@@ -6,7 +6,7 @@ test("phones stop before the 3D application loads while larger screens continue"
 
   if (mobileProject) {
     await expect(page.locator("body")).toHaveAttribute("data-device-support", "unsupported");
-    await expect(page.getByRole("heading", { name: "Open Amble on a laptop or desktop" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Singapore is waiting on the big screen" })).toBeVisible();
     await expect(page.locator("#device-gate")).toBeVisible();
     await expect(page.locator("#map")).toHaveCount(0);
     await expect(page.locator("#experience-intro")).toHaveCount(0);

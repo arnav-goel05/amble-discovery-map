@@ -14,9 +14,8 @@ function showUnsupportedDevice(support) {
   gate.innerHTML = `
     <section class="device-gate__card">
       <img class="device-gate__wordmark" src="/brand/amble-wordmark.png" alt="Amble" width="1422" height="449">
-      <p class="device-gate__eyebrow">Larger screen required</p>
-      <h1 id="device-gate-title" class="device-gate__title">Open Amble on a laptop or desktop</h1>
-      <p class="device-gate__copy">Amble's detailed 3D map needs more graphics memory than phones can reliably provide. Open this same link on a larger screen to explore events, restaurants, and plans.</p>
+      <h1 id="device-gate-title" class="device-gate__title">Singapore is waiting on the big screen</h1>
+      <p class="device-gate__copy">Open Amble on your laptop to explore the city in 3D, uncover exciting events, find your next restaurant, and build the perfect day out.</p>
     </section>
   `;
   document.body.appendChild(gate);
