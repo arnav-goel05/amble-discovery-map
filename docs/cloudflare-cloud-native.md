@@ -28,6 +28,23 @@ npm run cloudflare:cloud:deploy
 
 `cloudflare:prepare` copies the public directory without the large tile trees, bundles the current approved event snapshot into the Worker, and builds the static frontend. Geometry remains in the `amble-3d-tiles` R2 bucket.
 
+## Automatic deployments from GitHub
+
+The production Worker uses Cloudflare Workers Builds to deploy successful pushes from the GitHub `main` branch. Connect the existing `amble` Worker to `arnav-goel05/amble-discovery-map` and use these build settings:
+
+| Setting | Value |
+| --- | --- |
+| Production branch | `main` |
+| Root directory | `/` |
+| Build command | `npm run cloudflare:cloud:test` |
+| Deploy command | `npm run cloudflare:cloud:deploy` |
+| Build variable | `NODE_VERSION=24` |
+| Non-production branch builds | Disabled |
+
+Authorize the Cloudflare GitHub App only for this repository. Keep runtime secrets, D1, and R2 bindings on the existing Worker; build variables are not a replacement for runtime secrets.
+
+The deploy command always creates a fresh frontend bundle and verifies that its lightweight entry contains the phone/tablet compatibility gate before Wrangler publishes it. A failed test, build, or verification must not replace the active deployment.
+
 ## Verify
 
 ```bash
