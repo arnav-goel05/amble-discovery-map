@@ -97,7 +97,7 @@ When the provider response reports a total, result count, page count, or next-pa
 
 Save the untouched raw listing response as `raw/<source>/listings/page-<n>.json` and point `providerTotalEvidence` at its provider-owned total using JSON Pointer. The orchestrator reads that value itself. Do not create a summary response or rewrite the provider total.
 
-A successful zero-record source additionally requires `completion.zeroResultConfirmed: true`, meaning the official listing explicitly proved there were no source records after complete pagination. A loading shell, placeholders, inaccessible event cards, or “nothing validated in this pass” is pending or blocked—not zero-result success.
+A successful zero-record source additionally requires `completion.zeroResultConfirmed: true`, meaning the official listing explicitly proved there were no source records after complete pagination. A loading shell, placeholders, inaccessible event cards, or “nothing validated in this pass” is pending or blocked - not zero-result success.
 
 Blocked or failed sources require `error` and may omit counts. Successful normalization requires `status: "success"`, `counts`, `artifactRefs`, and:
 

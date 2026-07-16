@@ -66,7 +66,7 @@ last checked time and validity state. An expired deal is not returned as current
 
 ### `POST /api/plans`
 
-Creates a challenge-ready anonymous plan from 1–20 validated event/restaurant stops.
+Creates a challenge-ready anonymous plan from 1-20 validated event/restaurant stops.
 Returns `planId`, normalized summary, `lastActivityAt`, and `expiresAt`. Creation establishes
 activity and expiry seven days later. It does not create an account.
 

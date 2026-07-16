@@ -53,23 +53,23 @@ administrator; single-process background delivery and retention worker
 
 *GATE: Passed before Phase 0 research and passed again after Phase 1 design.*
 
-- **Evidence — PASS**: `contracts/event-pipeline.md` defines source provenance, official
+- **Evidence - PASS**: `contracts/event-pipeline.md` defines source provenance, official
   evidence, OneMap approval, missing-data behavior, and the manual review boundary.
-- **Automation — PASS**: Deterministic collectors, normalizers, resolvers, reconciliation,
+- **Automation - PASS**: Deterministic collectors, normalizers, resolvers, reconciliation,
   verification, publication, retention, and provider-policy checks remain code-owned.
   Administrator decisions are structured, hash-bound inputs to later pipeline processing.
-- **Identity and publication — PASS**: Occurrence identities are distinct from listing and
+- **Identity and publication - PASS**: Occurrence identities are distinct from listing and
   merged identities. Immutable snapshot directories and one atomic active pointer prevent
   mixed publication; partial runs keep the previous pointer.
-- **Boundaries — PASS**: Events, map rendering, restaurants, plans/games, admin, persistence,
+- **Boundaries - PASS**: Events, map rendering, restaurants, plans/games, admin, persistence,
   and external providers have separate services/adapters and versioned contracts.
-- **Quality and security — PASS**: The plan adds a single release gate, recovery/privacy
+- **Quality and security - PASS**: The plan adds a single release gate, recovery/privacy
   tests, browser projects, password/session/CSRF/rate-limit controls, provider allowlists,
   and URL/content protections.
-- **UX and performance — PASS**: Existing singleton components and event-driven updates are
+- **UX and performance - PASS**: Existing singleton components and event-driven updates are
   preserved; shared tokens and state contracts apply Apple HIG-informed decisions; map
   changes require cold/warm desktop/mobile benchmarks.
-- **Operations and privacy — PASS**: The design is single-host and free-only, removes product
+- **Operations and privacy - PASS**: The design is single-host and free-only, removes product
   metrics, applies task-end and seven-day cleanup, exposes stale state, and separates
   approved artifacts from caches and runs.
 

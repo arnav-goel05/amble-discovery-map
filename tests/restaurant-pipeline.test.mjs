@@ -489,9 +489,9 @@ test("generic offer, award, order, and promotion navigation text is not treated 
 });
 
 test("deal evidence remains centered on a signal found late in minified page text", () => {
-  const evidence = evidenceSnippets(`<p>${"generic restaurant copy ".repeat(80)}Daily HAPPY HOUR promotions run from 6–8pm with selected drinks.</p>`);
+  const evidence = evidenceSnippets(`<p>${"generic restaurant copy ".repeat(80)}Daily HAPPY HOUR promotions run from 6-8pm with selected drinks.</p>`);
   assert.equal(evidence[0].title, "HAPPY HOUR");
-  assert.match(evidence[0].evidence, /HAPPY HOUR promotions run from 6–8pm/);
+  assert.match(evidence[0].evidence, /HAPPY HOUR promotions run from 6-8pm/);
   assert.ok(evidence[0].evidence.length <= 420);
   assert.equal(evidenceSnippets("Enjoy complimentary parking with a minimum spend of S$100.")[0].title, "Complimentary parking");
 });

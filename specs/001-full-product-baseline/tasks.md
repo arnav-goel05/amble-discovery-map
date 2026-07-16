@@ -65,7 +65,7 @@ approved snapshot can be loaded safely, and the production build passes.
 
 ---
 
-## Phase 3: User Story 1 — Discover nearby events on the map (Priority: P1) 🎯 MVP
+## Phase 3: User Story 1 - Discover nearby events on the map (Priority: P1) 🎯 MVP
 
 **Goal**: Anonymous users can see approved event buildings and compact full-title pills while
 normal buildings remain correct and duplicate geometry is impossible.
@@ -93,7 +93,7 @@ areas, POI/background separation, and final-quality restoration.
 
 ---
 
-## Phase 4: User Story 2 — Search, filter, and inspect event details (Priority: P1)
+## Phase 4: User Story 2 - Search, filter, and inspect event details (Priority: P1)
 
 **Goal**: Users can narrow events and inspect one consistent, complete, honest detail panel.
 
@@ -120,7 +120,7 @@ fields, then filter out the selection and confirm all state clears.
 
 ---
 
-## Phase 5: User Story 6 — Refresh and reconcile trusted data weekly (Priority: P1)
+## Phase 5: User Story 6 - Refresh and reconcile trusted data weekly (Priority: P1)
 
 **Goal**: The weekly event pipeline covers the run date plus seven following days, preserves
 provenance, reuses approved work, resolves safely, reconciles by occurrence identity, and
@@ -159,7 +159,7 @@ snapshot.
 
 ---
 
-## Phase 6: User Story 7 — Review unresolved venues privately (Priority: P1)
+## Phase 6: User Story 7 - Review unresolved venues privately (Priority: P1)
 
 **Goal**: One authenticated administrator can adjudicate evidence-hash-bound venue cases;
 public users cannot access them, and decisions return through pipeline validation.
@@ -195,7 +195,7 @@ pipeline verification.
 
 ---
 
-## Phase 7: User Story 3 — Build an anonymous outing plan (Priority: P2)
+## Phase 7: User Story 3 - Build an anonymous outing plan (Priority: P2)
 
 **Goal**: Users can build and route a mixed event/restaurant plan without an account, with
 seven-day inactivity deletion for persisted challenge-ready plans.
@@ -224,7 +224,7 @@ and verify deletion without affecting an active game.
 
 ---
 
-## Phase 8: User Story 4 — Play a Telegram challenge (Priority: P2)
+## Phase 8: User Story 4 - Play a Telegram challenge (Priority: P2)
 
 **Goal**: Optional Telegram challenges remain idempotent and restart-safe while deleting
 related verification data at task end or after seven days of abandonment.
@@ -258,7 +258,7 @@ restart, and all cleanup deadlines.
 
 ---
 
-## Phase 9: User Story 5 — Discover restaurants and verified deals (Priority: P2)
+## Phase 9: User Story 5 - Discover restaurants and verified deals (Priority: P2)
 
 **Goal**: User-triggered viewport restaurant discovery is distinct, evidence-backed,
 free-only, stale-aware, and isolated from event state.
@@ -290,7 +290,7 @@ cleanup plus unchanged event state.
 
 ---
 
-## Phase 10: User Story 8 — Continue safely through external outages (Priority: P2)
+## Phase 10: User Story 8 - Continue safely through external outages (Priority: P2)
 
 **Goal**: Users retain the last approved applicable data with honest stale context, or receive
 a clear unavailable state when no approved fallback exists.

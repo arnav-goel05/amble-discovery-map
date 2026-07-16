@@ -54,16 +54,16 @@ npm audit
 
 ## Repository map
 
-- `activity-scenes/` — map interactions and product features
-- `assets/` — editable source assets that are not shipped to browsers
-- `map-layers/` — deck.gl and MapLibre building layers
-- `scripts/` — server, data pipelines, publication, and operational tooling
-- `cloudflare/` — public Worker and R2/VPC routing
-- `data/` — approved immutable application snapshots and policies
-- `pull_data.md` — executable event-source schedule and success ledger
-- `tests/` — Node contract and Playwright browser tests
-- `docs/` — architecture, deployment, operations, and design QA documentation
-- `specs/` — product baseline, contracts, and implementation record
+- `activity-scenes/` - map interactions and product features
+- `assets/` - editable source assets that are not shipped to browsers
+- `map-layers/` - deck.gl and MapLibre building layers
+- `scripts/` - server, data pipelines, publication, and operational tooling
+- `cloudflare/` - public Worker and R2/VPC routing
+- `data/` - approved immutable application snapshots and policies
+- `pull_data.md` - executable event-source schedule and success ledger
+- `tests/` - Node contract and Playwright browser tests
+- `docs/` - architecture, deployment, operations, and design QA documentation
+- `specs/` - product baseline, contracts, and implementation record
 
 ## Deployment notes
 

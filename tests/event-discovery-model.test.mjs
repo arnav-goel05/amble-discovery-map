@@ -6,12 +6,12 @@ import { createEventDiscoveryModel, reconcileEventSelection } from "../activity-
 const landmarks = [
   {
     id: "library", label: "National Library", anchor: { lng: 103.854, lat: 1.298 }, events: [
-      { id: "late", title: "Journey to the West", venue: "Drama Centre", dateText: "15 Jul 2026", startDateTime: "2026-07-15T19:00:00+08:00", category: "Performances", price: "S$35–S$60" },
+      { id: "late", title: "Journey to the West", venue: "Drama Centre", dateText: "15 Jul 2026", startDateTime: "2026-07-15T19:00:00+08:00", category: "Performances", price: "S$35-S$60" },
       { id: "early", title: "Architecture Talk", venue: "Drama Centre", dateText: "14 Jul 2026", startDateTime: "2026-07-14T10:00:00+08:00", category: "Workshops & Classes", price: "Free" },
     ],
   },
   { id: "museum", label: "National Museum", anchor: { lng: 103.848, lat: 1.296 }, events: [
-    { id: "exhibition", title: "História Café", venue: "Gallery One", dateText: "14–21 Jul 2026", category: "Exhibitions" },
+    { id: "exhibition", title: "História Café", venue: "Gallery One", dateText: "14-21 Jul 2026", category: "Exhibitions" },
   ] },
 ];
 

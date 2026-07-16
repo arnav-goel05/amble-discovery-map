@@ -320,7 +320,7 @@ class PlanGameService {
       const action = this.advanceVerifiedMission(game, session, mission, {
         type: "photo_accepted", missionId: mission.id, submissionId: existing.id, verifier: "manual-review", at: this.clock().toISOString(),
       });
-      action.text = `Organizer review complete — your photo was accepted.\n\n${action.text}`;
+      action.text = `Organizer review complete: your photo was accepted.\n\n${action.text}`;
       return { submission: reviewed, action };
     });
   }
@@ -455,7 +455,7 @@ class PlanGameService {
       active.phase = "photo";
       active.history.push({ type: "location_verified", missionId: mission.id, distanceMeters: evidence.distanceMeters, method: evidence.reason, accuracyMeters: evidence.accuracyMeters, at: this.clock().toISOString() });
       this.saveSession(active);
-      return [{ chatId, text: `Location confirmed — ${evidence.distanceMeters} m from the stop. Now send your challenge photo.`, removeKeyboard: true }];
+      return [{ chatId, text: `Location confirmed: ${evidence.distanceMeters} m from the stop. Now send your challenge photo.`, removeKeyboard: true }];
     }
     if (Array.isArray(message.photo) && message.photo.length) {
       if (active.phase !== "photo") {

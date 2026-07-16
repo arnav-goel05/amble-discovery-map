@@ -211,7 +211,7 @@ Only previously approved applicable data may be returned with `stale: true`.
 |---|---|
 | `planId`, `schemaVersion` | Opaque public identity and contract version |
 | `title`, `travelMode` | Validated public fields |
-| `stops` | Ordered 1–20 normalized Event or Restaurant Stop snapshots |
+| `stops` | Ordered 1-20 normalized Event or Restaurant Stop snapshots |
 | `createdAt`, `lastActivityAt`, `expiresAt` | Set at creation; only successful game creation refreshes activity; expiry is seven days later |
 | `revokedAt` | Nullable terminal operator action |
 

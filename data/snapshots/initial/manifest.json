@@ -20,9 +20,9 @@
   "tilesetRef": "tileset.json",
   "previousSnapshotId": null,
   "artifactHashes": {
-    "landmarks.json": "41e9bc2cc905b1f21abfc93a5d5b04fe36d4fb48c4a51d83edbeeee1c64262e3",
+    "landmarks.json": "cce7e22b163af5fdcf957432defbd9efbbf665c6b6d54936069d76753411a1b3",
     "pois.json": "644e3f187b95f2f128659fe1d3ff22f6da2e2dfca9b41b861aa05a373bf5c8fb",
     "tileset.json": "c316b0534a32ed8080b6c792b3420456aefcce5ac4a3809e1a896805ef8dd572"
   },
-  "contentHash": "9ce771f490fad23972c2888f113bcf246e892f52d574cbbf9cecd34b4376dc24"
+  "contentHash": "cacc20c2e4aaefcb0757da5744c40265670ffd346688b03a1765c935758cb2b1"
 }

@@ -42,32 +42,32 @@ privacy cleanup, and production smoke checks pass.
 
 ## Implementation checkpoints
 
-- Foundation (T007–T018): passed on 2026-07-14 with 12/12 shared contract, provider-policy,
+- Foundation (T007-T018): passed on 2026-07-14 with 12/12 shared contract, provider-policy,
   and approved-snapshot tests; the production build passed; the initial 64-landmark/64-POI
   migration passed equivalence and hash validation; focused default, empty, and injected
   Chromium snapshot paths passed. The production `/api/snapshot` endpoint also returned the
   active `initial` snapshot with security and cache headers.
-- Event discovery MVP (T019–T027): passed on 2026-07-14 with 6/6 reconciliation and geometry
+- Event discovery MVP (T019-T027): passed on 2026-07-14 with 6/6 reconciliation and geometry
   lifecycle tests, 64 POIs separated across 366 source tiles, focused desktop/mobile discovery
   browser coverage, stable full-title/multi-event pills, and a successful production build.
-- Event search and details (T028–T036): passed on 2026-07-14 with 7/7 model/overlay tests,
+- Event search and details (T028-T036): passed on 2026-07-14 with 7/7 model/overlay tests,
   34 passing UI browser tests (2 staged-only tests skipped without a run directory), explicit
   missing-data states, validated optional links, singleton overlay coordination, and a
   successful production build.
-- Private venue review (T055–T070): passed on 2026-07-14 through repository/API tests and the
+- Private venue review (T055-T070): passed on 2026-07-14 through repository/API tests and the
   desktop/mobile Chromium, WebKit, and Firefox admin journeys. Local HTTP automation disables
   only the Secure cookie attribute; production remains Secure, HttpOnly, SameSite=Strict.
-- Anonymous planning and Telegram challenge lifecycle (T071–T095): passed on 2026-07-14 with
+- Anonymous planning and Telegram challenge lifecycle (T071-T095): passed on 2026-07-14 with
   mixed-stop ordering and touch reordering, Google Maps order, immutable game snapshots,
   restart/idempotency behavior, seven-day cleanup, terminal photo cleanup, zero product
   telemetry, and private photo-review coverage.
-- Restaurant discovery (T096–T108): passed on 2026-07-14 with free-provider/official-domain
+- Restaurant discovery (T096-T108): passed on 2026-07-14 with free-provider/official-domain
   policy, fresh/stale/expired response contracts, viewport markers, singleton details, plan
   handoff, and complete close cleanup across the automated browser matrix.
-- Stale-source recovery (T109–T116): passed on 2026-07-14 with prior-snapshot preservation,
+- Stale-source recovery (T109-T116): passed on 2026-07-14 with prior-snapshot preservation,
   explicit no-prior-data states, bounded restaurant recovery, expired-deal suppression, and
   fresh in-place reconciliation.
-- Automated release completion (T117–T123 and T125–T127): the production build, five weekly-wrapper tests, artifact
+- Automated release completion (T117-T123 and T125-T127): the production build, five weekly-wrapper tests, artifact
   audit, production smoke, and 276-case Chromium/WebKit/Firefox desktop/mobile matrix passed
   on 2026-07-14 (258 passed; 18 staged-only cases skipped without a run directory). Performance
   results and the responsibility audit are recorded in `docs/performance-baseline.md` and
@@ -155,7 +155,7 @@ must be executed until the command returns `complete: true` or a genuine documen
 Validate the checked-in free cron/systemd example in a disposable user account and confirm
 that overlapping invocations do not start a second refresh.
 
-### Weekly event pipeline checkpoint (T037–T054)
+### Weekly event pipeline checkpoint (T037-T054)
 
 Verified on 2026-07-14:
 

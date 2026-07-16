@@ -16,7 +16,7 @@ function dateLabel(start, end) {
   if (start && !end) return `From ${format(start)}`;
   if (!start && end) return `Until ${format(end)}`;
   if (start === end) return format(start);
-  return `${format(start)} – ${format(end)}`;
+  return `${format(start)} - ${format(end)}`;
 }
 
 function createDateRangeFilter() {

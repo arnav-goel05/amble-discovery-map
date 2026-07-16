@@ -22,7 +22,7 @@ export function extractAddressEvidence(values) {
   const postalCodes = [...new Set([...text.matchAll(/\bSingapore\s+(\d{6})\b/gi)].map((match) => match[1]))];
   const candidates = [];
   const add = (value) => {
-    const cleaned = String(value ?? '').replace(/^[\s:;,–—-]+|[\s;,.]+$/g, '').replace(/\s+/g, ' ').trim();
+    const cleaned = String(value ?? '').replace(/^[\s:;,-]+|[\s;,.]+$/g, '').replace(/\s+/g, ' ').trim();
     if (cleaned && cleaned.length <= 240 && !candidates.some((item) => item.toLowerCase() === cleaned.toLowerCase())) candidates.push(cleaned);
   };
   const patterns = [

@@ -13,11 +13,11 @@ exercised.
 | Platform | Browser | Version | Result |
 | --- | --- | --- | --- |
 | macOS 26.5.1 | Safari | 26.5 (WebDriver 21624.2.5.11.4) | Not exercised: Safari remote automation is disabled; no result is claimed. |
-| macOS 26.5.1 | Google Chrome | — | Not exercised: no local installation. |
-| macOS 26.5.1 | Mozilla Firefox | — | Not exercised: no local installation. |
-| macOS 26.5.1 | Microsoft Edge | — | Not exercised: no local installation. |
+| macOS 26.5.1 | Google Chrome | - | Not exercised: no local installation. |
+| macOS 26.5.1 | Mozilla Firefox | - | Not exercised: no local installation. |
+| macOS 26.5.1 | Microsoft Edge | - | Not exercised: no local installation. |
 | iOS Simulator 26.5/27.0 | Mobile Safari | iPad mini (26.5) and iPhone 17 Pro (27.0) booted | Not exercised: the captured simulator remained locked/black; no result is claimed. |
-| Android Emulator | Chrome, Firefox, Edge | — | Not exercised: no Android emulator or `adb` installation. |
+| Android Emulator | Chrome, Firefox, Edge | - | Not exercised: no Android emulator or `adb` installation. |
 
 The local production application was additionally inspected through the Codex in-app browser: the `initial` approved snapshot loaded, the combined highlight manager mounted 64 pills, internal warning copy was absent, a complete event panel opened, and an event entered the anonymous plan. This is useful product evidence but is not substituted for any actual branded-browser row above.
 

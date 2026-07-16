@@ -47,9 +47,9 @@ function openingHourGroups(value) {
     const match = rule.match(/^([A-Za-z,-]+)\s+(.+)$/);
     const days = (match ? match[1] : "Schedule").split(",").map((part) => {
       const [start, end] = part.trim().split("-");
-      return end && DAY_LABELS[start] && DAY_LABELS[end] ? `${DAY_LABELS[start]}–${DAY_LABELS[end]}` : (DAY_LABELS[start] || part.trim());
+      return end && DAY_LABELS[start] && DAY_LABELS[end] ? `${DAY_LABELS[start]}-${DAY_LABELS[end]}` : (DAY_LABELS[start] || part.trim());
     }).join(", ");
-    const hours = (match ? match[2] : rule).replace(/(\d{1,2}:\d{2})-(\d{1,2}:\d{2})/g, "$1–$2");
+    const hours = (match ? match[2] : rule).replace(/(\d{1,2}:\d{2})-(\d{1,2}:\d{2})/g, "$1-$2");
     if (!groups.has(days)) groups.set(days, []);
     groups.get(days).push(hours);
   }

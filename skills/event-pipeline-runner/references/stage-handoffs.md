@@ -42,7 +42,7 @@ A `not_mappable` result must include `notMappableEvidence` with `reasonCode` equ
 {
   "changeAction": "create | update | noop",
   "poiId": "esplanade",
-  "canonicalVenue": "Esplanade – Theatres on the Bay",
+  "canonicalVenue": "Esplanade - Theatres on the Bay",
   "anchor": { "lng": 103.85455, "lat": 1.2892 },
   "poiTilesetUrl": "poi-tiles/esplanade/tileset.json",
   "extractionManifestUrl": "poi-tiles/esplanade/extraction-manifest.json",

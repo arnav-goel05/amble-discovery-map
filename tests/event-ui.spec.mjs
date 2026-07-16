@@ -249,8 +249,8 @@ test("event search exposes a working date filter without a price filter", async 
     return output;
   });
   expect(result).toEqual({
-    dateLabel: "14 Jul – 21 Jul",
-    dateLabelBeforeApply: "14 Jul – 21 Jul",
+    dateLabel: "14 Jul - 21 Jul",
+    dateLabelBeforeApply: "14 Jul - 21 Jul",
     endBlankByDefault: "",
     endBlankWhenAnyDateOpens: "",
     hasPriceFilter: false,

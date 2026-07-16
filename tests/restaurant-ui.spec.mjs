@@ -192,8 +192,8 @@ test("button searches the visible map area, clusters locations, lists restaurant
   await expect(detailValues.nth(1)).toHaveText("restaurant");
   await expect(detailValues.nth(2)).toHaveText("singaporean, asian");
   await expect(detailValues.nth(3)).toHaveText("3 Example Road, Singapore 018900");
-  await expect(page.locator(".restaurant-detail__hours-days")).toHaveText("Monday–Sunday");
-  await expect(page.locator(".restaurant-detail__hours-time")).toHaveText("11:00–22:00");
+  await expect(page.locator(".restaurant-detail__hours-days")).toHaveText("Monday-Sunday");
+  await expect(page.locator(".restaurant-detail__hours-time")).toHaveText("11:00-22:00");
   await expect(page.locator(".restaurant-detail__deal-evidence")).toHaveText("Enjoy 20% off dinner from Monday to Thursday.");
   await expect(page.locator(".restaurant-detail__deal-source")).toHaveAttribute("href", "https://example.com/promotions");
   await page.locator(".restaurant-detail__plan").click();

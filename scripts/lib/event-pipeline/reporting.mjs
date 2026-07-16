@@ -18,7 +18,7 @@ export function renderStatus(state, run, frontendPlan = null) {
     const c = source.counts ?? {};
     return `| ${name} | ${source.status} | ${c.pages ?? 0} | ${c.sourceRecordsReceived ?? 0} | ${c.invalidSourceRecords ?? 0} | ${c.processedSourceRecords ?? 0} | ${c.occurrencesEmitted ?? 0} | ${c.excludedOccurrences ?? 0} | ${c.eligiblePreDedup ?? 0} | ${c.duplicateCollapsed ?? 0} | ${c.acceptedPrimary ?? 0} | ${(source.artifactRefs ?? []).join('<br>')} |`;
   }).join('\n');
-  const venueRows = Object.entries(state.venues ?? {}).map(([id, venue]) => `| ${id} | ${venue.venue} | ${EVENT_STAGES.map((stage) => venue.stages[stage].status).join(' | ')} | ${EVENT_STAGES.map((stage) => venue.stages[stage].outputRef ?? '—').join('<br>')} |`).join('\n') || '| — | — | — | — | — | — | — | — |';
+  const venueRows = Object.entries(state.venues ?? {}).map(([id, venue]) => `| ${id} | ${venue.venue} | ${EVENT_STAGES.map((stage) => venue.stages[stage].status).join(' | ')} | ${EVENT_STAGES.map((stage) => venue.stages[stage].outputRef ?? '-').join('<br>')} |`).join('\n') || '| - | - | - | - | - | - | - | - |';
   const errors = [
     ...Object.entries(state.sources ?? {}).filter(([, value]) => value.error).map(([name, value]) => `- Source ${name}: ${value.error}`),
     ...Object.entries(state.venues ?? {}).flatMap(([id, venue]) => EVENT_STAGES.filter((stage) => venue.stages[stage].error).map((stage) => `- ${id}/${stage}: ${venue.stages[stage].error}`)),
