@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "thian-hock-keng",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:05.683Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/73/8_0.b3dm",
+      "sourceSha256": "73503c1df0e64fd0c291e93274dd7c694ef273a418d7b90e5fa10e24704cea65",
+      "originalBatchIds": [
+        42
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c"
+      ],
+      "gmlNames": [
+        "THIAN HOCK KENG"
+      ],
+      "poiFile": "8_0.b3dm",
+      "poiSha256": "705c6a5c588aea1b97b35d29eac3c76d506c7f17453f2f46a35a693342adc935",
+      "poiTriangles": 2800,
+      "backgroundFile": "optimized-tiles/7/73/8_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c"
+      ],
+      "backgroundSha256": "788e75b2a45a1acad9126271b6a07477c099c6a9c9593b128dbaf505d8c75c49",
+      "backgroundTriangles": 8244
+    },
+    {
+      "sourceTile": "tiles/7/73/8_1.b3dm",
+      "sourceSha256": "a1035f4d64b97360d0f24c5c873b6299821afd0c612afa055405b8ae0dc1d759",
+      "originalBatchIds": [
+        42
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c"
+      ],
+      "gmlNames": [
+        "THIAN HOCK KENG"
+      ],
+      "poiFile": "8_1.b3dm",
+      "poiSha256": "cbd2a011eb829c5b99b9643fed6d9488d887f31536bfa331e5e85d63433308a1",
+      "poiTriangles": 2800,
+      "backgroundFile": "optimized-tiles/7/73/8_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c"
+      ],
+      "backgroundSha256": "b8ccc83e4a2089f1dd0a66967e740c0482713a468981c0bad16541c7a9461aac",
+      "backgroundTriangles": 8244
+    },
+    {
+      "sourceTile": "tiles/7/73/8_2.b3dm",
+      "sourceSha256": "ce97ed1efbecc8b5ee48c2317fe356c5e59be306d612997ae04a2ee927b94e3b",
+      "originalBatchIds": [
+        42
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c"
+      ],
+      "gmlNames": [
+        "THIAN HOCK KENG"
+      ],
+      "poiFile": "8_2.b3dm",
+      "poiSha256": "0bdad6f8e3f99b5c2b68966810c15c000d90a51d6beae88b2cf77dda2b9a6904",
+      "poiTriangles": 2800,
+      "backgroundFile": "optimized-tiles/7/73/8_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c"
+      ],
+      "backgroundSha256": "1e74a7faaaec8c91cb57e0b1bb206d016b1e1ed66a56260eb4c8f6377fff0577",
+      "backgroundTriangles": 8244
+    },
+    {
+      "sourceTile": "tiles/7/73/8_3.b3dm",
+      "sourceSha256": "d1277155118ba131e3a47fb55fb8a807b9bd6ad6cca626d01cab89fd45f56cf1",
+      "originalBatchIds": [
+        42
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c"
+      ],
+      "gmlNames": [
+        "THIAN HOCK KENG"
+      ],
+      "poiFile": "8_3.b3dm",
+      "poiSha256": "d640b0ce3fe25c8b258bec2b793c5c9b432f3ad2f6da195b9b2261ebefd7b6a6",
+      "poiTriangles": 2800,
+      "backgroundFile": "optimized-tiles/7/73/8_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c"
+      ],
+      "backgroundSha256": "838f78cc76c2762dee80840d4ead53e112f2f190a8ef1a79c71c14663331ff94",
+      "backgroundTriangles": 8244
+    },
+    {
+      "sourceTile": "tiles/7/73/8_4.b3dm",
+      "sourceSha256": "e158e341570e85f356bd244159af3c4fa5348a0c5492c05c78481a95f359fdcb",
+      "originalBatchIds": [
+        42
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c"
+      ],
+      "gmlNames": [
+        "THIAN HOCK KENG"
+      ],
+      "poiFile": "8_4.b3dm",
+      "poiSha256": "d903eeddf13f2784940321f1469ff3e4e740ce69bebbb577fe050f35ec48a9ea",
+      "poiTriangles": 2800,
+      "backgroundFile": "optimized-tiles/7/73/8_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c"
+      ],
+      "backgroundSha256": "0c28b1cc8a073fd13b0f51bc41c1caf75f985804282ae3c0fbda3a9f405c8dce",
+      "backgroundTriangles": 8244
+    }
+  ]
+}

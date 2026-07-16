@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "singapore-chinese-cultural-centre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:05.746Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/75/5_0.b3dm",
+      "sourceSha256": "bb1ae33076ff6779a59a29a6490937b720f804a64ba833af36d084c14707bec6",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "gmlNames": [
+        "SINGAPORE CHINESE CULTURAL CENTRE"
+      ],
+      "poiFile": "5_0.b3dm",
+      "poiSha256": "10e01df0d5f6205b096954f536684554f84d71f252d3878fd8d4a95f196ca009",
+      "poiTriangles": 352,
+      "backgroundFile": "optimized-tiles/7/75/5_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "backgroundSha256": "a265642b125d4f698dd0c281a28dc65ff85a8945481f8f30f59eac541b541a87",
+      "backgroundTriangles": 1979
+    },
+    {
+      "sourceTile": "tiles/7/75/5_1.b3dm",
+      "sourceSha256": "01e7ea7cdcf6d82b36c1d528258c9d069ce88119e3ee7f7e2930e34871dd1082",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "gmlNames": [
+        "SINGAPORE CHINESE CULTURAL CENTRE"
+      ],
+      "poiFile": "5_1.b3dm",
+      "poiSha256": "0d82a65ccbddcb2ba3cc4459830ba32284089abe993073404948751f7038e0f0",
+      "poiTriangles": 352,
+      "backgroundFile": "optimized-tiles/7/75/5_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "backgroundSha256": "f23ce22a3e39ab8e743c2bc7d3c778f1bdad5ffebbb38783cb9063a88c3fc8b7",
+      "backgroundTriangles": 1979
+    },
+    {
+      "sourceTile": "tiles/7/75/5_2.b3dm",
+      "sourceSha256": "a497802c2ce9522b9088724bf382d06e492268cc0f367ec09eda4ec1aa9822fb",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "gmlNames": [
+        "SINGAPORE CHINESE CULTURAL CENTRE"
+      ],
+      "poiFile": "5_2.b3dm",
+      "poiSha256": "a85ddba43eda9bc965574ab5ce29effe1ec355e9bb45394332d39e53ee46222e",
+      "poiTriangles": 352,
+      "backgroundFile": "optimized-tiles/7/75/5_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "backgroundSha256": "a50c8e65e2768bed50c14da33623177a259237c4942ea148179bdc3fb156c059",
+      "backgroundTriangles": 1979
+    },
+    {
+      "sourceTile": "tiles/7/75/5_3.b3dm",
+      "sourceSha256": "aade30137a3ae3fcbece5b93d04a9984c6dff487dbc0c3028a1f559f153e2dac",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "gmlNames": [
+        "SINGAPORE CHINESE CULTURAL CENTRE"
+      ],
+      "poiFile": "5_3.b3dm",
+      "poiSha256": "3c18fd8dd165c1d1dd8e9202f5ef86e7857b5469a3d557ac95dcb86bb5adf670",
+      "poiTriangles": 352,
+      "backgroundFile": "optimized-tiles/7/75/5_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "backgroundSha256": "a3a3adad99a23a8725232a982c2e56db8a2d8e8e612ab161470ea34a4aa2a7f1",
+      "backgroundTriangles": 1979
+    },
+    {
+      "sourceTile": "tiles/7/75/5_4.b3dm",
+      "sourceSha256": "032b27295a6397b468c4d44db956517621822d04fa9fc13f1521eed588db0177",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "gmlNames": [
+        "SINGAPORE CHINESE CULTURAL CENTRE"
+      ],
+      "poiFile": "5_4.b3dm",
+      "poiSha256": "6f6d6acf7873e46e7ac97854986b27971f4689dc9c27fa6836a320e334f4c55e",
+      "poiTriangles": 352,
+      "backgroundFile": "optimized-tiles/7/75/5_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "backgroundSha256": "5fc5f1a3eea42c20049fb40aaf2c0dd12fa46374e5e62086e637888cc39780f7",
+      "backgroundTriangles": 1979
+    },
+    {
+      "sourceTile": "tiles/7/75/5_5.b3dm",
+      "sourceSha256": "e2f36394ae746493200de5c0420f896d0cea4fe18fd0c1abf0790ec9961928d9",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "gmlNames": [
+        "SINGAPORE CHINESE CULTURAL CENTRE"
+      ],
+      "poiFile": "5_5.b3dm",
+      "poiSha256": "454a68c7c6c4e41185f525cf34f2bbf1025a68f61b7dfe55c8655be2c5bf9963",
+      "poiTriangles": 352,
+      "backgroundFile": "optimized-tiles/7/75/5_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "backgroundSha256": "f278a1917953a774a4da1a8c4aab6c653e856b75f1d0fa96cae56d9d43b18e9f",
+      "backgroundTriangles": 1979
+    }
+  ]
+}

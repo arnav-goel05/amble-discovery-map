@@ -1,0 +1,4 @@
+interface:
+  display_name: "Event Pipeline Runner"
+  short_description: "Pull events and run the OneMap workflow"
+  default_prompt: "Read pull_data.md, call each configured event API, run the four OneMap event skills in sequence, and produce a status report with next steps."

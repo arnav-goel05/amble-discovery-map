@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "shell-dunman",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:06.848Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/49/6_0.b3dm",
+      "sourceSha256": "4d4683e88732a48ca13b125e5ee0d8b9a29ac4d81bbb4f1c9c8db50f94fd5193",
+      "originalBatchIds": [
+        26
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_55303342-8d85-4db9-8e05-31a7f9f7fb6a"
+      ],
+      "gmlNames": [
+        "SHELL DUNMAN"
+      ],
+      "poiFile": "6_0.b3dm",
+      "poiSha256": "40cf70137828494f5c38a2685be23f967c22dfc3745c64382f6c05dd863fdff7",
+      "poiTriangles": 96,
+      "backgroundFile": "optimized-tiles/6/49/6_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_55303342-8d85-4db9-8e05-31a7f9f7fb6a"
+      ],
+      "backgroundSha256": "14339f8664f7e88f48bd270e9737fc2ac3be40a5d5de6a204b38b61b8f74e627",
+      "backgroundTriangles": 8385
+    },
+    {
+      "sourceTile": "tiles/6/49/6_1.b3dm",
+      "sourceSha256": "af65990ea607366319beabc7c8eeeccd0313acaa57a371ee43ae21d1fd15203b",
+      "originalBatchIds": [
+        26
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_55303342-8d85-4db9-8e05-31a7f9f7fb6a"
+      ],
+      "gmlNames": [
+        "SHELL DUNMAN"
+      ],
+      "poiFile": "6_1.b3dm",
+      "poiSha256": "3be2c22ed8e593a620f36154497694f0a3fa59c4e8159f22eb0a664a7adbd3b5",
+      "poiTriangles": 96,
+      "backgroundFile": "optimized-tiles/6/49/6_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_55303342-8d85-4db9-8e05-31a7f9f7fb6a"
+      ],
+      "backgroundSha256": "976d2e894c136a94a8ec0422ee2fde12f547d1e50793a28d29a80ba4c985bf32",
+      "backgroundTriangles": 8385
+    },
+    {
+      "sourceTile": "tiles/6/49/6_2.b3dm",
+      "sourceSha256": "9df3644cc7ba4c856604b09ee24b160505fa7c36d828fcfe22456cc6f87f7711",
+      "originalBatchIds": [
+        26
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_55303342-8d85-4db9-8e05-31a7f9f7fb6a"
+      ],
+      "gmlNames": [
+        "SHELL DUNMAN"
+      ],
+      "poiFile": "6_2.b3dm",
+      "poiSha256": "8d4538c21e7a53556c8d51074c9c406b845bfbd02c1a875ad2b0cd805faae573",
+      "poiTriangles": 96,
+      "backgroundFile": "optimized-tiles/6/49/6_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_55303342-8d85-4db9-8e05-31a7f9f7fb6a"
+      ],
+      "backgroundSha256": "9400a72623637042ec48693752a464830e664637693ce4ac8df3240be0820093",
+      "backgroundTriangles": 8385
+    },
+    {
+      "sourceTile": "tiles/6/49/6_3.b3dm",
+      "sourceSha256": "4a829c2d4fdef623395bb6af5c8d7d0b70771ca7831f2c6521b39402a3a78e3a",
+      "originalBatchIds": [
+        26
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_55303342-8d85-4db9-8e05-31a7f9f7fb6a"
+      ],
+      "gmlNames": [
+        "SHELL DUNMAN"
+      ],
+      "poiFile": "6_3.b3dm",
+      "poiSha256": "e9989e7915ae8aef74427bf8195bddd3a3455a0e76940f1a4b20f48e01370fe5",
+      "poiTriangles": 96,
+      "backgroundFile": "optimized-tiles/6/49/6_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_55303342-8d85-4db9-8e05-31a7f9f7fb6a"
+      ],
+      "backgroundSha256": "817c582074276f83ce19bbf150d62c921ffe48ecc17bb5356c3f1c3e9c669499",
+      "backgroundTriangles": 8385
+    }
+  ]
+}

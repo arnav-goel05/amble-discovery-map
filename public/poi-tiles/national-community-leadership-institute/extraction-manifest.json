@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "national-community-leadership-institute",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:09.894Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/19/5_0.b3dm",
+      "sourceSha256": "6c32b52c4572c3cc0b61ecf72f01ee505576216c2c2dd1dc8a6d2b1e2a9d1498",
+      "originalBatchIds": [
+        35
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f"
+      ],
+      "gmlNames": [
+        "NATIONAL COMMUNITY LEADERSHIP INSTITUTE"
+      ],
+      "poiFile": "5_0.b3dm",
+      "poiSha256": "024fa8aa1b1fe07785de9f9d950f380c0bb11c7ddcbcdc66c2a15161048e0f2c",
+      "poiTriangles": 724,
+      "backgroundFile": "optimized-tiles/6/19/5_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f"
+      ],
+      "backgroundSha256": "8c0c28430a174df59f34346fa2c4903a832c5b32b9e1dbe216523b8a29b81fd9",
+      "backgroundTriangles": 15758
+    },
+    {
+      "sourceTile": "tiles/6/19/5_1.b3dm",
+      "sourceSha256": "35dac3b44c6c2750ade7c728bf4af5fb9ed92f5e23356592ec2f6b391c807c87",
+      "originalBatchIds": [
+        35
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f"
+      ],
+      "gmlNames": [
+        "NATIONAL COMMUNITY LEADERSHIP INSTITUTE"
+      ],
+      "poiFile": "5_1.b3dm",
+      "poiSha256": "fce9c00e713d7905cdc801be964ce0cb6043ebcafd69f7353cce1902cac5205b",
+      "poiTriangles": 724,
+      "backgroundFile": "optimized-tiles/6/19/5_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f"
+      ],
+      "backgroundSha256": "36c7219b1b8d3a68b85635046780fe8c59f96bb482d505851cf2752e49bd1650",
+      "backgroundTriangles": 15758
+    },
+    {
+      "sourceTile": "tiles/6/19/5_2.b3dm",
+      "sourceSha256": "ec548c4502ec8042a1ea93489f1c23f50a2d4ede405c7c78fdb1071e66730422",
+      "originalBatchIds": [
+        35
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f"
+      ],
+      "gmlNames": [
+        "NATIONAL COMMUNITY LEADERSHIP INSTITUTE"
+      ],
+      "poiFile": "5_2.b3dm",
+      "poiSha256": "b51c996b9ab355149d475175bddb47ba9a3b57706a946917b457fcde6f7b2d11",
+      "poiTriangles": 724,
+      "backgroundFile": "optimized-tiles/6/19/5_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f"
+      ],
+      "backgroundSha256": "1ae556028fcb8324006faff430f0e841192090c5277c2482212eb5561a8bdec2",
+      "backgroundTriangles": 15758
+    },
+    {
+      "sourceTile": "tiles/6/19/5_3.b3dm",
+      "sourceSha256": "48e900c2ffdc8b6187a046ee2652dcb48bbe63011e42944b345ad1d193e6d9db",
+      "originalBatchIds": [
+        35
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f"
+      ],
+      "gmlNames": [
+        "NATIONAL COMMUNITY LEADERSHIP INSTITUTE"
+      ],
+      "poiFile": "5_3.b3dm",
+      "poiSha256": "8956f6ee4225fd31e585498660974e08c2c3bcfc7b71ed19eb9400653d71fb1b",
+      "poiTriangles": 724,
+      "backgroundFile": "optimized-tiles/6/19/5_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f"
+      ],
+      "backgroundSha256": "7eac5d9c97794afc66fb98dcdff6ce6b977804c5b8c25922657269fef7a72df1",
+      "backgroundTriangles": 15758
+    },
+    {
+      "sourceTile": "tiles/6/19/5_4.b3dm",
+      "sourceSha256": "d7b8b152efb10bb180b03d278347fcb6e1c3198c8804ee6a58a365dcd7636e6b",
+      "originalBatchIds": [
+        35
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f"
+      ],
+      "gmlNames": [
+        "NATIONAL COMMUNITY LEADERSHIP INSTITUTE"
+      ],
+      "poiFile": "5_4.b3dm",
+      "poiSha256": "c436a4cafbc5148c35d2769ee8609e25008e578eb91e4a198accb169118fc65d",
+      "poiTriangles": 724,
+      "backgroundFile": "optimized-tiles/6/19/5_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f"
+      ],
+      "backgroundSha256": "1e4a71f89bbafce9d6b072adadfd66c3d696fa9c2ad66d4b1b4ce052e4f8ef60",
+      "backgroundTriangles": 15758
+    }
+  ]
+}

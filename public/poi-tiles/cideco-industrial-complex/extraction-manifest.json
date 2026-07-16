@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "cideco-industrial-complex",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:04.500Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/41/22_0.b3dm",
+      "sourceSha256": "dd0630954dbf0796bc7ac0cb41a0d8cacf70704371117db878aa6622de18ba75",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "gmlNames": [
+        "CIDECO INDUSTRIAL COMPLEX"
+      ],
+      "poiFile": "22_0.b3dm",
+      "poiSha256": "ae7a19c9bdad2eeebd30e4e8bc08a8174dd26b49924078457e9fa673f6a701b7",
+      "poiTriangles": 548,
+      "backgroundFile": "optimized-tiles/6/41/22_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "backgroundSha256": "f4390fe698abc2d7e82410436979ff534b96b9e86a6408b531ed0d099a28d04a",
+      "backgroundTriangles": 5195
+    },
+    {
+      "sourceTile": "tiles/6/41/22_1.b3dm",
+      "sourceSha256": "981c212b0df835f32e6f636baf7e8bf37e4496d9ca105f2b523e37d8fe2ba29d",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "gmlNames": [
+        "CIDECO INDUSTRIAL COMPLEX"
+      ],
+      "poiFile": "22_1.b3dm",
+      "poiSha256": "a652bd02d6f70743ba4d273ffd596b418faf9fefed338e2e586beb4bf06220a3",
+      "poiTriangles": 548,
+      "backgroundFile": "optimized-tiles/6/41/22_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "backgroundSha256": "65f4c40745738502974e396114c325250815441b3183a902976b4e9dc1ca3a92",
+      "backgroundTriangles": 5195
+    },
+    {
+      "sourceTile": "tiles/6/41/22_2.b3dm",
+      "sourceSha256": "1e783d806c002e7b8c2b6c6c92431648cf15a067c36ea3233ed49e3db9fe1b53",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "gmlNames": [
+        "CIDECO INDUSTRIAL COMPLEX"
+      ],
+      "poiFile": "22_2.b3dm",
+      "poiSha256": "04b50dd393a1d77b46dad4d337814e513970aaba0347a7767154c078d355ae14",
+      "poiTriangles": 548,
+      "backgroundFile": "optimized-tiles/6/41/22_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "backgroundSha256": "2192cbb4e3d4db81608137f26b781f7786779b1a666b2e2baaa9eb6783a6025d",
+      "backgroundTriangles": 5195
+    },
+    {
+      "sourceTile": "tiles/6/41/22_3.b3dm",
+      "sourceSha256": "d238404f9bc3aa18a9fa524164faef16c8042149b8e1ef41765f5d6d1e8d4065",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "gmlNames": [
+        "CIDECO INDUSTRIAL COMPLEX"
+      ],
+      "poiFile": "22_3.b3dm",
+      "poiSha256": "d3a8d363676f8cde07c7fb1fd9dbf6d8560568acae5e4ce753040501106b4f35",
+      "poiTriangles": 548,
+      "backgroundFile": "optimized-tiles/6/41/22_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "backgroundSha256": "0cde1d318cc0e45fc07ecef0829c84a35a620b40c0ba9073dcb2ff7dc7e9a975",
+      "backgroundTriangles": 5195
+    },
+    {
+      "sourceTile": "tiles/6/41/22_4.b3dm",
+      "sourceSha256": "e869392419868dfb91d6e5f053145928c381a46fc5353ac5141164498d1e46c6",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "gmlNames": [
+        "CIDECO INDUSTRIAL COMPLEX"
+      ],
+      "poiFile": "22_4.b3dm",
+      "poiSha256": "6b908b3c13c6fd54a58ce54e6f0ef2ae56c1a559ae97593d7dda4c2a8ee745ae",
+      "poiTriangles": 548,
+      "backgroundFile": "optimized-tiles/6/41/22_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "backgroundSha256": "b56c5021231fd607734327233483c444b09588b9feede3ab038603c3a06d920a",
+      "backgroundTriangles": 5195
+    },
+    {
+      "sourceTile": "tiles/6/41/22_5.b3dm",
+      "sourceSha256": "53000b6694ef38909aca306249f592f5ca4dd2b2249dce1c94c537aa1bb35c3d",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "gmlNames": [
+        "CIDECO INDUSTRIAL COMPLEX"
+      ],
+      "poiFile": "22_5.b3dm",
+      "poiSha256": "ba9c7efdccb92384e8d1e3f6f0652c9f1519c565d61536d0bb9cbfc83341a181",
+      "poiTriangles": 548,
+      "backgroundFile": "optimized-tiles/6/41/22_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761"
+      ],
+      "backgroundSha256": "4e93e23b45a14bb650a9fb1927eac305e3f98edd4e57d8a91a314f323590bd6b",
+      "backgroundTriangles": 5195
+    }
+  ]
+}

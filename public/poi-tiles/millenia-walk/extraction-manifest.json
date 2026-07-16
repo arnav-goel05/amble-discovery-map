@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "millenia-walk",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:04.930Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/79/12_0.b3dm",
+      "sourceSha256": "63488eaed3811bc70d1af2628de1b82ef92ce1206ad0859370b037bf13dbd3d8",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "gmlNames": [
+        "MILLENIA WALK"
+      ],
+      "poiFile": "12_0.b3dm",
+      "poiSha256": "d2e7ecdcfbd25352f6b40cb5f57fbcac271fedd1c0b76a954c9450951a95d7af",
+      "poiTriangles": 3464,
+      "backgroundFile": "optimized-tiles/7/79/12_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "backgroundSha256": "0241a0024425685320b6282b7069cfd09695f96d9d1d00ade4d63dafeb949a80",
+      "backgroundTriangles": 2312
+    },
+    {
+      "sourceTile": "tiles/7/79/12_1.b3dm",
+      "sourceSha256": "fe7d96ca70130eb123e9a4996563074442fc51c1615ed94ab6f25e2dd3485380",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "gmlNames": [
+        "MILLENIA WALK"
+      ],
+      "poiFile": "12_1.b3dm",
+      "poiSha256": "03a590c369a6da604f4c49051b0598bf4951dbbc79df21ba5fbfeefe13d37369",
+      "poiTriangles": 3464,
+      "backgroundFile": "optimized-tiles/7/79/12_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "backgroundSha256": "c20bf51edf647cbe11e25418ce2e5da182204527a120022901ac4ea69c8a65f3",
+      "backgroundTriangles": 2312
+    },
+    {
+      "sourceTile": "tiles/7/79/12_2.b3dm",
+      "sourceSha256": "4f6588b18999e8c8997ee2309c627140cd05e3b4b5742d6aba3b494f97fb164e",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "gmlNames": [
+        "MILLENIA WALK"
+      ],
+      "poiFile": "12_2.b3dm",
+      "poiSha256": "32d17a6c3bde582e94b295dbb14f74efbadedae6ba304bceb995111be867ecc6",
+      "poiTriangles": 3464,
+      "backgroundFile": "optimized-tiles/7/79/12_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "backgroundSha256": "c23a49637bb05bc299076c4218af4c9922915a77194c8fa791f28750ec3c0237",
+      "backgroundTriangles": 2312
+    },
+    {
+      "sourceTile": "tiles/7/79/12_3.b3dm",
+      "sourceSha256": "b8b13014b54f147daa91c46b7174ee25c2dd37c183b592bcc8bc06c533df87a2",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "gmlNames": [
+        "MILLENIA WALK"
+      ],
+      "poiFile": "12_3.b3dm",
+      "poiSha256": "791aa6c59895ec929b08a68004b4e2b9988b70d7c7e20b8f2e38607977bf65a0",
+      "poiTriangles": 3464,
+      "backgroundFile": "optimized-tiles/7/79/12_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "backgroundSha256": "8f6e0959cd2ac5f0842ad8762ac843fe3518a13515990fa8449c5bc0093a7754",
+      "backgroundTriangles": 2312
+    },
+    {
+      "sourceTile": "tiles/7/79/12_4.b3dm",
+      "sourceSha256": "91d487f337af565e25667a5f244e5cca5973aa3acdc9b2b93985a0668e580999",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "gmlNames": [
+        "MILLENIA WALK"
+      ],
+      "poiFile": "12_4.b3dm",
+      "poiSha256": "bdf666739c39ad73531c57c95e0560cb394f906446949cb7b6ae3445d5bae38a",
+      "poiTriangles": 3464,
+      "backgroundFile": "optimized-tiles/7/79/12_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "backgroundSha256": "a8b3623a9a460c2a81bb3f45929df1850d37f2619bd4093ff67fcadb95abed11",
+      "backgroundTriangles": 2312
+    },
+    {
+      "sourceTile": "tiles/7/79/12_5.b3dm",
+      "sourceSha256": "983390bf8a7d04a01391fb728c864093926ee05f1af0fa1e6696fe3d4363decf",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "gmlNames": [
+        "MILLENIA WALK"
+      ],
+      "poiFile": "12_5.b3dm",
+      "poiSha256": "a750b2345db01ddfd86a6c2adfdf215947b1e3b37cc667d2e6f26ae90e4bd8d8",
+      "poiTriangles": 3464,
+      "backgroundFile": "optimized-tiles/7/79/12_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261"
+      ],
+      "backgroundSha256": "c86b5ee136aa9ced7394024e6015b8936f7a50ded0168beae646fa32326db194",
+      "backgroundTriangles": 2312
+    }
+  ]
+}

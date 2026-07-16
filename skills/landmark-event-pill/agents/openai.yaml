@@ -1,0 +1,4 @@
+interface:
+  display_name: "Landmark Event Pill"
+  short_description: "Add verified map-anchored event pills."
+  default_prompt: "Add a close-range event pill to an approved and highlighted OneMap landmark, then verify its behavior in the browser."

@@ -1,0 +1,96 @@
+{
+  "asset": {
+    "version": "1.0",
+    "extras": {
+      "ion": {
+        "georeferenced": true,
+        "movable": false
+      }
+    }
+  },
+  "geometricError": 512,
+  "root": {
+    "boundingVolume": {
+      "region": [
+        1.813385316153742,
+        0.0228403937797477,
+        1.813421547889055,
+        0.022862887868801,
+        0,
+        18.17057853057043
+      ]
+    },
+    "geometricError": 256,
+    "refine": "REPLACE",
+    "children": [
+      {
+        "boundingVolume": {
+          "region": [
+            1.813385316153742,
+            0.0228403937797477,
+            1.813421547889055,
+            0.022862887868801,
+            0,
+            18.17057853057043
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "6_0.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813385316153742,
+            0.0228403937797477,
+            1.813421547889055,
+            0.022862887868801,
+            0,
+            18.17057853057043
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "6_1.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813385316153742,
+            0.0228403937797477,
+            1.813421547889055,
+            0.022862887868801,
+            0,
+            18.17057853057043
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "6_2.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813385316153742,
+            0.0228403937797477,
+            1.813421547889055,
+            0.022862887868801,
+            0,
+            18.17057853057043
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "6_3.b3dm"
+        }
+      }
+    ]
+  }
+}

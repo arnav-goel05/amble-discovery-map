@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "national-museum-of-singapore",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:04.097Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/18/3_0.b3dm",
+      "sourceSha256": "04abed6db9ca55f5a82d066c7ee84b363194bf080d6d523cbc3fd8017e29702c",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_7be6b055-114a-4065-b9fa-8e383fad9357"
+      ],
+      "gmlNames": [
+        "NATIONAL MUSEUM OF SINGAPORE"
+      ],
+      "poiFile": "3_0.b3dm",
+      "poiSha256": "68e350ea6cdf1ca8a2375a5582ad896ce80fe76994491f27a0739c8babb126c0",
+      "poiTriangles": 3844,
+      "backgroundFile": "optimized-tiles/5/18/3_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_7be6b055-114a-4065-b9fa-8e383fad9357"
+      ],
+      "backgroundSha256": "bc0318abb428d984c8ce6ae184971c68cca4079a830d8eb87adb1dcb6d38e05a",
+      "backgroundTriangles": 3252
+    },
+    {
+      "sourceTile": "tiles/5/18/3_1.b3dm",
+      "sourceSha256": "b028237562463646935f71b33061d8ffa8aa778f20d3fe4988f13afffd03521f",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_7be6b055-114a-4065-b9fa-8e383fad9357"
+      ],
+      "gmlNames": [
+        "NATIONAL MUSEUM OF SINGAPORE"
+      ],
+      "poiFile": "3_1.b3dm",
+      "poiSha256": "91becbb45f21ef72068bdd510ca026bfdabfab82f08bcbeffaf662c33167cb9e",
+      "poiTriangles": 3844,
+      "backgroundFile": "optimized-tiles/5/18/3_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_7be6b055-114a-4065-b9fa-8e383fad9357"
+      ],
+      "backgroundSha256": "2d2fac69bdbf4e2449c4f24ccdb209e58c02f6795ec12e7eed5f4719b8a6bb09",
+      "backgroundTriangles": 3252
+    },
+    {
+      "sourceTile": "tiles/5/18/3_2.b3dm",
+      "sourceSha256": "7597bf7554f4e3922eb597364b14eb0668223efce2c731d3e46c3b7dd1c06e3b",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_7be6b055-114a-4065-b9fa-8e383fad9357"
+      ],
+      "gmlNames": [
+        "NATIONAL MUSEUM OF SINGAPORE"
+      ],
+      "poiFile": "3_2.b3dm",
+      "poiSha256": "401eb1de7bf2d2a54a5c2c144921eefb38896a4c40631e5664a72303a132c536",
+      "poiTriangles": 3844,
+      "backgroundFile": "optimized-tiles/5/18/3_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_7be6b055-114a-4065-b9fa-8e383fad9357"
+      ],
+      "backgroundSha256": "55006a919f910b70ac4ba108a37f297737ee98703b301f82071365a06780bee9",
+      "backgroundTriangles": 3252
+    },
+    {
+      "sourceTile": "tiles/5/18/3_3.b3dm",
+      "sourceSha256": "775308adc3ba8836465e7e7edc5336ffa8cec0b46f146980850d374cda7f44f8",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_7be6b055-114a-4065-b9fa-8e383fad9357"
+      ],
+      "gmlNames": [
+        "NATIONAL MUSEUM OF SINGAPORE"
+      ],
+      "poiFile": "3_3.b3dm",
+      "poiSha256": "fb9a5ec1a1ba559b06a2ca63c64da61e8a24287d956b74e6e092a8f13f3e6c72",
+      "poiTriangles": 3844,
+      "backgroundFile": "optimized-tiles/5/18/3_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_7be6b055-114a-4065-b9fa-8e383fad9357"
+      ],
+      "backgroundSha256": "6828e4b0112473b3a5e1c751544c737881de5e8d5081ae7df0639464ea21cf70",
+      "backgroundTriangles": 3252
+    },
+    {
+      "sourceTile": "tiles/5/18/3_4.b3dm",
+      "sourceSha256": "493682c57a78052d4b666466d8f054da5b50c469487380541f76543f1e1054d9",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_7be6b055-114a-4065-b9fa-8e383fad9357"
+      ],
+      "gmlNames": [
+        "NATIONAL MUSEUM OF SINGAPORE"
+      ],
+      "poiFile": "3_4.b3dm",
+      "poiSha256": "916568fdfbf2c0df78df077d2e08b289bf8468c2296768a4eb94a3c1b7cc6a25",
+      "poiTriangles": 3844,
+      "backgroundFile": "optimized-tiles/5/18/3_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_7be6b055-114a-4065-b9fa-8e383fad9357"
+      ],
+      "backgroundSha256": "557cc7ffb60021ea25b021da29c013780e664a8170002246b13a469e087a1f12",
+      "backgroundTriangles": 3252
+    }
+  ]
+}

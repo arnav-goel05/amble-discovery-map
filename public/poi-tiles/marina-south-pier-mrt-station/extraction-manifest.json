@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "marina-south-pier-mrt-station",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:09.361Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/20/0_0.b3dm",
+      "sourceSha256": "2df2d559433df781efa2ec594b4f8bbb7e1929d7dff6c138cf8f8d54ef069fd6",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "gmlNames": [
+        "MARINA SOUTH PIER MRT STATION"
+      ],
+      "poiFile": "0_0.b3dm",
+      "poiSha256": "ac6a5baa4b8e7097bc6cb46c29e00bea8611c0d8f921425673c9c894ef77bc28",
+      "poiTriangles": 200,
+      "backgroundFile": "optimized-tiles/5/20/0_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "backgroundSha256": "6e5a746a040830eef3ad06f91e5356f6ed89a40a60d6e47ba92cd00f801b3e98",
+      "backgroundTriangles": 21028
+    },
+    {
+      "sourceTile": "tiles/5/20/0_1.b3dm",
+      "sourceSha256": "7317303123ec7cfbe23ebc853d5928619e4ae3a494f938096f467d93e4e62864",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "gmlNames": [
+        "MARINA SOUTH PIER MRT STATION"
+      ],
+      "poiFile": "0_1.b3dm",
+      "poiSha256": "bc1319e9f7bd099a6c981d9f527e66379540e9235dde2a45e656b898070141b8",
+      "poiTriangles": 200,
+      "backgroundFile": "optimized-tiles/5/20/0_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "backgroundSha256": "00fc768f865076cdf379cab909764c130dd332dedb95a3c86e1553b2c32e21d8",
+      "backgroundTriangles": 21028
+    },
+    {
+      "sourceTile": "tiles/5/20/0_2.b3dm",
+      "sourceSha256": "533b100b335bcd360ab99eb4df0085373d2360379adf3477286f422b24d8497d",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "gmlNames": [
+        "MARINA SOUTH PIER MRT STATION"
+      ],
+      "poiFile": "0_2.b3dm",
+      "poiSha256": "780087001ef7f896a305de3a3038ace0e36f5db3f8ca30aea7f03507e4e8fed7",
+      "poiTriangles": 200,
+      "backgroundFile": "optimized-tiles/5/20/0_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "backgroundSha256": "0cd29edda79cf16da7823bd60c34564fcaa6cad86e2ae0aec944e807bc4d87d3",
+      "backgroundTriangles": 21028
+    },
+    {
+      "sourceTile": "tiles/5/20/0_3.b3dm",
+      "sourceSha256": "5e4c90ed7ec32910df825774d2014ee67acb9128f60cdeb52785f9bf5b18fab6",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "gmlNames": [
+        "MARINA SOUTH PIER MRT STATION"
+      ],
+      "poiFile": "0_3.b3dm",
+      "poiSha256": "eea422430126c945f62edf66c5add38de25ee3e447f1c746d34b493ffd44d764",
+      "poiTriangles": 200,
+      "backgroundFile": "optimized-tiles/5/20/0_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "backgroundSha256": "a822f68a32e2ded4902523003ddf1a3c7f5b03c79a351968d26fd72f94c129d1",
+      "backgroundTriangles": 21028
+    },
+    {
+      "sourceTile": "tiles/5/20/0_4.b3dm",
+      "sourceSha256": "5a300dae2c6116b48d4fd808412d2c4ddeb197b27bfa99f52c2f6fbd5dbca4b8",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "gmlNames": [
+        "MARINA SOUTH PIER MRT STATION"
+      ],
+      "poiFile": "0_4.b3dm",
+      "poiSha256": "754786671b18a910d5c5ca420aefcdf53f088b39b238bdbf65a9ff30e32bbf60",
+      "poiTriangles": 200,
+      "backgroundFile": "optimized-tiles/5/20/0_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "backgroundSha256": "20402155c50a24e1bc214dcd386472b0d45066b0a4174df3137c2688c82a3814",
+      "backgroundTriangles": 21028
+    },
+    {
+      "sourceTile": "tiles/5/20/0_5.b3dm",
+      "sourceSha256": "af5f4eb8428fc0df38c96f7fdb95b2e08d6920c6ade4970d0b26c9b7433cb958",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "gmlNames": [
+        "MARINA SOUTH PIER MRT STATION"
+      ],
+      "poiFile": "0_5.b3dm",
+      "poiSha256": "94bfdbf5e4a229a9b797e49e6e5bbde650308260bffb58255f3a6f125a085665",
+      "poiTriangles": 200,
+      "backgroundFile": "optimized-tiles/5/20/0_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "backgroundSha256": "69c5f9bd62521dae936da7f0f62f46c1e36be72c2d9a96ba265976c0f60374ff",
+      "backgroundTriangles": 21028
+    }
+  ]
+}

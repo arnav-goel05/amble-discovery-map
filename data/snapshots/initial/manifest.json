@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0",
+  "snapshotId": "initial",
+  "publishedAt": "2026-07-13T19:31:51.796Z",
+  "coveredWindow": {
+    "start": "2026-07-14",
+    "end": "2026-07-21",
+    "timezone": "Asia/Singapore"
+  },
+  "freshness": "fresh",
+  "staleAfter": "2026-07-20T19:31:51.796Z",
+  "sourceHealth": {
+    "legacyMigration": {
+      "status": "migrated",
+      "lastSuccessfulAt": "2026-07-13T19:31:51.796Z"
+    }
+  },
+  "landmarksRef": "landmarks.json",
+  "poisRef": "pois.json",
+  "tilesetRef": "tileset.json",
+  "previousSnapshotId": null,
+  "artifactHashes": {
+    "landmarks.json": "41e9bc2cc905b1f21abfc93a5d5b04fe36d4fb48c4a51d83edbeeee1c64262e3",
+    "pois.json": "644e3f187b95f2f128659fe1d3ff22f6da2e2dfca9b41b861aa05a373bf5c8fb",
+    "tileset.json": "c316b0534a32ed8080b6c792b3420456aefcce5ac4a3809e1a896805ef8dd572"
+  },
+  "contentHash": "9ce771f490fad23972c2888f113bcf246e892f52d574cbbf9cecd34b4376dc24"
+}

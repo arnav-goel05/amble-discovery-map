@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "reflection-at-bukit-chandu-opium-hill",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:07.853Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/10/1_0.b3dm",
+      "sourceSha256": "7afb5309c87db3f3dd12c7156ba3d2def43057c91d1e83cdd1a1607b06c1bd3c",
+      "originalBatchIds": [
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "gmlNames": [
+        "REFLECTION AT BUKIT CHANDU (OPIUM HILL)"
+      ],
+      "poiFile": "1_0.b3dm",
+      "poiSha256": "e31fca3c32b48ef345623e6b69239422c9c0f7f5fcbfb71ad640c6122e60ea40",
+      "poiTriangles": 736,
+      "backgroundFile": "optimized-tiles/5/10/1_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "backgroundSha256": "11f7f6e84cc32f6e5a8ec8c0b42db050b4751a54e964a1941dba4c33e7ff929f",
+      "backgroundTriangles": 14759
+    },
+    {
+      "sourceTile": "tiles/5/10/1_1.b3dm",
+      "sourceSha256": "35e224cf57a60901ca9ea9fe0fe8fde8c28c5a36aa4df035205267d57335a549",
+      "originalBatchIds": [
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "gmlNames": [
+        "REFLECTION AT BUKIT CHANDU (OPIUM HILL)"
+      ],
+      "poiFile": "1_1.b3dm",
+      "poiSha256": "b5495910ced97b36302030b95f84c4bc6529db6e910b95b037af64d652daf3fa",
+      "poiTriangles": 736,
+      "backgroundFile": "optimized-tiles/5/10/1_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "backgroundSha256": "1a0e1f0957c91a152a0d46b71379859264eae2e765972d1f5cd8eefccdeea352",
+      "backgroundTriangles": 14759
+    },
+    {
+      "sourceTile": "tiles/5/10/1_2.b3dm",
+      "sourceSha256": "e5a33c3793498379283c1c82bb59eac6f53bb640ebcb7a1ee7d658b788c5beb2",
+      "originalBatchIds": [
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "gmlNames": [
+        "REFLECTION AT BUKIT CHANDU (OPIUM HILL)"
+      ],
+      "poiFile": "1_2.b3dm",
+      "poiSha256": "589f0e16b458db70ca875699ff33773effb427ab3d29b94bf95248352d3ee4ed",
+      "poiTriangles": 736,
+      "backgroundFile": "optimized-tiles/5/10/1_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "backgroundSha256": "14c4cb04bab2255c7601da5cb6fa048a499c1d944cf8dd088cb416195c2beed5",
+      "backgroundTriangles": 14759
+    },
+    {
+      "sourceTile": "tiles/5/10/1_3.b3dm",
+      "sourceSha256": "b513e1f1ecbf7691255644e9ab071cd7166fd9a0de5891c9d8b74ada679d42ed",
+      "originalBatchIds": [
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "gmlNames": [
+        "REFLECTION AT BUKIT CHANDU (OPIUM HILL)"
+      ],
+      "poiFile": "1_3.b3dm",
+      "poiSha256": "7d7a37dcfa1005100e32a1885304aab9c3832db084b6d7c8a925ada6f98e6bb8",
+      "poiTriangles": 736,
+      "backgroundFile": "optimized-tiles/5/10/1_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "backgroundSha256": "3ee90ea96a23ad03a9439460681626825cda5579395d1c18b2ae0f9233cbd395",
+      "backgroundTriangles": 14759
+    },
+    {
+      "sourceTile": "tiles/5/10/1_4.b3dm",
+      "sourceSha256": "f5fa0f24aa2d3fddf281e959a0854047b5788f0233b90ec438a51b45518e9c50",
+      "originalBatchIds": [
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "gmlNames": [
+        "REFLECTION AT BUKIT CHANDU (OPIUM HILL)"
+      ],
+      "poiFile": "1_4.b3dm",
+      "poiSha256": "f7d65db50db7cfe3349248cc025207b3e3efa965ef46c1ae1cf3adc28ccd8605",
+      "poiTriangles": 736,
+      "backgroundFile": "optimized-tiles/5/10/1_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "backgroundSha256": "8f99b03e182b09c5c9131fc66990d17763742d46206b5fc8deef1586489271da",
+      "backgroundTriangles": 14759
+    },
+    {
+      "sourceTile": "tiles/5/10/1_5.b3dm",
+      "sourceSha256": "1cced987e6fcaa4e816b332064e52312f6f759766050205c1de3aabb68ae6231",
+      "originalBatchIds": [
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "gmlNames": [
+        "REFLECTION AT BUKIT CHANDU (OPIUM HILL)"
+      ],
+      "poiFile": "1_5.b3dm",
+      "poiSha256": "42026ff68e7e983a5fdbb48cc098c7fca6470bad12a69cb87dd5c7d72d91dbba",
+      "poiTriangles": 736,
+      "backgroundFile": "optimized-tiles/5/10/1_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e"
+      ],
+      "backgroundSha256": "08ef90e9032c18adca634d0977eed00c9e89d27d751c501179229c8d03812e27",
+      "backgroundTriangles": 14759
+    }
+  ]
+}

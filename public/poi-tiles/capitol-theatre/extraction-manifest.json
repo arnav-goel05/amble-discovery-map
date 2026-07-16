@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "capitol-theatre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:05.313Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/76/13_0.b3dm",
+      "sourceSha256": "7798ba60fd00bdc3b334403755b4b76eeb5d841fdaa5d69e8c18c906b60c503b",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "gmlNames": [
+        "CAPITOL THEATRE"
+      ],
+      "poiFile": "13_0.b3dm",
+      "poiSha256": "1ada0889a026e7a811e3775d8e461be5d5802933f36c66bd7ad33219ba890990",
+      "poiTriangles": 528,
+      "backgroundFile": "optimized-tiles/7/76/13_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "backgroundSha256": "231707225da57ad304478c30d17707be1c9489b6346c4e1f5c22cfd55a957224",
+      "backgroundTriangles": 14152
+    },
+    {
+      "sourceTile": "tiles/7/76/13_1.b3dm",
+      "sourceSha256": "2becce8f5bb10b9b6be9b17e96faafedfb4f76900f8fad6ece2d8062c26fc2a5",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "gmlNames": [
+        "CAPITOL THEATRE"
+      ],
+      "poiFile": "13_1.b3dm",
+      "poiSha256": "99e8145457f0ff03c31e5656271ed3c69991e08bb208254817e5de22a862cf9f",
+      "poiTriangles": 528,
+      "backgroundFile": "optimized-tiles/7/76/13_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "backgroundSha256": "34daf48f16388b05efff899b50de85ffa7b5cce3fa865492628313c58debbd04",
+      "backgroundTriangles": 14152
+    },
+    {
+      "sourceTile": "tiles/7/76/13_2.b3dm",
+      "sourceSha256": "9d821a36552424fee2c817f83e972fa485f0d328e47e195038257b0ff6ace340",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "gmlNames": [
+        "CAPITOL THEATRE"
+      ],
+      "poiFile": "13_2.b3dm",
+      "poiSha256": "18bb73c7938deaa650cdd2c8e721645e1e396f833ea719c8cbf2873b53607a10",
+      "poiTriangles": 528,
+      "backgroundFile": "optimized-tiles/7/76/13_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "backgroundSha256": "bf532899a039c3c29806add766c634f45c745a1271de5cc7fc4b3450262906b8",
+      "backgroundTriangles": 14152
+    },
+    {
+      "sourceTile": "tiles/7/76/13_3.b3dm",
+      "sourceSha256": "08b53d9098287ab83b41985d72123bbbf53dfd540cc1c0ff98bdcf20c1a67605",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "gmlNames": [
+        "CAPITOL THEATRE"
+      ],
+      "poiFile": "13_3.b3dm",
+      "poiSha256": "db62471f53ce7b9c2aea3e34b7bace1a2693a581ba5842444d389c6a967b55e1",
+      "poiTriangles": 528,
+      "backgroundFile": "optimized-tiles/7/76/13_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "backgroundSha256": "f6c89aebc3b899f71ff5dcab9f4c04af56afeed99121fd09f79982670e9b791e",
+      "backgroundTriangles": 14152
+    },
+    {
+      "sourceTile": "tiles/7/76/13_4.b3dm",
+      "sourceSha256": "791d54782c136fefcbffbe3285b848a9f9d8399d52500d848b16ea74006ea686",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "gmlNames": [
+        "CAPITOL THEATRE"
+      ],
+      "poiFile": "13_4.b3dm",
+      "poiSha256": "e5d6d947116ba9ef5834c4e8cfcce2e1c043cf24c4ab6eeb1c00b2d0be5ed7e0",
+      "poiTriangles": 528,
+      "backgroundFile": "optimized-tiles/7/76/13_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "backgroundSha256": "01c5b0cf309e68ab1fdee6a9317b84f186f7e5bf3fad7789c58c2c875e8e89f9",
+      "backgroundTriangles": 14152
+    },
+    {
+      "sourceTile": "tiles/7/76/13_5.b3dm",
+      "sourceSha256": "2ecb66d720c692b2583cc587b62ab68e0bcdcda3844ee12569cd81aca0874a26",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "gmlNames": [
+        "CAPITOL THEATRE"
+      ],
+      "poiFile": "13_5.b3dm",
+      "poiSha256": "05b90c04f3af134c8ce336da853a8fe36aa12d3b5d485f806add61f552eff8cb",
+      "poiTriangles": 528,
+      "backgroundFile": "optimized-tiles/7/76/13_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45"
+      ],
+      "backgroundSha256": "edb4029737e678e0d10e3f756d0aceff0048c46b6b74bd443faa27e76cbcbcfb",
+      "backgroundTriangles": 14152
+    }
+  ]
+}

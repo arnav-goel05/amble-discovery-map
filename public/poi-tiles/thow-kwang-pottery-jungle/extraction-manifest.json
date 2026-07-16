@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "thow-kwang-pottery-jungle",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:05.809Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/1/38_0.b3dm",
+      "sourceSha256": "2f5f02dfdfdc76bb8e195c09010b5f42c83637d951e051d98b9e9fd4f15e1d4e",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_093c21de-36bc-4e29-bec2-cd24c5764074"
+      ],
+      "gmlNames": [
+        "THOW KWANG POTTERY JUNGLE"
+      ],
+      "poiFile": "38_0.b3dm",
+      "poiSha256": "719465bbd76a51585acb068e364e94dcdc07e6dcd323fd16e644d70bbccd2f92",
+      "poiTriangles": 1340,
+      "backgroundFile": "optimized-tiles/6/1/38_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_093c21de-36bc-4e29-bec2-cd24c5764074"
+      ],
+      "backgroundSha256": "0bcdeedab7207c31395dd0bbcb513f377492e7277f34a453dd35f2d13c7d2353",
+      "backgroundTriangles": 10359
+    },
+    {
+      "sourceTile": "tiles/6/1/38_1.b3dm",
+      "sourceSha256": "533eaf0d8d1ff67618a318b9d86b87a8b4ef1a888753f8aaca647d83f4a8f982",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_093c21de-36bc-4e29-bec2-cd24c5764074"
+      ],
+      "gmlNames": [
+        "THOW KWANG POTTERY JUNGLE"
+      ],
+      "poiFile": "38_1.b3dm",
+      "poiSha256": "c72a6cda32791d0b6ee8b2019c4766c015117ef7e262856e3b0128e855a938f0",
+      "poiTriangles": 1340,
+      "backgroundFile": "optimized-tiles/6/1/38_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_093c21de-36bc-4e29-bec2-cd24c5764074"
+      ],
+      "backgroundSha256": "c47214234795bf1cc854d9cdc800d6b7c76e48fd981849414648be6acdb4a9fc",
+      "backgroundTriangles": 10359
+    },
+    {
+      "sourceTile": "tiles/6/1/38_2.b3dm",
+      "sourceSha256": "e6e1cb97df5366eed5ab67bf79d9c702976e4e6c9a8c68924a0170f04976dcc0",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_093c21de-36bc-4e29-bec2-cd24c5764074"
+      ],
+      "gmlNames": [
+        "THOW KWANG POTTERY JUNGLE"
+      ],
+      "poiFile": "38_2.b3dm",
+      "poiSha256": "8551373b6f5323a742602f3273b27c81af0c95b8ec612863ba429d689ee15e8e",
+      "poiTriangles": 1340,
+      "backgroundFile": "optimized-tiles/6/1/38_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_093c21de-36bc-4e29-bec2-cd24c5764074"
+      ],
+      "backgroundSha256": "b808340adaaf572a142d92ef6714097f5e9e4f5c88acbf3247a14e28d2787053",
+      "backgroundTriangles": 10359
+    },
+    {
+      "sourceTile": "tiles/6/1/38_3.b3dm",
+      "sourceSha256": "32b7a1376deda11c0b820d832dc3960445159cfdf07f0fc4dc734d6172cc1267",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_093c21de-36bc-4e29-bec2-cd24c5764074"
+      ],
+      "gmlNames": [
+        "THOW KWANG POTTERY JUNGLE"
+      ],
+      "poiFile": "38_3.b3dm",
+      "poiSha256": "29cbadde9ca7b886b4da463b3c72b778ccddb66789c171694ec3d12f1b7a85d5",
+      "poiTriangles": 1340,
+      "backgroundFile": "optimized-tiles/6/1/38_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_093c21de-36bc-4e29-bec2-cd24c5764074"
+      ],
+      "backgroundSha256": "d44a07763d1163c2cc12ba6fd3aea2ae6707774a0e33fb9b88f4acc298e2587b",
+      "backgroundTriangles": 10359
+    },
+    {
+      "sourceTile": "tiles/6/1/38_4.b3dm",
+      "sourceSha256": "8d98fc02e4b79eb9af4f85655e938b83437b59f4b6da1cbf6a71993bd8eb7023",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_093c21de-36bc-4e29-bec2-cd24c5764074"
+      ],
+      "gmlNames": [
+        "THOW KWANG POTTERY JUNGLE"
+      ],
+      "poiFile": "38_4.b3dm",
+      "poiSha256": "57064b8b9eadbf2b6810debdb68534b454fa4c00ba65b3af7a6ad65d640e3dec",
+      "poiTriangles": 1340,
+      "backgroundFile": "optimized-tiles/6/1/38_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_093c21de-36bc-4e29-bec2-cd24c5764074"
+      ],
+      "backgroundSha256": "b6691fce65b6b3009140de2f0ab5c34543ae3829f4c83b573ace689fadcac6f4",
+      "backgroundTriangles": 10359
+    }
+  ]
+}

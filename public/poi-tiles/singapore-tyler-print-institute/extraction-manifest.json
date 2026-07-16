@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "singapore-tyler-print-institute",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:07.315Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/65/12_0.b3dm",
+      "sourceSha256": "087f8b028f9cb9ba0de845f37869af9f05306cf75541f64c1b8937a09621bca5",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "gmlNames": [
+        "SINGAPORE TYLER PRINT INSTITUTE"
+      ],
+      "poiFile": "12_0.b3dm",
+      "poiSha256": "005ef794cf0722e28d9a5e7a2e80b984f9f1801f3119e5b3f1c97505a6052e12",
+      "poiTriangles": 502,
+      "backgroundFile": "optimized-tiles/7/65/12_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "backgroundSha256": "409c1f4714da040d8ea09a99af52fe2e03679f599972296af408fd46e37afe76",
+      "backgroundTriangles": 14796
+    },
+    {
+      "sourceTile": "tiles/7/65/12_1.b3dm",
+      "sourceSha256": "dc1d9e6020e8eb274e73d4aab4a596cf0452154507733ec8fda3acec8192a6d0",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "gmlNames": [
+        "SINGAPORE TYLER PRINT INSTITUTE"
+      ],
+      "poiFile": "12_1.b3dm",
+      "poiSha256": "241566be3a7db270c0d5b8ff80c3e9704b4aa282c2f30529f7b55179c954086e",
+      "poiTriangles": 502,
+      "backgroundFile": "optimized-tiles/7/65/12_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "backgroundSha256": "eb0f030e311887949b27f93fdc685a667ff60a978ad63de4df0fcc1c63647227",
+      "backgroundTriangles": 14796
+    },
+    {
+      "sourceTile": "tiles/7/65/12_2.b3dm",
+      "sourceSha256": "bf49bafe6d79c28cb4c92bd9a80ed74c779c94b03c755a57aa5252f07d7904aa",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "gmlNames": [
+        "SINGAPORE TYLER PRINT INSTITUTE"
+      ],
+      "poiFile": "12_2.b3dm",
+      "poiSha256": "375dc69dea05db4f71b8ad7feed57143ae5da7e2126a04e45f49df4681059337",
+      "poiTriangles": 502,
+      "backgroundFile": "optimized-tiles/7/65/12_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "backgroundSha256": "744439673e8bfcf51c964ac6a5fca2dba9d280d167841904309f0cbfe37bd1e0",
+      "backgroundTriangles": 14796
+    },
+    {
+      "sourceTile": "tiles/7/65/12_3.b3dm",
+      "sourceSha256": "f094367087fb2269e5568ad1386f35b52ecfa85d1d414691b66cacd41f2c1d69",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "gmlNames": [
+        "SINGAPORE TYLER PRINT INSTITUTE"
+      ],
+      "poiFile": "12_3.b3dm",
+      "poiSha256": "945c8934565fe81948884729917b47c61096efef908f7ba5820865db552f1aaf",
+      "poiTriangles": 502,
+      "backgroundFile": "optimized-tiles/7/65/12_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "backgroundSha256": "3dadd628323efa108597f620fbea6a9f55661c63aeff62ce474222a6b6056dd7",
+      "backgroundTriangles": 14796
+    },
+    {
+      "sourceTile": "tiles/7/65/12_4.b3dm",
+      "sourceSha256": "43e10d8f75ee286a4cda93e5008dfc34ff6bcabf7485972500249e1375e30e9b",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "gmlNames": [
+        "SINGAPORE TYLER PRINT INSTITUTE"
+      ],
+      "poiFile": "12_4.b3dm",
+      "poiSha256": "cfa6775d2f7b77cada38b9914c777ac311522b017501902e52e2d7d0f910702d",
+      "poiTriangles": 502,
+      "backgroundFile": "optimized-tiles/7/65/12_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "backgroundSha256": "72ce1b593e6c8bd4cd106d18bee65101a0662f9844b5587eafc26e5701f0d45a",
+      "backgroundTriangles": 14796
+    },
+    {
+      "sourceTile": "tiles/7/65/12_5.b3dm",
+      "sourceSha256": "73fbd11fdb78ed27553000527e9395ccbad003e493da4dd04bf3309e857f1f0e",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "gmlNames": [
+        "SINGAPORE TYLER PRINT INSTITUTE"
+      ],
+      "poiFile": "12_5.b3dm",
+      "poiSha256": "ba783f8900ac417c15e9b4e9ec62dd44916e95a1bf99dd576c4a941ba9e05cb6",
+      "poiTriangles": 502,
+      "backgroundFile": "optimized-tiles/7/65/12_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "backgroundSha256": "fff1a02f8080b6e762bc9bd3d590a809e13ff2989318125f0c4713ed7876bb90",
+      "backgroundTriangles": 14796
+    }
+  ]
+}

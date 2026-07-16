@@ -1,0 +1,4 @@
+interface:
+  display_name: "OneMap POI Highlight"
+  short_description: "Extract and verify highlighted OneMap POIs"
+  default_prompt: "Use an approved venue record to extract, integrate, and browser-verify a highlighted OneMap POI with the shared layer manager."

@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "marina-bay-sands-mice",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:08.113Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/39/4_0.b3dm",
+      "sourceSha256": "99f2bc8a3b43e10c0691e60396750770134893d3250b7a51e0e92b623d2af98c",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (MICE)"
+      ],
+      "poiFile": "4_0.b3dm",
+      "poiSha256": "5743079bf82b11d2157556facf6546ee5b4a9c30d0a3fb10c44cf5f757291614",
+      "poiTriangles": 5080,
+      "backgroundFile": "optimized-tiles/6/39/4_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "backgroundSha256": "358f79ef01cd014086d6051c3507f56d0eddb69af1ffbd5d3862e062d1dad52e",
+      "backgroundTriangles": 6948
+    },
+    {
+      "sourceTile": "tiles/6/39/4_1.b3dm",
+      "sourceSha256": "ca5526870c9425543e588439012852cd393d5a58256252acbf75258cf94d2c45",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (MICE)"
+      ],
+      "poiFile": "4_1.b3dm",
+      "poiSha256": "fbea231c9f0484a16780ebaca431dd8972d003186c836db438a138115b512dac",
+      "poiTriangles": 5080,
+      "backgroundFile": "optimized-tiles/6/39/4_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "backgroundSha256": "4853346cba674831c6bac053add821a8b103bc4651876390d52375f24e3e4993",
+      "backgroundTriangles": 6948
+    },
+    {
+      "sourceTile": "tiles/6/39/4_2.b3dm",
+      "sourceSha256": "ff16e6807feb0afc62c03572e69546a0efe05c741e16a42b3fc71a5e5aade43b",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (MICE)"
+      ],
+      "poiFile": "4_2.b3dm",
+      "poiSha256": "4567b1df093b42858aaf62fe6200d0fcba82a0a4fdd002293eec7360a7be9e57",
+      "poiTriangles": 5080,
+      "backgroundFile": "optimized-tiles/6/39/4_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "backgroundSha256": "092bdf8c433818be252c10b101166f850b157f37da58efb2b5f877e369978b51",
+      "backgroundTriangles": 6948
+    },
+    {
+      "sourceTile": "tiles/6/39/4_3.b3dm",
+      "sourceSha256": "82f43c43d7814212f50227c5fabdc8b7d91ff64f571c689c17d7598628dc5d56",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (MICE)"
+      ],
+      "poiFile": "4_3.b3dm",
+      "poiSha256": "52cfd5de8f646acaa74a0ba6148c3e47289daca3b01a28793eb0ad8100e5bf25",
+      "poiTriangles": 5080,
+      "backgroundFile": "optimized-tiles/6/39/4_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "backgroundSha256": "7f61b6d4130b61c67d4d26ed59174238cf1e7e1ed097bccf6ef51a342b6252de",
+      "backgroundTriangles": 6948
+    },
+    {
+      "sourceTile": "tiles/6/39/4_4.b3dm",
+      "sourceSha256": "13592a15dc7327b2944b4efd8659e121fbd88518281ccb69861cd948307af923",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (MICE)"
+      ],
+      "poiFile": "4_4.b3dm",
+      "poiSha256": "13820c51ee130bb6d5eb2ea74ab850d99bf699aca277a1824308c5ed2c684412",
+      "poiTriangles": 5080,
+      "backgroundFile": "optimized-tiles/6/39/4_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "backgroundSha256": "29686e59387551a0f576fcb5d874b92dec05c85612365de8ab0f530355405f80",
+      "backgroundTriangles": 6948
+    },
+    {
+      "sourceTile": "tiles/6/39/4_5.b3dm",
+      "sourceSha256": "ce2243f17412dfd04dbaa4bca212944b2b8e461b910cdd0a273bb8fc214c7398",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (MICE)"
+      ],
+      "poiFile": "4_5.b3dm",
+      "poiSha256": "ceaa9fddbd5c5f91e8f5bc316f06d4dd679c17c9a35a45aa00178788a0799122",
+      "poiTriangles": 5080,
+      "backgroundFile": "optimized-tiles/6/39/4_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782"
+      ],
+      "backgroundSha256": "2d1e77c76fbfaa52efb8c266d1be9fad6ef2aa6615a8f4c1880a2036b251a78d",
+      "backgroundTriangles": 6948
+    }
+  ]
+}

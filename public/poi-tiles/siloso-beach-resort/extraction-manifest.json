@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "siloso-beach-resort",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:09.453Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/12/0_0.b3dm",
+      "sourceSha256": "ddeb96239aed800661350cf488c4fd2bcf911063f9b413ff9feb7fd9a1a8415d",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "gmlNames": [
+        "SILOSO BEACH RESORT"
+      ],
+      "poiFile": "0_0.b3dm",
+      "poiSha256": "9878e689c5b79309416fe675344b6a8d1e5661c117fd7d4169fc4fd3adf346a2",
+      "poiTriangles": 316,
+      "backgroundFile": "optimized-tiles/5/12/0_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "backgroundSha256": "6228a44540979a92c00c5e684a8b6f988b82d3e6b8a79c586417d25ea25b350b",
+      "backgroundTriangles": 36956
+    },
+    {
+      "sourceTile": "tiles/5/12/0_1.b3dm",
+      "sourceSha256": "e0839c91fbeb25524d16a6722bc4a73fd74f412bada6a56617e32e155dee8ebd",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "gmlNames": [
+        "SILOSO BEACH RESORT"
+      ],
+      "poiFile": "0_1.b3dm",
+      "poiSha256": "97d71a64a53088d54f31ac276eab053b8862430326dee71d8f31dbcb782f5c70",
+      "poiTriangles": 316,
+      "backgroundFile": "optimized-tiles/5/12/0_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "backgroundSha256": "c926c61691cee2fc1f98dd1a7b3e938b5cb89d311e54ce1991219aa76dcad277",
+      "backgroundTriangles": 36956
+    },
+    {
+      "sourceTile": "tiles/5/12/0_2.b3dm",
+      "sourceSha256": "5fe09bc9efe7b0082c9bb2928e5f65da1f74cce5bc5ee71236745043e5a288cc",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "gmlNames": [
+        "SILOSO BEACH RESORT"
+      ],
+      "poiFile": "0_2.b3dm",
+      "poiSha256": "44b5a9823db0d805df48a163507bd93366881f541548af40d8fd326804b153cd",
+      "poiTriangles": 316,
+      "backgroundFile": "optimized-tiles/5/12/0_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "backgroundSha256": "3e42207eb2ae9957230a6005c83e07d7100b45e1a0a80e1007d164fadccd749b",
+      "backgroundTriangles": 36956
+    },
+    {
+      "sourceTile": "tiles/5/12/0_3.b3dm",
+      "sourceSha256": "82093bc2f01d1e4299f14fa7ee4dbd15cdbead4199cdbc7e03e2eb05f20c367f",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "gmlNames": [
+        "SILOSO BEACH RESORT"
+      ],
+      "poiFile": "0_3.b3dm",
+      "poiSha256": "ce29a47b93c31a79a5c86c4dff3278fdc422c6c6df356cb11518cdd2e381f437",
+      "poiTriangles": 316,
+      "backgroundFile": "optimized-tiles/5/12/0_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "backgroundSha256": "dadcf4de1346bbb1eeb8be9d7e75f4323764c69c1b9ad0bb9cc65cc7b0ad9124",
+      "backgroundTriangles": 36956
+    },
+    {
+      "sourceTile": "tiles/5/12/0_4.b3dm",
+      "sourceSha256": "9dc7a20b1233da6e60b3ea6cc1bd26490592597d4e3ec943bb8e92924e36f5b8",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "gmlNames": [
+        "SILOSO BEACH RESORT"
+      ],
+      "poiFile": "0_4.b3dm",
+      "poiSha256": "70cb3e38c53ab83ce2773c5d03384c516a751a02c40160c80818987305980df5",
+      "poiTriangles": 316,
+      "backgroundFile": "optimized-tiles/5/12/0_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "backgroundSha256": "486f59e15bdfbb943bb8f07f4ca14727e5bf77c75d3ec9cc849d5b0212532543",
+      "backgroundTriangles": 36956
+    },
+    {
+      "sourceTile": "tiles/5/12/0_5.b3dm",
+      "sourceSha256": "77f948d12ce72780e602b5bf77b54c2affd481539718538a0ff92a59c574edf1",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "gmlNames": [
+        "SILOSO BEACH RESORT"
+      ],
+      "poiFile": "0_5.b3dm",
+      "poiSha256": "662bd37f51f3f97cf50c1a65faa0fc9a1b2110c50db29a8bf097fa7839e60f66",
+      "poiTriangles": 316,
+      "backgroundFile": "optimized-tiles/5/12/0_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "backgroundSha256": "3bcf0e466dbdf06d41351d9d375ebe8ba5b4cab26e3728243203ac4b39843ea4",
+      "backgroundTriangles": 36956
+    }
+  ]
+}

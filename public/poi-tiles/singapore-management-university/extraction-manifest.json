@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "singapore-management-university",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:09.959Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/37/7_0.b3dm",
+      "sourceSha256": "4f90220036cd633f36bb6e3e7db5d737cf4bddb48ecbddee0954057bdc6da6d3",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "gmlNames": [
+        "SINGAPORE MANAGEMENT UNIVERSITY"
+      ],
+      "poiFile": "7_0.b3dm",
+      "poiSha256": "c5f56d06647d85b57433157aac0f8b62abbc7431e9e69b248c254dbd000b4d36",
+      "poiTriangles": 1944,
+      "backgroundFile": "optimized-tiles/6/37/7_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "backgroundSha256": "fdac3d4482901b64f0e167f3e2c9b9c525ce6d7a42e258c620286cb49660da92",
+      "backgroundTriangles": 26064
+    },
+    {
+      "sourceTile": "tiles/6/37/7_1.b3dm",
+      "sourceSha256": "11cb49adfcc2652febbd35e0af4987ea6f18cae7bbe4fa5ab52e62e93b6231a8",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "gmlNames": [
+        "SINGAPORE MANAGEMENT UNIVERSITY"
+      ],
+      "poiFile": "7_1.b3dm",
+      "poiSha256": "a53d4b1220a33142803f3e2a772b735257e3f0f01271ad92866cb4deed358259",
+      "poiTriangles": 1944,
+      "backgroundFile": "optimized-tiles/6/37/7_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "backgroundSha256": "31b8b30a0ee35fca37388da542806e59b94ef586b3522b6c1cf515acd92624cb",
+      "backgroundTriangles": 26064
+    },
+    {
+      "sourceTile": "tiles/6/37/7_2.b3dm",
+      "sourceSha256": "fcc47c54d46e9c6f0559d3a9f492ed671eb889167a063f753eef08df4910b9fb",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "gmlNames": [
+        "SINGAPORE MANAGEMENT UNIVERSITY"
+      ],
+      "poiFile": "7_2.b3dm",
+      "poiSha256": "4c4618fd20812b7e6dbfbe24140070eb5ac506e62864c815be1371be9eae2fe2",
+      "poiTriangles": 1944,
+      "backgroundFile": "optimized-tiles/6/37/7_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "backgroundSha256": "8d76d0d81e48229b2a43faf001d337d2f37050e5bea59417ca2ccb0207a673d1",
+      "backgroundTriangles": 26064
+    },
+    {
+      "sourceTile": "tiles/6/37/7_3.b3dm",
+      "sourceSha256": "3617a2b4c463adb3b4fc35f340d9f16f5e2e8c41977b029ee692ff22c9d9b0b8",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "gmlNames": [
+        "SINGAPORE MANAGEMENT UNIVERSITY"
+      ],
+      "poiFile": "7_3.b3dm",
+      "poiSha256": "0330aaadb2430bfb15f76af0f994105b2a2a85c85a9bd81323e0cdf0c17a1ae5",
+      "poiTriangles": 1944,
+      "backgroundFile": "optimized-tiles/6/37/7_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "backgroundSha256": "f72043a3f744d2fe8676e8748851f778f620e94fa5616e0b25fe301d4e57e0f5",
+      "backgroundTriangles": 26064
+    },
+    {
+      "sourceTile": "tiles/6/37/7_4.b3dm",
+      "sourceSha256": "8aeb4f3fe2650d4c3bfe2066093d6cb87647542340202ef8da4b2f017f4272f6",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "gmlNames": [
+        "SINGAPORE MANAGEMENT UNIVERSITY"
+      ],
+      "poiFile": "7_4.b3dm",
+      "poiSha256": "68e1e65169b84666141b9cf513f3eb7093d84dd23bce12eb74e2785c4d6d3d7a",
+      "poiTriangles": 1944,
+      "backgroundFile": "optimized-tiles/6/37/7_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "backgroundSha256": "3fa6c0c91e776030b12771edc1347e9d86549c0750f8f7de714420f83d90ef73",
+      "backgroundTriangles": 26064
+    },
+    {
+      "sourceTile": "tiles/6/37/7_5.b3dm",
+      "sourceSha256": "a070fdfffef008ece90c82b295cd954fecbb0fdeb71a2592d88ec201d3e19aac",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "gmlNames": [
+        "SINGAPORE MANAGEMENT UNIVERSITY"
+      ],
+      "poiFile": "7_5.b3dm",
+      "poiSha256": "eb2391cdb3ff8940663f2b886220df6ac2614ff746a550ccfdac3ebed648343b",
+      "poiTriangles": 1944,
+      "backgroundFile": "optimized-tiles/6/37/7_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "backgroundSha256": "cab02375dc8cc1bc1ea96156d596b529316988d11c5ec78f35c16bcb2ed70580",
+      "backgroundTriangles": 26064
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+.DS_Store
+.env*
+!.env.example
+node_modules/
+dist/
+outputs/
+external-tools/
+public/poi-tiles/source/
+# Runtime 3D geometry is published to Cloudflare R2. Keep only the small
+# tileset manifests in Git so clones stay lightweight.
+public/poi-tiles/**/*.b3dm
+tiles/
+optimized-tiles/**
+!optimized-tiles/
+!optimized-tiles/.gitkeep
+*.log
+*.tmp
+*.swp
+.vscode/
+.idea/
+wrangler.vpc.jsonc
+.wrangler/

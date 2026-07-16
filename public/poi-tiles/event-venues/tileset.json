@@ -1,0 +1,1436 @@
+{
+  "asset": {
+    "version": "1.0",
+    "generator": "whats-here-combined-event-venues"
+  },
+  "geometricError": 256,
+  "root": {
+    "boundingVolume": {
+      "region": [
+        1.808737361616266,
+        0.021782546251235,
+        1.81550934495113,
+        0.0251194051592163,
+        0,
+        280.0843471375198
+      ]
+    },
+    "geometricError": 256,
+    "refine": "REPLACE",
+    "children": [
+      {
+        "boundingVolume": {
+          "region": [
+            1.812587245894928,
+            0.0224116372343783,
+            1.812743879772621,
+            0.0224982354316738,
+            0,
+            183.4047444020544
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../tower-3-marina-bay-sands-singapore/tileset.json"
+        },
+        "extras": {
+          "poiId": "tower-3-marina-bay-sands-singapore",
+          "label": "TOWER 3 (MARINA BAY SANDS SINGAPORE)"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812450031599977,
+            0.0223393384555945,
+            1.812743879772621,
+            0.0226876675369513,
+            0,
+            280.0843471375198
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../the-shoppes-at-marina-bay-sands/tileset.json"
+        },
+        "extras": {
+          "poiId": "the-shoppes-at-marina-bay-sands",
+          "label": "THE SHOPPES AT MARINA BAY SANDS"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812451769392739,
+            0.0224954206502941,
+            1.812543547324671,
+            0.0226876675369513,
+            0,
+            125.606801384065
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../national-museum-of-singapore/tileset.json"
+        },
+        "extras": {
+          "poiId": "national-museum-of-singapore",
+          "label": "NATIONAL MUSEUM OF SINGAPORE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812527695762618,
+            0.0224929789008368,
+            1.812575008481753,
+            0.022568345862037,
+            0,
+            115.4761186895448
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../national-gallery-singapore/tileset.json"
+        },
+        "extras": {
+          "poiId": "national-gallery-singapore",
+          "label": "NATIONAL GALLERY SINGAPORE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813177849984792,
+            0.0230805553278444,
+            1.813325066724931,
+            0.0231496192253773,
+            0,
+            59.8733080226723
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../lion-building-c/tileset.json"
+        },
+        "extras": {
+          "poiId": "lion-building-c",
+          "label": "LION BUILDING C"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812194969957075,
+            0.022790086393502,
+            1.812252504933166,
+            0.0228240703069919,
+            0,
+            101.6671901917045
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../claymore-plaza/tileset.json"
+        },
+        "extras": {
+          "poiId": "claymore-plaza",
+          "label": "CLAYMORE PLAZA"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.81289380425302,
+            0.0231452924635846,
+            1.812963817508359,
+            0.023181077254395,
+            0,
+            47.43045333858545
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../cideco-industrial-complex/tileset.json"
+        },
+        "extras": {
+          "poiId": "cideco-industrial-complex",
+          "label": "CIDECO INDUSTRIAL COMPLEX"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813463803628801,
+            0.0227710542051036,
+            1.813526234880629,
+            0.0228116802140232,
+            0,
+            36.49561615627348
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../rumah-bebe/tileset.json"
+        },
+        "extras": {
+          "poiId": "rumah-bebe",
+          "label": "RUMAH BEBE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812821808677023,
+            0.0231446717251477,
+            1.812963939367726,
+            0.0231988176473141,
+            0,
+            63.7172627300024
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../perfect-one/tileset.json"
+        },
+        "extras": {
+          "poiId": "perfect-one",
+          "label": "PERFECT ONE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812652697124581,
+            0.0227476376302357,
+            1.81274169373184,
+            0.0228285541085295,
+            0,
+            92.7174665890934
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../textile-centre/tileset.json"
+        },
+        "extras": {
+          "poiId": "textile-centre",
+          "label": "TEXTILE CENTRE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812655027752574,
+            0.0227916853503991,
+            1.81269709317249,
+            0.0228264994119401,
+            0,
+            52.85679654046962
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../song-lin-building/tileset.json"
+        },
+        "extras": {
+          "poiId": "song-lin-building",
+          "label": "SONG LIN BUILDING"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812666958810786,
+            0.0224964163757654,
+            1.812739548310348,
+            0.0225830421363536,
+            0,
+            218.1086348281835
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../millenia-walk/tileset.json"
+        },
+        "extras": {
+          "poiId": "millenia-walk",
+          "label": "MILLENIA WALK"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812570058328171,
+            0.0226473083748671,
+            1.812619058850865,
+            0.0226788595589961,
+            0,
+            71.49511131915126
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../inter-continental-singapore/tileset.json"
+        },
+        "extras": {
+          "poiId": "inter-continental-singapore",
+          "label": "INTER-CONTINENTAL SINGAPORE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813459344747282,
+            0.0227470815421613,
+            1.813496338186973,
+            0.0227827423770804,
+            0,
+            69.58657631845227
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../roxy-square/tileset.json"
+        },
+        "extras": {
+          "poiId": "roxy-square",
+          "label": "ROXY SQUARE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.811839529721979,
+            0.0223773826096275,
+            1.81191455018156,
+            0.0224595179526066,
+            0,
+            97.1537389449742
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../blk-e-e2i/tileset.json"
+        },
+        "extras": {
+          "poiId": "blk-e-e2i",
+          "label": "BLK E (E2I)"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812530385372982,
+            0.0225599510707313,
+            1.81257667211398,
+            0.0226182471185546,
+            0,
+            56.56271331381276
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../capitol-theatre/tileset.json"
+        },
+        "extras": {
+          "poiId": "capitol-theatre",
+          "label": "CAPITOL THEATRE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812256127513092,
+            0.0226750110747089,
+            1.812318495089534,
+            0.0227285689720869,
+            0,
+            145.4741351760628
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../scape/tileset.json"
+        },
+        "extras": {
+          "poiId": "scape",
+          "label": "SCAPE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.814131116924451,
+            0.0235813627092423,
+            1.814225467457217,
+            0.0236242063754807,
+            0,
+            39.27289071943279
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../tampines-plaza/tileset.json"
+        },
+        "extras": {
+          "poiId": "tampines-plaza",
+          "label": "TAMPINES PLAZA"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.81247080918173,
+            0.0223454490886923,
+            1.812495134656935,
+            0.0223714117359683,
+            0,
+            39.58052529135135
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../thian-hock-keng/tileset.json"
+        },
+        "extras": {
+          "poiId": "thian-hock-keng",
+          "label": "THIAN HOCK KENG"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812505747217212,
+            0.0222603023108275,
+            1.812532664563919,
+            0.022310653507055,
+            0,
+            240.7195015093312
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../singapore-chinese-cultural-centre/tileset.json"
+        },
+        "extras": {
+          "poiId": "singapore-chinese-cultural-centre",
+          "label": "SINGAPORE CHINESE CULTURAL CENTRE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813322051904899,
+            0.0229598448698746,
+            1.813678982998481,
+            0.0230429751633061,
+            0,
+            61.15135915387606
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../wisma-geylang-serai/tileset.json"
+        },
+        "extras": {
+          "poiId": "wisma-geylang-serai",
+          "label": "WISMA GEYLANG SERAI"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.809768073718029,
+            0.0236157479663581,
+            1.809869345653985,
+            0.0236408675564713,
+            0,
+            38.53646032289367
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../thow-kwang-pottery-jungle/tileset.json"
+        },
+        "extras": {
+          "poiId": "thow-kwang-pottery-jungle",
+          "label": "THOW KWANG POTTERY JUNGLE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812587245894928,
+            0.0224116372343783,
+            1.812743879772621,
+            0.0224982354316738,
+            0,
+            183.4047444020544
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../marina-bay-sands-artscience-museum/tileset.json"
+        },
+        "extras": {
+          "poiId": "marina-bay-sands-artscience-museum",
+          "label": "MARINA BAY SANDS (ARTSCIENCE MUSEUM)"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812451769392739,
+            0.0226150225262818,
+            1.812496619200622,
+            0.0226790915738983,
+            0,
+            42.08246232826857
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../temasek-shophouse/tileset.json"
+        },
+        "extras": {
+          "poiId": "temasek-shophouse",
+          "label": "TEMASEK SHOPHOUSE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813120402380134,
+            0.0233160960124343,
+            1.813174452773463,
+            0.023366299748491,
+            0,
+            60.19469987958183
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../the-commerze-irving/tileset.json"
+        },
+        "extras": {
+          "poiId": "the-commerze-irving",
+          "label": "THE COMMERZE@IRVING"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.808737361616266,
+            0.0233098449684965,
+            1.808872584923733,
+            0.0234468682586269,
+            0,
+            68.49720721948194
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../raffles-marina/tileset.json"
+        },
+        "extras": {
+          "poiId": "raffles-marina",
+          "label": "RAFFLES MARINA"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.811907813611094,
+            0.0223789254467811,
+            1.811993976380771,
+            0.0224628188652263,
+            0,
+            103.7424321015982
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../gateway-theatre/tileset.json"
+        },
+        "extras": {
+          "poiId": "gateway-theatre",
+          "label": "GATEWAY THEATRE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812309664859484,
+            0.022676734119297,
+            1.812393691055661,
+            0.0227378786748603,
+            0,
+            75.19398284878618
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../orchard-central/tileset.json"
+        },
+        "extras": {
+          "poiId": "orchard-central",
+          "label": "ORCHARD CENTRAL"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813478132989829,
+            0.0245185625486472,
+            1.813542144042918,
+            0.0246238373139051,
+            0,
+            53.85401813328024
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../safra-clubhouse-punggol/tileset.json"
+        },
+        "extras": {
+          "poiId": "safra-clubhouse-punggol",
+          "label": "SAFRA CLUBHOUSE (PUNGGOL)"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812494525794804,
+            0.0225069335743371,
+            1.812543547324671,
+            0.0226136385456875,
+            0,
+            125.606801384065
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../singapore-philatelic-museum/tileset.json"
+        },
+        "extras": {
+          "poiId": "singapore-philatelic-museum",
+          "label": "SINGAPORE PHILATELIC MUSEUM"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813385316153742,
+            0.0228403937797477,
+            1.813421547889055,
+            0.022862887868801,
+            0,
+            18.17057853057043
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../shell-dunman/tileset.json"
+        },
+        "extras": {
+          "poiId": "shell-dunman",
+          "label": "SHELL DUNMAN"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813177849984792,
+            0.0230805553278444,
+            1.813325066724931,
+            0.0231496192253773,
+            0,
+            59.8733080226723
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../63-ubi/tileset.json"
+        },
+        "extras": {
+          "poiId": "63-ubi",
+          "label": "63@UBI"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812494525794804,
+            0.0225069335743371,
+            1.812543547324671,
+            0.0226136385456875,
+            0,
+            125.606801384065
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../peranakan-museum/tileset.json"
+        },
+        "extras": {
+          "poiId": "peranakan-museum",
+          "label": "PERANAKAN MUSEUM"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.81346618225473,
+            0.0226643776254286,
+            1.813505719107826,
+            0.0227554134609923,
+            0,
+            99.66490644290516
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../parkway-parade/tileset.json"
+        },
+        "extras": {
+          "poiId": "parkway-parade",
+          "label": "PARKWAY PARADE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812338079945385,
+            0.0225026752104947,
+            1.812361479782198,
+            0.0225758307125957,
+            0,
+            84.91474516729515
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../singapore-tyler-print-institute/tileset.json"
+        },
+        "extras": {
+          "poiId": "singapore-tyler-print-institute",
+          "label": "SINGAPORE TYLER PRINT INSTITUTE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812454578778239,
+            0.0224954206502941,
+            1.812500904503066,
+            0.022615388643018,
+            0,
+            30.21806613936607
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../fort-canning-centre/tileset.json"
+        },
+        "extras": {
+          "poiId": "fort-canning-centre",
+          "label": "FORT CANNING CENTRE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812309664859484,
+            0.022676734119297,
+            1.812393691055661,
+            0.0227378786748603,
+            0,
+            75.19398284878618
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../313-somerset/tileset.json"
+        },
+        "extras": {
+          "poiId": "313-somerset",
+          "label": "313 @ SOMERSET"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812278652257755,
+            0.0221846184583612,
+            1.81231533119104,
+            0.0222798819243616,
+            0,
+            156.6916742308061
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../tanjong-pagar-distripark/tileset.json"
+        },
+        "extras": {
+          "poiId": "tanjong-pagar-distripark",
+          "label": "TANJONG PAGAR DISTRIPARK"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812533114271788,
+            0.0226082007133886,
+            1.812619058850865,
+            0.0226825381109528,
+            0,
+            95.34393100955278
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../carlton-hotel/tileset.json"
+        },
+        "extras": {
+          "poiId": "carlton-hotel",
+          "label": "CARLTON HOTEL"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.811436531044246,
+            0.0227990732372087,
+            1.811463383969502,
+            0.0228167469667031,
+            0,
+            74.79652197376191
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../the-star/tileset.json"
+        },
+        "extras": {
+          "poiId": "the-star",
+          "label": "THE STAR"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.814608501979912,
+            0.0237678853586156,
+            1.814696850120896,
+            0.0238041909874719,
+            0,
+            18.59140845694256
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../changi-chapel-and-museum/tileset.json"
+        },
+        "extras": {
+          "poiId": "changi-chapel-and-museum",
+          "label": "CHANGI CHAPEL AND MUSEUM"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.811479005549512,
+            0.0222637208888946,
+            1.811587801129077,
+            0.0223362629602611,
+            0,
+            54.05520301509226
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../reflection-at-bukit-chandu-opium-hill/tileset.json"
+        },
+        "extras": {
+          "poiId": "reflection-at-bukit-chandu-opium-hill",
+          "label": "REFLECTION AT BUKIT CHANDU (OPIUM HILL)"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812553882548763,
+            0.022764300975677,
+            1.812578931382852,
+            0.0227989980967715,
+            0,
+            23.21252195435224
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../pgp-building/tileset.json"
+        },
+        "extras": {
+          "poiId": "pgp-building",
+          "label": "PGP BUILDING"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812535305118274,
+            0.0224605415847749,
+            1.812558890546055,
+            0.0224966627149462,
+            0,
+            53.34077456243281
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../victoria-theatre-and-concert-hall-u-c/tileset.json"
+        },
+        "extras": {
+          "poiId": "victoria-theatre-and-concert-hall-u-c",
+          "label": "VICTORIA THEATRE AND CONCERT HALL (U/C)"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.81259056165707,
+            0.022349077367764,
+            1.812732500226365,
+            0.0224255627858922,
+            0,
+            181.0129233473586
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../marina-bay-sands-mice/tileset.json"
+        },
+        "extras": {
+          "poiId": "marina-bay-sands-mice",
+          "label": "MARINA BAY SANDS (MICE)"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812570058328171,
+            0.0226163007694703,
+            1.812619058850865,
+            0.0226788595589961,
+            0,
+            95.34393100955278
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../national-library-building/tileset.json"
+        },
+        "extras": {
+          "poiId": "national-library-building",
+          "label": "NATIONAL LIBRARY BUILDING"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.81241542378313,
+            0.0223929929904786,
+            1.81243097425678,
+            0.0224149908828219,
+            0,
+            19.05790006985231
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../chinatown-heritage-centre/tileset.json"
+        },
+        "extras": {
+          "poiId": "chinatown-heritage-centre",
+          "label": "CHINATOWN HERITAGE CENTRE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812527695762618,
+            0.0224929789008368,
+            1.812617971593694,
+            0.0226247839264602,
+            0,
+            226.7042209621207
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../south-beach/tileset.json"
+        },
+        "extras": {
+          "poiId": "south-beach",
+          "label": "SOUTH BEACH"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812397674329192,
+            0.023024134120137,
+            1.812541771399883,
+            0.0230904445694133,
+            0,
+            149.2984136590479
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../velocity-novena-square/tileset.json"
+        },
+        "extras": {
+          "poiId": "velocity-novena-square",
+          "label": "VELOCITY @ NOVENA SQUARE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812607316530899,
+            0.0224958547118573,
+            1.812683902740744,
+            0.022563739586527,
+            0,
+            83.8189838199931
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../esplanade-theatres-on-the-bay/tileset.json"
+        },
+        "extras": {
+          "poiId": "esplanade-theatres-on-the-bay",
+          "label": "ESPLANADE - THEATRES ON THE BAY"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813459344747282,
+            0.0227470815421613,
+            1.813496338186973,
+            0.0227827423770804,
+            0,
+            69.58657631845227
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../katong-square/tileset.json"
+        },
+        "extras": {
+          "poiId": "katong-square",
+          "label": "KATONG SQUARE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.811543927412814,
+            0.0227549932474759,
+            1.811628176524215,
+            0.0228263767634315,
+            0,
+            84.37479473475607
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../one-commonwealth/tileset.json"
+        },
+        "extras": {
+          "poiId": "one-commonwealth",
+          "label": "ONE COMMONWEALTH"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.811381557943257,
+            0.0250267069799541,
+            1.811482206083308,
+            0.0251194051592163,
+            0,
+            60.42431792670237
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../woods-square/tileset.json"
+        },
+        "extras": {
+          "poiId": "woods-square",
+          "label": "WOODS SQUARE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813604269086997,
+            0.0242609834179814,
+            1.813952461961537,
+            0.0243789813642006,
+            0,
+            64.56549077387899
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../punggol-neighbourhood-police-centre/tileset.json"
+        },
+        "extras": {
+          "poiId": "punggol-neighbourhood-police-centre",
+          "label": "PUNGGOL NEIGHBOURHOOD POLICE CENTRE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812065573022503,
+            0.021782546251235,
+            1.812197201081126,
+            0.022214898500405,
+            0,
+            78.54686193095678
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../sentosa-development-corporation/tileset.json"
+        },
+        "extras": {
+          "poiId": "sentosa-development-corporation",
+          "label": "SENTOSA DEVELOPMENT CORPORATION"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812737354977707,
+            0.0221705179520395,
+            1.812815755737096,
+            0.0224015095573315,
+            0,
+            51.1763110617174
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../marina-south-pier-mrt-station/tileset.json"
+        },
+        "extras": {
+          "poiId": "marina-south-pier-mrt-station",
+          "label": "MARINA SOUTH PIER MRT STATION"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.811785256026529,
+            0.0218249162918036,
+            1.811968983884736,
+            0.0219822348413721,
+            0,
+            42.96732670986759
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../siloso-beach-resort/tileset.json"
+        },
+        "extras": {
+          "poiId": "siloso-beach-resort",
+          "label": "SILOSO BEACH RESORT"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812560305039547,
+            0.0234528050856433,
+            1.812636223827707,
+            0.0235054883649687,
+            0,
+            68.95308039197717
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../bishan-green/tileset.json"
+        },
+        "extras": {
+          "poiId": "bishan-green",
+          "label": "BISHAN GREEN"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812527695762618,
+            0.0224929789008368,
+            1.812617971593694,
+            0.0226247839264602,
+            0,
+            226.7042209621207
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../raffles-hotel-1886/tileset.json"
+        },
+        "extras": {
+          "poiId": "raffles-hotel-1886",
+          "label": "RAFFLES HOTEL (1886)"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.814875669741234,
+            0.0242730207719344,
+            1.81550934495113,
+            0.024412006392511,
+            0,
+            21.7474226586697
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../changi-point-ferry-terminal/tileset.json"
+        },
+        "extras": {
+          "poiId": "changi-point-ferry-terminal",
+          "label": "CHANGI POINT FERRY TERMINAL"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.811417118399717,
+            0.0223598411239074,
+            1.811480296397652,
+            0.0224123192014455,
+            0,
+            26.96627555924862
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../national-community-leadership-institute/tileset.json"
+        },
+        "extras": {
+          "poiId": "national-community-leadership-institute",
+          "label": "NATIONAL COMMUNITY LEADERSHIP INSTITUTE"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812493080488028,
+            0.0226045378544433,
+            1.812537508773728,
+            0.0226876675369513,
+            0,
+            57.17832925377511
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../singapore-management-university/tileset.json"
+        },
+        "extras": {
+          "poiId": "singapore-management-university",
+          "label": "SINGAPORE MANAGEMENT UNIVERSITY"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812535305118274,
+            0.0224605415847749,
+            1.812558890546055,
+            0.0224966627149462,
+            0,
+            53.34077456243281
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../empress-place-building/tileset.json"
+        },
+        "extras": {
+          "poiId": "empress-place-building",
+          "label": "EMPRESS PLACE BUILDING"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.811576987982723,
+            0.0222515846983884,
+            1.811744721939631,
+            0.0223349658820662,
+            0,
+            155.2250493261703
+          ]
+        },
+        "geometricError": 256,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "../gillman-barracks/tileset.json"
+        },
+        "extras": {
+          "poiId": "gillman-barracks",
+          "label": "GILLMAN BARRACKS"
+        }
+      }
+    ]
+  },
+  "extras": {
+    "venueCount": 64,
+    "venueIds": [
+      "tower-3-marina-bay-sands-singapore",
+      "the-shoppes-at-marina-bay-sands",
+      "national-museum-of-singapore",
+      "national-gallery-singapore",
+      "lion-building-c",
+      "claymore-plaza",
+      "cideco-industrial-complex",
+      "rumah-bebe",
+      "perfect-one",
+      "textile-centre",
+      "song-lin-building",
+      "millenia-walk",
+      "inter-continental-singapore",
+      "roxy-square",
+      "blk-e-e2i",
+      "capitol-theatre",
+      "scape",
+      "tampines-plaza",
+      "thian-hock-keng",
+      "singapore-chinese-cultural-centre",
+      "wisma-geylang-serai",
+      "thow-kwang-pottery-jungle",
+      "marina-bay-sands-artscience-museum",
+      "temasek-shophouse",
+      "the-commerze-irving",
+      "raffles-marina",
+      "gateway-theatre",
+      "orchard-central",
+      "safra-clubhouse-punggol",
+      "singapore-philatelic-museum",
+      "shell-dunman",
+      "63-ubi",
+      "peranakan-museum",
+      "parkway-parade",
+      "singapore-tyler-print-institute",
+      "fort-canning-centre",
+      "313-somerset",
+      "tanjong-pagar-distripark",
+      "carlton-hotel",
+      "the-star",
+      "changi-chapel-and-museum",
+      "reflection-at-bukit-chandu-opium-hill",
+      "pgp-building",
+      "victoria-theatre-and-concert-hall-u-c",
+      "marina-bay-sands-mice",
+      "national-library-building",
+      "chinatown-heritage-centre",
+      "south-beach",
+      "velocity-novena-square",
+      "esplanade-theatres-on-the-bay",
+      "katong-square",
+      "one-commonwealth",
+      "woods-square",
+      "punggol-neighbourhood-police-centre",
+      "sentosa-development-corporation",
+      "marina-south-pier-mrt-station",
+      "siloso-beach-resort",
+      "bishan-green",
+      "raffles-hotel-1886",
+      "changi-point-ferry-terminal",
+      "national-community-leadership-institute",
+      "singapore-management-university",
+      "empress-place-building",
+      "gillman-barracks"
+    ]
+  }
+}

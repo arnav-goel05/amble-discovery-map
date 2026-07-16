@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "tampines-plaza",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:05.544Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/55/36_0.b3dm",
+      "sourceSha256": "a92113c171fdfc5bd0d7af560e175cd7d4a7b5242232e6dbc8872bdcd8e453a5",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "gmlNames": [
+        "TAMPINES PLAZA"
+      ],
+      "poiFile": "36_0.b3dm",
+      "poiSha256": "9c757ce2e488764fd33d9483f1b4508231e1afa1b107fc2838176169063f6b34",
+      "poiTriangles": 812,
+      "backgroundFile": "optimized-tiles/6/55/36_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "backgroundSha256": "b374db73426954a5f385eb8a8ff54753e4413594ca14f5f538c6286d2dfc9d3a",
+      "backgroundTriangles": 27364
+    },
+    {
+      "sourceTile": "tiles/6/55/36_1.b3dm",
+      "sourceSha256": "0820469805cf78681d23809e6b2daa6cf1ab0c106ff7115c548bb68fbb34da13",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "gmlNames": [
+        "TAMPINES PLAZA"
+      ],
+      "poiFile": "36_1.b3dm",
+      "poiSha256": "5216a761e14b29e28d658b02853680eaf41fdf0f8407f5ab4904546851bf7567",
+      "poiTriangles": 812,
+      "backgroundFile": "optimized-tiles/6/55/36_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "backgroundSha256": "596f2375f7bec552987b4aa6e690da68de818dadcfc2a157ebbbf84ae3607e2a",
+      "backgroundTriangles": 27364
+    },
+    {
+      "sourceTile": "tiles/6/55/36_2.b3dm",
+      "sourceSha256": "ca6d4b2c444999e63a4f590e1b9ab8363bb22e37a6c98dcaf8f13c34c55d3f9b",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "gmlNames": [
+        "TAMPINES PLAZA"
+      ],
+      "poiFile": "36_2.b3dm",
+      "poiSha256": "30cb0bdf2876728a253a278331f9060591898f2630f5ad07ea8811379b076c0d",
+      "poiTriangles": 812,
+      "backgroundFile": "optimized-tiles/6/55/36_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "backgroundSha256": "809b802bea51a302e541ac7a4723e4c8eb9f58a009c63b52d4686c0522bbc87b",
+      "backgroundTriangles": 27364
+    },
+    {
+      "sourceTile": "tiles/6/55/36_3.b3dm",
+      "sourceSha256": "64b071efe37a68acc633bcec13f577b204a39409f84364446aeaad953573dd36",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "gmlNames": [
+        "TAMPINES PLAZA"
+      ],
+      "poiFile": "36_3.b3dm",
+      "poiSha256": "08143e528a8c92fd758ff09eefa038d77136e6987cf2d0a2837ddc7b29ae855f",
+      "poiTriangles": 812,
+      "backgroundFile": "optimized-tiles/6/55/36_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "backgroundSha256": "d9a9bd4c9d27ef371c5726b0a0bde4664a632da40aa36a668de2414563d7da9e",
+      "backgroundTriangles": 27364
+    },
+    {
+      "sourceTile": "tiles/6/55/36_4.b3dm",
+      "sourceSha256": "a966bb681c3afd9f33efc194c90fca8c4237a606f6a1c452f0e6ba8d92941a24",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "gmlNames": [
+        "TAMPINES PLAZA"
+      ],
+      "poiFile": "36_4.b3dm",
+      "poiSha256": "b78d3f61ed55075b8f98828b24588d031e8600382b23ac7f203bb9a124027677",
+      "poiTriangles": 812,
+      "backgroundFile": "optimized-tiles/6/55/36_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "backgroundSha256": "da8f80f27adf5d1086726dc22691a1c2a534cfd2ce5828cdf170c42149ba9456",
+      "backgroundTriangles": 27364
+    },
+    {
+      "sourceTile": "tiles/6/55/36_5.b3dm",
+      "sourceSha256": "d6afad50cd0caccc909502927f1b9863f9f3acf13b255ca141815143473bc810",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "gmlNames": [
+        "TAMPINES PLAZA"
+      ],
+      "poiFile": "36_5.b3dm",
+      "poiSha256": "df8149cb722661f6a8445b6c103ea69a6801d006436246f99cab6643263b09c4",
+      "poiTriangles": 812,
+      "backgroundFile": "optimized-tiles/6/55/36_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493"
+      ],
+      "backgroundSha256": "089e1b4517b1fbe439aaca0d127c8372b84e47b9b643d687dc6e68f85b5382ee",
+      "backgroundTriangles": 27364
+    }
+  ]
+}

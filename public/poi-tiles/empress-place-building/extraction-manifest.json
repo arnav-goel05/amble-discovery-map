@@ -1,0 +1,188 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "empress-place-building",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:10.110Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/76/11_0.b3dm",
+      "sourceSha256": "5f34f00d30e2e9d8c526d913d154cf0b9247f23db512086ee5de533c6014b897",
+      "originalBatchIds": [
+        6
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "gmlNames": [
+        "EMPRESS PLACE BUILDING"
+      ],
+      "poiFile": "11_0.b3dm",
+      "poiSha256": "c421d7315853409331838b8f80144ca4136e6b33eca036bea3ee8e86f508a746",
+      "poiTriangles": 3396,
+      "backgroundFile": "optimized-tiles/7/76/11_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "backgroundSha256": "9ce45f7f443febfab2e319ae66f22c1684f342891d60de0a95506e3f51d47e29",
+      "backgroundTriangles": 3016
+    },
+    {
+      "sourceTile": "tiles/7/76/11_1.b3dm",
+      "sourceSha256": "3477384d5ff44a317d1f4304ee96661a0c8b16b93d89d7eb7b5372c37fb3f598",
+      "originalBatchIds": [
+        6
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "gmlNames": [
+        "EMPRESS PLACE BUILDING"
+      ],
+      "poiFile": "11_1.b3dm",
+      "poiSha256": "08557507e3e3001482390085b47d87147891237aaca0841c1c005da5a3ce523b",
+      "poiTriangles": 3396,
+      "backgroundFile": "optimized-tiles/7/76/11_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "backgroundSha256": "ae2cc7afefced314bedd3c0467cbd5d08c99885539e80023eadc6cfe8a02baa0",
+      "backgroundTriangles": 3016
+    },
+    {
+      "sourceTile": "tiles/7/76/11_2.b3dm",
+      "sourceSha256": "2120892f4f27f0b72ed17f5fe3fb9657c244256d88f233ea2e34fe303db5ba1f",
+      "originalBatchIds": [
+        6
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "gmlNames": [
+        "EMPRESS PLACE BUILDING"
+      ],
+      "poiFile": "11_2.b3dm",
+      "poiSha256": "825c2a6ef96ac7601bb19fd067e8575aa16b1ab26e7b6c9c3dc57cfe991d9803",
+      "poiTriangles": 3396,
+      "backgroundFile": "optimized-tiles/7/76/11_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "backgroundSha256": "ba4a70727aff52c9ce9902e580c42ab0eb52c839d62c2cfd82df86aa698b0e8a",
+      "backgroundTriangles": 3016
+    },
+    {
+      "sourceTile": "tiles/7/76/11_3.b3dm",
+      "sourceSha256": "4cd9bee3459cd8604c81d482f2e01b3523b811c0eafd4a0a3fb42b2bfae84cca",
+      "originalBatchIds": [
+        6
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "gmlNames": [
+        "EMPRESS PLACE BUILDING"
+      ],
+      "poiFile": "11_3.b3dm",
+      "poiSha256": "a31b79f8336495f0962e4b116b6a0c5e6178955878fae4dfac80aa4ccc67956e",
+      "poiTriangles": 3396,
+      "backgroundFile": "optimized-tiles/7/76/11_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "backgroundSha256": "03ccc3d8496ad3c240b79f971d9bdde4b61913b3e0bee5e990d0cce665d4f8b7",
+      "backgroundTriangles": 3016
+    },
+    {
+      "sourceTile": "tiles/7/76/11_4.b3dm",
+      "sourceSha256": "fb90b72101ca455f214f9fc6d39b20e9701e0c23743dfd18035471993f976648",
+      "originalBatchIds": [
+        6
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "gmlNames": [
+        "EMPRESS PLACE BUILDING"
+      ],
+      "poiFile": "11_4.b3dm",
+      "poiSha256": "39dcaa8d20e535c5499e67067e4556e161788b73b846d14f7f6323f36fee0581",
+      "poiTriangles": 3396,
+      "backgroundFile": "optimized-tiles/7/76/11_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "backgroundSha256": "fab1a2c6a3d60c4aaacc82e9bb07249306123577a68c201bf6f84c760ad02bb6",
+      "backgroundTriangles": 3016
+    }
+  ]
+}

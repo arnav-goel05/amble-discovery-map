@@ -1,0 +1,52 @@
+:root {
+  color-scheme: light;
+  --app-shell-max-width: 1480px;
+
+  --color-ink: #172033;
+  --color-ink-muted: #687287;
+  --color-surface: #ffffff;
+  --color-surface-translucent: rgba(249, 251, 252, 0.88);
+  --color-border: rgba(21, 35, 55, 0.13);
+  --color-accent: #087f84;
+  --color-accent-strong: #08656a;
+  --color-focus: rgba(31, 127, 163, 0.34);
+  --color-warning: #8a5b00;
+  --color-error: #a22b2b;
+  --color-stale-surface: #fff8e7;
+  --color-error-surface: #fff1f0;
+
+  --font-family-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-size-caption: 0.75rem;
+  --font-size-body: 1rem;
+  --font-size-title: clamp(1.5rem, 3vw, 2.5rem);
+  --line-height-body: 1.5;
+  --font-weight-medium: 600;
+  --font-weight-bold: 750;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --radius-control: 14px;
+  --radius-panel: 28px;
+  --radius-pill: 999px;
+  --touch-target-min: 44px;
+  --shadow-panel: 0 18px 48px rgba(17, 29, 45, 0.2);
+
+  --motion-fast: 120ms;
+  --motion-standard: 180ms;
+  --motion-settle: 280ms;
+  --motion-easing: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-standard: 0ms;
+    --motion-settle: 0ms;
+  }
+}

@@ -1,0 +1,4893 @@
+{
+  "schemaVersion": "1.0",
+  "entries": [
+    {
+      "status": "approved",
+      "rawVenue": "Gateway Theatre",
+      "normalizedVenue": "gateway theatre",
+      "canonicalVenue": "GATEWAY THEATRE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.8165752490265,
+        "lat": 1.2839708536712913
+      },
+      "poiId": "gateway-theatre",
+      "gmlId": "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5",
+      "acceptedGmlNames": [
+        "GATEWAY THEATRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/26/6_0.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/6_1.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/6_2.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/6_3.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/6_4.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/6_5.b3dm",
+          "batchIds": [
+            24
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Exact venue name resolves to one unique OneMap GML identity across its LOD tiles",
+          "verifiedAt": "2026-07-12T07:16:55.189Z"
+        }
+      ],
+      "verifiedAt": "2026-07-12T07:17:06.203Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "GOODMAN ARTS CENTRE (BLK O)",
+      "normalizedVenue": "goodman arts centre blk o",
+      "canonicalVenue": "GOODMAN ARTS CENTRE (BLK O)",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.88504494164275,
+        "lat": 1.302756782885033
+      },
+      "poiId": "goodman-arts-centre-blk-o",
+      "gmlId": "SLA_BLDG2_b20484db-1e6b-4097-9b56-985db9f49c8e",
+      "acceptedGmlNames": [
+        "GOODMAN ARTS CENTRE (BLK O)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/44/9_0.b3dm",
+          "batchIds": [
+            66
+          ]
+        },
+        {
+          "path": "tiles/6/44/9_1.b3dm",
+          "batchIds": [
+            66
+          ]
+        },
+        {
+          "path": "tiles/6/44/9_2.b3dm",
+          "batchIds": [
+            66
+          ]
+        },
+        {
+          "path": "tiles/6/44/9_3.b3dm",
+          "batchIds": [
+            66
+          ]
+        },
+        {
+          "path": "tiles/6/44/9_4.b3dm",
+          "batchIds": [
+            66
+          ]
+        },
+        {
+          "path": "tiles/6/44/9_5.b3dm",
+          "batchIds": [
+            66
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Exact venue name resolves to one unique OneMap GML identity across its LOD tiles",
+          "verifiedAt": "2026-07-13T07:37:05.398Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T07:38:03.609Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "THE METROPOLIS",
+      "normalizedVenue": "the metropolis",
+      "canonicalVenue": "THE METROPOLIS",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.7914782714656,
+        "lat": 1.3060050976746247
+      },
+      "poiId": "the-metropolis",
+      "gmlId": "SLA_BLDG2_8af1ec78-08cc-43e3-b9e1-ca234041332e",
+      "acceptedGmlNames": [
+        "THE METROPOLIS"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/41/25_0.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/7/41/25_1.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/7/41/25_2.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/7/41/25_3.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/7/41/25_4.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/7/41/25_5.b3dm",
+          "batchIds": [
+            7
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Exact venue name resolves to one unique OneMap GML identity across its LOD tiles",
+          "verifiedAt": "2026-07-13T07:37:05.398Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T07:38:03.640Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "GOODMAN ARTS CENTRE",
+      "normalizedVenue": "goodman arts centre",
+      "canonicalVenue": "GOODMAN ARTS CENTRE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.88537046433814,
+        "lat": 1.3034580425368636
+      },
+      "poiId": "goodman-arts-centre",
+      "gmlId": "SLA_BLDG2_c015c3d9-10cf-461b-bac3-2f60c51f9654",
+      "acceptedGmlNames": [
+        "GOODMAN ARTS CENTRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/44/9_0.b3dm",
+          "batchIds": [
+            61
+          ]
+        },
+        {
+          "path": "tiles/6/44/9_1.b3dm",
+          "batchIds": [
+            61
+          ]
+        },
+        {
+          "path": "tiles/6/44/9_2.b3dm",
+          "batchIds": [
+            61
+          ]
+        },
+        {
+          "path": "tiles/6/44/9_3.b3dm",
+          "batchIds": [
+            61
+          ]
+        },
+        {
+          "path": "tiles/6/44/9_4.b3dm",
+          "batchIds": [
+            61
+          ]
+        },
+        {
+          "path": "tiles/6/44/9_5.b3dm",
+          "batchIds": [
+            61
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Exact venue name resolves to one unique OneMap GML identity across its LOD tiles",
+          "verifiedAt": "2026-07-13T07:37:05.398Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T07:38:03.677Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "SkyPark Observation Deck, Level 56, Hotel Tower 3",
+      "normalizedVenue": "skypark observation deck level 56 hotel tower 3",
+      "canonicalVenue": "TOWER 3 (MARINA BAY SANDS SINGAPORE)",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.86096348605537,
+        "lat": 1.2844378672608592
+      },
+      "poiId": "tower-3-marina-bay-sands-singapore",
+      "gmlId": "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+      "acceptedGmlNames": [
+        "TOWER 3 (MARINA BAY SANDS SINGAPORE)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/39/5_0.b3dm",
+          "batchIds": [
+            13
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_1.b3dm",
+          "batchIds": [
+            13
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_2.b3dm",
+          "batchIds": [
+            13
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_3.b3dm",
+          "batchIds": [
+            13
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_4.b3dm",
+          "batchIds": [
+            13
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_5.b3dm",
+          "batchIds": [
+            13
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.056Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "The Shoppes at Marina Bay Sands, Basement 2, The Canal",
+      "normalizedVenue": "the shoppes at marina bay sands basement 2 the canal",
+      "canonicalVenue": "THE SHOPPES AT MARINA BAY SANDS",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.85888658923577,
+        "lat": 1.2840696139645784
+      },
+      "poiId": "the-shoppes-at-marina-bay-sands",
+      "gmlId": "SLA_BLDG2_e33331a5-741c-41d1-b700-4fe77186a470",
+      "acceptedGmlNames": [
+        "THE SHOPPES AT MARINA BAY SANDS"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/4/9/1_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/4/9/1_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/4/9/1_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/4/9/1_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.063Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "NATIONAL MUSEUM OF SINGAPORE",
+      "normalizedVenue": "national museum of singapore",
+      "canonicalVenue": "NATIONAL MUSEUM OF SINGAPORE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.84838868243224,
+        "lat": 1.2965293668742313
+      },
+      "poiId": "national-museum-of-singapore",
+      "gmlId": "SLA_BLDG2_7be6b055-114a-4065-b9fa-8e383fad9357",
+      "acceptedGmlNames": [
+        "NATIONAL MUSEUM OF SINGAPORE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/18/3_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/18/3_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/18/3_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/18/3_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/18/3_4.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.072Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "National Gallery Singapore",
+      "normalizedVenue": "national gallery singapore",
+      "canonicalVenue": "NATIONAL GALLERY SINGAPORE",
+      "verifiedAddress": "1 St Andrew’s Road, Singapore 178957",
+      "coordinates": {
+        "lng": 103.8515234999511,
+        "lat": 1.2902843735283591
+      },
+      "poiId": "national-gallery-singapore",
+      "gmlId": "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736",
+      "acceptedGmlNames": [
+        "NATIONAL GALLERY SINGAPORE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/76/12_0.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_1.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_2.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_3.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_4.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_5.b3dm",
+          "batchIds": [
+            3
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.082Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Arudio Ceramic MacPherson",
+      "normalizedVenue": "arudio ceramic macpherson",
+      "canonicalVenue": "LION BUILDING C",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.89171064224868,
+        "lat": 1.3246403459888996
+      },
+      "poiId": "lion-building-c",
+      "gmlId": "SLA_BLDG2_9b8926b5-f70c-4783-95a3-73d775e158b8",
+      "acceptedGmlNames": [
+        "LION BUILDING C"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/23/10_0.b3dm",
+          "batchIds": [
+            11
+          ]
+        },
+        {
+          "path": "tiles/5/23/10_1.b3dm",
+          "batchIds": [
+            11
+          ]
+        },
+        {
+          "path": "tiles/5/23/10_2.b3dm",
+          "batchIds": [
+            11
+          ]
+        },
+        {
+          "path": "tiles/5/23/10_3.b3dm",
+          "batchIds": [
+            11
+          ]
+        },
+        {
+          "path": "tiles/5/23/10_4.b3dm",
+          "batchIds": [
+            11
+          ]
+        },
+        {
+          "path": "tiles/5/23/10_5.b3dm",
+          "batchIds": [
+            11
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.093Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Ministry of DJs - Pro DJ School",
+      "normalizedVenue": "ministry of djs pro dj school",
+      "canonicalVenue": "CLAYMORE PLAZA",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.83162054828252,
+        "lat": 1.3068173469291342
+      },
+      "poiId": "claymore-plaza",
+      "gmlId": "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2",
+      "acceptedGmlNames": [
+        "CLAYMORE PLAZA"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/60/27_0.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/60/27_1.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/60/27_2.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/60/27_3.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/60/27_4.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/60/27_5.b3dm",
+          "batchIds": [
+            3
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.100Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "The Gentlemens Press Studio",
+      "normalizedVenue": "the gentlemens press studio",
+      "canonicalVenue": "CIDECO INDUSTRIAL COMPLEX",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.8737016780484,
+        "lat": 1.3275267157930692
+      },
+      "poiId": "cideco-industrial-complex",
+      "gmlId": "SLA_BLDG2_23ccd5dd-a2da-4297-a905-69e6cda3f761",
+      "acceptedGmlNames": [
+        "CIDECO INDUSTRIAL COMPLEX"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/41/22_0.b3dm",
+          "batchIds": [
+            13
+          ]
+        },
+        {
+          "path": "tiles/6/41/22_1.b3dm",
+          "batchIds": [
+            13
+          ]
+        },
+        {
+          "path": "tiles/6/41/22_2.b3dm",
+          "batchIds": [
+            13
+          ]
+        },
+        {
+          "path": "tiles/6/41/22_3.b3dm",
+          "batchIds": [
+            13
+          ]
+        },
+        {
+          "path": "tiles/6/41/22_4.b3dm",
+          "batchIds": [
+            13
+          ]
+        },
+        {
+          "path": "tiles/6/41/22_5.b3dm",
+          "batchIds": [
+            13
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.107Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Rumah Kim Choo",
+      "normalizedVenue": "rumah kim choo",
+      "canonicalVenue": "RUMAH BEBE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.90448727247086,
+        "lat": 1.3058834584402714
+      },
+      "poiId": "rumah-bebe",
+      "gmlId": "SLA_BLDG2_548e0f21-cb9e-40cb-8ad3-34f01ebe7abf",
+      "acceptedGmlNames": [
+        "RUMAH BEBE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/26/1_0.b3dm",
+          "batchIds": [
+            87
+          ]
+        },
+        {
+          "path": "tiles/5/26/1_1.b3dm",
+          "batchIds": [
+            87
+          ]
+        },
+        {
+          "path": "tiles/5/26/1_2.b3dm",
+          "batchIds": [
+            87
+          ]
+        },
+        {
+          "path": "tiles/5/26/1_3.b3dm",
+          "batchIds": [
+            87
+          ]
+        },
+        {
+          "path": "tiles/5/26/1_4.b3dm",
+          "batchIds": [
+            87
+          ]
+        },
+        {
+          "path": "tiles/5/26/1_5.b3dm",
+          "batchIds": [
+            87
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.118Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Hakko Products",
+      "normalizedVenue": "hakko products",
+      "canonicalVenue": "PERFECT ONE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.87388124289113,
+        "lat": 1.328651337258212
+      },
+      "poiId": "perfect-one",
+      "gmlId": "SLA_BLDG2_584a5f39-7d6a-4806-b228-fc470f837398",
+      "acceptedGmlNames": [
+        "PERFECT ONE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/20/11_0.b3dm",
+          "batchIds": [
+            61
+          ]
+        },
+        {
+          "path": "tiles/5/20/11_1.b3dm",
+          "batchIds": [
+            61
+          ]
+        },
+        {
+          "path": "tiles/5/20/11_2.b3dm",
+          "batchIds": [
+            61
+          ]
+        },
+        {
+          "path": "tiles/5/20/11_3.b3dm",
+          "batchIds": [
+            61
+          ]
+        },
+        {
+          "path": "tiles/5/20/11_4.b3dm",
+          "batchIds": [
+            61
+          ]
+        },
+        {
+          "path": "tiles/5/20/11_5.b3dm",
+          "batchIds": [
+            61
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.130Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Artify Studio, Textile Centre, #12-07",
+      "normalizedVenue": "artify studio textile centre 12 07",
+      "canonicalVenue": "TEXTILE CENTRE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.86146008209803,
+        "lat": 1.3038219416319847
+      },
+      "poiId": "textile-centre",
+      "gmlId": "SLA_BLDG2_ce2a64ce-455f-4fcb-85ee-29856dacf0e7",
+      "acceptedGmlNames": [
+        "TEXTILE CENTRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/19/5_0.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/19/5_1.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/19/5_2.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/19/5_3.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/19/5_4.b3dm",
+          "batchIds": [
+            1
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.137Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "TAS Studio",
+      "normalizedVenue": "tas studio",
+      "canonicalVenue": "SONG LIN BUILDING",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.85873872770357,
+        "lat": 1.3063461756276058
+      },
+      "poiId": "song-lin-building",
+      "gmlId": "SLA_BLDG2_df6a0b98-a602-4211-adf3-1844bb47d267",
+      "acceptedGmlNames": [
+        "SONG LIN BUILDING"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/38/11_0.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/6/38/11_1.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/6/38/11_2.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/6/38/11_3.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/6/38/11_4.b3dm",
+          "batchIds": [
+            3
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.145Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "TCA Prologue Cafe (Tea. Coffee. Artisans)",
+      "normalizedVenue": "tca prologue cafe tea coffee artisans",
+      "canonicalVenue": "MILLENIA WALK",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.85944037199918,
+        "lat": 1.2927191446278683
+      },
+      "poiId": "millenia-walk",
+      "gmlId": "SLA_BLDG2_9d1b2d20-7be2-4f68-b0e0-6006e5a49261",
+      "acceptedGmlNames": [
+        "MILLENIA WALK"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/79/12_0.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/79/12_1.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/79/12_2.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/79/12_3.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/79/12_4.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/79/12_5.b3dm",
+          "batchIds": [
+            3
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.153Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "The Lobby Lounge, Frasers House, a Luxury Collection Hotel",
+      "normalizedVenue": "the lobby lounge frasers house a luxury collection hotel",
+      "canonicalVenue": "INTER-CONTINENTAL SINGAPORE",
+      "verifiedAddress": "80 Middle Rd, Singapore 188966",
+      "coordinates": {
+        "lng": 103.8548742657753,
+        "lat": 1.298490549744487
+      },
+      "poiId": "inter-continental-singapore",
+      "gmlId": "SLA_BLDG2_1bc57e13-54d7-41a1-addc-e7bfd1256a67",
+      "acceptedGmlNames": [
+        "INTER-CONTINENTAL SINGAPORE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/77/15_0.b3dm",
+          "batchIds": [
+            16
+          ]
+        },
+        {
+          "path": "tiles/7/77/15_1.b3dm",
+          "batchIds": [
+            16
+          ]
+        },
+        {
+          "path": "tiles/7/77/15_2.b3dm",
+          "batchIds": [
+            16
+          ]
+        },
+        {
+          "path": "tiles/7/77/15_3.b3dm",
+          "batchIds": [
+            16
+          ]
+        },
+        {
+          "path": "tiles/7/77/15_4.b3dm",
+          "batchIds": [
+            16
+          ]
+        },
+        {
+          "path": "tiles/7/77/15_5.b3dm",
+          "batchIds": [
+            16
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.160Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "UniqArts center #02-32",
+      "normalizedVenue": "uniqarts center 02 32",
+      "canonicalVenue": "ROXY SQUARE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.90406095898861,
+        "lat": 1.3043015726096299
+      },
+      "poiId": "roxy-square",
+      "gmlId": "SLA_BLDG2_e3b9b9c9-5d59-4ed7-b126-e1850e41da93",
+      "acceptedGmlNames": [
+        "ROXY SQUARE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/52/1_0.b3dm",
+          "batchIds": [
+            18
+          ]
+        },
+        {
+          "path": "tiles/6/52/1_1.b3dm",
+          "batchIds": [
+            18
+          ]
+        },
+        {
+          "path": "tiles/6/52/1_2.b3dm",
+          "batchIds": [
+            18
+          ]
+        },
+        {
+          "path": "tiles/6/52/1_3.b3dm",
+          "batchIds": [
+            18
+          ]
+        },
+        {
+          "path": "tiles/6/52/1_4.b3dm",
+          "batchIds": [
+            18
+          ]
+        },
+        {
+          "path": "tiles/6/52/1_5.b3dm",
+          "batchIds": [
+            18
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.169Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "weareSuper@imable Collective Space",
+      "normalizedVenue": "wearesuper imable collective space",
+      "canonicalVenue": "BLK E (E2I)",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.81438165844831,
+        "lat": 1.2863653629353249
+      },
+      "poiId": "blk-e-e2i",
+      "gmlId": "SLA_BLDG2_53314457-8c8b-48d1-b020-04227e577e71",
+      "acceptedGmlNames": [
+        "BLK E (E2I)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/25/6_0.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/25/6_1.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/25/6_2.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/25/6_3.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/25/6_4.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/25/6_5.b3dm",
+          "batchIds": [
+            36
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.180Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "The Capitol Jazz Club",
+      "normalizedVenue": "the capitol jazz club",
+      "canonicalVenue": "CAPITOL THEATRE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.85117758661914,
+        "lat": 1.2934758471005787
+      },
+      "poiId": "capitol-theatre",
+      "gmlId": "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45",
+      "acceptedGmlNames": [
+        "CAPITOL THEATRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/76/13_0.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/13_1.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/13_2.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/13_3.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/13_4.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/13_5.b3dm",
+          "batchIds": [
+            5
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.188Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "The Kopitiam Canvas by Mochiart Art Studio",
+      "normalizedVenue": "the kopitiam canvas by mochiart art studio",
+      "canonicalVenue": "SCAPE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.83574842041503,
+        "lat": 1.3010131553541873
+      },
+      "poiId": "scape",
+      "gmlId": "SLA_BLDG2_115253b8-cc64-46a8-b00b-8a196d8d472d",
+      "acceptedGmlNames": [
+        "SCAPE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/31/11_0.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/31/11_1.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/31/11_2.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/31/11_3.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/31/11_4.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/31/11_5.b3dm",
+          "batchIds": [
+            36
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.198Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Believer Music | Tampines Plaza 2 #01-01A",
+      "normalizedVenue": "believer music tampines plaza 2 01 01a",
+      "canonicalVenue": "TAMPINES PLAZA",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.94271348743291,
+        "lat": 1.3531581619426925
+      },
+      "poiId": "tampines-plaza",
+      "gmlId": "SLA_BLDG2_1fbd0631-f204-4d28-8c4a-3e14c538b493",
+      "acceptedGmlNames": [
+        "TAMPINES PLAZA"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/55/36_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/55/36_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/55/36_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/55/36_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/55/36_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/55/36_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.208Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Thian Hock Keng Temple",
+      "normalizedVenue": "thian hock keng temple",
+      "canonicalVenue": "THIAN HOCK KENG",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.84751036027205,
+        "lat": 1.2811022374858432
+      },
+      "poiId": "thian-hock-keng",
+      "gmlId": "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c",
+      "acceptedGmlNames": [
+        "THIAN HOCK KENG"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/73/8_0.b3dm",
+          "batchIds": [
+            42
+          ]
+        },
+        {
+          "path": "tiles/7/73/8_1.b3dm",
+          "batchIds": [
+            42
+          ]
+        },
+        {
+          "path": "tiles/7/73/8_2.b3dm",
+          "batchIds": [
+            42
+          ]
+        },
+        {
+          "path": "tiles/7/73/8_3.b3dm",
+          "batchIds": [
+            42
+          ]
+        },
+        {
+          "path": "tiles/7/73/8_4.b3dm",
+          "batchIds": [
+            42
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.216Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "THIAN HOCK KENG",
+      "normalizedVenue": "thian hock keng",
+      "canonicalVenue": "THIAN HOCK KENG",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.84751036027205,
+        "lat": 1.2811022374858432
+      },
+      "poiId": "thian-hock-keng",
+      "gmlId": "SLA_BLDG2_91075794-41f1-4195-97b0-9fb12b3dca4c",
+      "acceptedGmlNames": [
+        "THIAN HOCK KENG"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/73/8_0.b3dm",
+          "batchIds": [
+            42
+          ]
+        },
+        {
+          "path": "tiles/7/73/8_1.b3dm",
+          "batchIds": [
+            42
+          ]
+        },
+        {
+          "path": "tiles/7/73/8_2.b3dm",
+          "batchIds": [
+            42
+          ]
+        },
+        {
+          "path": "tiles/7/73/8_3.b3dm",
+          "batchIds": [
+            42
+          ]
+        },
+        {
+          "path": "tiles/7/73/8_4.b3dm",
+          "batchIds": [
+            42
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.222Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Singapore Chinese Cultural Centre Auditorium, Level 9 新加坡华族文化中心表演厅, 九楼",
+      "normalizedVenue": "singapore chinese cultural centre auditorium level 9 新加坡华族文化中心表演厅 九楼",
+      "canonicalVenue": "SINGAPORE CHINESE CULTURAL CENTRE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.84957033668435,
+        "lat": 1.2758291819866812
+      },
+      "poiId": "singapore-chinese-cultural-centre",
+      "gmlId": "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb",
+      "acceptedGmlNames": [
+        "SINGAPORE CHINESE CULTURAL CENTRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/75/5_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.229Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Kamal Arts Gallery",
+      "normalizedVenue": "kamal arts gallery",
+      "canonicalVenue": "WISMA GEYLANG SERAI",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.89676240426208,
+        "lat": 1.3164631078694682
+      },
+      "poiId": "wisma-geylang-serai",
+      "gmlId": "SLA_BLDG2_f88fb35e-5840-4c22-b240-c3255594f5a5",
+      "acceptedGmlNames": [
+        "WISMA GEYLANG SERAI"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/4/12/4_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/4/12/4_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/4/12/4_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.237Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Thow Kwang Pottery Jungle",
+      "normalizedVenue": "thow kwang pottery jungle",
+      "canonicalVenue": "THOW KWANG POTTERY JUNGLE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.69277238559934,
+        "lat": 1.353558499521706
+      },
+      "poiId": "thow-kwang-pottery-jungle",
+      "gmlId": "SLA_BLDG2_093c21de-36bc-4e29-bec2-cd24c5764074",
+      "acceptedGmlNames": [
+        "THOW KWANG POTTERY JUNGLE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/1/38_0.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/6/1/38_1.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/6/1/38_2.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/6/1/38_3.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/6/1/38_4.b3dm",
+          "batchIds": [
+            5
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.244Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "6 Bayfront Ave, Singapore 018974",
+      "normalizedVenue": "6 bayfront ave singapore 018974",
+      "canonicalVenue": "MARINA BAY SANDS (ARTSCIENCE MUSEUM)",
+      "verifiedAddress": "6 Bayfront Ave, Singapore 018974",
+      "coordinates": {
+        "lng": 103.85927402663303,
+        "lat": 1.2862040338634544
+      },
+      "poiId": "marina-bay-sands-artscience-museum",
+      "gmlId": "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e",
+      "acceptedGmlNames": [
+        "MARINA BAY SANDS (ARTSCIENCE MUSEUM)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/39/5_0.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_1.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_2.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_3.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_4.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_5.b3dm",
+          "batchIds": [
+            14
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.252Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Temasek Shophouse",
+      "normalizedVenue": "temasek shophouse",
+      "canonicalVenue": "TEMASEK SHOPHOUSE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.84648346553948,
+        "lat": 1.2990985396819563
+      },
+      "poiId": "temasek-shophouse",
+      "gmlId": "SLA_BLDG2_a7cbd4e9-2609-4d66-86d3-308c9ee6cc54",
+      "acceptedGmlNames": [
+        "TEMASEK SHOPHOUSE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/36/7_0.b3dm",
+          "batchIds": [
+            27
+          ]
+        },
+        {
+          "path": "tiles/6/36/7_1.b3dm",
+          "batchIds": [
+            27
+          ]
+        },
+        {
+          "path": "tiles/6/36/7_2.b3dm",
+          "batchIds": [
+            27
+          ]
+        },
+        {
+          "path": "tiles/6/36/7_3.b3dm",
+          "batchIds": [
+            27
+          ]
+        },
+        {
+          "path": "tiles/6/36/7_4.b3dm",
+          "batchIds": [
+            27
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.259Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Singapore Chinese Cultural Centre",
+      "normalizedVenue": "singapore chinese cultural centre",
+      "canonicalVenue": "SINGAPORE CHINESE CULTURAL CENTRE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.84957033668435,
+        "lat": 1.2758291819866812
+      },
+      "poiId": "singapore-chinese-cultural-centre",
+      "gmlId": "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb",
+      "acceptedGmlNames": [
+        "SINGAPORE CHINESE CULTURAL CENTRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/75/5_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.266Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "The Mind Synergy Centre @ Tai Seng, #05-03",
+      "normalizedVenue": "the mind synergy centre tai seng 05 03",
+      "canonicalVenue": "THE COMMERZE@IRVING",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.8864135988058,
+        "lat": 1.3362279396240475
+      },
+      "poiId": "the-commerze-irving",
+      "gmlId": "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc",
+      "acceptedGmlNames": [
+        "THE COMMERZE@IRVING"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/45/29_0.b3dm",
+          "batchIds": [
+            23
+          ]
+        },
+        {
+          "path": "tiles/6/45/29_1.b3dm",
+          "batchIds": [
+            23
+          ]
+        },
+        {
+          "path": "tiles/6/45/29_2.b3dm",
+          "batchIds": [
+            23
+          ]
+        },
+        {
+          "path": "tiles/6/45/29_3.b3dm",
+          "batchIds": [
+            23
+          ]
+        },
+        {
+          "path": "tiles/6/45/29_4.b3dm",
+          "batchIds": [
+            23
+          ]
+        },
+        {
+          "path": "tiles/6/45/29_5.b3dm",
+          "batchIds": [
+            23
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.276Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Gateway Theatre Dance Studio",
+      "normalizedVenue": "gateway theatre dance studio",
+      "canonicalVenue": "GATEWAY THEATRE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.8165752490265,
+        "lat": 1.2839708536712913
+      },
+      "poiId": "gateway-theatre",
+      "gmlId": "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5",
+      "acceptedGmlNames": [
+        "GATEWAY THEATRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/26/6_0.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/6_1.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/6_2.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/6_3.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/6_4.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/6_5.b3dm",
+          "batchIds": [
+            24
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.289Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Capitol Theatre",
+      "normalizedVenue": "capitol theatre",
+      "canonicalVenue": "CAPITOL THEATRE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.85117758661914,
+        "lat": 1.2934758471005787
+      },
+      "poiId": "capitol-theatre",
+      "gmlId": "SLA_BLDG2_866a7bdd-7a53-4de6-8512-f17bbf282a45",
+      "acceptedGmlNames": [
+        "CAPITOL THEATRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/76/13_0.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/13_1.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/13_2.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/13_3.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/13_4.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/13_5.b3dm",
+          "batchIds": [
+            5
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.297Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Happy Together (Orchard Central #04-27/28)",
+      "normalizedVenue": "happy together orchard central 04 27 28",
+      "canonicalVenue": "ORCHARD CENTRAL",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.83977110373262,
+        "lat": 1.3006384889516347
+      },
+      "poiId": "orchard-central",
+      "gmlId": "SLA_BLDG2_4f360519-d1c5-4188-b9b8-a4fde827d769",
+      "acceptedGmlNames": [
+        "ORCHARD CENTRAL"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/32/8_0.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/32/8_1.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/32/8_2.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/32/8_3.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/32/8_4.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/32/8_5.b3dm",
+          "batchIds": [
+            9
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.306Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "SAFRA Punggol",
+      "normalizedVenue": "safra punggol",
+      "canonicalVenue": "SAFRA CLUBHOUSE (PUNGGOL)",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.90619501762325,
+        "lat": 1.4102757845269558
+      },
+      "poiId": "safra-clubhouse-punggol",
+      "gmlId": "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c",
+      "acceptedGmlNames": [
+        "SAFRA CLUBHOUSE (PUNGGOL)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/52/61_0.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/52/61_1.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/52/61_2.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/52/61_3.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/52/61_4.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/52/61_5.b3dm",
+          "batchIds": [
+            9
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.314Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "SHELL DUNMAN",
+      "normalizedVenue": "shell dunman",
+      "canonicalVenue": "SHELL DUNMAN",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.90099738034162,
+        "lat": 1.309822817165285
+      },
+      "poiId": "shell-dunman",
+      "gmlId": "SLA_BLDG2_55303342-8d85-4db9-8e05-31a7f9f7fb6a",
+      "acceptedGmlNames": [
+        "SHELL DUNMAN"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/49/6_0.b3dm",
+          "batchIds": [
+            26
+          ]
+        },
+        {
+          "path": "tiles/6/49/6_1.b3dm",
+          "batchIds": [
+            26
+          ]
+        },
+        {
+          "path": "tiles/6/49/6_2.b3dm",
+          "batchIds": [
+            26
+          ]
+        },
+        {
+          "path": "tiles/6/49/6_3.b3dm",
+          "batchIds": [
+            26
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.319Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "63@UBI",
+      "normalizedVenue": "63 ubi",
+      "canonicalVenue": "63@UBI",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.89398163920904,
+        "lat": 1.3245980419563743
+      },
+      "poiId": "63-ubi",
+      "gmlId": "SLA_BLDG2_6cc5c91d-4f0f-49a4-98a7-ccc2ebe89989",
+      "acceptedGmlNames": [
+        "63@UBI"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/23/10_0.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/5/23/10_1.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/5/23/10_2.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/5/23/10_3.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/5/23/10_4.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/5/23/10_5.b3dm",
+          "batchIds": [
+            9
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.328Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Peranakan Museum",
+      "normalizedVenue": "peranakan museum",
+      "canonicalVenue": "PERANAKAN MUSEUM",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.84904934146827,
+        "lat": 1.294292363604709
+      },
+      "poiId": "peranakan-museum",
+      "gmlId": "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da",
+      "acceptedGmlNames": [
+        "PERANAKAN MUSEUM"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/37/6_0.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_1.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_2.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_3.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_4.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_5.b3dm",
+          "batchIds": [
+            21
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.337Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "PARKWAY PARADE",
+      "normalizedVenue": "parkway parade",
+      "canonicalVenue": "PARKWAY PARADE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.90528981643675,
+        "lat": 1.301401897525115
+      },
+      "poiId": "parkway-parade",
+      "gmlId": "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d",
+      "acceptedGmlNames": [
+        "PARKWAY PARADE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/52/0_0.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/52/0_1.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/52/0_2.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/52/0_3.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/52/0_4.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/52/0_5.b3dm",
+          "batchIds": [
+            9
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.345Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "SINGAPORE TYLER PRINT INSTITUTE",
+      "normalizedVenue": "singapore tyler print institute",
+      "canonicalVenue": "SINGAPORE TYLER PRINT INSTITUTE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.84026414836612,
+        "lat": 1.291049926847979
+      },
+      "poiId": "singapore-tyler-print-institute",
+      "gmlId": "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0",
+      "acceptedGmlNames": [
+        "SINGAPORE TYLER PRINT INSTITUTE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/65/12_0.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/65/12_1.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/65/12_2.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/65/12_3.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/65/12_4.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/65/12_5.b3dm",
+          "batchIds": [
+            1
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.353Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "FORT CANNING CENTRE",
+      "normalizedVenue": "fort canning centre",
+      "canonicalVenue": "FORT CANNING CENTRE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.84679682938261,
+        "lat": 1.295210191419898
+      },
+      "poiId": "fort-canning-centre",
+      "gmlId": "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0",
+      "acceptedGmlNames": [
+        "FORT CANNING CENTRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/36/6_0.b3dm",
+          "batchIds": [
+            26
+          ]
+        },
+        {
+          "path": "tiles/6/36/6_1.b3dm",
+          "batchIds": [
+            26
+          ]
+        },
+        {
+          "path": "tiles/6/36/6_2.b3dm",
+          "batchIds": [
+            26
+          ]
+        },
+        {
+          "path": "tiles/6/36/6_3.b3dm",
+          "batchIds": [
+            26
+          ]
+        },
+        {
+          "path": "tiles/6/36/6_4.b3dm",
+          "batchIds": [
+            26
+          ]
+        },
+        {
+          "path": "tiles/6/36/6_5.b3dm",
+          "batchIds": [
+            26
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.360Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "313 @ SOMERSET",
+      "normalizedVenue": "313 somerset",
+      "canonicalVenue": "313 @ SOMERSET",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.83828913679355,
+        "lat": 1.301006404707934
+      },
+      "poiId": "313-somerset",
+      "gmlId": "SLA_BLDG2_374333a2-29b9-4d7f-b7be-0dc5cd0814b9",
+      "acceptedGmlNames": [
+        "313 @ SOMERSET"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/32/8_0.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/6/32/8_1.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/6/32/8_2.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/6/32/8_3.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/6/32/8_4.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/6/32/8_5.b3dm",
+          "batchIds": [
+            3
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.367Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "CARLTON HOTEL",
+      "normalizedVenue": "carlton hotel",
+      "canonicalVenue": "CARLTON HOTEL",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.85277695561217,
+        "lat": 1.295998552884164
+      },
+      "poiId": "carlton-hotel",
+      "gmlId": "SLA_BLDG2_cd4f380d-6bc9-4ff4-b9d0-6cdf1c184e88",
+      "acceptedGmlNames": [
+        "CARLTON HOTEL"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/38/7_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/7_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/7_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/7_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.374Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "The Star Theatre, The Star Performing Arts Centre",
+      "normalizedVenue": "the star theatre the star performing arts centre",
+      "canonicalVenue": "THE STAR",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.78843736435559,
+        "lat": 1.3067969894460119
+      },
+      "poiId": "the-star",
+      "gmlId": "SLA_BLDG2_c1aa8a65-aa52-48cf-ba3d-4e54814ab9f6",
+      "acceptedGmlNames": [
+        "THE STAR"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/8/82/51_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/8/82/51_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/8/82/51_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/8/82/51_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/8/82/51_4.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.381Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Changi Chapel & Museum",
+      "normalizedVenue": "changi chapel museum",
+      "canonicalVenue": "CHANGI CHAPEL AND MUSEUM",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.97385869089895,
+        "lat": 1.362185483656241
+      },
+      "poiId": "changi-chapel-and-museum",
+      "gmlId": "SLA_BLDG2_7725a044-2429-4cf8-afd6-b0515b4ee812",
+      "acceptedGmlNames": [
+        "CHANGI CHAPEL AND MUSEUM"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/30/21_0.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/5/30/21_1.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/5/30/21_2.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/5/30/21_3.b3dm",
+          "batchIds": [
+            14
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.387Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Reflections at Bukit Chandu",
+      "normalizedVenue": "reflections at bukit chandu",
+      "canonicalVenue": "REFLECTION AT BUKIT CHANDU (OPIUM HILL)",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.79416977824226,
+        "lat": 1.279581972175609
+      },
+      "poiId": "reflection-at-bukit-chandu-opium-hill",
+      "gmlId": "SLA_BLDG2_2c8d97d3-8552-4351-93c8-65a87df9011e",
+      "acceptedGmlNames": [
+        "REFLECTION AT BUKIT CHANDU (OPIUM HILL)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/10/1_0.b3dm",
+          "batchIds": [
+            17
+          ]
+        },
+        {
+          "path": "tiles/5/10/1_1.b3dm",
+          "batchIds": [
+            17
+          ]
+        },
+        {
+          "path": "tiles/5/10/1_2.b3dm",
+          "batchIds": [
+            17
+          ]
+        },
+        {
+          "path": "tiles/5/10/1_3.b3dm",
+          "batchIds": [
+            17
+          ]
+        },
+        {
+          "path": "tiles/5/10/1_4.b3dm",
+          "batchIds": [
+            17
+          ]
+        },
+        {
+          "path": "tiles/5/10/1_5.b3dm",
+          "batchIds": [
+            17
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.395Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Victoria Concert Hall",
+      "normalizedVenue": "victoria concert hall",
+      "canonicalVenue": "VICTORIA THEATRE AND CONCERT HALL (U/C)",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.85158346753775,
+        "lat": 1.2883545097052018
+      },
+      "poiId": "victoria-theatre-and-concert-hall-u-c",
+      "gmlId": "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+      "acceptedGmlNames": [
+        "VICTORIA THEATRE AND CONCERT HALL (U/C)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/76/11_0.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_1.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_2.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_3.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_4.b3dm",
+          "batchIds": [
+            5
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.401Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Sands Theatre, Marina Bay Sands",
+      "normalizedVenue": "sands theatre marina bay sands",
+      "canonicalVenue": "MARINA BAY SANDS (MICE)",
+      "verifiedAddress": "100 Victoria St, #03-01, Singapore 188064",
+      "coordinates": {
+        "lng": 103.85835580221267,
+        "lat": 1.2823745906549533
+      },
+      "poiId": "marina-bay-sands-mice",
+      "gmlId": "SLA_BLDG2_8424544d-9df2-4930-b224-316591aac782",
+      "acceptedGmlNames": [
+        "MARINA BAY SANDS (MICE)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/39/4_0.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/39/4_1.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/39/4_2.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/39/4_3.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/39/4_4.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/39/4_5.b3dm",
+          "batchIds": [
+            9
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.408Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Singapore Chinese Cultural Centre Auditorium, 九楼, Level 9 新加坡华族文化中心表演厅",
+      "normalizedVenue": "singapore chinese cultural centre auditorium 九楼 level 9 新加坡华族文化中心表演厅",
+      "canonicalVenue": "SINGAPORE CHINESE CULTURAL CENTRE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.84957033668435,
+        "lat": 1.2758291819866812
+      },
+      "poiId": "singapore-chinese-cultural-centre",
+      "gmlId": "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb",
+      "acceptedGmlNames": [
+        "SINGAPORE CHINESE CULTURAL CENTRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/75/5_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T12:21:02.174Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:22:57.416Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "RAFFLES MARINA",
+      "normalizedVenue": "raffles marina",
+      "canonicalVenue": "RAFFLES MARINA",
+      "verifiedAddress": "10 Tuas West Drive, Singapore 638404",
+      "coordinates": {
+        "lng": 103.63536113825208,
+        "lat": 1.3420598885154371
+      },
+      "poiId": "raffles-marina",
+      "gmlId": "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe",
+      "acceptedGmlNames": [
+        "RAFFLES MARINA"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/0/15_4.b3dm",
+          "batchIds": [
+            39
+          ]
+        },
+        {
+          "path": "tiles/5/0/15_3.b3dm",
+          "batchIds": [
+            39
+          ]
+        },
+        {
+          "path": "tiles/5/0/15_2.b3dm",
+          "batchIds": [
+            39
+          ]
+        },
+        {
+          "path": "tiles/5/0/15_1.b3dm",
+          "batchIds": [
+            39
+          ]
+        },
+        {
+          "path": "tiles/5/0/15_0.b3dm",
+          "batchIds": [
+            39
+          ]
+        },
+        {
+          "path": "tiles/5/0/15_5.b3dm",
+          "batchIds": [
+            39
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-13T12:46:38.450Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T12:46:42.891Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "CHILDREN'S MUSEUM SINGAPORE",
+      "normalizedVenue": "children s museum singapore",
+      "canonicalVenue": "SINGAPORE PHILATELIC MUSEUM",
+      "verifiedAddress": "23-B Coleman Street, Singapore 179807",
+      "coordinates": {
+        "lng": 103.84871417173503,
+        "lat": 1.2928442705797234
+      },
+      "poiId": "singapore-philatelic-museum",
+      "gmlId": "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+      "acceptedGmlNames": [
+        "SINGAPORE PHILATELIC MUSEUM"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/37/6_0.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_1.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_2.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_3.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_4.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_5.b3dm",
+          "batchIds": [
+            9
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-13T13:04:44.318Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T13:04:47.871Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "TANJONG PAGAR DISTRIPARK",
+      "normalizedVenue": "tanjong pagar distripark",
+      "canonicalVenue": "TANJONG PAGAR DISTRIPARK",
+      "verifiedAddress": "39 Keppel Road, Tanjong Pagar Distripark #03-04, Singapore 089065",
+      "coordinates": {
+        "lng": 103.83664260831985,
+        "lat": 1.2718859563161569
+      },
+      "poiId": "tanjong-pagar-distripark",
+      "gmlId": "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3",
+      "acceptedGmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/31/4_4.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_3.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_2.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_1.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_0.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_5.b3dm",
+          "batchIds": [
+            2
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-13T13:32:10.942Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T13:32:14.195Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "INDIAN HERITAGE CENTRE",
+      "normalizedVenue": "indian heritage centre",
+      "canonicalVenue": "PGP BUILDING",
+      "verifiedAddress": "5 Campbell Lane, Singapore 209924",
+      "coordinates": {
+        "lng": 103.8522522697651,
+        "lat": 1.3056775669279062
+      },
+      "poiId": "pgp-building",
+      "gmlId": "SLA_BLDG2_1d51886b-d21d-49e7-b40b-14a5651cd731",
+      "acceptedGmlNames": [
+        "PGP BUILDING"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/35/10_2.b3dm",
+          "batchIds": [
+            35
+          ]
+        },
+        {
+          "path": "tiles/6/35/10_1.b3dm",
+          "batchIds": [
+            35
+          ]
+        },
+        {
+          "path": "tiles/6/35/10_0.b3dm",
+          "batchIds": [
+            35
+          ]
+        },
+        {
+          "path": "tiles/6/35/10_3.b3dm",
+          "batchIds": [
+            35
+          ]
+        },
+        {
+          "path": "tiles/6/35/10_4.b3dm",
+          "batchIds": [
+            35
+          ]
+        },
+        {
+          "path": "tiles/6/35/10_5.b3dm",
+          "batchIds": [
+            35
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-13T13:53:20.299Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T13:54:11.753Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "DRAMA CENTRE",
+      "normalizedVenue": "drama centre",
+      "canonicalVenue": "NATIONAL LIBRARY BUILDING",
+      "verifiedAddress": "100 Victoria Street Singapore 188064",
+      "coordinates": {
+        "lng": 103.85440629802106,
+        "lat": 1.297750037014743
+      },
+      "poiId": "national-library-building",
+      "gmlId": null,
+      "gmlIds": [
+        "SLA_BLDG2_f3d43df7-e313-4f49-805d-beeadc22bc2e",
+        "SLA_BLDG2_6f068875-e586-4ad3-868b-b1a52263ffa4",
+        "SLA_BLDG2_cba786f5-47bf-4e3c-b153-db06df11c68e"
+      ],
+      "acceptedGmlNames": [
+        "NATIONAL LIBRARY BUILDING"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/77/15_5.b3dm",
+          "batchIds": [
+            15,
+            14
+          ]
+        },
+        {
+          "path": "tiles/7/77/15_4.b3dm",
+          "batchIds": [
+            15,
+            14
+          ]
+        },
+        {
+          "path": "tiles/7/77/15_3.b3dm",
+          "batchIds": [
+            15,
+            14
+          ]
+        },
+        {
+          "path": "tiles/7/77/15_2.b3dm",
+          "batchIds": [
+            15,
+            14
+          ]
+        },
+        {
+          "path": "tiles/7/77/15_1.b3dm",
+          "batchIds": [
+            15,
+            14
+          ]
+        },
+        {
+          "path": "tiles/7/77/15_0.b3dm",
+          "batchIds": [
+            15,
+            14
+          ]
+        },
+        {
+          "path": "tiles/7/77/14_0.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/7/77/14_1.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/7/77/14_2.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/7/77/14_3.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/7/77/14_4.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/7/77/14_5.b3dm",
+          "batchIds": [
+            21
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-13T14:13:59.453Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:14:19.540Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "CHINATOWN HERITAGE CENTRE",
+      "normalizedVenue": "chinatown heritage centre",
+      "canonicalVenue": "CHINATOWN HERITAGE CENTRE",
+      "verifiedAddress": "48 Pagoda St, Singapore 059207",
+      "coordinates": {
+        "lng": 103.84437146082173,
+        "lat": 1.2835648869624805
+      },
+      "poiId": "chinatown-heritage-centre",
+      "gmlId": null,
+      "gmlIds": [
+        "SLA_BLDG2_db56d24a-313b-4d2f-87a9-9515b10b4687",
+        "SLA_BLDG2_deea84f2-4af4-4e59-9a5f-3501b5d82eb3",
+        "SLA_BLDG2_2815e86f-1a81-471b-9270-8c24d958220e"
+      ],
+      "acceptedGmlNames": [
+        "CHINATOWN HERITAGE CENTRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/69/10_0.b3dm",
+          "batchIds": [
+            39,
+            42,
+            45
+          ]
+        },
+        {
+          "path": "tiles/7/69/10_1.b3dm",
+          "batchIds": [
+            39,
+            42,
+            45
+          ]
+        },
+        {
+          "path": "tiles/7/69/10_2.b3dm",
+          "batchIds": [
+            39,
+            42,
+            45
+          ]
+        },
+        {
+          "path": "tiles/7/69/10_3.b3dm",
+          "batchIds": [
+            39,
+            42,
+            45
+          ]
+        },
+        {
+          "path": "tiles/7/69/10_4.b3dm",
+          "batchIds": [
+            39,
+            42,
+            45
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.096Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Cool Cats at NCO Club",
+      "normalizedVenue": "cool cats at nco club",
+      "canonicalVenue": "SOUTH BEACH",
+      "verifiedAddress": "32 Beach Road, Singapore 189764",
+      "coordinates": {
+        "lng": 103.85511351811824,
+        "lat": 1.2941524356691765
+      },
+      "poiId": "south-beach",
+      "gmlId": "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+      "gmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6"
+      ],
+      "acceptedGmlNames": [
+        "SOUTH BEACH"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/38/6_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_4.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_5.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.111Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Believer Music | Velocity@Novena Square #02-56",
+      "normalizedVenue": "believer music velocity novena square 02 56",
+      "canonicalVenue": "VELOCITY @ NOVENA SQUARE",
+      "verifiedAddress": "238 Thomson Road #02-56, Singapore 307683",
+      "coordinates": {
+        "lng": 103.84383128630344,
+        "lat": 1.319950541615593
+      },
+      "poiId": "velocity-novena-square",
+      "gmlId": "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35",
+      "gmlIds": [
+        "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35"
+      ],
+      "acceptedGmlNames": [
+        "VELOCITY @ NOVENA SQUARE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/17/9_0.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/17/9_1.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/17/9_2.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/17/9_3.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/17/9_4.b3dm",
+          "batchIds": [
+            1
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.120Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Esplanade Box Office and Visitor Centre",
+      "normalizedVenue": "esplanade box office and visitor centre",
+      "canonicalVenue": "ESPLANADE - THEATRES ON THE BAY",
+      "verifiedAddress": "1 Esplanade Drive, Singapore 038981",
+      "coordinates": {
+        "lng": 103.85532007007397,
+        "lat": 1.2898528657029187
+      },
+      "poiId": "esplanade-theatres-on-the-bay",
+      "gmlId": "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "acceptedGmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/78/12_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.130Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "TheArtHaus Katong Square",
+      "normalizedVenue": "thearthaus katong square",
+      "canonicalVenue": "KATONG SQUARE",
+      "verifiedAddress": "88 East Coast Road, #02-09, Singapore 423371",
+      "coordinates": {
+        "lng": 103.9046422889341,
+        "lat": 1.3048194212996436
+      },
+      "poiId": "katong-square",
+      "gmlId": "SLA_BLDG2_c04aa71b-82d8-4431-b802-d6d8e9748b40",
+      "gmlIds": [
+        "SLA_BLDG2_c04aa71b-82d8-4431-b802-d6d8e9748b40"
+      ],
+      "acceptedGmlNames": [
+        "KATONG SQUARE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/52/1_0.b3dm",
+          "batchIds": [
+            22
+          ]
+        },
+        {
+          "path": "tiles/6/52/1_1.b3dm",
+          "batchIds": [
+            22
+          ]
+        },
+        {
+          "path": "tiles/6/52/1_2.b3dm",
+          "batchIds": [
+            22
+          ]
+        },
+        {
+          "path": "tiles/6/52/1_3.b3dm",
+          "batchIds": [
+            22
+          ]
+        },
+        {
+          "path": "tiles/6/52/1_4.b3dm",
+          "batchIds": [
+            22
+          ]
+        },
+        {
+          "path": "tiles/6/52/1_5.b3dm",
+          "batchIds": [
+            22
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.139Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Believer Music | One Commonwealth #06-05",
+      "normalizedVenue": "believer music one commonwealth 06 05",
+      "canonicalVenue": "ONE COMMONWEALTH",
+      "verifiedAddress": "1 Commonwealth Lane #06-05, Singapore 149544",
+      "coordinates": {
+        "lng": 103.79676977856437,
+        "lat": 1.304403518047924
+      },
+      "poiId": "one-commonwealth",
+      "gmlId": "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12",
+      "gmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "acceptedGmlNames": [
+        "ONE COMMONWEALTH"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/21/12_0.b3dm",
+          "batchIds": [
+            10
+          ]
+        },
+        {
+          "path": "tiles/6/21/12_1.b3dm",
+          "batchIds": [
+            10
+          ]
+        },
+        {
+          "path": "tiles/6/21/12_2.b3dm",
+          "batchIds": [
+            10
+          ]
+        },
+        {
+          "path": "tiles/6/21/12_3.b3dm",
+          "batchIds": [
+            10
+          ]
+        },
+        {
+          "path": "tiles/6/21/12_4.b3dm",
+          "batchIds": [
+            10
+          ]
+        },
+        {
+          "path": "tiles/6/21/12_5.b3dm",
+          "batchIds": [
+            10
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.148Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Sasha & Lulu Atelier @ Woods Square Solo 1 #04-52",
+      "normalizedVenue": "sasha lulu atelier woods square solo 1 04 52",
+      "canonicalVenue": "WOODS SQUARE",
+      "verifiedAddress": "10 Woodlands Square #04-52, Singapore 737714",
+      "coordinates": {
+        "lng": 103.78594347618994,
+        "lat": 1.4351556332485083
+      },
+      "poiId": "woods-square",
+      "gmlId": "SLA_BLDG2_ff4db59a-8250-4ff9-a465-7df2053d68c9",
+      "gmlIds": [
+        "SLA_BLDG2_ff4db59a-8250-4ff9-a465-7df2053d68c9"
+      ],
+      "acceptedGmlNames": [
+        "WOODS SQUARE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/16/56_0.b3dm",
+          "batchIds": [
+            16
+          ]
+        },
+        {
+          "path": "tiles/6/16/56_1.b3dm",
+          "batchIds": [
+            16
+          ]
+        },
+        {
+          "path": "tiles/6/16/56_2.b3dm",
+          "batchIds": [
+            16
+          ]
+        },
+        {
+          "path": "tiles/6/16/56_3.b3dm",
+          "batchIds": [
+            16
+          ]
+        },
+        {
+          "path": "tiles/6/16/56_4.b3dm",
+          "batchIds": [
+            16
+          ]
+        },
+        {
+          "path": "tiles/6/16/56_5.b3dm",
+          "batchIds": [
+            16
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.160Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "City Sprouts Punggol Greenhouse Plot A13",
+      "normalizedVenue": "city sprouts punggol greenhouse plot a13",
+      "canonicalVenue": "PUNGGOL NEIGHBOURHOOD POLICE CENTRE",
+      "verifiedAddress": "50 Punggol East, Singapore 828826",
+      "coordinates": {
+        "lng": 103.91687927680823,
+        "lat": 1.3941864165028381
+      },
+      "poiId": "punggol-neighbourhood-police-centre",
+      "gmlId": "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821",
+      "gmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "acceptedGmlNames": [
+        "PUNGGOL NEIGHBOURHOOD POLICE CENTRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/27/28_0.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/5/27/28_1.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/5/27/28_2.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/5/27/28_3.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/5/27/28_4.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/5/27/28_5.b3dm",
+          "batchIds": [
+            6
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.170Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Raffles Marina near Lighthouse",
+      "normalizedVenue": "raffles marina near lighthouse",
+      "canonicalVenue": "RAFFLES MARINA",
+      "verifiedAddress": "10 Tuas West Drive, Singapore 638404",
+      "coordinates": {
+        "lng": 103.63564449273957,
+        "lat": 1.3433679037951562
+      },
+      "poiId": "raffles-marina",
+      "gmlId": "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c",
+      "gmlIds": [
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
+      ],
+      "acceptedGmlNames": [
+        "RAFFLES MARINA"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/0/31_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/0/31_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/0/31_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/0/31_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/0/31_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/0/31_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.179Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Imbiah Lookout, Sentosa",
+      "normalizedVenue": "imbiah lookout sentosa",
+      "canonicalVenue": "SENTOSA DEVELOPMENT CORPORATION",
+      "verifiedAddress": "51B Imbiah Road, Sentosa 099708",
+      "coordinates": {
+        "lng": 103.82801062504481,
+        "lat": 1.24850196384833
+      },
+      "poiId": "sentosa-development-corporation",
+      "gmlId": "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290",
+      "gmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "acceptedGmlNames": [
+        "SENTOSA DEVELOPMENT CORPORATION"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/14/1_0.b3dm",
+          "batchIds": [
+            11
+          ]
+        },
+        {
+          "path": "tiles/5/14/1_1.b3dm",
+          "batchIds": [
+            11
+          ]
+        },
+        {
+          "path": "tiles/5/14/1_2.b3dm",
+          "batchIds": [
+            11
+          ]
+        },
+        {
+          "path": "tiles/5/14/1_3.b3dm",
+          "batchIds": [
+            11
+          ]
+        },
+        {
+          "path": "tiles/5/14/1_4.b3dm",
+          "batchIds": [
+            11
+          ]
+        },
+        {
+          "path": "tiles/5/14/1_5.b3dm",
+          "batchIds": [
+            11
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.191Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Marina South Pier (Meeting Point)",
+      "normalizedVenue": "marina south pier meeting point",
+      "canonicalVenue": "MARINA SOUTH PIER MRT STATION",
+      "verifiedAddress": "31 Marina Coastal Drive, Singapore 018988",
+      "coordinates": {
+        "lng": 103.863406578479,
+        "lat": 1.2720678880119793
+      },
+      "poiId": "marina-south-pier-mrt-station",
+      "gmlId": "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4",
+      "gmlIds": [
+        "SLA_BLDG2_ad9dc410-f983-4c8a-866d-eb9f7239afa4"
+      ],
+      "acceptedGmlNames": [
+        "MARINA SOUTH PIER MRT STATION"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/20/0_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_4.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_5.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.200Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Scentopia 36 Siloso Beach Walk Singapore",
+      "normalizedVenue": "scentopia 36 siloso beach walk singapore",
+      "canonicalVenue": "SILOSO BEACH RESORT",
+      "verifiedAddress": "36 Siloso Beach Walk, Singapore 099007",
+      "coordinates": {
+        "lng": 103.81465296124205,
+        "lat": 1.2544850681946629
+      },
+      "poiId": "siloso-beach-resort",
+      "gmlId": "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd",
+      "gmlIds": [
+        "SLA_BLDG2_40bfea2d-8c38-4829-ac6f-387660b076cd"
+      ],
+      "acceptedGmlNames": [
+        "SILOSO BEACH RESORT"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/12/0_0.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/5/12/0_1.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/5/12/0_2.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/5/12/0_3.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/5/12/0_4.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/5/12/0_5.b3dm",
+          "batchIds": [
+            2
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.210Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Esplanade Recital Studio",
+      "normalizedVenue": "esplanade recital studio",
+      "canonicalVenue": "ESPLANADE - THEATRES ON THE BAY",
+      "verifiedAddress": "1 Esplanade Drive, Singapore 038981",
+      "coordinates": {
+        "lng": 103.85532007007397,
+        "lat": 1.2898528657029187
+      },
+      "poiId": "esplanade-theatres-on-the-bay",
+      "gmlId": "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "acceptedGmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/78/12_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.220Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "BISHAN GREEN",
+      "normalizedVenue": "bishan green",
+      "canonicalVenue": "BISHAN GREEN",
+      "verifiedAddress": "152 Bishan Street 11, Singapore 570152",
+      "coordinates": {
+        "lng": 103.85464618562368,
+        "lat": 1.345545011825183
+      },
+      "poiId": "bishan-green",
+      "gmlId": "SLA_BLDG2_7884e82c-b7f1-4d64-9c37-46a31e9a7eb7",
+      "gmlIds": [
+        "SLA_BLDG2_7884e82c-b7f1-4d64-9c37-46a31e9a7eb7"
+      ],
+      "acceptedGmlNames": [
+        "BISHAN GREEN"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/35/32_0.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/35/32_1.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/35/32_2.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/35/32_3.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/35/32_4.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/6/35/32_5.b3dm",
+          "batchIds": [
+            9
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.233Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "CITY HALL MRT STATION",
+      "normalizedVenue": "city hall mrt station",
+      "canonicalVenue": "RAFFLES HOTEL (1886)",
+      "verifiedAddress": "1 Beach Road, Singapore 189673",
+      "coordinates": {
+        "lng": 103.8543591714802,
+        "lat": 1.2948849000552567
+      },
+      "poiId": "raffles-hotel-1886",
+      "gmlId": "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da",
+      "gmlIds": [
+        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+      ],
+      "acceptedGmlNames": [
+        "RAFFLES HOTEL (1886)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/38/6_0.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_1.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_2.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_3.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_4.b3dm",
+          "batchIds": [
+            5
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_5.b3dm",
+          "batchIds": [
+            5
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.242Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "CHANGI POINT FERRY TERMINAL",
+      "normalizedVenue": "changi point ferry terminal",
+      "canonicalVenue": "CHANGI POINT FERRY TERMINAL",
+      "verifiedAddress": "51 Lorong Bekukong, Singapore 499172",
+      "coordinates": {
+        "lng": 103.98760310134976,
+        "lat": 1.3908895869539188
+      },
+      "poiId": "changi-point-ferry-terminal",
+      "gmlId": "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b",
+      "gmlIds": [
+        "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b"
+      ],
+      "acceptedGmlNames": [
+        "CHANGI POINT FERRY TERMINAL"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/31/29_0.b3dm",
+          "batchIds": [
+            33
+          ]
+        },
+        {
+          "path": "tiles/5/31/29_1.b3dm",
+          "batchIds": [
+            33
+          ]
+        },
+        {
+          "path": "tiles/5/31/29_2.b3dm",
+          "batchIds": [
+            33
+          ]
+        },
+        {
+          "path": "tiles/5/31/29_3.b3dm",
+          "batchIds": [
+            33
+          ]
+        },
+        {
+          "path": "tiles/5/31/29_4.b3dm",
+          "batchIds": [
+            33
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.251Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "NATIONAL COMMUNITY LEADERSHIP INSTITUTE",
+      "normalizedVenue": "national community leadership institute",
+      "canonicalVenue": "NATIONAL COMMUNITY LEADERSHIP INSTITUTE",
+      "verifiedAddress": "70 South Buona Vista Road, Singapore 118176",
+      "coordinates": {
+        "lng": 103.78829031025937,
+        "lat": 1.2830358484389668
+      },
+      "poiId": "national-community-leadership-institute",
+      "gmlId": "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f",
+      "gmlIds": [
+        "SLA_BLDG2_d11827b1-88f6-4e86-b3f0-31d860cf435f"
+      ],
+      "acceptedGmlNames": [
+        "NATIONAL COMMUNITY LEADERSHIP INSTITUTE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/19/5_0.b3dm",
+          "batchIds": [
+            35
+          ]
+        },
+        {
+          "path": "tiles/6/19/5_1.b3dm",
+          "batchIds": [
+            35
+          ]
+        },
+        {
+          "path": "tiles/6/19/5_2.b3dm",
+          "batchIds": [
+            35
+          ]
+        },
+        {
+          "path": "tiles/6/19/5_3.b3dm",
+          "batchIds": [
+            35
+          ]
+        },
+        {
+          "path": "tiles/6/19/5_4.b3dm",
+          "batchIds": [
+            35
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.259Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "SINGAPORE ART MUSEUM (TANJONG PAGAR DISTRIPARK)",
+      "normalizedVenue": "singapore art museum tanjong pagar distripark",
+      "canonicalVenue": "TANJONG PAGAR DISTRIPARK",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.83664260831985,
+        "lat": 1.2718859563161569
+      },
+      "poiId": "tanjong-pagar-distripark",
+      "gmlId": "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3",
+      "gmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "acceptedGmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/31/4_0.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_1.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_2.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_3.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_4.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_5.b3dm",
+          "batchIds": [
+            2
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.271Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "SINGAPORE MANAGEMENT UNIVERSITY (SCHOOL OF ACCOUNTANCY)",
+      "normalizedVenue": "singapore management university school of accountancy",
+      "canonicalVenue": "SINGAPORE MANAGEMENT UNIVERSITY",
+      "verifiedAddress": "ONALU Bagel Haús: 60 Stamford Rd, #01-11, Singapore 178900",
+      "coordinates": {
+        "lng": 103.84973498388698,
+        "lat": 1.2957630175515251
+      },
+      "poiId": "singapore-management-university",
+      "gmlId": "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2",
+      "gmlIds": [
+        "SLA_BLDG2_e8144000-04bb-4639-82b4-c1c930ee3de2"
+      ],
+      "acceptedGmlNames": [
+        "SINGAPORE MANAGEMENT UNIVERSITY"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/37/7_0.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/6/37/7_1.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/6/37/7_2.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/6/37/7_3.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/6/37/7_4.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/6/37/7_5.b3dm",
+          "batchIds": [
+            19
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.286Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "CHINATOWN COMPLEX",
+      "normalizedVenue": "chinatown complex",
+      "canonicalVenue": "CHINATOWN HERITAGE CENTRE",
+      "verifiedAddress": "48 Pagoda Street Singapore 059207",
+      "coordinates": {
+        "lng": 103.84437146082173,
+        "lat": 1.2835648869624805
+      },
+      "poiId": "chinatown-heritage-centre",
+      "gmlId": null,
+      "gmlIds": [
+        "SLA_BLDG2_db56d24a-313b-4d2f-87a9-9515b10b4687",
+        "SLA_BLDG2_deea84f2-4af4-4e59-9a5f-3501b5d82eb3",
+        "SLA_BLDG2_2815e86f-1a81-471b-9270-8c24d958220e"
+      ],
+      "acceptedGmlNames": [
+        "CHINATOWN HERITAGE CENTRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/69/10_0.b3dm",
+          "batchIds": [
+            39,
+            42,
+            45
+          ]
+        },
+        {
+          "path": "tiles/7/69/10_1.b3dm",
+          "batchIds": [
+            39,
+            42,
+            45
+          ]
+        },
+        {
+          "path": "tiles/7/69/10_2.b3dm",
+          "batchIds": [
+            39,
+            42,
+            45
+          ]
+        },
+        {
+          "path": "tiles/7/69/10_3.b3dm",
+          "batchIds": [
+            39,
+            42,
+            45
+          ]
+        },
+        {
+          "path": "tiles/7/69/10_4.b3dm",
+          "batchIds": [
+            39,
+            42,
+            45
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.293Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "ASIAN CIVILISATIONS MUSEUM",
+      "normalizedVenue": "asian civilisations museum",
+      "canonicalVenue": "EMPRESS PLACE BUILDING",
+      "verifiedAddress": "1 Empress Place Singapore 179555",
+      "coordinates": {
+        "lng": 103.85141343750463,
+        "lat": 1.2874487009217126
+      },
+      "poiId": "empress-place-building",
+      "gmlId": "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
+      "gmlIds": [
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "acceptedGmlNames": [
+        "EMPRESS PLACE BUILDING"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/76/11_0.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_1.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_2.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_3.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_4.b3dm",
+          "batchIds": [
+            6
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.301Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Esplanade Annexe Studio",
+      "normalizedVenue": "esplanade annexe studio",
+      "canonicalVenue": "ESPLANADE - THEATRES ON THE BAY",
+      "verifiedAddress": "1 Esplanade Drive, Singapore 038981",
+      "coordinates": {
+        "lng": 103.85532007007397,
+        "lat": 1.2898528657029187
+      },
+      "poiId": "esplanade-theatres-on-the-bay",
+      "gmlId": "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "acceptedGmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/78/12_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.309Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Meeting point: Box Office / Information Counter",
+      "normalizedVenue": "meeting point box office information counter",
+      "canonicalVenue": "ESPLANADE - THEATRES ON THE BAY",
+      "verifiedAddress": "1 Esplanade Drive, Singapore 038981",
+      "coordinates": {
+        "lng": 103.85532007007397,
+        "lat": 1.2898528657029187
+      },
+      "poiId": "esplanade-theatres-on-the-bay",
+      "gmlId": "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "acceptedGmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/78/12_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.318Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "GILLMAN BARRACKS",
+      "normalizedVenue": "gillman barracks",
+      "canonicalVenue": "GILLMAN BARRACKS",
+      "verifiedAddress": "22 LOCK ROAD #01-34 GILLMAN BARRACKS, SINGAPORE 108939",
+      "coordinates": {
+        "lng": 103.80512389849707,
+        "lat": 1.2792824258249862
+      },
+      "poiId": "gillman-barracks",
+      "gmlId": "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f",
+      "gmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "acceptedGmlNames": [
+        "GILLMAN BARRACKS"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/11/1_0.b3dm",
+          "batchIds": [
+            15
+          ]
+        },
+        {
+          "path": "tiles/5/11/1_1.b3dm",
+          "batchIds": [
+            15
+          ]
+        },
+        {
+          "path": "tiles/5/11/1_2.b3dm",
+          "batchIds": [
+            15
+          ]
+        },
+        {
+          "path": "tiles/5/11/1_3.b3dm",
+          "batchIds": [
+            15
+          ]
+        },
+        {
+          "path": "tiles/5/11/1_4.b3dm",
+          "batchIds": [
+            15
+          ]
+        },
+        {
+          "path": "tiles/5/11/1_5.b3dm",
+          "batchIds": [
+            15
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.330Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Esplanade Theatre",
+      "normalizedVenue": "esplanade theatre",
+      "canonicalVenue": "ESPLANADE - THEATRES ON THE BAY",
+      "verifiedAddress": "1 Esplanade Drive, Singapore 038981",
+      "coordinates": {
+        "lng": 103.85532007007397,
+        "lat": 1.2898528657029187
+      },
+      "poiId": "esplanade-theatres-on-the-bay",
+      "gmlId": "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "acceptedGmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/78/12_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-13T14:20:38.628Z"
+        }
+      ],
+      "verifiedAt": "2026-07-13T14:21:03.338Z"
+    }
+  ]
+}

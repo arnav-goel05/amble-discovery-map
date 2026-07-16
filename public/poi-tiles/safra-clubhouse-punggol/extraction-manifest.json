@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "safra-clubhouse-punggol",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:06.614Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/52/61_0.b3dm",
+      "sourceSha256": "007991b048aee9a436279cb846ec53c70cc094c60fcbf6ff51b2f1c629a8ff70",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "gmlNames": [
+        "SAFRA CLUBHOUSE (PUNGGOL)"
+      ],
+      "poiFile": "61_0.b3dm",
+      "poiSha256": "8afaf244a6403616e237a650004834d3054e3c0cdeb0e98d2289703d9fe5f706",
+      "poiTriangles": 3996,
+      "backgroundFile": "optimized-tiles/6/52/61_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "backgroundSha256": "f84691e4147ce9aecc0ef7bd8c4ae6ca41d1467705b6242d4fcc134d5249963f",
+      "backgroundTriangles": 13460
+    },
+    {
+      "sourceTile": "tiles/6/52/61_1.b3dm",
+      "sourceSha256": "0cd176b1aad8baf73b5bcc73ee76812e5b98f6ba1e1729c8bb80ec97e3ebedea",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "gmlNames": [
+        "SAFRA CLUBHOUSE (PUNGGOL)"
+      ],
+      "poiFile": "61_1.b3dm",
+      "poiSha256": "c38a69e73b4684f7952732e032e67e19249fbcef90bea4fccdf63c5f5a67db1e",
+      "poiTriangles": 3996,
+      "backgroundFile": "optimized-tiles/6/52/61_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "backgroundSha256": "f4343291735300590274f01e63287e8dce4e9dc1a44d099981e70d63e0020bf8",
+      "backgroundTriangles": 13460
+    },
+    {
+      "sourceTile": "tiles/6/52/61_2.b3dm",
+      "sourceSha256": "71ea2284bbf38dab818477cf6b48e41b84c6ce0bf203d86966a87ef2b2902f2c",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "gmlNames": [
+        "SAFRA CLUBHOUSE (PUNGGOL)"
+      ],
+      "poiFile": "61_2.b3dm",
+      "poiSha256": "ed2b8ab6fe862d47a5bd88fccbb05ede0fcabdba4393f4fc577ae1b19a9a223e",
+      "poiTriangles": 3996,
+      "backgroundFile": "optimized-tiles/6/52/61_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "backgroundSha256": "1628c995f2ab4f6e1d21107a7d9984bc1869e3491cf7b12bfabf961407320002",
+      "backgroundTriangles": 13460
+    },
+    {
+      "sourceTile": "tiles/6/52/61_3.b3dm",
+      "sourceSha256": "a2f626ac63406ef0db2171417da728e3e834bb5e5fdc13904bda41f5510f6a57",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "gmlNames": [
+        "SAFRA CLUBHOUSE (PUNGGOL)"
+      ],
+      "poiFile": "61_3.b3dm",
+      "poiSha256": "ddfe79e8395668a245fd1ab0f227b7ab4fe85612066dd7dcedfe6d52a15e2d55",
+      "poiTriangles": 3996,
+      "backgroundFile": "optimized-tiles/6/52/61_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "backgroundSha256": "95350865388057e462a44f40de1d4a1c5fa8c2da0f687b4738c5cd7a4b607fa1",
+      "backgroundTriangles": 13460
+    },
+    {
+      "sourceTile": "tiles/6/52/61_4.b3dm",
+      "sourceSha256": "85d0108ec83cd993e4721c25581cc9190ed875acdb1c19df41e1dba2a370e7bf",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "gmlNames": [
+        "SAFRA CLUBHOUSE (PUNGGOL)"
+      ],
+      "poiFile": "61_4.b3dm",
+      "poiSha256": "12a64fea24fb3765398b7eef33dc6ffcd7a231ea9f183012f168641141d27962",
+      "poiTriangles": 3996,
+      "backgroundFile": "optimized-tiles/6/52/61_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "backgroundSha256": "aa0bedcfda3503d105e3a1a2e64de406b9d458fc671e343512200bcce0f76a9a",
+      "backgroundTriangles": 13460
+    },
+    {
+      "sourceTile": "tiles/6/52/61_5.b3dm",
+      "sourceSha256": "ab08420d724139b65ad92f76cdfef50e70726a3e486a7a81938ab8764abc739e",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "gmlNames": [
+        "SAFRA CLUBHOUSE (PUNGGOL)"
+      ],
+      "poiFile": "61_5.b3dm",
+      "poiSha256": "4c8d3ccc7fa979f907695cfd74df641fd0f0d81fba1d595c43a55656ba3b3285",
+      "poiTriangles": 3996,
+      "backgroundFile": "optimized-tiles/6/52/61_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_62879231-c985-4803-9d22-d56becd35d5c"
+      ],
+      "backgroundSha256": "2fd8b1a869e549c7257dc8872ce73a04f93d3922ed37ec8bebd2e4a8d46f5f19",
+      "backgroundTriangles": 13460
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "the-shoppes-at-marina-bay-sands",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:03.971Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/4/9/1_0.b3dm",
+      "sourceSha256": "756625d270d8da98a0f8b5ce51abc3164552fca8a21b941ef713f1088961a989",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e33331a5-741c-41d1-b700-4fe77186a470"
+      ],
+      "gmlNames": [
+        "THE SHOPPES AT MARINA BAY SANDS"
+      ],
+      "poiFile": "1_0.b3dm",
+      "poiSha256": "505fa524fc6875b2fee2de7e96337ed5c5df66e6e6e8fbf296834428d52994c9",
+      "poiTriangles": 13644,
+      "backgroundFile": "optimized-tiles/4/9/1_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e33331a5-741c-41d1-b700-4fe77186a470"
+      ],
+      "backgroundSha256": "bbfe9e3fce5e87f4240dee522b857f49d494add506557d1e51cb91123506463b",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/4/9/1_1.b3dm",
+      "sourceSha256": "4f86d8b5573608886c3ede25108e4c9937522564dab6debfc5b0f9ec48e4e2d2",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e33331a5-741c-41d1-b700-4fe77186a470"
+      ],
+      "gmlNames": [
+        "THE SHOPPES AT MARINA BAY SANDS"
+      ],
+      "poiFile": "1_1.b3dm",
+      "poiSha256": "c063e9739acbeeac095fec96c1e166c7dcf1b4a28da12e8dc786ac3de5293baf",
+      "poiTriangles": 13644,
+      "backgroundFile": "optimized-tiles/4/9/1_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e33331a5-741c-41d1-b700-4fe77186a470"
+      ],
+      "backgroundSha256": "bbfe9e3fce5e87f4240dee522b857f49d494add506557d1e51cb91123506463b",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/4/9/1_2.b3dm",
+      "sourceSha256": "3d780937d138127c479d90031ffc65a1f0949d9c7bc003b06f7a81e6f4bf9298",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e33331a5-741c-41d1-b700-4fe77186a470"
+      ],
+      "gmlNames": [
+        "THE SHOPPES AT MARINA BAY SANDS"
+      ],
+      "poiFile": "1_2.b3dm",
+      "poiSha256": "9f60dd071048333f5a518578ac65e1dde6faded4ea243c37ae66f1188da05d14",
+      "poiTriangles": 13644,
+      "backgroundFile": "optimized-tiles/4/9/1_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e33331a5-741c-41d1-b700-4fe77186a470"
+      ],
+      "backgroundSha256": "bbfe9e3fce5e87f4240dee522b857f49d494add506557d1e51cb91123506463b",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/4/9/1_3.b3dm",
+      "sourceSha256": "4c744a7daf16dbf95e6b333454e5df45a13df5d663bd2be208d6f7891e37a254",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e33331a5-741c-41d1-b700-4fe77186a470"
+      ],
+      "gmlNames": [
+        "THE SHOPPES AT MARINA BAY SANDS"
+      ],
+      "poiFile": "1_3.b3dm",
+      "poiSha256": "8bcf59a8bd10bb6d24d101b120e841de7a4be17647ff55b2a4001a9d5c10ee79",
+      "poiTriangles": 13644,
+      "backgroundFile": "optimized-tiles/4/9/1_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e33331a5-741c-41d1-b700-4fe77186a470"
+      ],
+      "backgroundSha256": "bbfe9e3fce5e87f4240dee522b857f49d494add506557d1e51cb91123506463b",
+      "backgroundTriangles": 0
+    }
+  ]
+}

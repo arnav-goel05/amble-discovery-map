@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "fort-canning-centre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:07.392Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/36/6_0.b3dm",
+      "sourceSha256": "3c4f2060cf6ffed19b0b4d5b73932761419b4b64ab4a3e54815283c4bc49b6db",
+      "originalBatchIds": [
+        26
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "gmlNames": [
+        "FORT CANNING CENTRE"
+      ],
+      "poiFile": "6_0.b3dm",
+      "poiSha256": "cee77f0b6058c07293941380b8a8e177353fd6f249ad709fec9124916e4adcb7",
+      "poiTriangles": 1352,
+      "backgroundFile": "optimized-tiles/6/36/6_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "482420f281563b638c613921143d04eebd349fb3cef1680f7e5f092f471f1280",
+      "backgroundTriangles": 8763
+    },
+    {
+      "sourceTile": "tiles/6/36/6_1.b3dm",
+      "sourceSha256": "ad818818acb5b3bc8f9e416388d0ec7e13c12fccffe32041de761158d655d139",
+      "originalBatchIds": [
+        26
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "gmlNames": [
+        "FORT CANNING CENTRE"
+      ],
+      "poiFile": "6_1.b3dm",
+      "poiSha256": "aa06902ab84b0b8802aeec8ea1a7ca989601d31db0a3b3eba9cd4d71312d7253",
+      "poiTriangles": 1352,
+      "backgroundFile": "optimized-tiles/6/36/6_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "4fb88a44df29ca945a54f249879b9e5cffe3db6600371e7a95c38b0d98b020ab",
+      "backgroundTriangles": 8763
+    },
+    {
+      "sourceTile": "tiles/6/36/6_2.b3dm",
+      "sourceSha256": "4cc46c31abddec831e5d08bb33565b6d57c4fb2f284492ef7776b97df6efe212",
+      "originalBatchIds": [
+        26
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "gmlNames": [
+        "FORT CANNING CENTRE"
+      ],
+      "poiFile": "6_2.b3dm",
+      "poiSha256": "044edd864928ba8d34203bc163056acd098fe6e91abf4f64430151e449935cb3",
+      "poiTriangles": 1352,
+      "backgroundFile": "optimized-tiles/6/36/6_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "b1c2f476499b5e0b536eceaec77d614b901c432674ee40998f34bbe685ff75ec",
+      "backgroundTriangles": 8763
+    },
+    {
+      "sourceTile": "tiles/6/36/6_3.b3dm",
+      "sourceSha256": "0b6bed042ee6ea03cc403669fc8af19d69403eda021ec7b2d540497e34b1e785",
+      "originalBatchIds": [
+        26
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "gmlNames": [
+        "FORT CANNING CENTRE"
+      ],
+      "poiFile": "6_3.b3dm",
+      "poiSha256": "1245ea658639751104281f9226e490c04cb5271a8e55f3580e6f1dae75c9168f",
+      "poiTriangles": 1352,
+      "backgroundFile": "optimized-tiles/6/36/6_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "6ec5b35388c102d93772d80db734e4147d3d9bbebcd60447e17a9df486b60170",
+      "backgroundTriangles": 8763
+    },
+    {
+      "sourceTile": "tiles/6/36/6_4.b3dm",
+      "sourceSha256": "307df9365f46853b71e174d70e5fcd9fdd0f55226065d934d3992f7e9dfd28a7",
+      "originalBatchIds": [
+        26
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "gmlNames": [
+        "FORT CANNING CENTRE"
+      ],
+      "poiFile": "6_4.b3dm",
+      "poiSha256": "7db15b95ea8dd522e7449e1966f374a0389ef981fb3e19af08cb308499cd3232",
+      "poiTriangles": 1352,
+      "backgroundFile": "optimized-tiles/6/36/6_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "80f505b48b6c536d6101c1b8a5a96ebc03d6741c00cb3113e7ff128e20d4a0ca",
+      "backgroundTriangles": 8763
+    },
+    {
+      "sourceTile": "tiles/6/36/6_5.b3dm",
+      "sourceSha256": "fef332cd27bcb47ca9854d9a4c8eeaf56c1c0a0fee4fb89f94108b86ec28f8c4",
+      "originalBatchIds": [
+        26
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "gmlNames": [
+        "FORT CANNING CENTRE"
+      ],
+      "poiFile": "6_5.b3dm",
+      "poiSha256": "1a7d1af83b851857ce7574e6bb772055a69e196d71b0e1f51687a9e157c9d265",
+      "poiTriangles": 1352,
+      "backgroundFile": "optimized-tiles/6/36/6_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "d137d55eb06339ef9c46197174440e03e3d9e780820ece13d9e0f87bb6c2292b",
+      "backgroundTriangles": 8763
+    }
+  ]
+}

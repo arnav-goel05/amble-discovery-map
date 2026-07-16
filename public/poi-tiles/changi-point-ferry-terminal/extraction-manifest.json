@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "changi-point-ferry-terminal",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:09.849Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/31/29_0.b3dm",
+      "sourceSha256": "584bad69858f50df93a7e61740005b6609e7bbfb1277a717f7ae4ce886b832b2",
+      "originalBatchIds": [
+        33
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b"
+      ],
+      "gmlNames": [
+        "CHANGI POINT FERRY TERMINAL"
+      ],
+      "poiFile": "29_0.b3dm",
+      "poiSha256": "2550ce2febae88f6710ac9979cea0cae66bb9a8dbb9ec6ebfbf903246e5c8f5d",
+      "poiTriangles": 208,
+      "backgroundFile": "optimized-tiles/5/31/29_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b"
+      ],
+      "backgroundSha256": "109a0df3e717af84595c09bfbfbde9f5a61b663e24209b2dd3da665da078cc4c",
+      "backgroundTriangles": 6932
+    },
+    {
+      "sourceTile": "tiles/5/31/29_1.b3dm",
+      "sourceSha256": "7cb13b853885412f5a44056fe762043da5e1554d60ee7205d33531500f4115db",
+      "originalBatchIds": [
+        33
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b"
+      ],
+      "gmlNames": [
+        "CHANGI POINT FERRY TERMINAL"
+      ],
+      "poiFile": "29_1.b3dm",
+      "poiSha256": "26c87dd90fe7bd9ccd514f832d3d71d4046d98c1c5df370a4d2f2ef961d056e1",
+      "poiTriangles": 208,
+      "backgroundFile": "optimized-tiles/5/31/29_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b"
+      ],
+      "backgroundSha256": "da9d61149e76262e4f367bc068274280eb097e45f6534ecacc450bd87d433673",
+      "backgroundTriangles": 6932
+    },
+    {
+      "sourceTile": "tiles/5/31/29_2.b3dm",
+      "sourceSha256": "857150f1b16dedc52fe8cca820bfc9d8d0102beaf76cc5ddad729e1853e4bc2e",
+      "originalBatchIds": [
+        33
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b"
+      ],
+      "gmlNames": [
+        "CHANGI POINT FERRY TERMINAL"
+      ],
+      "poiFile": "29_2.b3dm",
+      "poiSha256": "a4ae962582bf81a2a9ed864f08d7f78746bd73aa7a0bca5c389953a133241bd0",
+      "poiTriangles": 208,
+      "backgroundFile": "optimized-tiles/5/31/29_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b"
+      ],
+      "backgroundSha256": "48944c5b60701b9dea7443f8feb1dba86564bf70bf6b627c495432ee38fec079",
+      "backgroundTriangles": 6932
+    },
+    {
+      "sourceTile": "tiles/5/31/29_3.b3dm",
+      "sourceSha256": "8cff43b4bf9b3cdf75ecd04a4d1ad875956237befe50da469cb4e75937710dfd",
+      "originalBatchIds": [
+        33
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b"
+      ],
+      "gmlNames": [
+        "CHANGI POINT FERRY TERMINAL"
+      ],
+      "poiFile": "29_3.b3dm",
+      "poiSha256": "876eb07faa62bb596701dbdb316be471479c3f732711581760d7e5d95a8691ed",
+      "poiTriangles": 208,
+      "backgroundFile": "optimized-tiles/5/31/29_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b"
+      ],
+      "backgroundSha256": "b18b4df0d63ef2a3a281f7e8a8feb7885498c18406ea967319f12368d6f76a0d",
+      "backgroundTriangles": 6932
+    },
+    {
+      "sourceTile": "tiles/5/31/29_4.b3dm",
+      "sourceSha256": "63a9648178d027297fe286799877fc0f28a974ee4454caa083437e6e5146ee8b",
+      "originalBatchIds": [
+        33
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b"
+      ],
+      "gmlNames": [
+        "CHANGI POINT FERRY TERMINAL"
+      ],
+      "poiFile": "29_4.b3dm",
+      "poiSha256": "f1ce7dcc30726741628fdcb3240433a2c61d55559db614fa83e7404c993e9401",
+      "poiTriangles": 208,
+      "backgroundFile": "optimized-tiles/5/31/29_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9bee3e2e-7911-4c8a-8694-66f24bd6346b"
+      ],
+      "backgroundSha256": "1b41070b097bc8441265045db4dbdd0fd7233ae6380459e0b02b64f4a72ed0f4",
+      "backgroundTriangles": 6932
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "south-beach",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:08.560Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/38/6_0.b3dm",
+      "sourceSha256": "a17ad9302e6aff9cdd89ec650f62e1d1cd3b027ff7b986ec77c9cb4f8869168c",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6"
+      ],
+      "gmlNames": [
+        "SOUTH BEACH"
+      ],
+      "poiFile": "6_0.b3dm",
+      "poiSha256": "58881fa4add15261e5e9d3462e43775d2fbd057e95e20ae6ce3275356431c7aa",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/38/6_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+      ],
+      "backgroundSha256": "85c3369a99b6dbc33f36dd7f183fc9e0619c959152821e7ad271cde0df1d12b9",
+      "backgroundTriangles": 18228
+    },
+    {
+      "sourceTile": "tiles/6/38/6_1.b3dm",
+      "sourceSha256": "4cbc09c7eb87abceac0a2af2dd05e709540af9d71b883e767a02dfc1a94d25bf",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6"
+      ],
+      "gmlNames": [
+        "SOUTH BEACH"
+      ],
+      "poiFile": "6_1.b3dm",
+      "poiSha256": "baff4b2f3cc13398813740d7313f0ea05f4ff22f33da40a516c1422b9b4c2826",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/38/6_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+      ],
+      "backgroundSha256": "01e6ca9082c64c0429339b5be0741ec92b2673d23c271ef48edb4f336943502b",
+      "backgroundTriangles": 18228
+    },
+    {
+      "sourceTile": "tiles/6/38/6_2.b3dm",
+      "sourceSha256": "6418638b9c7b54bd3a28b5e7218ca50d82f290baa5a9d64fc47a3d2c41be68bf",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6"
+      ],
+      "gmlNames": [
+        "SOUTH BEACH"
+      ],
+      "poiFile": "6_2.b3dm",
+      "poiSha256": "461762b53dce03cfd182bc792bfa5a5cd826d809bfce48a6d5a08a47589e8050",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/38/6_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+      ],
+      "backgroundSha256": "eda2da22c9f72871744b273d65ea0147fe2e9aa3d1c414da200493347998b6af",
+      "backgroundTriangles": 18228
+    },
+    {
+      "sourceTile": "tiles/6/38/6_3.b3dm",
+      "sourceSha256": "1f5165e2fd648b0d04e3ab233321cffafcb0b2783333e1428a06948b05697c86",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6"
+      ],
+      "gmlNames": [
+        "SOUTH BEACH"
+      ],
+      "poiFile": "6_3.b3dm",
+      "poiSha256": "a2b3be59b93f8c3ad0f5dc11a0c9f2bfad56b21b07a1e3ec121da91d1f6e6902",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/38/6_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+      ],
+      "backgroundSha256": "8dc36ba3e8f8052d533f7d23119e541407b49a6cce775043e3b1ecb7c38ee501",
+      "backgroundTriangles": 18228
+    },
+    {
+      "sourceTile": "tiles/6/38/6_4.b3dm",
+      "sourceSha256": "148b984b844fa1ae08798022badde66b337dfd4a9e860a5daa3b7bf9c925f064",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6"
+      ],
+      "gmlNames": [
+        "SOUTH BEACH"
+      ],
+      "poiFile": "6_4.b3dm",
+      "poiSha256": "ad086ec8c769e2c6b5e4654fb97f7f23c5cb2c5b5b57936da0d6fb1803374886",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/38/6_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+      ],
+      "backgroundSha256": "4f003da9d810482e100cbf976f54421d945e0961136d80c4b486eb03562cd3de",
+      "backgroundTriangles": 18228
+    },
+    {
+      "sourceTile": "tiles/6/38/6_5.b3dm",
+      "sourceSha256": "1a0a1df94ab7163d01d6449ec1049b3fbb15e277949cd8d0593acdeaaecbe876",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6"
+      ],
+      "gmlNames": [
+        "SOUTH BEACH"
+      ],
+      "poiFile": "6_5.b3dm",
+      "poiSha256": "2e49d97d4b219ab990cf002b17907deea1c8a926b0260138258cb3838a651a84",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/38/6_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+      ],
+      "backgroundSha256": "00deec64eb97a77b0a78a921a017b5d1a78dff0fbfd92b1aee307e98a434af06",
+      "backgroundTriangles": 18228
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Landmark Event Panel"
+  short_description: "Open detailed event panels from map pills"
+  default_prompt: "Add a click-open side panel to a landmark event pill, render the full event-detail contract, and verify it in the browser."

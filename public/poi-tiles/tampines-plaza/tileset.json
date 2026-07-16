@@ -1,0 +1,130 @@
+{
+  "asset": {
+    "version": "1.0",
+    "extras": {
+      "ion": {
+        "georeferenced": true,
+        "movable": false
+      }
+    }
+  },
+  "geometricError": 512,
+  "root": {
+    "boundingVolume": {
+      "region": [
+        1.814131116924451,
+        0.0235813627092423,
+        1.814225467457217,
+        0.0236242063754807,
+        0,
+        39.27289071943279
+      ]
+    },
+    "geometricError": 256,
+    "refine": "REPLACE",
+    "children": [
+      {
+        "boundingVolume": {
+          "region": [
+            1.814131116924451,
+            0.0235813627092423,
+            1.814225467457217,
+            0.0236242063754807,
+            0,
+            39.27289071943279
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "36_0.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.814131116924451,
+            0.0235813627092423,
+            1.814225467457217,
+            0.0236242063754807,
+            0,
+            39.27289071943279
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "36_1.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.814131116924451,
+            0.0235813627092423,
+            1.814225467457217,
+            0.0236242063754807,
+            0,
+            39.27289071943279
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "36_2.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.814131116924451,
+            0.0235813627092423,
+            1.814225467457217,
+            0.0236242063754807,
+            0,
+            39.27289071943279
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "36_3.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.814131116924451,
+            0.0235813627092423,
+            1.814225467457217,
+            0.0236242063754807,
+            0,
+            39.27289071943279
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "36_4.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.814131116924451,
+            0.0235813627092423,
+            1.814225467457217,
+            0.0236242063754807,
+            0,
+            39.27289071943279
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "36_5.b3dm"
+        }
+      }
+    ]
+  }
+}

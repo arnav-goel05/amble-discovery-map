@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "parkway-parade",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:07.095Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/52/0_0.b3dm",
+      "sourceSha256": "57c04bcf7efd4d65458803152e9e266099a87488beec487cbca8f9362b0c04b6",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "gmlNames": [
+        "PARKWAY PARADE"
+      ],
+      "poiFile": "0_0.b3dm",
+      "poiSha256": "02af31e2086666b7a55c7d35d21edac497c50c31c7faadef91272095cc136400",
+      "poiTriangles": 11052,
+      "backgroundFile": "optimized-tiles/6/52/0_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "backgroundSha256": "cbb2d5b46115d619d35d27dd2b1ee51514d76c0cdf63f9b01467c90cf798927f",
+      "backgroundTriangles": 9400
+    },
+    {
+      "sourceTile": "tiles/6/52/0_1.b3dm",
+      "sourceSha256": "da6c2abd86fddb2ac41024eeb2598c3a6dc6bb92e6ea9a04987ff0894ba5de45",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "gmlNames": [
+        "PARKWAY PARADE"
+      ],
+      "poiFile": "0_1.b3dm",
+      "poiSha256": "bb9b401a0511d9beb7d6b5d864873e681711c52a3967fb1bf4da025914b17f56",
+      "poiTriangles": 11052,
+      "backgroundFile": "optimized-tiles/6/52/0_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "backgroundSha256": "20cc163e70c28fa4c057a83bf1203f67a172374bd5c6133b2e1965bf0dd07681",
+      "backgroundTriangles": 9400
+    },
+    {
+      "sourceTile": "tiles/6/52/0_2.b3dm",
+      "sourceSha256": "c6eae610e8a6b64afa8e1677ad8fac7af970fedff3526d0c0e88c41b4f44a479",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "gmlNames": [
+        "PARKWAY PARADE"
+      ],
+      "poiFile": "0_2.b3dm",
+      "poiSha256": "63a65f065cfba38dc3035f7ab664b9c1e02bd1b585cd6dbd1341307a2e25fb08",
+      "poiTriangles": 11052,
+      "backgroundFile": "optimized-tiles/6/52/0_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "backgroundSha256": "cad474a8ecb91ecc890b0db449f70484ff0df0e4a7c0acd27c0cdde0a75d2bc8",
+      "backgroundTriangles": 9400
+    },
+    {
+      "sourceTile": "tiles/6/52/0_3.b3dm",
+      "sourceSha256": "0ee78f10e3e757735fc778357aa097a926191a0349b348891cefe9ac242dabe2",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "gmlNames": [
+        "PARKWAY PARADE"
+      ],
+      "poiFile": "0_3.b3dm",
+      "poiSha256": "61a5ab8d142d2a5fb1857a91e6bf3e580f54a04d86f2fdfc6f61d63c125def4c",
+      "poiTriangles": 11052,
+      "backgroundFile": "optimized-tiles/6/52/0_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "backgroundSha256": "d0ef59fe54e8741fdc34ad04181a4822fd64b24deb3d13675a6d3d4d56f38e6f",
+      "backgroundTriangles": 9400
+    },
+    {
+      "sourceTile": "tiles/6/52/0_4.b3dm",
+      "sourceSha256": "5bc51de2809dced8e78497fe6c32e5dd44d46189252ae5bf039457f20853e236",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "gmlNames": [
+        "PARKWAY PARADE"
+      ],
+      "poiFile": "0_4.b3dm",
+      "poiSha256": "ba34ea5ec03b2c28b5607c7224bf7bda02b5dba7f61cb92022370d68e84838c6",
+      "poiTriangles": 11052,
+      "backgroundFile": "optimized-tiles/6/52/0_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "backgroundSha256": "cbbecb3f5f7c713ad8fafa701d1a167b35586c58559c4932e3b63a40f4fae411",
+      "backgroundTriangles": 9400
+    },
+    {
+      "sourceTile": "tiles/6/52/0_5.b3dm",
+      "sourceSha256": "c290c5c8d8e32c9d30a92cac714b323ca367bc7ac20ab3aec151a51c84b68a65",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "gmlNames": [
+        "PARKWAY PARADE"
+      ],
+      "poiFile": "0_5.b3dm",
+      "poiSha256": "bbd2eb275c9af0f704e573a4ada0f57bcd29b5cf495ed8fb505d898d2056aec0",
+      "poiTriangles": 11052,
+      "backgroundFile": "optimized-tiles/6/52/0_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_d00ae339-f76b-48f3-ae72-7eb5f29c566d"
+      ],
+      "backgroundSha256": "3581ae2aa32bfcf27edbd951a1d93b3596961e586e00208f3810dbaf7fb30964",
+      "backgroundTriangles": 9400
+    }
+  ]
+}

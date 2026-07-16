@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0",
+  "enabled": false,
+  "timezone": "Asia/Singapore",
+  "event": {
+    "command": ["npm", "run", "event-pipeline", "--", "start"],
+    "maximumContinuations": 4096
+  },
+  "restaurants": {
+    "command": ["npm", "run", "restaurant-pipeline", "--", "start"],
+    "maximumContinuationsPerCoverage": 3,
+    "coverage": [
+      { "id": "sg-southwest-1", "bbox": "1.13,103.60,1.25,103.70" },
+      { "id": "sg-southwest-2", "bbox": "1.13,103.70,1.25,103.80" },
+      { "id": "sg-southcentral", "bbox": "1.13,103.80,1.25,103.90" },
+      { "id": "sg-southeast-1", "bbox": "1.13,103.90,1.25,104.00" },
+      { "id": "sg-southeast-2", "bbox": "1.13,104.00,1.25,104.10" },
+      { "id": "sg-west-1", "bbox": "1.25,103.60,1.37,103.70" },
+      { "id": "sg-west-2", "bbox": "1.25,103.70,1.37,103.80" },
+      { "id": "sg-central", "bbox": "1.25,103.80,1.37,103.90" },
+      { "id": "sg-east-1", "bbox": "1.25,103.90,1.37,104.00" },
+      { "id": "sg-east-2", "bbox": "1.25,104.00,1.37,104.10" },
+      { "id": "sg-northwest-1", "bbox": "1.37,103.60,1.48,103.70" },
+      { "id": "sg-northwest-2", "bbox": "1.37,103.70,1.48,103.80" },
+      { "id": "sg-northcentral", "bbox": "1.37,103.80,1.48,103.90" },
+      { "id": "sg-northeast-1", "bbox": "1.37,103.90,1.48,104.00" },
+      { "id": "sg-northeast-2", "bbox": "1.37,104.00,1.48,104.10" }
+    ]
+  }
+}

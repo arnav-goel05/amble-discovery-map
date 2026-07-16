@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "one-commonwealth",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:08.959Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/21/12_0.b3dm",
+      "sourceSha256": "9d20e67aa35e098f88bff1853efcc3677f38fc0ed229665736a2f4ffd0e97ffe",
+      "originalBatchIds": [
+        10
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "gmlNames": [
+        "ONE COMMONWEALTH"
+      ],
+      "poiFile": "12_0.b3dm",
+      "poiSha256": "13ff5a42997e89696efadc9d89aebc119f57911c76ecf3fefc6d82354eafc55e",
+      "poiTriangles": 3424,
+      "backgroundFile": "optimized-tiles/6/21/12_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "backgroundSha256": "df0495635acd5aa5598e00014d80edd7409cebab8ab5ae7b7be50fc96b49f81c",
+      "backgroundTriangles": 11644
+    },
+    {
+      "sourceTile": "tiles/6/21/12_1.b3dm",
+      "sourceSha256": "4aeee1bba2b6262dbac6c4a22130893b81478ab01f35d99c598debdcd9d58cec",
+      "originalBatchIds": [
+        10
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "gmlNames": [
+        "ONE COMMONWEALTH"
+      ],
+      "poiFile": "12_1.b3dm",
+      "poiSha256": "8652f00850175b835b6b5e9825cbb679e22c695fae2a6633c64d60d6fdd0376d",
+      "poiTriangles": 3424,
+      "backgroundFile": "optimized-tiles/6/21/12_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "backgroundSha256": "f456d8f3b72f83a18778e1cfe46ae4ad5b7601ac9f8c5afcd896fcac395667cc",
+      "backgroundTriangles": 11644
+    },
+    {
+      "sourceTile": "tiles/6/21/12_2.b3dm",
+      "sourceSha256": "3adc9a16c43f4034736765d9f6d5c72a449d2517309371f21e5120e5d0c65460",
+      "originalBatchIds": [
+        10
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "gmlNames": [
+        "ONE COMMONWEALTH"
+      ],
+      "poiFile": "12_2.b3dm",
+      "poiSha256": "6377607510080ffbd4f374cc60c7f8246e225655a0ff45b1ce76fb51af592f1a",
+      "poiTriangles": 3424,
+      "backgroundFile": "optimized-tiles/6/21/12_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "backgroundSha256": "2f08130e92cf66d36b8b0d0d8e3445a55ca71c42ee756801542468dd12a36863",
+      "backgroundTriangles": 11644
+    },
+    {
+      "sourceTile": "tiles/6/21/12_3.b3dm",
+      "sourceSha256": "c1266a04b8e8e273703187b0f85a556b351e8efc82e1d21d5bb8f255d0e01f31",
+      "originalBatchIds": [
+        10
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "gmlNames": [
+        "ONE COMMONWEALTH"
+      ],
+      "poiFile": "12_3.b3dm",
+      "poiSha256": "2f06717c93f98d104317df0cc362beab7c8c7e8db22c4233d5f920cabf0b4b74",
+      "poiTriangles": 3424,
+      "backgroundFile": "optimized-tiles/6/21/12_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "backgroundSha256": "4058b7f4a1796862f4703d709826847f38369d3d94e72872054d30ee2c87a666",
+      "backgroundTriangles": 11644
+    },
+    {
+      "sourceTile": "tiles/6/21/12_4.b3dm",
+      "sourceSha256": "d31069bbca45e9374ef2879e91fa8d5d356f1887d4a9e5ab7bc63bfa245424e3",
+      "originalBatchIds": [
+        10
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "gmlNames": [
+        "ONE COMMONWEALTH"
+      ],
+      "poiFile": "12_4.b3dm",
+      "poiSha256": "8f0e145f7fb906605fd8487a61eea8ceb6bf004572454e2e333fddab28ade9bb",
+      "poiTriangles": 3424,
+      "backgroundFile": "optimized-tiles/6/21/12_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "backgroundSha256": "baecae6f3fed5b3943495d0de629829616eb7d89f4460c816154b43f174f32ea",
+      "backgroundTriangles": 11644
+    },
+    {
+      "sourceTile": "tiles/6/21/12_5.b3dm",
+      "sourceSha256": "1f1f447f7bcd1cb395fb9d9e0cfaf2e2f6b434c56795e0d9f75579987d521c41",
+      "originalBatchIds": [
+        10
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "gmlNames": [
+        "ONE COMMONWEALTH"
+      ],
+      "poiFile": "12_5.b3dm",
+      "poiSha256": "84be7ba817d35d6b3121d80313b34ec9901890a569970433cddada0ce1912102",
+      "poiTriangles": 3424,
+      "backgroundFile": "optimized-tiles/6/21/12_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_45e0fdf6-812e-4c9b-9498-f5eb2dc07a12"
+      ],
+      "backgroundSha256": "d1fca8b182a9c53fc9ee3bfefa00848e63cf0cdecc7a02e787542c6bf8d5cf7c",
+      "backgroundTriangles": 11644
+    }
+  ]
+}

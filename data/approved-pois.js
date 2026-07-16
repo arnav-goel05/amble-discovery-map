@@ -1,0 +1,1756 @@
+export const APPROVED_POIS = [
+  {
+    "id": "tower-3-marina-bay-sands-singapore",
+    "label": "TOWER 3 (MARINA BAY SANDS SINGAPORE)",
+    "data": "poi-tiles/tower-3-marina-bay-sands-singapore/tileset.json",
+    "names": [
+      "TOWER 3 (MARINA BAY SANDS SINGAPORE)"
+    ],
+    "tiles": {
+      "tiles/6/39/5_0.b3dm": [
+        13
+      ],
+      "tiles/6/39/5_1.b3dm": [
+        13
+      ],
+      "tiles/6/39/5_2.b3dm": [
+        13
+      ],
+      "tiles/6/39/5_3.b3dm": [
+        13
+      ],
+      "tiles/6/39/5_4.b3dm": [
+        13
+      ],
+      "tiles/6/39/5_5.b3dm": [
+        13
+      ]
+    }
+  },
+  {
+    "id": "the-shoppes-at-marina-bay-sands",
+    "label": "THE SHOPPES AT MARINA BAY SANDS",
+    "data": "poi-tiles/the-shoppes-at-marina-bay-sands/tileset.json",
+    "names": [
+      "THE SHOPPES AT MARINA BAY SANDS"
+    ],
+    "tiles": {
+      "tiles/4/9/1_0.b3dm": [
+        0
+      ],
+      "tiles/4/9/1_1.b3dm": [
+        0
+      ],
+      "tiles/4/9/1_2.b3dm": [
+        0
+      ],
+      "tiles/4/9/1_3.b3dm": [
+        0
+      ]
+    }
+  },
+  {
+    "id": "national-museum-of-singapore",
+    "label": "NATIONAL MUSEUM OF SINGAPORE",
+    "data": "poi-tiles/national-museum-of-singapore/tileset.json",
+    "names": [
+      "NATIONAL MUSEUM OF SINGAPORE"
+    ],
+    "tiles": {
+      "tiles/5/18/3_0.b3dm": [
+        0
+      ],
+      "tiles/5/18/3_1.b3dm": [
+        0
+      ],
+      "tiles/5/18/3_2.b3dm": [
+        0
+      ],
+      "tiles/5/18/3_3.b3dm": [
+        0
+      ],
+      "tiles/5/18/3_4.b3dm": [
+        0
+      ]
+    }
+  },
+  {
+    "id": "national-gallery-singapore",
+    "label": "NATIONAL GALLERY SINGAPORE",
+    "data": "poi-tiles/national-gallery-singapore/tileset.json",
+    "names": [
+      "NATIONAL GALLERY SINGAPORE"
+    ],
+    "tiles": {
+      "tiles/7/76/12_0.b3dm": [
+        3
+      ],
+      "tiles/7/76/12_1.b3dm": [
+        3
+      ],
+      "tiles/7/76/12_2.b3dm": [
+        3
+      ],
+      "tiles/7/76/12_3.b3dm": [
+        3
+      ],
+      "tiles/7/76/12_4.b3dm": [
+        3
+      ],
+      "tiles/7/76/12_5.b3dm": [
+        3
+      ]
+    }
+  },
+  {
+    "id": "lion-building-c",
+    "label": "LION BUILDING C",
+    "data": "poi-tiles/lion-building-c/tileset.json",
+    "names": [
+      "LION BUILDING C"
+    ],
+    "tiles": {
+      "tiles/5/23/10_0.b3dm": [
+        11
+      ],
+      "tiles/5/23/10_1.b3dm": [
+        11
+      ],
+      "tiles/5/23/10_2.b3dm": [
+        11
+      ],
+      "tiles/5/23/10_3.b3dm": [
+        11
+      ],
+      "tiles/5/23/10_4.b3dm": [
+        11
+      ],
+      "tiles/5/23/10_5.b3dm": [
+        11
+      ]
+    }
+  },
+  {
+    "id": "claymore-plaza",
+    "label": "CLAYMORE PLAZA",
+    "data": "poi-tiles/claymore-plaza/tileset.json",
+    "names": [
+      "CLAYMORE PLAZA"
+    ],
+    "tiles": {
+      "tiles/7/60/27_0.b3dm": [
+        3
+      ],
+      "tiles/7/60/27_1.b3dm": [
+        3
+      ],
+      "tiles/7/60/27_2.b3dm": [
+        3
+      ],
+      "tiles/7/60/27_3.b3dm": [
+        3
+      ],
+      "tiles/7/60/27_4.b3dm": [
+        3
+      ],
+      "tiles/7/60/27_5.b3dm": [
+        3
+      ]
+    }
+  },
+  {
+    "id": "cideco-industrial-complex",
+    "label": "CIDECO INDUSTRIAL COMPLEX",
+    "data": "poi-tiles/cideco-industrial-complex/tileset.json",
+    "names": [
+      "CIDECO INDUSTRIAL COMPLEX"
+    ],
+    "tiles": {
+      "tiles/6/41/22_0.b3dm": [
+        13
+      ],
+      "tiles/6/41/22_1.b3dm": [
+        13
+      ],
+      "tiles/6/41/22_2.b3dm": [
+        13
+      ],
+      "tiles/6/41/22_3.b3dm": [
+        13
+      ],
+      "tiles/6/41/22_4.b3dm": [
+        13
+      ],
+      "tiles/6/41/22_5.b3dm": [
+        13
+      ]
+    }
+  },
+  {
+    "id": "rumah-bebe",
+    "label": "RUMAH BEBE",
+    "data": "poi-tiles/rumah-bebe/tileset.json",
+    "names": [
+      "RUMAH BEBE"
+    ],
+    "tiles": {
+      "tiles/5/26/1_0.b3dm": [
+        87
+      ],
+      "tiles/5/26/1_1.b3dm": [
+        87
+      ],
+      "tiles/5/26/1_2.b3dm": [
+        87
+      ],
+      "tiles/5/26/1_3.b3dm": [
+        87
+      ],
+      "tiles/5/26/1_4.b3dm": [
+        87
+      ],
+      "tiles/5/26/1_5.b3dm": [
+        87
+      ]
+    }
+  },
+  {
+    "id": "perfect-one",
+    "label": "PERFECT ONE",
+    "data": "poi-tiles/perfect-one/tileset.json",
+    "names": [
+      "PERFECT ONE"
+    ],
+    "tiles": {
+      "tiles/5/20/11_0.b3dm": [
+        61
+      ],
+      "tiles/5/20/11_1.b3dm": [
+        61
+      ],
+      "tiles/5/20/11_2.b3dm": [
+        61
+      ],
+      "tiles/5/20/11_3.b3dm": [
+        61
+      ],
+      "tiles/5/20/11_4.b3dm": [
+        61
+      ],
+      "tiles/5/20/11_5.b3dm": [
+        61
+      ]
+    }
+  },
+  {
+    "id": "textile-centre",
+    "label": "TEXTILE CENTRE",
+    "data": "poi-tiles/textile-centre/tileset.json",
+    "names": [
+      "TEXTILE CENTRE"
+    ],
+    "tiles": {
+      "tiles/5/19/5_0.b3dm": [
+        1
+      ],
+      "tiles/5/19/5_1.b3dm": [
+        1
+      ],
+      "tiles/5/19/5_2.b3dm": [
+        1
+      ],
+      "tiles/5/19/5_3.b3dm": [
+        1
+      ],
+      "tiles/5/19/5_4.b3dm": [
+        1
+      ]
+    }
+  },
+  {
+    "id": "song-lin-building",
+    "label": "SONG LIN BUILDING",
+    "data": "poi-tiles/song-lin-building/tileset.json",
+    "names": [
+      "SONG LIN BUILDING"
+    ],
+    "tiles": {
+      "tiles/6/38/11_0.b3dm": [
+        3
+      ],
+      "tiles/6/38/11_1.b3dm": [
+        3
+      ],
+      "tiles/6/38/11_2.b3dm": [
+        3
+      ],
+      "tiles/6/38/11_3.b3dm": [
+        3
+      ],
+      "tiles/6/38/11_4.b3dm": [
+        3
+      ]
+    }
+  },
+  {
+    "id": "millenia-walk",
+    "label": "MILLENIA WALK",
+    "data": "poi-tiles/millenia-walk/tileset.json",
+    "names": [
+      "MILLENIA WALK"
+    ],
+    "tiles": {
+      "tiles/7/79/12_0.b3dm": [
+        3
+      ],
+      "tiles/7/79/12_1.b3dm": [
+        3
+      ],
+      "tiles/7/79/12_2.b3dm": [
+        3
+      ],
+      "tiles/7/79/12_3.b3dm": [
+        3
+      ],
+      "tiles/7/79/12_4.b3dm": [
+        3
+      ],
+      "tiles/7/79/12_5.b3dm": [
+        3
+      ]
+    }
+  },
+  {
+    "id": "inter-continental-singapore",
+    "label": "INTER-CONTINENTAL SINGAPORE",
+    "data": "poi-tiles/inter-continental-singapore/tileset.json",
+    "names": [
+      "INTER-CONTINENTAL SINGAPORE"
+    ],
+    "tiles": {
+      "tiles/7/77/15_0.b3dm": [
+        16
+      ],
+      "tiles/7/77/15_1.b3dm": [
+        16
+      ],
+      "tiles/7/77/15_2.b3dm": [
+        16
+      ],
+      "tiles/7/77/15_3.b3dm": [
+        16
+      ],
+      "tiles/7/77/15_4.b3dm": [
+        16
+      ],
+      "tiles/7/77/15_5.b3dm": [
+        16
+      ]
+    }
+  },
+  {
+    "id": "roxy-square",
+    "label": "ROXY SQUARE",
+    "data": "poi-tiles/roxy-square/tileset.json",
+    "names": [
+      "ROXY SQUARE"
+    ],
+    "tiles": {
+      "tiles/6/52/1_0.b3dm": [
+        18
+      ],
+      "tiles/6/52/1_1.b3dm": [
+        18
+      ],
+      "tiles/6/52/1_2.b3dm": [
+        18
+      ],
+      "tiles/6/52/1_3.b3dm": [
+        18
+      ],
+      "tiles/6/52/1_4.b3dm": [
+        18
+      ],
+      "tiles/6/52/1_5.b3dm": [
+        18
+      ]
+    }
+  },
+  {
+    "id": "blk-e-e2i",
+    "label": "BLK E (E2I)",
+    "data": "poi-tiles/blk-e-e2i/tileset.json",
+    "names": [
+      "BLK E (E2I)"
+    ],
+    "tiles": {
+      "tiles/6/25/6_0.b3dm": [
+        36
+      ],
+      "tiles/6/25/6_1.b3dm": [
+        36
+      ],
+      "tiles/6/25/6_2.b3dm": [
+        36
+      ],
+      "tiles/6/25/6_3.b3dm": [
+        36
+      ],
+      "tiles/6/25/6_4.b3dm": [
+        36
+      ],
+      "tiles/6/25/6_5.b3dm": [
+        36
+      ]
+    }
+  },
+  {
+    "id": "capitol-theatre",
+    "label": "CAPITOL THEATRE",
+    "data": "poi-tiles/capitol-theatre/tileset.json",
+    "names": [
+      "CAPITOL THEATRE"
+    ],
+    "tiles": {
+      "tiles/7/76/13_0.b3dm": [
+        5
+      ],
+      "tiles/7/76/13_1.b3dm": [
+        5
+      ],
+      "tiles/7/76/13_2.b3dm": [
+        5
+      ],
+      "tiles/7/76/13_3.b3dm": [
+        5
+      ],
+      "tiles/7/76/13_4.b3dm": [
+        5
+      ],
+      "tiles/7/76/13_5.b3dm": [
+        5
+      ]
+    }
+  },
+  {
+    "id": "scape",
+    "label": "SCAPE",
+    "data": "poi-tiles/scape/tileset.json",
+    "names": [
+      "SCAPE"
+    ],
+    "tiles": {
+      "tiles/6/31/11_0.b3dm": [
+        36
+      ],
+      "tiles/6/31/11_1.b3dm": [
+        36
+      ],
+      "tiles/6/31/11_2.b3dm": [
+        36
+      ],
+      "tiles/6/31/11_3.b3dm": [
+        36
+      ],
+      "tiles/6/31/11_4.b3dm": [
+        36
+      ],
+      "tiles/6/31/11_5.b3dm": [
+        36
+      ]
+    }
+  },
+  {
+    "id": "tampines-plaza",
+    "label": "TAMPINES PLAZA",
+    "data": "poi-tiles/tampines-plaza/tileset.json",
+    "names": [
+      "TAMPINES PLAZA"
+    ],
+    "tiles": {
+      "tiles/6/55/36_0.b3dm": [
+        4
+      ],
+      "tiles/6/55/36_1.b3dm": [
+        4
+      ],
+      "tiles/6/55/36_2.b3dm": [
+        4
+      ],
+      "tiles/6/55/36_3.b3dm": [
+        4
+      ],
+      "tiles/6/55/36_4.b3dm": [
+        4
+      ],
+      "tiles/6/55/36_5.b3dm": [
+        4
+      ]
+    }
+  },
+  {
+    "id": "thian-hock-keng",
+    "label": "THIAN HOCK KENG",
+    "data": "poi-tiles/thian-hock-keng/tileset.json",
+    "names": [
+      "THIAN HOCK KENG"
+    ],
+    "tiles": {
+      "tiles/7/73/8_0.b3dm": [
+        42
+      ],
+      "tiles/7/73/8_1.b3dm": [
+        42
+      ],
+      "tiles/7/73/8_2.b3dm": [
+        42
+      ],
+      "tiles/7/73/8_3.b3dm": [
+        42
+      ],
+      "tiles/7/73/8_4.b3dm": [
+        42
+      ]
+    }
+  },
+  {
+    "id": "singapore-chinese-cultural-centre",
+    "label": "SINGAPORE CHINESE CULTURAL CENTRE",
+    "data": "poi-tiles/singapore-chinese-cultural-centre/tileset.json",
+    "names": [
+      "SINGAPORE CHINESE CULTURAL CENTRE"
+    ],
+    "tiles": {
+      "tiles/7/75/5_0.b3dm": [
+        4
+      ],
+      "tiles/7/75/5_1.b3dm": [
+        4
+      ],
+      "tiles/7/75/5_2.b3dm": [
+        4
+      ],
+      "tiles/7/75/5_3.b3dm": [
+        4
+      ],
+      "tiles/7/75/5_4.b3dm": [
+        4
+      ],
+      "tiles/7/75/5_5.b3dm": [
+        4
+      ]
+    }
+  },
+  {
+    "id": "wisma-geylang-serai",
+    "label": "WISMA GEYLANG SERAI",
+    "data": "poi-tiles/wisma-geylang-serai/tileset.json",
+    "names": [
+      "WISMA GEYLANG SERAI"
+    ],
+    "tiles": {
+      "tiles/4/12/4_0.b3dm": [
+        0
+      ],
+      "tiles/4/12/4_1.b3dm": [
+        0
+      ],
+      "tiles/4/12/4_2.b3dm": [
+        0
+      ]
+    }
+  },
+  {
+    "id": "thow-kwang-pottery-jungle",
+    "label": "THOW KWANG POTTERY JUNGLE",
+    "data": "poi-tiles/thow-kwang-pottery-jungle/tileset.json",
+    "names": [
+      "THOW KWANG POTTERY JUNGLE"
+    ],
+    "tiles": {
+      "tiles/6/1/38_0.b3dm": [
+        5
+      ],
+      "tiles/6/1/38_1.b3dm": [
+        5
+      ],
+      "tiles/6/1/38_2.b3dm": [
+        5
+      ],
+      "tiles/6/1/38_3.b3dm": [
+        5
+      ],
+      "tiles/6/1/38_4.b3dm": [
+        5
+      ]
+    }
+  },
+  {
+    "id": "marina-bay-sands-artscience-museum",
+    "label": "MARINA BAY SANDS (ARTSCIENCE MUSEUM)",
+    "data": "poi-tiles/marina-bay-sands-artscience-museum/tileset.json",
+    "names": [
+      "MARINA BAY SANDS (ARTSCIENCE MUSEUM)"
+    ],
+    "tiles": {
+      "tiles/6/39/5_0.b3dm": [
+        14
+      ],
+      "tiles/6/39/5_1.b3dm": [
+        14
+      ],
+      "tiles/6/39/5_2.b3dm": [
+        14
+      ],
+      "tiles/6/39/5_3.b3dm": [
+        14
+      ],
+      "tiles/6/39/5_4.b3dm": [
+        14
+      ],
+      "tiles/6/39/5_5.b3dm": [
+        14
+      ]
+    }
+  },
+  {
+    "id": "temasek-shophouse",
+    "label": "TEMASEK SHOPHOUSE",
+    "data": "poi-tiles/temasek-shophouse/tileset.json",
+    "names": [
+      "TEMASEK SHOPHOUSE"
+    ],
+    "tiles": {
+      "tiles/6/36/7_0.b3dm": [
+        27
+      ],
+      "tiles/6/36/7_1.b3dm": [
+        27
+      ],
+      "tiles/6/36/7_2.b3dm": [
+        27
+      ],
+      "tiles/6/36/7_3.b3dm": [
+        27
+      ],
+      "tiles/6/36/7_4.b3dm": [
+        27
+      ]
+    }
+  },
+  {
+    "id": "the-commerze-irving",
+    "label": "THE COMMERZE@IRVING",
+    "data": "poi-tiles/the-commerze-irving/tileset.json",
+    "names": [
+      "THE COMMERZE@IRVING"
+    ],
+    "tiles": {
+      "tiles/6/45/29_0.b3dm": [
+        23
+      ],
+      "tiles/6/45/29_1.b3dm": [
+        23
+      ],
+      "tiles/6/45/29_2.b3dm": [
+        23
+      ],
+      "tiles/6/45/29_3.b3dm": [
+        23
+      ],
+      "tiles/6/45/29_4.b3dm": [
+        23
+      ],
+      "tiles/6/45/29_5.b3dm": [
+        23
+      ]
+    }
+  },
+  {
+    "id": "raffles-marina",
+    "label": "RAFFLES MARINA",
+    "data": "poi-tiles/raffles-marina/tileset.json",
+    "names": [
+      "RAFFLES MARINA"
+    ],
+    "tiles": {
+      "tiles/5/0/15_4.b3dm": [
+        39
+      ],
+      "tiles/5/0/15_3.b3dm": [
+        39
+      ],
+      "tiles/5/0/15_2.b3dm": [
+        39
+      ],
+      "tiles/5/0/15_1.b3dm": [
+        39
+      ],
+      "tiles/5/0/15_0.b3dm": [
+        39
+      ],
+      "tiles/5/0/15_5.b3dm": [
+        39
+      ]
+    }
+  },
+  {
+    "id": "gateway-theatre",
+    "label": "GATEWAY THEATRE",
+    "data": "poi-tiles/gateway-theatre/tileset.json",
+    "names": [
+      "GATEWAY THEATRE"
+    ],
+    "tiles": {
+      "tiles/6/26/6_0.b3dm": [
+        24
+      ],
+      "tiles/6/26/6_1.b3dm": [
+        24
+      ],
+      "tiles/6/26/6_2.b3dm": [
+        24
+      ],
+      "tiles/6/26/6_3.b3dm": [
+        24
+      ],
+      "tiles/6/26/6_4.b3dm": [
+        24
+      ],
+      "tiles/6/26/6_5.b3dm": [
+        24
+      ]
+    }
+  },
+  {
+    "id": "orchard-central",
+    "label": "ORCHARD CENTRAL",
+    "data": "poi-tiles/orchard-central/tileset.json",
+    "names": [
+      "ORCHARD CENTRAL"
+    ],
+    "tiles": {
+      "tiles/6/32/8_0.b3dm": [
+        9
+      ],
+      "tiles/6/32/8_1.b3dm": [
+        9
+      ],
+      "tiles/6/32/8_2.b3dm": [
+        9
+      ],
+      "tiles/6/32/8_3.b3dm": [
+        9
+      ],
+      "tiles/6/32/8_4.b3dm": [
+        9
+      ],
+      "tiles/6/32/8_5.b3dm": [
+        9
+      ]
+    }
+  },
+  {
+    "id": "safra-clubhouse-punggol",
+    "label": "SAFRA CLUBHOUSE (PUNGGOL)",
+    "data": "poi-tiles/safra-clubhouse-punggol/tileset.json",
+    "names": [
+      "SAFRA CLUBHOUSE (PUNGGOL)"
+    ],
+    "tiles": {
+      "tiles/6/52/61_0.b3dm": [
+        9
+      ],
+      "tiles/6/52/61_1.b3dm": [
+        9
+      ],
+      "tiles/6/52/61_2.b3dm": [
+        9
+      ],
+      "tiles/6/52/61_3.b3dm": [
+        9
+      ],
+      "tiles/6/52/61_4.b3dm": [
+        9
+      ],
+      "tiles/6/52/61_5.b3dm": [
+        9
+      ]
+    }
+  },
+  {
+    "id": "singapore-philatelic-museum",
+    "label": "SINGAPORE PHILATELIC MUSEUM",
+    "data": "poi-tiles/singapore-philatelic-museum/tileset.json",
+    "names": [
+      "SINGAPORE PHILATELIC MUSEUM"
+    ],
+    "tiles": {
+      "tiles/6/37/6_0.b3dm": [
+        9
+      ],
+      "tiles/6/37/6_1.b3dm": [
+        9
+      ],
+      "tiles/6/37/6_2.b3dm": [
+        9
+      ],
+      "tiles/6/37/6_3.b3dm": [
+        9
+      ],
+      "tiles/6/37/6_4.b3dm": [
+        9
+      ],
+      "tiles/6/37/6_5.b3dm": [
+        9
+      ]
+    }
+  },
+  {
+    "id": "shell-dunman",
+    "label": "SHELL DUNMAN",
+    "data": "poi-tiles/shell-dunman/tileset.json",
+    "names": [
+      "SHELL DUNMAN"
+    ],
+    "tiles": {
+      "tiles/6/49/6_0.b3dm": [
+        26
+      ],
+      "tiles/6/49/6_1.b3dm": [
+        26
+      ],
+      "tiles/6/49/6_2.b3dm": [
+        26
+      ],
+      "tiles/6/49/6_3.b3dm": [
+        26
+      ]
+    }
+  },
+  {
+    "id": "63-ubi",
+    "label": "63@UBI",
+    "data": "poi-tiles/63-ubi/tileset.json",
+    "names": [
+      "63@UBI"
+    ],
+    "tiles": {
+      "tiles/5/23/10_0.b3dm": [
+        9
+      ],
+      "tiles/5/23/10_1.b3dm": [
+        9
+      ],
+      "tiles/5/23/10_2.b3dm": [
+        9
+      ],
+      "tiles/5/23/10_3.b3dm": [
+        9
+      ],
+      "tiles/5/23/10_4.b3dm": [
+        9
+      ],
+      "tiles/5/23/10_5.b3dm": [
+        9
+      ]
+    }
+  },
+  {
+    "id": "peranakan-museum",
+    "label": "PERANAKAN MUSEUM",
+    "data": "poi-tiles/peranakan-museum/tileset.json",
+    "names": [
+      "PERANAKAN MUSEUM"
+    ],
+    "tiles": {
+      "tiles/6/37/6_0.b3dm": [
+        21
+      ],
+      "tiles/6/37/6_1.b3dm": [
+        21
+      ],
+      "tiles/6/37/6_2.b3dm": [
+        21
+      ],
+      "tiles/6/37/6_3.b3dm": [
+        21
+      ],
+      "tiles/6/37/6_4.b3dm": [
+        21
+      ],
+      "tiles/6/37/6_5.b3dm": [
+        21
+      ]
+    }
+  },
+  {
+    "id": "parkway-parade",
+    "label": "PARKWAY PARADE",
+    "data": "poi-tiles/parkway-parade/tileset.json",
+    "names": [
+      "PARKWAY PARADE"
+    ],
+    "tiles": {
+      "tiles/6/52/0_0.b3dm": [
+        9
+      ],
+      "tiles/6/52/0_1.b3dm": [
+        9
+      ],
+      "tiles/6/52/0_2.b3dm": [
+        9
+      ],
+      "tiles/6/52/0_3.b3dm": [
+        9
+      ],
+      "tiles/6/52/0_4.b3dm": [
+        9
+      ],
+      "tiles/6/52/0_5.b3dm": [
+        9
+      ]
+    }
+  },
+  {
+    "id": "singapore-tyler-print-institute",
+    "label": "SINGAPORE TYLER PRINT INSTITUTE",
+    "data": "poi-tiles/singapore-tyler-print-institute/tileset.json",
+    "names": [
+      "SINGAPORE TYLER PRINT INSTITUTE"
+    ],
+    "tiles": {
+      "tiles/7/65/12_0.b3dm": [
+        1
+      ],
+      "tiles/7/65/12_1.b3dm": [
+        1
+      ],
+      "tiles/7/65/12_2.b3dm": [
+        1
+      ],
+      "tiles/7/65/12_3.b3dm": [
+        1
+      ],
+      "tiles/7/65/12_4.b3dm": [
+        1
+      ],
+      "tiles/7/65/12_5.b3dm": [
+        1
+      ]
+    }
+  },
+  {
+    "id": "fort-canning-centre",
+    "label": "FORT CANNING CENTRE",
+    "data": "poi-tiles/fort-canning-centre/tileset.json",
+    "names": [
+      "FORT CANNING CENTRE"
+    ],
+    "tiles": {
+      "tiles/6/36/6_0.b3dm": [
+        26
+      ],
+      "tiles/6/36/6_1.b3dm": [
+        26
+      ],
+      "tiles/6/36/6_2.b3dm": [
+        26
+      ],
+      "tiles/6/36/6_3.b3dm": [
+        26
+      ],
+      "tiles/6/36/6_4.b3dm": [
+        26
+      ],
+      "tiles/6/36/6_5.b3dm": [
+        26
+      ]
+    }
+  },
+  {
+    "id": "313-somerset",
+    "label": "313 @ SOMERSET",
+    "data": "poi-tiles/313-somerset/tileset.json",
+    "names": [
+      "313 @ SOMERSET"
+    ],
+    "tiles": {
+      "tiles/6/32/8_0.b3dm": [
+        3
+      ],
+      "tiles/6/32/8_1.b3dm": [
+        3
+      ],
+      "tiles/6/32/8_2.b3dm": [
+        3
+      ],
+      "tiles/6/32/8_3.b3dm": [
+        3
+      ],
+      "tiles/6/32/8_4.b3dm": [
+        3
+      ],
+      "tiles/6/32/8_5.b3dm": [
+        3
+      ]
+    }
+  },
+  {
+    "id": "tanjong-pagar-distripark",
+    "label": "TANJONG PAGAR DISTRIPARK",
+    "data": "poi-tiles/tanjong-pagar-distripark/tileset.json",
+    "names": [
+      "TANJONG PAGAR DISTRIPARK"
+    ],
+    "tiles": {
+      "tiles/6/31/4_4.b3dm": [
+        2
+      ],
+      "tiles/6/31/4_3.b3dm": [
+        2
+      ],
+      "tiles/6/31/4_2.b3dm": [
+        2
+      ],
+      "tiles/6/31/4_1.b3dm": [
+        2
+      ],
+      "tiles/6/31/4_0.b3dm": [
+        2
+      ],
+      "tiles/6/31/4_5.b3dm": [
+        2
+      ]
+    }
+  },
+  {
+    "id": "carlton-hotel",
+    "label": "CARLTON HOTEL",
+    "data": "poi-tiles/carlton-hotel/tileset.json",
+    "names": [
+      "CARLTON HOTEL"
+    ],
+    "tiles": {
+      "tiles/6/38/7_0.b3dm": [
+        0
+      ],
+      "tiles/6/38/7_1.b3dm": [
+        0
+      ],
+      "tiles/6/38/7_2.b3dm": [
+        0
+      ],
+      "tiles/6/38/7_3.b3dm": [
+        0
+      ]
+    }
+  },
+  {
+    "id": "the-star",
+    "label": "THE STAR",
+    "data": "poi-tiles/the-star/tileset.json",
+    "names": [
+      "THE STAR"
+    ],
+    "tiles": {
+      "tiles/8/82/51_0.b3dm": [
+        0
+      ],
+      "tiles/8/82/51_1.b3dm": [
+        0
+      ],
+      "tiles/8/82/51_2.b3dm": [
+        0
+      ],
+      "tiles/8/82/51_3.b3dm": [
+        0
+      ],
+      "tiles/8/82/51_4.b3dm": [
+        0
+      ]
+    }
+  },
+  {
+    "id": "changi-chapel-and-museum",
+    "label": "CHANGI CHAPEL AND MUSEUM",
+    "data": "poi-tiles/changi-chapel-and-museum/tileset.json",
+    "names": [
+      "CHANGI CHAPEL AND MUSEUM"
+    ],
+    "tiles": {
+      "tiles/5/30/21_0.b3dm": [
+        14
+      ],
+      "tiles/5/30/21_1.b3dm": [
+        14
+      ],
+      "tiles/5/30/21_2.b3dm": [
+        14
+      ],
+      "tiles/5/30/21_3.b3dm": [
+        14
+      ]
+    }
+  },
+  {
+    "id": "reflection-at-bukit-chandu-opium-hill",
+    "label": "REFLECTION AT BUKIT CHANDU (OPIUM HILL)",
+    "data": "poi-tiles/reflection-at-bukit-chandu-opium-hill/tileset.json",
+    "names": [
+      "REFLECTION AT BUKIT CHANDU (OPIUM HILL)"
+    ],
+    "tiles": {
+      "tiles/5/10/1_0.b3dm": [
+        17
+      ],
+      "tiles/5/10/1_1.b3dm": [
+        17
+      ],
+      "tiles/5/10/1_2.b3dm": [
+        17
+      ],
+      "tiles/5/10/1_3.b3dm": [
+        17
+      ],
+      "tiles/5/10/1_4.b3dm": [
+        17
+      ],
+      "tiles/5/10/1_5.b3dm": [
+        17
+      ]
+    }
+  },
+  {
+    "id": "pgp-building",
+    "label": "PGP BUILDING",
+    "data": "poi-tiles/pgp-building/tileset.json",
+    "names": [
+      "PGP BUILDING"
+    ],
+    "tiles": {
+      "tiles/6/35/10_2.b3dm": [
+        35
+      ],
+      "tiles/6/35/10_1.b3dm": [
+        35
+      ],
+      "tiles/6/35/10_0.b3dm": [
+        35
+      ],
+      "tiles/6/35/10_3.b3dm": [
+        35
+      ],
+      "tiles/6/35/10_4.b3dm": [
+        35
+      ],
+      "tiles/6/35/10_5.b3dm": [
+        35
+      ]
+    }
+  },
+  {
+    "id": "victoria-theatre-and-concert-hall-u-c",
+    "label": "VICTORIA THEATRE AND CONCERT HALL (U/C)",
+    "data": "poi-tiles/victoria-theatre-and-concert-hall-u-c/tileset.json",
+    "names": [
+      "VICTORIA THEATRE AND CONCERT HALL (U/C)"
+    ],
+    "tiles": {
+      "tiles/7/76/11_0.b3dm": [
+        5
+      ],
+      "tiles/7/76/11_1.b3dm": [
+        5
+      ],
+      "tiles/7/76/11_2.b3dm": [
+        5
+      ],
+      "tiles/7/76/11_3.b3dm": [
+        5
+      ],
+      "tiles/7/76/11_4.b3dm": [
+        5
+      ]
+    }
+  },
+  {
+    "id": "marina-bay-sands-mice",
+    "label": "MARINA BAY SANDS (MICE)",
+    "data": "poi-tiles/marina-bay-sands-mice/tileset.json",
+    "names": [
+      "MARINA BAY SANDS (MICE)"
+    ],
+    "tiles": {
+      "tiles/6/39/4_0.b3dm": [
+        9
+      ],
+      "tiles/6/39/4_1.b3dm": [
+        9
+      ],
+      "tiles/6/39/4_2.b3dm": [
+        9
+      ],
+      "tiles/6/39/4_3.b3dm": [
+        9
+      ],
+      "tiles/6/39/4_4.b3dm": [
+        9
+      ],
+      "tiles/6/39/4_5.b3dm": [
+        9
+      ]
+    }
+  },
+  {
+    "id": "national-library-building",
+    "label": "NATIONAL LIBRARY BUILDING",
+    "data": "poi-tiles/national-library-building/tileset.json",
+    "names": [
+      "NATIONAL LIBRARY BUILDING"
+    ],
+    "tiles": {
+      "tiles/7/77/15_5.b3dm": [
+        15,
+        14
+      ],
+      "tiles/7/77/15_4.b3dm": [
+        15,
+        14
+      ],
+      "tiles/7/77/15_3.b3dm": [
+        15,
+        14
+      ],
+      "tiles/7/77/15_2.b3dm": [
+        15,
+        14
+      ],
+      "tiles/7/77/15_1.b3dm": [
+        15,
+        14
+      ],
+      "tiles/7/77/15_0.b3dm": [
+        15,
+        14
+      ],
+      "tiles/7/77/14_0.b3dm": [
+        21
+      ],
+      "tiles/7/77/14_1.b3dm": [
+        21
+      ],
+      "tiles/7/77/14_2.b3dm": [
+        21
+      ],
+      "tiles/7/77/14_3.b3dm": [
+        21
+      ],
+      "tiles/7/77/14_4.b3dm": [
+        21
+      ],
+      "tiles/7/77/14_5.b3dm": [
+        21
+      ]
+    }
+  },
+  {
+    "id": "chinatown-heritage-centre",
+    "label": "CHINATOWN HERITAGE CENTRE",
+    "data": "poi-tiles/chinatown-heritage-centre/tileset.json",
+    "names": [
+      "CHINATOWN HERITAGE CENTRE"
+    ],
+    "tiles": {
+      "tiles/7/69/10_0.b3dm": [
+        39,
+        42,
+        45
+      ],
+      "tiles/7/69/10_1.b3dm": [
+        39,
+        42,
+        45
+      ],
+      "tiles/7/69/10_2.b3dm": [
+        39,
+        42,
+        45
+      ],
+      "tiles/7/69/10_3.b3dm": [
+        39,
+        42,
+        45
+      ],
+      "tiles/7/69/10_4.b3dm": [
+        39,
+        42,
+        45
+      ]
+    }
+  },
+  {
+    "id": "south-beach",
+    "label": "SOUTH BEACH",
+    "data": "poi-tiles/south-beach/tileset.json",
+    "names": [
+      "SOUTH BEACH"
+    ],
+    "tiles": {
+      "tiles/6/38/6_0.b3dm": [
+        0
+      ],
+      "tiles/6/38/6_1.b3dm": [
+        0
+      ],
+      "tiles/6/38/6_2.b3dm": [
+        0
+      ],
+      "tiles/6/38/6_3.b3dm": [
+        0
+      ],
+      "tiles/6/38/6_4.b3dm": [
+        0
+      ],
+      "tiles/6/38/6_5.b3dm": [
+        0
+      ]
+    }
+  },
+  {
+    "id": "velocity-novena-square",
+    "label": "VELOCITY @ NOVENA SQUARE",
+    "data": "poi-tiles/velocity-novena-square/tileset.json",
+    "names": [
+      "VELOCITY @ NOVENA SQUARE"
+    ],
+    "tiles": {
+      "tiles/5/17/9_0.b3dm": [
+        1
+      ],
+      "tiles/5/17/9_1.b3dm": [
+        1
+      ],
+      "tiles/5/17/9_2.b3dm": [
+        1
+      ],
+      "tiles/5/17/9_3.b3dm": [
+        1
+      ],
+      "tiles/5/17/9_4.b3dm": [
+        1
+      ]
+    }
+  },
+  {
+    "id": "esplanade-theatres-on-the-bay",
+    "label": "ESPLANADE - THEATRES ON THE BAY",
+    "data": "poi-tiles/esplanade-theatres-on-the-bay/tileset.json",
+    "names": [
+      "ESPLANADE - THEATRES ON THE BAY"
+    ],
+    "tiles": {
+      "tiles/7/78/12_0.b3dm": [
+        4
+      ],
+      "tiles/7/78/12_1.b3dm": [
+        4
+      ],
+      "tiles/7/78/12_2.b3dm": [
+        4
+      ],
+      "tiles/7/78/12_3.b3dm": [
+        4
+      ],
+      "tiles/7/78/12_4.b3dm": [
+        4
+      ],
+      "tiles/7/78/12_5.b3dm": [
+        4
+      ]
+    }
+  },
+  {
+    "id": "katong-square",
+    "label": "KATONG SQUARE",
+    "data": "poi-tiles/katong-square/tileset.json",
+    "names": [
+      "KATONG SQUARE"
+    ],
+    "tiles": {
+      "tiles/6/52/1_0.b3dm": [
+        22
+      ],
+      "tiles/6/52/1_1.b3dm": [
+        22
+      ],
+      "tiles/6/52/1_2.b3dm": [
+        22
+      ],
+      "tiles/6/52/1_3.b3dm": [
+        22
+      ],
+      "tiles/6/52/1_4.b3dm": [
+        22
+      ],
+      "tiles/6/52/1_5.b3dm": [
+        22
+      ]
+    }
+  },
+  {
+    "id": "one-commonwealth",
+    "label": "ONE COMMONWEALTH",
+    "data": "poi-tiles/one-commonwealth/tileset.json",
+    "names": [
+      "ONE COMMONWEALTH"
+    ],
+    "tiles": {
+      "tiles/6/21/12_0.b3dm": [
+        10
+      ],
+      "tiles/6/21/12_1.b3dm": [
+        10
+      ],
+      "tiles/6/21/12_2.b3dm": [
+        10
+      ],
+      "tiles/6/21/12_3.b3dm": [
+        10
+      ],
+      "tiles/6/21/12_4.b3dm": [
+        10
+      ],
+      "tiles/6/21/12_5.b3dm": [
+        10
+      ]
+    }
+  },
+  {
+    "id": "woods-square",
+    "label": "WOODS SQUARE",
+    "data": "poi-tiles/woods-square/tileset.json",
+    "names": [
+      "WOODS SQUARE"
+    ],
+    "tiles": {
+      "tiles/6/16/56_0.b3dm": [
+        16
+      ],
+      "tiles/6/16/56_1.b3dm": [
+        16
+      ],
+      "tiles/6/16/56_2.b3dm": [
+        16
+      ],
+      "tiles/6/16/56_3.b3dm": [
+        16
+      ],
+      "tiles/6/16/56_4.b3dm": [
+        16
+      ],
+      "tiles/6/16/56_5.b3dm": [
+        16
+      ]
+    }
+  },
+  {
+    "id": "punggol-neighbourhood-police-centre",
+    "label": "PUNGGOL NEIGHBOURHOOD POLICE CENTRE",
+    "data": "poi-tiles/punggol-neighbourhood-police-centre/tileset.json",
+    "names": [
+      "PUNGGOL NEIGHBOURHOOD POLICE CENTRE"
+    ],
+    "tiles": {
+      "tiles/5/27/28_0.b3dm": [
+        6
+      ],
+      "tiles/5/27/28_1.b3dm": [
+        6
+      ],
+      "tiles/5/27/28_2.b3dm": [
+        6
+      ],
+      "tiles/5/27/28_3.b3dm": [
+        6
+      ],
+      "tiles/5/27/28_4.b3dm": [
+        6
+      ],
+      "tiles/5/27/28_5.b3dm": [
+        6
+      ]
+    }
+  },
+  {
+    "id": "sentosa-development-corporation",
+    "label": "SENTOSA DEVELOPMENT CORPORATION",
+    "data": "poi-tiles/sentosa-development-corporation/tileset.json",
+    "names": [
+      "SENTOSA DEVELOPMENT CORPORATION"
+    ],
+    "tiles": {
+      "tiles/5/14/1_0.b3dm": [
+        11
+      ],
+      "tiles/5/14/1_1.b3dm": [
+        11
+      ],
+      "tiles/5/14/1_2.b3dm": [
+        11
+      ],
+      "tiles/5/14/1_3.b3dm": [
+        11
+      ],
+      "tiles/5/14/1_4.b3dm": [
+        11
+      ],
+      "tiles/5/14/1_5.b3dm": [
+        11
+      ]
+    }
+  },
+  {
+    "id": "marina-south-pier-mrt-station",
+    "label": "MARINA SOUTH PIER MRT STATION",
+    "data": "poi-tiles/marina-south-pier-mrt-station/tileset.json",
+    "names": [
+      "MARINA SOUTH PIER MRT STATION"
+    ],
+    "tiles": {
+      "tiles/5/20/0_0.b3dm": [
+        0
+      ],
+      "tiles/5/20/0_1.b3dm": [
+        0
+      ],
+      "tiles/5/20/0_2.b3dm": [
+        0
+      ],
+      "tiles/5/20/0_3.b3dm": [
+        0
+      ],
+      "tiles/5/20/0_4.b3dm": [
+        0
+      ],
+      "tiles/5/20/0_5.b3dm": [
+        0
+      ]
+    }
+  },
+  {
+    "id": "siloso-beach-resort",
+    "label": "SILOSO BEACH RESORT",
+    "data": "poi-tiles/siloso-beach-resort/tileset.json",
+    "names": [
+      "SILOSO BEACH RESORT"
+    ],
+    "tiles": {
+      "tiles/5/12/0_0.b3dm": [
+        2
+      ],
+      "tiles/5/12/0_1.b3dm": [
+        2
+      ],
+      "tiles/5/12/0_2.b3dm": [
+        2
+      ],
+      "tiles/5/12/0_3.b3dm": [
+        2
+      ],
+      "tiles/5/12/0_4.b3dm": [
+        2
+      ],
+      "tiles/5/12/0_5.b3dm": [
+        2
+      ]
+    }
+  },
+  {
+    "id": "bishan-green",
+    "label": "BISHAN GREEN",
+    "data": "poi-tiles/bishan-green/tileset.json",
+    "names": [
+      "BISHAN GREEN"
+    ],
+    "tiles": {
+      "tiles/6/35/32_0.b3dm": [
+        9
+      ],
+      "tiles/6/35/32_1.b3dm": [
+        9
+      ],
+      "tiles/6/35/32_2.b3dm": [
+        9
+      ],
+      "tiles/6/35/32_3.b3dm": [
+        9
+      ],
+      "tiles/6/35/32_4.b3dm": [
+        9
+      ],
+      "tiles/6/35/32_5.b3dm": [
+        9
+      ]
+    }
+  },
+  {
+    "id": "raffles-hotel-1886",
+    "label": "RAFFLES HOTEL (1886)",
+    "data": "poi-tiles/raffles-hotel-1886/tileset.json",
+    "names": [
+      "RAFFLES HOTEL (1886)"
+    ],
+    "tiles": {
+      "tiles/6/38/6_0.b3dm": [
+        5
+      ],
+      "tiles/6/38/6_1.b3dm": [
+        5
+      ],
+      "tiles/6/38/6_2.b3dm": [
+        5
+      ],
+      "tiles/6/38/6_3.b3dm": [
+        5
+      ],
+      "tiles/6/38/6_4.b3dm": [
+        5
+      ],
+      "tiles/6/38/6_5.b3dm": [
+        5
+      ]
+    }
+  },
+  {
+    "id": "changi-point-ferry-terminal",
+    "label": "CHANGI POINT FERRY TERMINAL",
+    "data": "poi-tiles/changi-point-ferry-terminal/tileset.json",
+    "names": [
+      "CHANGI POINT FERRY TERMINAL"
+    ],
+    "tiles": {
+      "tiles/5/31/29_0.b3dm": [
+        33
+      ],
+      "tiles/5/31/29_1.b3dm": [
+        33
+      ],
+      "tiles/5/31/29_2.b3dm": [
+        33
+      ],
+      "tiles/5/31/29_3.b3dm": [
+        33
+      ],
+      "tiles/5/31/29_4.b3dm": [
+        33
+      ]
+    }
+  },
+  {
+    "id": "national-community-leadership-institute",
+    "label": "NATIONAL COMMUNITY LEADERSHIP INSTITUTE",
+    "data": "poi-tiles/national-community-leadership-institute/tileset.json",
+    "names": [
+      "NATIONAL COMMUNITY LEADERSHIP INSTITUTE"
+    ],
+    "tiles": {
+      "tiles/6/19/5_0.b3dm": [
+        35
+      ],
+      "tiles/6/19/5_1.b3dm": [
+        35
+      ],
+      "tiles/6/19/5_2.b3dm": [
+        35
+      ],
+      "tiles/6/19/5_3.b3dm": [
+        35
+      ],
+      "tiles/6/19/5_4.b3dm": [
+        35
+      ]
+    }
+  },
+  {
+    "id": "singapore-management-university",
+    "label": "SINGAPORE MANAGEMENT UNIVERSITY",
+    "data": "poi-tiles/singapore-management-university/tileset.json",
+    "names": [
+      "SINGAPORE MANAGEMENT UNIVERSITY"
+    ],
+    "tiles": {
+      "tiles/6/37/7_0.b3dm": [
+        19
+      ],
+      "tiles/6/37/7_1.b3dm": [
+        19
+      ],
+      "tiles/6/37/7_2.b3dm": [
+        19
+      ],
+      "tiles/6/37/7_3.b3dm": [
+        19
+      ],
+      "tiles/6/37/7_4.b3dm": [
+        19
+      ],
+      "tiles/6/37/7_5.b3dm": [
+        19
+      ]
+    }
+  },
+  {
+    "id": "empress-place-building",
+    "label": "EMPRESS PLACE BUILDING",
+    "data": "poi-tiles/empress-place-building/tileset.json",
+    "names": [
+      "EMPRESS PLACE BUILDING"
+    ],
+    "tiles": {
+      "tiles/7/76/11_0.b3dm": [
+        6
+      ],
+      "tiles/7/76/11_1.b3dm": [
+        6
+      ],
+      "tiles/7/76/11_2.b3dm": [
+        6
+      ],
+      "tiles/7/76/11_3.b3dm": [
+        6
+      ],
+      "tiles/7/76/11_4.b3dm": [
+        6
+      ]
+    }
+  },
+  {
+    "id": "gillman-barracks",
+    "label": "GILLMAN BARRACKS",
+    "data": "poi-tiles/gillman-barracks/tileset.json",
+    "names": [
+      "GILLMAN BARRACKS"
+    ],
+    "tiles": {
+      "tiles/5/11/1_0.b3dm": [
+        15
+      ],
+      "tiles/5/11/1_1.b3dm": [
+        15
+      ],
+      "tiles/5/11/1_2.b3dm": [
+        15
+      ],
+      "tiles/5/11/1_3.b3dm": [
+        15
+      ],
+      "tiles/5/11/1_4.b3dm": [
+        15
+      ],
+      "tiles/5/11/1_5.b3dm": [
+        15
+      ]
+    }
+  }
+];

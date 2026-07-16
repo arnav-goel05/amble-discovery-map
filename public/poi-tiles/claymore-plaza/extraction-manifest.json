@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "claymore-plaza",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:04.428Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/60/27_0.b3dm",
+      "sourceSha256": "41d7b906283e9bd52c1f3476179ed18c5adb166574582318893ccd948aa21948",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "gmlNames": [
+        "CLAYMORE PLAZA"
+      ],
+      "poiFile": "27_0.b3dm",
+      "poiSha256": "54bee879940a3265fad28aa9fd712b0b6a2408251d6a1d80f957d24a5d7fbc7f",
+      "poiTriangles": 928,
+      "backgroundFile": "optimized-tiles/7/60/27_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "backgroundSha256": "8398cb979a64f1efbe5f06ff2a20563b9dacc88515ef247872b5238f81d473f4",
+      "backgroundTriangles": 11852
+    },
+    {
+      "sourceTile": "tiles/7/60/27_1.b3dm",
+      "sourceSha256": "90d762ad5ad44281d172434a7de3187acbdc2edeef86aaeb74f4e1dd41d0d02b",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "gmlNames": [
+        "CLAYMORE PLAZA"
+      ],
+      "poiFile": "27_1.b3dm",
+      "poiSha256": "4362b004f6d086126f7a80599c820dbea6d796b835010a4508b979696cc4c5d3",
+      "poiTriangles": 928,
+      "backgroundFile": "optimized-tiles/7/60/27_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "backgroundSha256": "1636df81705dca0fe0a24b170d96ac403fa713df00e2b53c8a9f506a091f5c41",
+      "backgroundTriangles": 11852
+    },
+    {
+      "sourceTile": "tiles/7/60/27_2.b3dm",
+      "sourceSha256": "9629e1069e9476556a2709360082242107ae2ca3492ea6b795a77fd8c7553cc8",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "gmlNames": [
+        "CLAYMORE PLAZA"
+      ],
+      "poiFile": "27_2.b3dm",
+      "poiSha256": "aaaa83e39b9f83430c3e1cfb7e405de7201debbc16cb66d732e007e32eee83f5",
+      "poiTriangles": 928,
+      "backgroundFile": "optimized-tiles/7/60/27_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "backgroundSha256": "98cd853a5a5311303dc62664678228ec5813dc2b8b1e567d9cf31d2bc67e7027",
+      "backgroundTriangles": 11852
+    },
+    {
+      "sourceTile": "tiles/7/60/27_3.b3dm",
+      "sourceSha256": "97c6e0352617a6377c3dcfc254d12850f0d8bf8439984ccde2b4d0930ebe4600",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "gmlNames": [
+        "CLAYMORE PLAZA"
+      ],
+      "poiFile": "27_3.b3dm",
+      "poiSha256": "75abba83ecd7a4a3398778fe67658e2a8f9184cc8d548e5499fcc312bf0d1f46",
+      "poiTriangles": 928,
+      "backgroundFile": "optimized-tiles/7/60/27_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "backgroundSha256": "d1b031ddd9b09f6c486a0f8bad65db011720145628f2524d87e292aad24dcfb4",
+      "backgroundTriangles": 11852
+    },
+    {
+      "sourceTile": "tiles/7/60/27_4.b3dm",
+      "sourceSha256": "39dbe52956804001fb371de5ce5f0afaddd6a8ec2dba79e839f85a773f2276ae",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "gmlNames": [
+        "CLAYMORE PLAZA"
+      ],
+      "poiFile": "27_4.b3dm",
+      "poiSha256": "5180855459f7bfc7eb8febca100345bcdcb286e6718d417e0bf453f2afaceb85",
+      "poiTriangles": 928,
+      "backgroundFile": "optimized-tiles/7/60/27_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "backgroundSha256": "f0b55dc23c589ee0d830061ed275464bd42e0b18358197a7de2c659b36cf0c47",
+      "backgroundTriangles": 11852
+    },
+    {
+      "sourceTile": "tiles/7/60/27_5.b3dm",
+      "sourceSha256": "b35edae53b72392df120f524753b514862ef6a7832041264e96f79f43cc3d561",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "gmlNames": [
+        "CLAYMORE PLAZA"
+      ],
+      "poiFile": "27_5.b3dm",
+      "poiSha256": "4f1887744ccf4b3fe2cee85e8077194d64c3c2e69d654a116c7cb8a4f639da26",
+      "poiTriangles": 928,
+      "backgroundFile": "optimized-tiles/7/60/27_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0f5c908f-130c-4de3-a223-f7cde7635af2"
+      ],
+      "backgroundSha256": "8998ff9d472387518bd719e8b7c2463171fe8b618941ea944a1f11708b36ed44",
+      "backgroundTriangles": 11852
+    }
+  ]
+}

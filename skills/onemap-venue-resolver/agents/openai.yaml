@@ -1,0 +1,4 @@
+interface:
+  display_name: "OneMap Venue Resolver"
+  short_description: "Verify venues and map them to OneMap buildings"
+  default_prompt: "Use $onemap-venue-resolver to verify the current venue address, map it to OneMap geometry, and cache the evidence."

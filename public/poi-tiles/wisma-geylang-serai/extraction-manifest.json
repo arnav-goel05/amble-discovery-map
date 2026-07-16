@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "wisma-geylang-serai",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:05.789Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/4/12/4_0.b3dm",
+      "sourceSha256": "fea005be3f26dbe829b05d51d8102617db38c4a9ec6c0517e888349ed1efee02",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_f88fb35e-5840-4c22-b240-c3255594f5a5"
+      ],
+      "gmlNames": [
+        "WISMA GEYLANG SERAI"
+      ],
+      "poiFile": "4_0.b3dm",
+      "poiSha256": "22df76956f66ea201f3e53677eeb84c940d661d202bffde2aeae68b736ece45c",
+      "poiTriangles": 1764,
+      "backgroundFile": "optimized-tiles/4/12/4_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f88fb35e-5840-4c22-b240-c3255594f5a5"
+      ],
+      "backgroundSha256": "ccdc8b0dda08f06d18abdc6fe0e1e235460aa1bf92bbeee45c52de08a77c1c88",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/4/12/4_1.b3dm",
+      "sourceSha256": "ee0ac626a95a8fd315b51f7b7c3366bd0b29a904601a43d2b8dfd395b862d6a9",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_f88fb35e-5840-4c22-b240-c3255594f5a5"
+      ],
+      "gmlNames": [
+        "WISMA GEYLANG SERAI"
+      ],
+      "poiFile": "4_1.b3dm",
+      "poiSha256": "2c298dc77f41511e430b5c62a3fd4ea595680ede5302db2bd794dae34a4cdcf0",
+      "poiTriangles": 1764,
+      "backgroundFile": "optimized-tiles/4/12/4_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f88fb35e-5840-4c22-b240-c3255594f5a5"
+      ],
+      "backgroundSha256": "ccdc8b0dda08f06d18abdc6fe0e1e235460aa1bf92bbeee45c52de08a77c1c88",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/4/12/4_2.b3dm",
+      "sourceSha256": "6cd2183a2aec010d2729bb1d08316c1877b289018633955edd77026c50b9e92f",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_f88fb35e-5840-4c22-b240-c3255594f5a5"
+      ],
+      "gmlNames": [
+        "WISMA GEYLANG SERAI"
+      ],
+      "poiFile": "4_2.b3dm",
+      "poiSha256": "93cb5fd56c8d2c589f400779456cbc413ee0f81dd25c4ccdcd33b0b6bd89370b",
+      "poiTriangles": 1764,
+      "backgroundFile": "optimized-tiles/4/12/4_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f88fb35e-5840-4c22-b240-c3255594f5a5"
+      ],
+      "backgroundSha256": "ccdc8b0dda08f06d18abdc6fe0e1e235460aa1bf92bbeee45c52de08a77c1c88",
+      "backgroundTriangles": 0
+    }
+  ]
+}

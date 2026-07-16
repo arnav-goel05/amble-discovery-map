@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "entries": [
+    {
+      "name": "Angelina",
+      "status": "approved",
+      "website": "https://www.marinabaysands.com/restaurants/angelina.html",
+      "evidence": ["https://www.marinabaysands.com/restaurants/angelina.html"],
+      "approvedAt": "2026-07-13T00:00:00.000Z"
+    },
+    {
+      "name": "Cut by Wolfgang Puck",
+      "status": "approved",
+      "website": "https://www.marinabaysands.com/restaurants/cut.html",
+      "evidence": ["https://www.marinabaysands.com/restaurants/cut.html"],
+      "approvedAt": "2026-07-13T00:00:00.000Z"
+    },
+    {
+      "name": "Haakon",
+      "status": "approved",
+      "website": "https://haakon.com.sg/",
+      "evidence": ["https://haakon.com.sg/"],
+      "approvedAt": "2026-07-13T00:00:00.000Z"
+    },
+    {
+      "name": "Jasons Deli",
+      "status": "approved",
+      "website": "https://www.marinabaysands.com/shopping/jasons-deli.html",
+      "evidence": ["https://www.marinabaysands.com/shopping/jasons-deli.html"],
+      "approvedAt": "2026-07-13T00:00:00.000Z"
+    },
+    {
+      "name": "Monti",
+      "status": "approved",
+      "website": "https://www.monti.sg/dining/",
+      "evidence": ["https://www.monti.sg/dining/"],
+      "approvedAt": "2026-07-13T00:00:00.000Z"
+    },
+    {
+      "name": "Palm Beach",
+      "status": "approved",
+      "website": "https://www.palmbeachseafood.com/",
+      "evidence": ["https://www.palmbeachseafood.com/"],
+      "approvedAt": "2026-07-13T00:00:00.000Z"
+    },
+    {
+      "name": "Rasapura Masters",
+      "status": "approved",
+      "website": "https://www.marinabaysands.com/restaurants/rasapura-masters.html",
+      "evidence": ["https://www.marinabaysands.com/restaurants/rasapura-masters.html"],
+      "approvedAt": "2026-07-13T00:00:00.000Z"
+    },
+    {
+      "name": "Sen of Japan",
+      "status": "approved",
+      "website": "https://www.senofjapan.com.sg/",
+      "evidence": ["https://www.senofjapan.com.sg/contact"],
+      "approvedAt": "2026-07-13T00:00:00.000Z"
+    },
+    {
+      "name": "St Pierre",
+      "status": "approved",
+      "website": "https://www.saintpierre.com.sg/highlights",
+      "evidence": ["https://www.saintpierre.com.sg/visit-us"],
+      "approvedAt": "2026-07-13T00:00:00.000Z"
+    },
+    {
+      "name": "The Providore",
+      "status": "approved",
+      "website": "https://theprovidore.com/stores/",
+      "evidence": ["https://theprovidore.com/stores/"],
+      "approvedAt": "2026-07-13T00:00:00.000Z"
+    },
+    {
+      "name": "TWG Tea",
+      "status": "approved",
+      "website": "https://twgtea.com/en/locations/singapore/twg-tea-garden-at-marina-bay-sands",
+      "evidence": ["https://twgtea.com/en/locations/singapore/twg-tea-garden-at-marina-bay-sands"],
+      "approvedAt": "2026-07-13T00:00:00.000Z"
+    }
+  ]
+}

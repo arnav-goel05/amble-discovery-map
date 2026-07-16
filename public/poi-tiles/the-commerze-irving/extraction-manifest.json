@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "the-commerze-irving",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:06.058Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/45/29_0.b3dm",
+      "sourceSha256": "171149773e0c758033fdf06afaa1bd8f685e4384a9635168be0ffbce32b996b0",
+      "originalBatchIds": [
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "gmlNames": [
+        "THE COMMERZE@IRVING"
+      ],
+      "poiFile": "29_0.b3dm",
+      "poiSha256": "d8eb731e7b97e7cd7fdf2c8d96bd20ffc0876506c3c494407277e2f35a61d33e",
+      "poiTriangles": 1908,
+      "backgroundFile": "optimized-tiles/6/45/29_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "backgroundSha256": "db0cb3630dcb2fdca90b840612901203bf039c8bdc515eedb82a0f6b19e5506d",
+      "backgroundTriangles": 15410
+    },
+    {
+      "sourceTile": "tiles/6/45/29_1.b3dm",
+      "sourceSha256": "da2bd3fc5608f21e0f757e23da145efdf7068d74dbb4ea38f9c35037f0104ee1",
+      "originalBatchIds": [
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "gmlNames": [
+        "THE COMMERZE@IRVING"
+      ],
+      "poiFile": "29_1.b3dm",
+      "poiSha256": "c9eee706387ee1c81b6fce5e6d12e01b62b7e7df4161bc378f9ad4df73565595",
+      "poiTriangles": 1908,
+      "backgroundFile": "optimized-tiles/6/45/29_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "backgroundSha256": "11b47f6a561ea8ff033427ad5c61d004d98efda8406465429c61546371990d15",
+      "backgroundTriangles": 15410
+    },
+    {
+      "sourceTile": "tiles/6/45/29_2.b3dm",
+      "sourceSha256": "c0512466828673bb492068f3c003750b4fd2845d96704bcdc7fcaedf2c646b06",
+      "originalBatchIds": [
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "gmlNames": [
+        "THE COMMERZE@IRVING"
+      ],
+      "poiFile": "29_2.b3dm",
+      "poiSha256": "af560a218c6f2867395ad3b8cd56e73c9ef23745cabf54fa33c5dcbf1bed080a",
+      "poiTriangles": 1908,
+      "backgroundFile": "optimized-tiles/6/45/29_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "backgroundSha256": "d30f96166f89904a3670b588580c96043559f4eebcccb2b2437d7ed403dd19da",
+      "backgroundTriangles": 15410
+    },
+    {
+      "sourceTile": "tiles/6/45/29_3.b3dm",
+      "sourceSha256": "de9f9c740d17902a915419a5f9399a421ef38d23b1df5f9e81d9b0d096dc482b",
+      "originalBatchIds": [
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "gmlNames": [
+        "THE COMMERZE@IRVING"
+      ],
+      "poiFile": "29_3.b3dm",
+      "poiSha256": "35b3e54e976a2ffa57c05303bd452976ad99138f2cb6c2c9750a48b41afe5d6a",
+      "poiTriangles": 1908,
+      "backgroundFile": "optimized-tiles/6/45/29_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "backgroundSha256": "c05d7de2316b58582b303a678c469f74d5a090af4227fe6d0dbd0a10239b1981",
+      "backgroundTriangles": 15410
+    },
+    {
+      "sourceTile": "tiles/6/45/29_4.b3dm",
+      "sourceSha256": "3fc2ebf6cb9e438b2009cb332d6856ce5098f8cbe085f31dc9f9a9d2d5beca79",
+      "originalBatchIds": [
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "gmlNames": [
+        "THE COMMERZE@IRVING"
+      ],
+      "poiFile": "29_4.b3dm",
+      "poiSha256": "d3d6fbc2e9fd8630e05c03b37cc33b2070fcf0220094fafcf160d4c47d59e5e1",
+      "poiTriangles": 1908,
+      "backgroundFile": "optimized-tiles/6/45/29_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "backgroundSha256": "12e021f1e4cceca61a837d76f574fbaed53cbf387eb8b13cda9016298ebb3ec2",
+      "backgroundTriangles": 15410
+    },
+    {
+      "sourceTile": "tiles/6/45/29_5.b3dm",
+      "sourceSha256": "10c21291559ebdd8b5adf2ec651a31c7a329351a8a5ee1e885bcaab7894565fa",
+      "originalBatchIds": [
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "gmlNames": [
+        "THE COMMERZE@IRVING"
+      ],
+      "poiFile": "29_5.b3dm",
+      "poiSha256": "1342511e6a2441838ae0bd66fc7791aeb105d423f258d8e55decc1b89cbe7948",
+      "poiTriangles": 1908,
+      "backgroundFile": "optimized-tiles/6/45/29_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_08823d44-1e03-49ce-ab31-72ea74f810fc"
+      ],
+      "backgroundSha256": "9d7a203d6e5a6f0bec11c0e774ef8db3564562fcf00cd360ab9b4cc4eea2eeda",
+      "backgroundTriangles": 15410
+    }
+  ]
+}

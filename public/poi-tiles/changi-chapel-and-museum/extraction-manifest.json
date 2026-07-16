@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "changi-chapel-and-museum",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:07.821Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/30/21_0.b3dm",
+      "sourceSha256": "4479604faa26ba41507c06980ca93f2ea60b3d4b43aa8d9db13ff9cfd787799a",
+      "originalBatchIds": [
+        14
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_7725a044-2429-4cf8-afd6-b0515b4ee812"
+      ],
+      "gmlNames": [
+        "CHANGI CHAPEL AND MUSEUM"
+      ],
+      "poiFile": "21_0.b3dm",
+      "poiSha256": "adcb147bfaa21b96a0b1c78d93cc7f1918b167826a8e5649ba9b3dec0de3f069",
+      "poiTriangles": 672,
+      "backgroundFile": "optimized-tiles/5/30/21_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_7725a044-2429-4cf8-afd6-b0515b4ee812"
+      ],
+      "backgroundSha256": "fbcb07803b6ddee24a4d311dc51609cd33ebc4741230a4201129069df6ffb33a",
+      "backgroundTriangles": 5420
+    },
+    {
+      "sourceTile": "tiles/5/30/21_1.b3dm",
+      "sourceSha256": "2bcae93464824d446fa3ba3ca0564645d5cf5fe98cc0056be506e1e8f96789e5",
+      "originalBatchIds": [
+        14
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_7725a044-2429-4cf8-afd6-b0515b4ee812"
+      ],
+      "gmlNames": [
+        "CHANGI CHAPEL AND MUSEUM"
+      ],
+      "poiFile": "21_1.b3dm",
+      "poiSha256": "676e242c1f381e7b47f00433eb5f0cc1e10e270fc5130ff6df77cf4fe3c3ee63",
+      "poiTriangles": 672,
+      "backgroundFile": "optimized-tiles/5/30/21_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_7725a044-2429-4cf8-afd6-b0515b4ee812"
+      ],
+      "backgroundSha256": "b24b1706428a753577f3bee1d5a54a3a20a3aca63811d17a7b289f22ee0485d9",
+      "backgroundTriangles": 5420
+    },
+    {
+      "sourceTile": "tiles/5/30/21_2.b3dm",
+      "sourceSha256": "0d0a38666836bf3c2e98c1ba0c3f6c231fa3c7de5d739a450218d40df5ed924d",
+      "originalBatchIds": [
+        14
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_7725a044-2429-4cf8-afd6-b0515b4ee812"
+      ],
+      "gmlNames": [
+        "CHANGI CHAPEL AND MUSEUM"
+      ],
+      "poiFile": "21_2.b3dm",
+      "poiSha256": "7439aa905d01678df259e5f1d79dede84be309aced22be9e769ace18b9d09f65",
+      "poiTriangles": 672,
+      "backgroundFile": "optimized-tiles/5/30/21_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_7725a044-2429-4cf8-afd6-b0515b4ee812"
+      ],
+      "backgroundSha256": "bf71d06ff30dc4edf332daf0a7b7333b887b5082c939add541347971b0106993",
+      "backgroundTriangles": 5420
+    },
+    {
+      "sourceTile": "tiles/5/30/21_3.b3dm",
+      "sourceSha256": "12e0c17a98e49ea0cf36028117e3b9e7eea4668a03f009b0d0e236cb5cd9f2f4",
+      "originalBatchIds": [
+        14
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_7725a044-2429-4cf8-afd6-b0515b4ee812"
+      ],
+      "gmlNames": [
+        "CHANGI CHAPEL AND MUSEUM"
+      ],
+      "poiFile": "21_3.b3dm",
+      "poiSha256": "1a7aff03b1964c529f20d99c4fc4f7bd12705ec7184c4218029032533084fdb7",
+      "poiTriangles": 672,
+      "backgroundFile": "optimized-tiles/5/30/21_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_7725a044-2429-4cf8-afd6-b0515b4ee812"
+      ],
+      "backgroundSha256": "0c1ec95a03ca08d2f88ddcb18dd5b191f59503006598878054aab1e45b9f7ee2",
+      "backgroundTriangles": 5420
+    }
+  ]
+}

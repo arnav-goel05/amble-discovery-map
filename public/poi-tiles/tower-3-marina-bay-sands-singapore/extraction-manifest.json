@@ -1,0 +1,211 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "tower-3-marina-bay-sands-singapore",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:03.825Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/39/5_0.b3dm",
+      "sourceSha256": "02b000ac2e001840aa1564d9101c4952e5e7d86667ae6bde177ff01db6a84525",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c"
+      ],
+      "gmlNames": [
+        "TOWER 3 (MARINA BAY SANDS SINGAPORE)"
+      ],
+      "poiFile": "5_0.b3dm",
+      "poiSha256": "5b90aa3511f0a92ecb00b84612c423da10e70cd6babf494ab171aa2ef13470c2",
+      "poiTriangles": 796,
+      "backgroundFile": "optimized-tiles/6/39/5_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e"
+      ],
+      "backgroundSha256": "9721c97fdb772b893fc1f581c20579f681dc8fd8f96dfe89d98bac7d68671185",
+      "backgroundTriangles": 16796
+    },
+    {
+      "sourceTile": "tiles/6/39/5_1.b3dm",
+      "sourceSha256": "10a4ce6433ed1492c805a3d3178e766d62050e14534ac54cc416cc33dc991e66",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c"
+      ],
+      "gmlNames": [
+        "TOWER 3 (MARINA BAY SANDS SINGAPORE)"
+      ],
+      "poiFile": "5_1.b3dm",
+      "poiSha256": "28267a8902853162cfb724c00c5c90dd895b5ff4c315dfe5b03db2e2f406e1b0",
+      "poiTriangles": 796,
+      "backgroundFile": "optimized-tiles/6/39/5_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e"
+      ],
+      "backgroundSha256": "7f387ef9782f0722cba630d552d0319b5fe6754d2ae4b2f9ad33f339b2d6b0cd",
+      "backgroundTriangles": 16796
+    },
+    {
+      "sourceTile": "tiles/6/39/5_2.b3dm",
+      "sourceSha256": "a5e0d73025f22aa925f5244f062b4e890d76a1869224583e34f4fa130d066206",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c"
+      ],
+      "gmlNames": [
+        "TOWER 3 (MARINA BAY SANDS SINGAPORE)"
+      ],
+      "poiFile": "5_2.b3dm",
+      "poiSha256": "225723b5a70d7379876a15ac10fbf9e3221c5e38099d80dd4e07125db176afec",
+      "poiTriangles": 796,
+      "backgroundFile": "optimized-tiles/6/39/5_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e"
+      ],
+      "backgroundSha256": "269ea16519d0905764dc3f58d3fbd3c9ccdb42c3d11c840043df18498388873b",
+      "backgroundTriangles": 16796
+    },
+    {
+      "sourceTile": "tiles/6/39/5_3.b3dm",
+      "sourceSha256": "5d5665e187a3973909159a83d9416e91afcc021b92e2ada4ab328a4e195585f2",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c"
+      ],
+      "gmlNames": [
+        "TOWER 3 (MARINA BAY SANDS SINGAPORE)"
+      ],
+      "poiFile": "5_3.b3dm",
+      "poiSha256": "4e9c741f7c3eeb47669a9920edbb103d29ff5d69662084b71e920b668fb7e460",
+      "poiTriangles": 796,
+      "backgroundFile": "optimized-tiles/6/39/5_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e"
+      ],
+      "backgroundSha256": "700b28804971b7612a1c25886808942705ed4c9d9d0efd68d6d2fc13d112721c",
+      "backgroundTriangles": 16796
+    },
+    {
+      "sourceTile": "tiles/6/39/5_4.b3dm",
+      "sourceSha256": "f92690816b8de06dbb6955a91c483bc1ab23759b0807f8b838654e4988a86fa5",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c"
+      ],
+      "gmlNames": [
+        "TOWER 3 (MARINA BAY SANDS SINGAPORE)"
+      ],
+      "poiFile": "5_4.b3dm",
+      "poiSha256": "ce337b1a113e4e925f76a20ed92aa23cbe513e94dc31c9cdba5972e6e4668804",
+      "poiTriangles": 796,
+      "backgroundFile": "optimized-tiles/6/39/5_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e"
+      ],
+      "backgroundSha256": "bfa99fbcbfd00e7bf782ceeacccfdfe46f635bae75040a293804edfb8f85965a",
+      "backgroundTriangles": 16796
+    },
+    {
+      "sourceTile": "tiles/6/39/5_5.b3dm",
+      "sourceSha256": "489af84868c8f91a52b75e36e9ea78e0d152d7936918f3ea55395a95c6a5cc64",
+      "originalBatchIds": [
+        13
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c"
+      ],
+      "gmlNames": [
+        "TOWER 3 (MARINA BAY SANDS SINGAPORE)"
+      ],
+      "poiFile": "5_5.b3dm",
+      "poiSha256": "3c2993798159f047b372a06a32a54eb7cfcc81575f2231c8d0ce86fe26ce0f29",
+      "poiTriangles": 796,
+      "backgroundFile": "optimized-tiles/6/39/5_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e"
+      ],
+      "backgroundSha256": "eeecbf11f0bb2f5341ff0f158189c745b9cca33caaff0783d33f508925d34fd9",
+      "backgroundTriangles": 16796
+    }
+  ]
+}

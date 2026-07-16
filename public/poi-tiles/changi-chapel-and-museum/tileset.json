@@ -1,0 +1,96 @@
+{
+  "asset": {
+    "version": "1.0",
+    "extras": {
+      "ion": {
+        "georeferenced": true,
+        "movable": false
+      }
+    }
+  },
+  "geometricError": 512,
+  "root": {
+    "boundingVolume": {
+      "region": [
+        1.814608501979912,
+        0.0237678853586156,
+        1.814696850120896,
+        0.0238041909874719,
+        0,
+        18.59140845694256
+      ]
+    },
+    "geometricError": 256,
+    "refine": "REPLACE",
+    "children": [
+      {
+        "boundingVolume": {
+          "region": [
+            1.814608501979912,
+            0.0237678853586156,
+            1.814696850120896,
+            0.0238041909874719,
+            0,
+            18.59140845694256
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "21_0.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.814608501979912,
+            0.0237678853586156,
+            1.814696850120896,
+            0.0238041909874719,
+            0,
+            18.59140845694256
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "21_1.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.814608501979912,
+            0.0237678853586156,
+            1.814696850120896,
+            0.0238041909874719,
+            0,
+            18.59140845694256
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "21_2.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.814608501979912,
+            0.0237678853586156,
+            1.814696850120896,
+            0.0238041909874719,
+            0,
+            18.59140845694256
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "21_3.b3dm"
+        }
+      }
+    ]
+  }
+}

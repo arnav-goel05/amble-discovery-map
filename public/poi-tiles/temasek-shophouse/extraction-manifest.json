@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "temasek-shophouse",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:06.006Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/36/7_0.b3dm",
+      "sourceSha256": "5c78ee6bc017eb35430e941ae298a27baeb7ba4b67515bd64072ed9805adf9f9",
+      "originalBatchIds": [
+        27
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_a7cbd4e9-2609-4d66-86d3-308c9ee6cc54"
+      ],
+      "gmlNames": [
+        "TEMASEK SHOPHOUSE"
+      ],
+      "poiFile": "7_0.b3dm",
+      "poiSha256": "b79220b1a90ee2d5c49bbd6d8374ef6b41c06cd15c59fb57826cc6719acaab2d",
+      "poiTriangles": 316,
+      "backgroundFile": "optimized-tiles/6/36/7_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_a7cbd4e9-2609-4d66-86d3-308c9ee6cc54"
+      ],
+      "backgroundSha256": "77ced3a6addf9538497400bc91caaae4f48816c4f5aca11771d7a0041fca79ed",
+      "backgroundTriangles": 10642
+    },
+    {
+      "sourceTile": "tiles/6/36/7_1.b3dm",
+      "sourceSha256": "692fa8f3b91b1a3b36edf3bb0f0a9935bfa44799fc981f9cac83b6a8cf027d1b",
+      "originalBatchIds": [
+        27
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_a7cbd4e9-2609-4d66-86d3-308c9ee6cc54"
+      ],
+      "gmlNames": [
+        "TEMASEK SHOPHOUSE"
+      ],
+      "poiFile": "7_1.b3dm",
+      "poiSha256": "ca4bc7ab4718ffeb5065f38b78c124b215293056b5d908d87bb262bc048efc23",
+      "poiTriangles": 316,
+      "backgroundFile": "optimized-tiles/6/36/7_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_a7cbd4e9-2609-4d66-86d3-308c9ee6cc54"
+      ],
+      "backgroundSha256": "2470b1028c6b8e05bdfa0f304ba5883c97cda34e7b3e647cc21229f2337bc3b6",
+      "backgroundTriangles": 10642
+    },
+    {
+      "sourceTile": "tiles/6/36/7_2.b3dm",
+      "sourceSha256": "7b4ed59d7107f6f886e9749eeeac1f624e61ce302cd5220ae94cb917c869eca2",
+      "originalBatchIds": [
+        27
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_a7cbd4e9-2609-4d66-86d3-308c9ee6cc54"
+      ],
+      "gmlNames": [
+        "TEMASEK SHOPHOUSE"
+      ],
+      "poiFile": "7_2.b3dm",
+      "poiSha256": "5f5e687dbf544f6fb3497138534a4288880e6d91ee7b71c88dfcb21ce8eb4266",
+      "poiTriangles": 316,
+      "backgroundFile": "optimized-tiles/6/36/7_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_a7cbd4e9-2609-4d66-86d3-308c9ee6cc54"
+      ],
+      "backgroundSha256": "651de3d35ed9e4d334d97e6a7d1c0fe585726eef97ccd14469eff97559be72a8",
+      "backgroundTriangles": 10642
+    },
+    {
+      "sourceTile": "tiles/6/36/7_3.b3dm",
+      "sourceSha256": "561400a71dcbd1328872d83906600a98b91ecaa5db484c88a8d813c7b58b8fd4",
+      "originalBatchIds": [
+        27
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_a7cbd4e9-2609-4d66-86d3-308c9ee6cc54"
+      ],
+      "gmlNames": [
+        "TEMASEK SHOPHOUSE"
+      ],
+      "poiFile": "7_3.b3dm",
+      "poiSha256": "f7c697d6ac97313ca38743d24d0ddbf4b70e3af3b9f25f9518b22bd8648ae3d3",
+      "poiTriangles": 316,
+      "backgroundFile": "optimized-tiles/6/36/7_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_a7cbd4e9-2609-4d66-86d3-308c9ee6cc54"
+      ],
+      "backgroundSha256": "98fc5330ce94429e6ece625ce9f11d8ea6ee1d03691535441f1fec136e59ed4d",
+      "backgroundTriangles": 10642
+    },
+    {
+      "sourceTile": "tiles/6/36/7_4.b3dm",
+      "sourceSha256": "0b4f708bde3a0c81d3bceba35c675c5b113b445cbe443198fc5b55e00e9b3aff",
+      "originalBatchIds": [
+        27
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_a7cbd4e9-2609-4d66-86d3-308c9ee6cc54"
+      ],
+      "gmlNames": [
+        "TEMASEK SHOPHOUSE"
+      ],
+      "poiFile": "7_4.b3dm",
+      "poiSha256": "f38753b97bd7841b99e2aef7510a6d58b13fa55fdd64f23253cd9c0c1db3aad6",
+      "poiTriangles": 316,
+      "backgroundFile": "optimized-tiles/6/36/7_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_a7cbd4e9-2609-4d66-86d3-308c9ee6cc54"
+      ],
+      "backgroundSha256": "dfc56b1a03fe0e2a3903737fa668bd06efbdf7ba2684300a57397e7e488abd07",
+      "backgroundTriangles": 10642
+    }
+  ]
+}

@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "esplanade-theatres-on-the-bay",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:08.771Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/78/12_0.b3dm",
+      "sourceSha256": "97236ab7143eb136f15f45fb1294e58a2b89f3145698c9fdcceceb5754bc9fa4",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "gmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "poiFile": "12_0.b3dm",
+      "poiSha256": "d86076a9f0c5ffe137588246917106115d28a65ec1a76bd1c213e4042c1e0613",
+      "poiTriangles": 5544,
+      "backgroundFile": "optimized-tiles/7/78/12_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "backgroundSha256": "0836550ee1a9061724fa3133d1f2b4040aab83b21bdc4bff1ae19c33372b3809",
+      "backgroundTriangles": 8660
+    },
+    {
+      "sourceTile": "tiles/7/78/12_1.b3dm",
+      "sourceSha256": "2ed672b3bd01ecf79967830f4d7d1ce833243becec6364e5f731273129a4093b",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "gmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "poiFile": "12_1.b3dm",
+      "poiSha256": "9ec42ee3896bf679639fcb42ae4fcd0e5df77b2b6eafebf6ee5f791a3e0342da",
+      "poiTriangles": 5544,
+      "backgroundFile": "optimized-tiles/7/78/12_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "backgroundSha256": "04c84998e9bab8c57e7329e91367481122a21ad51fcdeac43874cb5f7304ab55",
+      "backgroundTriangles": 8660
+    },
+    {
+      "sourceTile": "tiles/7/78/12_2.b3dm",
+      "sourceSha256": "ac8fab7d2d068ea63f196236a97d9a6490b76c56f2d1d14460067479def915ca",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "gmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "poiFile": "12_2.b3dm",
+      "poiSha256": "a43e638fa24819421f1bce6192415636a415b785d94223df2d81f742acc6a832",
+      "poiTriangles": 5544,
+      "backgroundFile": "optimized-tiles/7/78/12_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "backgroundSha256": "086ec24356e747f8791faa2dce56e4f4b7cecb08af5bba61d6b575dbf6576c23",
+      "backgroundTriangles": 8660
+    },
+    {
+      "sourceTile": "tiles/7/78/12_3.b3dm",
+      "sourceSha256": "2f9c91debd4c05c61d9b2b7bd4f6cfac3d2ebbea7fc7fe4a676c7aaca2253451",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "gmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "poiFile": "12_3.b3dm",
+      "poiSha256": "c2ec8e6c170afbb0084d4d8186c6f7a2f98a2f311f07c324985accf5c76a9cf6",
+      "poiTriangles": 5544,
+      "backgroundFile": "optimized-tiles/7/78/12_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "backgroundSha256": "34b0c244374008b6526ebc7a40fd5bd22be1a2dba93642cfb5b6b49ca23eaaa0",
+      "backgroundTriangles": 8660
+    },
+    {
+      "sourceTile": "tiles/7/78/12_4.b3dm",
+      "sourceSha256": "1a30e7fabbedba77a9aeb3566abfdb8e96d03859237f43f1c27ff393661158e0",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "gmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "poiFile": "12_4.b3dm",
+      "poiSha256": "046e5d56698daa05b27f4e8379bcd1ce7efc031806168d80f302f1b8431049db",
+      "poiTriangles": 5544,
+      "backgroundFile": "optimized-tiles/7/78/12_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "backgroundSha256": "fc46ca120c907a9b0e842d94ddf60618018363690c510e8972982e1297608fba",
+      "backgroundTriangles": 8660
+    },
+    {
+      "sourceTile": "tiles/7/78/12_5.b3dm",
+      "sourceSha256": "92a7720fc35bba7c2020caeb6436afaae272e694c6effccce06683fe92a77183",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "gmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "poiFile": "12_5.b3dm",
+      "poiSha256": "973d260592e2ae6d583075a1c5dd6af1a8bb4bc7bc41dbe4fc91b8c07ba41563",
+      "poiTriangles": 5544,
+      "backgroundFile": "optimized-tiles/7/78/12_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "backgroundSha256": "0d56dcf7cef5ddf82e7b3054dad87bc6a1e7f5f6fb616968e116967fa3de75f1",
+      "backgroundTriangles": 8660
+    }
+  ]
+}

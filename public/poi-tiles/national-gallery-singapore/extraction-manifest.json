@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "national-gallery-singapore",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:04.178Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/76/12_0.b3dm",
+      "sourceSha256": "47b6cdef472114a21d7a22d66481b39876e5e127c04d2628b5b8eb35aa121a17",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "gmlNames": [
+        "NATIONAL GALLERY SINGAPORE"
+      ],
+      "poiFile": "12_0.b3dm",
+      "poiSha256": "c6db8792ac7b52317f9748df9dcda8665336539e25e41350cef0c2bbee2e5e8f",
+      "poiTriangles": 2092,
+      "backgroundFile": "optimized-tiles/7/76/12_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "backgroundSha256": "769547b680db85bd769bb0291bda69778f421a90ae8efc60ff463a47f940bc51",
+      "backgroundTriangles": 20832
+    },
+    {
+      "sourceTile": "tiles/7/76/12_1.b3dm",
+      "sourceSha256": "44dfa70e45dd51c45bae5873b8cfae4c5be40c8fa7e6c7cce5748b659854f7e1",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "gmlNames": [
+        "NATIONAL GALLERY SINGAPORE"
+      ],
+      "poiFile": "12_1.b3dm",
+      "poiSha256": "ccef91918fe1c51e069f0729bef23bb0f7b05e32e50d0bc4eaf7039423fd73dd",
+      "poiTriangles": 2092,
+      "backgroundFile": "optimized-tiles/7/76/12_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "backgroundSha256": "19e54161348781aa1e2e24b9e28936110326a5a2abc9e8a4549168b7ccd2758a",
+      "backgroundTriangles": 20832
+    },
+    {
+      "sourceTile": "tiles/7/76/12_2.b3dm",
+      "sourceSha256": "496fa230301b576861fa681c1742bd7a430fe3bd4ca8b646282dfcaadb160f78",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "gmlNames": [
+        "NATIONAL GALLERY SINGAPORE"
+      ],
+      "poiFile": "12_2.b3dm",
+      "poiSha256": "2575e4e98c641840cd4b12cda590168595c5bd5b8b0f7b5a25d8e6b65a73917b",
+      "poiTriangles": 2092,
+      "backgroundFile": "optimized-tiles/7/76/12_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "backgroundSha256": "253daee482dfa3ec088d9bcf11c991ae5fa050f40b7e21c79f6a59d8bbe8fb88",
+      "backgroundTriangles": 20832
+    },
+    {
+      "sourceTile": "tiles/7/76/12_3.b3dm",
+      "sourceSha256": "9d9d74442e656bf5a72a80940a92bba7fb8b9e96c6e68663180aac05f4b819ff",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "gmlNames": [
+        "NATIONAL GALLERY SINGAPORE"
+      ],
+      "poiFile": "12_3.b3dm",
+      "poiSha256": "85cb083fb1fcddeb6aec443efc9b649b48bb2be5dda5ccfed6e615b65cfea4ed",
+      "poiTriangles": 2092,
+      "backgroundFile": "optimized-tiles/7/76/12_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "backgroundSha256": "afb7ca1bceb1f00ea2fbc17c0d42fae65e44dfb28ec95465b3858bed64a50753",
+      "backgroundTriangles": 20832
+    },
+    {
+      "sourceTile": "tiles/7/76/12_4.b3dm",
+      "sourceSha256": "a80775d64b2ae9453bd5808cda92eef3aeda501383ae9089c4870e32a8ca19ef",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "gmlNames": [
+        "NATIONAL GALLERY SINGAPORE"
+      ],
+      "poiFile": "12_4.b3dm",
+      "poiSha256": "8920732d9311129a2bddb68379d294597e11ca780cc6413248fa645776cf2747",
+      "poiTriangles": 2092,
+      "backgroundFile": "optimized-tiles/7/76/12_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "backgroundSha256": "919b5d8c78aa0045c2554804a4e3ab6748475ff1ece57cc8f01e6434eecb99e7",
+      "backgroundTriangles": 20832
+    },
+    {
+      "sourceTile": "tiles/7/76/12_5.b3dm",
+      "sourceSha256": "01a4bdd77496356796d345fdd068a76d16fa5e4da9d7de3fbf65f58fb2eb45af",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "gmlNames": [
+        "NATIONAL GALLERY SINGAPORE"
+      ],
+      "poiFile": "12_5.b3dm",
+      "poiSha256": "04f9a90ce03c7826fc89e126fd706e56686e0995d582636fb2039de04125fa2a",
+      "poiTriangles": 2092,
+      "backgroundFile": "optimized-tiles/7/76/12_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "backgroundSha256": "3a8d21867254e1330f5e9dc5c64b9bc739092fbf51f411a637452f2b9b54efec",
+      "backgroundTriangles": 20832
+    }
+  ]
+}

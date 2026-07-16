@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "gillman-barracks",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:10.178Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/11/1_0.b3dm",
+      "sourceSha256": "84f694ebae89a653d4e6e1f5e508fce33ccd46959d5795fedff76058743a4909",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "gmlNames": [
+        "GILLMAN BARRACKS"
+      ],
+      "poiFile": "1_0.b3dm",
+      "poiSha256": "46884673b412883a96a9bf56f269a1a3aad06493e733a4f81ad58f201a918f85",
+      "poiTriangles": 568,
+      "backgroundFile": "optimized-tiles/5/11/1_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "backgroundSha256": "7f9a8da21f91b91280b5321c1bb8b4d3c8b52188a55cb8044f92a3fe0ba9ae7c",
+      "backgroundTriangles": 8346
+    },
+    {
+      "sourceTile": "tiles/5/11/1_1.b3dm",
+      "sourceSha256": "2c4f5b438fa2655921311b4a2ca16e2d542fd7173eb31c4a5a8ad4239aae94be",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "gmlNames": [
+        "GILLMAN BARRACKS"
+      ],
+      "poiFile": "1_1.b3dm",
+      "poiSha256": "8237a62352e966e2ffbb938decc8f8e235faadc843d9702283deec09ee38ece5",
+      "poiTriangles": 568,
+      "backgroundFile": "optimized-tiles/5/11/1_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "backgroundSha256": "4f1a86f02def234f4d66d55febb8b2b20e255d86cbd4f4967cd07901a3cda9da",
+      "backgroundTriangles": 8346
+    },
+    {
+      "sourceTile": "tiles/5/11/1_2.b3dm",
+      "sourceSha256": "27454673c5a97f19eb3376629a5fc8b10da73abc12c329f8516227cb7904ee16",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "gmlNames": [
+        "GILLMAN BARRACKS"
+      ],
+      "poiFile": "1_2.b3dm",
+      "poiSha256": "d1ae958bd54966f0aeb25f626744bfd81e5f73956eb8c37b34d15a67e7ede5e7",
+      "poiTriangles": 568,
+      "backgroundFile": "optimized-tiles/5/11/1_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "backgroundSha256": "95030213836293a85a81e752a558a5ba6eeb3fddff7f1036c03edbea3351982f",
+      "backgroundTriangles": 8346
+    },
+    {
+      "sourceTile": "tiles/5/11/1_3.b3dm",
+      "sourceSha256": "70ac8c0d98f1142cdd4e26ed96515f13e720fa4fd9a39c67dac6cd804fa0f2a6",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "gmlNames": [
+        "GILLMAN BARRACKS"
+      ],
+      "poiFile": "1_3.b3dm",
+      "poiSha256": "bb15834e87e167e90180c047add47f9347df9ac30f16638cbf012997d17c2216",
+      "poiTriangles": 568,
+      "backgroundFile": "optimized-tiles/5/11/1_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "backgroundSha256": "9ad3236a36fc375b239a045092dddbdc49a34b0db75feebd4b9a06e9fba62e43",
+      "backgroundTriangles": 8346
+    },
+    {
+      "sourceTile": "tiles/5/11/1_4.b3dm",
+      "sourceSha256": "f23e87e1f40f2d6f0820eac7d4330bdc123c93633c786ce9e827b4bea942c928",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "gmlNames": [
+        "GILLMAN BARRACKS"
+      ],
+      "poiFile": "1_4.b3dm",
+      "poiSha256": "78e4d800a4b821b3533f060801c97d787eef8e06d9b28b88512f188b8caa0f18",
+      "poiTriangles": 568,
+      "backgroundFile": "optimized-tiles/5/11/1_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "backgroundSha256": "e8ed03a09865985708c605f58576c1bb7199188ace01bc8a55c22c1f71071657",
+      "backgroundTriangles": 8346
+    },
+    {
+      "sourceTile": "tiles/5/11/1_5.b3dm",
+      "sourceSha256": "e1b4e69daba489ed40dae1dca74ddbfc532583a27b9850f1e2179d66d80e5ccc",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "gmlNames": [
+        "GILLMAN BARRACKS"
+      ],
+      "poiFile": "1_5.b3dm",
+      "poiSha256": "25abac5d521fb5ecd2e4c830a8fd36b5ea5f77ef36debbdab8ce4424309dcdb9",
+      "poiTriangles": 568,
+      "backgroundFile": "optimized-tiles/5/11/1_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_77adaba3-44c4-43a8-a016-642d38671e8f"
+      ],
+      "backgroundSha256": "0ce8692aa6ac5e4a573ef85971fbcf5eb1ef42b350b8be77b48ecf628ebf898d",
+      "backgroundTriangles": 8346
+    }
+  ]
+}

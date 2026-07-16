@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0",
+  "timezone": "Asia/Singapore",
+  "windowDaysAfterStart": 7,
+  "requestPolicy": {
+    "timeoutMs": 15000,
+    "maxAttempts": 3,
+    "initialBackoffMs": 500,
+    "maximumBackoffMs": 4000
+  },
+  "paginationCeiling": 50,
+  "sources": [
+    {
+      "name": "Catch.sg",
+      "enabled": true,
+      "adapterId": "catch-official-listing-v1",
+      "version": "1.0",
+      "providerId": "catch-sg",
+      "owner": "National Arts Council Singapore",
+      "officialDomains": ["catch.sg"],
+      "costClass": "free",
+      "listing": {
+        "url": "https://www.catch.sg/api/events/SearchListEvent",
+        "method": "POST",
+        "pageSize": 100,
+        "recordsPointer": "/data/Items",
+        "totalPointer": "/data/ItemTotal",
+        "pageTotalPointer": "/data/PageTotal"
+      },
+      "detail": {
+        "bootstrap": true,
+        "url": "https://www.catch.sg/api/site/GetEventDetail",
+        "method": "POST",
+        "dataPointer": "/data"
+      }
+    },
+    {
+      "name": "SISTIC",
+      "enabled": true,
+      "adapterId": "sistic-official-listing-v1",
+      "version": "1.0",
+      "providerId": "sistic",
+      "owner": "SISTIC.com Pte Ltd",
+      "officialDomains": ["sistic.com.sg"],
+      "costClass": "free",
+      "listing": {
+        "url": "https://cms.sistic.com.sg/sistic/docroot/api/events",
+        "method": "GET",
+        "pageSize": 30,
+        "recordsPointer": "/data",
+        "totalPointer": "/total_records"
+      },
+      "detail": {
+        "url": "https://cms.sistic.com.sg/sistic/docroot/api/event-detail",
+        "method": "GET",
+        "dataPointer": ""
+      }
+    }
+  ]
+}

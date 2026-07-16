@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "punggol-neighbourhood-police-centre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:09.191Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/27/28_0.b3dm",
+      "sourceSha256": "fbe6a54283512252cc6b0f0668effea4f3bd5097bcd2a9d14d8ccc07c2b6adcd",
+      "originalBatchIds": [
+        6
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "gmlNames": [
+        "PUNGGOL NEIGHBOURHOOD POLICE CENTRE"
+      ],
+      "poiFile": "28_0.b3dm",
+      "poiSha256": "6b324417fb55bbfb161fc8fe0ba0aed7caf9e449375717fb96969bc76f9e9b77",
+      "poiTriangles": 144,
+      "backgroundFile": "optimized-tiles/5/27/28_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "backgroundSha256": "a8ca9e7f199d712c3666d0ebaffe76e2308eb75eb4e313a51af458c219ea3cc8",
+      "backgroundTriangles": 10100
+    },
+    {
+      "sourceTile": "tiles/5/27/28_1.b3dm",
+      "sourceSha256": "e23614296161f4f1c57e820bbef29cd4a5de7d9321ec3b05523dfb16a50026fe",
+      "originalBatchIds": [
+        6
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "gmlNames": [
+        "PUNGGOL NEIGHBOURHOOD POLICE CENTRE"
+      ],
+      "poiFile": "28_1.b3dm",
+      "poiSha256": "5c77fbe4d2f020dfedb856a0ba07cf6623520f1b2328514e8bc572fa47ec6aae",
+      "poiTriangles": 144,
+      "backgroundFile": "optimized-tiles/5/27/28_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "backgroundSha256": "ec4711586224e26415cdf0c41d002ed15987c0331648d7c90ace51087f6a7564",
+      "backgroundTriangles": 10100
+    },
+    {
+      "sourceTile": "tiles/5/27/28_2.b3dm",
+      "sourceSha256": "d47c6e8b0e90f75a5cf89739c9aad84c782937de7db7df76b4882652297b003f",
+      "originalBatchIds": [
+        6
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "gmlNames": [
+        "PUNGGOL NEIGHBOURHOOD POLICE CENTRE"
+      ],
+      "poiFile": "28_2.b3dm",
+      "poiSha256": "5a94f2f9b2a739378de81f502c1fe06510933045d5e289535e31c19e249c8844",
+      "poiTriangles": 144,
+      "backgroundFile": "optimized-tiles/5/27/28_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "backgroundSha256": "f3b7ca556279745870c0db6e4c232f4a81b440954a6e08a993eb028100646dd5",
+      "backgroundTriangles": 10100
+    },
+    {
+      "sourceTile": "tiles/5/27/28_3.b3dm",
+      "sourceSha256": "816f8ca0488e043364ce7d60b627bb817f1600388bfd5ce69a0d62000e2761c7",
+      "originalBatchIds": [
+        6
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "gmlNames": [
+        "PUNGGOL NEIGHBOURHOOD POLICE CENTRE"
+      ],
+      "poiFile": "28_3.b3dm",
+      "poiSha256": "1b631737e26fe1066eb57ec18e7e28d15b29110a704c8d29b7baeeb23c454c92",
+      "poiTriangles": 144,
+      "backgroundFile": "optimized-tiles/5/27/28_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "backgroundSha256": "72ec6f9a20b78aa8e90f93ce08064660915bfeba99d3f43d3ffe0f83feda1a4f",
+      "backgroundTriangles": 10100
+    },
+    {
+      "sourceTile": "tiles/5/27/28_4.b3dm",
+      "sourceSha256": "87393753f3508fcfcaa3aff4ca712be82f245e788f1b7d32db1a1ca54fc9a643",
+      "originalBatchIds": [
+        6
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "gmlNames": [
+        "PUNGGOL NEIGHBOURHOOD POLICE CENTRE"
+      ],
+      "poiFile": "28_4.b3dm",
+      "poiSha256": "c5fdb24920a085e3fa26121c23d4d6032c42a3a400162a7b579b3286de8b4b73",
+      "poiTriangles": 144,
+      "backgroundFile": "optimized-tiles/5/27/28_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "backgroundSha256": "84f8baf602ee39d4473717a5f00c45b492fb5e18fb8ea3b16a827e9158dd0aad",
+      "backgroundTriangles": 10100
+    },
+    {
+      "sourceTile": "tiles/5/27/28_5.b3dm",
+      "sourceSha256": "65112477bbbfcd73d02681e4164477d96c145fb423583e7b4ec9578ee33b2e71",
+      "originalBatchIds": [
+        6
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "gmlNames": [
+        "PUNGGOL NEIGHBOURHOOD POLICE CENTRE"
+      ],
+      "poiFile": "28_5.b3dm",
+      "poiSha256": "10f1edfb80dbbfb1ba2ced88245e8f3ca9a59b30bf14e34a9e67984965b94f76",
+      "poiTriangles": 144,
+      "backgroundFile": "optimized-tiles/5/27/28_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_23019e8b-e6bf-42af-880b-a47f54ec2821"
+      ],
+      "backgroundSha256": "f15466f6634b7bf3c4570f7a6df5d29c8bd69d27a8639f62f70dad5b1365b50e",
+      "backgroundTriangles": 10100
+    }
+  ]
+}

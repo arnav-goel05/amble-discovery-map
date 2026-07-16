@@ -1,0 +1,79 @@
+{
+  "asset": {
+    "version": "1.0",
+    "extras": {
+      "ion": {
+        "georeferenced": true,
+        "movable": false
+      }
+    }
+  },
+  "geometricError": 512,
+  "root": {
+    "boundingVolume": {
+      "region": [
+        1.813322051904899,
+        0.0229598448698746,
+        1.813678982998481,
+        0.0230429751633061,
+        0,
+        61.15135915387606
+      ]
+    },
+    "geometricError": 256,
+    "refine": "REPLACE",
+    "children": [
+      {
+        "boundingVolume": {
+          "region": [
+            1.813322051904899,
+            0.0229598448698746,
+            1.813678982998481,
+            0.0230429751633061,
+            0,
+            61.15135915387606
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "4_0.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813322051904899,
+            0.0229598448698746,
+            1.813678982998481,
+            0.0230429751633061,
+            0,
+            61.15135915387606
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "4_1.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.813322051904899,
+            0.0229598448698746,
+            1.813678982998481,
+            0.0230429751633061,
+            0,
+            61.15135915387606
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "4_2.b3dm"
+        }
+      }
+    ]
+  }
+}

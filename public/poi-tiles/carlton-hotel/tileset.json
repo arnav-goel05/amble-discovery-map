@@ -1,0 +1,96 @@
+{
+  "asset": {
+    "version": "1.0",
+    "extras": {
+      "ion": {
+        "georeferenced": true,
+        "movable": false
+      }
+    }
+  },
+  "geometricError": 512,
+  "root": {
+    "boundingVolume": {
+      "region": [
+        1.812533114271788,
+        0.0226082007133886,
+        1.812619058850865,
+        0.0226825381109528,
+        0,
+        95.34393100955278
+      ]
+    },
+    "geometricError": 256,
+    "refine": "REPLACE",
+    "children": [
+      {
+        "boundingVolume": {
+          "region": [
+            1.812533114271788,
+            0.0226082007133886,
+            1.812619058850865,
+            0.0226825381109528,
+            0,
+            95.34393100955278
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "7_0.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812533114271788,
+            0.0226082007133886,
+            1.812619058850865,
+            0.0226825381109528,
+            0,
+            95.34393100955278
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "7_1.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812533114271788,
+            0.0226082007133886,
+            1.812619058850865,
+            0.0226825381109528,
+            0,
+            95.34393100955278
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "7_2.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812533114271788,
+            0.0226082007133886,
+            1.812619058850865,
+            0.0226825381109528,
+            0,
+            95.34393100955278
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "7_3.b3dm"
+        }
+      }
+    ]
+  }
+}

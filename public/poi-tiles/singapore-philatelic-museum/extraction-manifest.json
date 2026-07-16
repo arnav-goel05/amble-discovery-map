@@ -1,0 +1,211 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "singapore-philatelic-museum",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:06.733Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/37/6_0.b3dm",
+      "sourceSha256": "d3d1bddf204525a432ae6ff262ca08795f8696055b76fec0274ed63821e2817e",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc"
+      ],
+      "gmlNames": [
+        "SINGAPORE PHILATELIC MUSEUM"
+      ],
+      "poiFile": "6_0.b3dm",
+      "poiSha256": "3350a082c8bfd064a2b5bf9476752bf3fccf1756546bfe9ba878b4e8066533fc",
+      "poiTriangles": 372,
+      "backgroundFile": "optimized-tiles/6/37/6_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da"
+      ],
+      "backgroundSha256": "7b5fa37e99f1159b315846f3de9be74d28e75725c307e44c4d1e7a207b298b4e",
+      "backgroundTriangles": 20726
+    },
+    {
+      "sourceTile": "tiles/6/37/6_1.b3dm",
+      "sourceSha256": "39926c895925f6e93899fb1c7a407653e8a22d3ccbb7bce644ac5dd489d1e395",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc"
+      ],
+      "gmlNames": [
+        "SINGAPORE PHILATELIC MUSEUM"
+      ],
+      "poiFile": "6_1.b3dm",
+      "poiSha256": "af6200f44241dcec10ef1e6843d82311cfe5105dd9bc0b7f971c6e522b8826ba",
+      "poiTriangles": 372,
+      "backgroundFile": "optimized-tiles/6/37/6_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da"
+      ],
+      "backgroundSha256": "97a6dae145ae2958a6bd65efb9ddada403cf23da41a0ccc08e828f25950da82f",
+      "backgroundTriangles": 20726
+    },
+    {
+      "sourceTile": "tiles/6/37/6_2.b3dm",
+      "sourceSha256": "1b4b82a4416e99197e5319b7612343637ef61c26d5d8ec120a7e8df9260297a8",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc"
+      ],
+      "gmlNames": [
+        "SINGAPORE PHILATELIC MUSEUM"
+      ],
+      "poiFile": "6_2.b3dm",
+      "poiSha256": "2a86aa8f2be658dc431c1684aedb87301a959508526af5ab868fdfaafb3d66b8",
+      "poiTriangles": 372,
+      "backgroundFile": "optimized-tiles/6/37/6_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da"
+      ],
+      "backgroundSha256": "d43d01c523a6590f8e780ba445254f801cf807177882b1920d6cb608a53f57d3",
+      "backgroundTriangles": 20726
+    },
+    {
+      "sourceTile": "tiles/6/37/6_3.b3dm",
+      "sourceSha256": "d36e44e7cf31653a37d2d86deb6c3b53e51c9ad9569fd6529a03c4547b8983d6",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc"
+      ],
+      "gmlNames": [
+        "SINGAPORE PHILATELIC MUSEUM"
+      ],
+      "poiFile": "6_3.b3dm",
+      "poiSha256": "0f197cf853bbc2df0150a331ad3bafb8feb5b487c9edd91ed1fc63362cf0682d",
+      "poiTriangles": 372,
+      "backgroundFile": "optimized-tiles/6/37/6_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da"
+      ],
+      "backgroundSha256": "9f3f4b705d6abb4255a20f4c9d005e08c0c9474dc747c82eeb20a97efb3b3f40",
+      "backgroundTriangles": 20726
+    },
+    {
+      "sourceTile": "tiles/6/37/6_4.b3dm",
+      "sourceSha256": "402188a0ec019ace407777a25f76fc227b50fbafcc2747f5958271cdec9dbbe5",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc"
+      ],
+      "gmlNames": [
+        "SINGAPORE PHILATELIC MUSEUM"
+      ],
+      "poiFile": "6_4.b3dm",
+      "poiSha256": "893ab55b49d9b268fd3d07687d2da53952a218a54dc52829e3908062187d2a3a",
+      "poiTriangles": 372,
+      "backgroundFile": "optimized-tiles/6/37/6_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da"
+      ],
+      "backgroundSha256": "c9f6b7a06da9d2d9f7146f73a7f8d2a706ba7b1c05286272a5699e7669c3015f",
+      "backgroundTriangles": 20726
+    },
+    {
+      "sourceTile": "tiles/6/37/6_5.b3dm",
+      "sourceSha256": "c024de3dedd7e453f64dde245e28827725a9698cd9937e84ed5afa4fc1254f28",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc"
+      ],
+      "gmlNames": [
+        "SINGAPORE PHILATELIC MUSEUM"
+      ],
+      "poiFile": "6_5.b3dm",
+      "poiSha256": "84e856d53453c9f3c6795918be7f7f586160b8ea6c8b59f82a28d6b0668f98ae",
+      "poiTriangles": 372,
+      "backgroundFile": "optimized-tiles/6/37/6_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da"
+      ],
+      "backgroundSha256": "44e7391f7e4e6d491aee40b9899ad6538f4301b1a4623b404aa9deb8c561f669",
+      "backgroundTriangles": 20726
+    }
+  ]
+}

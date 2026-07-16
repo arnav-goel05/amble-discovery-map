@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "tanjong-pagar-distripark",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:07.558Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/31/4_4.b3dm",
+      "sourceSha256": "4b424d7041050a5cb3f57f57bb2117bf58100c4f27f63333b6f12bc70a63babf",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "gmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "poiFile": "4_4.b3dm",
+      "poiSha256": "531f755d0a4ebae01bea18bad06cc6c683f061788889e611f873d0edfb9ce7ad",
+      "poiTriangles": 608,
+      "backgroundFile": "optimized-tiles/6/31/4_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "backgroundSha256": "d478f7d034147e651986a6e1cd8960978e7ad579d04dcc16ad88c8439b7632fe",
+      "backgroundTriangles": 14996
+    },
+    {
+      "sourceTile": "tiles/6/31/4_3.b3dm",
+      "sourceSha256": "92353547e5e2aedc31d3f7c1aa6bfb6df74105d1879b259b46f4ed09bb97a912",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "gmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "poiFile": "4_3.b3dm",
+      "poiSha256": "662e4de4fcb278cb52b312d3a483923b4aa0d3d90a0ad39af45f89c268e38d2c",
+      "poiTriangles": 608,
+      "backgroundFile": "optimized-tiles/6/31/4_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "backgroundSha256": "7c2a623fc65047e58155d8208c51c351a4d59ca1e4a0fcf80e14383e12fe07ed",
+      "backgroundTriangles": 14996
+    },
+    {
+      "sourceTile": "tiles/6/31/4_2.b3dm",
+      "sourceSha256": "73d5c49068018e3743313b49399ed1e506a36cd7cc5455eef9e5f4b8b2a8b40f",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "gmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "poiFile": "4_2.b3dm",
+      "poiSha256": "766b5ee726f380bdc42e740a9310f6f6050399ef9fe3a956d0d643691101bac0",
+      "poiTriangles": 608,
+      "backgroundFile": "optimized-tiles/6/31/4_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "backgroundSha256": "62ff5877f267429914a0d753985a460e9e13e02057938f2656b095f6d4ed2887",
+      "backgroundTriangles": 14996
+    },
+    {
+      "sourceTile": "tiles/6/31/4_1.b3dm",
+      "sourceSha256": "e5fc2cf09b2401d8597b169f65c7610f358bd2c1ffb6bd612dd34fc615219ae4",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "gmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "poiFile": "4_1.b3dm",
+      "poiSha256": "ab03a7e6e0be02108e1a56a675729658096fc31f6b463cbd51532fdd21a46415",
+      "poiTriangles": 608,
+      "backgroundFile": "optimized-tiles/6/31/4_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "backgroundSha256": "5706a04e2eb47404a069e19a9add87bf6b05a1eb4775b3e40526babceccd4824",
+      "backgroundTriangles": 14996
+    },
+    {
+      "sourceTile": "tiles/6/31/4_0.b3dm",
+      "sourceSha256": "fbf5f2b9fb0d09fe206d0aceea3b010c7046fb8984c92e435888084fd5d54f76",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "gmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "poiFile": "4_0.b3dm",
+      "poiSha256": "c699e9336ed7f06a6f9bd4824c106f26275f3d6c8d44994be4c594d83470ebef",
+      "poiTriangles": 608,
+      "backgroundFile": "optimized-tiles/6/31/4_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "backgroundSha256": "d841bf3774f81c9999fa6ea34fca479903076509deb8f6c54dc3d5b9a0f8e52b",
+      "backgroundTriangles": 14996
+    },
+    {
+      "sourceTile": "tiles/6/31/4_5.b3dm",
+      "sourceSha256": "91a4aac90d589cf07ec7b4f5f7bfcc179d04a4bd6f4ef726d99d4fa1ffd7401d",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "gmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "poiFile": "4_5.b3dm",
+      "poiSha256": "883701e54d20199e9599574f302c04f64c238e145e177aaab5902b23c70caaad",
+      "poiTriangles": 608,
+      "backgroundFile": "optimized-tiles/6/31/4_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "backgroundSha256": "c8e4861b8e58e3815f552c2ad9afc730acf5b72b6d754221e40c0359ea612ffe",
+      "backgroundTriangles": 14996
+    }
+  ]
+}

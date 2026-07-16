@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "1.0",
+  "providers": [
+    {
+      "id": "catch-sg",
+      "owner": "National Arts Council Singapore",
+      "domains": ["catch.sg"],
+      "costClass": "free",
+      "enabled": true,
+      "purpose": ["event-listing", "event-detail"]
+    },
+    {
+      "id": "sistic",
+      "owner": "SISTIC.com Pte Ltd",
+      "domains": ["sistic.com.sg"],
+      "costClass": "free",
+      "enabled": true,
+      "purpose": ["event-listing", "event-detail"]
+    },
+    {
+      "id": "onemap",
+      "owner": "Singapore Land Authority",
+      "domains": ["onemap.gov.sg"],
+      "costClass": "free",
+      "enabled": true,
+      "purpose": ["building-identity", "geocoding", "map-tiles"]
+    },
+    {
+      "id": "openstreetmap-overpass",
+      "owner": "OpenStreetMap community",
+      "domains": ["overpass-api.de", "overpass.kumi.systems"],
+      "costClass": "open",
+      "enabled": true,
+      "purpose": ["restaurant-discovery", "geographic-bridge"]
+    },
+    {
+      "id": "openstreetmap",
+      "owner": "OpenStreetMap Foundation and contributors",
+      "domains": ["openstreetmap.org"],
+      "costClass": "open",
+      "enabled": true,
+      "purpose": ["map-data", "geographic-bridge"]
+    },
+    {
+      "id": "wikidata",
+      "owner": "Wikimedia Foundation",
+      "domains": ["wikidata.org", "wikimedia.org"],
+      "costClass": "open",
+      "enabled": true,
+      "purpose": ["official-website-discovery"]
+    },
+    {
+      "id": "tinyfish-fetch",
+      "owner": "TinyFish",
+      "domains": ["api.fetch.tinyfish.ai"],
+      "costClass": "free",
+      "enabled": true,
+      "purpose": ["rendered-official-website-retrieval"]
+    },
+    {
+      "id": "tinyfish-search",
+      "owner": "TinyFish",
+      "domains": ["api.search.tinyfish.ai"],
+      "costClass": "free",
+      "enabled": true,
+      "purpose": ["official-website-candidate-discovery"]
+    },
+    {
+      "id": "carto-basemap",
+      "owner": "CARTO",
+      "domains": ["basemaps.cartocdn.com"],
+      "costClass": "free",
+      "enabled": true,
+      "purpose": ["map-basemap"]
+    }
+  ]
+}

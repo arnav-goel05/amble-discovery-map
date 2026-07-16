@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "gateway-theatre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:06.282Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/26/6_0.b3dm",
+      "sourceSha256": "6da3474f47fd4f2e0e02b5f25b102a2b9bdb341119fd2d7a38ff5830cab0606c",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "gmlNames": [
+        "GATEWAY THEATRE"
+      ],
+      "poiFile": "6_0.b3dm",
+      "poiSha256": "adf93aa1b9d4fa2069616363cf7115927918de059f9e0a7127acb07043027e54",
+      "poiTriangles": 844,
+      "backgroundFile": "optimized-tiles/6/26/6_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "backgroundSha256": "63911b2e9b6b022c6d498947370c249bc2d88aeba9ebd3b013f60ef76bf26ddf",
+      "backgroundTriangles": 23652
+    },
+    {
+      "sourceTile": "tiles/6/26/6_1.b3dm",
+      "sourceSha256": "8ea16f349f5ca5409e6a2df78faea15ff7316ebf20f7526c140d39a34ab60fc9",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "gmlNames": [
+        "GATEWAY THEATRE"
+      ],
+      "poiFile": "6_1.b3dm",
+      "poiSha256": "b91936d9f066e1d7d1f9dc24d524204c370156a8ddfa0c9a3b65c4db9c4804de",
+      "poiTriangles": 844,
+      "backgroundFile": "optimized-tiles/6/26/6_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "backgroundSha256": "9665cf8c4b2ff3613c0f0cac95ee9c70182e5162883a33327825f2cfa770dec7",
+      "backgroundTriangles": 23652
+    },
+    {
+      "sourceTile": "tiles/6/26/6_2.b3dm",
+      "sourceSha256": "fa3351bfa4d68f641fa18690fac7d124e960f2a0ab3e3f61382af3dc8ee99b2a",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "gmlNames": [
+        "GATEWAY THEATRE"
+      ],
+      "poiFile": "6_2.b3dm",
+      "poiSha256": "99dccbcce88b6802a14154d4e90d921b086e225ae1a09ea4a64abe2812e84834",
+      "poiTriangles": 844,
+      "backgroundFile": "optimized-tiles/6/26/6_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "backgroundSha256": "edb6c2c2303a2e2095065a8c2e44abf4e86effcf129f521405f6b32888900709",
+      "backgroundTriangles": 23652
+    },
+    {
+      "sourceTile": "tiles/6/26/6_3.b3dm",
+      "sourceSha256": "61fbe4f6778783db5b71f4330f6bd8a52eee175a23e7190324f9e0715c37812b",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "gmlNames": [
+        "GATEWAY THEATRE"
+      ],
+      "poiFile": "6_3.b3dm",
+      "poiSha256": "bbfe910a7873988d26c5cf412e941ca0894e91d3da3ea20496ccc08fa34b62c1",
+      "poiTriangles": 844,
+      "backgroundFile": "optimized-tiles/6/26/6_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "backgroundSha256": "a87be056aedf1ab6d00a63e8302d6fa452299ea63d7b82fd52be1e9aa5f14b14",
+      "backgroundTriangles": 23652
+    },
+    {
+      "sourceTile": "tiles/6/26/6_4.b3dm",
+      "sourceSha256": "742c2a494386e869817a5e1aa2f3ac81d50b04db2d230280e11444a05b9358b8",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "gmlNames": [
+        "GATEWAY THEATRE"
+      ],
+      "poiFile": "6_4.b3dm",
+      "poiSha256": "a21d6c2e786f59fbb2c4be862a103d7f22929c7ca7dc3a64d65e55f33d87cb9a",
+      "poiTriangles": 844,
+      "backgroundFile": "optimized-tiles/6/26/6_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "backgroundSha256": "99d67a0c2a7a9095fd80349ef33f44c1eb8be51c8ed60fea79829806e6d38048",
+      "backgroundTriangles": 23652
+    },
+    {
+      "sourceTile": "tiles/6/26/6_5.b3dm",
+      "sourceSha256": "fe8c1480477d5c8d207cb4609ac02de703bd1a8b3f191f0e274211903d24856e",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "gmlNames": [
+        "GATEWAY THEATRE"
+      ],
+      "poiFile": "6_5.b3dm",
+      "poiSha256": "6ff17e816d3d7f80d6d311cab3d95aff78801490bcb79c970ab70b2e7dc85517",
+      "poiTriangles": 844,
+      "backgroundFile": "optimized-tiles/6/26/6_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_831d2787-5906-4504-9ba8-89ddc16ca1f5"
+      ],
+      "backgroundSha256": "1cfe9276ec6365f506df51f389ec595708562f83bb75f855a8879639c29e5323",
+      "backgroundTriangles": 23652
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "velocity-novena-square",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:08.677Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/17/9_0.b3dm",
+      "sourceSha256": "fb6041fe786fe88a559d7dec5cae57a04b4efb85bf304c2c593eec5228cb741b",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35"
+      ],
+      "gmlNames": [
+        "VELOCITY @ NOVENA SQUARE"
+      ],
+      "poiFile": "9_0.b3dm",
+      "poiSha256": "991f5692512ca16d34628094c71b51155c2d1cc5dae7c1eae5ea2f7cdc5bac8f",
+      "poiTriangles": 6768,
+      "backgroundFile": "optimized-tiles/5/17/9_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35"
+      ],
+      "backgroundSha256": "23147f84759e841270e38368fb5d759cf099284c7d8d144f86fde4b3d32b6c28",
+      "backgroundTriangles": 944
+    },
+    {
+      "sourceTile": "tiles/5/17/9_1.b3dm",
+      "sourceSha256": "4cda0e7a82bdc43fc0348559bfde69abe6ebdbbe2df3b697f842481d3842af72",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35"
+      ],
+      "gmlNames": [
+        "VELOCITY @ NOVENA SQUARE"
+      ],
+      "poiFile": "9_1.b3dm",
+      "poiSha256": "cf2caeb9f69806162fc730d549d1ea535db60a2bb13689dc71d36c5583ba7ac9",
+      "poiTriangles": 6768,
+      "backgroundFile": "optimized-tiles/5/17/9_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35"
+      ],
+      "backgroundSha256": "ebfd732db49b27db92d9abfcc64ddb5528623a4f9d963825ae1ea66a123b4eac",
+      "backgroundTriangles": 944
+    },
+    {
+      "sourceTile": "tiles/5/17/9_2.b3dm",
+      "sourceSha256": "74792b339de81bd135997749696956df10b3a09aec3afd02e8686cfc680cfafc",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35"
+      ],
+      "gmlNames": [
+        "VELOCITY @ NOVENA SQUARE"
+      ],
+      "poiFile": "9_2.b3dm",
+      "poiSha256": "9d578527e25a3b6f59a31e9d571c05b639995abf985832dfd634024e78f3508f",
+      "poiTriangles": 6768,
+      "backgroundFile": "optimized-tiles/5/17/9_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35"
+      ],
+      "backgroundSha256": "ea751622a6cb36477ec23488bc34786fa1eb8e2b950bb163e60b4d6e8b47efb9",
+      "backgroundTriangles": 944
+    },
+    {
+      "sourceTile": "tiles/5/17/9_3.b3dm",
+      "sourceSha256": "791e7d088714c2d6c328296a014df0a6a330564a0f5e147e66d4665984d8ca06",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35"
+      ],
+      "gmlNames": [
+        "VELOCITY @ NOVENA SQUARE"
+      ],
+      "poiFile": "9_3.b3dm",
+      "poiSha256": "94af8052474ee43bf222bc07edcf2ab86b205b0aa6f5b85696b5da527069850b",
+      "poiTriangles": 6768,
+      "backgroundFile": "optimized-tiles/5/17/9_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35"
+      ],
+      "backgroundSha256": "4e791e6a8a7d29c4adb48275d1064105f7bad4961a805e0340c8c760e8327e2a",
+      "backgroundTriangles": 944
+    },
+    {
+      "sourceTile": "tiles/5/17/9_4.b3dm",
+      "sourceSha256": "2ed502bba73b3257db316d9bd51d00f5261d4b35f17189c07ad661686fa21228",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35"
+      ],
+      "gmlNames": [
+        "VELOCITY @ NOVENA SQUARE"
+      ],
+      "poiFile": "9_4.b3dm",
+      "poiSha256": "fcba85ce80425a59f42c638e6c61dfb6b6fd3ff2eea359c914acd521f838c638",
+      "poiTriangles": 6768,
+      "backgroundFile": "optimized-tiles/5/17/9_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_815bf752-930b-4805-8578-0315f8c84b35"
+      ],
+      "backgroundSha256": "c588852a9fd879af8665bd6a121f1015afaa3655627a435cf70d9a96014675a3",
+      "backgroundTriangles": 944
+    }
+  ]
+}

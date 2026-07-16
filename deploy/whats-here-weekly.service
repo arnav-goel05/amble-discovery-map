@@ -1,0 +1,15 @@
+[Unit]
+Description=What's Here weekly approved-data refresh
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=whats-here
+Group=whats-here
+WorkingDirectory=/srv/whats-here
+EnvironmentFile=-/etc/whats-here.env
+ExecStart=/usr/bin/npm run weekly:refresh
+Nice=10
+NoNewPrivileges=true
+PrivateTmp=true

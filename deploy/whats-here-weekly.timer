@@ -1,0 +1,11 @@
+[Unit]
+Description=Run What's Here data refresh weekly
+
+[Timer]
+OnCalendar=Mon *-*-* 03:15:00 Asia/Singapore
+Persistent=true
+RandomizedDelaySec=10m
+Unit=whats-here-weekly.service
+
+[Install]
+WantedBy=timers.target

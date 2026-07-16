@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "carlton-hotel",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:07.661Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/38/7_0.b3dm",
+      "sourceSha256": "8d3d87a7eeb7b628efd174860c50c70e4a12255415f14bfe3ec1426ba3f94afd",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_cd4f380d-6bc9-4ff4-b9d0-6cdf1c184e88"
+      ],
+      "gmlNames": [
+        "CARLTON HOTEL"
+      ],
+      "poiFile": "7_0.b3dm",
+      "poiSha256": "f7aeb529c863488a2001170c16f07a81777609ce43a27cde1ecc5bc1042ce645",
+      "poiTriangles": 4472,
+      "backgroundFile": "optimized-tiles/6/38/7_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_cd4f380d-6bc9-4ff4-b9d0-6cdf1c184e88"
+      ],
+      "backgroundSha256": "a32518605ffd488af994afd72ba54b3f4915e5a609eda6202c5ac666c6911723",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/6/38/7_1.b3dm",
+      "sourceSha256": "5893609de32443323d4ea8e10c8aef6d8d7bdd3640f9d9b157360e88974762da",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_cd4f380d-6bc9-4ff4-b9d0-6cdf1c184e88"
+      ],
+      "gmlNames": [
+        "CARLTON HOTEL"
+      ],
+      "poiFile": "7_1.b3dm",
+      "poiSha256": "3deb76447804e0e61d44256a50708415fd96c460892da40b22996cfdecf19981",
+      "poiTriangles": 4472,
+      "backgroundFile": "optimized-tiles/6/38/7_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_cd4f380d-6bc9-4ff4-b9d0-6cdf1c184e88"
+      ],
+      "backgroundSha256": "a32518605ffd488af994afd72ba54b3f4915e5a609eda6202c5ac666c6911723",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/6/38/7_2.b3dm",
+      "sourceSha256": "6fb51282da05ee01b2df418ab60c3b7462465c813bb773f765a5013ad2f425ed",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_cd4f380d-6bc9-4ff4-b9d0-6cdf1c184e88"
+      ],
+      "gmlNames": [
+        "CARLTON HOTEL"
+      ],
+      "poiFile": "7_2.b3dm",
+      "poiSha256": "e543c382659a00785fe0cd4b125746cefd72bec48d47eb58c837de4969ec234b",
+      "poiTriangles": 4472,
+      "backgroundFile": "optimized-tiles/6/38/7_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_cd4f380d-6bc9-4ff4-b9d0-6cdf1c184e88"
+      ],
+      "backgroundSha256": "a32518605ffd488af994afd72ba54b3f4915e5a609eda6202c5ac666c6911723",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/6/38/7_3.b3dm",
+      "sourceSha256": "e5ac0840c4af67950c13796945f1dddc19b19005b5341b53154e31cc1ecf5d18",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_cd4f380d-6bc9-4ff4-b9d0-6cdf1c184e88"
+      ],
+      "gmlNames": [
+        "CARLTON HOTEL"
+      ],
+      "poiFile": "7_3.b3dm",
+      "poiSha256": "0ce77722ff06d20c1f59a4bf0eb552de2ab8f2553000ef30fede297562b3e180",
+      "poiTriangles": 4472,
+      "backgroundFile": "optimized-tiles/6/38/7_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_cd4f380d-6bc9-4ff4-b9d0-6cdf1c184e88"
+      ],
+      "backgroundSha256": "a32518605ffd488af994afd72ba54b3f4915e5a609eda6202c5ac666c6911723",
+      "backgroundTriangles": 0
+    }
+  ]
+}

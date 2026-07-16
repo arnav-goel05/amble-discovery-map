@@ -1,0 +1,4 @@
+interface:
+  display_name: "Restaurant Discovery Pipeline"
+  short_description: "Run and verify viewport restaurant deal scans"
+  default_prompt: "Use $restaurant-discovery-pipeline to scan a map viewport for restaurants, enrich official deal evidence, and verify the run."

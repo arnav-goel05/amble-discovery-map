@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "sentosa-development-corporation",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "thow-kwang-pottery-jungle",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "peranakan-museum",
+    "parkway-parade",
+    "singapore-tyler-print-institute",
+    "fort-canning-centre",
+    "313-somerset",
+    "tanjong-pagar-distripark",
+    "carlton-hotel",
+    "the-star",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "pgp-building",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "national-library-building",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "marina-south-pier-mrt-station",
+    "siloso-beach-resort",
+    "bishan-green",
+    "raffles-hotel-1886",
+    "changi-point-ferry-terminal",
+    "national-community-leadership-institute",
+    "singapore-management-university",
+    "empress-place-building",
+    "gillman-barracks"
+  ],
+  "generatedAt": "2026-07-13T14:21:09.260Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/14/1_0.b3dm",
+      "sourceSha256": "0bf2ac2b2e380d1a56190984daa23d68d66635818e1f22a83f1a7fc23ed281c4",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "gmlNames": [
+        "SENTOSA DEVELOPMENT CORPORATION"
+      ],
+      "poiFile": "1_0.b3dm",
+      "poiSha256": "9e6820fd2e40ee008673d5ba25c94134655341270ac30a6d246bb846edee00c1",
+      "poiTriangles": 516,
+      "backgroundFile": "optimized-tiles/5/14/1_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "backgroundSha256": "ab4098e0adf0028c64317161c90933448f6e0e7f132470b2c9128239e18d67d7",
+      "backgroundTriangles": 15251
+    },
+    {
+      "sourceTile": "tiles/5/14/1_1.b3dm",
+      "sourceSha256": "db0371d5f7d532b5c377479102876b65962ba09cc9ac17e5e061f50ad6ea63b5",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "gmlNames": [
+        "SENTOSA DEVELOPMENT CORPORATION"
+      ],
+      "poiFile": "1_1.b3dm",
+      "poiSha256": "4fa009e1c03f3037e49e809d5bfa16f0eaab461e72edef12e0df2a969fa9274c",
+      "poiTriangles": 516,
+      "backgroundFile": "optimized-tiles/5/14/1_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "backgroundSha256": "820a0c41459d0e53ad784d08ac574c7661640ef86b892c6d40c664efc253c68c",
+      "backgroundTriangles": 15251
+    },
+    {
+      "sourceTile": "tiles/5/14/1_2.b3dm",
+      "sourceSha256": "976ecf8b0ffdc0f6121f44c1de3a2a0c6ec17ea21573d1b54fedac42d1415b1a",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "gmlNames": [
+        "SENTOSA DEVELOPMENT CORPORATION"
+      ],
+      "poiFile": "1_2.b3dm",
+      "poiSha256": "7b1bc66e3a65a4cf0bfbc607fbed9603e163ceafa1b8e13644646de8ca7bb049",
+      "poiTriangles": 516,
+      "backgroundFile": "optimized-tiles/5/14/1_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "backgroundSha256": "dfd76e609f6c5c858dd64d083eab5160ccf514cee7f0713d4270a21f6548bdcb",
+      "backgroundTriangles": 15251
+    },
+    {
+      "sourceTile": "tiles/5/14/1_3.b3dm",
+      "sourceSha256": "0a3cb115ecabe875c8927d4d1771e2f9454c547be3c1e180b9bcc2d758b6240e",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "gmlNames": [
+        "SENTOSA DEVELOPMENT CORPORATION"
+      ],
+      "poiFile": "1_3.b3dm",
+      "poiSha256": "58417b4311ffcc8b5342c3307e300752f676f7292260b14dbe4e2aaaf0254a7e",
+      "poiTriangles": 516,
+      "backgroundFile": "optimized-tiles/5/14/1_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "backgroundSha256": "7ce942bd9963893316914ff417cc33a3ddb56b873b12e6acb5b47d4c4467f5ce",
+      "backgroundTriangles": 15251
+    },
+    {
+      "sourceTile": "tiles/5/14/1_4.b3dm",
+      "sourceSha256": "5d72b3d8d1b1f4f86aad9a400cf9103d29b7ed1e99f0d0514d0ec0b782606788",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "gmlNames": [
+        "SENTOSA DEVELOPMENT CORPORATION"
+      ],
+      "poiFile": "1_4.b3dm",
+      "poiSha256": "bffae0d2fee5c093d18473ed07cd10ad1eaded18b92225e17e1c1235f797da6e",
+      "poiTriangles": 516,
+      "backgroundFile": "optimized-tiles/5/14/1_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "backgroundSha256": "894c318a07a9b20f991e9cc86fd1a3334a4884784ee7c9e43ab23007f7f26c60",
+      "backgroundTriangles": 15251
+    },
+    {
+      "sourceTile": "tiles/5/14/1_5.b3dm",
+      "sourceSha256": "a2e8181b331400f4243dd51b4c7358299af30498f04fd1347559772df258ac2c",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "gmlNames": [
+        "SENTOSA DEVELOPMENT CORPORATION"
+      ],
+      "poiFile": "1_5.b3dm",
+      "poiSha256": "4ceeb0d810139885527fd83b8c49bcd2d511bb8c4e24548934912e84e10668e4",
+      "poiTriangles": 516,
+      "backgroundFile": "optimized-tiles/5/14/1_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_eca58ee2-d8e7-46ee-b249-bedad6c5c290"
+      ],
+      "backgroundSha256": "dd361b25d703d96e9f837f7e3382f89ad7947884be99a70b036b8726eae2b328",
+      "backgroundTriangles": 15251
+    }
+  ]
+}
