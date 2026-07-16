@@ -1,0 +1,3 @@
+# Replace /srv/amble before installing with crontab.
+CRON_TZ=Asia/Singapore
+15 3 * * 1 cd /srv/amble && /usr/bin/npm run weekly:refresh >> /var/log/amble-weekly.log 2>&1

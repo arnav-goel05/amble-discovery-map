@@ -5,6 +5,7 @@ import bpy
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "public" / "models" / "esplanade-concert-cutaway.glb"
+SOURCE = ROOT / "assets" / "blender" / "esplanade-concert-cutaway.blend"
 
 bpy.ops.object.select_all(action="SELECT")
 bpy.ops.object.delete()
@@ -129,7 +130,8 @@ for obj in bpy.context.scene.objects:
     obj.select_set(True)
 bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
-bpy.ops.wm.save_as_mainfile(filepath=str(ROOT / "public" / "models" / "esplanade-concert-cutaway.blend"))
+SOURCE.parent.mkdir(parents=True, exist_ok=True)
+bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE))
 OUT.parent.mkdir(parents=True, exist_ok=True)
 bpy.ops.export_scene.gltf(
     filepath=str(OUT),

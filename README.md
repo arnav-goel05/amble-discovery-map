@@ -2,7 +2,7 @@
 
 Amble is a three-dimensional Singapore discovery map for finding events, nearby restaurants, and building an ordered day plan.
 
-![Amble map and onboarding](qa-feature-tour-implementation.png)
+![Amble map and onboarding](docs/design/qa/qa-feature-tour-implementation.png)
 
 **Live demo:** https://amble.amble-sg.workers.dev
 
@@ -55,12 +55,14 @@ npm audit
 ## Repository map
 
 - `activity-scenes/` — map interactions and product features
+- `assets/` — editable source assets that are not shipped to browsers
 - `map-layers/` — deck.gl and MapLibre building layers
 - `scripts/` — server, data pipelines, publication, and operational tooling
 - `cloudflare/` — public Worker and R2/VPC routing
 - `data/` — approved immutable application snapshots and policies
+- `pull_data.md` — executable event-source schedule and success ledger
 - `tests/` — Node contract and Playwright browser tests
-- `docs/` — deployment and operations documentation
+- `docs/` — architecture, deployment, operations, and design QA documentation
 - `specs/` — product baseline, contracts, and implementation record
 
 ## Deployment notes
@@ -72,4 +74,3 @@ Never commit populated `.env` files, Cloudflare credentials, Telegram tokens, ad
 ## Data and licensing
 
 The application source is currently all rights reserved. Third-party libraries and datasets retain their own licences. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for attribution and data-use information.
-

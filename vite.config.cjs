@@ -12,7 +12,9 @@ function remoteTileFallbackPlugin() {
   return {
     name: "remote-tile-fallback",
     configureServer(server) {
-      const configuredOrigin = String(process.env.TILE_FALLBACK_ORIGIN || "").trim().replace(/\/$/, "");
+      const configuredOrigin = String(
+        process.env.TILE_FALLBACK_ORIGIN || "https://amble.amble-sg.workers.dev",
+      ).trim().replace(/\/$/, "");
       let origin = null;
       try {
         if (configuredOrigin) origin = new URL(configuredOrigin);
