@@ -3,6 +3,10 @@
 !.env.example
 node_modules/
 dist/
+dist-cloudflare/
+.cloudflare-public/
+cloudflare/generated-approved-snapshot.mjs
+cloudflare/generated-restaurant-seed.sql
 outputs/
 external-tools/
 public/poi-tiles/source/
