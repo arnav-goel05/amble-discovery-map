@@ -50,8 +50,8 @@ test("multiple events share one landmark pill and one singleton detail panel", a
 });
 
 test("empty snapshots keep the mobile toolbar compact and hide laptop-only map controls", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/?autoStart&emptyApprovedSnapshot#17/1.2858/103.8579/0/60");
+  await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.locator(".landmark-event-pill")).toHaveCount(0);
   await expect(page.locator("#landmark-event-search")).toBeVisible();
   await expect(page.locator(".landmark-event-search__actions > button")).toHaveCount(2);

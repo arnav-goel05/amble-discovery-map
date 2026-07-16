@@ -68,8 +68,8 @@ test('staged stale metadata is visible without publishing the candidate over the
 
 test('staged panel remains usable at a narrow viewport', async ({ page }) => {
   test.skip(!landmarks.length, 'No staged landmarks');
-  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/?autoStart#17/1.285844/103.857897/-30/60');
+  await page.setViewportSize({ width: 390, height: 844 });
   await pill(page, landmarks[0]).locator('.landmark-event-pill__card').click();
   const panel = page.locator('#landmark-event-panel');
   await expect(panel).toBeVisible();

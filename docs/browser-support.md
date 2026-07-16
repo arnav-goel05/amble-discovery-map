@@ -4,9 +4,11 @@ Checked on 2026-07-14 from macOS 26.5.1 (Apple Silicon).
 
 ## Repeatable engine coverage
 
-`playwright.config.mjs` defines the required release-gate desktop and mobile projects for
-Chromium, WebKit, and Firefox. These engine checks are not claims that a branded browser was
-exercised.
+`playwright.config.mjs` defines desktop application projects and mobile compatibility-gate
+projects for Chromium, WebKit, and Firefox. Phone and tablet projects verify that the 3D
+application does not load and that the larger-screen message remains usable. Responsive
+component coverage runs by resizing an allowed desktop session after startup. These engine
+checks are not claims that a branded browser was exercised.
 
 ## Actual installed browsers
 

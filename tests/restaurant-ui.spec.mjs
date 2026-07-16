@@ -233,9 +233,9 @@ test("stale restaurant and deal envelopes are labelled and expired deals stay hi
 });
 
 test("restaurant names are rendered as text and the list remains usable on a narrow viewport", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 760 });
   await mockRestaurantApi(page);
   await page.goto("/?autoStart&emptyApprovedSnapshot");
+  await page.setViewportSize({ width: 390, height: 760 });
   await expect.poll(() => page.locator("body").getAttribute("data-restaurant-explorer")).toBe("mounted");
   await page.locator("#restaurant-search-button").click();
   const unsafe = page.locator('[data-restaurant-id="osm-node-43"] .restaurant-results__name');

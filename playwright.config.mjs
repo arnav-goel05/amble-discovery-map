@@ -3,11 +3,11 @@ import { defineConfig, devices } from "playwright/test";
 const fullMatrix = process.env.PLAYWRIGHT_FULL_MATRIX === "1";
 const projects = [
   { name: "chromium-desktop", use: { ...devices["Desktop Chrome"] } },
-  { name: "chromium-mobile", use: { ...devices["Pixel 7"] } },
+  { name: "chromium-mobile", testMatch: "**/device-support.spec.mjs", use: { ...devices["Pixel 7"] } },
   { name: "webkit-desktop", use: { ...devices["Desktop Safari"] } },
-  { name: "webkit-mobile", use: { ...devices["iPhone 15"] } },
+  { name: "webkit-mobile", testMatch: "**/device-support.spec.mjs", use: { ...devices["iPhone 15"] } },
   { name: "firefox-desktop", use: { ...devices["Desktop Firefox"] } },
-  { name: "firefox-mobile", use: { browserName: "firefox", viewport: { width: 390, height: 844 }, hasTouch: true } },
+  { name: "firefox-mobile", testMatch: "**/device-support.spec.mjs", use: { browserName: "firefox", viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, hasTouch: true } },
 ];
 
 export default defineConfig({

@@ -32,6 +32,7 @@ Requirements:
 
 - Node.js 24 or newer
 - npm
+- A laptop or desktop with a longest screen edge of at least 1024 CSS pixels; phone and tablet browsers receive a lightweight compatibility screen before the 3D application loads
 
 ```bash
 npm ci
