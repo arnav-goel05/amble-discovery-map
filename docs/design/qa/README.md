@@ -66,7 +66,7 @@ final result: passed
 
 # Amble Wordmark Integration Design QA
 
-- Source visual truth: `public/brand/amble-wordmark.png`
+- Source visual truth: [`public/brand/amble-wordmark.png`](../../../public/brand/amble-wordmark.png)
 - Implementation screenshots: `qa-amble-wordmark-desktop.jpg`, `qa-amble-wordmark-mobile.jpg`, and `qa-amble-wordmark-small-phone.jpg`
 - Combined comparison evidence: `qa-amble-wordmark-comparison.png`
 - Viewports and state: 1440 × 900, 768 × 1024, 390 × 844, and 320 × 568; intro loading state
