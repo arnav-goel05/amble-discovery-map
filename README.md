@@ -21,7 +21,8 @@ Amble is a three-dimensional Singapore discovery map for finding events, nearby 
 Browser
   -> Cloudflare Worker
       -> Cloudflare R2 (3D tile geometry)
-      -> Workers VPC -> Cloudflare Tunnel -> Node application/API
+      -> Cloudflare D1 (restaurant data and runtime state)
+      -> Worker static assets + approved event snapshot
 ```
 
 The repository intentionally contains tileset manifests but not the large `.b3dm` geometry files. Production geometry is stored in Cloudflare R2 so Git clones remain lightweight.
@@ -68,7 +69,7 @@ npm audit
 
 ## Deployment notes
 
-The current public deployment uses Cloudflare R2 for 3D geometry and a Workers VPC tunnel to the application origin. See [the deployment guide](docs/cloudflare-workers-vpc.md) for the exact request path and operational constraints.
+The public deployment is cloud-native and does not require a Mac, tunnel, or long-running Node process. See [the cloud-native deployment guide](docs/cloudflare-cloud-native.md) for deployment and verification. The older [Workers VPC guide](docs/cloudflare-workers-vpc.md) is retained only as a rollback reference.
 
 Never commit populated `.env` files, Cloudflare credentials, Telegram tokens, administrator secrets, downloaded source geometry, or runtime databases.
 
