@@ -60,7 +60,7 @@ npm audit
 - `assets/` - editable source assets that are not shipped to browsers
 - `map-layers/` - deck.gl and MapLibre building layers
 - `scripts/` - server, data pipelines, publication, and operational tooling
-- `cloudflare/` - public Worker and R2/VPC routing
+- `cloudflare/` - Workers, D1, R2, and static asset hosting
 - `data/` - approved immutable application snapshots and policies
 - `pull_data.md` - executable event-source schedule and success ledger
 - `tests/` - Node contract and Playwright browser tests
