@@ -203,7 +203,7 @@ release without broadening scope.
 - [x] T040 [P] Update canonical-host, metadata ownership, crawler review cadence, privacy, artifact classification, and single-page limitations in `README.md` and `docs/seo-geo-operations.md`
 - [x] T041 Run the post-change benchmark and compare it with `outputs/seo-geo/before/`, storing routine results under `outputs/seo-geo/after/` and documenting any material regression in `docs/seo-geo-operations.md`
 - [x] T042 Run lint, changed-file formatting, unit/integration tests, `npm run cloudflare:cloud:check`, and the full desktop/mobile Chromium/WebKit/Firefox matrix from `specs/003-maximize-seo-geo/quickstart.md`
-- [ ] T043 Validate preview and production HTTP contracts with `scripts/verify-site-discovery.mjs`, record the prior Worker rollback version under ignored `outputs/seo-geo/release/`, and preserve/restore it on any mandatory failure
+- [x] T043 Validate preview and production HTTP contracts with `scripts/verify-site-discovery.mjs`, record the prior Worker rollback version under ignored `outputs/seo-geo/release/`, and preserve/restore it on any mandatory failure
 - [x] T044 Apply the matching free Cloudflare managed-robots/content-signal/verified-bot controls, or record `not-available` when the free account lacks a control, in `docs/seo-geo-operations.md`
 - [x] T045 Complete DNS-only Google Search Console and Bing Webmaster Tools verification plus canonical sitemap submission, or record a sanitized provider `external-blocker`, in `docs/seo-geo-operations.md`
 - [x] T046 Perform a final scope audit confirming no event/guide/mobile-content/`llms.txt`/crawler-only page, paid service, analytics, or unsupported schema was added in `specs/003-maximize-seo-geo/checklists/requirements.md`

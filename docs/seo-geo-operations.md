@@ -56,6 +56,18 @@ Discovery responses use a one-hour revalidating cache. Identity assets are repla
 with their metadata. After an urgent correction, deploy the corrected Worker and purge only the
 affected URL(s), then rerun GET/HEAD and unauthenticated asset checks.
 
+### Production release evidence (2026-07-18)
+
+- Exact tested commit: `67050ba9748daa8caaddea98ca6624180c8c7005`.
+- Active Worker version: `5b3ebdd1-11aa-4b6c-898d-c17856b9db9d`; preserved rollback version:
+  `28b74c15-d0cc-4817-a12f-aafd7da61804`.
+- A mandatory alias check failed during an earlier propagation window, so production was
+  immediately restored to the preserved version. After disabling Cloudflare Managed robots.txt
+  and selectively purging only the homepage, robots, and sitemap URLs, five consecutive probes
+  passed and the full live release record passed all required checks in one attempt.
+- The sanitized release record is retained under ignored
+  `outputs/seo-geo/release/live.json`; no credentials or account identifiers are stored.
+
 ### Performance evidence (2026-07-17)
 
 The pre-change cold UI sample was 746.6 ms; two post-change samples were 700.8 ms and 727.1 ms.
@@ -83,11 +95,14 @@ content, `llms.txt`, crawler-only response, paid SEO service, behavioral analyti
 event/venue/review/rating/offer/FAQ schema. Desktop retains full 3D Amble; mobile retains the
 existing desktop-required compatibility screen without loading the 3D bundle.
 
-## Pending operator evidence
+## Operator evidence
 
-- Cloudflare dashboard review on 2026-07-17 confirmed managed `robots.txt` is off. The Free-plan
-  per-crawler block switches are present but disabled, so verified-bot edge enforcement is
-  recorded as `not-available`; repository directives remain voluntary.
+- Cloudflare dashboard review on 2026-07-18 found Managed robots.txt enabled and prepending
+  Cloudflare content to the repository response. It was disabled with owner approval, the five
+  affected URLs were selectively purged, and the exact repository response then passed five
+  consecutive probes plus the full live verifier. The Free-plan per-crawler block switches are
+  present but disabled, so verified-bot edge enforcement remains `not-available`; repository
+  directives remain voluntary.
 - Google Search Console: `external-blocker` — the domain property is unconfigured and awaits
   owner confirmation before property creation and DNS TXT verification.
 - Bing Webmaster Tools: `external-blocker` — sign-in requires granting Bing access to the
