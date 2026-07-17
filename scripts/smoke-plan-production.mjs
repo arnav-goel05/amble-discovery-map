@@ -53,7 +53,7 @@ try {
   const plan = await create.json();
   assert.equal(Object.hasOwn(plan, "shareUrl"), false);
   assert.equal((await (await fetch(`${origin}/api/plans/${plan.id}`)).json()).title, "Production smoke plan");
-  assert.match(await (await fetch(origin)).text(), /Amble - Singapore Events Map/);
+  assert.match(await (await fetch(origin)).text(), /Amble: See What’s Happening in Singapore/);
   const backgroundTilesetUrl = `${origin}/optimized-tiles/tileset.json`;
   const compressedTileset = await fetch(backgroundTilesetUrl, { headers: { "Accept-Encoding": "gzip" } });
   assert.equal(compressedTileset.status, 200);
