@@ -11,6 +11,20 @@ if (!base) {
   );
 }
 
+let effectiveBase = base;
+if (/^0+$/.test(base)) {
+  try {
+    effectiveBase = execFileSync("git", ["rev-parse", `${head}^`], {
+      encoding: "utf8",
+    }).trim();
+  } catch {
+    effectiveBase = execFileSync("git", ["mktree"], {
+      encoding: "utf8",
+      input: "",
+    }).trim();
+  }
+}
+
 const supportedExtensions = new Set([
   ".cjs",
   ".css",
@@ -25,7 +39,7 @@ const supportedExtensions = new Set([
 
 const changedFiles = execFileSync(
   "git",
-  ["diff", "--name-only", "--diff-filter=ACMR", `${base}...${head}`],
+  ["diff", "--name-only", "--diff-filter=ACMR", effectiveBase, head],
   { encoding: "utf8" },
 )
   .split("\n")
