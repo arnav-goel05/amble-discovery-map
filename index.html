@@ -1,29 +1,128 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Explore Singapore in 3D and discover events happening across the city. Amble turns what’s on into an interactive desktop map."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://amblefinds.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Amble" />
+    <meta property="og:locale" content="en_SG" />
+    <meta
+      property="og:title"
+      content="Amble: See What’s Happening in Singapore"
+    />
+    <meta
+      property="og:description"
+      content="Explore Singapore in 3D and discover events happening across the city. Amble turns what’s on into an interactive desktop map."
+    />
+    <meta property="og:url" content="https://amblefinds.com/" />
+    <meta
+      property="og:image"
+      content="https://amblefinds.com/brand/amble-social-card.png"
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Amble interactive 3D events map of Singapore"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Amble: See What’s Happening in Singapore"
+    />
+    <meta
+      name="twitter:description"
+      content="Explore Singapore in 3D and discover events happening across the city. Amble turns what’s on into an interactive desktop map."
+    />
+    <meta
+      name="twitter:image"
+      content="https://amblefinds.com/brand/amble-social-card.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="Amble interactive 3D events map of Singapore"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/brand/favicon-32.png"
+    />
+    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
     <link rel="preload" href="/brand/amble-wordmark.png" as="image" />
-    <title>Amble - Singapore Events Map</title>
+    <title>Amble: See What’s Happening in Singapore</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://amblefinds.com/#website",
+            "url": "https://amblefinds.com/",
+            "name": "Amble",
+            "description": "Explore Singapore in 3D and discover events happening across the city. Amble turns what’s on into an interactive desktop map.",
+            "inLanguage": "en-SG",
+            "publisher": {
+              "@id": "https://amblefinds.com/#organization"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://amblefinds.com/#organization",
+            "name": "Amble",
+            "url": "https://amblefinds.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://amblefinds.com/brand/event-map-logo.png"
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="map"></div>
-    <div id="experience-intro" class="experience-intro" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="experience-intro-title">
+    <div
+      id="experience-intro"
+      class="experience-intro"
+      tabindex="-1"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="experience-intro-title"
+    >
       <div class="experience-intro__content">
         <div class="experience-intro__brand">
-          <img class="experience-intro__wordmark" src="/brand/amble-wordmark.png" alt="Amble" width="1422" height="449" decoding="async" fetchpriority="high" />
-          <h1 id="experience-intro-title" class="experience-intro__title">There is too much happening in Singapore, you just didn't know it</h1>
+          <img
+            class="experience-intro__wordmark"
+            src="/brand/amble-wordmark.png"
+            alt="Amble"
+            width="1422"
+            height="449"
+            decoding="async"
+            fetchpriority="high"
+          />
+          <h1 id="experience-intro-title" class="experience-intro__title">
+            There is too much happening in Singapore, you just didn't know it
+          </h1>
         </div>
         <div class="experience-intro__loading" role="status" aria-live="polite">
           <span>Bringing Singapore into view</span>
-          <span class="experience-intro__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="experience-intro__dots" aria-hidden="true"
+            ><i></i><i></i><i></i
+          ></span>
         </div>
-        <button class="experience-intro__enter" type="button" hidden disabled>Let's explore</button>
+        <button class="experience-intro__enter" type="button" hidden disabled>
+          Let's explore
+        </button>
       </div>
     </div>
     <script type="module" src="/app-entry.js"></script>
-    <!-- Cloudflare Web Analytics -->
-    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"354859786dc244b6b5783c72fcd2eea4"}'></script>
-    <!-- End Cloudflare Web Analytics -->
   </body>
 </html>
