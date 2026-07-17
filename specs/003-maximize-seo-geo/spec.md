@@ -191,20 +191,23 @@ reported status has a non-personal operational source.
   image; favicon and accessible logo identity; minimal website and publisher structured data;
   valid `robots.txt`; purpose-specific search/retrieval/training crawler policy; valid
   one-URL sitemap; correct content types and cache behavior for discovery files; true
-  not-found outcomes for unknown public paths; free webmaster registration/submission and
-  synthetic validation; removal of client-side visitor analytics; and operational guidance.
+  not-found outcomes for unknown public paths; free Google Search Console
+  registration/submission and synthetic validation; removal of client-side visitor analytics;
+  and operational guidance.
 - **Out of scope**: Individual event pages; venue pages; date, category, price, neighbourhood,
   or filter collections; articles, guides, FAQs, or editorial content; mobile event
   information; event structured data; keyword-volume tooling; paid SEO/GEO services; backlink
   campaigns; crawler-only pages; `llms.txt` or Markdown-for-agent content; application redesign;
-  guaranteed rankings, rich results, answer-engine mentions, or citations.
+  additional webmaster consoles; guaranteed rankings, rich results, answer-engine mentions,
+  or citations.
 - **Evidence and dependencies**: Homepage claims MUST describe the existing product accurately.
   Crawler identities and directives MUST be checked against current primary operator
-  documentation. Only free webmaster and validation capabilities may be used. External
-  console delays or outages MUST NOT affect public availability.
+  documentation. Only free Google Search Console and validation capabilities may be used.
+  External console delays or outages MUST NOT affect public availability.
 - **Privacy and lifecycle**: Public use remains anonymous. No behavioral analytics, advertising
   identifiers, client tracking beacons, or new personal data may be collected. Aggregate
-  webmaster reports, verified crawler requests, and synthetic checks are operational evidence.
+  Search Console reports, verified crawler requests, and synthetic checks are operational
+  evidence.
 - **Experience**: The current full 3D desktop application and current mobile device gate remain
   visually and behaviorally unchanged except for metadata and removal of the analytics beacon.
   The feature MUST NOT expose event information on mobile or serve privileged content to a
@@ -259,9 +262,9 @@ reported status has a non-personal operational source.
   policy/brand correction without producing unnecessary crawler downloads.
 - **FR-018**: The public application MUST not send the existing or any replacement client-side
   visitor analytics beacon and MUST not create a new persistent analytics identifier.
-- **FR-019**: The operator MUST be able to verify the domain with configured free webmaster
-  services, submit the canonical sitemap, inspect the canonical homepage, and review crawl and
-  index outcomes without exposing credentials in the repository.
+- **FR-019**: The operator MUST be able to verify the domain with Google Search Console, submit
+  the canonical sitemap, inspect the canonical homepage, and review crawl and index outcomes
+  without exposing credentials in the repository.
 - **FR-020**: Automated validation MUST cover canonical and alternate origins; metadata;
   structured identity; preview and favicon assets; crawler-purpose policy; crawler-file
   syntax/content types; sitemap membership; missing paths/assets; mobile gate; absence of
@@ -269,7 +272,7 @@ reported status has a non-personal operational source.
 - **FR-021**: A failed redirect, metadata, asset, crawler-policy, sitemap, status-code, privacy,
   build, or browser gate MUST prevent publication and preserve the previous working deployment.
 - **FR-022**: Operational documentation MUST explain canonical-host policy, metadata ownership,
-  crawler categories, no-training policy, sitemap submission, webmaster verification,
+  crawler categories, no-training policy, sitemap submission, Google Search Console verification,
   synthetic checks, cache updates, rollback, and the deliberate limitations of this phase.
 
 ### Key Entities
@@ -307,8 +310,8 @@ reported status has a non-personal operational source.
   advertising beacon requests and zero new persistent visitor identifiers.
 - **SC-008**: Existing desktop acceptance tests and the existing mobile device-gate tests pass
   without a user-visible application regression.
-- **SC-009**: Each configured free webmaster service accepts domain ownership and the canonical
-  sitemap, or records a specific external blocker without affecting release correctness.
+- **SC-009**: Google Search Console accepts domain ownership and the canonical sitemap, or
+  records a specific external blocker without affecting release correctness.
 - **SC-010**: Every failed release fixture leaves the prior canonical redirects, homepage,
   metadata, assets, crawler policy, and sitemap unchanged.
 
@@ -323,6 +326,7 @@ reported status has a non-personal operational source.
   search potential.
 - Search and answer-engine retrieval should be permitted, while model-training collection
   should remain disallowed.
+- Google Search Console is the only webmaster console included in this phase.
 - Paid keyword, backlink, rendering, analytics, and SEO platforms remain prohibited.
 - Search rankings and generative citations cannot be promised from technical changes alone;
   this phase establishes correctness and eligibility for future content work.

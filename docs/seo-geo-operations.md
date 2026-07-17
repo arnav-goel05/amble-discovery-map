@@ -78,12 +78,10 @@ or client request, removes one analytics request, and leaves the 3D entry bundle
 the evidence does not attribute the warm variance to SEO/GEO code. Raw results are retained in
 ignored `outputs/seo-geo/before/`, `after/`, and `after-repeat/` directories.
 
-## Webmaster services
+## Webmaster service
 
 - Google Search Console: create the `amblefinds.com` domain property, verify by DNS TXT, submit
   `https://amblefinds.com/sitemap.xml`, and inspect the selected canonical after processing.
-- Bing Webmaster Tools: use DNS verification or the supported Search Console import, submit
-  the same sitemap, and record processing state.
 - Commit only `unconfigured`, `dns-pending`, `verified`, `sitemap-submitted`, `processed`, or a
   sanitized `external-blocker`. Never commit TXT values, cookies, account identifiers, or
   screenshots containing private account data.
@@ -103,9 +101,8 @@ existing desktop-required compatibility screen without loading the 3D bundle.
   consecutive probes plus the full live verifier. The Free-plan per-crawler block switches are
   present but disabled, so verified-bot edge enforcement remains `not-available`; repository
   directives remain voluntary.
-- Google Search Console: `external-blocker` — the domain property is unconfigured and awaits
-  owner confirmation before property creation and DNS TXT verification.
-- Bing Webmaster Tools: `external-blocker` — sign-in requires granting Bing access to the
-  selected Google account profile; no OAuth permission was granted without owner confirmation.
+- Google Search Console: `sitemap-submitted` — the `amblefinds.com` domain property is verified
+  by DNS, and `https://amblefinds.com/sitemap.xml` was submitted and read successfully on
+  2026-07-18 with one discovered page. Keep the verification DNS record in place.
 - Secrets, verification tokens, account identifiers, and screenshots containing private data
   are not committed.

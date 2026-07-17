@@ -61,7 +61,7 @@ _GATE: Passed before Phase 0 and re-checked after Phase 1 design._
   omitted, and no event-level claims are fabricated.
 - **Automation — PASS**: Pure policy helpers, build verification, Worker contract tests, browser
   tests, and live synthetic checks own repeatable validation. Manual work is limited to visual
-  approval of the social card and free webmaster-console ownership/submission, with documented
+  approval of the social card and Google Search Console ownership/submission, with documented
   expected outputs.
 - **Identity and publication — PASS**: Stable IDs are the canonical origin and fragment IDs
   `#website` and `#organization`. A candidate is classified as create, update, or no-op by file
@@ -78,10 +78,9 @@ _GATE: Passed before Phase 0 and re-checked after Phase 1 design._
   required Chromium/WebKit/Firefox desktop/mobile matrix preserves the current gate and desktop
   app. The social card is a non-runtime asset; no rendering loop or client dependency is added.
   Existing before/after benchmark output is recorded because public HTML and assets change.
-- **Operations and privacy — PASS**: Google Search Console, Bing Webmaster Tools, Cloudflare,
-  and local validators are free. The Cloudflare analytics beacon is removed, no replacement is
-  added, operational evidence contains no visitor identifiers, and the single-host deployment
-  model is unchanged.
+- **Operations and privacy — PASS**: Google Search Console, Cloudflare, and local validators are
+  free. The Cloudflare analytics beacon is removed, no replacement is added, operational
+  evidence contains no visitor identifiers, and the single-host deployment model is unchanged.
 
 ### Post-design re-check
 
@@ -160,7 +159,7 @@ Amble turns what’s on into an interactive desktop map.`
   webmaster indexing. Run the production build and full relevant test suite before deployment;
   deploy one Worker version containing HTML, policy, and assets; run live checks; roll back to
   the previous version on a failed mandatory check.
-- Verify the domain through DNS in Google Search Console and Bing Webmaster Tools, submit
+- Verify the domain through DNS in Google Search Console, submit
   `https://amblefinds.com/sitemap.xml`, and document pending/external-blocker states without
   delaying a technically correct release.
 

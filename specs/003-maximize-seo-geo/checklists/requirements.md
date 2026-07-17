@@ -34,6 +34,8 @@
 - Research and application audit completed before specification drafting.
 - Five high-impact product choices were recorded through `/speckit-clarify`; the
   specification is ready for planning.
+- Google Search Console is the sole webmaster console in scope; secondary console integration
+  was removed by owner decision on 2026-07-18.
 
 ## Final Scope Audit
 

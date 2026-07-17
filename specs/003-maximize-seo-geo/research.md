@@ -229,7 +229,7 @@ validated without running the 3D app in a social crawler.
 replacement analytics SDK, cookie, identifier, or visitor-level log.
 
 **Rationale**: The project constitution forbids user analytics and product telemetry. Search
-Console/Bing aggregate webmaster reports and synthetic HTTP/browser checks provide sufficient
+Console aggregate webmaster reports and synthetic HTTP/browser checks provide sufficient
 operational evidence without instrumenting visitors.
 
 **Alternatives considered**:
@@ -237,12 +237,11 @@ operational evidence without instrumenting visitors.
 - Privacy-focused analytics: still violates the explicit no-user-analytics constraint.
 - Server-side pageview logs: not required; minimal security/reliability logs remain allowed.
 
-## Decision 11: Verify through free consoles and DNS
+## Decision 11: Verify through Google Search Console and DNS
 
-**Decision**: Use free Google Search Console and Bing Webmaster Tools domain verification via
-DNS TXT records managed in Cloudflare, submit the canonical sitemap, and document state as
-pending, verified, submitted, indexed, or external blocker. No token or console credential is
-committed.
+**Decision**: Use free Google Search Console domain verification via a DNS TXT record managed
+in Cloudflare, submit the canonical sitemap, and document state as pending, verified,
+submitted, indexed, or external blocker. No token or console credential is committed.
 
 **Rationale**: DNS verification proves the whole domain without adding secret-like HTML files
 or runtime configuration. Console processing is asynchronous and must not be confused with a
@@ -251,6 +250,8 @@ release gate.
 **Alternatives considered**:
 
 - HTML meta/file verification: workable, but creates token lifecycle in the public build.
+- Additional webmaster consoles: excluded because Google Search Console is sufficient for this
+  foundation phase.
 - Paid rank/GEO monitoring suites: prohibited and unnecessary for foundation correctness.
 
 ## Decision 12: Treat GEO claims conservatively
