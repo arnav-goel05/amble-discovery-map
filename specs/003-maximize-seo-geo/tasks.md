@@ -187,7 +187,7 @@ mandatory fixture.
 - [x] T035 [US6] Remove the Cloudflare Web Analytics beacon from `index.html` and remove Cloudflare Insights hosts from `SECURITY_HEADERS` in `cloudflare/cloud-native-worker.mjs`
 - [x] T036 [US6] Implement idempotent static/preview/live modes, schema-versioned release records, secret sanitization, mandatory versus external-blocker classification, and rollback-target reporting in `scripts/verify-site-discovery.mjs`
 - [x] T037 [US6] Keep the protected `Quality checks` context stable while raising its timeout to 40 minutes, installing Chromium/WebKit/Firefox, running all six explicit desktop/mobile projects in `.github/workflows/ci.yml`, and aligning project definitions in `playwright.config.mjs`
-- [x] T038 [US6] Document DNS-only Google Search Console/Bing verification, sitemap submission, cache correction, Cloudflare deploy/rollback, sanitized evidence, and deliberate mobile/content limitations in `docs/seo-geo-operations.md`
+- [x] T038 [US6] Document DNS-only Google Search Console verification, sitemap submission, cache correction, Cloudflare deploy/rollback, sanitized evidence, and deliberate mobile/content limitations in `docs/seo-geo-operations.md`
 
 **Checkpoint**: User Story 6 independently proves technical eligibility and privacy without
 tracking users.
@@ -205,7 +205,7 @@ release without broadening scope.
 - [x] T042 Run lint, changed-file formatting, unit/integration tests, `npm run cloudflare:cloud:check`, and the full desktop/mobile Chromium/WebKit/Firefox matrix from `specs/003-maximize-seo-geo/quickstart.md`
 - [x] T043 Validate preview and production HTTP contracts with `scripts/verify-site-discovery.mjs`, record the prior Worker rollback version under ignored `outputs/seo-geo/release/`, and preserve/restore it on any mandatory failure
 - [x] T044 Apply the matching free Cloudflare managed-robots/content-signal/verified-bot controls, or record `not-available` when the free account lacks a control, in `docs/seo-geo-operations.md`
-- [x] T045 Complete DNS-only Google Search Console and Bing Webmaster Tools verification plus canonical sitemap submission, or record a sanitized provider `external-blocker`, in `docs/seo-geo-operations.md`
+- [x] T045 Complete DNS-only Google Search Console verification plus canonical sitemap submission, or record a sanitized provider `external-blocker`, in `docs/seo-geo-operations.md`
 - [x] T046 Perform a final scope audit confirming no event/guide/mobile-content/`llms.txt`/crawler-only page, paid service, analytics, or unsupported schema was added in `specs/003-maximize-seo-geo/checklists/requirements.md`
 
 ---

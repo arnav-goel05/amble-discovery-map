@@ -144,15 +144,9 @@ This is operator work and must not expose credentials in Git or logs.
 4. Submit `https://amblefinds.com/sitemap.xml`.
 5. Inspect the canonical homepage and confirm the selected canonical when processing completes.
 
-### Bing Webmaster Tools
-
-1. Add the domain using DNS verification or import the verified Search Console property where
-   the free console supports it.
-2. Submit the same canonical sitemap.
-3. Record verification/submission/processing state without credentials or visitor data.
-
-Expected: each service reaches verified and sitemap-submitted, or has a specific sanitized
-external blocker. Provider delay does not roll back an otherwise correct HTTP release.
+Expected: Google Search Console reaches verified and sitemap-submitted, or has a specific
+sanitized external blocker. Provider delay does not roll back an otherwise correct HTTP
+release.
 
 ## 9. Manual social-preview check
 

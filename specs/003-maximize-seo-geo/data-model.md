@@ -161,15 +161,15 @@ Host/protocol/path normalization contract.
 
 Operator-owned external state; no credentials are stored in the model.
 
-| Field        | Type         | Required | Rule                                              |
-| ------------ | ------------ | -------: | ------------------------------------------------- |
-| `provider`   | enum         |      yes | `google-search-console` or `bing-webmaster-tools` |
-| `property`   | string       |      yes | `amblefinds.com` domain property                  |
-| `method`     | enum         |      yes | `dns-txt`                                         |
-| `state`      | enum         |      yes | See transitions below                             |
-| `sitemapUrl` | URL          |      yes | Canonical sitemap                                 |
-| `checkedAt`  | ISO datetime |       no | Operator observation time                         |
-| `blocker`    | string/null  |       no | Sanitized external reason only                    |
+| Field        | Type         | Required | Rule                             |
+| ------------ | ------------ | -------: | -------------------------------- |
+| `provider`   | enum         |      yes | `google-search-console`          |
+| `property`   | string       |      yes | `amblefinds.com` domain property |
+| `method`     | enum         |      yes | `dns-txt`                        |
+| `state`      | enum         |      yes | See transitions below            |
+| `sitemapUrl` | URL          |      yes | Canonical sitemap                |
+| `checkedAt`  | ISO datetime |       no | Operator observation time        |
+| `blocker`    | string/null  |       no | Sanitized external reason only   |
 
 ### State transitions
 
