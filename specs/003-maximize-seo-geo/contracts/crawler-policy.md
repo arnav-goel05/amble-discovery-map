@@ -19,20 +19,20 @@ Every row requires release-time confirmation against its linked primary document
 identity is renamed or its purpose becomes ambiguous, classify it as `review` and do not invent
 a replacement.
 
-| Agent token        | Purpose                  | Access   | Evidence                                                                                                                                                         |
-| ------------------ | ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Googlebot`        | Traditional search       | Allow    | [Google crawlers](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers)                                                          |
-| `Bingbot`          | Traditional search       | Allow    | [Bing Webmaster Guidelines](https://www.bing.com/webmasters/help/webmaster-guidelines-30fba23a)                                                                  |
-| `OAI-SearchBot`    | AI answer search         | Allow    | [OpenAI bots](https://platform.openai.com/docs/bots)                                                                                                             |
-| `ChatGPT-User`     | User-requested retrieval | Allow    | [OpenAI bots](https://platform.openai.com/docs/bots)                                                                                                             |
-| `GPTBot`           | Model training           | Disallow | [OpenAI bots](https://platform.openai.com/docs/bots)                                                                                                             |
-| `Claude-SearchBot` | AI answer search         | Allow    | [Anthropic crawler controls](https://support.anthropic.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler) |
-| `Claude-User`      | User-requested retrieval | Allow    | [Anthropic crawler controls](https://support.anthropic.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler) |
-| `ClaudeBot`        | Model training           | Disallow | [Anthropic crawler controls](https://support.anthropic.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler) |
-| `PerplexityBot`    | AI answer search         | Allow    | [Perplexity bots](https://docs.perplexity.ai/guides/bots)                                                                                                        |
-| `Perplexity-User`  | User-requested retrieval | Allow    | [Perplexity bots](https://docs.perplexity.ai/guides/bots)                                                                                                        |
-| `Google-Extended`  | Model-use control        | Disallow | [Google-Extended](https://developers.google.com/search/docs/crawling-indexing/google-common-crawlers#google-extended)                                            |
-| `CCBot`            | Dataset/model training   | Disallow | [Common Crawl bot](https://commoncrawl.org/ccbot)                                                                                                                |
+| Agent token        | Purpose                  | Access   | Evidence                                                                                                                                                      |
+| ------------------ | ------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Googlebot`        | Traditional search       | Allow    | [Google crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers)                                                     |
+| `Bingbot`          | Traditional search       | Allow    | [Bing Webmaster Guidelines](https://www.bing.com/webmasters/help/webmaster-guidelines-30fba23a)                                                               |
+| `OAI-SearchBot`    | AI answer search         | Allow    | [OpenAI bots](https://developers.openai.com/api/docs/bots)                                                                                                    |
+| `ChatGPT-User`     | User-requested retrieval | Allow    | [OpenAI bots](https://developers.openai.com/api/docs/bots)                                                                                                    |
+| `GPTBot`           | Model training           | Disallow | [OpenAI bots](https://developers.openai.com/api/docs/bots)                                                                                                    |
+| `Claude-SearchBot` | AI answer search         | Allow    | [Anthropic crawler controls](https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler) |
+| `Claude-User`      | User-requested retrieval | Allow    | [Anthropic crawler controls](https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler) |
+| `ClaudeBot`        | Model training           | Disallow | [Anthropic crawler controls](https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler) |
+| `PerplexityBot`    | AI answer search         | Allow    | [Perplexity bots](https://docs.perplexity.ai/docs/resources/perplexity-crawlers)                                                                              |
+| `Perplexity-User`  | User-requested retrieval | Allow    | [Perplexity bots](https://docs.perplexity.ai/docs/resources/perplexity-crawlers)                                                                              |
+| `Google-Extended`  | Model-use control        | Disallow | [Google-Extended](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers#google-extended)                                       |
+| `CCBot`            | Dataset/model training   | Disallow | [Common Crawl bot](https://commoncrawl.org/ccbot)                                                                                                             |
 
 ## Enforcement levels
 

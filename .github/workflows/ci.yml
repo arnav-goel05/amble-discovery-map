@@ -18,7 +18,7 @@ jobs:
   quality:
     name: Quality checks
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
 
     steps:
       - name: Check out repository
@@ -44,8 +44,8 @@ jobs:
           CI_HEAD_SHA: ${{ github.sha }}
         run: npm run format:check
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install browser matrix
+        run: npx playwright install --with-deps chromium webkit firefox
 
       - name: Run unit and integration tests
         run: npm run test:unit

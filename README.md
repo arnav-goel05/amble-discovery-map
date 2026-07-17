@@ -4,7 +4,11 @@ Amble is a three-dimensional Singapore discovery map for finding events, nearby 
 
 ![Amble map and onboarding](docs/design/qa/qa-feature-tour-implementation.png)
 
-**Live demo:** https://amble.amble-sg.workers.dev
+**Canonical site:** https://amblefinds.com/
+
+The `www` hostname and `amble.amble-sg.workers.dev` are redirect-only aliases. Homepage
+metadata, crawler policy, sitemap, privacy constraints, and the quarterly crawler-review process
+are documented in [docs/seo-geo-operations.md](docs/seo-geo-operations.md).
 
 ## What it does
 
@@ -72,6 +76,10 @@ npm audit
 The public deployment is cloud-native and does not require a Mac, tunnel, or long-running Node process. See [the cloud-native deployment guide](docs/cloudflare-cloud-native.md) for deployment and verification. The older [Workers VPC guide](docs/cloudflare-workers-vpc.md) is retained only as a rollback reference.
 
 Never commit populated `.env` files, Cloudflare credentials, Telegram tokens, administrator secrets, downloaded source geometry, or runtime databases.
+
+Public use has no client-side visitor analytics or advertising identifier. The public discovery
+surface is intentionally one canonical homepage: there are no indexable event/guide pages,
+crawler-only pages, or mobile event-content variant.
 
 ## Data and licensing
 

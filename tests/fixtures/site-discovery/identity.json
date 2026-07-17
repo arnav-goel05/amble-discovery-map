@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "1.0",
+  "canonicalOrigin": "https://amblefinds.com",
+  "canonicalHomepage": "https://amblefinds.com/",
+  "workerAliasHost": "amble.amble-sg.workers.dev",
+  "siteName": "Amble",
+  "publisherName": "Amble",
+  "language": "en-SG",
+  "locale": "en_SG",
+  "title": "Amble: See What’s Happening in Singapore",
+  "description": "Explore Singapore in 3D and discover events happening across the city. Amble turns what’s on into an interactive desktop map.",
+  "websiteId": "https://amblefinds.com/#website",
+  "organizationId": "https://amblefinds.com/#organization",
+  "logoUrl": "https://amblefinds.com/brand/event-map-logo.png",
+  "socialImage": {
+    "url": "https://amblefinds.com/brand/amble-social-card.png",
+    "width": 1200,
+    "height": 630,
+    "maxBytes": 512000,
+    "alt": "Amble interactive 3D events map of Singapore"
+  },
+  "discovery": {
+    "robotsPath": "/robots.txt",
+    "sitemapPath": "/sitemap.xml",
+    "cacheControl": "public, max-age=3600, must-revalidate"
+  },
+  "crawlers": [
+    {
+      "agent": "Googlebot",
+      "purpose": "traditional-search",
+      "access": "allow",
+      "evidenceUrl": "https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    },
+    {
+      "agent": "Bingbot",
+      "purpose": "traditional-search",
+      "access": "allow",
+      "evidenceUrl": "https://www.bing.com/webmasters/help/webmaster-guidelines-30fba23a",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    },
+    {
+      "agent": "OAI-SearchBot",
+      "purpose": "answer-search",
+      "access": "allow",
+      "evidenceUrl": "https://developers.openai.com/api/docs/bots",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    },
+    {
+      "agent": "ChatGPT-User",
+      "purpose": "user-retrieval",
+      "access": "allow",
+      "evidenceUrl": "https://developers.openai.com/api/docs/bots",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    },
+    {
+      "agent": "GPTBot",
+      "purpose": "model-training",
+      "access": "disallow",
+      "evidenceUrl": "https://developers.openai.com/api/docs/bots",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    },
+    {
+      "agent": "Claude-SearchBot",
+      "purpose": "answer-search",
+      "access": "allow",
+      "evidenceUrl": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    },
+    {
+      "agent": "Claude-User",
+      "purpose": "user-retrieval",
+      "access": "allow",
+      "evidenceUrl": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    },
+    {
+      "agent": "ClaudeBot",
+      "purpose": "model-training",
+      "access": "disallow",
+      "evidenceUrl": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    },
+    {
+      "agent": "PerplexityBot",
+      "purpose": "answer-search",
+      "access": "allow",
+      "evidenceUrl": "https://docs.perplexity.ai/docs/resources/perplexity-crawlers",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    },
+    {
+      "agent": "Perplexity-User",
+      "purpose": "user-retrieval",
+      "access": "allow",
+      "evidenceUrl": "https://docs.perplexity.ai/docs/resources/perplexity-crawlers",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    },
+    {
+      "agent": "Google-Extended",
+      "purpose": "model-training",
+      "access": "disallow",
+      "evidenceUrl": "https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers#google-extended",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    },
+    {
+      "agent": "CCBot",
+      "purpose": "model-training",
+      "access": "disallow",
+      "evidenceUrl": "https://commoncrawl.org/ccbot",
+      "reviewedAt": "2026-07-17",
+      "edgeEnforcement": "not-available"
+    }
+  ]
+}
