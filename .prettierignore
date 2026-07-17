@@ -1,0 +1,13 @@
+.cloudflare-public/
+.wrangler/
+cloudflare/generated-*.mjs
+data/
+dist/
+dist-cloudflare/
+external-tools/
+node_modules/
+optimized-tiles/
+outputs/
+public/
+tiles/
+package-lock.json
