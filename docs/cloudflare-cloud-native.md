@@ -45,7 +45,17 @@ Authorize the Cloudflare GitHub App only for this repository. Keep runtime secre
 
 The deploy command always creates a fresh frontend bundle and verifies that its lightweight entry contains the phone/tablet compatibility gate before Wrangler publishes it. A failed test, build, or verification must not replace the active deployment.
 
-GitHub Actions is the pre-merge CI gate. Pull requests into `main` run JavaScript linting, changed-file formatting checks, the complete Node test suite, Chromium desktop/mobile smoke tests, and a production-equivalent Cloudflare build. The `main` branch requires the `CI / Quality checks` result but does not require another reviewer, which keeps the flow practical for a solo developer. Cloudflare remains the CD system and deploys only after a successful merge reaches `main`.
+GitHub Actions is the pre-merge CI gate. Pull requests into `develop` and `main` run JavaScript linting, changed-file formatting checks, the complete Node test suite, Chromium desktop/mobile smoke tests, and a production-equivalent Cloudflare build. Both branches require the `CI / Quality checks` result but do not require another reviewer, which keeps the flow practical for a solo developer.
+
+Use `develop` as the permanent integration branch:
+
+1. Create feature branches from `develop`.
+2. Open feature pull requests into `develop` and merge them after CI passes.
+3. Keep completed but unreleased changes on `develop` for as long as needed.
+4. Open a release pull request from `develop` into `main` when the combined changes are ready for users.
+5. Merge the release pull request after CI passes.
+
+Cloudflare remains the CD system and watches only `main`. Pushes and merges into `develop` stay in GitHub and do not deploy; merging a release pull request into `main` triggers the production deployment.
 
 ## Verify
 
