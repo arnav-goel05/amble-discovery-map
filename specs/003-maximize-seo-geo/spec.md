@@ -1,6 +1,8 @@
 # Feature Specification: Technical SEO and GEO Foundation
 
-**Feature Branch**: `develop` (no branch-creation hook configured)
+**Working Branch**: `codex/amble-homepage-title-seo`
+
+**Delivery Target**: `develop` through a protected-branch pull request
 
 **Created**: 2026-07-17
 
@@ -21,6 +23,12 @@ content experience.
   foundations only for now.
 - Q: What title should identify the homepage in search results and browser tabs? → A: Use
   `Amble: See What’s Happening in Singapore`.
+- Q: Should AI crawlers be allowed to retrieve Amble for search/citations or model training? →
+  A: Allow AI search and user-requested retrieval, but block dedicated model-training
+  crawlers.
+- Q: What should the homepage social-sharing image show? → A: Use a purpose-built branded
+  preview combining the Amble wordmark with a representative view of the real 3D Singapore
+  map.
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -207,8 +215,9 @@ reported status has a non-personal operational source.
 ### Functional Requirements
 
 - **FR-001**: `https://amblefinds.com/` MUST be the single canonical public homepage.
-- **FR-002**: HTTP, `www`, and the public worker-development hostname MUST permanently redirect
-  to the equivalent canonical production URL without loops or multi-hop chains.
+- **FR-002**: HTTP, `www`, and the public worker-development hostname
+  `amble.amble-sg.workers.dev` MUST permanently redirect to the equivalent canonical production
+  URL without loops or multi-hop chains.
 - **FR-003**: The homepage MUST use the title `Amble: See What’s Happening in Singapore` and
   return one useful description, one absolute self-canonical URL, and explicit index/follow
   permission.
@@ -220,8 +229,10 @@ reported status has a non-personal operational source.
 - **FR-006**: The homepage MUST provide accurate Open Graph and social-card metadata containing
   an absolute canonical URL, title, description, site name, locale, image, image dimensions,
   and descriptive image alternative.
-- **FR-007**: Social, favicon, wordmark, and logo assets used for identity MUST be publicly
-  accessible, stable, correctly typed, appropriately sized, and permitted for Amble's use.
+- **FR-007**: The social image MUST be a purpose-built sharing composition containing the
+  Amble wordmark and a representative view of the actual 3D Singapore map; social, favicon,
+  wordmark, and logo assets used for identity MUST be publicly accessible, stable, correctly
+  typed, appropriately sized, and permitted for Amble's use.
 - **FR-008**: Homepage machine-readable identity MUST describe only the actual website and
   publisher/brand using facts also visible or directly verifiable on the page.
 - **FR-009**: This phase MUST NOT emit event, venue, review, rating, offer, FAQ, or other
@@ -230,8 +241,9 @@ reported status has a non-personal operational source.
   directives, the canonical sitemap location, and the reviewed content-use policy; it MUST
   never include application HTML.
 - **FR-011**: Traditional search, answer-search, user-retrieval, and model-training crawlers
-  MUST be reviewed as separate purposes; search and user-retrieval access MUST be allowed,
-  while the no-training preference MUST be expressed for reviewed training crawlers.
+  MUST be reviewed as separate purposes; traditional search, AI answer-search, and
+  user-requested retrieval MUST be allowed for discovery and citations, while dedicated
+  model-training crawlers MUST receive an explicit no-training directive.
 - **FR-012**: Edge-level crawler enforcement MUST agree with the published directives and MUST
   verify crawler identity where enforcement relies on more than a voluntary instruction.
 - **FR-013**: `sitemap.xml` MUST return successful valid XML with the appropriate content type
@@ -305,7 +317,8 @@ reported status has a non-personal operational source.
 - The canonical product remains a single indexable homepage during this phase.
 - The public brand and structured-data site name remain `Amble`; the longer approved wording
   is the homepage title, not a brand rename.
-- The domain `amblefinds.com` is canonical; `www` is only a redirecting alias.
+- The domain `amblefinds.com` is canonical; `www` and `amble.amble-sg.workers.dev` are only
+  redirecting aliases.
 - Mobile event discovery is intentionally excluded despite its negative effect on mobile-first
   search potential.
 - Search and answer-engine retrieval should be permitted, while model-training collection

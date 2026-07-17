@@ -32,5 +32,5 @@
 ## Notes
 
 - Research and application audit completed before specification drafting.
-- Three high-impact product choices were recorded through `/speckit-clarify`; the
+- Five high-impact product choices were recorded through `/speckit-clarify`; the
   specification is ready for planning.
