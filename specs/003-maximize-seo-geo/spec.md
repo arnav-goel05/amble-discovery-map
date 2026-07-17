@@ -22,7 +22,7 @@ content experience.
 - Q: What title should identify the homepage in search results and browser tabs? → A: Use
   `Amble: See What’s Happening in Singapore`.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Find the canonical Amble website (Priority: P1)
 
@@ -176,7 +176,7 @@ reported status has a non-personal operational source.
 - The homepage is rendered with a smartphone user agent and receives the intended gate.
 - A metadata change deploys while the previous frontend snapshot remains active.
 
-## Scope and Constraints *(mandatory)*
+## Scope and Constraints _(mandatory)_
 
 - **In scope**: Canonical production origin and permanent host/protocol redirects; homepage
   title, description, canonical and indexing metadata; branded social preview metadata and
@@ -202,7 +202,7 @@ reported status has a non-personal operational source.
   The feature MUST NOT expose event information on mobile or serve privileged content to a
   smartphone crawler.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -275,7 +275,7 @@ reported status has a non-personal operational source.
 - **Release Validation Record**: Evidence that canonical, metadata, crawler, sitemap, status,
   privacy, mobile-gate, and existing-desktop checks passed for a deployment.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
