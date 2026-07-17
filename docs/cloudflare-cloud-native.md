@@ -32,18 +32,20 @@ npm run cloudflare:cloud:deploy
 
 The production Worker uses Cloudflare Workers Builds to deploy successful pushes from the GitHub `main` branch. Connect the existing `amble` Worker to `arnav-goel05/amble-discovery-map` and use these build settings:
 
-| Setting | Value |
-| --- | --- |
-| Production branch | `main` |
-| Root directory | `/` |
-| Build command | `npm run cloudflare:cloud:test` |
-| Deploy command | `npm run cloudflare:cloud:deploy` |
-| Build variable | `NODE_VERSION=24` |
-| Non-production branch builds | Disabled |
+| Setting                      | Value                             |
+| ---------------------------- | --------------------------------- |
+| Production branch            | `main`                            |
+| Root directory               | `/`                               |
+| Build command                | `npm run cloudflare:cloud:test`   |
+| Deploy command               | `npm run cloudflare:cloud:deploy` |
+| Build variable               | `NODE_VERSION=24`                 |
+| Non-production branch builds | Disabled                          |
 
 Authorize the Cloudflare GitHub App only for this repository. Keep runtime secrets, D1, and R2 bindings on the existing Worker; build variables are not a replacement for runtime secrets.
 
 The deploy command always creates a fresh frontend bundle and verifies that its lightweight entry contains the phone/tablet compatibility gate before Wrangler publishes it. A failed test, build, or verification must not replace the active deployment.
+
+GitHub Actions is the pre-merge CI gate. Pull requests into `main` run JavaScript linting, changed-file formatting checks, the complete Node test suite, Chromium desktop/mobile smoke tests, and a production-equivalent Cloudflare build. The `main` branch requires the `CI / Quality checks` result but does not require another reviewer, which keeps the flow practical for a solo developer. Cloudflare remains the CD system and deploys only after a successful merge reaches `main`.
 
 ## Verify
 
