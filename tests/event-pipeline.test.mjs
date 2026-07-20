@@ -3238,11 +3238,20 @@ test("status report includes contract accounting, reconciliation, errors, and ne
         status: "success",
         counts: {
           pages: 1,
+          listingAppearances: 3,
+          uniqueSourcePointers: 2,
+          listingDuplicatesCollapsed: 1,
           sourceRecordsReceived: 1,
           processedSourceRecords: 1,
           occurrencesEmitted: 1,
           eligiblePreDedup: 1,
           acceptedPrimary: 1,
+        },
+        completion: {
+          surfaceOutcomes: [
+            { status: "success" },
+            { status: "blocked", reasonCode: "provider_policy_invalid" },
+          ],
         },
         artifactRefs: ["raw/page.json"],
       },
@@ -3280,6 +3289,8 @@ test("status report includes contract accounting, reconciliation, errors, and ne
     "Ordered next steps",
   ])
     assert.match(report, new RegExp(heading));
+  assert.match(report, /Listing appearances/);
+  assert.match(report, /\| 3 \| 2 \| 1 \| 1 \|/);
 });
 
 test("CLI refuses to finalize a newly started incomplete run", () => {

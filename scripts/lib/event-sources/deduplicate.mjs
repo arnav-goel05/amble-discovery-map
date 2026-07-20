@@ -87,6 +87,32 @@ const organizersCompatible = (a, b) => {
     strongerDuplicateEvidence(a, b)
   );
 };
+const tokenSimilarity = (a, b) => {
+  const at = tokens(a),
+    bt = tokens(b);
+  if (!at.size || !bt.size) return 0;
+  const shared = [...at].filter((token) => bt.has(token)).length;
+  return shared / Math.max(at.size, bt.size);
+};
+const sameSourceSemanticRepeat = (a, b) => {
+  const exactTitle =
+      canonicalEventTitle(a.title) === canonicalEventTitle(b.title),
+    venueA = canonicalEventTitle(a.venue),
+    venueB = canonicalEventTitle(b.venue),
+    organizerA = canonicalEventTitle(a.organizer),
+    organizerB = canonicalEventTitle(b.organizer),
+    organizerAgreement = Boolean(organizerA) && organizerA === organizerB,
+    descriptionAgreement = tokenSimilarity(a.description, b.description) >= 0.7;
+  return (
+    exactTitle &&
+    Boolean(venueA) &&
+    venueA === venueB &&
+    scheduleCompatible(a, b) &&
+    (organizerAgreement ||
+      descriptionAgreement ||
+      strongerDuplicateEvidence(a, b))
+  );
+};
 
 export function generateDedupCandidates(events) {
   const candidates = [];
@@ -101,12 +127,13 @@ export function generateDedupCandidates(events) {
       const sharesSource = (b.sources ?? []).some(({ source }) =>
         aSources.has(source),
       );
-      if (
+      const differentSameSourceParents =
         sharesSource &&
         a.parentActivityId !== b.parentActivityId &&
-        a.parentListingId !== b.parentListingId
-      )
-        continue;
+        a.parentListingId !== b.parentListingId;
+      const semanticRepeat =
+        differentSameSourceParents && sameSourceSemanticRepeat(a, b);
+      if (differentSameSourceParents && !semanticRepeat) continue;
       if (
         !scheduleCompatible(a, b) ||
         !titleCompatible(a.title, b.title) ||
@@ -128,7 +155,11 @@ export function generateDedupCandidates(events) {
           "compatible_title",
           "compatible_schedule",
           ...(offMapCompatible ? ["compatible_off_map_state"] : []),
-          ...(sharesSource ? ["same_parent_repeat"] : []),
+          ...(semanticRepeat
+            ? ["same_source_semantic_repeat"]
+            : sharesSource
+              ? ["same_parent_repeat"]
+              : []),
         ],
         rawVenueCompatible:
           canonicalEventTitle(a.venue) === canonicalEventTitle(b.venue),

@@ -1305,6 +1305,13 @@ function validateSourceResult(result) {
       );
     }
     if (!result.error) fail("Blocked source requires an error");
+    if (
+      result.httpStatus != null &&
+      (!Number.isInteger(result.httpStatus) ||
+        result.httpStatus < 100 ||
+        result.httpStatus > 599)
+    )
+      fail("Blocked source httpStatus must be a valid HTTP status");
   } else if (result.status === "pilot_failed") {
     if (!result.error) fail("Pilot failure requires an error");
   } else if (!result.error) fail("Failed source requires an error");
@@ -2112,6 +2119,7 @@ function recordSource(options) {
     error: result.error ?? null,
     message: result.message ?? null,
     blockerReasonCode: result.blockerReasonCode ?? null,
+    httpStatus: result.httpStatus ?? null,
     completion: result.completion ?? null,
     sourceRole: result.sourceRole ?? state.sources[options.source].sourceRole,
     operatingMode:
@@ -2220,7 +2228,15 @@ async function collectSourceCommand(options) {
           urls: record.urls,
           results: record.results,
           errors: record.errors,
+          listingAppearances: record.listingAppearances,
+          uniquePointers: record.uniquePointers,
+          newUniquePointers: record.newUniquePointers,
+          duplicatesCollapsed: record.duplicatesCollapsed,
         },
+        reasonCode: record.reasonCode ?? null,
+        httpStatus: record.httpStatus ?? null,
+        listingSurface: record.listingSurface ?? null,
+        evidenceRef: record.evidenceRef ?? null,
       }),
   });
   writeJson(resultPath, result);
@@ -2242,6 +2258,7 @@ async function collectSourceCommand(options) {
     entityId: options.source,
     counts: result.counts,
     reasonCode: result.blockerReasonCode ?? null,
+    httpStatus: result.httpStatus ?? null,
     blocker: result.error ?? null,
     nextAction: `npm run event-pipeline -- advance --run ${options.run}`,
   });

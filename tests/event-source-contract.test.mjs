@@ -143,6 +143,55 @@ test("requests time out and stop after the configured attempt bound", async () =
   assert.equal(calls, 2);
 });
 
+test("TinyFish HTTP 469 is a single bounded provider-policy failure", async () => {
+  let calls = 0;
+  const client = createTinyfishFetchClient({
+    apiKey: "test-key",
+    resolver: async () => [{ address: "93.184.216.34", family: 4 }],
+    fetchImpl: async () => {
+      calls += 1;
+      return new Response("restricted", { status: 469 });
+    },
+    sleep: async () => {},
+    maxAttempts: 3,
+  });
+  await assert.rejects(
+    client.fetchBatch(["https://www.catch.sg/events"], {
+      sourceName: "Catch.sg",
+      stage: "listing",
+    }),
+    (error) => error.code === "provider_policy_invalid" && error.status === 469,
+  );
+  assert.equal(calls, 1);
+});
+
+test("Catch HTTP 469 remains a redacted provider-policy source blocker", async () => {
+  const state = temporaryState();
+  try {
+    const source = readPipelineConfig().sources.find(
+      ({ adapterId }) => adapterId === "catch-official-listing-v1",
+    );
+    let calls = 0;
+    const result = await collectSource({
+      runDir: state.root,
+      run: { runId: "catch-469", window: singaporeWindow("2026-07-20") },
+      source,
+      transport: async () => {
+        calls += 1;
+        return { status: 469, ok: false, body: null, text: "do not retain" };
+      },
+      requestPolicy: { maxAttempts: 3, timeoutMs: 100 },
+    });
+    assert.equal(result.status, "blocked");
+    assert.equal(result.blockerReasonCode, "provider_policy_invalid");
+    assert.equal(result.httpStatus, 469);
+    assert.equal(calls, 1);
+    assert.doesNotMatch(JSON.stringify(result), /do not retain/);
+  } finally {
+    state.cleanup();
+  }
+});
+
 test("official event references require successful approved-domain destinations", () => {
   const source = readPipelineConfig().sources.find(
     ({ providerId }) => providerId === "sistic",
@@ -1824,6 +1873,29 @@ test("Time Out parses real schedules and venues without confusing publication da
   assert.equal(emptyAddress.claims.venue, null);
 });
 
+test("Time Out preserves compact shared-year and same-month listing ranges", () => {
+  const source = readPipelineConfig().sources.find(
+    ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
+  );
+  const adapter = renderedAdapterFor(source.adapterId);
+  const card = (title, date) =>
+    `<article data-testid="tile-zone-large-list_testID"><a href="/singapore/art/${title}" data-testid="tile-link_testID"><h3 data-testid="tile-title_testID">1. ${title}</h3></a><span>${date}</span></article>`;
+  for (const [raw, expected] of [
+    ["23 Jul 18 Oct 2026", "23 Jul 2026 to 18 Oct 2026"],
+    ["July 10 to 19, 2026", "July 10, 2026 to July 19, 2026"],
+  ]) {
+    const parsed = adapter.listing(
+      {
+        url: source.listing.urls.find((url) => url.includes("art-exhibitions")),
+        text: `<h2>Best art exhibitions in Singapore</h2>${card("compact-range", raw)}<h2>More to explore</h2>`,
+      },
+      source,
+      source.listing.urls.find((url) => url.includes("art-exhibitions")),
+    );
+    assert.equal(parsed.detailItems[0].record.dateText, expected);
+  }
+});
+
 test("Time Out carries bounded listing evidence into discovery confirmation", async () => {
   const state = temporaryState();
   try {
@@ -2057,6 +2129,9 @@ test("rendered collection traverses bounded Time Out surfaces and fetches overla
     assert.equal(collected.status, "success");
     assert.equal(collected.counts.pages, 4);
     assert.equal(collected.counts.discoveryRecordsReceived, 2);
+    assert.equal(collected.counts.listingAppearances, 3);
+    assert.equal(collected.counts.uniqueSourcePointers, 2);
+    assert.equal(collected.counts.listingDuplicatesCollapsed, 1);
     assert.equal(calls.filter((url) => url === shared).length, 1);
     assert.deepEqual(calls.slice(0, 4), [
       source.listing.url,
@@ -2074,6 +2149,66 @@ test("rendered collection traverses bounded Time Out surfaces and fetches overla
           action === "listing_surface_queued" && listingSurface === month,
       ),
     );
+  } finally {
+    state.cleanup();
+  }
+});
+
+test("rendered collection accounts for every surface and blocks partial Time Out results", async () => {
+  const state = temporaryState();
+  try {
+    const configured = readPipelineConfig().sources.find(
+      ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
+    );
+    const weekend = configured.listing.urls.find((url) =>
+      url.includes("this-weekend"),
+    );
+    const source = {
+      ...configured,
+      listing: {
+        ...configured.listing,
+        urls: [weekend],
+        paginationCeiling: 2,
+      },
+    };
+    const detail = "https://www.timeout.com/singapore/news/shared-event";
+    const card = `<article data-testid="tile-zone-large-list_testID"><a href="${detail}" data-testid="tile-link_testID"><h3 data-testid="tile-title_testID">1. Shared event</h3></a><span>Until 31 Aug 2026</span></article>`;
+    const renderedClient = {
+      fetchBatch: async ([url]) => {
+        if (url === weekend)
+          throw Object.assign(new Error("TinyFish returned HTTP 469"), {
+            code: "provider_policy_invalid",
+            status: 469,
+          });
+        return {
+          results: [
+            {
+              url,
+              text: `<h2>Best events in Singapore this week</h2>${card}<h2>Explore Singapore</h2>`,
+            },
+          ],
+          errors: [],
+          payloadHash: `hash-${url}`,
+        };
+      },
+    };
+    const result = await collectRenderedSource({
+      runDir: state.root,
+      run: { runId: "timeout-partial", window: singaporeWindow("2026-07-20") },
+      source,
+      renderedClient,
+    });
+    assert.equal(result.status, "blocked");
+    assert.equal(result.blockerReasonCode, "provider_policy_invalid");
+    assert.equal(result.httpStatus, 469);
+    assert.equal(result.counts.listingAppearances, 1);
+    assert.equal(result.counts.uniqueSourcePointers, 1);
+    assert.equal(result.completion.surfaceOutcomes.length, 2);
+    assert.deepEqual(
+      result.completion.surfaceOutcomes.map(({ status }) => status),
+      ["success", "blocked"],
+    );
+    assert.equal(result.artifactRefs.length, 1);
   } finally {
     state.cleanup();
   }
