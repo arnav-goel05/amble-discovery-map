@@ -27,7 +27,7 @@ export function createAssistantView({
   open.type = "button";
   open.dataset.testid = "assistant-open";
   open.setAttribute("aria-expanded", "false");
-  open.setAttribute("aria-label", "Talk to Amble");
+  open.setAttribute("aria-label", "Speak to Amble");
   const orbFrame = element("span", "assistant-orb-frame");
   orbFrame.setAttribute("aria-hidden", "true");
   const orb = element("img", "assistant-orb");
@@ -38,7 +38,7 @@ export function createAssistantView({
   orb.height = 64;
   orbFrame.append(orb);
   const openCopy = element("span", "assistant-open__copy");
-  const openTitle = element("span", "assistant-open__title", "Talk");
+  const openTitle = element("span", "assistant-open__title", "Speak to Amble");
   const livePreview = element(
     "span",
     "assistant-open__preview",
@@ -423,8 +423,8 @@ export function createAssistantView({
           speaking: "Speaking",
           muted: "Paused",
           degraded: "Retry",
-          stopped: "Talk",
-        }[state] || "Talk";
+          stopped: "Speak to Amble",
+        }[state] || "Speak to Amble";
       open.setAttribute(
         "aria-label",
         {
@@ -434,8 +434,8 @@ export function createAssistantView({
           speaking: "Amble is speaking",
           muted: "Amble voice paused",
           degraded: "Retry Amble voice",
-          stopped: "Talk to Amble",
-        }[state] || "Talk to Amble",
+          stopped: "Speak to Amble",
+        }[state] || "Speak to Amble",
       );
       if (!hasLiveTranscript)
         livePreview.textContent =
