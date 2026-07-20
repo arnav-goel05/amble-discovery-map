@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "source": "Roots HAN",
+  "cases": [
+    "single-time",
+    "multiple-times",
+    "various-timings",
+    "virtual",
+    "resource-card",
+    "next-terminal"
+  ]
+}

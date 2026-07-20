@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0",
+  "sourceSnapshotId": "approved-fixture-snapshot-2026-07-18",
+  "candidates": [
+    {
+      "candidateId": "candidate:gardens-bay-walk",
+      "candidateType": "venue",
+      "sourceSnapshotId": "approved-fixture-snapshot-2026-07-18",
+      "areaId": "ura-subzone:marina-south",
+      "coordinates": [103.8641, 1.2816],
+      "attributes": {
+        "name": "Gardens waterfront walk",
+        "setting": ["garden", "waterfront"],
+        "pace": "calm",
+        "price": "free"
+      },
+      "evidenceRefs": ["approved-source:venue-001"]
+    },
+    {
+      "candidateId": "candidate:national-gallery",
+      "candidateType": "venue",
+      "sourceSnapshotId": "approved-fixture-snapshot-2026-07-18",
+      "areaId": "ura-subzone:city-hall",
+      "coordinates": [103.8513, 1.2903],
+      "attributes": {
+        "name": "Civic district gallery",
+        "setting": ["art", "indoor"],
+        "pace": "flexible",
+        "price": "mixed"
+      },
+      "evidenceRefs": ["approved-source:venue-002"]
+    },
+    {
+      "candidateId": "candidate:esplanade-waterfront",
+      "candidateType": "event",
+      "sourceSnapshotId": "approved-fixture-snapshot-2026-07-18",
+      "areaId": "ura-subzone:city-hall",
+      "coordinates": [103.8554, 1.2898],
+      "attributes": {
+        "name": "Waterfront evening programme",
+        "setting": ["arts", "waterfront"],
+        "pace": "lively",
+        "price": "free"
+      },
+      "evidenceRefs": ["approved-source:event-001"]
+    }
+  ],
+  "rankingExpectation": {
+    "defaultUsesTransit": false,
+    "transitConstraintActive": false,
+    "orderedAreaIds": ["ura-subzone:marina-south", "ura-subzone:city-hall"]
+  }
+}

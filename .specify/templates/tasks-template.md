@@ -1,5 +1,4 @@
 ---
-
 description: "Task list template for feature implementation"
 ---
 
@@ -8,6 +7,8 @@ description: "Task list template for feature implementation"
 **Input**: Design documents from `/specs/[###-feature-name]/`
 
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
+
+**Branch**: Execute feature tasks on `develop`; do not create or switch branches unless the user explicitly requests it.
 
 **Tests**: Relevant automated tests and the production build are REQUIRED by the project constitution. Include success, failure, recovery, and lifecycle coverage in proportion to risk.
 
@@ -158,7 +159,8 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
 - [ ] TXXX Security hardening
 - [ ] TXXX Verify privacy retention and deletion paths
-- [ ] TXXX Verify evidence, stale-data, and partial-publication behavior
+- [ ] TXXX Verify evidence, per-identity carry-forward or hold behavior, stale-data labeling, atomic publication, and release-wide rollback
+- [ ] TXXX For any constitution-approved paid service, verify usage and spending limits, server-side credentials, disable control, limit-exhaustion behavior, and the free fallback
 - [ ] TXXX Record before-and-after performance benchmarks for rendering-sensitive changes
 - [ ] TXXX Run the required automated desktop/mobile Chromium, WebKit, and Firefox matrix; optionally record locally available branded-browser observations
 - [ ] TXXX Classify approved artifacts versus ignored caches and intermediate outputs

@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "singapore-repertory-theatre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:10.915Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/67/12_0.b3dm",
+      "sourceSha256": "bbfce3ebd8e12c8741b1b4f5b4ac41da7054f345fd4acc48a96908b8aa7b37ad",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "gmlNames": [
+        "SINGAPORE REPERTORY THEATRE"
+      ],
+      "poiFile": "12_0-b648a519d9a9.b3dm",
+      "poiSha256": "9bcc3d9a98c6ca4aa4127bbd3607570c0fbc9595aa5682a5513d40efe245bec2",
+      "poiTriangles": 208,
+      "backgroundFile": "optimized-tiles/7/67/12_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "backgroundSha256": "92ce08409f92a0ea7f23edb3fd3bb44e3f4ed946a40414f3b4d053f913f22e5c",
+      "backgroundTriangles": 12900
+    },
+    {
+      "sourceTile": "tiles/7/67/12_1.b3dm",
+      "sourceSha256": "20c1c0c6a2c0f8182a7bc9497ed54afe12ab1659722ad4feb3edcf01c41012e3",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "gmlNames": [
+        "SINGAPORE REPERTORY THEATRE"
+      ],
+      "poiFile": "12_1-cd44c2ab5a3b.b3dm",
+      "poiSha256": "e4cf07b49cfc18b53b66a5f7bbae2da92869b7824e6df3cc75a25a9391992ee8",
+      "poiTriangles": 208,
+      "backgroundFile": "optimized-tiles/7/67/12_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "backgroundSha256": "14b62ec037ba01bd820bf0ea750f88b47bdf46faa4312ace3126c754a1f85a2d",
+      "backgroundTriangles": 12900
+    },
+    {
+      "sourceTile": "tiles/7/67/12_2.b3dm",
+      "sourceSha256": "8a0ecea9e0dbacdb1c9bb9272dd79f3c7ca0827d7890db331d537ad20daf29fd",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "gmlNames": [
+        "SINGAPORE REPERTORY THEATRE"
+      ],
+      "poiFile": "12_2-c61aa6b29227.b3dm",
+      "poiSha256": "5460764bc1f03729b108c091b503d6c1fdc9c1a5a0fb9b35b2cbd9d153e837b6",
+      "poiTriangles": 208,
+      "backgroundFile": "optimized-tiles/7/67/12_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "backgroundSha256": "3066b46298507b51f9bd4abdb22089e1d5170ec6e350cd7418c9a2a1ea5483c4",
+      "backgroundTriangles": 12900
+    },
+    {
+      "sourceTile": "tiles/7/67/12_3.b3dm",
+      "sourceSha256": "69f43425f783493f5e56ebbc07ddf740d5e3d450c943bfb4d7beeb9ca17ce4b7",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "gmlNames": [
+        "SINGAPORE REPERTORY THEATRE"
+      ],
+      "poiFile": "12_3-e438e121597a.b3dm",
+      "poiSha256": "013d648eca2226756444b2c38e045957ba8f18aa4462b9aeddf7ee315a993e50",
+      "poiTriangles": 208,
+      "backgroundFile": "optimized-tiles/7/67/12_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "backgroundSha256": "dc6e3e58e5cd8e91a0378fb034bc48f54a88bd1c24cc8f6d7f7ef1c3cc9a40ab",
+      "backgroundTriangles": 12900
+    },
+    {
+      "sourceTile": "tiles/7/67/12_4.b3dm",
+      "sourceSha256": "0455d65a0cc53016a660dcc3e26be7e0b6976290af7e33a27ae0850ecf662138",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "gmlNames": [
+        "SINGAPORE REPERTORY THEATRE"
+      ],
+      "poiFile": "12_4-96bfd7fc9f97.b3dm",
+      "poiSha256": "ee603fa8b9ce0a15b0468a24126c431b3c0c0ccecd27adcbcab85091ac69af98",
+      "poiTriangles": 208,
+      "backgroundFile": "optimized-tiles/7/67/12_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "backgroundSha256": "5440c49caeb0522af22febb03795b32a09b7488dffac4fe64be3f64882bca879",
+      "backgroundTriangles": 12900
+    },
+    {
+      "sourceTile": "tiles/7/67/12_5.b3dm",
+      "sourceSha256": "c64619390d18d558ef0bb8ecdfaf477668ab09220661ff342e89344ec900ec58",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "gmlNames": [
+        "SINGAPORE REPERTORY THEATRE"
+      ],
+      "poiFile": "12_5-be6a27d4917e.b3dm",
+      "poiSha256": "b26b128adab4f557cc6796d8db724a921bb9c45826a8191ded9c4459e4c1466b",
+      "poiTriangles": 208,
+      "backgroundFile": "optimized-tiles/7/67/12_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_fed09c8d-a177-4c46-aa54-237bc318780a"
+      ],
+      "backgroundSha256": "83756ba20dc9fbe857b6419158ee64207e70f87fdc4a43fdc882674e27b2f9f5",
+      "backgroundTriangles": 12900
+    }
+  ]
+}

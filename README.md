@@ -6,7 +6,7 @@ Amble is a three-dimensional Singapore discovery map for finding events, nearby 
 
 **Canonical site:** https://amblefinds.com/
 
-The `www` hostname and `amble.amble-sg.workers.dev` are redirect-only aliases. Homepage
+The `www` hostname and `amble.project-hub-arnav.workers.dev` are redirect-only aliases. Homepage
 metadata, crawler policy, sitemap, privacy constraints, and the quarterly crawler-review process
 are documented in [docs/seo-geo-operations.md](docs/seo-geo-operations.md).
 
@@ -45,7 +45,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open http://127.0.0.1:5173. To load production 3D geometry while developing, set `TILE_FALLBACK_ORIGIN=https://amble.amble-sg.workers.dev` in `.env.local`.
+Open http://127.0.0.1:5173. To load production 3D geometry while developing, set `TILE_FALLBACK_ORIGIN=https://amble.project-hub-arnav.workers.dev` in `.env.local`.
 
 ## Validation
 

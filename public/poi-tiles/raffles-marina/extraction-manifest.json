@@ -23,7 +23,6 @@
     "thian-hock-keng",
     "singapore-chinese-cultural-centre",
     "wisma-geylang-serai",
-    "thow-kwang-pottery-jungle",
     "marina-bay-sands-artscience-museum",
     "temasek-shophouse",
     "the-commerze-irving",
@@ -34,20 +33,10 @@
     "singapore-philatelic-museum",
     "shell-dunman",
     "63-ubi",
-    "peranakan-museum",
-    "parkway-parade",
-    "singapore-tyler-print-institute",
-    "fort-canning-centre",
-    "313-somerset",
-    "tanjong-pagar-distripark",
-    "carlton-hotel",
-    "the-star",
     "changi-chapel-and-museum",
     "reflection-at-bukit-chandu-opium-hill",
-    "pgp-building",
     "victoria-theatre-and-concert-hall-u-c",
     "marina-bay-sands-mice",
-    "national-library-building",
     "chinatown-heritage-centre",
     "south-beach",
     "velocity-novena-square",
@@ -57,149 +46,198 @@
     "woods-square",
     "punggol-neighbourhood-police-centre",
     "sentosa-development-corporation",
-    "marina-south-pier-mrt-station",
     "siloso-beach-resort",
     "bishan-green",
-    "raffles-hotel-1886",
-    "changi-point-ferry-terminal",
-    "national-community-leadership-institute",
-    "singapore-management-university",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
     "empress-place-building",
-    "gillman-barracks"
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
   ],
-  "generatedAt": "2026-07-13T14:21:06.175Z",
+  "generatedAt": "2026-07-19T19:39:06.043Z",
   "tiles": [
     {
-      "sourceTile": "tiles/5/0/15_4.b3dm",
-      "sourceSha256": "7ed81dfb1561170cdd0b06db0956a6af7810f6000dfb39f123c3c39f44baae1f",
+      "sourceTile": "tiles/6/0/31_0.b3dm",
+      "sourceSha256": "d8a85cfdb28c39ffde6d0dc004b9641f2b40143a39a929ac821d8b572a39c25d",
       "originalBatchIds": [
-        39
+        4
       ],
       "gmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
       "gmlNames": [
         "RAFFLES MARINA"
       ],
-      "poiFile": "15_4.b3dm",
-      "poiSha256": "6685a787dd802200b718884cb3b5f2556bf554c7355cff09e53126a007f25971",
-      "poiTriangles": 2112,
-      "backgroundFile": "optimized-tiles/5/0/15_4.b3dm",
+      "poiFile": "31_0-299c43ffaf6d.b3dm",
+      "poiSha256": "68ac797dd0daeb4f1119954b270b393b874ea0ddcfa09e4cf6e253f6d4079aeb",
+      "poiTriangles": 72,
+      "backgroundFile": "optimized-tiles/6/0/31_0.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
-      "backgroundSha256": "f11270a59b0581e2e6f7849985830d2f20a1c1822cabee1cf9dfee6d24e51a70",
-      "backgroundTriangles": 10869
+      "backgroundSha256": "97c154c9fa3feba342f7d2d18add0e4085299fc5fa20033e4429d6fa2ae70316",
+      "backgroundTriangles": 7896
     },
     {
-      "sourceTile": "tiles/5/0/15_3.b3dm",
-      "sourceSha256": "6f5eceb8639de5b7be78a0c6ab0388edd4754f363eb4c70464818e93275b72b2",
+      "sourceTile": "tiles/6/0/31_1.b3dm",
+      "sourceSha256": "c8a443eaf36e0fd419510e1404d907c1f3e554be98b7eab49ee93e5b03cc3c2f",
       "originalBatchIds": [
-        39
+        4
       ],
       "gmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
       "gmlNames": [
         "RAFFLES MARINA"
       ],
-      "poiFile": "15_3.b3dm",
-      "poiSha256": "a0d917061b000182bf17420b926d0995d2ff484904380e1d2595a4348639d5a8",
-      "poiTriangles": 2112,
-      "backgroundFile": "optimized-tiles/5/0/15_3.b3dm",
+      "poiFile": "31_1-c5451d3adcc9.b3dm",
+      "poiSha256": "4b1713554e4b93357c7ca8f8ace7c3f65a5cf260b3889e3ca1d9c7940c6df37c",
+      "poiTriangles": 72,
+      "backgroundFile": "optimized-tiles/6/0/31_1.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
-      "backgroundSha256": "b0f5a5af83d459e9a387182eecf957df6f5448686f3b0eceba09338c5f5c135b",
-      "backgroundTriangles": 10869
+      "backgroundSha256": "42d9de0b7735052fae35ea4e43ccaab76d15e4e6a264c792601babec39357517",
+      "backgroundTriangles": 7896
     },
     {
-      "sourceTile": "tiles/5/0/15_2.b3dm",
-      "sourceSha256": "4adb90466a0ec42755836e6a6f688672a76cadfa2e131fb786b5397a45b6ddc0",
+      "sourceTile": "tiles/6/0/31_2.b3dm",
+      "sourceSha256": "e9535e3359f5ff90334729f2d6ea0b5a8a4f303d3c73235597eab159e765ad9d",
       "originalBatchIds": [
-        39
+        4
       ],
       "gmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
       "gmlNames": [
         "RAFFLES MARINA"
       ],
-      "poiFile": "15_2.b3dm",
-      "poiSha256": "53afa2d6d9952bc858b61481942aec18998ea53da593af6203133aa8c7d17ba7",
-      "poiTriangles": 2112,
-      "backgroundFile": "optimized-tiles/5/0/15_2.b3dm",
+      "poiFile": "31_2-d2683f2c7631.b3dm",
+      "poiSha256": "7b540a7368760d08f3dc581c43c225cc7a8e2dc3cbb9cc57aabc9b7cccff3ee0",
+      "poiTriangles": 72,
+      "backgroundFile": "optimized-tiles/6/0/31_2.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
-      "backgroundSha256": "3a2c3f2d7a11aded6f8d00aecc84beaed5a105a77623e3e41114db898fd01576",
-      "backgroundTriangles": 10869
+      "backgroundSha256": "fd4ff50971ff41bab63ffc4b30074b66b00bb5e4c84c58227925485c716488d6",
+      "backgroundTriangles": 7896
     },
     {
-      "sourceTile": "tiles/5/0/15_1.b3dm",
-      "sourceSha256": "2eab52068e334ec6c785f33800aabacb2a7bd71764666b90ef7f118269caf880",
+      "sourceTile": "tiles/6/0/31_3.b3dm",
+      "sourceSha256": "4749894efcc3bf92ad0c35adf017f8f9e919fa6dd78c6f10f2b66dafea2f95d4",
       "originalBatchIds": [
-        39
+        4
       ],
       "gmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
       "gmlNames": [
         "RAFFLES MARINA"
       ],
-      "poiFile": "15_1.b3dm",
-      "poiSha256": "89286399c8fe3cfdcb4791bf97736fb77ca9ec3f020d2a3ef3303d20ce075634",
-      "poiTriangles": 2112,
-      "backgroundFile": "optimized-tiles/5/0/15_1.b3dm",
+      "poiFile": "31_3-3bc39b63a25d.b3dm",
+      "poiSha256": "71b8df7ca85c9b3bc6a59f19a24d3d60d8067e79e68b8c6c82508444cab234ad",
+      "poiTriangles": 72,
+      "backgroundFile": "optimized-tiles/6/0/31_3.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
-      "backgroundSha256": "00293c64eed04874362100dabc7f1e7622f7394721564c57eb59fd809164bf75",
-      "backgroundTriangles": 10869
+      "backgroundSha256": "37871b577f296a1dde1ae9ef7e83bf1b8ef5c3defbe6810c7167d26f2ed0fac1",
+      "backgroundTriangles": 7896
     },
     {
-      "sourceTile": "tiles/5/0/15_0.b3dm",
-      "sourceSha256": "869ef55a656fb86e92e0224cbb46af0378573a3e4eb194391d9b968ea9018ab8",
+      "sourceTile": "tiles/6/0/31_4.b3dm",
+      "sourceSha256": "fcb29ac59750f34170542cbdad39f9b2fad648c7a53b0caeb9cadd5542e12798",
       "originalBatchIds": [
-        39
+        4
       ],
       "gmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
       "gmlNames": [
         "RAFFLES MARINA"
       ],
-      "poiFile": "15_0.b3dm",
-      "poiSha256": "80049406f02118778bf009c517f12579578be9a8836fd161915e7cb5c7d0f5a2",
-      "poiTriangles": 2112,
-      "backgroundFile": "optimized-tiles/5/0/15_0.b3dm",
+      "poiFile": "31_4-c47054c31bc7.b3dm",
+      "poiSha256": "5306cbda27a85a35a0b70e83ef35675fc7df7b7ab36fd8e659404b691d13f89b",
+      "poiTriangles": 72,
+      "backgroundFile": "optimized-tiles/6/0/31_4.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
-      "backgroundSha256": "e306738b500beb6ba268a42681d639ffd93a2f5db96a3b870c176001d0e6f973",
-      "backgroundTriangles": 10869
+      "backgroundSha256": "54589b002aeb546f13dc435e5b489a77b4d00116392ee40ffdc433c0ce9b38ba",
+      "backgroundTriangles": 7896
     },
     {
-      "sourceTile": "tiles/5/0/15_5.b3dm",
-      "sourceSha256": "4f93ffdc5ee310add09da379234cc9a0b4589f77ff0940f9a5b719a1b387d7c2",
+      "sourceTile": "tiles/6/0/31_5.b3dm",
+      "sourceSha256": "7a33ceb0777ed7f9a0bc36a61dc13e900602c8caee7c2c3c8adc8cd8fc1af100",
       "originalBatchIds": [
-        39
+        4
       ],
       "gmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
       "gmlNames": [
         "RAFFLES MARINA"
       ],
-      "poiFile": "15_5.b3dm",
-      "poiSha256": "0413b0925a4a4810c18a76627b6cc4a33781aed0f2f1e26eb93e638bbe257fb4",
-      "poiTriangles": 2112,
-      "backgroundFile": "optimized-tiles/5/0/15_5.b3dm",
+      "poiFile": "31_5-cece8caae160.b3dm",
+      "poiSha256": "ed94aed8ffc7145d78626c352b65b3a3132232749b3b118cf10f1fce1f7b550e",
+      "poiTriangles": 72,
+      "backgroundFile": "optimized-tiles/6/0/31_5.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_87863b1e-8fad-4ab1-a644-f61434e07efe"
+        "SLA_BLDG2_868112b0-bf7a-4e19-a923-c5a003a8ae9c"
       ],
-      "backgroundSha256": "3af17726501c6ee30d12e5b3db5f594de9369c5ca9f60cea571152f9434c7130",
-      "backgroundTriangles": 10869
+      "backgroundSha256": "8728d284e5b27818fdc429e9552804a85debefc68897aa0bb40e93aa0c795a01",
+      "backgroundTriangles": 7896
     }
   ]
 }

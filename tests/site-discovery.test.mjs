@@ -22,7 +22,10 @@ const fixture = JSON.parse(
 test("site identity matches the schema-versioned fixture", () => {
   assert.deepEqual(validateSiteIdentity(fixture), fixture);
   assert.equal(SITE_IDENTITY.canonicalHomepage, fixture.canonicalHomepage);
-  assert.equal(SITE_IDENTITY.workerAliasHost, "amble.amble-sg.workers.dev");
+  assert.equal(
+    SITE_IDENTITY.workerAliasHost,
+    "amble.project-hub-arnav.workers.dev",
+  );
 });
 
 test("site identity rejects duplicate crawlers and unsupported access", () => {
@@ -54,7 +57,9 @@ test("canonical redirect matches only configured aliases", () => {
     "https://amblefinds.com/path?q=1",
   );
   assert.equal(
-    canonicalRedirect(new URL("https://amble.amble-sg.workers.dev/path?q=1")),
+    canonicalRedirect(
+      new URL("https://amble.project-hub-arnav.workers.dev/path?q=1"),
+    ),
     "https://amblefinds.com/path?q=1",
   );
   assert.equal(

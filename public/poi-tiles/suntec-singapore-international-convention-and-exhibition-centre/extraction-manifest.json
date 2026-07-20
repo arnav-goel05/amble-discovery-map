@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "suntec-singapore-international-convention-and-exhibition-centre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:10.994Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/8/157/26_0.b3dm",
+      "sourceSha256": "0fb57cda749555ee4dddd1e2d381228a85a6accb7ef3c6bf98cdd8ad1412adf5",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "gmlNames": [
+        "SUNTEC SINGAPORE INTERNATIONAL CONVENTION AND EXHIBITION CENTRE"
+      ],
+      "poiFile": "26_0-0dacc3412c36.b3dm",
+      "poiSha256": "4e503c88abc2349fb4f752a24afd43c7bf05a5c3d95841d8709d4b3172a364eb",
+      "poiTriangles": 19200,
+      "backgroundFile": "optimized-tiles/8/157/26_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "backgroundSha256": "b83b221cf32ef3de78b3cc94b7268fb3ad78e3f2c99980ab9548083b7c8a9946",
+      "backgroundTriangles": 1352
+    },
+    {
+      "sourceTile": "tiles/8/157/26_1.b3dm",
+      "sourceSha256": "9c592808ef77abbae67606f3cadbc53f15d4dd53a9d58c8d1c1218028af3df4e",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "gmlNames": [
+        "SUNTEC SINGAPORE INTERNATIONAL CONVENTION AND EXHIBITION CENTRE"
+      ],
+      "poiFile": "26_1-29a4504e7d12.b3dm",
+      "poiSha256": "992e4c31f3647f3db62612a328ecff303652eab325bb824cbd96ae3e417ad328",
+      "poiTriangles": 19200,
+      "backgroundFile": "optimized-tiles/8/157/26_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "backgroundSha256": "30652ef0e55a73c867e8d05620c3f520230e4f7686d05e63036541216fbcf0fb",
+      "backgroundTriangles": 1352
+    },
+    {
+      "sourceTile": "tiles/8/157/26_2.b3dm",
+      "sourceSha256": "a4785dfad237d58059c2657a864f9c25b28949d24251dbf1b6f2e18a3e360fb8",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "gmlNames": [
+        "SUNTEC SINGAPORE INTERNATIONAL CONVENTION AND EXHIBITION CENTRE"
+      ],
+      "poiFile": "26_2-139b547d401d.b3dm",
+      "poiSha256": "caed7019910068dc306fd09f81aa2fae105fbdff10b4a1919bb15665df2e293f",
+      "poiTriangles": 19200,
+      "backgroundFile": "optimized-tiles/8/157/26_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "backgroundSha256": "9f73c217deca7530ac2a62ddc1e89bb381063df98402c44b72507af38b1a5ae9",
+      "backgroundTriangles": 1352
+    },
+    {
+      "sourceTile": "tiles/8/157/26_3.b3dm",
+      "sourceSha256": "8f462158c277d61ec775bb3769d3336fdc1b4f6c5c6fa589914bb3b9c8a6c2f3",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "gmlNames": [
+        "SUNTEC SINGAPORE INTERNATIONAL CONVENTION AND EXHIBITION CENTRE"
+      ],
+      "poiFile": "26_3-e175d919fd99.b3dm",
+      "poiSha256": "e9810de9901ba0c54060ec66178b10c2ee946eed64787b2793bef839465f57d2",
+      "poiTriangles": 19200,
+      "backgroundFile": "optimized-tiles/8/157/26_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "backgroundSha256": "46816fff92364916601fbdfaef7b0b71652dc67eb8d802f3fc6489de5d82bb2b",
+      "backgroundTriangles": 1352
+    },
+    {
+      "sourceTile": "tiles/8/157/26_4.b3dm",
+      "sourceSha256": "a832bd94e9678e849fea5a8d90522981a4292748ac9f63362f2c33cb521b052b",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "gmlNames": [
+        "SUNTEC SINGAPORE INTERNATIONAL CONVENTION AND EXHIBITION CENTRE"
+      ],
+      "poiFile": "26_4-2ad2e752b9ad.b3dm",
+      "poiSha256": "cb7abbc66b45afece77f5e8b9c51ccee7cfa5d785daa5d03379ab1b893a5f641",
+      "poiTriangles": 19200,
+      "backgroundFile": "optimized-tiles/8/157/26_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "backgroundSha256": "d2ff99b31c98dd7db89e6d90efe7de5efc56344e68aaeba6dec773ee6f2ce2e2",
+      "backgroundTriangles": 1352
+    },
+    {
+      "sourceTile": "tiles/8/157/26_5.b3dm",
+      "sourceSha256": "3fef983b77fbf5b77f4cde92a1d2eaaf2bc4fd4b698bdadf411e6296a263efc1",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "gmlNames": [
+        "SUNTEC SINGAPORE INTERNATIONAL CONVENTION AND EXHIBITION CENTRE"
+      ],
+      "poiFile": "26_5-ce49dd2277ec.b3dm",
+      "poiSha256": "1ff4681a91de0e27f9ddedab8e98d36642c082f0416ae9937faa56dbc8fe1a1e",
+      "poiTriangles": 19200,
+      "backgroundFile": "optimized-tiles/8/157/26_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_04bef3bb-3e9b-40da-9b03-5d18389ef8eb"
+      ],
+      "backgroundSha256": "242ec7760cf367d339efe7884a9284d864bd523b930cf88bea92e978873b21fc",
+      "backgroundTriangles": 1352
+    }
+  ]
+}

@@ -40,7 +40,7 @@ npm run cloudflare:deploy
 The deployed MVP hostname is:
 
 ```text
-https://amble.amble-sg.workers.dev
+https://amble.project-hub-arnav.workers.dev
 ```
 
 ## R2 migration
@@ -89,9 +89,9 @@ R2 responses include `x-amble-tile-source: r2`. Existing application URLs remain
 
 ```bash
 npm run cloudflare:test
-curl -I https://amble.amble-sg.workers.dev/
-curl -I https://amble.amble-sg.workers.dev/optimized-tiles/tileset.json
-curl -I https://amble.amble-sg.workers.dev/api/snapshot
+curl -I https://amble.project-hub-arnav.workers.dev/
+curl -I https://amble.project-hub-arnav.workers.dev/optimized-tiles/tileset.json
+curl -I https://amble.project-hub-arnav.workers.dev/api/snapshot
 ```
 
 Confirm that `/admin.html` and `/api/admin/session` both return `404` through the public Worker.

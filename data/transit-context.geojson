@@ -1,0 +1,7347 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:ns",
+        "railType": "MRT",
+        "railLineCode": "NS",
+        "routeId": "ns",
+        "stationIds": [
+          "mrt-station:jurong-east",
+          "mrt-station:bukit-batok",
+          "mrt-station:bukit-gombak",
+          "mrt-station:choa-chu-kang",
+          "mrt-station:yew-tee",
+          "mrt-station:kranji",
+          "mrt-station:marsiling",
+          "mrt-station:woodlands",
+          "mrt-station:admiralty",
+          "mrt-station:sembawang",
+          "mrt-station:canberra",
+          "mrt-station:yishun",
+          "mrt-station:khatib",
+          "mrt-station:yio-chu-kang",
+          "mrt-station:ang-mo-kio",
+          "mrt-station:bishan",
+          "mrt-station:braddell",
+          "mrt-station:toa-payoh",
+          "mrt-station:novena",
+          "mrt-station:newton",
+          "mrt-station:orchard",
+          "mrt-station:somerset",
+          "mrt-station:dhoby-ghaut",
+          "mrt-station:city-hall",
+          "mrt-station:raffles-place",
+          "mrt-station:marina-bay",
+          "mrt-station:marina-south-pier"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.74236508406312,
+            1.3332114638253463
+          ],
+          [
+            103.74969897623916,
+            1.349219024939553
+          ],
+          [
+            103.75196174761149,
+            1.3590319850204209
+          ],
+          [
+            103.74445818471794,
+            1.3853280577571785
+          ],
+          [
+            103.74726709268903,
+            1.397499132778915
+          ],
+          [
+            103.7620526444446,
+            1.4249606810976627
+          ],
+          [
+            103.77410964960487,
+            1.4326934873645052
+          ],
+          [
+            103.7876268008561,
+            1.4361869096379904
+          ],
+          [
+            103.80085749444699,
+            1.4404069329400087
+          ],
+          [
+            103.82001511665648,
+            1.4489224371143137
+          ],
+          [
+            103.82971217750564,
+            1.443227401411478
+          ],
+          [
+            103.8350494239018,
+            1.4293844756294476
+          ],
+          [
+            103.83293675462139,
+            1.4174038435815333
+          ],
+          [
+            103.84480893448905,
+            1.3817151830909304
+          ],
+          [
+            103.84967573689514,
+            1.3696182336423717
+          ],
+          [
+            103.8486921069671,
+            1.3508634014459961
+          ],
+          [
+            103.84675895618112,
+            1.340828491675716
+          ],
+          [
+            103.84728463789433,
+            1.3327412066251947
+          ],
+          [
+            103.84386453367341,
+            1.3204953771685692
+          ],
+          [
+            103.83811425879578,
+            1.3127635093197172
+          ],
+          [
+            103.83185961720105,
+            1.303789221695739
+          ],
+          [
+            103.83883951102648,
+            1.3003680916322324
+          ],
+          [
+            103.84550168866953,
+            1.2994107088527835
+          ],
+          [
+            103.85244081320343,
+            1.2932059256953405
+          ],
+          [
+            103.8514146762947,
+            1.2837037810256355
+          ],
+          [
+            103.85513069011677,
+            1.2754511607510612
+          ],
+          [
+            103.8629548603669,
+            1.2709839133404244
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:ew",
+        "railType": "MRT",
+        "railLineCode": "EW",
+        "routeId": "ew",
+        "stationIds": [
+          "mrt-station:pasir-ris",
+          "mrt-station:tampines",
+          "mrt-station:simei",
+          "mrt-station:tanah-merah",
+          "mrt-station:bedok",
+          "mrt-station:kembangan",
+          "mrt-station:eunos",
+          "mrt-station:paya-lebar",
+          "mrt-station:aljunied",
+          "mrt-station:kallang",
+          "mrt-station:lavender",
+          "mrt-station:bugis",
+          "mrt-station:city-hall",
+          "mrt-station:raffles-place",
+          "mrt-station:tanjong-pagar",
+          "mrt-station:outram-park",
+          "mrt-station:tiong-bahru",
+          "mrt-station:redhill",
+          "mrt-station:queenstown",
+          "mrt-station:commonwealth",
+          "mrt-station:buona-vista",
+          "mrt-station:dover",
+          "mrt-station:clementi",
+          "mrt-station:jurong-east",
+          "mrt-station:chinese-garden",
+          "mrt-station:lakeside",
+          "mrt-station:boon-lay",
+          "mrt-station:pioneer",
+          "mrt-station:joo-koon",
+          "mrt-station:gul-circle",
+          "mrt-station:tuas-crescent",
+          "mrt-station:tuas-west-road",
+          "mrt-station:tuas-link"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.94923518349682,
+            1.3728641027162678
+          ],
+          [
+            103.94378200066225,
+            1.3543165275390319
+          ],
+          [
+            103.953818676297,
+            1.3426617945337078
+          ],
+          [
+            103.94575888475583,
+            1.32695951210127
+          ],
+          [
+            103.92941150425963,
+            1.3239705415943168
+          ],
+          [
+            103.9129201840768,
+            1.321037934168733
+          ],
+          [
+            103.90289713414593,
+            1.3195365796568062
+          ],
+          [
+            103.89220107839353,
+            1.3178251159873784
+          ],
+          [
+            103.88248476911996,
+            1.3163632078243936
+          ],
+          [
+            103.87165882001496,
+            1.3116611267596656
+          ],
+          [
+            103.86284668976303,
+            1.3073939998022037
+          ],
+          [
+            103.85620926697865,
+            1.3002680194792327
+          ],
+          [
+            103.85244081320343,
+            1.2932059256953405
+          ],
+          [
+            103.8514146762947,
+            1.2837037810256355
+          ],
+          [
+            103.84643317490287,
+            1.276506255901992
+          ],
+          [
+            103.83907654709711,
+            1.280728280859196
+          ],
+          [
+            103.82724350426975,
+            1.286060698644622
+          ],
+          [
+            103.8171219158162,
+            1.289428290017252
+          ],
+          [
+            103.80589279616889,
+            1.2948515894133086
+          ],
+          [
+            103.79837875141848,
+            1.302372675890001
+          ],
+          [
+            103.79065881256486,
+            1.3069294345160043
+          ],
+          [
+            103.77838474329596,
+            1.3115543125642066
+          ],
+          [
+            103.76537190030689,
+            1.3147708499395085
+          ],
+          [
+            103.74236508406312,
+            1.3332114638253463
+          ],
+          [
+            103.73278503871252,
+            1.341995553045827
+          ],
+          [
+            103.72107892304636,
+            1.3441229895834477
+          ],
+          [
+            103.70571801969106,
+            1.3384759405295732
+          ],
+          [
+            103.69714241314384,
+            1.3375881274629595
+          ],
+          [
+            103.67858239304405,
+            1.3277290979482586
+          ],
+          [
+            103.65993954468826,
+            1.3189347248509815
+          ],
+          [
+            103.64912276518791,
+            1.3210037067554503
+          ],
+          [
+            103.63953752800171,
+            1.330027377185666
+          ],
+          [
+            103.63704319374754,
+            1.3406834857368601
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:cg",
+        "railType": "MRT",
+        "railLineCode": "EW",
+        "routeId": "cg",
+        "stationIds": [
+          "mrt-station:tanah-merah",
+          "mrt-station:expo",
+          "mrt-station:changi-airport"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.94575888475583,
+            1.32695951210127
+          ],
+          [
+            103.96239435938976,
+            1.3351797416167697
+          ],
+          [
+            103.98829061110587,
+            1.356780838532488
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:ne",
+        "railType": "MRT",
+        "railLineCode": "NE",
+        "routeId": "ne",
+        "stationIds": [
+          "mrt-station:harbourfront",
+          "mrt-station:outram-park",
+          "mrt-station:chinatown",
+          "mrt-station:clarke-quay",
+          "mrt-station:dhoby-ghaut",
+          "mrt-station:little-india",
+          "mrt-station:farrer-park",
+          "mrt-station:boon-keng",
+          "mrt-station:potong-pasir",
+          "mrt-station:woodleigh",
+          "mrt-station:serangoon",
+          "mrt-station:kovan",
+          "mrt-station:hougang",
+          "mrt-station:buangkok",
+          "mrt-station:sengkang",
+          "mrt-station:punggol"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.82149962821518,
+            1.2654106664124478
+          ],
+          [
+            103.83907654709711,
+            1.280728280859196
+          ],
+          [
+            103.84407269085706,
+            1.2846415113506147
+          ],
+          [
+            103.8465650175935,
+            1.2886155666760253
+          ],
+          [
+            103.84550168866953,
+            1.2994107088527835
+          ],
+          [
+            103.84927941390605,
+            1.3067475131053192
+          ],
+          [
+            103.85433720319526,
+            1.3121610183985268
+          ],
+          [
+            103.8613709552917,
+            1.3190856294870317
+          ],
+          [
+            103.86900119241783,
+            1.331672067985565
+          ],
+          [
+            103.87083429229013,
+            1.3389870079378268
+          ],
+          [
+            103.87329741577366,
+            1.3502623171668307
+          ],
+          [
+            103.88482657958616,
+            1.3599804073029922
+          ],
+          [
+            103.89246438442173,
+            1.371432176548845
+          ],
+          [
+            103.8931734944837,
+            1.383029756905052
+          ],
+          [
+            103.89548936790362,
+            1.3917192967765781
+          ],
+          [
+            103.90220458929751,
+            1.4048161949745839
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:cc",
+        "railType": "MRT",
+        "railLineCode": "CC",
+        "routeId": "cc",
+        "stationIds": [
+          "mrt-station:dhoby-ghaut",
+          "mrt-station:bras-basah",
+          "mrt-station:esplanade",
+          "mrt-station:promenade",
+          "mrt-station:nicoll-highway",
+          "mrt-station:stadium",
+          "mrt-station:mountbatten",
+          "mrt-station:dakota",
+          "mrt-station:paya-lebar",
+          "mrt-station:macpherson",
+          "mrt-station:tai-seng",
+          "mrt-station:bartley",
+          "mrt-station:serangoon",
+          "mrt-station:lorong-chuan",
+          "mrt-station:bishan",
+          "mrt-station:marymount",
+          "mrt-station:caldecott",
+          "mrt-station:botanic-gardens",
+          "mrt-station:farrer-road",
+          "mrt-station:holland-village",
+          "mrt-station:buona-vista",
+          "mrt-station:one-north",
+          "mrt-station:kent-ridge",
+          "mrt-station:haw-par-villa",
+          "mrt-station:pasir-panjang",
+          "mrt-station:labrador-park",
+          "mrt-station:telok-blangah",
+          "mrt-station:harbourfront"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.84550168866953,
+            1.2994107088527835
+          ],
+          [
+            103.8505264190178,
+            1.2970013009425738
+          ],
+          [
+            103.85568040869373,
+            1.293194362529821
+          ],
+          [
+            103.860348993272,
+            1.2932255017455436
+          ],
+          [
+            103.86382885147265,
+            1.2999152246963064
+          ],
+          [
+            103.8753131111321,
+            1.302940656871825
+          ],
+          [
+            103.88292291421888,
+            1.3063993179446136
+          ],
+          [
+            103.88864327651277,
+            1.308455468964854
+          ],
+          [
+            103.89220107839353,
+            1.3178251159873784
+          ],
+          [
+            103.88955832467487,
+            1.3258707110251868
+          ],
+          [
+            103.88792075251713,
+            1.3352674810786016
+          ],
+          [
+            103.87958229359455,
+            1.3428749053727125
+          ],
+          [
+            103.87329741577366,
+            1.3502623171668307
+          ],
+          [
+            103.86392598671051,
+            1.3515888207439537
+          ],
+          [
+            103.8486921069671,
+            1.3508634014459961
+          ],
+          [
+            103.83957343743887,
+            1.3484232292972218
+          ],
+          [
+            103.84003535137836,
+            1.3374869862318381
+          ],
+          [
+            103.81544552576293,
+            1.3226096226428752
+          ],
+          [
+            103.80767723263273,
+            1.317522871033869
+          ],
+          [
+            103.79588732699557,
+            1.3110003169231763
+          ],
+          [
+            103.79065881256486,
+            1.3069294345160043
+          ],
+          [
+            103.78754638481149,
+            1.299794098173204
+          ],
+          [
+            103.78457515889197,
+            1.2934868977315543
+          ],
+          [
+            103.7820063970724,
+            1.2830552735417646
+          ],
+          [
+            103.79203018692041,
+            1.276003232785054
+          ],
+          [
+            103.80235555366292,
+            1.2721069580543352
+          ],
+          [
+            103.80988373092025,
+            1.2707212262114045
+          ],
+          [
+            103.82149962821518,
+            1.2654106664124478
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:ce",
+        "railType": "MRT",
+        "railLineCode": "CC",
+        "routeId": "ce",
+        "stationIds": [
+          "mrt-station:promenade",
+          "mrt-station:bayfront",
+          "mrt-station:marina-bay"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.860348993272,
+            1.2932255017455436
+          ],
+          [
+            103.85920456548351,
+            1.282089309786341
+          ],
+          [
+            103.85513069011677,
+            1.2754511607510612
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:dt",
+        "railType": "MRT",
+        "railLineCode": "DT",
+        "routeId": "dt",
+        "stationIds": [
+          "mrt-station:bukit-panjang",
+          "mrt-station:cashew",
+          "mrt-station:hillview",
+          "mrt-station:beauty-world",
+          "mrt-station:king-albert-park",
+          "mrt-station:sixth-avenue",
+          "mrt-station:tan-kah-kee",
+          "mrt-station:botanic-gardens",
+          "mrt-station:stevens",
+          "mrt-station:newton",
+          "mrt-station:little-india",
+          "mrt-station:rochor",
+          "mrt-station:bugis",
+          "mrt-station:promenade",
+          "mrt-station:bayfront",
+          "mrt-station:downtown",
+          "mrt-station:telok-ayer",
+          "mrt-station:chinatown",
+          "mrt-station:fort-canning",
+          "mrt-station:bencoolen",
+          "mrt-station:jalan-besar",
+          "mrt-station:bendemeer",
+          "mrt-station:geylang-bahru",
+          "mrt-station:mattar",
+          "mrt-station:macpherson",
+          "mrt-station:ubi",
+          "mrt-station:kaki-bukit",
+          "mrt-station:bedok-north",
+          "mrt-station:bedok-reservoir",
+          "mrt-station:tampines-west",
+          "mrt-station:tampines",
+          "mrt-station:tampines-east",
+          "mrt-station:upper-changi",
+          "mrt-station:expo"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.7621427618644,
+            1.3786217351770063
+          ],
+          [
+            103.76423448071098,
+            1.3698333185962925
+          ],
+          [
+            103.76739837501947,
+            1.3622792889314002
+          ],
+          [
+            103.77573217376438,
+            1.3410867460890723
+          ],
+          [
+            103.78379592249806,
+            1.3357565615926617
+          ],
+          [
+            103.79670713017461,
+            1.3311508856909509
+          ],
+          [
+            103.80779999638969,
+            1.3257396139528346
+          ],
+          [
+            103.81544552576293,
+            1.3226096226428752
+          ],
+          [
+            103.8257877978408,
+            1.3201417279919707
+          ],
+          [
+            103.83811425879578,
+            1.3127635093197172
+          ],
+          [
+            103.84927941390605,
+            1.3067475131053192
+          ],
+          [
+            103.85273967864146,
+            1.3038094417846313
+          ],
+          [
+            103.85620926697865,
+            1.3002680194792327
+          ],
+          [
+            103.860348993272,
+            1.2932255017455436
+          ],
+          [
+            103.85920456548351,
+            1.282089309786341
+          ],
+          [
+            103.85277105540212,
+            1.279553222177013
+          ],
+          [
+            103.84870717603917,
+            1.282211776179462
+          ],
+          [
+            103.84407269085706,
+            1.2846415113506147
+          ],
+          [
+            103.84429753288106,
+            1.2926181857619832
+          ],
+          [
+            103.84989185539355,
+            1.298364571380096
+          ],
+          [
+            103.85527034501443,
+            1.3051785870112829
+          ],
+          [
+            103.86314661868386,
+            1.3136666153239247
+          ],
+          [
+            103.87167493949823,
+            1.3213354072677879
+          ],
+          [
+            103.88324022727885,
+            1.3268574681294334
+          ],
+          [
+            103.88955832467487,
+            1.3258707110251868
+          ],
+          [
+            103.89923113088656,
+            1.3298907994822522
+          ],
+          [
+            103.90927568744428,
+            1.3351165483561398
+          ],
+          [
+            103.91851436903174,
+            1.3345218518539055
+          ],
+          [
+            103.93318700618062,
+            1.3364513321142049
+          ],
+          [
+            103.93857262189366,
+            1.3453148925641991
+          ],
+          [
+            103.94378200066225,
+            1.3543165275390319
+          ],
+          [
+            103.95528315107563,
+            1.3561430882801482
+          ],
+          [
+            103.96128514658888,
+            1.3415477120278756
+          ],
+          [
+            103.96239435938976,
+            1.3351797416167697
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:te",
+        "railType": "MRT",
+        "railLineCode": "TE",
+        "routeId": "te",
+        "stationIds": [
+          "mrt-station:woodlands-north",
+          "mrt-station:woodlands",
+          "mrt-station:woodlands-south",
+          "mrt-station:springleaf",
+          "mrt-station:lentor",
+          "mrt-station:mayflower",
+          "mrt-station:bright-hill",
+          "mrt-station:upper-thomson",
+          "mrt-station:caldecott",
+          "mrt-station:stevens",
+          "mrt-station:napier",
+          "mrt-station:orchard-boulevard",
+          "mrt-station:orchard",
+          "mrt-station:great-world",
+          "mrt-station:havelock",
+          "mrt-station:outram-park",
+          "mrt-station:maxwell",
+          "mrt-station:shenton-way",
+          "mrt-station:marina-bay",
+          "mrt-station:marina-south",
+          "mrt-station:gardens-by-the-bay",
+          "mrt-station:tanjong-rhu",
+          "mrt-station:katong-park",
+          "mrt-station:tanjong-katong",
+          "mrt-station:marine-parade",
+          "mrt-station:marine-terrace",
+          "mrt-station:siglap",
+          "mrt-station:bayshore"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.78526567604953,
+            1.4484919011018793
+          ],
+          [
+            103.7876268008561,
+            1.4361869096379904
+          ],
+          [
+            103.79395813934858,
+            1.426972273826002
+          ],
+          [
+            103.81815854863089,
+            1.3980974104338053
+          ],
+          [
+            103.83655194030277,
+            1.3847385802272616
+          ],
+          [
+            103.8367656394605,
+            1.3720404197659632
+          ],
+          [
+            103.8328688965173,
+            1.3631669264740247
+          ],
+          [
+            103.83282056841344,
+            1.3545271235855987
+          ],
+          [
+            103.84003535137836,
+            1.3374869862318381
+          ],
+          [
+            103.8257877978408,
+            1.3201417279919707
+          ],
+          [
+            103.81949519948067,
+            1.3066404836453698
+          ],
+          [
+            103.82376675527779,
+            1.3030436388374476
+          ],
+          [
+            103.83185961720105,
+            1.303789221695739
+          ],
+          [
+            103.83309156886823,
+            1.294296204091656
+          ],
+          [
+            103.83373395793535,
+            1.2884384467211425
+          ],
+          [
+            103.83907654709711,
+            1.280728280859196
+          ],
+          [
+            103.84399205942661,
+            1.2807150714114808
+          ],
+          [
+            103.85093581007624,
+            1.2774705811450466
+          ],
+          [
+            103.85513069011677,
+            1.2754511607510612
+          ],
+          [
+            103.86221097558553,
+            1.2740203434260169
+          ],
+          [
+            103.86790320784318,
+            1.2791668064192445
+          ],
+          [
+            103.8735402960179,
+            1.2973297672846043
+          ],
+          [
+            103.88608064630657,
+            1.2979590972838213
+          ],
+          [
+            103.89748462479015,
+            1.299428004349031
+          ],
+          [
+            103.9068439327607,
+            1.3037772663831824
+          ],
+          [
+            103.91507441029029,
+            1.30669394023776
+          ],
+          [
+            103.92997897887473,
+            1.309854457687683
+          ],
+          [
+            103.94158330608437,
+            1.3128147333789453
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:bp",
+        "railType": "LRT",
+        "railLineCode": "LRT",
+        "routeId": "bp",
+        "stationIds": [
+          "mrt-station:choa-chu-kang",
+          "mrt-station:south-view",
+          "mrt-station:keat-hong",
+          "mrt-station:teck-whye",
+          "mrt-station:phoenix",
+          "mrt-station:bukit-panjang",
+          "mrt-station:petir",
+          "mrt-station:pending",
+          "mrt-station:bangkit",
+          "mrt-station:fajar",
+          "mrt-station:segar",
+          "mrt-station:jelapang",
+          "mrt-station:senja"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.74445818471794,
+            1.3853280577571785
+          ],
+          [
+            103.74510113107972,
+            1.3803176569910298
+          ],
+          [
+            103.74922684160637,
+            1.3784649670168292
+          ],
+          [
+            103.75382610234246,
+            1.3765641949369936
+          ],
+          [
+            103.75825247510643,
+            1.378614068213967
+          ],
+          [
+            103.7621427618644,
+            1.3786217351770063
+          ],
+          [
+            103.76679301496294,
+            1.37760322809516
+          ],
+          [
+            103.77132784229688,
+            1.376297117193637
+          ],
+          [
+            103.77259057420869,
+            1.3798533467645455
+          ],
+          [
+            103.77067551844488,
+            1.3844650711796456
+          ],
+          [
+            103.76940991480218,
+            1.3878115559952267
+          ],
+          [
+            103.76467679284494,
+            1.3868326995309255
+          ],
+          [
+            103.76232576657173,
+            1.3828754471752023
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:se",
+        "railType": "LRT",
+        "railLineCode": "LRT",
+        "routeId": "se",
+        "stationIds": [
+          "mrt-station:sengkang",
+          "mrt-station:compassvale",
+          "mrt-station:rumbia",
+          "mrt-station:bakau",
+          "mrt-station:kangkar",
+          "mrt-station:ranggung",
+          "mrt-station:sengkang"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.89548936790362,
+            1.3917192967765781
+          ],
+          [
+            103.90066153357648,
+            1.3944308469049642
+          ],
+          [
+            103.90606230550871,
+            1.3913773641022749
+          ],
+          [
+            103.90546387737824,
+            1.388013092354575
+          ],
+          [
+            103.90221196308491,
+            1.3839198530203611
+          ],
+          [
+            103.89727283093592,
+            1.3841406347375078
+          ],
+          [
+            103.89548936790362,
+            1.3917192967765781
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:sw",
+        "railType": "LRT",
+        "railLineCode": "LRT",
+        "routeId": "sw",
+        "stationIds": [
+          "mrt-station:sengkang",
+          "mrt-station:cheng-lim",
+          "mrt-station:farmway",
+          "mrt-station:kupang",
+          "mrt-station:thanggam",
+          "mrt-station:fernvale",
+          "mrt-station:layar",
+          "mrt-station:tongkang",
+          "mrt-station:renjong",
+          "mrt-station:sengkang"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.89548936790362,
+            1.3917192967765781
+          ],
+          [
+            103.8938026029252,
+            1.396280094679355
+          ],
+          [
+            103.8892612323647,
+            1.3971669110404612
+          ],
+          [
+            103.88113855300325,
+            1.3982214946162514
+          ],
+          [
+            103.87562660067039,
+            1.397195247131311
+          ],
+          [
+            103.87626165389224,
+            1.3921582676260966
+          ],
+          [
+            103.88015126483126,
+            1.3920853547732004
+          ],
+          [
+            103.88602323575125,
+            1.3892795844733175
+          ],
+          [
+            103.89042367692801,
+            1.3867560500520364
+          ],
+          [
+            103.89548936790362,
+            1.3917192967765781
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:pe",
+        "railType": "LRT",
+        "railLineCode": "LRT",
+        "routeId": "pe",
+        "stationIds": [
+          "mrt-station:punggol",
+          "mrt-station:cove",
+          "mrt-station:meridian",
+          "mrt-station:coral-edge",
+          "mrt-station:riviera",
+          "mrt-station:kadaloor",
+          "mrt-station:oasis",
+          "mrt-station:damai",
+          "mrt-station:punggol"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.90220458929751,
+            1.4048161949745839
+          ],
+          [
+            103.906052374688,
+            1.3992135250589088
+          ],
+          [
+            103.90891766467064,
+            1.3969013699690482
+          ],
+          [
+            103.91268048916862,
+            1.3938277296662271
+          ],
+          [
+            103.91609928452392,
+            1.3944423385440405
+          ],
+          [
+            103.91645229440469,
+            1.3996103651652896
+          ],
+          [
+            103.91270035342811,
+            1.4023054254111869
+          ],
+          [
+            103.90870304151012,
+            1.4051653208712422
+          ],
+          [
+            103.90220458929751,
+            1.4048161949745839
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "rail_line",
+        "railLineId": "rail-route:pw",
+        "railType": "LRT",
+        "railLineCode": "LRT",
+        "routeId": "pw",
+        "stationIds": [
+          "mrt-station:punggol",
+          "mrt-station:sam-kee",
+          "mrt-station:teck-lee",
+          "mrt-station:punggol-point",
+          "mrt-station:samudera",
+          "mrt-station:nibong",
+          "mrt-station:sumang",
+          "mrt-station:soo-teck",
+          "mrt-station:punggol"
+        ],
+        "sourceDatasetIds": [
+          "d_e8bf3cff62f97300817d1fdcce382584",
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+        "simplificationTolerance": 0.00004
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.90220458929751,
+            1.4048161949745839
+          ],
+          [
+            103.90491542547062,
+            1.4097650862417428
+          ],
+          [
+            103.90664615971971,
+            1.412902368913235
+          ],
+          [
+            103.9067555486285,
+            1.4167894179276284
+          ],
+          [
+            103.90213653486909,
+            1.4158856087872789
+          ],
+          [
+            103.90030268112983,
+            1.4118415485297002
+          ],
+          [
+            103.89854640201656,
+            1.4084281664294225
+          ],
+          [
+            103.89721924696917,
+            1.405129912183108
+          ],
+          [
+            103.90220458929751,
+            1.4048161949745839
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:admiralty",
+        "stationName": "ADMIRALTY",
+        "exitIdentities": [
+          "071776EA2CE1E3E9",
+          "37905A3114C1A244",
+          "746E9DB47E3B63DD",
+          "887FE97DECFFEA05"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS10"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.80085749444699,
+          1.4404069329400087
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:aljunied",
+        "stationName": "ALJUNIED",
+        "exitIdentities": [
+          "045EB7203A0A5B4F",
+          "7C42B43D848F246C"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW9"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.88248476911996,
+          1.3163632078243936
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:ang-mo-kio",
+        "stationName": "ANG MO KIO",
+        "exitIdentities": [
+          "2FA1606517F7F394",
+          "65B35A9BB66315DF",
+          "6CB268C777B52269",
+          "87583D09ABBEFC42"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS16"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84967573689514,
+          1.3696182336423717
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bakau",
+        "stationName": "BAKAU LRT STATION",
+        "exitIdentities": [
+          "8A3C1E7317417FD2",
+          "FD691A27B9222ACC"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SE3"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90546387737824,
+          1.388013092354575
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bangkit",
+        "stationName": "BANGKIT LRT STATION",
+        "exitIdentities": [
+          "B7DF61CC7C6C3B13"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP9"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.77259057420869,
+          1.3798533467645455
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bartley",
+        "stationName": "BARTLEY",
+        "exitIdentities": [
+          "0455856EC60DC1B0",
+          "21A49043695321F2"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC12"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.87958229359455,
+          1.3428749053727125
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bayfront",
+        "stationName": "BAYFRONT",
+        "exitIdentities": [
+          "2379024BE499AD08",
+          "9446A698C2D12F17",
+          "959F42085F43D0D7",
+          "D926E2FE3DE5668D",
+          "F8BA0963046FE249"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CE1",
+          "DT16"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85920456548351,
+          1.282089309786341
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bayshore",
+        "stationName": "BAYSHORE",
+        "exitIdentities": [
+          "627189E55776A726",
+          "72CF4D8065313905",
+          "934C58722E4ADC1A",
+          "AA83FB2CE4CCFB86",
+          "CF6FB3FF74566524"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE29"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.94158330608437,
+          1.3128147333789453
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:beauty-world",
+        "stationName": "BEAUTY\r\nWORLD",
+        "exitIdentities": [
+          "7E2D6AAB2D36BBBA",
+          "91AF290F33622FDB",
+          "D320410A69021932"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT5"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.77573217376438,
+          1.3410867460890723
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bedok",
+        "stationName": "BEDOK",
+        "exitIdentities": [
+          "20B9A6B793404FF3",
+          "29CA710B93C2CB4B",
+          "D5D6C1E315FDB9D7"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW5"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.92941150425963,
+          1.3239705415943168
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bedok-north",
+        "stationName": "BEDOK NORTH",
+        "exitIdentities": [
+          "472D306FE205DA62",
+          "4D84939055694394",
+          "7227ED6E51A0A478",
+          "D120C83FD7AA7B80"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT29"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.91851436903174,
+          1.3345218518539055
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bedok-reservoir",
+        "stationName": "BEDOK RESERVOIR",
+        "exitIdentities": [
+          "2B5A7B2D633B3BD5",
+          "D9EF7EDA7B6AE00E"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT30"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.93318700618062,
+          1.3364513321142049
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bencoolen",
+        "stationName": "BENCOOLEN",
+        "exitIdentities": [
+          "0DF43E9348A676BC",
+          "58C4E2D41BF56E13",
+          "B84D682A36C94724"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT21"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84989185539355,
+          1.298364571380096
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bendemeer",
+        "stationName": "BENDEMEER",
+        "exitIdentities": [
+          "5EC1075AF445471C",
+          "CC5340F062D36648"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT23"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.86314661868386,
+          1.3136666153239247
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bishan",
+        "stationName": "BISHAN",
+        "exitIdentities": [
+          "03844339B281C755",
+          "1B5DEBDC60CE4A0E",
+          "2C4E7954EAAC322A",
+          "32BBD904B9B7DCBD",
+          "CC79D6FD2A8F1DD0"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC15",
+          "NS17"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8486921069671,
+          1.3508634014459961
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:boon-keng",
+        "stationName": "BOON KENG",
+        "exitIdentities": [
+          "0194CF0B3B46824D",
+          "437A42A639D5778D",
+          "B8343022B9AB9000"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NE9"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8613709552917,
+          1.3190856294870317
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:boon-lay",
+        "stationName": "BOON  LAY",
+        "exitIdentities": [
+          "0E296E75C6372829",
+          "A16B7FAC4E5AB117",
+          "A277212C952A5DE9",
+          "D64646CF4B4055D8",
+          "E67002E356755554",
+          "F72B433FA6426C66"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW27"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.70571801969106,
+          1.3384759405295732
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:botanic-gardens",
+        "stationName": "BOTANIC GARDENS MRT STATION",
+        "exitIdentities": [
+          "1D8ACE3D804EFC33",
+          "A2B2C9A4721A3198"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC19",
+          "DT9"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.81544552576293,
+          1.3226096226428752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:braddell",
+        "stationName": "BRADDELL",
+        "exitIdentities": [
+          "6D90E5E9F8684602",
+          "90DD180B16820DA9",
+          "B8C182EB1FFEA0F7"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS18"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84675895618112,
+          1.340828491675716
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bras-basah",
+        "stationName": "BRAS BASAH",
+        "exitIdentities": [
+          "1C26490BD624B606",
+          "57B5E4CF560CD25A",
+          "6010EED2184D4748",
+          "9448BEB862765BA4",
+          "D53EA9E82E6BE2E5"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC2"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8505264190178,
+          1.2970013009425738
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bright-hill",
+        "stationName": "BRIGHT HILL",
+        "exitIdentities": [
+          "2A45076ED986B275",
+          "BC4A442B12F99E85",
+          "CFB9350F44E8991A",
+          "F273E9D550B06062"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE7"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8328688965173,
+          1.3631669264740247
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:buangkok",
+        "stationName": "BUANGKOK",
+        "exitIdentities": [
+          "64BE76AD177F77E2",
+          "7C714ED0FE4AF579"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NE15"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8931734944837,
+          1.383029756905052
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bugis",
+        "stationName": "BUGIS",
+        "exitIdentities": [
+          "1AC0E726E51FF630",
+          "5BA6737A900E594D",
+          "9A6B839F19EEBCD4",
+          "A06B8C4EF9D0D3CF"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT14",
+          "EW12"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85620926697865,
+          1.3002680194792327
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bukit-batok",
+        "stationName": "BUKIT BATOK",
+        "exitIdentities": [
+          "400A184FD3289B7A",
+          "474392E67F3BCE9B",
+          "C429C4E74FC7D20E",
+          "E14204E5225118FF"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS2"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.74969897623916,
+          1.349219024939553
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bukit-gombak",
+        "stationName": "BUKIT GOMBAK",
+        "exitIdentities": [
+          "09DD5C2C18DD73D5",
+          "86F244E67822A799",
+          "DE40965F683CCE3E",
+          "ED8947B8EAD1722E"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS3"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.75196174761149,
+          1.3590319850204209
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:bukit-panjang",
+        "stationName": "BUKIT PANJANG",
+        "exitIdentities": [
+          "09D276CE9D28C5F6",
+          "0D013B4A269EF17B",
+          "46B17181D8944278",
+          "68EDD0201493E175",
+          "73796FEF5F3AC744",
+          "BE5F7B68E04895BE",
+          "C1FCA2C604034AB0",
+          "E6C3D8E13B430D8D"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP6",
+          "DT1"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7621427618644,
+          1.3786217351770063
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:buona-vista",
+        "stationName": "BUONA VISTA",
+        "exitIdentities": [
+          "95621469AB2856E4",
+          "D90F93DC24A3A902",
+          "EE2D2107B28FC4C5",
+          "F92A8D113B600232"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC22",
+          "EW21"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.79065881256486,
+          1.3069294345160043
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:caldecott",
+        "stationName": "CALDECOTT",
+        "exitIdentities": [
+          "00BCCDD48A0A19AB",
+          "857DEE03468202D9",
+          "907574C903E3C5B1",
+          "B27228AA1D3CABE9"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC17",
+          "TE9"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84003535137836,
+          1.3374869862318381
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:canberra",
+        "stationName": "CANBERRA",
+        "exitIdentities": [
+          "5CC317629EEEF874",
+          "749D0975B17D266E",
+          "9BEA4511424691E9",
+          "B2A3B66D0D93D04A",
+          "DD34E7FB97694745"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS12"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.82971217750564,
+          1.443227401411478
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:cashew",
+        "stationName": "CASHEW",
+        "exitIdentities": [
+          "CC93934ACEAF445A"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT2"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.76423448071098,
+          1.3698333185962925
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:cc9",
+        "stationName": "CC9",
+        "exitIdentities": [
+          "C1F2BBD57BDE56E9",
+          "D98C24C34886C2A7"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.89292190000816,
+          1.3175124998400487
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:changi-airport",
+        "stationName": "CHANGI AIRPORT",
+        "exitIdentities": [
+          "18E22F13F5B553EB",
+          "2D491EF64CB58C02"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CG2"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.98829061110587,
+          1.356780838532488
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:cheng-lim",
+        "stationName": "CHENG LIM LRT STATION",
+        "exitIdentities": [
+          "1BE9F4E72D049751",
+          "FC07F81DEF01BAAF"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SW1"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8938026029252,
+          1.396280094679355
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:chinatown",
+        "stationName": "CHINATOWN",
+        "exitIdentities": [
+          "3A1CC9F9DAB5860F",
+          "6EAFAD60E5DC5EB3",
+          "872CCBBC52D205A8",
+          "A5191DE73F930CFE",
+          "F311BD73BF790D1C",
+          "FCD3F9C4B46D59AD"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT19",
+          "NE4"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84407269085706,
+          1.2846415113506147
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:chinese-garden",
+        "stationName": "CHINESE GARDEN MRT STATION",
+        "exitIdentities": [
+          "34270BC7D85E5169",
+          "D5745B5A724E8909",
+          "F57ABC73B061CF8C"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW25"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.73278503871252,
+          1.341995553045827
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:choa-chu-kang",
+        "stationName": "CHOA CHU KANG LRT STATION",
+        "exitIdentities": [
+          "10C24E69D8E231DD",
+          "2E2B70E0E2D25273",
+          "4DDA5EEBC0D64FFE",
+          "51E0066A5AD1C4F1",
+          "AADCDA84B1CB7302",
+          "B31E5041452C3958",
+          "B98A2C3B9DA5DE50",
+          "BFC5700660BC9DF6",
+          "C3478FBF9D9DA5A3"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP1",
+          "NS4"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.74445818471794,
+          1.3853280577571785
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:city-hall",
+        "stationName": "CITY HALL",
+        "exitIdentities": [
+          "0D2982825A7A63D7",
+          "16ABA07E07EB8482",
+          "6F31D6D44E1CD68C",
+          "762708380AC6662A"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW13",
+          "NS25"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85244081320343,
+          1.2932059256953405
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:clarke-quay",
+        "stationName": "CLARKE QUAY",
+        "exitIdentities": [
+          "18FD71C7FA6C0E2A",
+          "30B1E5E1C8017C54",
+          "4217F1A02B8B47A7",
+          "804AAB0D2993008D",
+          "BC3B9F37FEEA2F7D",
+          "E4C1DE41B6ED8311"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NE5"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8465650175935,
+          1.2886155666760253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:clementi",
+        "stationName": "CLEMENTI",
+        "exitIdentities": [
+          "1BCD78C2E2F0AEBA",
+          "A9519BF912A2133C",
+          "B42D779AB82F42CF",
+          "B7D91BDACAA183E1"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW23"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.76537190030689,
+          1.3147708499395085
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:commonwealth",
+        "stationName": "COMMONWEALTH",
+        "exitIdentities": [
+          "07C70283FD8BEFD4",
+          "2DDDE6ED2CFECBB8",
+          "4759AD8699CAAFEB",
+          "5C10631FF88A2A31"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW20"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.79837875141848,
+          1.302372675890001
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:compassvale",
+        "stationName": "COMPASSVALE LRT STATION",
+        "exitIdentities": [
+          "5E01800475DDF5ED",
+          "7A6540195C75D6C2"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SE1"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90066153357648,
+          1.3944308469049642
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:coral-edge",
+        "stationName": "CORAL EDGE LRT STATION",
+        "exitIdentities": [
+          "D4CB376FFBED3D8A",
+          "E7718F39AA487D8B"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PE3"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.91268048916862,
+          1.3938277296662271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:cove",
+        "stationName": "COVE LRT STATION",
+        "exitIdentities": [
+          "8007BDF5105E0800",
+          "C06D10E6EBF83EA6"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PE1"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.906052374688,
+          1.3992135250589088
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:dakota",
+        "stationName": "DAKOTA",
+        "exitIdentities": [
+          "A66FCFFDD49C15D3",
+          "AB5D405E46C647FB"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC8"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.88864327651277,
+          1.308455468964854
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:damai",
+        "stationName": "DAMAI LRT STATION",
+        "exitIdentities": [
+          "C9AD817C66E8F720",
+          "D50CD0EB8DF1A6AD"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PE7"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90870304151012,
+          1.4051653208712422
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:dhoby-ghaut",
+        "stationName": "DHOBY GHAUT",
+        "exitIdentities": [
+          "348F2D3D9B9B7760",
+          "3DC596781F39163C",
+          "94631C7F11FCE747",
+          "BBEA402CB9EF9C2E",
+          "D718E6930765A66B",
+          "F3513EFAD04F7A68"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC1",
+          "NE6",
+          "NS24"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84550168866953,
+          1.2994107088527835
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:dover",
+        "stationName": "DOVER",
+        "exitIdentities": [
+          "3350D5255C75B2ED",
+          "F180ED4FDDA94062"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW22"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.77838474329596,
+          1.3115543125642066
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:downtown",
+        "stationName": "DOWNTOWN",
+        "exitIdentities": [
+          "2397863DFE9A27AE",
+          "419B0A25DCF2D8F3",
+          "8938BEADE9C163A4",
+          "AD2F8B7AE573BE63",
+          "D77ADD7D0B7369D2",
+          "EF75BE606A770937"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT17"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85277105540212,
+          1.279553222177013
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:dt18",
+        "stationName": "DT18",
+        "exitIdentities": [
+          "1DD9022663718F32",
+          "876C55E36105A859"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.847799999845,
+          1.2826500003916856
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:dt4",
+        "stationName": "DT4",
+        "exitIdentities": [
+          "BFFFA021E82FCF75",
+          "DEBE61198CBF6328"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.76867360009803,
+          1.3549460000598166
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:esplanade",
+        "stationName": "ESPLANADE",
+        "exitIdentities": [
+          "2ACFF8F7FE329CCA",
+          "37A435E4166C73B7",
+          "5A8D40F4CDB7B0AD",
+          "63956E6E46ECE3E0",
+          "651EA817751D16D3",
+          "C6AC4E01D3816D01",
+          "E51530AE6521B581"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC3"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85568040869373,
+          1.293194362529821
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:eunos",
+        "stationName": "EUNOS",
+        "exitIdentities": [
+          "8EBFC6F8732D28BD",
+          "C83CDC2726150409",
+          "CB562FEDBA333355"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW7"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90289713414593,
+          1.3195365796568062
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:expo",
+        "stationName": "EXPO",
+        "exitIdentities": [
+          "0C14825AD577B2E3",
+          "697283586E726E3F",
+          "6E43F01A7FD410B2",
+          "7559EFD8098C1D02",
+          "8F171DDEC2A3C476",
+          "906C9579A92CF7A4",
+          "E79BB6D2D2002821",
+          "FD3508562E82B730"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CG1",
+          "DT35"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.96239435938976,
+          1.3351797416167697
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:fajar",
+        "stationName": "FAJAR LRT STATION",
+        "exitIdentities": [
+          "A324402CF624723A"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP10"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.77067551844488,
+          1.3844650711796456
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:farmway",
+        "stationName": "FARMWAY LRT STATION",
+        "exitIdentities": [
+          "B5FE598CC9473CDE",
+          "C66585DE1453A1EF"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SW2"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8892612323647,
+          1.3971669110404612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:farrer-park",
+        "stationName": "FARRER PARK",
+        "exitIdentities": [
+          "173209DA7F23FABE",
+          "29BDA63F18A13487",
+          "360853AB3FB5F8E8",
+          "4A1DAEFD59468463",
+          "54174A49E0822F8A",
+          "6551D0EB84199FBF",
+          "6F1834F3D5171B51",
+          "E130D0857A648E60",
+          "F1BDA4510E572B33"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NE8"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85433720319526,
+          1.3121610183985268
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:farrer-road",
+        "stationName": "FARRER  ROAD",
+        "exitIdentities": [
+          "256E821C70941FD4",
+          "C5B7A8210D496AE2"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC20"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.80767723263273,
+          1.317522871033869
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:fernvale",
+        "stationName": "FERNVALE LRT STATION",
+        "exitIdentities": [
+          "92D152D45E445F84"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SW5"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.87626165389224,
+          1.3921582676260966
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:fort-canning",
+        "stationName": "FORT CANNING MRT STATION",
+        "exitIdentities": [
+          "AF446178B7F1A586",
+          "FC551044CAEAB201"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT20"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84429753288106,
+          1.2926181857619832
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:gardens-by-the-bay",
+        "stationName": "GARDENS BY THE BAY",
+        "exitIdentities": [
+          "139A309B16435395",
+          "272B01765238D930",
+          "64955697073C7D02"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE22"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.86790320784318,
+          1.2791668064192445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:geylang-bahru",
+        "stationName": "GEYLANG BAHRU",
+        "exitIdentities": [
+          "31AEB6AC99986A23",
+          "7D14D8F944626336"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT24"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.87167493949823,
+          1.3213354072677879
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:great-world",
+        "stationName": "GREAT WORLD",
+        "exitIdentities": [
+          "4F2D7457D45F29D1",
+          "5FD7E726E04576E5",
+          "65268329B5AD5F93",
+          "72FD2496EC6B1D54",
+          "C2D22AD994AA8975",
+          "FCF6BA18E63CA65C"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE15"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.83309156886823,
+          1.294296204091656
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:gul-circle",
+        "stationName": "GUL CIRCLE",
+        "exitIdentities": [
+          "E5B02C31AEAEB829",
+          "F7C62DDD2A73BCC1"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW30"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.65993954468826,
+          1.3189347248509815
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:harbourfront",
+        "stationName": "HARBOURFRONT",
+        "exitIdentities": [
+          "54F69FDA2233B8B4",
+          "690B8B15B6CB2137",
+          "8A673F2CF4ABB497",
+          "B43EC60E1D8817B8",
+          "F2A67B74844A3E35",
+          "FF2613B98FF1665F"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC29",
+          "NE1"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.82149962821518,
+          1.2654106664124478
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:havelock",
+        "stationName": "HAVELOCK",
+        "exitIdentities": [
+          "2B4107CDD54FF45A",
+          "3509B8FC37977C9F",
+          "41415B22F604DBB1",
+          "43806860EF6F95B6",
+          "F01A3E97C6F40606"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE16"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.83373395793535,
+          1.2884384467211425
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:haw-par-villa",
+        "stationName": "HAW PAR VILLA",
+        "exitIdentities": [
+          "F33EEDAA74A75803"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC25"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7820063970724,
+          1.2830552735417646
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:hillview",
+        "stationName": "HILLVIEW",
+        "exitIdentities": [
+          "4A8EA2D66E8ECDA8",
+          "A858C4A736160A26"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT3"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.76739837501947,
+          1.3622792889314002
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:holland-village",
+        "stationName": "HOLLAND VILLAGE",
+        "exitIdentities": [
+          "5AE0992EF2AB9ACA",
+          "6C37FA62DE7E9E31",
+          "76D46E22BDCAEAAA"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC21"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.79588732699557,
+          1.3110003169231763
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:hougang",
+        "stationName": "HOUGANG",
+        "exitIdentities": [
+          "2D8A3BEA17E41AFD",
+          "6D19186EFE5FD5FB",
+          "CAD432D1FEF31915"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NE14"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.89246438442173,
+          1.371432176548845
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:jalan-besar",
+        "stationName": "JALAN BESAR",
+        "exitIdentities": [
+          "1DF95F048432E540",
+          "F845CB06D67E6A83"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT22"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85527034501443,
+          1.3051785870112829
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:jelapang",
+        "stationName": "JELAPANG LRT STATION",
+        "exitIdentities": [
+          "45CDB0D9BDC73079"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP12"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.76467679284494,
+          1.3868326995309255
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:joo-koon",
+        "stationName": "JOO KOON",
+        "exitIdentities": [
+          "93D34F9CC519E4F1",
+          "AFF1FA0853BEBB53"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW29"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.67858239304405,
+          1.3277290979482586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:jurong-east",
+        "stationName": "JURONG EAST MRT STATION",
+        "exitIdentities": [
+          "133799CC6DC30D46",
+          "62C94126CEE417F0",
+          "C166FA1DA983F4C3",
+          "F6949D2149A78ED9"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW24",
+          "NS1"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.74236508406312,
+          1.3332114638253463
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:kadaloor",
+        "stationName": "KADALOOR LRT STATION",
+        "exitIdentities": [
+          "8F348D1DC2C6DCD9",
+          "F84C17D9498B88F1"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PE5"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.91645229440469,
+          1.3996103651652896
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:kaki-bukit",
+        "stationName": "KAKI BUKIT",
+        "exitIdentities": [
+          "C7859F14611E3E46",
+          "D3065772B4A8884B"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT28"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90927568744428,
+          1.3351165483561398
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:kallang",
+        "stationName": "KALLANG",
+        "exitIdentities": [
+          "6CF9B446E7CA4054",
+          "C4FA9AF262FF43C1"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW10"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.87165882001496,
+          1.3116611267596656
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:kangkar",
+        "stationName": "KANGKAR LRT STATION",
+        "exitIdentities": [
+          "09AD446CDB37F542",
+          "8F3E5F0D6E718156"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SE4"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90221196308491,
+          1.3839198530203611
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:katong-park",
+        "stationName": "KATONG PARK",
+        "exitIdentities": [
+          "15DB4306D5D96B25",
+          "FC1CBA9301C10E50"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE24"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.88608064630657,
+          1.2979590972838213
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:keat-hong",
+        "stationName": "KEAT HONG LRT STATION",
+        "exitIdentities": [
+          "C7644F242A74A168"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP3"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.74922684160637,
+          1.3784649670168292
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:kembangan",
+        "stationName": "KEMBANGAN",
+        "exitIdentities": [
+          "85173EF160C47192",
+          "E09063B99CE6B24F"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW6"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9129201840768,
+          1.321037934168733
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:kent-ridge",
+        "stationName": "KENT RIDGE",
+        "exitIdentities": [
+          "3A15EBE767637D7E",
+          "AE7207C0705527D0",
+          "D5D0496822FDF5DF",
+          "E895460A627947D4"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC24"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.78457515889197,
+          1.2934868977315543
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:khatib",
+        "stationName": "KHATIB",
+        "exitIdentities": [
+          "0EB1742925CA5FD4",
+          "67A576351EE1E7DB",
+          "BEC9777C2AF5693A",
+          "DFC9A990CD03CDD1"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS14"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.83293675462139,
+          1.4174038435815333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:king-albert-park",
+        "stationName": "KING ALBERT PARK",
+        "exitIdentities": [
+          "DAE9E8760965D45A",
+          "E65E02F76E0D2687"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT6"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.78379592249806,
+          1.3357565615926617
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:kovan",
+        "stationName": "KOVAN",
+        "exitIdentities": [
+          "420650AF4622E265",
+          "A740F42ACFBB45B6",
+          "AECA4062F6010632"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NE13"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.88482657958616,
+          1.3599804073029922
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:kranji",
+        "stationName": "KRANJI",
+        "exitIdentities": [
+          "20E6B767B2F69FB8",
+          "91BDDFEBA5A15383",
+          "E0BD26E3F5EE18B9",
+          "EFEBDF844A7E944C"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS7"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7620526444446,
+          1.4249606810976627
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:kupang",
+        "stationName": "KUPANG LRT STATION",
+        "exitIdentities": [
+          "62EDCA2810CF78CE",
+          "EC95D6994C36C7C2"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SW3"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.88113855300325,
+          1.3982214946162514
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:labrador-park",
+        "stationName": "LABRADOR\r\nPARK",
+        "exitIdentities": [
+          "77D4BE63E9419638"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC27"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.80235555366292,
+          1.2721069580543352
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:lakeside",
+        "stationName": "LAKESIDE",
+        "exitIdentities": [
+          "33F25E28EB4DD76D",
+          "577ECF5E707DE228",
+          "DA7033E23CE2B741"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW26"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.72107892304636,
+          1.3441229895834477
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:lavender",
+        "stationName": "LAVENDER",
+        "exitIdentities": [
+          "67781AFE7035C87A",
+          "79E658884200F5CF"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW11"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.86284668976303,
+          1.3073939998022037
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:layar",
+        "stationName": "LAYAR LRT STATION",
+        "exitIdentities": [
+          "213B4B13C275292B",
+          "F757F13626617675"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SW6"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.88015126483126,
+          1.3920853547732004
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:lentor",
+        "stationName": "LENTOR",
+        "exitIdentities": [
+          "1D02FE80AE160F4F",
+          "1DBB7D760352881C",
+          "26CD4A0F04FEAE7A",
+          "872548D8089E5C63",
+          "AD8355986951011E"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE5"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.83655194030277,
+          1.3847385802272616
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:little-india",
+        "stationName": "LITTLE  INDIA",
+        "exitIdentities": [
+          "42434AF40AAA3CAF",
+          "5617CFEE626840BB",
+          "6710D2143B21969B",
+          "6ABD7125ED6CAD9B",
+          "8A50DC395B46AA31",
+          "ADDF2D4CC49805FA"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT12",
+          "NE7"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84927941390605,
+          1.3067475131053192
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:lorong-chuan",
+        "stationName": "LORONG CHUAN",
+        "exitIdentities": [
+          "28A9382A30C8CE74",
+          "F22EC9809EB9F243"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC14"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.86392598671051,
+          1.3515888207439537
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:macpherson",
+        "stationName": "MACPHERSON",
+        "exitIdentities": [
+          "5285256719923C73",
+          "A4023956A12A2155",
+          "AB2B8B46B299062B",
+          "DA5558C22F66CC7C",
+          "DB18BEBDD5326092"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC10",
+          "DT26"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.88955832467487,
+          1.3258707110251868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:marina-bay",
+        "stationName": "MARINA BAY",
+        "exitIdentities": [
+          "03BC8BA7B72C2D81",
+          "2F2639EB423EFD0D",
+          "4F0EDD7252D1EAF8",
+          "9B69D26308E8046F",
+          "F125CE014C37C2DB"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CE2",
+          "NS27",
+          "TE20"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85513069011677,
+          1.2754511607510612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:marina-south",
+        "stationName": "MARINA SOUTH",
+        "exitIdentities": [
+          "0D8225B43A9DB12A",
+          "20846F5C306F5CFE",
+          "465066CFAE562319",
+          "AC98AC5E6E4A2440"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE21"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.86221097558553,
+          1.2740203434260169
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:marina-south-pier",
+        "stationName": "MARINA SOUTH PIER",
+        "exitIdentities": [
+          "C73EE0EE2FBED722",
+          "F068727788589ACD"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS28"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8629548603669,
+          1.2709839133404244
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:marine-parade",
+        "stationName": "MARINE PARADE",
+        "exitIdentities": [
+          "0DF85BF8AB49FEC7",
+          "22754DFDE2D848CB",
+          "52845A2DC274CA7C",
+          "732030E82EF855A4",
+          "9CE48F9E4A0DF166",
+          "D4E2F934F7995156"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE26"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9068439327607,
+          1.3037772663831824
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:marine-terrace",
+        "stationName": "MARINE TERRACE",
+        "exitIdentities": [
+          "0A03D5F54F0F16EA",
+          "1ACC71BADD4F380E",
+          "34B15330BE334750",
+          "48CC5428C44F3C52",
+          "58814986A4D00949",
+          "5CB0B88DE39DABDE"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE27"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.91507441029029,
+          1.30669394023776
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:marsiling",
+        "stationName": "MARSILING",
+        "exitIdentities": [
+          "0449B4DEFBEC025F",
+          "A4DF45D1ABCFAC02",
+          "AC661F5F30DEBD6A",
+          "BC10B89687EB57DF"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS8"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.77410964960487,
+          1.4326934873645052
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:marymount",
+        "stationName": "MARYMOUNT",
+        "exitIdentities": [
+          "00445EC81B4CF09B",
+          "D6F8DA032170A0CA"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC16"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.83957343743887,
+          1.3484232292972218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:mattar",
+        "stationName": "MATTAR",
+        "exitIdentities": [
+          "63BE655DB172CD4E",
+          "6B8EB7C225C36578"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT25"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.88324022727885,
+          1.3268574681294334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:maxwell",
+        "stationName": "MAXWELL",
+        "exitIdentities": [
+          "5D6CDC9708168E3B",
+          "95F61602B7CE905C",
+          "CE1632BF9D6E1F72"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE18"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84399205942661,
+          1.2807150714114808
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:mayflower",
+        "stationName": "MAYFLOWER",
+        "exitIdentities": [
+          "03D1FF1990E162EB",
+          "0C15214EBA575804",
+          "4C504570F6BC8EC3",
+          "4F085EF4AAB00599",
+          "64DA1E7B1619F148",
+          "728784A5D5FEAA7A",
+          "AE51C872434B37D7"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE6"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8367656394605,
+          1.3720404197659632
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:meridian",
+        "stationName": "MERIDIAN LRT STATION",
+        "exitIdentities": [
+          "CB5492FBE757562B",
+          "FCD25ADA46274E53"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PE2"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90891766467064,
+          1.3969013699690482
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:mountbatten",
+        "stationName": "MOUNTBATTEN",
+        "exitIdentities": [
+          "187A879D30D2F951",
+          "D4AA144302569724"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC7"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.88292291421888,
+          1.3063993179446136
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:napier",
+        "stationName": "NAPIER",
+        "exitIdentities": [
+          "8800C596B7DB260F",
+          "CE1402EDB6926C4A"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE12"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.81949519948067,
+          1.3066404836453698
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:newton",
+        "stationName": "NEWTON",
+        "exitIdentities": [
+          "3A315A2361D88723",
+          "B75D0390F4B7FDF5",
+          "D977970135729EB8"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT11",
+          "NS21"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.83811425879578,
+          1.3127635093197172
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:nibong",
+        "stationName": "NIBONG LRT STATION",
+        "exitIdentities": [
+          "853F2A40C64D662F",
+          "BDB536DD4D5059E3"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PW5"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90030268112983,
+          1.4118415485297002
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:nicoll-highway",
+        "stationName": "NICOLL HIGHWAY",
+        "exitIdentities": [
+          "2E07D7422B61952A",
+          "CE8447F8465B2FF7"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC5"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.86382885147265,
+          1.2999152246963064
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:novena",
+        "stationName": "NOVENA",
+        "exitIdentities": [
+          "1C30DBBBBC9F938C",
+          "F8D815A9ADA89BE1"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS20"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84386453367341,
+          1.3204953771685692
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:oasis",
+        "stationName": "OASIS LRT STATION",
+        "exitIdentities": [
+          "0BEB37C242EBF30C",
+          "9B8770AEDF254A19"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PE6"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.91270035342811,
+          1.4023054254111869
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:one-north",
+        "stationName": "ONE-NORTH",
+        "exitIdentities": [
+          "14396AC4C6B421F3",
+          "1C5F562480779031",
+          "45A9A4D683B771BF",
+          "5C641090FA13AD51"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC23"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.78754638481149,
+          1.299794098173204
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:orchard",
+        "stationName": "ORCHARD",
+        "exitIdentities": [
+          "0A847CDFAB7B3F63",
+          "4E4D642287D1546E",
+          "5EA01AD2A9EE377D",
+          "7055832BEE42BDA7",
+          "705858431FF72BCB",
+          "9C4A361AF93F75D2",
+          "A360078B6432F773",
+          "AD31C99F12BAEE46",
+          "B3BE3F499ED707F1",
+          "D7A5F13EF395CD85",
+          "DBD31FCCFBAE692E",
+          "EA3B90BA295EFD84",
+          "FCA5411E28B2A33D"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS22",
+          "TE14"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.83185961720105,
+          1.303789221695739
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:orchard-boulevard",
+        "stationName": "ORCHARD \r\nBOULEVARD",
+        "exitIdentities": [
+          "387A884B34A26CED",
+          "4FC444363DB7E86D"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE13"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.82376675527779,
+          1.3030436388374476
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:outram-park",
+        "stationName": "OUTRAM PARK",
+        "exitIdentities": [
+          "00AC1131DC50AE35",
+          "3057E9135BFBD0F9",
+          "3C9A35B7FDC33A1A",
+          "7A26F4DA0D6151ED",
+          "9240996FD39C6AB0",
+          "C6452A7F824358BC",
+          "CBF6275E32E848D8",
+          "E6EE8657F042CAA7"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW16",
+          "NE3",
+          "TE17"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.83907654709711,
+          1.280728280859196
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:pasir-panjang",
+        "stationName": "PASIR PANJANG",
+        "exitIdentities": [
+          "DC64D55F9888B200"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC26"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.79203018692041,
+          1.276003232785054
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:pasir-ris",
+        "stationName": "PASIR RIS",
+        "exitIdentities": [
+          "5F3BC6B21D0848C7",
+          "A801E2A1E34520C9"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW1"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.94923518349682,
+          1.3728641027162678
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:paya-lebar",
+        "stationName": "PAYA LEBAR",
+        "exitIdentities": [
+          "0EA7336E0E7F32CF",
+          "69CB616E4522ABA4",
+          "786C0A6632548330",
+          "CC4D13D27CAEA2B1"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC9",
+          "EW8"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.89220107839353,
+          1.3178251159873784
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:pending",
+        "stationName": "PENDING LRT STATION",
+        "exitIdentities": [
+          "17E89960BD47612A"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP8"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.77132784229688,
+          1.376297117193637
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:petir",
+        "stationName": "PETIR LRT STATION",
+        "exitIdentities": [
+          "B0600A1212F651AE"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP7"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.76679301496294,
+          1.37760322809516
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:phoenix",
+        "stationName": "PHOENIX LRT STATION",
+        "exitIdentities": [
+          "C7F6410B1E2A01E2"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP5"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.75825247510643,
+          1.378614068213967
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:pioneer",
+        "stationName": "PIONEER",
+        "exitIdentities": [
+          "2362DB8619A766E8",
+          "72551C3253621E4C"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW28"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.69714241314384,
+          1.3375881274629595
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:potong-pasir",
+        "stationName": "POTONG PASIR",
+        "exitIdentities": [
+          "1B39543BA5308563",
+          "ADC7223B75A5E175",
+          "C0620A11315B77FF"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NE10"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.86900119241783,
+          1.331672067985565
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:promenade",
+        "stationName": "PROMENADE",
+        "exitIdentities": [
+          "9EAAD1597236079B",
+          "BCC2873D65F6A92C",
+          "DF287781847E65C1"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC4",
+          "DT15"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.860348993272,
+          1.2932255017455436
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:punggol",
+        "stationName": "PUNGGOL",
+        "exitIdentities": [
+          "0B2529A684127E11",
+          "946836207101FC23",
+          "ABD1B5F0A5C95A52",
+          "E3FC8EFB1852284C"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NE17",
+          "PTC"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90220458929751,
+          1.4048161949745839
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:punggol-point",
+        "stationName": "PUNGGOL POINT LRT STATION",
+        "exitIdentities": [
+          "45E35F4903E99C73",
+          "A61E18152335BFC3"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PW3"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9067555486285,
+          1.4167894179276284
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:queenstown",
+        "stationName": "QUEENSTOWN",
+        "exitIdentities": [
+          "2B9707C0F0ECEFC8",
+          "323A1F8C0515C318",
+          "45F7FB42BEF80E73",
+          "C54B2E9241AC7587"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW19"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.80589279616889,
+          1.2948515894133086
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:raffles-place",
+        "stationName": "RAFFLES   PLACE",
+        "exitIdentities": [
+          "0172739C99613BF7",
+          "229B46DF8A1250CC",
+          "244D66DE744BCD47",
+          "3363214AF138AD7A",
+          "40F9660EB1C4C12E",
+          "5783A6CCBAC00283",
+          "7908CDF860503E38",
+          "BDC3B51F0318BD2C",
+          "D79CE3109CFB1331",
+          "F5DECEDB9FFE5F33"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW14",
+          "NS26"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8514146762947,
+          1.2837037810256355
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:ranggung",
+        "stationName": "RANGGUNG LRT STATION",
+        "exitIdentities": [
+          "077813950167F0B1",
+          "8D5E7FC2B8D737C3"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SE5"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.89727283093592,
+          1.3841406347375078
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:redhill",
+        "stationName": "REDHILL",
+        "exitIdentities": [
+          "08AE2164E30DF4A7",
+          "C665A340A5A6CBEC"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW18"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8171219158162,
+          1.289428290017252
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:renjong",
+        "stationName": "RENJONG LRT STATION",
+        "exitIdentities": [
+          "35048F84F3D858BC",
+          "B0178F7E6DD16A1A"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SW8"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.89042367692801,
+          1.3867560500520364
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:riviera",
+        "stationName": "RIVIERA",
+        "exitIdentities": [
+          "720E105DE8EACE66",
+          "B302D78A0F102EF5"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PE4"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.91609928452392,
+          1.3944423385440405
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:rochor",
+        "stationName": "ROCHOR",
+        "exitIdentities": [
+          "3D9484B6A1206900",
+          "5F1E6F573314E1E3"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT13"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85273967864146,
+          1.3038094417846313
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:rumbia",
+        "stationName": "RUMBIA LRT STATION",
+        "exitIdentities": [
+          "19F50D0B45ED2625",
+          "24270D468CB0C551"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SE2"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90606230550871,
+          1.3913773641022749
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:sam-kee",
+        "stationName": "SAM KEE LRT STATION",
+        "exitIdentities": [
+          "D716A4040285BEB9",
+          "ED444F6994E770B0"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PW1"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90491542547062,
+          1.4097650862417428
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:samudera",
+        "stationName": "SAMUDERA LRT STATION",
+        "exitIdentities": [
+          "4D74C24533C50685",
+          "5773D3B5DB9A561F"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PW4"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90213653486909,
+          1.4158856087872789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:segar",
+        "stationName": "SEGAR LRT STATION",
+        "exitIdentities": [
+          "54BFE6EB924CBA6F"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP11"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.76940991480218,
+          1.3878115559952267
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:sembawang",
+        "stationName": "SEMBAWANG",
+        "exitIdentities": [
+          "3167E33222F7BAC9",
+          "A4391FC0AAA1EAAC",
+          "A612A01DC4DD39AA",
+          "CBDA244C9326B8C6"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS11"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.82001511665648,
+          1.4489224371143137
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:sengkang",
+        "stationName": "SENGKANG",
+        "exitIdentities": [
+          "245FC278F4E5D3D3",
+          "5C2ABE67FA9DA403",
+          "7B18AEBD6DA44B02",
+          "E026168F5D7B044A"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NE16",
+          "STC"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.89548936790362,
+          1.3917192967765781
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:senja",
+        "stationName": "SENJA LRT STATION",
+        "exitIdentities": [
+          "C46382A21331EA45"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP13"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.76232576657173,
+          1.3828754471752023
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:serangoon",
+        "stationName": "SERANGOON",
+        "exitIdentities": [
+          "12758F1DDC8CF6B8",
+          "29231A6BE44BC0C3",
+          "40A841F72D73A02C",
+          "56E474B40576C822",
+          "AF9B4A2ED6E87545",
+          "C1B3F5AC67211832",
+          "DA4475EAB2A9601C",
+          "F904CF22F1692BDE"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC13",
+          "NE12"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.87329741577366,
+          1.3502623171668307
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:shenton-way",
+        "stationName": "SHENTON WAY",
+        "exitIdentities": [
+          "03444FA2BC9AF9DF",
+          "2B1F698DD3DB8746",
+          "42CEFA5FE7DD78D9",
+          "A54D185A5569B115",
+          "AAEEB32398817172",
+          "FD720BE5E5565E2E"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE19"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85093581007624,
+          1.2774705811450466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:siglap",
+        "stationName": "SIGLAP",
+        "exitIdentities": [
+          "0CD4FE836F56EE89",
+          "5133D8768907FCBF",
+          "5449C62706BCB3AB",
+          "8AD9E3CFFD77F7FC"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE28"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.92997897887473,
+          1.309854457687683
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:simei",
+        "stationName": "SIMEI",
+        "exitIdentities": [
+          "FE7E73B9E2A00E1D"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW3"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.953818676297,
+          1.3426617945337078
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:sixth-avenue",
+        "stationName": "SIXTH    AVENUE",
+        "exitIdentities": [
+          "10CC04828E7C82D8",
+          "2C20FEBDCFC154A5"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT7"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.79670713017461,
+          1.3311508856909509
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:somerset",
+        "stationName": "SOMERSET",
+        "exitIdentities": [
+          "87BD98DB1E154EDA",
+          "947DEBE26C775910",
+          "C073EA14C7AA013E",
+          "C8C03BAA2804D6D1"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS23"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.83883951102648,
+          1.3003680916322324
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:soo-teck",
+        "stationName": "SOO TECK LRT STATION",
+        "exitIdentities": [
+          "5C840B0088A042B7",
+          "7CDEC183A92283AA"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PW7"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.89721924696917,
+          1.405129912183108
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:south-view",
+        "stationName": "SOUTH VIEW LRT STATION",
+        "exitIdentities": [
+          "335EFAECE777F0ED"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP2"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.74510113107972,
+          1.3803176569910298
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:springleaf",
+        "stationName": "SPRINGLEAF",
+        "exitIdentities": [
+          "122980157DCB57C6",
+          "8D6ED46D4B845735",
+          "CAB3151915361262"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE4"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.81815854863089,
+          1.3980974104338053
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:stadium",
+        "stationName": "STADIUM",
+        "exitIdentities": [
+          "402BA10E05281F64",
+          "CA5A16272BE38BEE"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC6"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8753131111321,
+          1.302940656871825
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:stevens",
+        "stationName": "STEVENS",
+        "exitIdentities": [
+          "3DDAD01108E1ED83",
+          "43C1FAB4A764D619",
+          "93AA974193E59BF8",
+          "A6EA6AA10E329D97",
+          "FD76A5DA4056C137"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT10",
+          "TE11"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8257877978408,
+          1.3201417279919707
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:sumang",
+        "stationName": "SUMANG LRT STATION",
+        "exitIdentities": [
+          "5B2417A2FAFF4D06",
+          "DE121A01C547F972"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PW6"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.89854640201656,
+          1.4084281664294225
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tai-seng",
+        "stationName": "TAI SENG",
+        "exitIdentities": [
+          "54874BD41781B357",
+          "B121007692C889BF"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC11"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.88792075251713,
+          1.3352674810786016
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tampines",
+        "stationName": "TAMPINES",
+        "exitIdentities": [
+          "1D91E52F1D3C6192",
+          "2E179BE5B3B6B091",
+          "4857FF7FA81FC41A",
+          "6D821717AFC18096",
+          "ACC2B4758E58EF1B",
+          "B610E91C58D66F87",
+          "CFE16BC8ECCE4D1A"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT32",
+          "EW2"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.94378200066225,
+          1.3543165275390319
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tampines-east",
+        "stationName": "TAMPINES EAST",
+        "exitIdentities": [
+          "192449D843551047",
+          "99EACB07EB87275F",
+          "CBB2A963BF33C276",
+          "FFF4C9A7B530851C"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT33"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.95528315107563,
+          1.3561430882801482
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tampines-west",
+        "stationName": "TAMPINES WEST",
+        "exitIdentities": [
+          "538DEFEDB8DF426A",
+          "6F2A56A935D2673D"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT31"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.93857262189366,
+          1.3453148925641991
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tan-kah-kee",
+        "stationName": "TAN    KAH    KEE",
+        "exitIdentities": [
+          "90A659920312F326",
+          "A5B4AAE12B40643B"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT8"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.80779999638969,
+          1.3257396139528346
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tanah-merah",
+        "stationName": "TANAH MERAH",
+        "exitIdentities": [
+          "36F95FB516EC35CE",
+          "A923EE234A94C8FF"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW4"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.94575888475583,
+          1.32695951210127
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tanjong-katong",
+        "stationName": "TANJONG\r\nKATONG",
+        "exitIdentities": [
+          "20195B0C7E059151",
+          "85C5F46F4FC53B6B",
+          "9EE3D3DBE4CA4419"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE25"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.89748462479015,
+          1.299428004349031
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tanjong-pagar",
+        "stationName": "TANJONG PAGAR",
+        "exitIdentities": [
+          "1052749762F1E1E3",
+          "39E16699C1976560",
+          "44F1B6273F87FEDF",
+          "80D1390DC9F96913",
+          "8B6F9D10513EFA49",
+          "B6A65715434862A9",
+          "BD38C5FD98D816FF",
+          "E1CC299B43F4C1C1",
+          "E922D2F204D2DA84"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW15"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84643317490287,
+          1.276506255901992
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tanjong-rhu",
+        "stationName": "TANJONG\r\nRHU",
+        "exitIdentities": [
+          "96F40A3597110E95",
+          "E5EAE98FAAD310FA"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE23"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8735402960179,
+          1.2973297672846043
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:teck-lee",
+        "stationName": "TECK LEE LRT STATION",
+        "exitIdentities": [
+          "3025BE9395030FE0",
+          "B648DCD0478F77B3"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "PW2"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.90664615971971,
+          1.412902368913235
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:teck-whye",
+        "stationName": "TECK WHYE LRT STATION",
+        "exitIdentities": [
+          "E0F222D52301D3A3"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "BP4"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.75382610234246,
+          1.3765641949369936
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:telok-ayer",
+        "stationName": "TELOK AYER",
+        "exitIdentities": [
+          "0482FD5CBD7B912B",
+          "974D41D519377A08",
+          "F628F180D146397C"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT18"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84870717603917,
+          1.282211776179462
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:telok-blangah",
+        "stationName": "TELOK BLANGAH",
+        "exitIdentities": [
+          "A4D239AA865A436A"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "CC28"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.80988373092025,
+          1.2707212262114045
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:thanggam",
+        "stationName": "THANGGAM LRT STATION",
+        "exitIdentities": [
+          "16EC7E9FB469AE26",
+          "256206889802450A"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SW4"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.87562660067039,
+          1.397195247131311
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tiong-bahru",
+        "stationName": "TIONG BAHRU",
+        "exitIdentities": [
+          "6D56F8B0A81292DB",
+          "B5B30BE2B81082CE"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW17"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.82724350426975,
+          1.286060698644622
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:toa-payoh",
+        "stationName": "TOA PAYOH",
+        "exitIdentities": [
+          "4345E66C22E984AC",
+          "4C8924227130F1F0",
+          "5AB7564CE0D0C509",
+          "DE385222B3EA4A3C"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS19"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84728463789433,
+          1.3327412066251947
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tongkang",
+        "stationName": "TONGKANG LRT STATION",
+        "exitIdentities": [
+          "DB46A51FA82F6865",
+          "F83D29999DC4CC0E"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "SW7"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.88602323575125,
+          1.3892795844733175
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tuas-crescent",
+        "stationName": "TUAS CRESCENT",
+        "exitIdentities": [
+          "6395E3FC8B63D35B",
+          "D98379EE652ED92E"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW31"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.64912276518791,
+          1.3210037067554503
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tuas-link",
+        "stationName": "TUAS LINK",
+        "exitIdentities": [
+          "124B3EF02A2AD8EF",
+          "4EB65BBF499F04BE"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW33"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.63704319374754,
+          1.3406834857368601
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:tuas-west-road",
+        "stationName": "TUAS WEST ROAD",
+        "exitIdentities": [
+          "7C93D36D12D462DA",
+          "9982881E8A76BEDD"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "EW32"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.63953752800171,
+          1.330027377185666
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:ubi",
+        "stationName": "UBI",
+        "exitIdentities": [
+          "7CB7D918F6B5E915",
+          "CAE96AD9A152877B"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT27"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.89923113088656,
+          1.3298907994822522
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:upper-changi",
+        "stationName": "UPPER  CHANGI",
+        "exitIdentities": [
+          "23F915FD4BA908AB",
+          "9EAAA93AC64D4C2B",
+          "D12B752513687695",
+          "DCF272AB67E90046",
+          "FC43DB54B0E61973"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "DT34"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.96128514658888,
+          1.3415477120278756
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:upper-thomson",
+        "stationName": "UPPER THOMSON",
+        "exitIdentities": [
+          "02A569EE1B9EC73B",
+          "2313E9492AA32861",
+          "3EA737829473A972",
+          "7A835D396BF0703F",
+          "A00E2C99CAD73E80"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE8"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.83282056841344,
+          1.3545271235855987
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:woodlands",
+        "stationName": "WOODLANDS",
+        "exitIdentities": [
+          "372C516598D98235",
+          "5CB3F601FBDF6CC4",
+          "A981B455F405BCC2",
+          "ABE9AA34AD7D1F14",
+          "AD7053030CB8BF9F",
+          "D82504FE62821345",
+          "F7F55451430108C4"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS9",
+          "TE2"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7876268008561,
+          1.4361869096379904
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:woodlands-north",
+        "stationName": "WOODLANDS NORTH",
+        "exitIdentities": [
+          "469EE4BF80F069CC",
+          "72D10D55C51FC3F5"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE1"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.78526567604953,
+          1.4484919011018793
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:woodlands-south",
+        "stationName": "WOODLANDS SOUTH",
+        "exitIdentities": [
+          "2F1F88360B17E436",
+          "45D78AD571DA0977",
+          "6518624D5602BB64",
+          "DADA67E3382ACDE0",
+          "E9A31A80A570C976"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "TE3"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.79395813934858,
+          1.426972273826002
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:woodleigh",
+        "stationName": "WOODLEIGH",
+        "exitIdentities": [
+          "021A225B04A13444",
+          "390C6CA013A0C83B",
+          "6AA9CF467B21891C"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NE11"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.87083429229013,
+          1.3389870079378268
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:yew-tee",
+        "stationName": "YEW  TEE",
+        "exitIdentities": [
+          "35EAF4829E8E58D0",
+          "3C305BEEF18066B9",
+          "992342EAF6984144",
+          "A5C5202910FC0B3E"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS5"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.74726709268903,
+          1.397499132778915
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:yio-chu-kang",
+        "stationName": "YIO CHU KANG",
+        "exitIdentities": [
+          "03DE662B8A72F32A",
+          "896C97CCBA89A32A",
+          "F73C9CE1485EDFF0"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS15"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84480893448905,
+          1.3817151830909304
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "featureClass": "station",
+        "stationId": "mrt-station:yishun",
+        "stationName": "YISHUN",
+        "exitIdentities": [
+          "4D6714260A96395A",
+          "6A53878C399EA119",
+          "7CCB5AAD7A692ED6",
+          "C2D55B079B8AA456",
+          "C551A20E6E342A65"
+        ],
+        "sourceDates": [
+          "20251202172807"
+        ],
+        "lineReferences": [
+          "NS13"
+        ],
+        "sourceDatasetIds": [
+          "d_b39d3a0871985372d7e1637193335da5",
+          "d_449ee0cec1f9574f8f34712da6f7456f",
+          "d_d312a5b127e1ae74299b8ae664cedd4e"
+        ],
+        "sourceObservedAt": "2026-07-18T10:28:33.537Z"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8350494239018,
+          1.4293844756294476
+        ]
+      }
+    }
+  ]
+}

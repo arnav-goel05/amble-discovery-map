@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "singapore-indoor-stadium",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:11.559Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/21/4_0.b3dm",
+      "sourceSha256": "c3b141d92babefdfd4a110c7b93a2cb46a55962f352e398fe30219d5cae312f6",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "gmlNames": [
+        "SINGAPORE INDOOR STADIUM"
+      ],
+      "poiFile": "4_0-fc22adde4058.b3dm",
+      "poiSha256": "69fb3eab1faa7ea90e6a8a91ce1343e82ee5073b2d1f11283e82052c8ea6f7da",
+      "poiTriangles": 3428,
+      "backgroundFile": "optimized-tiles/5/21/4_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "backgroundSha256": "df2aa73ebd7adbe8088c81b718497545acfddffa436056c160c642853c4fb094",
+      "backgroundTriangles": 3444
+    },
+    {
+      "sourceTile": "tiles/5/21/4_1.b3dm",
+      "sourceSha256": "653c1f8b90ddeb08dbaf79fd83c909fc91c8d072e74a55bea6b0e8cd7295fad0",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "gmlNames": [
+        "SINGAPORE INDOOR STADIUM"
+      ],
+      "poiFile": "4_1-74527de36b6d.b3dm",
+      "poiSha256": "0db8c80f4619f68ecee6257e276ddd62cab1e1e08c8d1709eb9181fa0accd4fb",
+      "poiTriangles": 3428,
+      "backgroundFile": "optimized-tiles/5/21/4_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "backgroundSha256": "8b348b8ab9a4373d2d62be9f0bdbef68f8a4324a1b72e20d26a79b2791b4ca6d",
+      "backgroundTriangles": 3444
+    },
+    {
+      "sourceTile": "tiles/5/21/4_2.b3dm",
+      "sourceSha256": "8102d540222cf187deabaf02058049c6c4af4418da7a36dc56a8ec74916231d4",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "gmlNames": [
+        "SINGAPORE INDOOR STADIUM"
+      ],
+      "poiFile": "4_2-6f3bbd662c7d.b3dm",
+      "poiSha256": "a57490c2d880d28daf46c34708c32d80c0c4b197178de091ada18c74dbee319b",
+      "poiTriangles": 3428,
+      "backgroundFile": "optimized-tiles/5/21/4_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "backgroundSha256": "28b5fa26e8907e1de76ee38e2dc6da589d58668977793f022eb646642736b1f9",
+      "backgroundTriangles": 3444
+    },
+    {
+      "sourceTile": "tiles/5/21/4_3.b3dm",
+      "sourceSha256": "86ecd75c48a922efa63bf92205de40488eb893ab51a1a915c06a04e3e4d4a890",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "gmlNames": [
+        "SINGAPORE INDOOR STADIUM"
+      ],
+      "poiFile": "4_3-a594eebf25b3.b3dm",
+      "poiSha256": "815541d08ce3c5517edfa3b9acd8e27d44a68d0fdef9c6bd554264e1b2b63e05",
+      "poiTriangles": 3428,
+      "backgroundFile": "optimized-tiles/5/21/4_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "backgroundSha256": "ec8d846c1693faa15e5d5df471fc36e6fba2f3b548f52ed97801df0bae409c0a",
+      "backgroundTriangles": 3444
+    },
+    {
+      "sourceTile": "tiles/5/21/4_4.b3dm",
+      "sourceSha256": "874c59ab491d533e1a3d16f8459774ca01e35100a80d0965ea61b12cb6c3d134",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "gmlNames": [
+        "SINGAPORE INDOOR STADIUM"
+      ],
+      "poiFile": "4_4-afc7bd054bc0.b3dm",
+      "poiSha256": "26b838976c65fc47d9a13f643bbdb958b011822adecdbc0c632e51ffd8b34274",
+      "poiTriangles": 3428,
+      "backgroundFile": "optimized-tiles/5/21/4_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "backgroundSha256": "5436d49f89d6126f2d04e58b83ff5de9f0e0dcfa008139de96ca5ffb78726ff4",
+      "backgroundTriangles": 3444
+    },
+    {
+      "sourceTile": "tiles/5/21/4_5.b3dm",
+      "sourceSha256": "d4f35c7525ed26b0fdffde11acaf9efe83ba59cfd17c1990f0bb3b33f4bfe40d",
+      "originalBatchIds": [
+        19
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "gmlNames": [
+        "SINGAPORE INDOOR STADIUM"
+      ],
+      "poiFile": "4_5-382da0b2c76a.b3dm",
+      "poiSha256": "b2f41c8dbf8827eee6c519ddf1b589f959418b0e9d688a3283dadbe325cdf90e",
+      "poiTriangles": 3428,
+      "backgroundFile": "optimized-tiles/5/21/4_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "backgroundSha256": "faba529445438951cea38ff3fb5eff629bd443ea1fa62b3354d057f1d6732225",
+      "backgroundTriangles": 3444
+    }
+  ]
+}

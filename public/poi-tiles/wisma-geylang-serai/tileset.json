@@ -37,7 +37,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "4_0.b3dm"
+          "uri": "4_0-c74cd2985b1f.b3dm"
         }
       },
       {
@@ -54,7 +54,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "4_1.b3dm"
+          "uri": "4_1-2dba22c25554.b3dm"
         }
       },
       {
@@ -71,7 +71,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "4_2.b3dm"
+          "uri": "4_2-ef58c71b46c5.b3dm"
         }
       }
     ]

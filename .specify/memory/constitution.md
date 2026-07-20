@@ -1,24 +1,30 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.1 -> 2.0.0
+- Version change: 2.2.0 -> 2.3.0
 - Modified principles:
-  - VI. Intentional UX and Performance: real branded-browser/device checks changed from a
-    mandatory release obligation to optional evidence; the automated desktop/mobile
-    Chromium, WebKit, and Firefox matrix is now the compatibility release gate.
+  - III. Stable Identity and Atomic Reconciliation: isolated source/event uncertainty now
+    carries forward or holds only affected identities; release-wide failures still roll back.
+  - Product, Data, and Privacy Constraints: weekly runs may retain all active and future
+    events while continuing to cover the mandatory current seven-day period.
+  - Development and Release Workflow: publication gates now distinguish branch-level
+    isolation from failures that make the assembled snapshot unsafe.
 - Added sections: none.
 - Removed sections: none.
 - Templates:
   - ✅ .specify/templates/plan-template.md
-  - ✅ .specify/templates/spec-template.md (no structural change required)
+  - ✅ .specify/templates/spec-template.md
   - ✅ .specify/templates/tasks-template.md
   - ✅ .specify/templates/commands/ (directory absent; no command templates to update)
 - Dependent artifacts:
-  - ✅ specs/001-full-product-baseline/{spec,plan,research,tasks,quickstart}.md
-  - ✅ specs/001-full-product-baseline/contracts/ui-components.md
-  - ✅ specs/001-full-product-baseline/checklists/requirements.md
-  - ✅ docs/browser-support.md
-- Deferred items: none.
+  - ✅ AGENTS.md
+  - ✅ docs/weekly-operations.md
+  - ✅ specs/002-add-web-event-sources/policy-review.md
+  - ✅ specs/002-add-web-event-sources/{spec,plan,research,data-model,quickstart,tasks}.md
+  - ✅ specs/002-add-web-event-sources/contracts/rendered-event-source.md
+- Deferred items: runtime runner references remain aligned to current implementation until
+  implementation tasks T141-T142 update them with the approved v3 behavior.
 -->
+
 # What's Here Constitution
 
 ## Core Principles
@@ -57,8 +63,11 @@ reused without extraction or rewriting; changed event content MUST replace the m
 stable event rather than create duplicates. Expired events MUST be removed, while a
 pipeline-managed location MUST remain until it has no current or future events. Undated
 events MUST be held for review instead of being deleted speculatively. New snapshots MUST
-be staged and verified before atomic publication. A partial or failed run MUST preserve
-the last approved production dataset.
+be staged and verified before atomic publication. An unresolved source, event, or venue
+branch MUST carry forward its still-valid approved identities or hold only the affected new
+identities; it MUST NOT delete, replace, or block unrelated safe identities. A release-wide
+failure that makes the assembled snapshot invalid, internally inconsistent, unsafe, or
+unverifiable MUST preserve the last approved production dataset.
 
 Rationale: stable reconciliation prevents duplicate highlights, stale events, visual
 layering defects, and partially published production state.
@@ -129,10 +138,18 @@ future iteration.
 - Public event discovery and plan creation MUST remain anonymous and MUST NOT require an
   account.
 - Only free services, free APIs, and open data MAY be used. Paid services and paid fallback
-  paths are prohibited. A source that ceases to be usable for free MUST be disabled until a
-  free replacement is approved.
-- Event and restaurant/deal collection MUST run weekly. Each event run MUST cover the run
-  date through the following seven days.
+  paths are prohibited except for the narrow exception below. A source that ceases to be
+  usable for free MUST be disabled until a free replacement is approved.
+- The OpenAI Realtime API MAY be used only for the conversational voice and map assistant
+  defined in `specs/004-conversational-voice-map/`. This exception was approved by the
+  project owner on 2026-07-18 and does not authorize any other paid API or paid fallback.
+  Before implementation research begins, the plan MUST name an operational owner and define
+  concrete usage and spending limits. Before production use, server-side credential
+  handling, an immediate service-disable control, limit-exhaustion behavior, and equivalent
+  text and direct-interface fallbacks MUST be implemented and verified.
+- Event and restaurant/deal collection MUST run weekly. Each event run MUST cover at least
+  the run date through the following seven days and MAY retain all active and future events
+  exposed by configured bounded source surfaces.
 - When an external source is unavailable, the last approved data MAY remain visible but
   MUST be clearly marked as potentially outdated.
 - Telegram photos and related personal verification data MUST be deleted when the associated
@@ -149,18 +166,25 @@ future iteration.
 
 ## Development and Release Workflow
 
-1. A change starts with a testable specification containing bounded scope, acceptance
+1. New feature work MUST be performed on the `develop` branch. Agents and automation MUST
+   NOT create or switch to another branch unless the user explicitly requests a different
+   branch or explicitly authorizes creating one.
+2. A change starts with a testable specification containing bounded scope, acceptance
    scenarios, failure behavior, data lifecycle, and measurable outcomes.
-2. The implementation plan MUST pass every Constitution Check before research or coding.
+3. The implementation plan MUST pass every Constitution Check before research or coding.
    Any exception MUST be documented in Complexity Tracking with a rejected simpler option.
-3. Tasks MUST include relevant automated tests, data/provenance handling, privacy cleanup,
+4. Tasks MUST include relevant automated tests, data/provenance handling, privacy cleanup,
    security controls, lifecycle reconciliation, documentation, and performance validation.
-4. Generated data MUST be staged separately from the approved production snapshot.
-5. Publication requires source validation, identity and geometry checks where applicable,
+5. Generated data MUST be staged separately from the approved production snapshot.
+6. Publication requires source validation, identity and geometry checks where applicable,
    the production build, all relevant automated tests, and successful finalization.
-6. A partial run MUST report unresolved work and preserve the last approved production
-   state. It MUST NOT be labeled successful merely because finalization executed.
-7. Code review MUST reject fabricated evidence, venue-specific hardcoding outside approved
+7. Every run MUST report unresolved work. Isolated source, event, deduplication, or venue
+   uncertainty MUST preserve or hold only its affected identities while safe identities MAY
+   publish in the same atomically verified snapshot. A failure that makes the assembled
+   snapshot invalid, internally inconsistent, unsafe, or unverifiable MUST preserve the
+   last approved production state. A run MUST NOT be labeled fully successful merely
+   because finalization executed.
+8. Code review MUST reject fabricated evidence, venue-specific hardcoding outside approved
    registries or fixtures, unbounded recovery loops, silent data loss, and unverified
    generated-data changes.
 
@@ -175,4 +199,4 @@ for non-semantic clarification. Every specification, plan, implementation review
 release MUST verify compliance. Unjustified violations block completion. Runtime-specific
 instructions remain in `AGENTS.md` and domain documentation but MUST conform to this file.
 
-**Version**: 2.0.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-14
+**Version**: 2.3.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-18

@@ -125,7 +125,7 @@ Amble turns what’s on into an interactive desktop map.`
   and HEAD. Preserve API paths and private admin denial. Delegate known static assets to
   `ASSETS.fetch`; propagate true missing-asset status with security headers.
 - Permanently redirect HTTP, `www`, the exact public Workers development hostname
-  `amble.amble-sg.workers.dev`, and `/index.html` to the equivalent canonical URL in one hop.
+  `amble.project-hub-arnav.workers.dev`, and `/index.html` to the equivalent canonical URL in one hop.
   Preserve path and query where the canonical path is meaningful; `/index.html` normalizes to
   `/`. Store the exact alias in the validated identity fixture and match it exactly rather than
   using a broad `*.workers.dev` suffix. A redirected unknown path then returns a true 404 at the

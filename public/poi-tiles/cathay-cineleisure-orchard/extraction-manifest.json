@@ -1,0 +1,249 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "cathay-cineleisure-orchard",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:09.207Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/31/11_0.b3dm",
+      "sourceSha256": "04c5f2e6076c8efe34d7e7f139168e071e966f5bae8070a6c3dda3d487b6402b",
+      "originalBatchIds": [
+        35
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "gmlNames": [
+        "CATHAY CINELEISURE ORCHARD"
+      ],
+      "poiFile": "11_0-4999cd8fd36a.b3dm",
+      "poiSha256": "f1ba4fef6ed77b732af442b2305d1e60bb9fe7ef7678971460cd08eb29d1f6b5",
+      "poiTriangles": 2416,
+      "backgroundFile": "optimized-tiles/6/31/11_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_115253b8-cc64-46a8-b00b-8a196d8d472d",
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "backgroundSha256": "0cb701cdd001ad4bd3ef6109264f9618dcc6b32b576086736a86efe78ae7c4a9",
+      "backgroundTriangles": 16235
+    },
+    {
+      "sourceTile": "tiles/6/31/11_1.b3dm",
+      "sourceSha256": "e0d7fe227d26aa702ae15b1ef07d3f9a214663ac48a5517358b600f42108dc42",
+      "originalBatchIds": [
+        35
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "gmlNames": [
+        "CATHAY CINELEISURE ORCHARD"
+      ],
+      "poiFile": "11_1-25ca0e1ca6e8.b3dm",
+      "poiSha256": "c05f4440ad5b714f3a302d4a40fff198e9ace48588c2e969bfaf20f05fa08b1e",
+      "poiTriangles": 2416,
+      "backgroundFile": "optimized-tiles/6/31/11_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_115253b8-cc64-46a8-b00b-8a196d8d472d",
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "backgroundSha256": "2da33fe73573f6f6ad3ed8522d5064d08534ace862cf4876f377fd44b33435af",
+      "backgroundTriangles": 16235
+    },
+    {
+      "sourceTile": "tiles/6/31/11_2.b3dm",
+      "sourceSha256": "6d7cba2795417024200a5a3c16f82ecfa1874f7b022703081066ae49e8ad185e",
+      "originalBatchIds": [
+        35
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "gmlNames": [
+        "CATHAY CINELEISURE ORCHARD"
+      ],
+      "poiFile": "11_2-894a9871af46.b3dm",
+      "poiSha256": "0a0e5ae6e0ba67803e2dca63ddf5afe3a628918431d2b007ff7ec9e38a302fc5",
+      "poiTriangles": 2416,
+      "backgroundFile": "optimized-tiles/6/31/11_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_115253b8-cc64-46a8-b00b-8a196d8d472d",
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "backgroundSha256": "1ed8b4609843c7820b9559e935a9ca9bc7c0a9283f080edf553ee34bdb73ad8f",
+      "backgroundTriangles": 16235
+    },
+    {
+      "sourceTile": "tiles/6/31/11_3.b3dm",
+      "sourceSha256": "3c2557ed0e25dbdb14a0fedd296217f5819bb52e77dafceb31dac3a5b3cac421",
+      "originalBatchIds": [
+        35
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "gmlNames": [
+        "CATHAY CINELEISURE ORCHARD"
+      ],
+      "poiFile": "11_3-0df534828846.b3dm",
+      "poiSha256": "f65cf8e639b754dc8b5a33a4bdabd1e064dfb115be7a1a8043dc827b1cc809d4",
+      "poiTriangles": 2416,
+      "backgroundFile": "optimized-tiles/6/31/11_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_115253b8-cc64-46a8-b00b-8a196d8d472d",
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "backgroundSha256": "90aff43968db66252bcca11bb13e01c11d94bc6fe6f46d9430188725f3eceb02",
+      "backgroundTriangles": 16235
+    },
+    {
+      "sourceTile": "tiles/6/31/11_4.b3dm",
+      "sourceSha256": "93480398508e28ba047cb0bbda8993b0eb3c8b39de1cdd349bad4f0a3d2e8420",
+      "originalBatchIds": [
+        35
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "gmlNames": [
+        "CATHAY CINELEISURE ORCHARD"
+      ],
+      "poiFile": "11_4-5e29e5cde14c.b3dm",
+      "poiSha256": "377b978f99c405719d2292694391db8d390afe7f054094653531a2f066d956d9",
+      "poiTriangles": 2416,
+      "backgroundFile": "optimized-tiles/6/31/11_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_115253b8-cc64-46a8-b00b-8a196d8d472d",
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "backgroundSha256": "f6e57313486e8e1f4c82a57dbb78e82a0a1c8b39d769bd796ae867ef6e6a458c",
+      "backgroundTriangles": 16235
+    },
+    {
+      "sourceTile": "tiles/6/31/11_5.b3dm",
+      "sourceSha256": "80bfc7c3cccf9e1bde0f3bf842e3c617cda03abb901cd0bfbc8b175a766ca271",
+      "originalBatchIds": [
+        35
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "gmlNames": [
+        "CATHAY CINELEISURE ORCHARD"
+      ],
+      "poiFile": "11_5-7105974f756b.b3dm",
+      "poiSha256": "2c0c4d74aa0c1e95761f6813766ed35b5c5ff153e8bad879186d3bb10a62850f",
+      "poiTriangles": 2416,
+      "backgroundFile": "optimized-tiles/6/31/11_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_115253b8-cc64-46a8-b00b-8a196d8d472d",
+        "SLA_BLDG2_bade7e9a-2212-4f01-b406-bf176b987b01"
+      ],
+      "backgroundSha256": "0ae97f87d116811ed2150020a8ce71ea2b39d2900a28378ae140711d866b2496",
+      "backgroundTriangles": 16235
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "lee-kong-chian-natural-history-museum",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:08.502Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/18/11_0.b3dm",
+      "sourceSha256": "e99ce2ce19e9ffb00ebf61a3c98676122d61c189110272b01419856880381eb4",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1"
+      ],
+      "gmlNames": [
+        "LEE KONG CHIAN NATURAL HISTORY MUSEUM"
+      ],
+      "poiFile": "11_0-565f54ea5ed9.b3dm",
+      "poiSha256": "573d208545c1b222ade33c425aea97b84a4d12d18a5efd262e087a5bb6a49180",
+      "poiTriangles": 1712,
+      "backgroundFile": "optimized-tiles/6/18/11_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1",
+        "SLA_BLDG2_e6146dc3-2900-4f47-b223-70f29c3a7cef"
+      ],
+      "backgroundSha256": "00447330c1dced1ac241ed19378bc870740149b046659fe1778e754852495157",
+      "backgroundTriangles": 15712
+    },
+    {
+      "sourceTile": "tiles/6/18/11_1.b3dm",
+      "sourceSha256": "cff6de8608958f1e1bc2102aab63c4979ea443d3c1ba4bc14b3744b0cc911870",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1"
+      ],
+      "gmlNames": [
+        "LEE KONG CHIAN NATURAL HISTORY MUSEUM"
+      ],
+      "poiFile": "11_1-419494064309.b3dm",
+      "poiSha256": "f21377646b415dba659da20112681fba49b504a73fb9f15e8b812fabdb1cb444",
+      "poiTriangles": 1712,
+      "backgroundFile": "optimized-tiles/6/18/11_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1",
+        "SLA_BLDG2_e6146dc3-2900-4f47-b223-70f29c3a7cef"
+      ],
+      "backgroundSha256": "4596a02b342cd4699be6298feb9715ffb942eb1553957242fedc9bb3e9458421",
+      "backgroundTriangles": 15712
+    },
+    {
+      "sourceTile": "tiles/6/18/11_2.b3dm",
+      "sourceSha256": "a579f089ee580ecb3cd388ca247b8e77dd518d5559770d39fa2ba027b7619c6c",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1"
+      ],
+      "gmlNames": [
+        "LEE KONG CHIAN NATURAL HISTORY MUSEUM"
+      ],
+      "poiFile": "11_2-381ed023cc99.b3dm",
+      "poiSha256": "3b539b6319b19ba55f12ed4566ed532e3f5b793433eecd46b6b77910ce0f7325",
+      "poiTriangles": 1712,
+      "backgroundFile": "optimized-tiles/6/18/11_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1",
+        "SLA_BLDG2_e6146dc3-2900-4f47-b223-70f29c3a7cef"
+      ],
+      "backgroundSha256": "4ba74db3046f3e6c9df3bffad982a7bac23b4a6fa5b65c4c3879af46cd68eb25",
+      "backgroundTriangles": 15712
+    },
+    {
+      "sourceTile": "tiles/6/18/11_3.b3dm",
+      "sourceSha256": "0a38314252c06bb5a1b608dc763ccbba56dd78a28a335a41b4c2e60bee93334e",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1"
+      ],
+      "gmlNames": [
+        "LEE KONG CHIAN NATURAL HISTORY MUSEUM"
+      ],
+      "poiFile": "11_3-cd1aeae19d4a.b3dm",
+      "poiSha256": "1337c4a8c3b217da356d509d26a062f9d8f75d614218a0ebb5ce71e26be666cc",
+      "poiTriangles": 1712,
+      "backgroundFile": "optimized-tiles/6/18/11_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1",
+        "SLA_BLDG2_e6146dc3-2900-4f47-b223-70f29c3a7cef"
+      ],
+      "backgroundSha256": "8622f0ef2dad452e95749823a91fb68e0dc23b33bb257e4325deb80ea18a1e41",
+      "backgroundTriangles": 15712
+    },
+    {
+      "sourceTile": "tiles/6/18/11_4.b3dm",
+      "sourceSha256": "8f6f1c3dd3a66cacf14e34ae762dd1ccd2e62bd6cc439040974d841f61c48c86",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1"
+      ],
+      "gmlNames": [
+        "LEE KONG CHIAN NATURAL HISTORY MUSEUM"
+      ],
+      "poiFile": "11_4-e03a02472727.b3dm",
+      "poiSha256": "db19711f3b823c5eb06531c57ca2d8b81c4e5dc875263726e8e2690f748595a7",
+      "poiTriangles": 1712,
+      "backgroundFile": "optimized-tiles/6/18/11_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1",
+        "SLA_BLDG2_e6146dc3-2900-4f47-b223-70f29c3a7cef"
+      ],
+      "backgroundSha256": "3f171392f414e555db57d8a8a583c7e2969acf2a3a46a43410574f65ba4116bb",
+      "backgroundTriangles": 15712
+    },
+    {
+      "sourceTile": "tiles/6/18/11_5.b3dm",
+      "sourceSha256": "a2653d553f61ccd32fcead9950a506348bc7e3510bbd1680f0237f48d95bf466",
+      "originalBatchIds": [
+        11
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1"
+      ],
+      "gmlNames": [
+        "LEE KONG CHIAN NATURAL HISTORY MUSEUM"
+      ],
+      "poiFile": "11_5-2556645efe14.b3dm",
+      "poiSha256": "2d983aaadde2162fa7ac131911261180817a9f812d5b0d6bd63e00d2f33ddf14",
+      "poiTriangles": 1712,
+      "backgroundFile": "optimized-tiles/6/18/11_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1",
+        "SLA_BLDG2_e6146dc3-2900-4f47-b223-70f29c3a7cef"
+      ],
+      "backgroundSha256": "414e538ca50b4c011dd8a6718a93c96a41237a656b8ee871cb0c9327c8ee8e1a",
+      "backgroundTriangles": 15712
+    }
+  ]
+}

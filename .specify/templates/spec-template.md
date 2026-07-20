@@ -1,6 +1,6 @@
 # Feature Specification: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`
+**Working Branch**: `develop` unless the user explicitly requested another branch
 
 **Created**: [DATE]
 
@@ -8,7 +8,7 @@
 
 **Input**: User description: "$ARGUMENTS"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 <!--
   IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
@@ -78,15 +78,15 @@
 - What happens when [boundary condition]?
 - How does system handle [error scenario]?
 
-## Scope and Constraints *(mandatory)*
+## Scope and Constraints _(mandatory)_
 
 - **In scope**: [User-visible capabilities and operational behavior included]
 - **Out of scope**: [Adjacent capabilities explicitly excluded]
-- **Evidence and dependencies**: [Authoritative sources, free/open constraints, and fallback behavior]
+- **Evidence and dependencies**: [Authoritative sources, free/open constraints or an explicitly approved constitutional exception, and fallback behavior]
 - **Privacy and lifecycle**: [Anonymous use, retention, expiry, and deletion behavior]
 - **Experience**: [Supported devices/browsers and relevant interaction guidance]
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
@@ -101,20 +101,20 @@
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
 - **FR-006**: System MUST define stable identity and create/update/no-op/expire/review behavior for changing data
-- **FR-007**: System MUST preserve the last approved state when a refresh cannot be safely published
+- **FR-007**: System MUST isolate unresolved identities, carry forward their last safe state where applicable, and preserve the entire last approved state when the assembled refresh cannot be safely published
 - **FR-008**: System MUST define testable loading, empty, missing-data, stale, and error states
 
-*Example of marking unclear requirements:*
+_Example of marking unclear requirements:_
 
 - **FR-XXX**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-XXY**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 <!--
   ACTION REQUIRED: Define measurable success criteria.

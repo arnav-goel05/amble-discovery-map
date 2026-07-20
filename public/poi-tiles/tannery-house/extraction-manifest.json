@@ -1,0 +1,267 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "tannery-house",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:09.688Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/42/23_0.b3dm",
+      "sourceSha256": "325a027322c7b0ba1fae64750a6003eb64f4a7dcb2cdb8933b0438331e0113d6",
+      "originalBatchIds": [
+        4,
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "gmlNames": [
+        "TANNERY HOUSE",
+        "TANNERY HOUSE"
+      ],
+      "poiFile": "23_0-4980bd340d96.b3dm",
+      "poiSha256": "c4e844d18be8545df65051c261e5f30ec6bead404501875ed8f0c8425997a54f",
+      "poiTriangles": 1032,
+      "backgroundFile": "optimized-tiles/6/42/23_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "backgroundSha256": "134294b6e1d36736df95e19432a670529d62468375788550281f093a0f8f341c",
+      "backgroundTriangles": 6200
+    },
+    {
+      "sourceTile": "tiles/6/42/23_1.b3dm",
+      "sourceSha256": "d0366a174ee02191427ddfa4de2a627ca62ba602739f9589b36cc60e5d08bbce",
+      "originalBatchIds": [
+        4,
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "gmlNames": [
+        "TANNERY HOUSE",
+        "TANNERY HOUSE"
+      ],
+      "poiFile": "23_1-d0d12e9caa61.b3dm",
+      "poiSha256": "354f62e883f2897ede4b2fd647fefd29a22225e060fb3a916cd48bc47310f8aa",
+      "poiTriangles": 1032,
+      "backgroundFile": "optimized-tiles/6/42/23_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "backgroundSha256": "84a55e278b51482d18d6c3e14dd123a15381be266505a203ae397927f36d99e8",
+      "backgroundTriangles": 6200
+    },
+    {
+      "sourceTile": "tiles/6/42/23_2.b3dm",
+      "sourceSha256": "99e0e68a4200e23bfd3959f4c89c196a51e3538dfa920bd9ea82b170a9e26299",
+      "originalBatchIds": [
+        4,
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "gmlNames": [
+        "TANNERY HOUSE",
+        "TANNERY HOUSE"
+      ],
+      "poiFile": "23_2-2cfce5579d35.b3dm",
+      "poiSha256": "71336bd6a444f8cd5518493e61984178cd793a23c13ef88da2ec66134bd735bf",
+      "poiTriangles": 1032,
+      "backgroundFile": "optimized-tiles/6/42/23_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "backgroundSha256": "b4019445d8358f9b2fa44c8178922297c04aa21e2b0f5f12b11a0cd76b06d50b",
+      "backgroundTriangles": 6200
+    },
+    {
+      "sourceTile": "tiles/6/42/23_3.b3dm",
+      "sourceSha256": "9b8bc0da04938d0df1db95065a64de1bf3fa333e252ddd0dcc1fd1b029961466",
+      "originalBatchIds": [
+        4,
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "gmlNames": [
+        "TANNERY HOUSE",
+        "TANNERY HOUSE"
+      ],
+      "poiFile": "23_3-13cd910b572a.b3dm",
+      "poiSha256": "0cfa46a682842bbcca3f543ba79d9b2c30abfb3bf854d9eca2c91e4a16698774",
+      "poiTriangles": 1032,
+      "backgroundFile": "optimized-tiles/6/42/23_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "backgroundSha256": "18ca6445c6f1266b8b99024d00e54eb4a6a4161f9d2288dad82d441e6ad16678",
+      "backgroundTriangles": 6200
+    },
+    {
+      "sourceTile": "tiles/6/42/23_4.b3dm",
+      "sourceSha256": "af1eda7022e88310260d0c1757c0b9b65b11f4032057d7225e6db2823ceac0f8",
+      "originalBatchIds": [
+        4,
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "gmlNames": [
+        "TANNERY HOUSE",
+        "TANNERY HOUSE"
+      ],
+      "poiFile": "23_4-2787fd9c130b.b3dm",
+      "poiSha256": "d12af4a3149fd9cd990d7efe2a605f4e3388d7cc30c7bb4301bf8bb2ec985546",
+      "poiTriangles": 1032,
+      "backgroundFile": "optimized-tiles/6/42/23_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "backgroundSha256": "b8ba76b85884a21e2d7f6c6bcf74b87fe040f2d2168dc62482e8d92f7fb55611",
+      "backgroundTriangles": 6200
+    },
+    {
+      "sourceTile": "tiles/6/42/23_5.b3dm",
+      "sourceSha256": "312e5434f91290851b39c753df0ba64d4bf2fea1f5e1151df6d7475370789fef",
+      "originalBatchIds": [
+        4,
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "gmlNames": [
+        "TANNERY HOUSE",
+        "TANNERY HOUSE"
+      ],
+      "poiFile": "23_5-b5e6a82f7b6e.b3dm",
+      "poiSha256": "8c33e74b4657127ea008a337ceb47db9f114e523531d94224d0d5a4552703a92",
+      "poiTriangles": 1032,
+      "backgroundFile": "optimized-tiles/6/42/23_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b16d19-1ad6-400e-87eb-a0cc3c189c7c",
+        "SLA_BLDG2_877184a8-2fb1-4a54-81fa-351c3dc54d85"
+      ],
+      "backgroundSha256": "17cb408fa4afd93c2f27fb3e6774754d4ba5514df97b1ac2e5ade9b70ee1cee1",
+      "backgroundTriangles": 6200
+    }
+  ]
+}

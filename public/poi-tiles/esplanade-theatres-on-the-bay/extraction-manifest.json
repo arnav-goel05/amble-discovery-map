@@ -23,7 +23,6 @@
     "thian-hock-keng",
     "singapore-chinese-cultural-centre",
     "wisma-geylang-serai",
-    "thow-kwang-pottery-jungle",
     "marina-bay-sands-artscience-museum",
     "temasek-shophouse",
     "the-commerze-irving",
@@ -34,20 +33,10 @@
     "singapore-philatelic-museum",
     "shell-dunman",
     "63-ubi",
-    "peranakan-museum",
-    "parkway-parade",
-    "singapore-tyler-print-institute",
-    "fort-canning-centre",
-    "313-somerset",
-    "tanjong-pagar-distripark",
-    "carlton-hotel",
-    "the-star",
     "changi-chapel-and-museum",
     "reflection-at-bukit-chandu-opium-hill",
-    "pgp-building",
     "victoria-theatre-and-concert-hall-u-c",
     "marina-bay-sands-mice",
-    "national-library-building",
     "chinatown-heritage-centre",
     "south-beach",
     "velocity-novena-square",
@@ -57,17 +46,66 @@
     "woods-square",
     "punggol-neighbourhood-police-centre",
     "sentosa-development-corporation",
-    "marina-south-pier-mrt-station",
     "siloso-beach-resort",
     "bishan-green",
-    "raffles-hotel-1886",
-    "changi-point-ferry-terminal",
-    "national-community-leadership-institute",
-    "singapore-management-university",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
     "empress-place-building",
-    "gillman-barracks"
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
   ],
-  "generatedAt": "2026-07-13T14:21:08.771Z",
+  "generatedAt": "2026-07-19T19:39:07.309Z",
   "tiles": [
     {
       "sourceTile": "tiles/7/78/12_0.b3dm",
@@ -81,15 +119,16 @@
       "gmlNames": [
         "ESPLANADE - THEATRES ON THE BAY"
       ],
-      "poiFile": "12_0.b3dm",
+      "poiFile": "12_0-22e5f84f7b75.b3dm",
       "poiSha256": "d86076a9f0c5ffe137588246917106115d28a65ec1a76bd1c213e4042c1e0613",
       "poiTriangles": 5544,
       "backgroundFile": "optimized-tiles/7/78/12_0.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+        "SLA_BLDG2_ce9c2e7b-783b-4ef3-adc7-33f8019ba471"
       ],
-      "backgroundSha256": "0836550ee1a9061724fa3133d1f2b4040aab83b21bdc4bff1ae19c33372b3809",
-      "backgroundTriangles": 8660
+      "backgroundSha256": "5ac9e23b965fe7a2bdc9892bdbf2dde287a6841ee0b05b000cc3dc8c1b109f22",
+      "backgroundTriangles": 2416
     },
     {
       "sourceTile": "tiles/7/78/12_1.b3dm",
@@ -103,15 +142,16 @@
       "gmlNames": [
         "ESPLANADE - THEATRES ON THE BAY"
       ],
-      "poiFile": "12_1.b3dm",
+      "poiFile": "12_1-3d034cd682ba.b3dm",
       "poiSha256": "9ec42ee3896bf679639fcb42ae4fcd0e5df77b2b6eafebf6ee5f791a3e0342da",
       "poiTriangles": 5544,
       "backgroundFile": "optimized-tiles/7/78/12_1.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+        "SLA_BLDG2_ce9c2e7b-783b-4ef3-adc7-33f8019ba471"
       ],
-      "backgroundSha256": "04c84998e9bab8c57e7329e91367481122a21ad51fcdeac43874cb5f7304ab55",
-      "backgroundTriangles": 8660
+      "backgroundSha256": "96527e035ce209a9bcaa2a8102908a319d218cff1f7dcd8f02bef8f9db8c0bdb",
+      "backgroundTriangles": 2416
     },
     {
       "sourceTile": "tiles/7/78/12_2.b3dm",
@@ -125,15 +165,16 @@
       "gmlNames": [
         "ESPLANADE - THEATRES ON THE BAY"
       ],
-      "poiFile": "12_2.b3dm",
+      "poiFile": "12_2-0472620328fc.b3dm",
       "poiSha256": "a43e638fa24819421f1bce6192415636a415b785d94223df2d81f742acc6a832",
       "poiTriangles": 5544,
       "backgroundFile": "optimized-tiles/7/78/12_2.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+        "SLA_BLDG2_ce9c2e7b-783b-4ef3-adc7-33f8019ba471"
       ],
-      "backgroundSha256": "086ec24356e747f8791faa2dce56e4f4b7cecb08af5bba61d6b575dbf6576c23",
-      "backgroundTriangles": 8660
+      "backgroundSha256": "e9996fcfadb4185f7a21b3a06c10b5854e8bd5d82f528de7427d827df2e34810",
+      "backgroundTriangles": 2416
     },
     {
       "sourceTile": "tiles/7/78/12_3.b3dm",
@@ -147,15 +188,16 @@
       "gmlNames": [
         "ESPLANADE - THEATRES ON THE BAY"
       ],
-      "poiFile": "12_3.b3dm",
+      "poiFile": "12_3-4f9d4f33b8ee.b3dm",
       "poiSha256": "c2ec8e6c170afbb0084d4d8186c6f7a2f98a2f311f07c324985accf5c76a9cf6",
       "poiTriangles": 5544,
       "backgroundFile": "optimized-tiles/7/78/12_3.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+        "SLA_BLDG2_ce9c2e7b-783b-4ef3-adc7-33f8019ba471"
       ],
-      "backgroundSha256": "34b0c244374008b6526ebc7a40fd5bd22be1a2dba93642cfb5b6b49ca23eaaa0",
-      "backgroundTriangles": 8660
+      "backgroundSha256": "2add7cc1245f1f062159f6b7304b92c9b0f48a1fc7fc6a1a2e9cd9334bfbc94d",
+      "backgroundTriangles": 2416
     },
     {
       "sourceTile": "tiles/7/78/12_4.b3dm",
@@ -169,15 +211,16 @@
       "gmlNames": [
         "ESPLANADE - THEATRES ON THE BAY"
       ],
-      "poiFile": "12_4.b3dm",
+      "poiFile": "12_4-1359601730bc.b3dm",
       "poiSha256": "046e5d56698daa05b27f4e8379bcd1ce7efc031806168d80f302f1b8431049db",
       "poiTriangles": 5544,
       "backgroundFile": "optimized-tiles/7/78/12_4.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+        "SLA_BLDG2_ce9c2e7b-783b-4ef3-adc7-33f8019ba471"
       ],
-      "backgroundSha256": "fc46ca120c907a9b0e842d94ddf60618018363690c510e8972982e1297608fba",
-      "backgroundTriangles": 8660
+      "backgroundSha256": "f820b4c35ccd2ce0537473ab3b502bf8f5b88637c2b2d297d932ee4e1bafcd72",
+      "backgroundTriangles": 2416
     },
     {
       "sourceTile": "tiles/7/78/12_5.b3dm",
@@ -191,15 +234,16 @@
       "gmlNames": [
         "ESPLANADE - THEATRES ON THE BAY"
       ],
-      "poiFile": "12_5.b3dm",
+      "poiFile": "12_5-dc5f3ac9f0b6.b3dm",
       "poiSha256": "973d260592e2ae6d583075a1c5dd6af1a8bb4bc7bc41dbe4fc91b8c07ba41563",
       "poiTriangles": 5544,
       "backgroundFile": "optimized-tiles/7/78/12_5.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+        "SLA_BLDG2_ce9c2e7b-783b-4ef3-adc7-33f8019ba471"
       ],
-      "backgroundSha256": "0d56dcf7cef5ddf82e7b3054dad87bc6a1e7f5f6fb616968e116967fa3de75f1",
-      "backgroundTriangles": 8660
+      "backgroundSha256": "28e98846d5a488cb3067a1c8b0730d212b11869369eadd71628637702b2ce5c6",
+      "backgroundTriangles": 2416
     }
   ]
 }

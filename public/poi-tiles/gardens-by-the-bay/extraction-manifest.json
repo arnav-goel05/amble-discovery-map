@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "gardens-by-the-bay",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:14.673Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/20/0_0.b3dm",
+      "sourceSha256": "2df2d559433df781efa2ec594b4f8bbb7e1929d7dff6c138cf8f8d54ef069fd6",
+      "originalBatchIds": [
+        20,
+        14,
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "gmlNames": [
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY"
+      ],
+      "poiFile": "0_0-223e366f9dde.b3dm",
+      "poiSha256": "4f9cecfd8078203aadbee1b3db15628790f2aad5f6b3a2c7521eadbd87795496",
+      "poiTriangles": 1012,
+      "backgroundFile": "optimized-tiles/5/20/0_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "backgroundSha256": "db436bcf1dd6f9764a98c339b827244a2125b93d64103cc33f7d0781461421b1",
+      "backgroundTriangles": 17804
+    },
+    {
+      "sourceTile": "tiles/5/20/0_1.b3dm",
+      "sourceSha256": "7317303123ec7cfbe23ebc853d5928619e4ae3a494f938096f467d93e4e62864",
+      "originalBatchIds": [
+        20,
+        14,
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "gmlNames": [
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY"
+      ],
+      "poiFile": "0_1-cb1e3083e7ed.b3dm",
+      "poiSha256": "7adedbcbb0e07ad0d30d2de26b20247b6acbe1c207d522d500605c897f874944",
+      "poiTriangles": 1012,
+      "backgroundFile": "optimized-tiles/5/20/0_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "backgroundSha256": "e1f6b40a48e2ce0109331fa67e0895512c21dfc49817802ea38bf25fb752a8ef",
+      "backgroundTriangles": 17804
+    },
+    {
+      "sourceTile": "tiles/5/20/0_2.b3dm",
+      "sourceSha256": "533b100b335bcd360ab99eb4df0085373d2360379adf3477286f422b24d8497d",
+      "originalBatchIds": [
+        20,
+        14,
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "gmlNames": [
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY"
+      ],
+      "poiFile": "0_2-9eee6851b510.b3dm",
+      "poiSha256": "ca61a0ae66f4174fad5153acae51529a29e3311478efd2ec066fffeca51e79c5",
+      "poiTriangles": 1012,
+      "backgroundFile": "optimized-tiles/5/20/0_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "backgroundSha256": "f875755c138eced053ff956c8efdff5784d8f3b20a9d4daf9dfd0d7f987ca9a1",
+      "backgroundTriangles": 17804
+    },
+    {
+      "sourceTile": "tiles/5/20/0_3.b3dm",
+      "sourceSha256": "5e4c90ed7ec32910df825774d2014ee67acb9128f60cdeb52785f9bf5b18fab6",
+      "originalBatchIds": [
+        20,
+        14,
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "gmlNames": [
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY"
+      ],
+      "poiFile": "0_3-fe908db4d68b.b3dm",
+      "poiSha256": "b10383c6251d7928faba2adb4b868b4c42549cfca51ce27aca1236ae11e4bdf5",
+      "poiTriangles": 1012,
+      "backgroundFile": "optimized-tiles/5/20/0_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "backgroundSha256": "852cf60f1869b81a44001880851200ab57d893055dcbc1490a373bab0f467f2c",
+      "backgroundTriangles": 17804
+    },
+    {
+      "sourceTile": "tiles/5/20/0_4.b3dm",
+      "sourceSha256": "5a300dae2c6116b48d4fd808412d2c4ddeb197b27bfa99f52c2f6fbd5dbca4b8",
+      "originalBatchIds": [
+        20,
+        14,
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "gmlNames": [
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY"
+      ],
+      "poiFile": "0_4-eaa12ff75956.b3dm",
+      "poiSha256": "062433836d1dec5fdd06edbcdccc5f226d1a5b11462e3fc7a95b2281affac6a3",
+      "poiTriangles": 1012,
+      "backgroundFile": "optimized-tiles/5/20/0_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "backgroundSha256": "3aabc871e1ff3651f0c3644560c630ac1aa272d1e50392097c697878534efa71",
+      "backgroundTriangles": 17804
+    },
+    {
+      "sourceTile": "tiles/5/20/0_5.b3dm",
+      "sourceSha256": "af5f4eb8428fc0df38c96f7fdb95b2e08d6920c6ade4970d0b26c9b7433cb958",
+      "originalBatchIds": [
+        20,
+        14,
+        17
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "gmlNames": [
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY",
+        "GARDENS BY THE BAY"
+      ],
+      "poiFile": "0_5-f90882c480cf.b3dm",
+      "poiSha256": "8bced03af7733df5a0c1df1caff419114d7dc8115901a12dcccdc72c8eae39ab",
+      "poiTriangles": 1012,
+      "backgroundFile": "optimized-tiles/5/20/0_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "backgroundSha256": "1ad2043b4880cf957a005f626487356602cda04bc96c7079f298a8e0f922ddc8",
+      "backgroundTriangles": 17804
+    }
+  ]
+}

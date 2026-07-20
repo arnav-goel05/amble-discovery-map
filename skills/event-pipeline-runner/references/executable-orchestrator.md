@@ -8,13 +8,14 @@ Use `npm run event-pipeline -- <command>` as the authoritative state machine. Th
 1. `start [--date YYYY-MM-DD]` creates immutable snapshots, `run.json`, and `orchestrator-state.json`. Preserve the returned run ID.
 2. `status --run <run-id>` returns the single next action plus all blockers.
 3. `collect-source --run <run-id> --source <configured name>` executes the configured adapter, complete pagination/detail capture, artifacts, and accounting. `record-source` is compatibility-only for tests and structured intervention submission.
-4. `normalize --run <run-id>` deterministically expands occurrences, filters the run window, normalizes, deduplicates, writes all four normalized artifacts, creates venue branches, and records the checkpoint. `record-normalization` remains available only for compatibility and fixture-driven testing.
+4. `normalize --run <run-id>` deterministically builds parents, finite sessions, and venue occurrences; applies inclusion/schedule/evidence/location policy without a weekly ingestion cutoff; collapses safe repeats; writes normalized artifacts; creates only required venue branches; and records complete/unavailable per-source accounting. Cross-source merging remains provisional until venue resolution. `record-normalization` remains available only for compatibility and fixture-driven testing.
 5. `prepare-venues --run <run-id>` validates or builds the local index, enriches every pending venue branch, and writes the local recovery candidate set. Resolve results are rejected until this succeeds.
 6. `resolve-local --run <run-id>` submits every unambiguous executable local match. Only remaining ambiguous branches may request agent adjudication.
 7. `record-venue-recovery --run <run-id> --venue <id> --evidence <json>` records newly verified address/coordinate evidence and reruns only that venue through the local resolver. If no exact candidate is approved, it writes the validated `needs_review` handoff itself. It preserves every completed branch.
-8. `stage-frontend --run <run-id>` stages expiry and complete-snapshot reconciliation, performs create/update/noop geometry work, runs asset/build/UI/staged-browser verification, writes evidence-backed highlight/pill/panel handoffs, and atomically commits the verified snapshot.
-9. `verify --run <run-id>` handles the zero-landmark path and compatibility verification after all venue stages are terminal.
-10. `finalize --run <run-id>` writes `status.md` only when no required work remains pending. It exits with code 2 for an incomplete run.
+8. `finalize-dedup --run <run-id>` completes same-source/all-source deduplication after every venue resolve result is terminal. It uses approved POI or strong compatible off-map evidence, preserves prior anchors/children/contributions, and isolates uncertain identities for review.
+9. `stage-frontend --run <run-id>` reconciles current contributions with stale carry-forward and expiry, stages mapped/off-map/held/archive outcomes, performs create/update/noop geometry work, runs release-wide asset/build/UI/staged-browser verification, writes evidence-backed handoffs, and atomically activates the immutable candidate only when every release gate passes.
+10. `verify --run <run-id>` handles the zero-landmark path and compatibility verification after all venue stages are terminal and deduplication succeeds.
+11. `finalize --run <run-id>` writes `status.json`, `status.md`, and the final trace event only when no required work remains pending. It exits with code 2 for an incomplete run.
 
 `advance --run <run-id>` follows executable actions autonomously until finalization or a structured intervention is emitted. Normal progression never asks an agent to choose or manufacture the next checkpoint.
 
@@ -49,7 +50,7 @@ Every nonterminal response contains:
 }
 ```
 
-Only a finalized response has `complete: true` and `mustContinue: false`. A worker may return control to the user before finalization only for a concrete external blocker it cannot resolve after exhausting the adapter and skill recovery rules. Ordinary pending work, a source failure that can be recorded, or the availability of a next checkpoint is not such a blocker.
+Only a finalized response has `complete: true` and `mustContinue: false`. A worker may return control to the user before finalization only for a concrete external blocker it cannot resolve after exhausting the adapter and skill recovery rules. Ordinary pending work, an isolated source failure that can be terminally accounted and reconciled, a scoped review, or the availability of a next checkpoint is not such a blocker. A release-wide rejection finalizes with the prior active snapshot preserved and explicit validation/activation lineage.
 
 ## Worker result formats
 
@@ -84,7 +85,10 @@ Source result:
   "sourceRecordRefs": ["raw/catch/details/<hash>.json#/records/0"],
   "invalidSourceRecordRefs": [],
   "processedSourceRecordRefs": ["raw/catch/details/<hash>.json#/records/0"],
-  "artifactRefs": ["raw/catch/listings/page-0001.dom.md", "raw/catch/details/<hash>.json"],
+  "artifactRefs": [
+    "raw/catch/listings/page-0001.dom.md",
+    "raw/catch/details/<hash>.json"
+  ],
   "error": null
 }
 ```

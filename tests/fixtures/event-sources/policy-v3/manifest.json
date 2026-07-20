@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "3.0",
+  "policyVersion": "3.0",
+  "activities": [
+    {
+      "fixtureId": "mapped-unit-session",
+      "title": "Studio Pottery Evening",
+      "scope": "Singapore",
+      "schedule": {
+        "kind": "exact",
+        "start": "2026-09-20T19:00:00+08:00",
+        "end": "2026-09-20T21:00:00+08:00"
+      },
+      "sessions": [
+        { "sourceSessionId": "session-1", "availability": "available" }
+      ],
+      "venues": [
+        {
+          "name": "Funan",
+          "address": "107 North Bridge Road",
+          "postalCode": "179105",
+          "unit": "#03-30",
+          "publicPlacement": "mapped",
+          "mappingStatus": "approved"
+        }
+      ],
+      "expected": {
+        "lifecycleState": "active",
+        "freshness": "current",
+        "parentCount": 1,
+        "sessionCount": 1,
+        "venueOccurrenceCount": 1
+      }
+    },
+    {
+      "fixtureId": "secret-tba-anytime",
+      "title": "Secret Supper Club",
+      "scope": "Singapore",
+      "schedule": { "kind": "anytime" },
+      "venues": [
+        {
+          "name": "Secret location",
+          "publicPlacement": "off_map",
+          "mappingStatus": "not_required",
+          "offMapSubtype": "secret_tba"
+        }
+      ],
+      "expected": { "lifecycleState": "active", "freshness": "current" }
+    },
+    {
+      "fixtureId": "reliable-multiple-location",
+      "title": "Neighbourhood Film Tour",
+      "scope": "Singapore",
+      "schedule": { "kind": "selectable" },
+      "sessions": [
+        { "sourceSessionId": "tampines", "venueKey": "venue-tampines" },
+        { "sourceSessionId": "jurong", "venueKey": "venue-jurong" }
+      ],
+      "venues": [
+        {
+          "venueKey": "venue-tampines",
+          "name": "Our Tampines Hub",
+          "publicPlacement": "mapped",
+          "mappingStatus": "approved"
+        },
+        {
+          "venueKey": "venue-jurong",
+          "name": "Jurong Regional Library",
+          "publicPlacement": "mapped",
+          "mappingStatus": "approved"
+        }
+      ],
+      "expected": {
+        "parentCount": 1,
+        "sessionCount": 2,
+        "venueOccurrenceCount": 2
+      }
+    },
+    {
+      "fixtureId": "unpaired-multiple-location",
+      "title": "Island Pop-up Series",
+      "scope": "Singapore",
+      "schedule": { "kind": "recurring", "displayText": "Selected weekends" },
+      "venues": [
+        {
+          "name": "Various venues",
+          "publicPlacement": "off_map",
+          "mappingStatus": "not_required",
+          "offMapSubtype": "multiple_locations"
+        }
+      ],
+      "expected": { "parentCount": 1, "venueOccurrenceCount": 1 }
+    },
+    {
+      "fixtureId": "mobile-route",
+      "title": "Night Cycling Trail",
+      "scope": "Singapore",
+      "schedule": {
+        "kind": "range",
+        "start": "2026-08-01T18:00:00+08:00",
+        "end": "2026-12-31T23:00:00+08:00"
+      },
+      "venues": [
+        {
+          "name": "Mobile route",
+          "publicPlacement": "off_map",
+          "mappingStatus": "not_required",
+          "offMapSubtype": "mobile_route"
+        }
+      ]
+    },
+    {
+      "fixtureId": "broad-area",
+      "title": "East Coast Nature Ramble",
+      "scope": "Singapore",
+      "schedule": { "kind": "recurring", "displayText": "Every Sunday" },
+      "venues": [
+        {
+          "name": "East Coast Park",
+          "publicPlacement": "off_map",
+          "mappingStatus": "not_required",
+          "offMapSubtype": "broad_area"
+        }
+      ]
+    },
+    {
+      "fixtureId": "selectable-waitlist",
+      "title": "Perfume Lab",
+      "scope": "Singapore",
+      "schedule": { "kind": "selectable", "displayText": "Choose a date" },
+      "sessions": [
+        { "sourceSessionId": "waitlist", "availability": "waitlist" }
+      ],
+      "venues": [
+        {
+          "name": "Scent Studio",
+          "publicPlacement": "off_map",
+          "mappingStatus": "pending_review",
+          "offMapSubtype": "geometry_unavailable"
+        }
+      ]
+    }
+  ],
+  "priorSnapshotMigration": {
+    "schemaVersion": "2.0",
+    "snapshotId": "fixture-v2-snapshot",
+    "events": [
+      {
+        "id": "event:mapped",
+        "status": "approved",
+        "locationStatus": "approved",
+        "stale": false
+      },
+      {
+        "id": "event:not-mappable",
+        "status": "approved",
+        "locationStatus": "not_mappable",
+        "stale": true,
+        "staleReason": "source_unavailable"
+      }
+    ],
+    "expected": [
+      {
+        "id": "event:mapped",
+        "publicPlacement": "mapped",
+        "mappingStatus": "approved",
+        "lifecycleState": "active",
+        "freshness": "current"
+      },
+      {
+        "id": "event:not-mappable",
+        "publicPlacement": "off_map",
+        "mappingStatus": "not_required",
+        "lifecycleState": "active",
+        "freshness": "stale"
+      }
+    ]
+  },
+  "staleCarryForward": {
+    "publishedEventId": "event:shared",
+    "sourceContributions": [
+      {
+        "sourceRecordId": "direct:old",
+        "freshness": "stale",
+        "staleReason": "source_incomplete",
+        "fields": ["description"]
+      },
+      {
+        "sourceRecordId": "editorial:current",
+        "freshness": "current",
+        "fields": ["title", "schedule", "location"]
+      }
+    ],
+    "expectedEventFreshness": "stale"
+  }
+}

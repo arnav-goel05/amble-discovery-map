@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "1.0",
+  "policyVersion": "openai-realtime-voice-1.0",
+  "owner": "Arnav",
+  "ownerRole": "project owner",
+  "capMicroUsd": 10000000,
+  "resetPolicy": "none",
+  "enabled": false,
+  "modelId": "gpt-realtime-2.1",
+  "transcriptionModelId": "gpt-realtime-whisper",
+  "rateCardVersion": "openai-2026-07-18-gpt-realtime-2.1",
+  "maxSessionSeconds": 300,
+  "idleSeconds": 60,
+  "maxResponses": 6,
+  "maxOutputTokens": 512,
+  "maxContextTokens": 4000,
+  "reasoningEffort": "low",
+  "automaticResponseCreation": false,
+  "imageInputEnabled": false,
+  "killSwitches": {
+    "requireBothEnabled": true,
+    "environment": {
+      "variable": "REALTIME_ENABLED",
+      "enabledValue": "true",
+      "defaultEnabled": false
+    },
+    "runtime": {
+      "store": "d1",
+      "key": "openai-realtime",
+      "defaultEnabled": false
+    },
+    "failureMode": "disabled"
+  },
+  "rateCard": {
+    "version": "openai-2026-07-18-gpt-realtime-2.1",
+    "currency": "USD",
+    "moneyUnit": "micro-USD",
+    "observedAt": "2026-07-18",
+    "sources": [
+      "https://developers.openai.com/api/docs/models/gpt-realtime-2.1",
+      "https://developers.openai.com/api/docs/models/gpt-realtime-whisper"
+    ],
+    "rates": {
+      "textInputMicroUsdPerMillionTokens": 4000000,
+      "cachedTextInputMicroUsdPerMillionTokens": 400000,
+      "textOutputMicroUsdPerMillionTokens": 24000000,
+      "audioInputMicroUsdPerMillionTokens": 32000000,
+      "cachedAudioInputMicroUsdPerMillionTokens": 400000,
+      "audioOutputMicroUsdPerMillionTokens": 64000000,
+      "transcriptionMicroUsdPerMinute": 17000
+    },
+    "reservationRules": {
+      "ignoreCachedInputDiscounts": true,
+      "useHighestEnabledInputRate": true,
+      "useHighestEnabledOutputRate": true,
+      "roundFractionalMicroUsdUp": true,
+      "unknownModelOrRate": "hold-and-disable"
+    }
+  },
+  "worstCaseReservation": {
+    "inputTranscription": {
+      "maxAudioSeconds": 60,
+      "rateMicroUsdPerMinute": 17000,
+      "reservedMicroUsd": 17000
+    },
+    "response": {
+      "maxInputTokens": 4000,
+      "inputRateMicroUsdPerMillionTokens": 32000000,
+      "inputReservedMicroUsd": 128000,
+      "maxOutputTokens": 512,
+      "outputRateMicroUsdPerMillionTokens": 64000000,
+      "outputReservedMicroUsd": 32768,
+      "reservedMicroUsd": 160768
+    },
+    "maxTurnReservedMicroUsd": 177768,
+    "admissionInvariant": "spentMicroUsd + reservedMicroUsd + requestedMicroUsd <= capMicroUsd",
+    "missingOrUntrustedUsage": "hold-full-reservation-and-disable-new-work"
+  }
+}

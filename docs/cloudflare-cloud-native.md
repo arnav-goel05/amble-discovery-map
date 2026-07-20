@@ -19,6 +19,7 @@ Authenticate Wrangler, apply D1 migrations, optionally refresh the D1 restaurant
 ```bash
 npx wrangler login
 npx wrangler secret put TINYFISH_API_KEY --config wrangler.cloud.jsonc
+npx wrangler secret put OPENAI_API_KEY --config wrangler.cloud.jsonc
 npx wrangler d1 migrations apply amble-runtime --remote --config wrangler.cloud.jsonc
 npm run cloudflare:seed:restaurants
 npx wrangler d1 execute amble-runtime --remote --config wrangler.cloud.jsonc --file cloudflare/generated-restaurant-seed.sql
@@ -49,8 +50,8 @@ GitHub Actions is the pre-merge CI gate. Pull requests into `develop` and `main`
 
 Use `develop` as the permanent integration branch:
 
-1. Create feature branches from `develop`.
-2. Open feature pull requests into `develop` and merge them after CI passes.
+1. Perform new feature work directly on `develop`.
+2. Do not create or switch to another branch unless the user explicitly requests it.
 3. Keep completed but unreleased changes on `develop` for as long as needed.
 4. Open a release pull request from `develop` into `main` when the combined changes are ready for users.
 5. Merge the release pull request after CI passes.
@@ -60,10 +61,10 @@ Cloudflare remains the CD system and watches only `main`. Pushes and merges into
 ## Verify
 
 ```bash
-curl https://amble.amble-sg.workers.dev/api/health/ready
-curl 'https://amble.amble-sg.workers.dev/api/restaurants?bbox=1.283,103.85,1.288,103.86'
-curl -I https://amble.amble-sg.workers.dev/optimized-tiles/tileset.json
-curl https://amble.amble-sg.workers.dev/api/snapshot
+curl https://amble.project-hub-arnav.workers.dev/api/health/ready
+curl 'https://amble.project-hub-arnav.workers.dev/api/restaurants?bbox=1.283,103.85,1.288,103.86'
+curl -I https://amble.project-hub-arnav.workers.dev/optimized-tiles/tileset.json
+curl https://amble.project-hub-arnav.workers.dev/api/snapshot
 ```
 
 Expected signals:
@@ -76,3 +77,11 @@ Expected signals:
 ## Cost controls
 
 Start on Workers Free. Static asset requests are free, while dynamic Worker and D1 usage are subject to their free daily allowances. R2 is the expected recurring cost because the tile bucket is approximately 113 GB. Upgrade to Workers Paid only after monitoring shows the free limits are being approached.
+
+### Realtime voice kill switches and USD 10 lifetime cap
+
+Realtime voice is disabled by default. Admission requires both `REALTIME_ENABLED=true` in the Worker environment and the D1 `openai-realtime` runtime flag to be enabled. Apply `cloudflare/migrations/0003_voice_budget.sql` before enabling it. The OpenAI credential must exist only as the `OPENAI_API_KEY` Worker secret; never place it in `wrangler.cloud.jsonc`, frontend variables, logs, or build output.
+
+The D1 ledger enforces a non-resetting lifetime cap of `10_000_000` micro-USD (USD 10). Each billable transcription or response reserves its worst-case amount before provider work. Unknown usage, settlement failure, cap exhaustion, or either disabled switch stops new work. Owner status responses expose state and totals only, never transcript, audio, coordinates, provider payloads, or credentials.
+
+To disable immediately, set the runtime flag off and restore `REALTIME_ENABLED=false`, then deploy. Routine verification always uses mocked audio/provider fixtures and keeps both live switches off.

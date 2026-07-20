@@ -1,120 +1,234 @@
 #!/usr/bin/env node
 
-import { chromium } from 'playwright';
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { loadEventAuthorityRegistry } from "./lib/provider-policy.mjs";
+import { validateSourcePolicy } from "./event-source-collector.mjs";
 
-const START = process.env.EVENT_WINDOW_START ?? '2026-07-11';
-const END = process.env.EVENT_WINDOW_END ?? '2026-07-18';
-const ddmmyyyy = (value) => value.split('-').reverse().join('/');
-const windowStart = Date.parse(`${START}T00:00:00+08:00`);
-const windowEnd = Date.parse(`${END}T23:59:59+08:00`);
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const CONFIG_PATH = path.join(ROOT, "data/event-pipeline-config.json");
+const AUTHORITY_PATH = path.join(ROOT, "data/event-authority-registry.json");
+const ROLES = new Set(["direct", "editorial", "unavailable"]);
+const STATES = new Set(["enabled", "disabled"]);
 
-function overlaps(start, end) {
-  const startValue = Date.parse(start);
-  const endValue = Date.parse(end ?? start);
-  return Number.isFinite(startValue) && Number.isFinite(endValue) && endValue >= windowStart && startValue <= windowEnd;
-}
-
-function assert(condition, message) {
-  if (!condition) throw new Error(message);
-}
-
-async function json(response, label) {
-  assert(response.ok, `${label} returned HTTP ${response.status}`);
-  const value = await response.json();
-  assert(value && typeof value === 'object', `${label} did not return JSON`);
-  return value;
-}
-
-async function verifyCatch() {
-  const browser = await chromium.launch({ headless: true });
-  try {
-    const page = await browser.newPage();
-    const navigation = await page.goto('https://www.catch.sg/Event', { waitUntil: 'domcontentloaded', timeout: 30_000 });
-    assert(navigation?.ok(), `Catch listing returned HTTP ${navigation?.status()}`);
-    const result = await page.evaluate(async ({ start, end }) => {
-      const eventDate = `${start}-${end}`;
-      const fetchPage = async (pageIndex) => {
-        const body = new URLSearchParams({
-          'filter[pageIndex]': String(pageIndex), 'filter[PageSize]': '100', 'filter[EventDate]': eventDate,
-          pathUrl: `https://www.catch.sg/Event?EventDate=${encodeURIComponent(eventDate)}`
-        });
-        const response = await fetch('/api/events/SearchListEvent', { method: 'POST', body });
-        return { status: response.status, payload: await response.json() };
-      };
-      const first = await fetchPage(1);
-      const pageTotal = first.payload?.data?.PageTotal ?? 0;
-      const pages = [first];
-      for (let pageIndex = 2; pageIndex <= pageTotal; pageIndex += 1) pages.push(await fetchPage(pageIndex));
-      const records = pages.flatMap((pageResult) => pageResult.payload?.data?.Items ?? []);
-      const samplePath = records.find((record) => record.Url)?.Url;
-      const sampleUrl = new URL(samplePath, location.origin).href;
-      const detailHtml = await (await fetch(sampleUrl)).text();
-      const eventPageID = detailHtml.match(/event-detail-page-id="([^"]+)"/)?.[1];
-      let detail = null;
-      if (eventPageID) {
-        const body = new URLSearchParams({
-          pathUrl: sampleUrl, eventPageID, articlePageSize: '6', photosPageSize: '8',
-          isPhotosPaginated: 'false', articlePageIndex: '1', photosPageIndex: '1'
-        });
-        detail = await (await fetch('/api/site/GetEventDetail', { method: 'POST', body })).json();
-      }
-      return { pages, sampleDetail: detail?.data };
-    }, { start: ddmmyyyy(START), end: ddmmyyyy(END) });
-    assert(result.pages.every((pageResult) => pageResult.status === 200 && pageResult.payload?.code === 200), 'Catch filtered listing API failed');
-    assert(result.sampleDetail?.ID && result.sampleDetail?.DisplayEventTitle, 'Catch detail API contract failed');
-    const data = result.pages[0].payload.data;
-    assert(Number.isInteger(data?.ItemTotal) && Number.isInteger(data?.PageTotal) && Array.isArray(data?.Items), 'Catch response contract changed');
-    assert(data.Items.length <= 100, 'Catch ignored the configured page size');
-    const records = result.pages.flatMap((pageResult) => pageResult.payload.data.Items ?? []);
-    assert(records.length === data.ItemTotal, `Catch pagination returned ${records.length} of ${data.ItemTotal} records`);
-    const urls = records.map((record) => record.Url).filter(Boolean);
-    const physical = records.filter((record) => ['physical', 'hybrid'].includes(String(record.Info?.EventFormat).toLowerCase()) && record.Info?.Location);
-    return {
-      source: 'Catch.sg', status: 'success', total: data.ItemTotal, pages: data.PageTotal,
-      records: records.length, uniqueDetailUrls: new Set(urls).size, missingDetailUrls: records.length - urls.length,
-      physicalRecords: physical.length, uniquePhysicalVenues: new Set(physical.map((record) => record.Info.Location.trim())).size
-    };
-  } finally {
-    await browser.close();
-  }
-}
-
-async function verifySistic() {
-  const url = new URL('https://cms.sistic.com.sg/sistic/docroot/api/events');
-  url.searchParams.set('first', '0');
-  url.searchParams.set('limit', '30');
-  url.searchParams.set('sort_type', 'date');
-  url.searchParams.set('sort_order', 'ASC');
-  url.searchParams.set('index', 'global');
-  url.searchParams.set('client', '1');
-  const firstPage = await json(await fetch(url), 'SISTIC listing API');
-  assert(Array.isArray(firstPage.data), 'SISTIC response records path changed');
-  const total = firstPage.total_records;
-  assert(Number.isInteger(total), 'SISTIC provider total path changed');
-  const records = [...firstPage.data];
-  for (let first = 30; first < total; first += 30) {
-    url.searchParams.set('first', String(first));
-    const page = await json(await fetch(url), `SISTIC listing API offset ${first}`);
-    records.push(...page.data);
-  }
-  assert(records.length === total, `SISTIC pagination returned ${records.length} of ${total} records`);
-  const aliases = records.map((record) => record.alias).filter(Boolean);
-  const inWindowPhysical = records.filter((record) => record.venue_name && overlaps(record.start_date, record.end_date));
-  const sampleAlias = aliases[0];
-  const detailUrl = new URL('https://cms.sistic.com.sg/sistic/docroot/api/event-detail');
-  detailUrl.searchParams.set('client', '1');
-  detailUrl.searchParams.set('code', sampleAlias);
-  const detail = await json(await fetch(detailUrl), 'SISTIC detail API');
-  assert(detail.alias === sampleAlias && detail.title, 'SISTIC detail API contract changed');
+export function migrateSourceDefinition(source) {
+  const evidenceRole =
+    source.evidenceRole ??
+    (source.operatingMode === "disabled"
+      ? "unavailable"
+      : source.sourceRole === "discovery"
+        ? "editorial"
+        : "direct");
+  const operatingState =
+    source.operatingState ??
+    (source.enabled === false || source.operatingMode === "disabled"
+      ? "disabled"
+      : "enabled");
+  const editorialPolicy =
+    evidenceRole === "editorial"
+      ? (source.editorialPolicy ?? {
+          version: "2.0",
+          corroborateFirst: true,
+          allowSufficientEditorialOnly: true,
+          ...(source.confirmation?.outboundLabels
+            ? { outboundLabels: source.confirmation.outboundLabels }
+            : {}),
+        })
+      : null;
   return {
-    source: 'SISTIC', status: 'success', total, records: records.length,
-    uniqueDetailAliases: new Set(aliases).size, duplicateDetailAliases: aliases.length - new Set(aliases).size,
-    missingDetailAliases: records.length - aliases.length,
-    inWindowPhysicalRecords: inWindowPhysical.length,
-    uniqueInWindowVenues: new Set(inWindowPhysical.map((record) => record.venue_name.trim())).size
+    ...source,
+    evidenceRole,
+    operatingState,
+    editorialPolicy,
+    enabled: operatingState === "enabled",
+    // Runtime compatibility aliases are derived, never authoritative config.
+    sourceRole: evidenceRole === "editorial" ? "discovery" : "authoritative",
+    operatingMode: operatingState === "disabled" ? "disabled" : "required",
+    confirmation: editorialPolicy
+      ? {
+          policyVersion: editorialPolicy.version,
+          outboundLabels: editorialPolicy.outboundLabels ?? [],
+        }
+      : source.confirmation,
   };
 }
 
-const results = [];
-for (const verifier of [verifyCatch, verifySistic]) results.push(await verifier());
-process.stdout.write(`${JSON.stringify({ window: { start: START, end: END }, results }, null, 2)}\n`);
+export function validateEventSourceDefinitions(
+  config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8")),
+) {
+  if (
+    !["1.0", "2.0"].includes(config.schemaVersion) ||
+    config.timezone !== "Asia/Singapore" ||
+    !Array.isArray(config.sources)
+  )
+    throw new Error("Unsupported event source configuration");
+  const ids = new Set(),
+    names = new Set(),
+    orders = new Set(),
+    precedences = new Set();
+  const sources = config.sources
+    .map(migrateSourceDefinition)
+    .toSorted((a, b) => a.collectionOrder - b.collectionOrder);
+  for (const source of sources) {
+    if (
+      !source.name ||
+      names.has(source.name) ||
+      !source.adapterId ||
+      ids.has(source.adapterId)
+    )
+      throw new Error("Source names and adapter IDs must be unique");
+    if (!ROLES.has(source.evidenceRole) || !STATES.has(source.operatingState))
+      throw new Error(
+        `${source.name} has invalid evidence role or operating state`,
+      );
+    if (source.enabled !== (source.operatingState === "enabled"))
+      throw new Error(
+        `${source.name} enabled flag conflicts with operating state`,
+      );
+    if (
+      source.evidenceRole === "unavailable" &&
+      (source.operatingState !== "disabled" || !source.unavailableReason)
+    )
+      throw new Error(
+        `${source.name} unavailable source must be disabled with a reason`,
+      );
+    if (
+      source.operatingState === "disabled" &&
+      source.evidenceRole !== "unavailable"
+    )
+      throw new Error(
+        `${source.name} disabled source must use the unavailable role`,
+      );
+    if (
+      !Number.isInteger(source.collectionOrder) ||
+      orders.has(source.collectionOrder)
+    )
+      throw new Error(`${source.name} requires unique collection order`);
+    if (
+      source.evidenceRole === "direct" ||
+      source.evidenceRole === "unavailable"
+    ) {
+      if (
+        !Number.isInteger(source.precedence) ||
+        precedences.has(source.precedence)
+      )
+        throw new Error(`${source.name} requires unique anchor precedence`);
+      precedences.add(source.precedence);
+    } else {
+      if (
+        source.precedence !== null ||
+        source.editorialPolicy?.version !== "2.0" ||
+        source.editorialPolicy.corroborateFirst !== true ||
+        source.editorialPolicy.allowSufficientEditorialOnly !== true
+      ) {
+        throw new Error(
+          `${source.name} editorial source cannot supply anchor precedence and requires policy v2`,
+        );
+      }
+    }
+    if (source.retrieval) {
+      const bounds = source.retrieval;
+      if (
+        bounds.providerId !== "tinyfish-fetch" ||
+        bounds.batchSize < 1 ||
+        bounds.batchSize > 10 ||
+        bounds.maximumUrlsPerMinute >= 150 ||
+        bounds.maxAttempts < 1 ||
+        bounds.maxAttempts > 5 ||
+        bounds.timeoutMs > 110_000 ||
+        bounds.maximumResponseBytes < 1
+      )
+        throw new Error(`${source.name} has invalid rendered retrieval bounds`);
+      if (
+        !["html", "json", "markdown"].includes(bounds.format ?? "markdown") ||
+        (bounds.ttl !== undefined &&
+          (!Number.isInteger(bounds.ttl) || bounds.ttl < 0))
+      )
+        throw new Error(
+          `${source.name} has invalid rendered retrieval format or freshness`,
+        );
+      for (const selectors of [
+        bounds.includeSelectors ?? [],
+        bounds.excludeSelectors ?? [],
+      ]) {
+        if (
+          !Array.isArray(selectors) ||
+          selectors.length > 20 ||
+          selectors.some(
+            (selector) =>
+              typeof selector !== "string" ||
+              selector.length < 1 ||
+              selector.length > 1000,
+          )
+        )
+          throw new Error(`${source.name} has invalid rendered selector scope`);
+      }
+      const listingBounds = source.listing?.retrieval;
+      if (listingBounds) {
+        if (
+          !["html", "json", "markdown"].includes(
+            listingBounds.format ?? bounds.format ?? "markdown",
+          ) ||
+          (listingBounds.ttl !== undefined &&
+            (!Number.isInteger(listingBounds.ttl) || listingBounds.ttl < 0))
+        )
+          throw new Error(
+            `${source.name} has invalid listing retrieval format or freshness`,
+          );
+        for (const selectors of [
+          listingBounds.includeSelectors ?? [],
+          listingBounds.excludeSelectors ?? [],
+        ]) {
+          if (
+            !Array.isArray(selectors) ||
+            selectors.length > 20 ||
+            selectors.some(
+              (selector) =>
+                typeof selector !== "string" ||
+                selector.length < 1 ||
+                selector.length > 1000,
+            )
+          )
+            throw new Error(
+              `${source.name} has invalid listing selector scope`,
+            );
+        }
+      }
+    }
+    validateSourcePolicy(source);
+    names.add(source.name);
+    ids.add(source.adapterId);
+    orders.add(source.collectionOrder);
+  }
+  loadEventAuthorityRegistry(AUTHORITY_PATH);
+  return {
+    schemaVersion: "2.0",
+    timezone: config.timezone,
+    sources: sources.map(
+      ({
+        name,
+        adapterId,
+        evidenceRole,
+        operatingState,
+        collectionOrder,
+        precedence,
+      }) => ({
+        name,
+        adapterId,
+        evidenceRole,
+        operatingState,
+        collectionOrder,
+        precedence,
+      }),
+    ),
+  };
+}
+
+if (
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+) {
+  const report = validateEventSourceDefinitions();
+  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+}

@@ -116,7 +116,7 @@ Cloudflare workflow. Then run the same verifier against these live origins:
 https://amblefinds.com/
 http://amblefinds.com/
 https://www.amblefinds.com/
-https://amble.amble-sg.workers.dev/
+https://amble.project-hub-arnav.workers.dev/
 ```
 
 Expected:

@@ -8,24 +8,52 @@ Use the documented official JSON APIs below. Do not crawl provider pages or redi
 
 - Method: adapter-specific
 - Authentication: none
-- Date parameters: none; apply the manifest's inclusive `Asia/Singapore` window after extraction
+- Date parameters: do not use the weekly run window as an ingestion cutoff. Collect every active/future record exposed by the bounded source surface; the run window is an expiry/reconciliation boundary.
 - Pagination ceiling: 50 listing pages or the source's explicit final page, whichever comes first
 - Stop early only when the official listing is demonstrably chronological and every remaining item starts after the window
 - Call the official detail API for each unique listing identifier
 - Store untouched listing responses at `raw/<source>/listings/page-<four-digit-n>.json`
 - Store untouched detail responses and parsed fixtures at `raw/<source>/details/<sha256-of-canonical-detail-url>.response.json` and `.json`
-- Preserve records with unavailable date evidence as `undated_review`; they cannot be silently expired or published as date-confirmed occurrences
-- Derive `occurrencesEmitted`, `excludedOccurrences`, and `eligiblePreDedup` from fixture performances. Online, unknown-mode, missing-venue, and out-of-window occurrences are not eligible. The executable validator recomputes these totals.
+- Preserve exact, ranged, recurring, selectable, anytime, and unverified schedules without inventing dates. Unverified records are held; intentional anytime records remain eligible.
+- Exclude expired, pure-promotion, online-only, overseas, and ordinary continuously available general admission. Waitlists, member restrictions, guides, evergreen containers, and future dates are metadata/context rather than automatic exclusions.
+- Derive `occurrencesEmitted`, `excludedOccurrences`, and `eligiblePreDedup` from every bounded entry/performance and record a terminal reason for each input.
 
 For each listing page, store the untouched API response and collect its detail identifier. Call each unique official detail API once, store the untouched response, and extract labeled values into this fixture before canonical normalization. Store the fixture as `records[0]` inside the universal JSON artifact envelope:
 
 ```json
-{ "adapterVersion": "", "listingPage": 1, "detailUrl": "", "sourceId": "", "title": "", "mode": "physical | online | hybrid | unknown", "dateText": null, "timeText": null, "venue": null, "address": null, "sourceCoordinates": null, "category": null, "price": null, "description": null, "organizer": null, "performances": [] }
+{
+  "adapterVersion": "",
+  "listingPage": 1,
+  "detailUrl": "",
+  "sourceId": "",
+  "title": "",
+  "mode": "physical | online | hybrid | unknown",
+  "dateText": null,
+  "timeText": null,
+  "venue": null,
+  "address": null,
+  "sourceCoordinates": null,
+  "category": null,
+  "price": null,
+  "description": null,
+  "organizer": null,
+  "performances": []
+}
 ```
 
 Each `performances[]` item contains `{ "startDateTime", "endDateTime", "dateText", "timeText" }`. Missing optional fields remain null and are tracked in provenance. Mark a record invalid only when a required identity or title contract fails; do not invent values.
 
 Map an explicit source label `Online` to `mode: online`, `Hybrid` to `hybrid`, and an explicit physical venue/mode to `physical`. Use `unknown` otherwise. Canonical `isOnline` is true only for `online`; hybrid or unknown records enter the map workflow only when a physical venue is present and later approved.
+
+## Rendered-page and discovery adapters
+
+The configured rendered-page adapters are Fever, Visit Singapore, Singapore Film Society, Roots/HAN, Honeycombers, ArtsEquator, and Time Out Singapore. Fever, Visit Singapore, and Singapore Film Society are enabled direct sources. Roots/HAN is explicitly unavailable/disabled until its layout contract is repaired. Honeycombers, ArtsEquator, and Time Out are enabled trusted editorial sources.
+
+Rendered retrieval uses the shared TinyFish transport with public HTTPS destinations only, bounded pages and response sizes, a maximum batch of 10, retry/backoff (including transient per-URL failures), and a rate below 150 URLs per minute. Checked-in source definitions may select `markdown`, `html`, or `json`, force bounded cache freshness, and scope extraction with reviewed CSS selectors. Store canonical listing/detail captures and parser fixtures in the current run. Reuse a canonical URL capture within that run so discovery-first and direct-first processing produce the same authority evidence. Never log credentials or full response bodies.
+
+Editorial assessment first reuses already collected compatible direct evidence, then attempts a bounded organizer/venue/ticketing/official-program link from `data/event-authority-registry.json`. Direct agreement yields `direct_corroborated`; conflicts or ambiguous sibling mapping enter scoped review. If no usable direct record remains after the attempt, a trusted editorial record may publish as `editorial_authoritative` only when it identifies one current Singapore activity, has a usable schedule or intentional anytime state, and has mapped or off-map placement evidence. Generic/search/directory/social evidence never supplies those claims by itself. Preserve the editorial contribution and any later direct upgrade under the same published identity.
+
+Source-specific scope rules are executable in `scripts/lib/event-sources/`: Fever retains selectable/anytime/waitlist activities and behaviorally excludes only ordinary attraction admission; Visit Singapore freshly scopes TinyFish to `stb-event-and-festivals`, emits every embedded `cardmultifield` item as a stable listing-native record, and splits guide headings only when each entry has both schedule and venue evidence; Singapore Film Society preserves screenings and access restrictions; Roots/HAN reports unavailable; Honeycombers and Time Out retain valid roundup/evergreen entries while rejecting pure promotion; ArtsEquator retains attendable programmes and rejects standalone non-attendable opportunities.
 
 ## `catch-official-listing-v1`
 

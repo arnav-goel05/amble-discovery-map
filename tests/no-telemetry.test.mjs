@@ -104,3 +104,60 @@ for (const file of ["index.html", "cloudflare/cloud-native-worker.mjs"]) {
     );
   });
 }
+
+test("voice surfaces contain no analytics, beacon, or telemetry SDK", () => {
+  const files = [
+    ...fs
+      .readdirSync("activity-scenes/assistant", { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".js"))
+      .map((entry) => path.join("activity-scenes/assistant", entry.name)),
+    "scripts/lib/realtime-relay-protocol.mjs",
+    "cloudflare/cloud-native-worker.mjs",
+  ];
+
+  for (const file of files) {
+    const source = fs.readFileSync(file, "utf8");
+    assert.doesNotMatch(
+      source,
+      /cloudflareinsights|data-cf-beacon|google-analytics|googletagmanager|\bgtag\s*\(|\bmixpanel\b|\bsegment\.com\b|\bsendBeacon\s*\(|\btrack(?:Event)?\s*\(/i,
+      `${file} must not collect voice, transcript, or location analytics`,
+    );
+  }
+});
+
+test("voice operational logging cannot include session-scoped payload fields", () => {
+  const files = [
+    "scripts/lib/realtime-relay-protocol.mjs",
+    "cloudflare/cloud-native-worker.mjs",
+  ];
+  for (const file of files) {
+    const source = fs.readFileSync(file, "utf8");
+    for (const [index, line] of source.split("\n").entries()) {
+      if (
+        !/\b(?:console\.(?:log|info|warn|error|debug)|logger\s*\()/i.test(line)
+      ) {
+        continue;
+      }
+      assert.doesNotMatch(
+        line,
+        /audio|transcript|coordinates?|latitude|longitude|exactLocation|interfaceContext|providerPayload/i,
+        `${file}:${index + 1} logs private voice content`,
+      );
+    }
+  }
+});
+
+test("voice browser lifecycle modules contain no persistence APIs", () => {
+  for (const file of [
+    "activity-scenes/assistant/audio-controller.js",
+    "activity-scenes/assistant/conversation-model.js",
+    "activity-scenes/assistant/realtime-relay-client.js",
+  ]) {
+    const source = fs.readFileSync(file, "utf8");
+    assert.doesNotMatch(
+      source,
+      /\b(?:localStorage|sessionStorage|indexedDB|CacheStorage|caches\.(?:open|match|put)|document\.cookie)\b/,
+      `${file} must not persist audio, transcripts, context, or location`,
+    );
+  }
+});

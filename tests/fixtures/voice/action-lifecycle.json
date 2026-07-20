@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "1.0",
+  "cases": [
+    {
+      "id": "reversible-open-second-area",
+      "contextRevision": 7,
+      "proposal": {
+        "type": "action.proposed",
+        "callId": "call-safe-001",
+        "actionId": "map.openarea",
+        "canonicalArguments": { "areaId": "ura-subzone:marina-south" },
+        "contextRevision": 7,
+        "confirmationClass": "reversible"
+      },
+      "result": {
+        "type": "action.completed",
+        "callId": "call-safe-001",
+        "ok": true,
+        "observable": { "focusedAreaId": "ura-subzone:marina-south" }
+      },
+      "expected": "executed_immediately"
+    },
+    {
+      "id": "consequential-external-navigation-accepted",
+      "contextRevision": 8,
+      "proposal": {
+        "type": "action.proposed",
+        "callId": "call-confirm-001",
+        "actionId": "navigation.openexternal",
+        "canonicalArguments": { "targetId": "candidate:national-gallery" },
+        "contextRevision": 8,
+        "confirmationClass": "consequential"
+      },
+      "confirmation": {
+        "type": "confirmation.required",
+        "confirmationId": "confirmation-001",
+        "fingerprint": "fixture-fingerprint-001",
+        "targetId": "candidate:national-gallery",
+        "effectSummary": "Open the approved destination page in a new tab.",
+        "expiresAt": "2026-07-18T12:00:25.000Z"
+      },
+      "confirmationResult": {
+        "type": "confirmation.result",
+        "confirmationId": "confirmation-001",
+        "fingerprint": "fixture-fingerprint-001",
+        "decision": "accepted"
+      },
+      "expected": "executed_after_confirmation"
+    },
+    {
+      "id": "consequential-delete-rejected",
+      "contextRevision": 9,
+      "proposal": {
+        "type": "action.proposed",
+        "callId": "call-confirm-002",
+        "actionId": "saved.deleteitem",
+        "canonicalArguments": { "itemId": "saved-fixture-001" },
+        "contextRevision": 9,
+        "confirmationClass": "consequential"
+      },
+      "confirmationResult": {
+        "type": "confirmation.result",
+        "confirmationId": "confirmation-002",
+        "fingerprint": "fixture-fingerprint-002",
+        "decision": "rejected"
+      },
+      "expected": "zero_side_effects"
+    },
+    {
+      "id": "stale-ordinal-context",
+      "proposal": {
+        "type": "action.proposed",
+        "callId": "call-stale-001",
+        "actionId": "map.openarea",
+        "canonicalArguments": { "areaId": "ura-subzone:marina-south" },
+        "contextRevision": 7,
+        "confirmationClass": "reversible"
+      },
+      "currentContextRevision": 10,
+      "expected": "clarification_required"
+    }
+  ]
+}

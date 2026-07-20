@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "singapore-polo-club",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:11.461Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/15/14_0.b3dm",
+      "sourceSha256": "6a36d0593ad6f83d8411c29819b383e2ea3f33df2304645d75cf94877249ee21",
+      "originalBatchIds": [
+        52
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "gmlNames": [
+        "SINGAPORE POLO CLUB"
+      ],
+      "poiFile": "14_0-9f4d97e4f6a6.b3dm",
+      "poiSha256": "6b4a9f681796dfd134012726be5cc05863159e58b0415c6d5d971ac4da064eb1",
+      "poiTriangles": 2504,
+      "backgroundFile": "optimized-tiles/5/15/14_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "backgroundSha256": "83d05b34d738ce531c6fbad1740c441767b63c6f9d5002619e48a54d46922935",
+      "backgroundTriangles": 11626
+    },
+    {
+      "sourceTile": "tiles/5/15/14_1.b3dm",
+      "sourceSha256": "dc1382c36fd2b5e35cdbc879a4c07229da520565480804311349c9f8d9db1c12",
+      "originalBatchIds": [
+        52
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "gmlNames": [
+        "SINGAPORE POLO CLUB"
+      ],
+      "poiFile": "14_1-df66cd92cf70.b3dm",
+      "poiSha256": "3a20011b7fcf362dbe01e1f66b68028eedc396637afd4f6d2c57776b75f2152d",
+      "poiTriangles": 2504,
+      "backgroundFile": "optimized-tiles/5/15/14_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "backgroundSha256": "fc54055b33e03440bc358734a23ce5384023018b6e5aba6d7eb8b01e7f939534",
+      "backgroundTriangles": 11626
+    },
+    {
+      "sourceTile": "tiles/5/15/14_2.b3dm",
+      "sourceSha256": "244fe8737774d5ad05123587e61ee4c0814f98e3036120aa75cce3c7c5576590",
+      "originalBatchIds": [
+        52
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "gmlNames": [
+        "SINGAPORE POLO CLUB"
+      ],
+      "poiFile": "14_2-e8390881d46b.b3dm",
+      "poiSha256": "a94e4a7672a2c418832b3c7b8bf89117c952ad4448eff2bd9cd81309c46b6ccc",
+      "poiTriangles": 2504,
+      "backgroundFile": "optimized-tiles/5/15/14_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "backgroundSha256": "280dfc8628968e9b6340659a04907ab58e89072bf96e0c158c788f29ec759048",
+      "backgroundTriangles": 11626
+    },
+    {
+      "sourceTile": "tiles/5/15/14_3.b3dm",
+      "sourceSha256": "1bfe06c870322fa62c4bf2ce060ec421bf0cf8d6041a8cb897c8dc0fa7f02aa4",
+      "originalBatchIds": [
+        52
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "gmlNames": [
+        "SINGAPORE POLO CLUB"
+      ],
+      "poiFile": "14_3-4e9f1e822664.b3dm",
+      "poiSha256": "fbbee4814bc22d3548a89d24eacd7837751f70358254d23e4820642a1cf2217b",
+      "poiTriangles": 2504,
+      "backgroundFile": "optimized-tiles/5/15/14_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "backgroundSha256": "e2f81ead66f82a7cc16c684e08039779287c8ec8ffb2295a51925d054a9cd370",
+      "backgroundTriangles": 11626
+    },
+    {
+      "sourceTile": "tiles/5/15/14_4.b3dm",
+      "sourceSha256": "6d0d5873dd311b88081a1fd7439916ae53aa98e90cf8e5d9c79363e425832c66",
+      "originalBatchIds": [
+        52
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "gmlNames": [
+        "SINGAPORE POLO CLUB"
+      ],
+      "poiFile": "14_4-ba8265844fca.b3dm",
+      "poiSha256": "dd382e9ce0cf456b2d027123b4f82e11dafc400947632300058ea50ca1b88118",
+      "poiTriangles": 2504,
+      "backgroundFile": "optimized-tiles/5/15/14_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "backgroundSha256": "91f3334bb81dc503e69a8f394826d8a3f8eea5aca6f28aa32a533602be40af4f",
+      "backgroundTriangles": 11626
+    },
+    {
+      "sourceTile": "tiles/5/15/14_5.b3dm",
+      "sourceSha256": "f62f812dc7c746d08572f8c1060f9354a78f55b288a01d8da01d9d2450c95d5a",
+      "originalBatchIds": [
+        52
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "gmlNames": [
+        "SINGAPORE POLO CLUB"
+      ],
+      "poiFile": "14_5-a70cef9f2730.b3dm",
+      "poiSha256": "ae0eb932ad0318c6297ada73b51f7239672917bc756d6bad87457b23099b96a6",
+      "poiTriangles": 2504,
+      "backgroundFile": "optimized-tiles/5/15/14_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_a822f3da-7386-4fb3-8b77-624c9600cb90"
+      ],
+      "backgroundSha256": "90d009d0fb76540c01c8f744a200a80df3f95f70b9b7f7d3715d349fffde3595",
+      "backgroundTriangles": 11626
+    }
+  ]
+}

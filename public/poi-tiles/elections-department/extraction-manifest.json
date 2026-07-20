@@ -1,0 +1,221 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "elections-department",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:10.585Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/70/16_0.b3dm",
+      "sourceSha256": "507a292a76e121a4162cb3bec69df97224e0362df7d47e70babb8ac200808fdd",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_685bdfe2-d055-4834-a68f-330dbc10daa3"
+      ],
+      "gmlNames": [
+        "ELECTIONS DEPARTMENT"
+      ],
+      "poiFile": "16_0-c05607275d57.b3dm",
+      "poiSha256": "24691b3d193adc5a8a71eaa55d849a57e4ddc428bb218d647e7de7ab613c0f81",
+      "poiTriangles": 360,
+      "backgroundFile": "optimized-tiles/7/70/16_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_685bdfe2-d055-4834-a68f-330dbc10daa3"
+      ],
+      "backgroundSha256": "6d54a13ad1be84b36a50a43742827370aeba58a7d7ae68ad883d4d764127d14f",
+      "backgroundTriangles": 7955
+    },
+    {
+      "sourceTile": "tiles/7/70/16_1.b3dm",
+      "sourceSha256": "ea4f260429766c38803849ffb13ff63268d1794dc7b052350bb8de65c3ff8ecd",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_685bdfe2-d055-4834-a68f-330dbc10daa3"
+      ],
+      "gmlNames": [
+        "ELECTIONS DEPARTMENT"
+      ],
+      "poiFile": "16_1-fe86ddf2d5bb.b3dm",
+      "poiSha256": "1ff79c57a6799315c367093712b13927dc1023e118175439bcd76dd65d6081a1",
+      "poiTriangles": 360,
+      "backgroundFile": "optimized-tiles/7/70/16_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_685bdfe2-d055-4834-a68f-330dbc10daa3"
+      ],
+      "backgroundSha256": "2974e148f9e3885b6e37f6448afc8d2d0dde456b038444003022607683a184ff",
+      "backgroundTriangles": 7955
+    },
+    {
+      "sourceTile": "tiles/7/70/16_2.b3dm",
+      "sourceSha256": "74a7706ead3c81d9814a773c921ddad5f8a7810fb497aa22a81e7a9913ddb93e",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_685bdfe2-d055-4834-a68f-330dbc10daa3"
+      ],
+      "gmlNames": [
+        "ELECTIONS DEPARTMENT"
+      ],
+      "poiFile": "16_2-42b5e67c8ab2.b3dm",
+      "poiSha256": "3d835947ceb81f534b5647c2a2a1698ea1c8836b8559b1549deb8d4071a431ef",
+      "poiTriangles": 360,
+      "backgroundFile": "optimized-tiles/7/70/16_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_685bdfe2-d055-4834-a68f-330dbc10daa3"
+      ],
+      "backgroundSha256": "102b16c7ea6fe2a204a426bbffa4fd57a5220e7d1259d8b5c4661c5207820f10",
+      "backgroundTriangles": 7955
+    },
+    {
+      "sourceTile": "tiles/7/70/16_3.b3dm",
+      "sourceSha256": "db17679a7d3a8d1c5c9a5e319e2f1196f6b65ed66ad3e2b26cd0e4f3c0e33cf0",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_685bdfe2-d055-4834-a68f-330dbc10daa3"
+      ],
+      "gmlNames": [
+        "ELECTIONS DEPARTMENT"
+      ],
+      "poiFile": "16_3-b0c9fa2755b9.b3dm",
+      "poiSha256": "29920c63daebffc763dfde2d2777cffbcc44f280c2ea118f41ab47e7419655d5",
+      "poiTriangles": 360,
+      "backgroundFile": "optimized-tiles/7/70/16_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_685bdfe2-d055-4834-a68f-330dbc10daa3"
+      ],
+      "backgroundSha256": "1c9832609486e92b2bf49738b69197d1761717c73fb1a381e26f9da363fa8f4c",
+      "backgroundTriangles": 7955
+    },
+    {
+      "sourceTile": "tiles/7/70/16_4.b3dm",
+      "sourceSha256": "3186abf6e372a9cab3255da0c7c1f2ff3875d596525729585b2936b6a6496812",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_685bdfe2-d055-4834-a68f-330dbc10daa3"
+      ],
+      "gmlNames": [
+        "ELECTIONS DEPARTMENT"
+      ],
+      "poiFile": "16_4-915330cdcf97.b3dm",
+      "poiSha256": "83a8bc710f35b3c8bcc03be4966f35e43de2203a3bc4c3ad2f7d60ff310b0b12",
+      "poiTriangles": 360,
+      "backgroundFile": "optimized-tiles/7/70/16_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_685bdfe2-d055-4834-a68f-330dbc10daa3"
+      ],
+      "backgroundSha256": "231274947383921d423e233de032f20f39c53010537fbcb4331cc23012714096",
+      "backgroundTriangles": 7955
+    }
+  ]
+}

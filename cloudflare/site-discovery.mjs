@@ -2,7 +2,7 @@ export const SITE_IDENTITY = Object.freeze({
   schemaVersion: "1.0",
   canonicalOrigin: "https://amblefinds.com",
   canonicalHomepage: "https://amblefinds.com/",
-  workerAliasHost: "amble.amble-sg.workers.dev",
+  workerAliasHost: "amble.project-hub-arnav.workers.dev",
   siteName: "Amble",
   publisherName: "Amble",
   language: "en-SG",

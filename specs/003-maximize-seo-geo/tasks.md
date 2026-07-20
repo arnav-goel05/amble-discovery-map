@@ -21,7 +21,7 @@ as an independent increment. No task runs the event pipeline.
 
 **Purpose**: Establish deterministic fixtures, commands, baseline evidence, and provenance.
 
-- [x] T001 Create the schema-versioned canonical identity, expected metadata, exact `amble.amble-sg.workers.dev` redirect host, crawler-purpose, and discovery-response fixture in `tests/fixtures/site-discovery/identity.json`
+- [x] T001 Create the schema-versioned canonical identity, expected metadata, exact `amble.project-hub-arnav.workers.dev` redirect host, crawler-purpose, and discovery-response fixture in `tests/fixtures/site-discovery/identity.json`
 - [x] T002 [P] Add `verify:site-discovery` and focused test commands without changing runtime dependencies in `package.json`
 - [x] T003 [P] Capture the pre-change frontend benchmark as ignored routine evidence under `outputs/seo-geo/before/`
 - [x] T004 [P] Record owned wordmark/logo provenance, approved social-card source requirements, and the primary crawler-document review date in `docs/seo-geo-operations.md`
@@ -62,7 +62,7 @@ desktop/mobile behavior.
 ### Implementation for User Story 1
 
 - [x] T011 [US1] Add the approved description, absolute canonical URL, index/follow directive, and normalized title to initial HTML in `index.html`
-- [x] T012 [US1] Implement 308 canonical protocol/host/path normalization, exact `amble.amble-sg.workers.dev` alias matching, arbitrary-Workers-host rejection, and one-hop loop guards in `cloudflare/site-discovery.mjs`
+- [x] T012 [US1] Implement 308 canonical protocol/host/path normalization, exact `amble.project-hub-arnav.workers.dev` alias matching, arbitrary-Workers-host rejection, and one-hop loop guards in `cloudflare/site-discovery.mjs`
 - [x] T013 [US1] Run canonical handling before private/API/tile/asset routing and preserve security headers in `cloudflare/cloud-native-worker.mjs`
 - [x] T014 [US1] Set `assets.run_worker_first` to `true` and `assets.not_found_handling` to `none` in `wrangler.cloud.jsonc`
 - [x] T015 [US1] Extend built-HTML, redirect, true-404, and existing-route validation in `scripts/verify-cloudflare-frontend.mjs` and `scripts/verify-site-discovery.mjs`

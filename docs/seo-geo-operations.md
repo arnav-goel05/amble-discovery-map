@@ -20,7 +20,7 @@
 ## Release boundaries
 
 - `https://amblefinds.com/` is canonical. `www` and
-  `https://amble.amble-sg.workers.dev/` are redirect-only aliases.
+  `https://amble.project-hub-arnav.workers.dev/` are redirect-only aliases.
 - No event, guide, mobile-content, crawler-only, or analytics surface belongs to this phase.
 - Routine verifier and benchmark reports belong under ignored `outputs/seo-geo/` paths.
 

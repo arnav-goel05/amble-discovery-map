@@ -20,16 +20,16 @@ not-found behavior. Existing API, tile, and private-admin contracts remain uncha
 
 ## Redirect matrix
 
-| Request                                       | Expected response | Location                          |
-| --------------------------------------------- | ----------------: | --------------------------------- |
-| `http://amblefinds.com/`                      |               308 | `https://amblefinds.com/`         |
-| `https://www.amblefinds.com/`                 |               308 | `https://amblefinds.com/`         |
-| `http://www.amblefinds.com/path?q=1`          |               308 | `https://amblefinds.com/path?q=1` |
-| `https://amble.amble-sg.workers.dev/path?q=1` |               308 | `https://amblefinds.com/path?q=1` |
-| `https://amblefinds.com/index.html`           |               308 | `https://amblefinds.com/`         |
-| `https://amblefinds.com/`                     |       no redirect | —                                 |
+| Request                                                | Expected response | Location                          |
+| ------------------------------------------------------ | ----------------: | --------------------------------- |
+| `http://amblefinds.com/`                               |               308 | `https://amblefinds.com/`         |
+| `https://www.amblefinds.com/`                          |               308 | `https://amblefinds.com/`         |
+| `http://www.amblefinds.com/path?q=1`                   |               308 | `https://amblefinds.com/path?q=1` |
+| `https://amble.project-hub-arnav.workers.dev/path?q=1` |               308 | `https://amblefinds.com/path?q=1` |
+| `https://amblefinds.com/index.html`                    |               308 | `https://amblefinds.com/`         |
+| `https://amblefinds.com/`                              |       no redirect | —                                 |
 
-An alias request for an unknown path redirects once; the resulting canonical request returns 404. Only the exact `amble.amble-sg.workers.dev` host is a configured Worker alias; the
+An alias request for an unknown path redirects once; the resulting canonical request returns 404. Only the exact `amble.project-hub-arnav.workers.dev` host is a configured Worker alias; the
 implementation must not redirect an arbitrary `*.workers.dev` hostname. Fragments are not sent
 in HTTP requests and are outside the server contract.
 

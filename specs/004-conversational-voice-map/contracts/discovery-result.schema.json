@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amble.local/contracts/discovery-result.schema.json",
+  "title": "Grounded Area-first Discovery Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["intentRevision", "areas", "clarification"],
+  "properties": {
+    "intentRevision": { "type": "integer", "minimum": 0 },
+    "areas": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "areaId",
+          "rank",
+          "confidence",
+          "reasons",
+          "tradeoffs",
+          "candidateIds"
+        ],
+        "properties": {
+          "areaId": { "type": "string", "minLength": 1 },
+          "rank": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "reasons": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["text", "candidateIds", "attributeKeys"],
+              "properties": {
+                "text": { "type": "string", "minLength": 1, "maxLength": 180 },
+                "candidateIds": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "type": "string" }
+                },
+                "attributeKeys": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          },
+          "tradeoffs": {
+            "type": "array",
+            "maxItems": 2,
+            "items": { "type": "string", "minLength": 1, "maxLength": 140 }
+          },
+          "candidateIds": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "clarification": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["question", "answerType"],
+          "properties": {
+            "question": { "type": "string", "minLength": 1, "maxLength": 180 },
+            "answerType": { "enum": ["choice", "short"] },
+            "choices": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 5,
+              "items": { "type": "string", "minLength": 1, "maxLength": 60 }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

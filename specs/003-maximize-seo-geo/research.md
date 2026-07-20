@@ -107,7 +107,7 @@ structured data represent visible page content and that each event have a unique
 
 **Decision**: Route every request through the Cloudflare Worker, return a one-hop permanent
 redirect for HTTP, `www`, the exact Workers development hostname
-`amble.amble-sg.workers.dev`, and `/index.html`, then delegate canonical requests to existing
+`amble.project-hub-arnav.workers.dev`, and `/index.html`, then delegate canonical requests to existing
 API/tile/static handlers. The alias comes from the authenticated Cloudflare account subdomain
 `amble-sg` and Worker name `amble`; implementation matches that hostname exactly.
 

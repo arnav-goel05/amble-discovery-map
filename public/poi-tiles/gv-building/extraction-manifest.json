@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "gv-building",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:08.365Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/24/6_0.b3dm",
+      "sourceSha256": "7ae6a1149342d2d275ca607f5a157e01c67aee943c909365c2092500aaa83b17",
+      "originalBatchIds": [
+        43
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "gmlNames": [
+        "GV BUILDING"
+      ],
+      "poiFile": "6_0-4ccd91c87f09.b3dm",
+      "poiSha256": "301b1052f962ea5033270f297fd68ae623844d198c8fce656680418079de47d8",
+      "poiTriangles": 160,
+      "backgroundFile": "optimized-tiles/5/24/6_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "backgroundSha256": "007a44ade53f0be264993d75c92bc372f905b00b6e492593d6277fd82105caab",
+      "backgroundTriangles": 28653
+    },
+    {
+      "sourceTile": "tiles/5/24/6_1.b3dm",
+      "sourceSha256": "121142d8b86521febfc8a26a1e5645227f7a6c5da4a7bae46c068e6646a471eb",
+      "originalBatchIds": [
+        43
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "gmlNames": [
+        "GV BUILDING"
+      ],
+      "poiFile": "6_1-8d34e75f8c36.b3dm",
+      "poiSha256": "239ae57ee8a507988f2676a32c26e37421b6a4280d30956ea2284c0dc72e660a",
+      "poiTriangles": 160,
+      "backgroundFile": "optimized-tiles/5/24/6_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "backgroundSha256": "bf685de0640d47c830e1f5def1343fc9537814709f6c27a999e2937294d30b28",
+      "backgroundTriangles": 28653
+    },
+    {
+      "sourceTile": "tiles/5/24/6_2.b3dm",
+      "sourceSha256": "82b1042deac7773e803625d342caa980783caa07736500b420e281c1cf082a5d",
+      "originalBatchIds": [
+        43
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "gmlNames": [
+        "GV BUILDING"
+      ],
+      "poiFile": "6_2-bdb79d525008.b3dm",
+      "poiSha256": "f2532b77d427c440ad96aa574db8aef32bce671c81c86a5c2cbc49ca025c42a3",
+      "poiTriangles": 160,
+      "backgroundFile": "optimized-tiles/5/24/6_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "backgroundSha256": "f45ea275f146da0bcef0ce1de0e91fd00f10ec4a40688d01811ed8ad023cb0bf",
+      "backgroundTriangles": 28653
+    },
+    {
+      "sourceTile": "tiles/5/24/6_3.b3dm",
+      "sourceSha256": "cfd4837935d2e78541e7067f6de05d259cdc948a85230e99fc9c4ac1212b6fac",
+      "originalBatchIds": [
+        43
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "gmlNames": [
+        "GV BUILDING"
+      ],
+      "poiFile": "6_3-d27c7f6f630a.b3dm",
+      "poiSha256": "145fa046621c0bf83de243545953b5425207198817977f36a8638b8bf29e0041",
+      "poiTriangles": 160,
+      "backgroundFile": "optimized-tiles/5/24/6_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "backgroundSha256": "23ddf8e3db7900f8a600a37c305c3fd889b2362dea5e6f235e3a9ab2b42ce6f7",
+      "backgroundTriangles": 28653
+    },
+    {
+      "sourceTile": "tiles/5/24/6_4.b3dm",
+      "sourceSha256": "50f4d63399cc7bfb296229c5ceb8df8a55df32dbece976fa28be6585b6dcef2f",
+      "originalBatchIds": [
+        43
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "gmlNames": [
+        "GV BUILDING"
+      ],
+      "poiFile": "6_4-558b365e4255.b3dm",
+      "poiSha256": "6eff88172813121d8ec1af15fba08304d1d734ce54bf2f1f4a702641f79bb520",
+      "poiTriangles": 160,
+      "backgroundFile": "optimized-tiles/5/24/6_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "backgroundSha256": "dacb33ee3c3dd210230c84c89733168bb000cfe55953814e781d8c76e85c403c",
+      "backgroundTriangles": 28653
+    },
+    {
+      "sourceTile": "tiles/5/24/6_5.b3dm",
+      "sourceSha256": "7f59d34f90e97bed404f6af22dbd269086e07ef433d46df960180f8785e6baa3",
+      "originalBatchIds": [
+        43
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "gmlNames": [
+        "GV BUILDING"
+      ],
+      "poiFile": "6_5-136c42d35c20.b3dm",
+      "poiSha256": "d5fe3dbe6b562542601b0c08d6cccc81ff2e9f8aa5caabe5ade62cafb05358b7",
+      "poiTriangles": 160,
+      "backgroundFile": "optimized-tiles/5/24/6_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_60ddbceb-9db0-4182-af3e-02dee903bf29"
+      ],
+      "backgroundSha256": "6ecb12442e36412a6a3b254c6a71657895c9f598c3f4e2c81d7776e2961bc0f5",
+      "backgroundTriangles": 28653
+    }
+  ]
+}
