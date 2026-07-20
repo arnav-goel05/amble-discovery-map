@@ -52,9 +52,7 @@ test("phones and larger screens enter the application with capability-based supp
     await expect(page.locator("#device-gate")).toHaveCount(0);
     await expect(page.locator("#map")).toHaveCount(1);
     await expect
-      .poll(() => page.evaluate(() => Boolean(window._map)), {
-        timeout: 15_000,
-      })
+      .poll(() => page.evaluate(() => Boolean(window._map)))
       .toBe(true);
   } else {
     await expect(page.locator("body")).toHaveAttribute(

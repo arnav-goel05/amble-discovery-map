@@ -83,6 +83,21 @@ async function bootstrapApplication() {
   let approvedOffMapEvents = [];
   let discoveryAreaAsset = { type: "FeatureCollection", features: [] };
   let transitContextAsset = { type: "FeatureCollection", features: [] };
+  const loadContextAsset = async (url) => {
+    try {
+      const response = await fetch(url);
+      return response.ok ? await response.json() : null;
+    } catch {
+      return null;
+    }
+  };
+  const contextAssetsPromise = Promise.all([
+    loadContextAsset(discoveryAreasUrl),
+    loadContextAsset(transitContextUrl),
+  ]).then(([discoveryAreas, transitContext]) => {
+    if (discoveryAreas) discoveryAreaAsset = discoveryAreas;
+    if (transitContext) transitContextAsset = transitContext;
+  });
   const snapshotStatus = createSnapshotStatus();
   if (queryParams.has("emptyApprovedSnapshot")) {
     document.body.dataset.snapshotState = "empty-test-fixture";
@@ -121,14 +136,6 @@ async function bootstrapApplication() {
       snapshotStatus.update({ state: "unavailable" });
     }
   }
-  try {
-    const response = await fetch(discoveryAreasUrl);
-    if (response.ok) discoveryAreaAsset = await response.json();
-  } catch {}
-  try {
-    const response = await fetch(transitContextUrl);
-    if (response.ok) transitContextAsset = await response.json();
-  } catch {}
   const tilesetUrl =
     injectedSnapshot?.backgroundTilesetUrl ??
     "optimized-tiles/tileset.json?assetMount=site-root-v1";
@@ -456,9 +463,10 @@ async function bootstrapApplication() {
     document.body.dataset.overlayLayersLoaded = "true";
   };
 
-  map.once("load", () => {
+  map.once("load", async () => {
     document.body.dataset.mapLoaded = "true";
     addOverlayLayers();
+    await contextAssetsPromise;
 
     const start = () => {
       if (!map.getLayer("buildings-3d")) {
