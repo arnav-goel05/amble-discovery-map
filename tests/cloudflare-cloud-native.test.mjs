@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import worker, { parseBbox } from "../cloudflare/cloud-native-worker.mjs";
+import { APPROVED_SNAPSHOT } from "../cloudflare/generated-approved-snapshot.mjs";
 
 const db = {
   prepare() {
@@ -40,10 +41,10 @@ test("cloud runtime serves approved snapshot metadata without a local origin", a
   const payload = await response.json();
   assert.equal(response.status, 200);
   assert.equal(payload.schemaVersion, "1.0");
-  assert.equal(payload.data.snapshotId, "initial");
-  assert.match(
+  assert.equal(payload.data.snapshotId, APPROVED_SNAPSHOT.manifest.snapshotId);
+  assert.equal(
     payload.data.landmarksRef,
-    /^\/api\/snapshot\/assets\/initial\//,
+    `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.landmarksRef}`,
   );
 });
 
