@@ -1858,6 +1858,25 @@ test("normalizer retains open-schedule and non-specific-venue activities without
       run: { runId: "run-a", window: singaporeWindow("2026-07-17") },
     });
     assert.equal(result.counts.acceptedPostDedup, 4);
+    const events = JSON.parse(
+      readFileSync(join(runDir, "normalized/events.json"), "utf8"),
+    ).records;
+    const cyclingTour = events.find((event) =>
+      event.sourceEventId.startsWith("b#"),
+    );
+    assert.deepEqual(
+      [
+        cyclingTour.publicPlacement,
+        cyclingTour.mappingStatus,
+        cyclingTour.offMapSubtype,
+      ],
+      ["off_map", "not_required", "mobile_route"],
+      "an authoritative no-address cycling tour bypasses building resolution",
+    );
+    assert.equal(
+      result.venueBranches.some((branch) => branch.venue === "Tour Office"),
+      false,
+    );
     assert.deepEqual(
       JSON.parse(
         readFileSync(join(runDir, "normalized/excluded.json"), "utf8"),

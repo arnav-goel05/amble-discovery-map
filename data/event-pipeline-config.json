@@ -194,7 +194,7 @@
       "owner": "Time Out England Limited",
       "officialDomains": ["timeout.com"],
       "costClass": "free",
-      "listing": { "url": "https://www.timeout.com/singapore/things-to-do/the-time-out-singapore-hotlist", "method": "GET", "paginationCeiling": 1, "detailPathPattern": "^/singapore/things-to-do/" },
+      "listing": { "url": "https://www.timeout.com/singapore/things-to-do/the-time-out-singapore-hotlist", "method": "GET", "paginationCeiling": 1, "detailPathPattern": "^/singapore/(?:things-to-do|news)/", "retrieval": { "format": "html", "ttl": 0 } },
       "detail": { "url": "https://www.timeout.com/singapore/things-to-do/", "method": "GET" },
       "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 },
       "editorialPolicy": { "version": "2.0", "corroborateFirst": true, "allowSufficientEditorialOnly": true, "outboundLabels": ["event website", "website"] }

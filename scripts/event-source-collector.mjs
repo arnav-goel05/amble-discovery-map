@@ -897,8 +897,10 @@ async function collectDiscoveryDetails({
   client,
   pages,
   detailUrls,
+  detailListingRecords = new Map(),
   artifactRefs,
   now,
+  logger = () => {},
   corroborationRecords = [],
 }) {
   const registry = loadEventAuthorityRegistry(DEFAULT_AUTHORITY_REGISTRY);
@@ -950,9 +952,25 @@ async function collectDiscoveryDetails({
         error: validationError.message,
       };
     }
-    const discovery = adapter.detail(result, source, finalUrl),
+    const listingRecord =
+      detailListingRecords.get(detailUrl)?.record ??
+      detailListingRecords.get(finalUrl)?.record ??
+      null;
+    const discovery = adapter.detail(result, source, finalUrl, {
+        listingRecord,
+      }),
       hash = sha(discovery.discoveryRecordId),
       retrievedAt = now();
+    logger({
+      action: "discovery_detail_parsed",
+      sourceName: source.name,
+      entityId: discovery.discoveryRecordId,
+      hasTitle: Boolean(discovery.claims?.title),
+      hasSchedule: Boolean(discovery.claims?.dateText),
+      hasVenue: Boolean(discovery.claims?.venue),
+      outboundLinks: discovery.outboundLinks?.length ?? 0,
+      adapterReasonCode: discovery.reasonCode ?? null,
+    });
     const responseRef = `raw/${source.adapterId}/discoveries/${hash}.response.json`,
       fixtureRef = `raw/${source.adapterId}/discoveries/${hash}.json`;
     discovery.evidenceRefs = [responseRef];
@@ -1050,6 +1068,14 @@ async function collectDiscoveryDetails({
       "direct_reused",
       "editorial_sufficient",
     ].includes(decision.decision);
+    logger({
+      action: "discovery_confirmation_decided",
+      sourceName: source.name,
+      entityId: discovery.discoveryRecordId,
+      decision: decision.decision,
+      evidenceLevel: decision.evidenceLevel ?? null,
+      eligible: eligibleDecision,
+    });
     const claims = discovery.claims ?? {};
     const venue = claims.venue ?? null;
     const offMapSubtype = /secret|tba|to be announced/i.test(venue ?? "")
@@ -1437,8 +1463,10 @@ export async function collectRenderedSource({
       client,
       pages,
       detailUrls,
+      detailListingRecords,
       artifactRefs,
       now,
+      logger,
       corroborationRecords,
     });
   const sourceRecordRefs = [...expansionInvalidRecordRefs],

@@ -323,3 +323,8 @@ filters without yet changing publication or UI behavior.
 - [x] T165 Add failing regressions proving authoritative listing CTAs become per-event source links, retain listing fallback evidence, and reject unsafe outbound redirects in `tests/event-source-contract.test.mjs`
 - [x] T166 Preserve authoritative outbound CTA provenance through the generic rendered collector and merge Visit Singapore card evidence behind organizer-detail evidence in `scripts/event-source-collector.mjs` and `scripts/lib/event-sources/visit-singapore.mjs`
 - [x] T167 Run focused contract tests and replay the saved Visit Singapore listing capture, retrieving only required organizer detail pages and auditing link/record outcomes without restarting unrelated sources
+
+## Phase 13: Mobile Occurrence Classification Convergence
+
+- [x] T168 Add focused normalizer regressions for an authoritative no-address cycling/walking tour, a multi-stop hop-on/hop-off route, a fixed venue whose title contains “tour”, and independently classified occurrences sharing one published venue label per FR-014, FR-019, US2/AC5, and SC-003 (partial)
+- [x] T169 Infer `mobile_route` from sufficiently strong activity-level evidence only when no single usable meeting point is available, apply placement before venue resolution without venue-specific hardcoding, and run only the focused normalizer, reconciliation, and map-reconciliation tests per FR-012, FR-014, FR-019, and Constitution VII (partial)

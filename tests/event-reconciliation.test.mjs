@@ -101,3 +101,83 @@ test("one stable parent preserves sibling sessions and splits only reliable venu
     ["off_map", "multiple_locations"],
   );
 });
+
+test("authoritative activity evidence classifies mobile occurrences before venue resolution", () => {
+  const cyclingTour = buildActivityHierarchy({
+    sourceName: "Fever Singapore",
+    sourceRecordId: "/m/100539",
+    title: "Historical Singapore Bike Tour Tickets",
+    venue: "Let's Go Tour Singapore",
+    schedule: { kind: "selectable" },
+  });
+  assert.deepEqual(
+    [
+      cyclingTour.venueOccurrences[0].publicPlacement,
+      cyclingTour.venueOccurrences[0].mappingStatus,
+      cyclingTour.venueOccurrences[0].offMapSubtype,
+    ],
+    ["off_map", "not_required", "mobile_route"],
+  );
+
+  const walkingTour = buildActivityHierarchy({
+    sourceName: "Fixture",
+    sourceRecordId: "walking",
+    title: "Chinatown Walking Tour",
+    venue: "Local Walking Tours",
+    schedule: { kind: "selectable" },
+  });
+  assert.equal(walkingTour.venueOccurrences[0].offMapSubtype, "mobile_route");
+
+  const multiStopSpeedboat = buildActivityHierarchy({
+    sourceName: "SISTIC",
+    sourceRecordId: "Speedboat",
+    title: "Albatross Hop-On Hop-Off Speedboat Pass",
+    venue: "Royal Albatross in Resorts World Sentosa",
+    sourceCoordinates: { lat: 1.2569835, lng: 103.8202676 },
+    description:
+      "Unlimited rides between Sentosa, Lazarus, Kusu and Sisters' Islands. Boats operate on a continuous loop from either boarding point.",
+  });
+  assert.deepEqual(
+    [
+      multiStopSpeedboat.venueOccurrences[0].publicPlacement,
+      multiStopSpeedboat.venueOccurrences[0].offMapSubtype,
+    ],
+    ["off_map", "mobile_route"],
+  );
+});
+
+test("mobile inference preserves a usable fixed meeting point and remains occurrence-specific", () => {
+  const fixedTour = buildActivityHierarchy({
+    sourceName: "Fixture",
+    sourceRecordId: "fixed-tour",
+    title: "Backstage Walking Tour",
+    venue: "Esplanade Concert Hall",
+    address: "1 Esplanade Drive, Singapore 038981",
+  });
+  assert.deepEqual(
+    [
+      fixedTour.venueOccurrences[0].publicPlacement,
+      fixedTour.venueOccurrences[0].mappingStatus,
+      fixedTour.venueOccurrences[0].offMapSubtype,
+    ],
+    ["none", "pending_review", null],
+    "a source-backed meeting building remains eligible for OneMap resolution",
+  );
+
+  const fixedCruiseMeetingPoint = buildActivityHierarchy({
+    sourceName: "SISTIC",
+    sourceRecordId: "dinner",
+    title: "Dinner Cruise - Romance Under Sail",
+    venue: "Royal Albatross in Resorts World Sentosa",
+    address: "8 Sentosa Gateway, Singapore 098269",
+    description:
+      "The experience begins at Resorts World Sentosa before the ship sails into port waters.",
+  });
+  assert.deepEqual(
+    [
+      fixedCruiseMeetingPoint.venueOccurrences[0].publicPlacement,
+      fixedCruiseMeetingPoint.venueOccurrences[0].offMapSubtype,
+    ],
+    ["none", null],
+  );
+});

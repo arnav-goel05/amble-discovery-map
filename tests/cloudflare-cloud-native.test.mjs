@@ -46,6 +46,27 @@ test("cloud runtime serves approved snapshot metadata without a local origin", a
     payload.data.landmarksRef,
     `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.landmarksRef}`,
   );
+  assert.equal(
+    payload.data.tilesetRef,
+    `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}&assetPaths=site-root-v1`,
+  );
+});
+
+test("cloud snapshot tilesets resolve relative POI children from the site root", async () => {
+  const { manifest } = APPROVED_SNAPSHOT;
+  const response = await worker.fetch(
+    new Request(
+      `https://amble.example/api/snapshot/assets/${encodeURIComponent(manifest.snapshotId)}/${manifest.tilesetRef}?assetPaths=site-root-v1`,
+    ),
+    {},
+    {},
+  );
+  const tileset = await response.json();
+  assert.equal(response.status, 200);
+  assert.match(
+    tileset.root.children[0].content.uri,
+    /^\.\.\/\.\.\/\.\.\/\.\.\/poi-tiles\//,
+  );
 });
 
 test("cloud runtime keeps admin routes private and serves static assets from the binding", async () => {

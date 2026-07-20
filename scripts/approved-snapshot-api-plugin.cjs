@@ -21,6 +21,11 @@ function publicTileset(tileset) {
           content[key].startsWith("/poi-tiles/")
         ) {
           content[key] = `../../../../${content[key].slice(1)}`;
+        } else if (
+          typeof content[key] === "string" &&
+          content[key].startsWith("../")
+        ) {
+          content[key] = `../../../../poi-tiles/${content[key].slice(3)}`;
         }
       }
     for (const child of tile?.children ?? []) visit(child);
@@ -60,7 +65,7 @@ function publicMetadata(snapshot) {
     sourceHealth,
     landmarksRef: snapshot.publicRefs.landmarks,
     poisRef: snapshot.publicRefs.pois,
-    tilesetRef: `${snapshot.publicRefs.tileset}?assetPaths=site-root-v1`,
+    tilesetRef: `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(snapshot.snapshotId)}&assetPaths=site-root-v1`,
     ...(snapshot.publicRefs.events
       ? { eventsRef: snapshot.publicRefs.events }
       : {}),
