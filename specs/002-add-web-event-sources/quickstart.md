@@ -284,3 +284,14 @@ Expected:
 To audit a run, follow trace correlation IDs and artifact references rather than raw content.
 A missing terminal trace, unexplained count difference, or invalid assembled snapshot is a
 release-wide blocker; an explicitly isolated source/event/location outcome is not.
+
+## 14. Focused multi-surface hardening validation
+
+```bash
+node --test tests/event-deduplication.test.mjs tests/event-source-contract.test.mjs tests/event-pipeline.test.mjs
+```
+
+Expected: compact Time Out ranges are retained; cross-surface repeats collapse without merging
+siblings; exact listing overlap is reported; a failed surface blocks the source with per-surface
+diagnostics; HTTP 469 is a non-retried provider-policy blocker; and Roots/HAN performs no fetch.
+This focused check does not satisfy the separate live-run task.

@@ -203,6 +203,60 @@ its own evidence and adapter review.
 
 **Alternatives considered**: Add it without a separate source decision.
 
+## Decision 17: Account for each surface without publishing partial collection
+
+**Decision**: Continue bounded independent listing surfaces after a recoverable surface error,
+retain completed surface evidence and terminal diagnostics, then return the source as blocked if
+any configured surface remains incomplete.
+
+**Rationale**: Operators can identify the failing surface and reuse same-run evidence safely,
+while reconciliation never mistakes a partial scrape for authoritative absence.
+
+**Alternatives considered**: Fail on the first surface; publish healthy surfaces as complete;
+treat a failed surface as zero results.
+
+## Decision 18: Deduplicate cross-surface repeats with multiple identity signals
+
+**Decision**: A same-source record with a different listing parent is a merge candidate only
+when title, schedule, venue, and organizer or descriptive evidence strongly agree. Existing
+sibling ambiguity safeguards remain authoritative.
+
+**Rationale**: Editorial roundups often link one event through different URLs, but title and
+date alone are insufficient to merge distinct sessions or editions.
+
+**Alternatives considered**: Never merge different same-source parents; merge on fuzzy title;
+canonicalize every source URL to one parent.
+
+## Decision 19: Expose appearance and overlap accounting
+
+**Decision**: Report per-surface appearances and unique pointers, plus source-wide exact pointer
+overlap collapsed before detail retrieval.
+
+**Rationale**: A low unique-event count can be explained as extraction loss, overlap, or policy
+instead of an opaque total.
+
+**Alternatives considered**: Log only unique details; infer overlap from raw captures manually.
+
+## Decision 20: Treat HTTP 469 as provider policy, not empty data
+
+**Decision**: Preserve the numeric status as redacted diagnostic metadata and use the existing
+provider-policy blocker class without retrying the non-transient response.
+
+**Rationale**: This is an external access outcome, not evidence that the source has no events.
+
+**Alternatives considered**: Retry as a server outage; special-case Catch as success; log the
+response body.
+
+## Decision 21: Keep unavailable sources executable only after contract revalidation
+
+**Decision**: Roots/HAN stays explicit and disabled, with zero network attempts, until its
+adapter contract is deliberately revalidated.
+
+**Rationale**: Visible unavailability is safer than silent removal or synthetic data.
+
+**Alternatives considered**: Remove it from reporting; reuse old captures; enable best-effort
+scraping.
+
 ## Primary References
 
 - [spec.md](spec.md) and [policy-review.md](policy-review.md)

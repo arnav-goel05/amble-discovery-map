@@ -213,6 +213,10 @@ No constitution violations or exceptions.
     this-month, later, and anytime date filtering without duplicate result representations.
 11. Update trace/report reason codes and operational documentation, then run focused tests,
     build, browser matrix, performance comparison, and `npm run verify` before any live run.
+12. Harden bounded multi-surface collection by retaining per-surface terminal accounting,
+    refusing partial-success claims, classifying provider-policy responses, parsing compact
+    date ranges, and conservatively collapsing same-source cross-surface repeats. Validate this
+    amendment with fixtures only; a live weekly run remains a separate operational gate.
 
 ## Phase 0 Research Output
 

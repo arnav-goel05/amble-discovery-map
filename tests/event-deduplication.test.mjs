@@ -197,6 +197,54 @@ test("same-source category and ticket repeats collapse while preserving child se
   assert.equal(result.events[0].venueOccurrences.length, 1);
 });
 
+test("same-source repeats from different editorial surfaces collapse with strong identity evidence", () => {
+  const repeated = {
+    organizer: "National Gallery Singapore",
+    description:
+      "A nocturnal light installation presented across the National Gallery facade.",
+  };
+  const events = [
+    event("Time Out Singapore", "weekly-url", {
+      ...repeated,
+      parentActivityId: "activity:weekly-url",
+      parentListingId: "Time Out Singapore:weekly-url",
+    }),
+    event("Time Out Singapore", "art-url", {
+      ...repeated,
+      parentActivityId: "activity:art-url",
+      parentListingId: "Time Out Singapore:art-url",
+    }),
+  ];
+  const candidates = generateDedupCandidates(events);
+  assert.equal(candidates.length, 1);
+  assert.ok(candidates[0].reasons.includes("same_source_semantic_repeat"));
+  assert.equal(
+    finalizeDeduplication({
+      events,
+      resolutions: { "Time Out Singapore-venue": approved("poi-a") },
+    }).events.length,
+    1,
+  );
+});
+
+test("different same-source editorial siblings remain distinct", () => {
+  const events = [
+    event("Time Out Singapore", "gallery-session", {
+      parentActivityId: "activity:gallery-session",
+      parentListingId: "Time Out Singapore:gallery-session",
+      organizer: "National Gallery Singapore",
+      description: "An artist-led gallery performance.",
+    }),
+    event("Time Out Singapore", "independent-session", {
+      parentActivityId: "activity:independent-session",
+      parentListingId: "Time Out Singapore:independent-session",
+      organizer: "Independent Arts Company",
+      description: "A separate theatre performance at the same time.",
+    }),
+  ];
+  assert.equal(generateDedupCandidates(events).length, 0);
+});
+
 test("direct and editorial records merge across all sources while retaining every contribution", () => {
   const direct = event("Catch.sg", "one", {
     evidenceLevel: "direct",

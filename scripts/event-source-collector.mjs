@@ -882,6 +882,25 @@ function tinyfishResult(batch, requestedUrl) {
   return { result, error };
 }
 
+function externalBlockerCodeForStatus(status) {
+  if (status === 401 || status === 403) return "authentication_or_captcha";
+  if (status === 429) return "persistent_rate_limit";
+  if (status >= 400 && status < 500) return "provider_policy_invalid";
+  return "source_unavailable";
+}
+
+function httpStatusOfProviderError(value) {
+  const status = Number(
+    value?.status ??
+      value?.httpStatus ??
+      value?.http_status ??
+      value?.status_code,
+  );
+  return Number.isInteger(status) && status >= 100 && status <= 599
+    ? status
+    : null;
+}
+
 function validateRenderedResult(source, requestedUrl, result) {
   const finalUrl = canonicalRenderedUrl(
     result?.final_url ?? result?.finalUrl ?? result?.url ?? requestedUrl,
@@ -934,6 +953,7 @@ async function collectDiscoveryDetails({
       return {
         status: source.operatingMode === "pilot" ? "pilot_failed" : "blocked",
         blockerReasonCode: error.code ?? "source_unavailable",
+        httpStatus: Number.isInteger(error.status) ? error.status : null,
         error: error.message,
       };
     }
@@ -941,10 +961,12 @@ async function collectDiscoveryDetails({
     if (error || !result)
       return {
         status: source.operatingMode === "pilot" ? "pilot_failed" : "blocked",
-        blockerReasonCode: "source_unavailable",
+        blockerReasonCode: error?.code ?? "source_unavailable",
+        httpStatus: httpStatusOfProviderError(error),
         error:
-          error?.message ??
-          `${source.name} discovery detail returned no result`,
+          (error
+            ? `${source.name} discovery detail retrieval failed (${error.code ?? "source_unavailable"})`
+            : null) ?? `${source.name} discovery detail returned no result`,
       };
     let finalUrl;
     try {
@@ -1256,9 +1278,34 @@ export async function collectRenderedSource({
   const slug = source.adapterId.replace(/-v\d+$/, ""),
     artifactRefs = [],
     pages = [],
+    surfaceOutcomes = [],
     detailUrls = new Set(),
     detailListingRecords = new Map(),
     listingRecords = [];
+  let listingAppearances = 0;
+  const recordSurfaceFailure = (pageUrl, reasonCode, error, extras = {}) => {
+    const outcome = {
+      listingSurface: canonicalRenderedUrl(pageUrl),
+      status: "blocked",
+      appearances: extras.appearances ?? 0,
+      uniquePointers: extras.uniquePointers ?? 0,
+      newUniquePointers: extras.newUniquePointers ?? 0,
+      duplicatesCollapsed: extras.duplicatesCollapsed ?? 0,
+      reasonCode,
+      httpStatus: extras.httpStatus ?? httpStatusOfProviderError(error),
+      evidenceRef: extras.evidenceRef ?? null,
+      error: error?.message ?? String(error),
+    };
+    surfaceOutcomes.push(outcome);
+    logger({
+      action: "listing_surface_blocked",
+      sourceName: source.name,
+      listingSurface: outcome.listingSurface,
+      reasonCode,
+      httpStatus: outcome.httpStatus,
+    });
+    return outcome;
+  };
   const listingQueue = [
     ...new Map(
       [source.listing.url, ...asArray(source.listing.urls)].map((url) => [
@@ -1309,29 +1356,29 @@ export async function collectRenderedSource({
         });
       }
     } catch (error) {
-      return {
-        status: "blocked",
-        blockerReasonCode: error.code ?? "source_unavailable",
-        error: error.message,
-      };
+      recordSurfaceFailure(pageUrl, error.code ?? "source_unavailable", error);
+      continue;
     }
     const { result, error } = tinyfishResult(batch, pageUrl);
-    if (error || !result)
-      return {
-        status: "blocked",
-        blockerReasonCode: "source_unavailable",
-        error:
-          error?.message ??
-          `${source.name} listing retrieval returned no result`,
-      };
+    if (error || !result) {
+      recordSurfaceFailure(
+        pageUrl,
+        error?.code ?? "source_unavailable",
+        error ??
+          new Error(`${source.name} listing retrieval returned no result`),
+        { httpStatus: httpStatusOfProviderError(error) },
+      );
+      continue;
+    }
     try {
       validateRenderedResult(source, pageUrl, result);
     } catch (validationError) {
-      return {
-        status: "blocked",
-        blockerReasonCode: "official_reference_invalid",
-        error: validationError.message,
-      };
+      recordSurfaceFailure(
+        pageUrl,
+        "official_reference_invalid",
+        validationError,
+      );
+      continue;
     }
     const pageRef = `raw/${slug}/listings/page-${String(pageIndex).padStart(4, "0")}.json`;
     writeJson(join(runDir, pageRef), {
@@ -1342,6 +1389,7 @@ export async function collectRenderedSource({
     });
     artifactRefs.push(pageRef);
     const parsed = adapter.listing(result, source, pageUrl);
+    const uniqueBefore = detailUrls.size + listingRecords.length;
     for (const detailUrl of parsed.detailUrls) detailUrls.add(detailUrl);
     for (const item of asArray(parsed.detailItems)) {
       const canonicalUrl = canonicalRenderedUrl(item.url);
@@ -1363,6 +1411,20 @@ export async function collectRenderedSource({
     }
     for (const record of asArray(parsed.records))
       listingRecords.push({ record, listingRef: pageRef, listingUrl: pageUrl });
+    const appearances =
+      parsed.appearances ??
+      parsed.detailUrls.length +
+        asArray(parsed.detailItems).length +
+        asArray(parsed.records).length;
+    listingAppearances += appearances;
+    const uniquePointers =
+        new Set([
+          ...parsed.detailUrls,
+          ...asArray(parsed.detailItems).map(({ url }) => url),
+        ]).size + asArray(parsed.records).length,
+      newUniquePointers =
+        detailUrls.size + listingRecords.length - uniqueBefore,
+      duplicatesCollapsed = Math.max(0, appearances - newUniquePointers);
     pages.push({
       ref: pageRef,
       count:
@@ -1378,7 +1440,7 @@ export async function collectRenderedSource({
       sourceName: source.name,
       pageIndex,
       listingSurface: pageUrl,
-      listingAppearances: parsed.appearances ?? parsed.detailUrls.length,
+      listingAppearances: appearances,
       detailUrls: parsed.detailUrls.length,
       detailItems: asArray(parsed.detailItems).length,
       listingRecords: asArray(parsed.records).length,
@@ -1388,12 +1450,24 @@ export async function collectRenderedSource({
       ...asArray(parsed.listingUrls),
       ...(!parsed.complete && parsed.nextUrl ? [parsed.nextUrl] : []),
     ];
-    if (!parsed.complete && !parsed.nextUrl)
-      return {
-        status: "blocked",
-        blockerReasonCode: "pagination_inaccessible",
-        error: `${source.name} listing pagination did not reach a terminal state`,
-      };
+    if (!parsed.complete && !parsed.nextUrl) {
+      recordSurfaceFailure(
+        pageUrl,
+        "pagination_inaccessible",
+        new Error(
+          `${source.name} listing pagination did not reach a terminal state`,
+        ),
+        {
+          appearances,
+          uniquePointers,
+          newUniquePointers,
+          duplicatesCollapsed,
+          evidenceRef: pageRef,
+        },
+      );
+      continue;
+    }
+    let discoveredReferenceInvalid = null;
     for (const discoveredUrl of discoveredListingUrls) {
       let canonicalUrl;
       try {
@@ -1404,11 +1478,8 @@ export async function collectRenderedSource({
           url: canonicalUrl,
         });
       } catch (validationError) {
-        return {
-          status: "blocked",
-          blockerReasonCode: "official_reference_invalid",
-          error: validationError.message,
-        };
+        discoveredReferenceInvalid = validationError;
+        continue;
       }
       if (
         visitedListingUrls.has(canonicalUrl) ||
@@ -1425,13 +1496,85 @@ export async function collectRenderedSource({
         discoveredFrom: pageUrl,
       });
     }
+    if (discoveredReferenceInvalid)
+      recordSurfaceFailure(
+        pageUrl,
+        "official_reference_invalid",
+        discoveredReferenceInvalid,
+        {
+          appearances,
+          uniquePointers,
+          newUniquePointers,
+          duplicatesCollapsed,
+          evidenceRef: pageRef,
+        },
+      );
+    else {
+      surfaceOutcomes.push({
+        listingSurface: canonicalRenderedUrl(pageUrl),
+        status: "success",
+        appearances,
+        uniquePointers,
+        newUniquePointers,
+        duplicatesCollapsed,
+        reasonCode: null,
+        httpStatus: null,
+        evidenceRef: pageRef,
+      });
+      logger({
+        action: "listing_surface_complete",
+        sourceName: source.name,
+        listingSurface: canonicalRenderedUrl(pageUrl),
+        listingAppearances: appearances,
+        uniquePointers,
+        newUniquePointers,
+        duplicatesCollapsed,
+        evidenceRef: pageRef,
+      });
+    }
   }
-  if (listingQueue.length)
+  while (listingQueue.length)
+    recordSurfaceFailure(
+      listingQueue.shift(),
+      "pagination_inaccessible",
+      new Error(
+        `${source.name} listing surfaces exceeded the configured ceiling`,
+      ),
+    );
+  const surfaceFailures = surfaceOutcomes.filter(
+    ({ status }) => status === "blocked",
+  );
+  const surfaceAccounting = {
+    listingAppearances,
+    uniqueSourcePointers: detailUrls.size + listingRecords.length,
+    listingDuplicatesCollapsed: Math.max(
+      0,
+      listingAppearances - detailUrls.size - listingRecords.length,
+    ),
+  };
+  const attachSurfaceAccounting = (result) => ({
+    ...result,
+    counts: { ...result.counts, ...surfaceAccounting },
+    completion: { ...result.completion, surfaceOutcomes },
+  });
+  if (surfaceFailures.length) {
+    const first = surfaceFailures[0];
     return {
-      status: "blocked",
-      blockerReasonCode: "pagination_inaccessible",
-      error: `${source.name} listing surfaces exceeded the configured ceiling`,
+      status: source.operatingMode === "pilot" ? "pilot_failed" : "blocked",
+      sourceRole: source.sourceRole,
+      operatingMode: source.operatingMode,
+      blockerReasonCode: first.reasonCode,
+      httpStatus: first.httpStatus,
+      error: `${surfaceFailures.length} of ${surfaceOutcomes.length} listing surfaces blocked; first: ${first.error}`,
+      counts: { pages: pages.length, ...surfaceAccounting },
+      completion: {
+        paginationComplete: false,
+        pagesVisited: pages.map(({ ref }) => ref),
+        surfaceOutcomes,
+      },
+      artifactRefs,
     };
+  }
   if (
     detailUrls.size === 0 &&
     listingRecords.length === 0 &&
@@ -1504,20 +1647,22 @@ export async function collectRenderedSource({
     for (const detailUrl of expanded) detailUrls.add(detailUrl);
   }
   if (source.sourceRole === "discovery")
-    return collectDiscoveryDetails({
-      runDir,
-      run,
-      source,
-      adapter,
-      client,
-      pages,
-      detailUrls,
-      detailListingRecords,
-      artifactRefs,
-      now,
-      logger,
-      corroborationRecords,
-    });
+    return attachSurfaceAccounting(
+      await collectDiscoveryDetails({
+        runDir,
+        run,
+        source,
+        adapter,
+        client,
+        pages,
+        detailUrls,
+        detailListingRecords,
+        artifactRefs,
+        now,
+        logger,
+        corroborationRecords,
+      }),
+    );
   const sourceRecordRefs = [...expansionInvalidRecordRefs],
     invalidSourceRecordRefs = [...expansionInvalidRecordRefs],
     processedSourceRecordRefs = [],
@@ -1859,7 +2004,7 @@ export async function collectRenderedSource({
       else excludedOccurrences += 1;
     }
   }
-  return {
+  return attachSurfaceAccounting({
     status: "success",
     sourceRole: source.sourceRole,
     operatingMode: source.operatingMode,
@@ -1896,7 +2041,7 @@ export async function collectRenderedSource({
     invalidReasonCodes,
     artifactRefs,
     error: null,
-  };
+  });
 }
 
 export async function collectSource({
@@ -1944,7 +2089,8 @@ export async function collectSource({
     if (!response.ok || !response.body)
       return {
         status: "blocked",
-        blockerReasonCode: "source_unavailable",
+        blockerReasonCode: externalBlockerCodeForStatus(response.status),
+        httpStatus: response.status,
         error: `${source.name} listing returned HTTP ${response.status}`,
       };
     const pageRef = `raw/${slug}/listings/page-${String(pageIndex).padStart(4, "0")}.json`;
@@ -2028,7 +2174,8 @@ export async function collectSource({
     if (!detail.response.ok || !detail.response.body)
       return {
         status: "blocked",
-        blockerReasonCode: "source_unavailable",
+        blockerReasonCode: externalBlockerCodeForStatus(detail.response.status),
+        httpStatus: detail.response.status,
         error: `${source.name} detail returned HTTP ${detail.response.status}`,
       };
     let officialReference;
