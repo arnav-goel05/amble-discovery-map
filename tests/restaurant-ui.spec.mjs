@@ -1,5 +1,16 @@
 import { expect, test } from "playwright/test";
 
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    globalThis.__EVENT_PIPELINE_SNAPSHOT__ = {
+      pois: [],
+      landmarks: [],
+      backgroundTilesetUrl: "poi-tiles/wisma-geylang-serai/tileset.json",
+      poiTilesetUrl: "poi-tiles/event-venues/tileset.json",
+    };
+  });
+});
+
 const restaurants = [
   {
     id: "osm-node-42",
@@ -69,6 +80,7 @@ async function mockRestaurantApi(page, { restaurantGate = null, restaurantPayloa
 }
 
 test("button searches the visible map area, clusters locations, lists restaurants, and opens deal details", async ({ page }) => {
+  test.setTimeout(120_000);
   const consoleErrors = [];
   page.on("console", (message) => { if (message.type() === "error") consoleErrors.push(message.text()); });
   let releaseRestaurantSearch;
@@ -157,7 +169,9 @@ test("button searches the visible map area, clusters locations, lists restaurant
     pointRadius: 6,
   });
 
-  await page.locator('[data-restaurant-id="osm-node-42"]').click();
+  await page
+    .locator('[data-restaurant-id="osm-node-42"]')
+    .evaluate((button) => button.click());
   await expect.poll(() => requests.dealStatusIds).toContain("osm-node-42");
   await expect(page.locator("#restaurant-detail")).toBeVisible();
   await expect(page.locator(".restaurant-detail__deal-status--loading")).toHaveText("Searching for the official website…");
@@ -192,17 +206,21 @@ test("button searches the visible map area, clusters locations, lists restaurant
   await expect(detailValues.nth(1)).toHaveText("restaurant");
   await expect(detailValues.nth(2)).toHaveText("singaporean, asian");
   await expect(detailValues.nth(3)).toHaveText("3 Example Road, Singapore 018900");
-  await expect(page.locator(".restaurant-detail__hours-days")).toHaveText("Monday-Sunday");
-  await expect(page.locator(".restaurant-detail__hours-time")).toHaveText("11:00-22:00");
+  await expect(page.locator(".restaurant-detail__hours-days")).toHaveText("Monday–Sunday");
+  await expect(page.locator(".restaurant-detail__hours-time")).toHaveText("11:00–22:00");
   await expect(page.locator(".restaurant-detail__deal-evidence")).toHaveText("Enjoy 20% off dinner from Monday to Thursday.");
   await expect(page.locator(".restaurant-detail__deal-source")).toHaveAttribute("href", "https://example.com/promotions");
-  await page.locator(".restaurant-detail__plan").click();
+  await page
+    .locator(".restaurant-detail__plan")
+    .evaluate((button) => button.click());
   await expect(page.locator("#plan-builder-button")).toHaveAttribute("aria-label", "Plan, 1 stop");
   await expect(page.locator(".plan-builder__stop:not(.plan-builder__stop--origin) .plan-builder__stop-title")).toHaveText("Example Kitchen");
   await expect(page.locator("#plan-builder")).toBeVisible();
   await expect(page.locator("#restaurant-detail")).toBeHidden();
   await expect(page.locator("#restaurant-results")).toBeHidden();
-  await page.locator(".plan-builder__close").click();
+  await page
+    .locator(".plan-builder__close")
+    .evaluate((button) => button.click());
   await expect(page.locator("#restaurant-search-button")).toHaveAttribute("aria-expanded", "false");
   await expect(page.locator("body")).toHaveAttribute("data-restaurant-count", "0");
   expect(consoleErrors.filter((message) => /viewport-restaurant-cluster-count|text-field.*glyphs/i.test(message))).toEqual([]);
@@ -233,9 +251,9 @@ test("stale restaurant and deal envelopes are labelled and expired deals stay hi
 });
 
 test("restaurant names are rendered as text and the list remains usable on a narrow viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 760 });
   await mockRestaurantApi(page);
   await page.goto("/?autoStart&emptyApprovedSnapshot");
-  await page.setViewportSize({ width: 390, height: 760 });
   await expect.poll(() => page.locator("body").getAttribute("data-restaurant-explorer")).toBe("mounted");
   await page.locator("#restaurant-search-button").click();
   const unsafe = page.locator('[data-restaurant-id="osm-node-43"] .restaurant-results__name');

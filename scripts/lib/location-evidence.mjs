@@ -4,15 +4,21 @@ function plainText(value) {
     .replace(/\r/g, '').replace(/[ \t]+/g, ' ').replace(/\n\s+/g, '\n').trim();
 }
 
-export function collectLocationStrings(value, output = [], depth = 0) {
+function primaryDetailText(value) {
+  const text = plainText(value);
+  return text.split(/(?:^|\n)\s*(?:#{1,6}\s*)?(?:similar experiences|discover our top experiences|nearby|recommended|related|you may also like)\s*(?:\n|$)/i)[0].trim();
+}
+
+export function collectLocationStrings(value, output = [], depth = 0, key = '') {
   if (depth > 10 || output.length >= 80 || value === null || value === undefined) return output;
+  if (/nearby|recommended|related|similar|you may also like|articles?_events?|events?_articles?/i.test(key)) return output;
   if (typeof value === 'string') {
-    const text = plainText(value);
+    const text = primaryDetailText(value);
     if (/\bSingapore\s+\d{6}\b|\b(?:starting point|address|location|visit us at)\b/i.test(text)) output.push(text);
   } else if (Array.isArray(value)) {
-    for (const item of value) collectLocationStrings(item, output, depth + 1);
+    for (const item of value) collectLocationStrings(item, output, depth + 1, key);
   } else if (typeof value === 'object') {
-    for (const item of Object.values(value)) collectLocationStrings(item, output, depth + 1);
+    for (const [name, item] of Object.entries(value)) collectLocationStrings(item, output, depth + 1, name);
   }
   return output;
 }

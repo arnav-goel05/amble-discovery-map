@@ -118,6 +118,23 @@ class AdminRepository {
     return { records: rows.slice(0, bounded).map((row) => this.rowToReview(row)), nextCursor: rows.length > bounded ? rows[bounded - 1].review_id : null };
   }
 
+  reconcileVenueReviewQueue(activeReviews = []) {
+    const refs = activeReviews.map((item) => typeof item === "string" ? { venueId: item, evidenceHash: null } : item)
+      .filter((item) => item?.venueId);
+    const venueIds = [...new Set(refs.map(({ venueId }) => String(venueId)))];
+    return this.transaction(() => {
+      const active = new Set(refs.map(({ venueId, evidenceHash }) => `${venueId}\0${evidenceHash ?? "*"}`));
+      const rows = this.db.prepare("SELECT review_id,venue_id,evidence_hash FROM venue_reviews WHERE status IN ('pending','deferred')").all();
+      const stale = rows.filter((row) => !active.has(`${row.venue_id}\0*`) && !active.has(`${row.venue_id}\0${row.evidence_hash}`));
+      const supersede = this.db.prepare("UPDATE venue_reviews SET status='superseded',superseded_at=? WHERE review_id=?");
+      for (const row of stale) supersede.run(this.now(), row.review_id);
+      const superseded = stale.length;
+      const pending = this.db.prepare("SELECT COUNT(*) AS count FROM venue_reviews WHERE status='pending'").get().count;
+      const deferred = this.db.prepare("SELECT COUNT(*) AS count FROM venue_reviews WHERE status='deferred'").get().count;
+      return { activeVenueIds: venueIds, superseded, pending, deferred };
+    });
+  }
+
   decideVenueReview(reviewId, decision) {
     return this.transaction(() => {
       const operation = `venue-review:${reviewId}`;

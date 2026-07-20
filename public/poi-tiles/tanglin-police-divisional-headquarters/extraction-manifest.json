@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "tanglin-police-divisional-headquarters",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:11.944Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/34/14_0.b3dm",
+      "sourceSha256": "2e370f21b3703ec83ced1480667e112a200ae07decfe0824d747b4ceab067f9c",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "gmlNames": [
+        "TANGLIN POLICE DIVISIONAL HEADQUARTERS"
+      ],
+      "poiFile": "14_0-e17d6751fa22.b3dm",
+      "poiSha256": "c1c973c2c070cab3729a74d6fc91d4226ed791151a1a3acb1c9cc782d3a95dca",
+      "poiTriangles": 152,
+      "backgroundFile": "optimized-tiles/6/34/14_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "backgroundSha256": "d26f5b53bc729c07f4a146dffe83e505c8c85c821bb1a585073fe7ca8c11b45f",
+      "backgroundTriangles": 21179
+    },
+    {
+      "sourceTile": "tiles/6/34/14_1.b3dm",
+      "sourceSha256": "b17d61eb8442523e9b39be691c4e5a479fb03197c06cc084c5c4e73049acfa4b",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "gmlNames": [
+        "TANGLIN POLICE DIVISIONAL HEADQUARTERS"
+      ],
+      "poiFile": "14_1-12bd99e1028f.b3dm",
+      "poiSha256": "216a31a0abd2c20b85a90e400d46335299fb35b01af1590958f4cd5e245b480c",
+      "poiTriangles": 152,
+      "backgroundFile": "optimized-tiles/6/34/14_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "backgroundSha256": "f328e59c6ef430298ac0eba0154cf8a55adf861dba0ab094cec2889e5d32a3c2",
+      "backgroundTriangles": 21179
+    },
+    {
+      "sourceTile": "tiles/6/34/14_2.b3dm",
+      "sourceSha256": "01d0950802fef789f1178d060a2c3cc8707583a8de26322b9305292c9b6403a0",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "gmlNames": [
+        "TANGLIN POLICE DIVISIONAL HEADQUARTERS"
+      ],
+      "poiFile": "14_2-c0c8da950e06.b3dm",
+      "poiSha256": "ac13b2cfa3866a85d12b42d32b95a0640b13977804327a1d612095b38f556e81",
+      "poiTriangles": 152,
+      "backgroundFile": "optimized-tiles/6/34/14_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "backgroundSha256": "f63e69ffef9bb22547882d8b31a4515068c40a2b4fc8318348f31829bf7a29de",
+      "backgroundTriangles": 21179
+    },
+    {
+      "sourceTile": "tiles/6/34/14_3.b3dm",
+      "sourceSha256": "eaf339f9c85d94dc9d898d785573025c9c5a52640d6139e0f658546db5b76a3c",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "gmlNames": [
+        "TANGLIN POLICE DIVISIONAL HEADQUARTERS"
+      ],
+      "poiFile": "14_3-8bea4456f9ce.b3dm",
+      "poiSha256": "c4bb1fbf099ffcda5ef880659c379f8b3bad9c6e90a43445acbe27b09a3d4ec3",
+      "poiTriangles": 152,
+      "backgroundFile": "optimized-tiles/6/34/14_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "backgroundSha256": "0c4b990bd2d7ea45d33a8986cf3aca82933af573f1fe58a72dc71dfb086d48ce",
+      "backgroundTriangles": 21179
+    },
+    {
+      "sourceTile": "tiles/6/34/14_4.b3dm",
+      "sourceSha256": "4710c4b2936043985042fb43536851ee404ad0b97e0e1ed2751b3353eb3f7f39",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "gmlNames": [
+        "TANGLIN POLICE DIVISIONAL HEADQUARTERS"
+      ],
+      "poiFile": "14_4-f740f8be1cad.b3dm",
+      "poiSha256": "741047115c8a0fcfa46032f8cbba42e9a067a9851e28549ac327c63927057e07",
+      "poiTriangles": 152,
+      "backgroundFile": "optimized-tiles/6/34/14_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "backgroundSha256": "3bbe7a66217044b36c5fd0eb8436a0800b855a461cfa19a734b9c5707847706c",
+      "backgroundTriangles": 21179
+    },
+    {
+      "sourceTile": "tiles/6/34/14_5.b3dm",
+      "sourceSha256": "a0de88eca1cc22f45b9f0cb97c45359e0003596a40615c6f8d406ec0267ed99e",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "gmlNames": [
+        "TANGLIN POLICE DIVISIONAL HEADQUARTERS"
+      ],
+      "poiFile": "14_5-2ce6407a8647.b3dm",
+      "poiSha256": "3979b78953990fa9d7081b62919cb6a3667f7788bdc074b7dbc7edace847d5ce",
+      "poiTriangles": 152,
+      "backgroundFile": "optimized-tiles/6/34/14_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_88ad0625-235a-40d8-9733-1af7fed6054c"
+      ],
+      "backgroundSha256": "8856a2ea6d72b2ae3733c8ece0c1228d45c72b6f7f25c5b291fc303446316c96",
+      "backgroundTriangles": 21179
+    }
+  ]
+}

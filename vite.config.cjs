@@ -5,6 +5,7 @@ const { planGameApiPlugin } = require("./scripts/plan-game-api-plugin.cjs");
 const { approvedSnapshotApiPlugin } = require("./scripts/approved-snapshot-api-plugin.cjs");
 const { weeklyRefreshApiPlugin } = require("./scripts/weekly-refresh-api-plugin.cjs");
 const { adminApiPlugin } = require("./scripts/admin-api-plugin.cjs");
+const { realtimeVoiceApiPlugin } = require("./scripts/realtime-voice-api-plugin.cjs");
 
 const TILE_PATH = /^\/(?:optimized-tiles|poi-tiles)\//;
 
@@ -13,7 +14,7 @@ function remoteTileFallbackPlugin() {
     name: "remote-tile-fallback",
     configureServer(server) {
       const configuredOrigin = String(
-        process.env.TILE_FALLBACK_ORIGIN || "https://amble.amble-sg.workers.dev",
+        process.env.TILE_FALLBACK_ORIGIN || "https://amble.project-hub-arnav.workers.dev",
       ).trim().replace(/\/$/, "");
       let origin = null;
       try {
@@ -64,5 +65,5 @@ module.exports = {
     entries: ["index.html"],
   },
   build: { rollupOptions: { input: { main: "index.html", admin: "admin.html" } } },
-  plugins: [remoteTileFallbackPlugin(), approvedSnapshotApiPlugin(), weeklyRefreshApiPlugin(), adminApiPlugin(), restaurantApiPlugin(), planGameApiPlugin()],
+  plugins: [remoteTileFallbackPlugin(), approvedSnapshotApiPlugin(), weeklyRefreshApiPlugin(), adminApiPlugin(), realtimeVoiceApiPlugin(), restaurantApiPlugin(), planGameApiPlugin()],
 };

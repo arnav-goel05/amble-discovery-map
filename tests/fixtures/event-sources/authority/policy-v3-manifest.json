@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "3.0",
+  "policyVersion": "2.0",
+  "sourceRoles": [
+    { "name": "Catch.sg", "evidenceRole": "direct", "operatingState": "enabled" },
+    { "name": "Honeycombers", "evidenceRole": "editorial", "operatingState": "enabled", "editorialPolicy": { "version": "2.0", "corroborateFirst": true, "allowSufficientEditorialOnly": true } },
+    { "name": "Roots HAN", "evidenceRole": "unavailable", "operatingState": "disabled", "unavailableReason": "layout_contract_changed" }
+  ],
+  "assessments": [
+    {
+      "fixtureId": "direct-reuse",
+      "records": [{ "sourceRecordId": "catch:1", "evidenceRole": "direct" }, { "sourceRecordId": "timeout:1", "evidenceRole": "editorial" }],
+      "expectedEvidenceLevel": "direct_corroborated"
+    },
+    {
+      "fixtureId": "editorial-sufficient",
+      "record": { "sourceRecordId": "honey:1", "evidenceRole": "editorial", "specific": true, "current": true, "scope": "Singapore", "scheduleKind": "anytime", "publicPlacement": "off_map", "purePromotion": false, "conflict": false },
+      "expectedEvidenceLevel": "editorial_authoritative"
+    },
+    {
+      "fixtureId": "editorial-incomplete",
+      "record": { "sourceRecordId": "arts:1", "evidenceRole": "editorial", "specific": true, "current": true, "scope": null, "scheduleKind": "unverified", "publicPlacement": "none", "purePromotion": false, "conflict": false },
+      "expectedEvidenceLevel": "editorial_evidence_incomplete"
+    },
+    {
+      "fixtureId": "editorial-conflict",
+      "record": { "sourceRecordId": "timeout:2", "evidenceRole": "editorial", "specific": true, "current": true, "scope": "Singapore", "scheduleKind": "exact", "publicPlacement": "mapped", "purePromotion": false, "conflict": true },
+      "expectedEvidenceLevel": "evidence_conflict"
+    },
+    {
+      "fixtureId": "editorial-promotion",
+      "record": { "sourceRecordId": "honey:2", "evidenceRole": "editorial", "specific": false, "current": true, "scope": "Singapore", "scheduleKind": "anytime", "publicPlacement": "off_map", "purePromotion": true, "conflict": false },
+      "expectedEvidenceLevel": "excluded"
+    }
+  ]
+}

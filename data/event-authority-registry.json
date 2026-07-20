@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "entries": [
+    { "authorityId": "sistic", "owner": "SISTIC.com Pte Ltd", "authorityType": "authorized_ticketing", "domains": ["sistic.com.sg"], "detailPathPatterns": ["^/event-details/"], "status": "approved", "reviewedAt": "2026-07-17", "evidenceUrl": "https://www.sistic.com.sg/events" },
+    { "authorityId": "eventbrite", "owner": "Eventbrite", "authorityType": "authorized_ticketing", "domains": ["eventbrite.com", "eventbrite.sg"], "detailPathPatterns": ["/e/"], "status": "approved", "reviewedAt": "2026-07-17", "evidenceUrl": "https://www.eventbrite.sg/" },
+    { "authorityId": "peatix", "owner": "Peatix", "authorityType": "authorized_ticketing", "domains": ["peatix.com"], "detailPathPatterns": ["^/event/"], "status": "approved", "reviewedAt": "2026-07-17", "evidenceUrl": "https://peatix.com/" },
+    { "authorityId": "singapore-film-society", "owner": "Singapore Film Society", "authorityType": "organizer", "domains": ["events.singaporefilmsociety.com"], "detailPathPatterns": ["/"], "status": "approved", "reviewedAt": "2026-07-17", "evidenceUrl": "https://www.singaporefilmsociety.com/membership" },
+    { "authorityId": "roots-han", "owner": "National Heritage Board Singapore", "authorityType": "government", "domains": ["roots.gov.sg"], "detailPathPatterns": ["^/han/Neighborhoods/.+/HAN-Programme-Folder/"], "status": "approved", "reviewedAt": "2026-07-17", "evidenceUrl": "https://www.roots.gov.sg/han/HAN-Whats-On" }
+  ]
+}

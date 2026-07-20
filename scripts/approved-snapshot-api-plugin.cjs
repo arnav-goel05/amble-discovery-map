@@ -37,6 +37,7 @@ function publicMetadata(snapshot) {
     landmarksRef: snapshot.publicRefs.landmarks,
     poisRef: snapshot.publicRefs.pois,
     tilesetRef: `${snapshot.publicRefs.tileset}?assetPaths=site-root-v1`,
+    ...(snapshot.publicRefs.events ? { eventsRef: snapshot.publicRefs.events } : {}),
     previousSnapshotId: snapshot.previousSnapshotId,
     contentHash: snapshot.contentHash,
   };

@@ -20,6 +20,48 @@ export function computeSnapshotContentHash(manifest) {
   return hashBuffer(JSON.stringify(contract));
 }
 
+export function migrateApprovedSnapshotV2(snapshot) {
+  if (snapshot?.schemaVersion === "3.0") return structuredClone(snapshot);
+  if (!snapshot || !["1.0", "2.0"].includes(snapshot.schemaVersion) || !Array.isArray(snapshot.events)) fail("snapshot_migration_invalid", "A v1/v2 snapshot with events is required for v3 migration");
+  const events = snapshot.events.map((event) => {
+    const locationStatus = event.locationStatus ?? (event.approvedLocationId ? "approved" : "needs_review");
+    const lifecycleState = event.lifecycleState ?? (event.status === "review" ? "held" : event.status === "archived" ? "archived" : event.status === "excluded" ? "excluded" : "active");
+    const publicPlacement = event.publicPlacement ?? (locationStatus === "approved" ? "mapped" : locationStatus === "not_mappable" ? "off_map" : "none");
+    const mappingStatus = event.mappingStatus ?? (locationStatus === "approved" ? "approved" : locationStatus === "not_mappable" ? "not_required" : "pending_review");
+    const freshness = event.freshness === "stale" || event.stale === true ? "stale" : "current";
+    const publishedEventId = event.publishedEventId ?? event.identityAnchor ?? event.id;
+    return {
+      ...event, publishedEventId, identityAnchor: event.identityAnchor ?? publishedEventId,
+      lifecycleState, publicPlacement, mappingStatus, freshness,
+      sourceContributions: event.sourceContributions ?? (event.sources ?? []).map((source) => ({
+        sourceRecordId: source.sourceRecordId ?? `${source.source}:${source.sourceId}`,
+        freshness, lastConfirmedAt: snapshot.publishedAt ?? null,
+        staleSince: freshness === "stale" ? event.staleSince ?? snapshot.publishedAt ?? null : null,
+        staleReason: freshness === "stale" ? event.staleReason ?? "legacy_snapshot" : null,
+        fields: ["title", "schedule", "location"],
+      })),
+      fieldFreshness: event.fieldFreshness ?? { title: freshness, schedule: freshness, location: freshness },
+    };
+  });
+  return { ...snapshot, schemaVersion: "3.0", migratedFromSchemaVersion: snapshot.schemaVersion, events };
+}
+
+export function assembleCandidateSnapshot({ events = [], previousSnapshotId = null } = {}) {
+  const identities = new Set();
+  const outcomes = { active: [], held: [], archived: [], excluded: [] };
+  for (const event of events) {
+    const publishedEventId = event.publishedEventId ?? event.identityAnchor ?? event.id;
+    if (!publishedEventId || identities.has(publishedEventId)) fail("snapshot_event_identity_invalid", `Candidate event identity is missing or duplicated: ${publishedEventId ?? "missing"}`);
+    identities.add(publishedEventId);
+    const lifecycleState = event.lifecycleState ?? "held";
+    if (!(lifecycleState in outcomes)) fail("snapshot_event_state_invalid", `Candidate event lifecycle is invalid: ${lifecycleState}`);
+    if (event.publicPlacement === "mapped" && event.mappingStatus !== "approved") fail("snapshot_event_geometry_invalid", `Mapped event lacks approved geometry: ${publishedEventId}`);
+    if (lifecycleState === "active" && !["mapped", "off_map"].includes(event.publicPlacement)) fail("snapshot_event_placement_invalid", `Active event lacks public placement: ${publishedEventId}`);
+    outcomes[lifecycleState].push({ ...event, publishedEventId, identityAnchor: event.identityAnchor ?? publishedEventId });
+  }
+  return { schemaVersion: "3.0", previousSnapshotId, events: [...outcomes.active, ...outcomes.held, ...outcomes.archived, ...outcomes.excluded], outcomes, counts: Object.fromEntries(Object.entries(outcomes).map(([key, values]) => [key, values.length])) };
+}
+
 function readJson(file, code) {
   try { return JSON.parse(fs.readFileSync(file, "utf8")); }
   catch (error) { fail(code, `${path.basename(file)} could not be read: ${error.message}`); }
@@ -63,7 +105,7 @@ export function loadApprovedSnapshot({ root, pointerPath = path.join(root, "data
   if (manifest.snapshotId !== snapshotId) fail("snapshot_identity_mismatch", "Pointer and manifest snapshot identities differ");
   if (computeSnapshotContentHash(manifest) !== manifest.contentHash) fail("snapshot_content_hash_mismatch", "Snapshot content hash does not match its manifest contract");
   if (!manifest.artifactHashes || typeof manifest.artifactHashes !== "object") fail("snapshot_artifact_hashes_missing", "Snapshot artifact hashes are required");
-  for (const reference of [manifest.landmarksRef, manifest.poisRef, manifest.tilesetRef]) {
+  for (const reference of [manifest.landmarksRef, manifest.poisRef, manifest.tilesetRef, manifest.eventsRef].filter(Boolean)) {
     const file = resolveInside(snapshotDirectory, reference);
     const expectedHash = manifest.artifactHashes[reference];
     if (!fs.existsSync(file)) fail("snapshot_artifact_missing", `Snapshot artifact is missing: ${reference}`);
@@ -80,6 +122,7 @@ export function loadApprovedSnapshot({ root, pointerPath = path.join(root, "data
       landmarks: `${publicBase}${manifest.landmarksRef.split("/").map(encodeURIComponent).join("/")}`,
       pois: `${publicBase}${manifest.poisRef.split("/").map(encodeURIComponent).join("/")}`,
       tileset: `${publicBase}${manifest.tilesetRef.split("/").map(encodeURIComponent).join("/")}`,
+      ...(manifest.eventsRef ? { events: `${publicBase}${manifest.eventsRef.split("/").map(encodeURIComponent).join("/")}` } : {}),
     },
     directory: snapshotDirectory,
     manifestHash: pointer.manifestHash,
@@ -89,7 +132,7 @@ export function loadApprovedSnapshot({ root, pointerPath = path.join(root, "data
 export function resolveActiveSnapshotAsset({ root, snapshotId, reference }) {
   const active = loadApprovedSnapshot({ root });
   if (active.snapshotId !== snapshotId) fail("snapshot_asset_not_active", "Only active snapshot assets are public");
-  const allowed = new Set([active.landmarksRef, active.poisRef, active.tilesetRef]);
+  const allowed = new Set([active.landmarksRef, active.poisRef, active.tilesetRef, active.eventsRef].filter(Boolean));
   if (!allowed.has(reference)) fail("snapshot_asset_unapproved", "Snapshot asset is not part of the public contract");
   return resolveInside(active.directory, reference);
 }
@@ -113,9 +156,10 @@ export function stageImmutableSnapshot({ root, snapshot, artifacts, commitEligib
     const landmarksRef = snapshot.landmarksRef && references.includes(snapshot.landmarksRef) ? snapshot.landmarksRef : references.find((item) => /landmarks/i.test(item));
     const poisRef = snapshot.poisRef && references.includes(snapshot.poisRef) ? snapshot.poisRef : references.find((item) => /pois/i.test(item));
     const tilesetRef = snapshot.tilesetRef && references.includes(snapshot.tilesetRef) ? snapshot.tilesetRef : references.find((item) => /tileset/i.test(item));
+    const eventsRef = snapshot.eventsRef && references.includes(snapshot.eventsRef) ? snapshot.eventsRef : references.find((item) => /events/i.test(item));
     if (!landmarksRef || !poisRef || !tilesetRef) fail("snapshot_stage_invalid", "Landmark, POI, and tileset artifacts are required");
     const artifactHashes = Object.fromEntries(references.map((reference) => [reference, hashFile(resolveInside(snapshotDirectory, reference))]));
-    const base = { ...snapshot, landmarksRef, poisRef, tilesetRef, artifactHashes };
+    const base = { ...snapshot, landmarksRef, poisRef, tilesetRef, ...(eventsRef ? { eventsRef } : {}), artifactHashes };
     delete base.contentHash;
     const manifest = validateApprovedSnapshot({ ...base, contentHash: computeSnapshotContentHash(base) });
     const manifestPath = path.join(snapshotDirectory, "manifest.json");

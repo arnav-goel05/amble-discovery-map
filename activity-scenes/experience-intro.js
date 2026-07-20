@@ -2,6 +2,7 @@ const INTRO_ID = "experience-intro";
 const DEFAULT_POLL_INTERVAL_MS = 120;
 const DEFAULT_MINIMUM_DISPLAY_MS = 700;
 const DEFAULT_READY_SETTLE_MS = 600;
+const DEFAULT_MAXIMUM_WAIT_MS = 8_000;
 
 function createMarkup() {
   const root = document.createElement("div");
@@ -28,10 +29,12 @@ function createMarkup() {
 }
 
 export function isInitialSceneReady(dataset = document.body.dataset) {
-  return dataset.mapLoaded === "true"
-    && dataset.buildingsLayerStarted === "true"
-    && dataset.tilesetLoaded === "true"
-    && dataset.backgroundViewLoaded === "true";
+  return (
+    dataset.mapLoaded === "true" &&
+    dataset.buildingsLayerStarted === "true" &&
+    dataset.tilesetLoaded === "true" &&
+    dataset.backgroundViewLoaded === "true"
+  );
 }
 
 export function createExperienceIntro({
@@ -40,6 +43,7 @@ export function createExperienceIntro({
   pollIntervalMs = DEFAULT_POLL_INTERVAL_MS,
   minimumDisplayMs = DEFAULT_MINIMUM_DISPLAY_MS,
   readySettleMs = DEFAULT_READY_SETTLE_MS,
+  maximumWaitMs = DEFAULT_MAXIMUM_WAIT_MS,
   sceneReady = () => isInitialSceneReady(),
   onEnter = () => {},
 } = {}) {
@@ -47,7 +51,7 @@ export function createExperienceIntro({
   if (skip) {
     root.remove();
     document.body.dataset.experienceIntro = "skipped";
-    return { destroy() {}, reveal() {} };
+    return { destroy() {}, reveal() {}, enter: () => false };
   }
 
   const button = root.querySelector(".experience-intro__enter");
@@ -55,6 +59,7 @@ export function createExperienceIntro({
   const startedAt = performance.now();
   let pollTimer = null;
   let minimumTimer = null;
+  let fallbackTimer = null;
   let removalTimer = null;
   let ready = false;
   let dismissed = false;
@@ -66,18 +71,24 @@ export function createExperienceIntro({
   const stopWaiting = () => {
     if (pollTimer !== null) clearInterval(pollTimer);
     if (minimumTimer !== null) clearTimeout(minimumTimer);
+    if (fallbackTimer !== null) clearTimeout(fallbackTimer);
     pollTimer = null;
     minimumTimer = null;
+    fallbackTimer = null;
   };
 
   const reveal = (reason = "scene-ready") => {
     if (ready || dismissed) return;
-    const remaining = Math.max(0, minimumDisplayMs - (performance.now() - startedAt));
+    const remaining = Math.max(
+      0,
+      minimumDisplayMs - (performance.now() - startedAt),
+    );
     if (remaining > 0) {
-      if (minimumTimer === null) minimumTimer = setTimeout(() => {
-        minimumTimer = null;
-        reveal(reason);
-      }, remaining);
+      if (minimumTimer === null)
+        minimumTimer = setTimeout(() => {
+          minimumTimer = null;
+          reveal(reason);
+        }, remaining);
       return;
     }
     ready = true;
@@ -96,7 +107,8 @@ export function createExperienceIntro({
   const checkScene = () => {
     if (sceneReady()) {
       sceneReadySince ??= performance.now();
-      if (performance.now() - sceneReadySince >= readySettleMs) reveal("scene-ready");
+      if (performance.now() - sceneReadySince >= readySettleMs)
+        reveal("scene-ready");
     } else {
       sceneReadySince = null;
     }
@@ -106,11 +118,13 @@ export function createExperienceIntro({
     if (!root.isConnected) return;
     root.remove();
     document.body.dataset.experienceIntro = "complete";
-    document.querySelector(".maplibregl-canvas")?.focus({ preventScroll: true });
+    document
+      .querySelector(".maplibregl-canvas")
+      ?.focus({ preventScroll: true });
   };
 
   const dismiss = () => {
-    if (!ready || dismissed) return;
+    if (!ready || dismissed) return false;
     dismissed = true;
     stopWaiting();
     button.disabled = true;
@@ -118,10 +132,15 @@ export function createExperienceIntro({
     root.classList.add("is-leaving");
     document.body.dataset.experienceIntro = "leaving";
     removalTimer = setTimeout(finishDismissal, 800);
+    return true;
   };
 
   const handleTransitionEnd = (event) => {
-    if (dismissed && event.target === root && event.propertyName === "opacity") {
+    if (
+      dismissed &&
+      event.target === root &&
+      event.propertyName === "opacity"
+    ) {
       clearTimeout(removalTimer);
       removalTimer = null;
       finishDismissal();
@@ -131,10 +150,12 @@ export function createExperienceIntro({
   button.addEventListener("click", dismiss);
   root.addEventListener("transitionend", handleTransitionEnd);
   pollTimer = setInterval(checkScene, pollIntervalMs);
+  fallbackTimer = setTimeout(() => reveal("maximum-wait"), maximumWaitMs);
   checkScene();
 
   return {
     reveal,
+    enter: dismiss,
     destroy() {
       dismissed = true;
       stopWaiting();

@@ -54,15 +54,25 @@ test("weekly refresh follows the exact event continuation before every configure
   assert.equal(JSON.parse(fs.readFileSync(path.join(root, "runtime/latest.json"), "utf8")).status, "success");
 });
 
-test("an incomplete event run fails safely and skips restaurant mutation", () => {
+test("a completed partial event run is terminally stale and skips restaurant mutation", () => {
   const root = temp(); const calls = [];
   const result = runWeeklyRefresh({ root, config, env: { WEEKLY_REFRESH_OUTPUT_ROOT: path.join(root, "runtime") }, invoke: (call) => {
     calls.push(call); return response({ runId: "event-partial", status: "partial", complete: true });
   } });
-  assert.equal(result.complete, false);
-  assert.equal(result.status, "partial");
+  assert.equal(result.complete, true);
+  assert.equal(result.status, "stale");
+  assert.equal(result.events.publicationStatus, "stale");
   assert.equal(result.restaurants.status, "skipped");
   assert.equal(calls.length, 1);
+});
+
+test("an event release failure is distinct from a stale preserved snapshot", () => {
+  const root = temp();
+  const result = runWeeklyRefresh({ root, config, env: { WEEKLY_REFRESH_OUTPUT_ROOT: path.join(root, "runtime") }, invoke: () => response({ runId: "event-failed", status: "failed", complete: true }, 1) });
+  assert.equal(result.complete, false);
+  assert.equal(result.status, "release_failed");
+  assert.equal(result.events.publicationStatus, "release_failed");
+  assert.equal(result.restaurants.reasonCode, "event_release_failed");
 });
 
 test("restaurant continuation and partial coverage produce a versioned combined terminal report", () => {

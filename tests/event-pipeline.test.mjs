@@ -4,24 +4,98 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node
 import { dirname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import test from 'node:test';
 import { Accessor, Document, NodeIO } from '@gltf-transform/core';
 
-import { branchEvidenceHash, canCommitFrontendSnapshot, classifyNonBuildingRecovery, collectLocationClues, collectOfficialCandidatePages, enrichRecoveryCoordinates, eventInterval, explicitMultiVenueSourceUrls, jsonPointer, nextAction, parseManifest, progressResponse, readPipelineConfig, reconcileNormalizedVenueBranches, renderStatus, reopenImprovedLocalCandidates, reusableResolutionEntry, selectDeterministicOneMapAddress, singaporeWindow, terminalProblems, validateApprovedResolution, validateHighlightArtifacts, validateNormalizedSemantics, validateNotMappableAgainstLocalCandidates, validateResolveRecoveryEvidence, validateSourceEvidence, validateSourceResult, validateSourceSemantics, validateStageEventIds, validateVenueRecoveryEvidence } from '../scripts/event-pipeline.mjs';
+import { branchEvidenceHash, canCommitFrontendSnapshot, classifyNonBuildingRecovery, collectLocationClues, collectOfficialCandidatePages, enrichRecoveryCoordinates, eventInterval, explicitMultiVenueSourceUrls, jsonPointer, nextAction, parseManifest, progressResponse, readPipelineConfig, reconcileNormalizedVenueBranches, renderStatus, reopenImprovedLocalCandidates, replaceLastSuccessfulUse, reusableResolutionEntry, selectDeterministicOneMapAddress, singaporeWindow, terminalProblems, validateApprovedResolution, validateHighlightArtifacts, validateNormalizedSemantics, validateNotMappableAgainstLocalCandidates, validateResolveRecoveryEvidence, validateSourceEvidence, validateSourceResult, validateSourceSemantics, validateStageEventIds, validateVenueRecoveryEvidence } from '../scripts/event-pipeline.mjs';
 import { pruneExpiredContent, reconcileLandmark, reconcilePoi } from '../scripts/reconcile-event-content.mjs';
 import { restorationTiles } from '../scripts/restore-poi-backgrounds.mjs';
 import { normalizeRun } from '../scripts/event-normalizer.mjs';
 import { canonicalDetailUrl, classifyFixture, collectSource, mapCatchDetail, mapSisticDetail } from '../scripts/event-source-collector.mjs';
+import { createTraceWriter, redactTraceValue } from '../scripts/lib/event-sources/trace.mjs';
+import { TRACE_REASON_CODES } from '../scripts/lib/event-sources/trace.mjs';
+import { assessActivityInclusion, deriveEventFreshness, normalizeActivityContract, normalizeSchedule } from '../scripts/lib/event-sources/activity-policy.mjs';
 import { commitFrontendSnapshot, prepareFrontendSnapshot, writeVerifiedStageHandoffs } from '../scripts/event-frontend-snapshot.mjs';
 import { consolidateCoordinateCandidates, coordinateBuildingChoice, groupExactOneMapRows, isPreciseProviderPin, preferPristineOneMapRows, selectAddressNamedBuilding } from '../scripts/lib/venue-resolution-evidence.mjs';
 import { extractCoordinates, extractEvidenceFromBody, extractRelevantLinks, shopifyProductJsonUrl, shouldRetryStatus } from '../scripts/extract-web-evidence.mjs';
 import { normalizeOneMapResults, searchQueries } from '../scripts/query-onemap-location.mjs';
-import { extractAddressEvidence, preferAuthoritativeRecovery } from '../scripts/lib/location-evidence.mjs';
+import { collectLocationStrings, extractAddressEvidence, preferAuthoritativeRecovery } from '../scripts/lib/location-evidence.mjs';
 import { clearPipelineEventData } from '../scripts/clear-event-pipeline-data.mjs';
 import { loadApprovedSnapshot } from '../scripts/lib/approved-snapshot.mjs';
+import { summarizeActivityOutcomes, summarizeEvidenceLevels } from '../scripts/lib/event-pipeline/reporting.mjs';
+import { temporaryState } from './helpers/baseline-fixtures.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SCRIPT = resolve(ROOT, 'scripts/event-pipeline.mjs');
+const require = createRequire(import.meta.url);
+const { AdminRepository } = require('../scripts/lib/admin-repository.cjs');
+const { AdminService } = require('../scripts/lib/admin-service.cjs');
+
+test('v3 activity contracts keep schedule, identity, placement, mapping, lifecycle, and freshness orthogonal', () => {
+  const activity = normalizeActivityContract({
+    sourceName: 'Fixture', sourceRecordId: 'fixture:secret', title: 'Secret Supper', scope: 'Singapore',
+    schedule: { kind: 'anytime' },
+    venueOccurrences: [{ venueOccurrenceId: 'fixture:secret:venue', publishedVenueName: 'Secret location', publicPlacement: 'off_map', mappingStatus: 'not_required', offMapSubtype: 'secret_tba' }],
+    sourceContributions: [{ sourceRecordId: 'fixture:secret', freshness: 'current', fields: ['title', 'schedule', 'location'] }],
+  });
+  assert.equal(activity.schemaVersion, '3.0');
+  assert.match(activity.parentActivityId, /^activity:/);
+  assert.deepEqual(activity.schedule, { kind: 'anytime', start: null, end: null, recurrence: null, sessionRefs: [], displayText: null, finalKnownOccurrence: null });
+  assert.deepEqual([activity.lifecycleState, activity.publicPlacement, activity.mappingStatus, activity.freshness], ['active', 'off_map', 'not_required', 'current']);
+  assert.equal(activity.sessions.length, 0);
+  assert.equal(activity.venueOccurrences.length, 1);
+});
+
+test('v3 contribution freshness derives stale fields without changing placement or lifecycle', () => {
+  assert.deepEqual(deriveEventFreshness([
+    { sourceRecordId: 'old', freshness: 'stale', fields: ['description'], staleReason: 'source_incomplete' },
+    { sourceRecordId: 'new', freshness: 'current', fields: ['title', 'schedule', 'location'] },
+  ], ['title', 'description', 'schedule', 'location']), {
+    freshness: 'stale', staleReason: 'source_incomplete', fieldFreshness: { title: 'current', description: 'stale', schedule: 'current', location: 'current' },
+  });
+});
+
+test('reporting counts unique activities separately from contributions and preserves stale/review outcomes', () => {
+  const events = [{
+    id: 'one', lifecycleState: 'active', publicPlacement: 'off_map', mappingStatus: 'pending_review', freshness: 'stale', evidenceLevel: 'direct_corroborated',
+    sourceContributions: [{ sourceRecordId: 'Catch:one', freshness: 'current' }, { sourceRecordId: 'Honey:one', freshness: 'stale', upgradedFrom: 'editorial_authoritative' }],
+  }];
+  assert.deepEqual(summarizeActivityOutcomes(events), { mapped: 0, off_map: 1, carry_forward_stale: 1, review: 1, held: 0, excluded: 0, archived: 0, release_rollback: 0 });
+  assert.deepEqual(summarizeEvidenceLevels(events), { uniqueActivities: 1, levels: { direct_corroborated: 1 }, upgrades: { 'editorial_authoritative->direct_corroborated': 1 } });
+});
+
+test('v3 trace vocabulary covers schedule, evidence, off-map, carry-forward, holds, archives, and rollback', () => {
+  for (const code of ['anytime', 'schedule_unverified', 'editorial_sufficient', 'secret_tba', 'carry_forward_stale', 'hold_new', 'expired', 'release_validation_failed']) {
+    assert.ok(TRACE_REASON_CODES.has(code), code);
+  }
+  const redacted = redactTraceValue({ reasonCode: 'carry_forward_stale', sourceContributionId: 'source:1', url: 'https://example.test/?token=secret', rawBody: 'private' });
+  assert.equal(redacted.url, 'https://example.test/?token=%5BREDACTED%5D');
+  assert.equal('rawBody' in redacted, false);
+});
+
+test('active and future activity policy preserves exact, range, recurring, selectable, anytime, and unverified schedules without a weekly cutoff', () => {
+  const asOf = '2026-07-18T00:00:00+08:00';
+  const cases = [
+    [{ title: 'Exact show', scope: 'Singapore', schedule: { kind: 'exact', start: '2027-01-01T20:00:00+08:00' } }, true, 'active'],
+    [{ title: 'Long exhibition', scope: 'Singapore', schedule: { kind: 'range', start: '2026-08-01T00:00:00+08:00', end: '2027-02-01T23:59:59+08:00' } }, true, 'active'],
+    [{ title: 'Friday comedy', scope: 'Singapore', schedule: { kind: 'recurring', recurrence: { frequency: 'weekly' } } }, true, 'active'],
+    [{ title: 'Choose a workshop', scope: 'Singapore', schedule: { kind: 'selectable', sessionRefs: ['one', 'two'] } }, true, 'active'],
+    [{ title: 'By appointment perfume lab', scope: 'Singapore', schedule: { kind: 'anytime' } }, true, 'active'],
+    [{ title: 'Announced programme', scope: 'Singapore', schedule: { kind: 'unverified' } }, true, 'held'],
+    [{ title: 'Past concert', scope: 'Singapore', schedule: { kind: 'exact', start: '2026-01-01T20:00:00+08:00', finalKnownOccurrence: '2026-01-01T22:00:00+08:00' } }, false, 'archived'],
+    [{ title: 'Past editorial listing', scope: 'Singapore', dateText: '17 July 2026', schedule: { kind: 'exact', displayText: '17 July 2026' } }, false, 'archived'],
+    [{ title: 'Discount only', scope: 'Singapore', purePromotion: true, schedule: { kind: 'anytime' } }, false, 'excluded'],
+    [{ title: 'Webinar', scope: 'Singapore', mode: 'online', schedule: { kind: 'exact', start: '2027-01-01T20:00:00+08:00' } }, false, 'excluded'],
+    [{ title: 'Johor workshop', scope: 'overseas', schedule: { kind: 'exact', start: '2027-01-01T20:00:00+08:00' } }, false, 'excluded'],
+  ];
+  for (const [record, eligible, lifecycle] of cases) {
+    const result = assessActivityInclusion(record, { asOf });
+    assert.equal(result.eligible, eligible, record.title);
+    assert.equal(result.lifecycleState, lifecycle, record.title);
+  }
+  assert.equal(normalizeSchedule({ kind: 'recurring', recurrence: { frequency: 'weekly' } }).sessionRefs.length, 0, 'recurrence is not expanded infinitely');
+});
 
 test('frontend reconciliation creates, updates, and no-ops by stable identity', () => {
   const base = { id: 'venue', label: 'Venue', anchor: { lng: 1, lat: 1 }, events: [{
@@ -38,7 +112,7 @@ test('frontend reconciliation creates, updates, and no-ops by stable identity', 
   assert.equal(reconcilePoi(poi, structuredClone(poi)).action, 'noop');
 });
 
-test('needs-review venues block publication while evidenced not-mappable venues are safely accounted', () => {
+test('needs-review and evidenced not-mappable venues are safely isolated from publication', () => {
   const state = {
     sources: { Catch: { status: 'success' }, SISTIC: { status: 'success' } },
     normalization: { status: 'success' }, resolutionPreparation: { status: 'success' },
@@ -48,7 +122,7 @@ test('needs-review venues block publication while evidenced not-mappable venues 
       ambiguous: { stages: { resolve: { status: 'unresolved', resolutionStatus: 'needs_review' } } },
     },
   };
-  assert.equal(canCommitFrontendSnapshot(state), false);
+  assert.equal(canCommitFrontendSnapshot(state), true);
   state.venues.ambiguous.stages.resolve.resolutionStatus = 'not_mappable';
   assert.equal(canCommitFrontendSnapshot(state), true);
 });
@@ -69,12 +143,13 @@ test('expired events and empty locations are removed at the run boundary', () =>
     landmarks: [
       { id: 'expired', events: [{ id: 'old', dateText: '10 Jul 2026' }] },
       { id: 'mixed', events: [{ id: 'old-2', endDateTime: '2026-07-10T20:00:00+08:00' }, { id: 'today', dateText: '11 Jul 2026' }] },
-      { id: 'unknown', events: [{ id: 'undated', dateText: null }] }
+      { id: 'unknown', events: [{ id: 'undated', dateText: null, schedule: { kind: 'unverified' } }, { id: 'anytime', dateText: null, schedule: { kind: 'anytime' } }] },
+      { id: 'schedule-expired', events: [{ id: 'old-schedule', schedule: { kind: 'range', finalKnownOccurrence: '2026-07-10T23:00:00+08:00' } }] }
     ],
-    pois: [{ id: 'expired' }, { id: 'mixed' }, { id: 'unknown' }]
+    pois: [{ id: 'expired' }, { id: 'mixed' }, { id: 'unknown' }, { id: 'schedule-expired' }]
   });
-  assert.deepEqual(result.expiredEventIds.sort(), ['old', 'old-2']);
-  assert.deepEqual(result.removedLandmarkIds, ['expired']);
+  assert.deepEqual(result.expiredEventIds.sort(), ['old', 'old-2', 'old-schedule']);
+  assert.deepEqual(result.removedLandmarkIds, ['expired', 'schedule-expired']);
   assert.deepEqual(result.landmarks.map((item) => item.id), ['mixed', 'unknown']);
   assert.deepEqual(result.pois.map((item) => item.id), ['mixed', 'unknown']);
 });
@@ -133,6 +208,57 @@ test('frontend snapshot stages reconciliation and commits only after executable 
   }
 });
 
+test('frontend snapshot resolves a newly dated occurrence through its preserved stable identity', async () => {
+  const root = resolve(tmpdir(), `event-frontend-identity-alias-${process.pid}-${Date.now()}`);
+  const runDir = join(root, 'run');
+  mkdirSync(join(runDir, 'normalized'), { recursive: true });
+  mkdirSync(join(runDir, 'stages/venue-a'), { recursive: true });
+  const oldId = 'Fever Singapore:/m/652048#1';
+  const newId = 'Fever Singapore:/m/652048#2026-09-18#1';
+  const parentActivityId = 'activity:wine-guide';
+  const previousEvent = {
+    id: oldId, occurrenceId: oldId, identityAnchor: oldId, publishedEventId: oldId,
+    parentActivityId, title: 'An Idiot’s Guide to Wine', venue: 'MDLR, TPI Building',
+    schedule: { kind: 'selectable', start: null, end: null, displayText: null },
+    publicPlacement: 'mapped', mappingStatus: 'approved', lifecycleState: 'active',
+    sourceOccurrenceIds: [oldId], sources: [{ source: 'Fever Singapore', sourceId: '/m/652048#1' }],
+  };
+  const incomingEvent = {
+    ...previousEvent, id: newId, occurrenceId: newId, identityAnchor: newId, publishedEventId: newId,
+    dateText: '2026-09-18', schedule: { kind: 'selectable', start: '2026-09-18', end: '2026-09-18', displayText: '2026-09-18' },
+    publicPlacement: 'none', mappingStatus: 'pending_review', sourceOccurrenceIds: [newId],
+    sources: [{ source: 'Fever Singapore', sourceId: '/m/652048#2026-09-18#1' }],
+  };
+  writeFileSync(join(runDir, 'normalized/events.json'), JSON.stringify({ records: [incomingEvent] }));
+  writeFileSync(join(runDir, 'stages/venue-a/resolve.json'), JSON.stringify({ result: {
+    resolutionStatus: 'approved', poiId: 'tpi-building', canonicalVenue: 'TPI BUILDING', acceptedGmlNames: ['TPI BUILDING'],
+    coordinates: { lng: 103.84947, lat: 1.28213 }, sourceTiles: [], inputEventIds: [newId],
+  } }));
+  const state = {
+    runId: 'run-alias', sources: { 'Fever Singapore': { status: 'success' } },
+    venues: { 'venue-a': { venue: 'MDLR, TPI Building', eventIds: [newId], stages: {
+      resolve: { status: 'success', outputRef: 'stages/venue-a/resolve.json' },
+    } } },
+  };
+  try {
+    await prepareFrontendSnapshot({
+      runDir, state, run: { runId: 'run-alias', window: singaporeWindow('2026-07-20') },
+      currentPois: [{ id: 'tpi-building', label: 'TPI BUILDING', data: 'poi-tiles/tpi-building/tileset.json', names: ['TPI BUILDING'], tiles: {} }],
+      currentLandmarks: [{ id: 'tpi-building', label: 'TPI BUILDING', anchor: { lng: 103.84947, lat: 1.28213 }, events: [previousEvent] }],
+    });
+    const landmark = JSON.parse(readFileSync(join(runDir, 'frontend/approved-landmarks.json'), 'utf8')).records[0];
+    assert.equal(landmark.events.length, 1);
+    assert.equal(landmark.events[0].id, oldId);
+    assert.equal(landmark.events[0].dateText, '2026-09-18');
+    assert.equal(landmark.events[0].title, 'An Idiot’s Guide to Wine');
+    const catalogue = JSON.parse(readFileSync(join(runDir, 'frontend/approved-events.json'), 'utf8'));
+    assert.equal(catalogue.mapped.length, 1);
+    assert.equal(catalogue.mapped[0].id, oldId);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('frontend snapshot commit rolls back earlier files when a later publication fails', () => {
   const root = resolve(tmpdir(), `event-frontend-rollback-${process.pid}-${Date.now()}`);
   const runDir = join(root, 'run'), frontend = join(runDir, 'frontend');
@@ -162,6 +288,20 @@ test('expiry identifies every background tile that must be restored', () => {
 test('manifest parsing preserves configured source order', () => {
   const manifest = parseManifest(`- Timezone: \`Asia/Singapore\`\n| Source | Enabled | Adapter | Date filter | Last successful use |\n|---|---|---|---|---|\n| Catch.sg | yes | \`catch-v1\` | shared | never |\n| Disabled | no | \`off-v1\` | shared | never |\n| SISTIC | yes | \`sistic-v1\` | shared | never |`);
   assert.deepEqual(manifest.sources.map((source) => source.name), ['Catch.sg', 'SISTIC']);
+  assert.deepEqual(manifest.sources.map((source) => source.operatingMode), ['required', 'required']);
+});
+
+test('last-success metadata updates compact and padded Markdown source rows', () => {
+  const timestamp = '2026-07-18T13:30:00.000Z';
+  for (const row of [
+    '| SISTIC | yes | `sistic-v1` | shared | never |',
+    '| SISTIC                         | yes      | `sistic-v1`                         | shared window | `2026-07-17T19:02:11.146Z` |',
+  ]) {
+    const result = replaceLastSuccessfulUse(`| Source | Enabled | Adapter | Date filter | Last successful use |\n${row}`, 'SISTIC', timestamp);
+    assert.equal(result.updated, true);
+    assert.match(result.markdown, /\| SISTIC\s+\|.*\| `2026-07-18T13:30:00\.000Z` \|/);
+  }
+  assert.equal(replaceLastSuccessfulUse('| Other | yes | `other` | shared | never |', 'SISTIC', timestamp).updated, false);
 });
 
 test('window covers the run date plus seven following dates inclusively', () => {
@@ -176,9 +316,30 @@ test('structured pipeline configuration is authoritative for sources and window'
   const config = readPipelineConfig();
   assert.equal(config.windowDaysAfterStart, 7);
   assert.deepEqual(config.sources.filter((source) => source.enabled).map((source) => source.adapterId), [
-    'catch-official-listing-v1', 'sistic-official-listing-v1'
+    'catch-official-listing-v1', 'sistic-official-listing-v1', 'fever-singapore-rendered-v1',
+    'visit-singapore-rendered-v1', 'singapore-film-society-rendered-v1',
+    'honeycombers-discovery-v1', 'arts-equator-discovery-v1', 'time-out-singapore-discovery-v1'
   ]);
+  const roots = config.sources.find((source) => source.adapterId === 'roots-han-rendered-v1');
+  assert.equal(roots.enabled, false);
+  assert.equal(roots.operatingMode, 'disabled');
+  assert.equal(roots.unavailableReason, 'layout_contract_changed');
   assert.ok(config.sources.find((source) => source.adapterId === 'sistic-official-listing-v1').listing.pageSize <= 30);
+});
+
+test('structured trace records preserve lineage while redacting credentials and raw bodies', () => {
+  const state = temporaryState();
+  try {
+    const tracePath = join(state.root, 'logs/trace.jsonl');
+    const writer = createTraceWriter({ path: tracePath, runId: 'run-a', window: singaporeWindow('2026-07-11'), now: () => '2026-07-11T00:00:00.000Z' });
+    writer.write({ stage: 'collection', action: 'capture', outcome: 'success', sourceName: 'Fever Singapore', entityType: 'authority', entityId: 'event-1', resumeDisposition: 'new', durationMs: 2, authorization: 'Bearer secret', evidenceRefs: ['raw/one.json'], url: 'https://example.com/event?api_key=secret', rawBody: 'private' });
+    const [record] = writer.read();
+    assert.equal(record.authorization, '[REDACTED]');
+    assert.match(record.url, /api_key=%5BREDACTED%5D/);
+    assert.equal(record.rawBody, undefined);
+    assert.equal(record.entityId, 'event-1');
+    assert.deepEqual(redactTraceValue({ cookie: 'abc', safe: 1 }), { cookie: '[REDACTED]', safe: 1 });
+  } finally { state.cleanup(); }
 });
 
 test('detail URL canonicalization removes trackers and orders retained parameters', () => {
@@ -190,6 +351,14 @@ test('source detail mappers produce the universal fixture contract', () => {
   assert.equal(sistic.mode, 'physical');
   assert.equal(sistic.performances.length, 1);
   assert.deepEqual(sistic.sourceCoordinates, { lat: 1.3001, lng: 103.8002 });
+  const festival = mapSisticDetail({
+    alias: 'festival', title: 'Band Festival', event_date: 'Thu, 23 Jul 2026 - Sun, 26 Jul 2026', venue_name: { name: 'Various Venues' },
+    description: '<strong>Opening Concert</strong><br>Date: 23 July, Thursday<br>Time: 1930h<br>Venue: YSTCM, Concert Hall<br><strong>Gala Concert</strong><br>Date: 24 July, Friday<br>Time: 1930h<br>Venue: NUS University Cultural Centre, Ho Bee Auditorium'
+  }, {}, 'https://www.sistic.com.sg/event-details/festival', 1);
+  assert.deepEqual(festival.performances, [
+    { title: 'Opening Concert', venue: 'YSTCM, Concert Hall', startDateTime: '2026-07-23T19:30:00+08:00', endDateTime: null, dateText: '2026-07-23', timeText: '19:30' },
+    { title: 'Gala Concert', venue: 'NUS University Cultural Centre, Ho Bee Auditorium', startDateTime: '2026-07-24T19:30:00+08:00', endDateTime: null, dateText: '2026-07-24', timeText: '19:30' }
+  ]);
   const catchFixture = mapCatchDetail({ DisplayEventTitle: 'Catch Show', Location: 'Room', EventFormat: 'Physical' }, {}, 'https://www.catch.sg/event/show', 1);
   assert.equal(catchFixture.title, 'Catch Show');
   assert.equal(mapCatchDetail({
@@ -220,6 +389,19 @@ test('source detail mappers produce the universal fixture contract', () => {
   assert.deepEqual(recurringCatchFixture.performances.map((item) => item.startDateTime), [
     '2026-07-13T10:00:00+08:00',
     '2026-07-15T10:00:00+08:00'
+  ]);
+
+  const mixedCatchFixture = mapCatchDetail({
+    DisplayEventTitle: 'Mixed Catch Show', EventFormat: 'Physical', Venue: 'The Arts House',
+    EventStartDate: '2026-07-01T00:00:00', EventEndDate: '2026-07-31T00:00:00',
+    LstDateTime: [
+      { SetDayArr: ['Mon', 'Wed'], IsFullDayEvent: true },
+      { SetDayArr: ['Mon', 'Wed'], StartHour: '16:00', EndHour: '18:00' }
+    ]
+  }, {}, 'https://www.catch.sg/Event/mixed-show', 1, singaporeWindow('2026-07-11'));
+  assert.deepEqual(mixedCatchFixture.performances, [
+    { startDateTime: '2026-07-13T16:00:00+08:00', endDateTime: '2026-07-13T18:00:00+08:00', dateText: '2026-07-13', timeText: '16:00 - 18:00' },
+    { startDateTime: '2026-07-15T16:00:00+08:00', endDateTime: '2026-07-15T18:00:00+08:00', dateText: '2026-07-15', timeText: '16:00 - 18:00' }
   ]);
 
   const timedCatchFixture = mapCatchDetail({
@@ -319,7 +501,7 @@ test('source fixtures keep optional mode and date gaps for downstream classifica
   assert.equal(classifyFixture({ ...partial, detailUrl: null }), 'missing_detail_url');
 });
 
-test('code normalizer filters, deduplicates, preserves provenance, and creates venue branches', () => {
+test('code normalizer filters, preserves cross-source candidates, provenance, and venue branches', () => {
   const runDir = resolve(tmpdir(), `event-normalizer-${process.pid}-${Date.now()}`);
   mkdirSync(join(runDir, 'raw/catch/details'), { recursive: true });
   mkdirSync(join(runDir, 'raw/sistic/details'), { recursive: true });
@@ -341,21 +523,21 @@ test('code normalizer filters, deduplicates, preserves provenance, and creates v
   } };
   try {
     const result = normalizeRun({ runDir, state, run: { runId: 'run-a', window: singaporeWindow('2026-07-11') } });
-    assert.deepEqual(result.counts, { eligiblePreDedup: 2, duplicateCollapsed: 1, acceptedPostDedup: 1, acceptedPrimary: 1 });
+    assert.deepEqual(result.counts, { eligiblePreDedup: 2, duplicateCollapsed: 0, acceptedPostDedup: 2, acceptedPrimary: 2 });
     assert.equal(result.venueBranches.length, 1);
     const events = JSON.parse(readFileSync(join(runDir, 'normalized/events.json'), 'utf8')).records;
-    assert.equal(events.length, 1);
-    assert.equal(events[0].sources.length, 2);
+    assert.equal(events.length, 2);
+    assert.equal(events[0].sources.length, 1);
     assert.match(events[0].sources[0].sourceId, /#2026-07-12#1$/);
     assert.equal(events[0].id, events[0].occurrenceId);
     assert.notEqual(events[0].occurrenceId, events[0].parentListingId);
     assert.notEqual(events[0].occurrenceId, events[0].mergedEventId);
-    assert.equal(events[0].sourceOccurrenceIds.length, 2);
+    assert.equal(events[0].sourceOccurrenceIds.length, 1);
     assert.equal(events[0].venueId, result.venueBranches[0].id);
     assert.match(events[0].contentHash, /^[a-f0-9]{64}$/);
     assert.deepEqual(result.sourceAccounting, {
       Catch: { occurrencesEmitted: 3, excludedOccurrences: 2, eligiblePreDedup: 1, duplicateCollapsed: 0, acceptedPrimary: 1 },
-      SISTIC: { occurrencesEmitted: 1, excludedOccurrences: 0, eligiblePreDedup: 1, duplicateCollapsed: 1, acceptedPrimary: 0 }
+      SISTIC: { occurrencesEmitted: 1, excludedOccurrences: 0, eligiblePreDedup: 1, duplicateCollapsed: 0, acceptedPrimary: 1 }
     });
     const decisions = JSON.parse(readFileSync(join(runDir, 'normalized/dedup-decisions.json'), 'utf8')).records;
     assert.ok(decisions.every((decision) => decision.primarySource));
@@ -364,6 +546,61 @@ test('code normalizer filters, deduplicates, preserves provenance, and creates v
   } finally {
     rmSync(runDir, { recursive: true, force: true });
   }
+});
+
+test('sufficient editorial records normalize with provenance, optional fields, off-map review, and exact accounting', () => {
+  const runDir = resolve(tmpdir(), `event-normalizer-editorial-${process.pid}-${Date.now()}`);
+  mkdirSync(join(runDir, 'raw/honeycombers/discoveries'), { recursive: true });
+  const recordRef = 'raw/honeycombers/discoveries/art.json#/records/0';
+  writeFileSync(join(runDir, 'raw/honeycombers/discoveries/art.json'), JSON.stringify({ schemaVersion: '1.0', records: [{
+    recordType: 'discovery', discoveryRecordId: 'honeycombers:art-night', sourceId: 'honeycombers:art-night',
+    title: 'Future Art Night', dateText: '20 December 2027', timeText: null, venue: 'National Gallery Singapore', scope: 'Singapore',
+    detailUrl: 'https://thehoneycombers.com/singapore/event/art-night', schedule: { kind: 'exact', displayText: '20 December 2027' },
+    publicPlacement: 'off_map', mappingStatus: 'pending_review', lifecycleState: 'active', evidenceLevel: 'editorial_authoritative',
+    primaryEvidenceId: 'honeycombers:art-night', sourceContributions: [{ sourceRecordId: 'honeycombers:art-night', freshness: 'current', fields: ['title', 'schedule', 'location'] }],
+  }] }));
+  const state = { sources: { Honeycombers: { status: 'success', sourceRole: 'discovery', operatingMode: 'required', invalidSourceRecordRefs: [], processedSourceRecordRefs: [recordRef] } } };
+  try {
+    const result = normalizeRun({ runDir, state, run: { runId: 'run-a', window: singaporeWindow('2026-07-18') } });
+    assert.deepEqual(result.counts, { eligiblePreDedup: 1, duplicateCollapsed: 0, acceptedPostDedup: 1, acceptedPrimary: 1 });
+    assert.equal(result.venueBranches.length, 1, 'pending exact-building review remains resolvable while publicly off-map');
+    const [event] = JSON.parse(readFileSync(join(runDir, 'normalized/events.json'), 'utf8')).records;
+    assert.deepEqual([event.publicPlacement, event.mappingStatus, event.evidenceLevel, event.timeText], ['off_map', 'pending_review', 'editorial_authoritative', null]);
+    assert.deepEqual(event.supportingDiscoveryIds, ['honeycombers:art-night']);
+    assert.equal(event.provenanceRefs[0], recordRef);
+    assert.deepEqual(summarizeEvidenceLevels([event]), { uniqueActivities: 1, levels: { editorial_authoritative: 1 }, upgrades: {} });
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
+});
+
+test('normalizer collapses an all-day duplicate into the more precise timed occurrence', () => {
+  const runDir = resolve(tmpdir(), `event-normalizer-schedule-precision-${process.pid}-${Date.now()}`);
+  mkdirSync(join(runDir, 'raw/catch/details'), { recursive: true });
+  const record = (sourceId, performance) => ({
+    schemaVersion: '1.0', runId: 'run-a', counts: { records: 1 }, records: [{
+      adapterVersion: '1.0', listingPage: 1, detailUrl: `https://example.com/${sourceId}`, sourceId,
+      title: 'Same Exhibition', mode: 'physical', dateText: '2026-07-18', timeText: null,
+      venue: 'Museum', performances: [performance]
+    }]
+  });
+  writeFileSync(join(runDir, 'raw/catch/details/all-day.json'), JSON.stringify(record('all-day', {
+    startDateTime: null, endDateTime: null, dateText: '2026-07-18', timeText: 'Full day'
+  })));
+  writeFileSync(join(runDir, 'raw/catch/details/timed.json'), JSON.stringify(record('timed', {
+    startDateTime: '2026-07-18T10:00:00+08:00', endDateTime: '2026-07-18T19:00:00+08:00',
+    dateText: '2026-07-18', timeText: '10:00 - 19:00'
+  })));
+  const state = { sources: { Catch: { status: 'success', invalidSourceRecordRefs: [], processedSourceRecordRefs: [
+    'raw/catch/details/all-day.json#/records/0', 'raw/catch/details/timed.json#/records/0'
+  ] } } };
+  try {
+    const result = normalizeRun({ runDir, state, run: { runId: 'run-a', window: singaporeWindow('2026-07-18') } });
+    assert.deepEqual(result.counts, { eligiblePreDedup: 2, duplicateCollapsed: 1, acceptedPostDedup: 1, acceptedPrimary: 1 });
+    const [event] = JSON.parse(readFileSync(join(runDir, 'normalized/events.json'), 'utf8')).records;
+    assert.equal(event.startsAt, '2026-07-18T10:00:00+08:00');
+    assert.equal(event.timeText, '10:00 - 19:00');
+    assert.equal(event.allDay, false);
+    assert.equal(event.sourceOccurrenceIds.length, 2);
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
 test('normalizer retains undated venue events and audits partial records without a venue', () => {
@@ -383,14 +620,34 @@ test('normalizer retains undated venue events and audits partial records without
   try {
     const result = normalizeRun({ runDir, state, run: { runId: 'run-a', window: singaporeWindow('2026-07-11') } });
     assert.equal(result.counts.acceptedPostDedup, 1);
-    assert.equal(result.venueBranches.length, 1);
+    assert.equal(result.venueBranches.length, 0);
     const events = JSON.parse(readFileSync(join(runDir, 'normalized/events.json'), 'utf8')).records;
     assert.equal(events[0].dateText, null);
+    assert.equal(events[0].lifecycleState, 'held');
     const excluded = JSON.parse(readFileSync(join(runDir, 'normalized/excluded.json'), 'utf8')).records;
     assert.equal(excluded[0].reasonCode, 'missing_venue');
   } finally {
     rmSync(runDir, { recursive: true, force: true });
   }
+});
+
+test('normalizer retains open-schedule and non-specific-venue activities without title hardcoding while excluding overseas occurrences', () => {
+  const runDir = resolve(tmpdir(), `event-normalizer-eligibility-${process.pid}-${Date.now()}`);
+  mkdirSync(join(runDir, 'raw/fever/details'), { recursive: true });
+  const records = [
+    { sourceId: 'a', title: 'Images of Singapore by Madame Tussauds', dateText: '18 Jul 2026', venue: 'Madame Tussauds Singapore' },
+    { sourceId: 'b', title: 'Guided Cycling Food Tour', dateText: 'daily', venue: 'Tour Office' },
+    { sourceId: 'c', title: 'Special Concert', dateText: '18 Jul 2026', venue: 'Various Venues' },
+    { sourceId: 'd', title: 'Weekend Festival', dateText: '18 Jul 2026', venue: 'Johor Bahru, Malaysia' },
+    { sourceId: 'e', title: 'One Night Only', dateText: '18 Jul 2026', venue: 'The Arts House' }
+  ].map((record) => ({ adapterVersion: '1.0', listingPage: 1, detailUrl: `https://example.com/${record.sourceId}`, mode: 'physical', timeText: null, performances: [], ...record }));
+  writeFileSync(join(runDir, 'raw/fever/details/all.json'), JSON.stringify({ schemaVersion: '1.0', runId: 'run-a', records }));
+  const refs = records.map((_, index) => `raw/fever/details/all.json#/records/${index}`);
+  try {
+    const result = normalizeRun({ runDir, state: { sources: { Fever: { status: 'success', invalidSourceRecordRefs: [], processedSourceRecordRefs: refs } } }, run: { runId: 'run-a', window: singaporeWindow('2026-07-17') } });
+    assert.equal(result.counts.acceptedPostDedup, 4);
+    assert.deepEqual(JSON.parse(readFileSync(join(runDir, 'normalized/excluded.json'), 'utf8')).records.map((item) => item.reasonCode), ['outside_singapore']);
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
 test('normalizer upgrades legacy optional-field invalid records without refetching them', () => {
@@ -432,13 +689,18 @@ test('normalization checkpoints preserve unchanged venue stages and reset change
   assert.equal(changed.venues['venue-a'].stages.resolve.status, 'pending');
 });
 
-test('normalization rejects out-of-window events and mixed venue branches', () => {
+test('normalization retains future events, rejects unexplained expired events, and rejects mixed venue branches', () => {
   const window = singaporeWindow('2026-07-11');
   const base = {
     counts: { acceptedPrimary: 1 },
     venueBranches: [{ id: 'venue-a', venue: 'Venue A', eventIds: ['event-a'] }]
   };
-  assert.throws(() => validateNormalizedSemantics('', { records: [{ id: 'event-a', venue: 'Venue A', isOnline: false, dateText: '27 Oct 2026' }] }, base, window), /outside the run window/);
+  assert.doesNotThrow(() => validateNormalizedSemantics('', { records: [{ id: 'event-a', venue: 'Venue A', isOnline: false, dateText: '27 Oct 2026' }] }, base, window));
+  assert.throws(() => validateNormalizedSemantics('', { records: [{ id: 'event-a', venue: 'Venue A', isOnline: false, dateText: '1 Jan 2026', lifecycleState: 'active' }] }, base, window), /ended before the run/);
+  assert.doesNotThrow(() => validateNormalizedSemantics('', { records: [{
+    id: 'event-a', venue: 'Venue A', isOnline: false, dateText: 'gates open in 1 June 2026',
+    schedule: { kind: 'selectable', start: null, end: null, finalKnownOccurrence: null }, lifecycleState: 'active'
+  }] }, base, window), 'an opening date is not a selectable activity final date');
   assert.doesNotThrow(() => validateNormalizedSemantics('', {
     records: [{ id: 'undated', venue: 'Venue A', isOnline: false, dateText: null }]
   }, {
@@ -483,10 +745,9 @@ test('highlight success requires a tileset and every referenced tile on disk', (
   rmSync(root, { recursive: true, force: true });
 });
 
-test('POI extractor stages and verifies an exact GML identity from a fixture b3dm', async () => {
+test('POI extractor preserves exact GML identities when source tiles share a basename', async () => {
   const fixtureRoot = resolve(tmpdir(), `poi-extractor-fixture-${process.pid}-${Date.now()}`), sourceCache = join(fixtureRoot, 'source');
-  const sourceTile = 'tiles/1/0/0.b3dm', sourcePath = join(sourceCache, '1/0/0.b3dm'), publishRoot = join(fixtureRoot, 'publish');
-  mkdirSync(dirname(sourcePath), { recursive: true });
+  const sourceTiles = ['tiles/1/0/0.b3dm', 'tiles/2/0/0.b3dm'], publishRoot = join(fixtureRoot, 'publish');
   const document = new Document(), buffer = document.createBuffer();
   const primitive = document.createPrimitive()
     .setAttribute('POSITION', document.createAccessor().setType(Accessor.Type.VEC3).setArray(new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0])).setBuffer(buffer))
@@ -495,13 +756,19 @@ test('POI extractor stages and verifies an exact GML identity from a fixture b3d
   document.createScene().addChild(document.createNode().setMesh(document.createMesh().addPrimitive(primitive)));
   const glb = Buffer.from(await new NodeIO().writeBinary(document));
   const padded = (value) => { let json = JSON.stringify(value); while (json.length % 8) json += ' '; return Buffer.from(json); };
-  const feature = padded({ BATCH_LENGTH: 1 }), batch = padded({ 'gml:id': ['gml-1'], 'gml:name': ['HALL'] });
-  const header = Buffer.alloc(28); header.write('b3dm'); header.writeUInt32LE(1, 4); header.writeUInt32LE(28 + feature.length + batch.length + glb.length, 8);
-  header.writeUInt32LE(feature.length, 12); header.writeUInt32LE(0, 16); header.writeUInt32LE(batch.length, 20); header.writeUInt32LE(0, 24);
-  writeFileSync(sourcePath, Buffer.concat([header, feature, batch, glb]));
+  const writeSourceTile = (sourceTile, gmlId) => {
+    const sourcePath = join(sourceCache, sourceTile.replace(/^tiles\//, ''));
+    mkdirSync(dirname(sourcePath), { recursive: true });
+    const feature = padded({ BATCH_LENGTH: 1 }), batch = padded({ 'gml:id': [gmlId], 'gml:name': ['HALL'] });
+    const header = Buffer.alloc(28); header.write('b3dm'); header.writeUInt32LE(1, 4); header.writeUInt32LE(28 + feature.length + batch.length + glb.length, 8);
+    header.writeUInt32LE(feature.length, 12); header.writeUInt32LE(0, 16); header.writeUInt32LE(batch.length, 20); header.writeUInt32LE(0, 24);
+    writeFileSync(sourcePath, Buffer.concat([header, feature, batch, glb]));
+  };
+  writeSourceTile(sourceTiles[0], 'gml-1');
+  writeSourceTile(sourceTiles[1], 'gml-2');
   const tilesetPath = join(fixtureRoot, 'tileset.json'), registryPath = join(fixtureRoot, 'registry.json');
-  writeFileSync(tilesetPath, JSON.stringify({ asset: { version: '1.0' }, root: { boundingVolume: { region: [0, 0, 1, 1, 0, 1] }, geometricError: 0, content: { uri: '1/0/0.b3dm' } } }));
-  writeFileSync(registryPath, JSON.stringify({ records: [{ id: 'hall', label: 'HALL', data: 'poi-tiles/hall/tileset.json', names: ['HALL'], tiles: { [sourceTile]: [0] } }] }));
+  writeFileSync(tilesetPath, JSON.stringify({ asset: { version: '1.0' }, root: { boundingVolume: { region: [0, 0, 1, 1, 0, 1] }, geometricError: 1, children: sourceTiles.map((sourceTile) => ({ boundingVolume: { region: [0, 0, 1, 1, 0, 1] }, geometricError: 0, content: { uri: sourceTile.replace(/^tiles\//, '') } })) } }));
+  writeFileSync(registryPath, JSON.stringify({ records: [{ id: 'hall', label: 'HALL', data: 'poi-tiles/hall/tileset.json', names: ['HALL'], tiles: Object.fromEntries(sourceTiles.map((sourceTile) => [sourceTile, [0]])) }] }));
   try {
     const extracted = spawnSync(process.execPath, ['scripts/extract-cbd-poi-tilesets.mjs', '--registry', registryPath, '--source-cache', sourceCache, '--source-tileset', tilesetPath,
       '--publish-root', publishRoot, '--work-root', join(fixtureRoot, 'work')], { cwd: ROOT, encoding: 'utf8', timeout: 30000 });
@@ -509,8 +776,9 @@ test('POI extractor stages and verifies an exact GML identity from a fixture b3d
     const verified = spawnSync(process.execPath, ['scripts/verify-poi-background-separation.mjs', '--registry', registryPath, '--root', publishRoot, '--source-cache', sourceCache], { cwd: ROOT, encoding: 'utf8' });
     assert.equal(verified.status, 0, verified.stderr);
     const manifest = JSON.parse(readFileSync(join(publishRoot, 'public/poi-tiles/hall/extraction-manifest.json'), 'utf8'));
-    assert.deepEqual(manifest.tiles[0].gmlIds, ['gml-1']);
-    assert.ok(manifest.tiles[0].poiTriangles > 0);
+    assert.deepEqual(manifest.tiles.flatMap(({ gmlIds }) => gmlIds).sort(), ['gml-1', 'gml-2']);
+    assert.equal(new Set(manifest.tiles.map(({ poiFile }) => poiFile)).size, 2);
+    assert.ok(manifest.tiles.every(({ poiTriangles }) => poiTriangles > 0));
   } finally { rmSync(fixtureRoot, { recursive: true, force: true }); }
 });
 
@@ -580,6 +848,15 @@ test('resolution cache reuses an exact stable event set when enrichment changes 
   };
   assert.equal(reusableResolutionEntry({ entries: [entry] }, 'various venues', 'new-hash', ['event-a']), entry);
   assert.equal(reusableResolutionEntry({ entries: [entry] }, 'various venues', 'new-hash', ['event-b']), null);
+});
+
+test('needs-review cache is not reused when current OneMap alternatives are missing', () => {
+  const entry = {
+    normalizedVenue: 'hall', evidenceHash: 'same-hash',
+    result: { inputEventIds: ['event-a'], resolutionStatus: 'needs_review', competingCandidates: [{ gmlId: 'one' }] }
+  };
+  assert.equal(reusableResolutionEntry({ entries: [entry] }, 'hall', 'same-hash', ['event-a'], ['one']), entry);
+  assert.equal(reusableResolutionEntry({ entries: [entry] }, 'hall', 'same-hash', ['event-a'], ['one', 'two']), null);
 });
 
 test('not-mappable recovery cannot override an exact local OneMap building candidate', () => {
@@ -740,22 +1017,29 @@ test('a listing record with no detail URL can be accounted for as invalid', () =
   }
 });
 
-test('source counters derive from fixture dates and modes', () => {
+test('source counters derive from the shared activity policy, dates, and modes', () => {
   const runDir = resolve(tmpdir(), `event-pipeline-source-semantics-${process.pid}`);
   mkdirSync(resolve(runDir, 'raw/source/details'), { recursive: true });
   writeFileSync(resolve(runDir, 'run.json'), JSON.stringify({ window: singaporeWindow('2026-07-11') }));
-  const refs = ['physical', 'online', 'unknown', 'membership', 'undated'].map((name, index) => {
+  const refs = ['physical', 'online', 'unknown', 'membership', 'undated', 'promotion', 'ordinary-attraction'].map((name, index) => {
     const path = `raw/source/details/${name}.json`;
     writeFileSync(resolve(runDir, path), JSON.stringify({ records: [{
-      mode: ['membership', 'undated'].includes(name) ? 'physical' : name, venue: ['physical', 'membership', 'undated'].includes(name) ? 'Venue' : null,
+      title: `Test ${name}`,
+      mode: ['membership', 'undated', 'promotion', 'ordinary-attraction'].includes(name) ? 'physical' : name,
+      venue: ['physical', 'membership', 'undated', 'promotion', 'ordinary-attraction'].includes(name) ? 'Venue' : null,
       recordType: name === 'membership' ? 'membership_offer' : 'event',
-      dateText: name === 'undated' ? null : index === 0 ? '12 Jul 2026' : '13 Jul 2026', performances: []
+      dateText: name === 'undated' ? null : index === 0 ? '12 Jul 2026' : '13 Jul 2026',
+      purePromotion: name === 'promotion',
+      generalAdmission: name === 'ordinary-attraction',
+      continuouslyAvailable: name === 'ordinary-attraction',
+      permanentFixedAttraction: name === 'ordinary-attraction',
+      performances: []
     }] }));
     return `${path}#/records/0`;
   });
   const result = {
     status: 'success', processedSourceRecordRefs: refs,
-    counts: { occurrencesEmitted: 5, excludedOccurrences: 3, eligiblePreDedup: 2 }
+    counts: { occurrencesEmitted: 7, excludedOccurrences: 5, eligiblePreDedup: 2 }
   };
   try {
     assert.doesNotThrow(() => validateSourceSemantics(runDir, {}, result));
@@ -921,15 +1205,23 @@ test('CLI resume invalidates tampered artifacts and resets downstream state', ()
 });
 
 test('CLI finalization distinguishes partial and fully blocked outcomes', () => {
-  const outputRoot = resolve(tmpdir(), `event-pipeline-outcomes-${process.pid}`), env = { ...process.env, EVENT_PIPELINE_OUTPUT_ROOT: outputRoot };
+  const outputRoot = resolve(tmpdir(), `event-pipeline-outcomes-${process.pid}`), adminDatabasePath = join(outputRoot, 'admin.sqlite');
+  const env = { ...process.env, EVENT_PIPELINE_OUTPUT_ROOT: outputRoot, ADMIN_DATABASE_PATH: adminDatabasePath };
+  const reviewRepository = new AdminRepository({ databasePath: adminDatabasePath });
+  const staleReview = new AdminService({ repository: reviewRepository }).createVenueReview({
+    venueId: 'venue-from-an-older-run', evidenceHash: 'f'.repeat(64), evidenceSnapshot: { venue: 'Old venue' }, candidates: [],
+  });
+  reviewRepository.close();
   let runIndex = 0;
   const makeRun = (sources, normalizationStatus) => {
     runIndex += 1;
     const started = spawnSync(process.execPath, [SCRIPT, 'start', '--date', `2099-01-0${runIndex}`], { cwd: ROOT, encoding: 'utf8', env });
     const { runId } = JSON.parse(started.stdout), statePath = join(outputRoot, runId, 'orchestrator-state.json');
     const state = JSON.parse(readFileSync(statePath, 'utf8'));
+    for (const source of Object.values(state.sources)) source.status = 'success';
     Object.assign(state.sources, sources);
     state.normalization = { status: normalizationStatus, counts: {}, artifactRefs: [], venueBranches: [], error: normalizationStatus === 'failed' ? 'No successful sources' : null };
+    state.deduplication = { status: 'success', counts: {}, artifactRefs: [], blockingReviews: [], error: null };
     state.resolutionPreparation = { status: 'success', artifactRefs: [], error: null };
     state.verification = normalizationStatus === 'success' ? { status: 'success', build: { status: 'success' }, eventUi: { status: 'success' } } : { status: 'pending' };
     writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`);
@@ -939,6 +1231,13 @@ test('CLI finalization distinguishes partial and fully blocked outcomes', () => 
     const partialRun = makeRun({ 'Catch.sg': { status: 'success' }, SISTIC: { status: 'blocked', error: 'Unavailable' } }, 'success');
     const partial = spawnSync(process.execPath, [SCRIPT, 'finalize', '--run', partialRun], { cwd: ROOT, encoding: 'utf8', env });
     assert.equal(JSON.parse(partial.stdout).status, 'partial');
+    const reconciled = new AdminRepository({ databasePath: adminDatabasePath });
+    assert.equal(reconciled.getVenueReview(staleReview.reviewId).status, 'superseded');
+    reconciled.close();
+    const partialStatus = JSON.parse(readFileSync(join(outputRoot, partialRun, 'status.json'), 'utf8'));
+    assert.deepEqual(partialStatus.adminReviewReconciliation, {
+      activeVenueIds: [], superseded: 1, pending: 0, deferred: 0, reconciledAt: partialStatus.adminReviewReconciliation.reconciledAt,
+    });
     const blockedRun = makeRun({ 'Catch.sg': { status: 'blocked', error: 'Unavailable' }, SISTIC: { status: 'failed', error: 'Failed' } }, 'failed');
     const blocked = spawnSync(process.execPath, [SCRIPT, 'finalize', '--run', blockedRun], { cwd: ROOT, encoding: 'utf8', env });
     assert.equal(JSON.parse(blocked.stdout).status, 'failed');
@@ -982,7 +1281,7 @@ test('CLI staged frontend applies expiry even when a successful snapshot has no 
 test('CLI frontend planner classifies unchanged geometry and events as no-op', () => {
   const outputRoot = resolve(tmpdir(), `event-pipeline-noop-${process.pid}`);
   const currentPoisPath = join(outputRoot, 'current-pois.json'), currentLandmarksPath = join(outputRoot, 'current-landmarks.json');
-  const event = { id: 'event-a', title: 'Show', venue: 'Hall', dateText: '12 Jul 2026', coordinates: { lng: 103.85, lat: 1.29 }, venueVerified: true, sources: [] };
+  const event = { id: 'event-a', occurrenceId: 'event-a', identityAnchor: 'event-a', publishedEventId: 'event-a', title: 'Show', venue: 'Hall', dateText: '12 Jul 2026', coordinates: { lng: 103.85, lat: 1.29 }, venueVerified: true, publicPlacement: 'mapped', mappingStatus: 'approved', lifecycleState: 'active', sources: [] };
   const poi = { id: 'hall', label: 'HALL', data: 'poi-tiles/hall/tileset.json', names: ['HALL'], tiles: {} };
   const landmark = { id: 'hall', label: 'Hall', anchor: { lng: 103.85, lat: 1.29 }, events: [event] };
   mkdirSync(outputRoot, { recursive: true }); writeFileSync(currentPoisPath, JSON.stringify({ records: [poi] })); writeFileSync(currentLandmarksPath, JSON.stringify({ records: [landmark] }));
@@ -1246,6 +1545,18 @@ test('venue recovery checkpoint accepts authoritative location evidence and reje
   assert.equal(withAddressAuthority.supplementalEvidence.length, 1);
 });
 
+test('recovery wording may reject a building footprint without denying the page map pin', () => {
+  const evidence = {
+    schemaVersion: '1.0', venue: 'Expo Hall 10', addressCandidates: ['1 Expo Drive Singapore 486150'], postalCodes: ['486150'],
+    coordinateCandidates: [{ lat: 1.333, lng: 103.96, source: 'venue_official_map', recordRef: 'https://venue.example/map', evidenceField: 'official map pin' }],
+    evidenceInspected: [
+      { sourceType: 'venue_official', label: 'Venue', url: 'https://venue.example/map', query: 'hall 10 map', outcome: 'Official pin exists, but no Hall 10 footprint exists at this pin.', checkedAt: '2026-07-18T00:00:00Z' },
+      { sourceType: 'host_or_authority', label: 'Host', url: 'https://host.example/event', query: 'event venue', outcome: 'Lists Expo Hall 10 at 1 Expo Drive Singapore 486150.', checkedAt: '2026-07-18T00:00:00Z' }
+    ]
+  };
+  assert.doesNotThrow(() => validateVenueRecoveryEvidence(evidence, 'Expo Hall 10'));
+});
+
 test('venue recovery surfaces an address buried late in saved provider HTML', () => {
   const padding = '<li>Workshop material and admission guidance.</li>'.repeat(40);
   const clues = collectLocationClues(`<ul>${padding}<li>My Art Space@Istana Park. Address 31 Orchard Road, Singapore 238888.</li></ul>`);
@@ -1333,6 +1644,26 @@ test('reviewed recovery evidence replaces contaminated source location clues', (
   assert.deepEqual(preferAuthoritativeRecovery(['source'], [], []), ['source']);
 });
 
+test('saved location extraction ignores nearby and recommended carousel records', () => {
+  const values = [];
+  collectLocationStrings({ event: { address: 'Location: 1 Main Road Singapore 123456' }, nearbyEvents: [{ address: 'KELE, 2 Smith Street Singapore 058917' }] }, values);
+  assert.deepEqual(extractAddressEvidence(values).postalCodes, ['123456']);
+});
+
+test('saved location extraction ignores embedded editorial event guides', () => {
+  const values = [];
+  collectLocationStrings({
+    venue_name: { name: 'Palawan Green, Sentosa' },
+    articles_events: { articles: [{ description: 'Chicken Little at 100 Victoria St, #03-01, Singapore 188064' }] }
+  }, values);
+  assert.deepEqual(values, []);
+});
+
+test('saved location extraction truncates flat rendered recommendation carousels', () => {
+  const clues = collectLocationClues({ text: 'Location: Pasir Ris Park Carpark A\n\n## Similar experiences\nKELE - 2 Smith Street Singapore 058917' });
+  assert.doesNotMatch(JSON.stringify(clues), /058917|Smith Street|KELE/i);
+});
+
 test('venue recovery fills one unique verified-address host-building coordinate in code', async () => {
   const normalized = { addressCandidates: ['22 Lock Road #01-34, Gillman Barracks, Singapore 108939'], postalCodes: ['108939'], coordinateCandidates: [], evidenceInspected: [], notMappableEvidence: null };
   const result = await enrichRecoveryCoordinates(normalized, async () => ({
@@ -1342,6 +1673,19 @@ test('venue recovery fills one unique verified-address host-building coordinate 
   assert.deepEqual(result.coordinateCandidates, [{
     lat: 1.27927637476523, lng: 103.805116656454, source: 'onemap_public_exact_address',
     recordRef: 'https://www.onemap.gov.sg/example', evidenceField: '108939'
+  }]);
+});
+
+test('an exact OneMap address replaces a conflicting general map pin', async () => {
+  const normalized = await enrichRecoveryCoordinates({
+    addressCandidates: ['10 Exact Road Singapore 123456'], postalCodes: ['123456'],
+    coordinateCandidates: [{ lat: 1.31, lng: 103.81, source: 'venue_official_map' }], evidenceInspected: [], notMappableEvidence: null
+  }, async () => ({ requestUrl: 'https://www.onemap.gov.sg/api/common/elastic/search?searchVal=10%20Exact%20Road', selectedQuery: '10 Exact Road Singapore 123456', results: [
+    { address: '10 Exact Road Singapore 123456', searchValue: 'Exact Building', postalCode: '123456', latitude: 1.3001, longitude: 103.8002 }
+  ] }));
+  assert.deepEqual(normalized.coordinateCandidates, [{
+    lat: 1.3001, lng: 103.8002, source: 'onemap_public_exact_address',
+    recordRef: 'https://www.onemap.gov.sg/api/common/elastic/search?searchVal=10%20Exact%20Road', evidenceField: '10 Exact Road Singapore 123456'
   }]);
 });
 
@@ -1374,7 +1718,8 @@ test('provider pin recovery accepts only a clearly nearest OneMap building', () 
   const providerPlace = { sourceCoordinate: true };
   assert.equal(isPreciseProviderPin(providerPlace, { distanceMeters: 0.4 }, { distanceMeters: 18.9 }), true);
   assert.equal(isPreciseProviderPin(providerPlace, { distanceMeters: 8 }, { distanceMeters: 68 }), true);
-  assert.equal(isPreciseProviderPin(providerPlace, { distanceMeters: 1.5 }, { distanceMeters: 8 }), false);
+  assert.equal(isPreciseProviderPin(providerPlace, { distanceMeters: 1.5 }, { distanceMeters: 8 }), true);
+  assert.equal(isPreciseProviderPin(providerPlace, { distanceMeters: 1.5 }, { distanceMeters: 5.9 }), false);
   assert.equal(isPreciseProviderPin(providerPlace, { distanceMeters: 48 }, { distanceMeters: 59 }), false);
   assert.equal(isPreciseProviderPin(providerPlace, { distanceMeters: 56 }, { distanceMeters: 58 }), false);
   assert.equal(isPreciseProviderPin({}, { distanceMeters: 8 }, { distanceMeters: 68 }), false);

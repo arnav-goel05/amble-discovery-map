@@ -37,7 +37,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "1_0.b3dm"
+          "uri": "1_0-d9fd095e5f0e.b3dm"
         }
       },
       {
@@ -54,7 +54,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "1_1.b3dm"
+          "uri": "1_1-3704f146908e.b3dm"
         }
       },
       {
@@ -71,7 +71,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "1_2.b3dm"
+          "uri": "1_2-8e2dd18f9060.b3dm"
         }
       },
       {
@@ -88,7 +88,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "1_3.b3dm"
+          "uri": "1_3-c4a740176d49.b3dm"
         }
       },
       {
@@ -105,7 +105,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "1_4.b3dm"
+          "uri": "1_4-d99c50d9c97a.b3dm"
         }
       },
       {
@@ -122,7 +122,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "1_5.b3dm"
+          "uri": "1_5-95af35a28fa0.b3dm"
         }
       }
     ]

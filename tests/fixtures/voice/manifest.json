@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "1.0",
+  "fixtureSetId": "voice-feature-004-v1",
+  "mode": "mock-only",
+  "liveProviderCallsAllowed": false,
+  "containsAudioBytes": false,
+  "containsPersonalData": false,
+  "files": [
+    {
+      "id": "audio-metadata",
+      "path": "audio-metadata.json",
+      "covers": [
+        "supported input",
+        "bounded chunks",
+        "unsupported format",
+        "oversized input"
+      ]
+    },
+    {
+      "id": "transcript-provider-events",
+      "path": "transcript-provider-events.json",
+      "covers": [
+        "partial transcript",
+        "final transcript",
+        "assistant fallback",
+        "sanitized usage"
+      ]
+    },
+    {
+      "id": "action-lifecycle",
+      "path": "action-lifecycle.json",
+      "covers": [
+        "reversible action",
+        "consequential confirmation",
+        "rejection",
+        "stale context"
+      ]
+    },
+    {
+      "id": "approved-candidates",
+      "path": "approved-candidates.json",
+      "covers": [
+        "approved facts",
+        "area grouping",
+        "evidence references",
+        "transit-neutral ranking"
+      ]
+    },
+    {
+      "id": "vague-discovery",
+      "path": "vague-discovery.json",
+      "covers": [
+        "area-first ranking",
+        "grounded reasons",
+        "trade-offs",
+        "clarification"
+      ]
+    },
+    {
+      "id": "budget-usage",
+      "path": "budget-usage.json",
+      "covers": ["reservation", "settlement", "held usage", "cap exhaustion"]
+    },
+    {
+      "id": "terminal-errors",
+      "path": "terminal-errors.json",
+      "covers": ["public errors", "terminal cleanup reasons", "safe messages"]
+    }
+  ]
+}

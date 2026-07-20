@@ -3,7 +3,7 @@ export function isPreciseProviderPin(place, best, second) {
     place?.sourceCoordinate
     && best
     && (
-      (best.distanceMeters <= 2 && (!second || second.distanceMeters - best.distanceMeters >= 10))
+      (best.distanceMeters <= 2 && (!second || second.distanceMeters - best.distanceMeters >= 5))
       || (best.distanceMeters <= 35 && (!second || second.distanceMeters - best.distanceMeters >= 30))
     )
   );

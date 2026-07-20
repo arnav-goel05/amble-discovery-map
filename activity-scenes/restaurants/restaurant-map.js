@@ -8,6 +8,68 @@ const SEARCH_SCREEN_INSET = 0.82;
 
 const emptyCollection = () => ({ type: "FeatureCollection", features: [] });
 
+const cleanText = (value) => String(value ?? "").trim();
+const cleanList = (value) => [...new Set(
+  (Array.isArray(value) ? value : String(value ?? "").split(/[;,]/))
+    .map((item) => cleanText(item).toLocaleLowerCase())
+    .filter(Boolean),
+)];
+
+export function restaurantCandidate(restaurant, {
+  sourceSnapshotId,
+  sourceEvidenceRefs = [],
+} = {}) {
+  const id = cleanText(restaurant?.id);
+  const name = cleanText(restaurant?.name);
+  const areaId = cleanText(restaurant?.areaId || restaurant?.subzoneCode);
+  const longitude = Number(restaurant?.longitude);
+  const latitude = Number(restaurant?.latitude);
+  if (!id || !name || !areaId || !cleanText(sourceSnapshotId)
+    || !Number.isFinite(longitude) || !Number.isFinite(latitude)) return null;
+
+  const attributes = {
+    name,
+    category: cleanText(restaurant.category) || "other",
+  };
+  const cuisine = cleanList(restaurant.cuisine);
+  const dietary = cleanList(restaurant.dietary);
+  if (cuisine.length) attributes.cuisine = cuisine;
+  if (dietary.length) attributes.dietary = dietary;
+  for (const [key, value] of [
+    ["address", restaurant.address],
+    ["openingHours", restaurant.openingHours],
+    ["takeaway", restaurant.takeaway],
+    ["delivery", restaurant.delivery],
+  ]) {
+    const text = cleanText(value);
+    if (text) attributes[key] = text;
+  }
+
+  const evidenceRefs = [...new Set([
+    ...sourceEvidenceRefs,
+    restaurant.osm?.url,
+    restaurant.sourceUrl,
+  ].map(cleanText).filter(Boolean))].sort();
+  if (!evidenceRefs.length) return null;
+
+  return {
+    candidateId: `restaurant:${id}`,
+    candidateType: "restaurant",
+    sourceSnapshotId: cleanText(sourceSnapshotId),
+    areaId,
+    coordinates: [longitude, latitude],
+    attributes,
+    evidenceRefs,
+  };
+}
+
+export function restaurantCandidates(restaurants, options = {}) {
+  return (Array.isArray(restaurants) ? restaurants : [])
+    .map((restaurant) => restaurantCandidate(restaurant, options))
+    .filter(Boolean)
+    .sort((left, right) => left.candidateId.localeCompare(right.candidateId));
+}
+
 function restaurantFeature(restaurant) {
   return {
     type: "Feature",

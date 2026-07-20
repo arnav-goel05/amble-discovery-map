@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "maritime-xperiential-museum",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:14.925Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/26/1_0.b3dm",
+      "sourceSha256": "9f61b639932e575a4dbee67a1a6ba7a5b57c3970f1772dbfc53aac5dac21ed7d",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "gmlNames": [
+        "MARITIME XPERIENTIAL MUSEUM"
+      ],
+      "poiFile": "1_0-aeb7370c5692.b3dm",
+      "poiSha256": "d17d8bf2066f4e8dcfa607e6a1c733b026ccee3c51abeeef8c3986f71e62f2c2",
+      "poiTriangles": 916,
+      "backgroundFile": "optimized-tiles/6/26/1_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "backgroundSha256": "cff63d78f88b2835260dbd6004c8c3a4c8a30664267f2e55ae017e8d4d3506e6",
+      "backgroundTriangles": 25392
+    },
+    {
+      "sourceTile": "tiles/6/26/1_1.b3dm",
+      "sourceSha256": "ad5d3699f27a8f23d094426cc1a82b43cb225bf6de71c1a8b6828e8acf774567",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "gmlNames": [
+        "MARITIME XPERIENTIAL MUSEUM"
+      ],
+      "poiFile": "1_1-489e3dd1130c.b3dm",
+      "poiSha256": "d6e1a872f54f41d1ab2d156aef78ee68ca190c49a1f93fe6f342c487e73c8894",
+      "poiTriangles": 916,
+      "backgroundFile": "optimized-tiles/6/26/1_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "backgroundSha256": "c84bedbde32c4efe5333bfb2754bea92d4cb4b808ace4919988e0a95c26181ff",
+      "backgroundTriangles": 25392
+    },
+    {
+      "sourceTile": "tiles/6/26/1_2.b3dm",
+      "sourceSha256": "f0391f881fdbba0620159f5c733d6d93560293f390565e8c32b56afa74ea4d5d",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "gmlNames": [
+        "MARITIME XPERIENTIAL MUSEUM"
+      ],
+      "poiFile": "1_2-9ffb0bf043e9.b3dm",
+      "poiSha256": "72f4745c132b4574b13da338b88c8506b631ba68730e564ed33c28d37ce3e940",
+      "poiTriangles": 916,
+      "backgroundFile": "optimized-tiles/6/26/1_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "backgroundSha256": "4700203fe25388a068bf74cb092bac52b8e86ff99b7865b25e8352c459f86af3",
+      "backgroundTriangles": 25392
+    },
+    {
+      "sourceTile": "tiles/6/26/1_3.b3dm",
+      "sourceSha256": "9b7639f32983efc7acba6358d279d302089b0e7510fe1018d596e013fe4735f0",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "gmlNames": [
+        "MARITIME XPERIENTIAL MUSEUM"
+      ],
+      "poiFile": "1_3-82653fae5dcc.b3dm",
+      "poiSha256": "55cc1f41d9f2ea9e8b32a109ec1603c2b6520774e11b2fbd6d1567cc0acd873d",
+      "poiTriangles": 916,
+      "backgroundFile": "optimized-tiles/6/26/1_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "backgroundSha256": "d41d857251ad16fb16685a0d3fbf17235cc8499720dec2c7732078fd4c95d0e6",
+      "backgroundTriangles": 25392
+    },
+    {
+      "sourceTile": "tiles/6/26/1_4.b3dm",
+      "sourceSha256": "881ea934a63d577555a77f51377aa666ee9e3550b2ad319be959933cbc318675",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "gmlNames": [
+        "MARITIME XPERIENTIAL MUSEUM"
+      ],
+      "poiFile": "1_4-95b4abe782df.b3dm",
+      "poiSha256": "94e0c7a93880377cabb8efde519c0b5d6b3f51de01757eb6df6206020beaefb0",
+      "poiTriangles": 916,
+      "backgroundFile": "optimized-tiles/6/26/1_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "backgroundSha256": "ce2de43914b38fcbe8883aaf62ee554bb951a83da5dc7aa5cc983d435a52d5de",
+      "backgroundTriangles": 25392
+    },
+    {
+      "sourceTile": "tiles/6/26/1_5.b3dm",
+      "sourceSha256": "df395970d66c86a6ae6a23cb5d2321b518a11d346aebc23f252d0961f0f85434",
+      "originalBatchIds": [
+        24
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "gmlNames": [
+        "MARITIME XPERIENTIAL MUSEUM"
+      ],
+      "poiFile": "1_5-499a29286ba7.b3dm",
+      "poiSha256": "48bc679e797837c761846a9a6d78af4ddf1655920bf03bc79ab4b552c76b85be",
+      "poiTriangles": 916,
+      "backgroundFile": "optimized-tiles/6/26/1_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "backgroundSha256": "1be0cea89d51c10faeb2757faddfd6c2981eecf9769f6ec691309d9b68bca681",
+      "backgroundTriangles": 25392
+    }
+  ]
+}

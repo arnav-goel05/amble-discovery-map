@@ -25,7 +25,19 @@ function indexLandmarks(landmarks, label) {
     const events = Array.isArray(landmark.events) ? landmark.events : [];
     const eventIds = events.map((event) => event?.id);
     if (eventIds.some((id) => !id) || new Set(eventIds).size !== eventIds.length) throw new Error(`Duplicate event identity in landmark ${landmark.id}`);
-    result.set(landmark.id, landmark);
+    const logical = new Map();
+    for (const event of events) {
+      const key = event.publishedEventId ?? event.identityAnchor ?? event.id;
+      const current = logical.get(key);
+      if (!current) logical.set(key, event);
+      else logical.set(key, {
+        ...current,
+        sessions: [...new Map([...(current.sessions ?? []), ...(event.sessions ?? [])].map((item) => [item.sessionId ?? JSON.stringify(item), item])).values()],
+        venueOccurrences: [...new Map([...(current.venueOccurrences ?? []), ...(event.venueOccurrences ?? [])].map((item) => [item.venueOccurrenceId ?? JSON.stringify(item), item])).values()],
+        sourceContributions: [...new Map([...(current.sourceContributions ?? []), ...(event.sourceContributions ?? [])].map((item) => [item.sourceRecordId ?? JSON.stringify(item), item])).values()],
+      });
+    }
+    result.set(landmark.id, logical.size === events.length ? landmark : { ...landmark, events: [...logical.values()] });
   }
   return result;
 }

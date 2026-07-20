@@ -2,6 +2,9 @@ import { APPROVED_SNAPSHOT } from "./generated-approved-snapshot.mjs";
 import { r2TileResponse, tileObjectKey } from "./workers-vpc-proxy.mjs";
 import { dealResponse } from "./restaurant-deals.mjs";
 import { canonicalRedirect, discoveryResponse } from "./site-discovery.mjs";
+import VOICE_POLICY from "../data/realtime-voice-policy.json" with { type: "json" };
+import { createRealtimeRelay } from "./realtime-relay.mjs";
+import { D1VoiceBudgetRepository } from "./voice-budget-repository.mjs";
 
 const PRIVATE_PATH = /^(?:\/admin\.html|\/api\/admin(?:\/|$))/;
 const RESTAURANT_TTL_MS = 24 * 60 * 60 * 1000;
@@ -9,11 +12,30 @@ const OVERPASS_ENDPOINTS = [
   "https://overpass-api.de/api/interpreter",
   "https://overpass.kumi.systems/api/interpreter",
 ];
+const VOICE_RELAYS = new WeakMap();
+const APPROVED_VOICE_CANDIDATE_IDS = APPROVED_SNAPSHOT.assets[
+  "landmarks.json"
+].flatMap((landmark) =>
+  (landmark.events || []).flatMap((event) => [event.id, `event:${event.id}`]),
+);
+const APPROVED_VOICE_CANDIDATES = APPROVED_SNAPSHOT.assets[
+  "landmarks.json"
+].flatMap((landmark) =>
+  (landmark.events || []).map((event) => ({
+    candidateId: `event:${event.id}`,
+    candidateType: "event",
+    name: event.title,
+    areaId: landmark.areaId || landmark.subzoneId || null,
+    venue: landmark.label,
+    category: event.category || null,
+    price: event.price || null,
+  })),
+);
 const SECURITY_HEADERS = {
   "content-security-policy":
     "default-src 'self'; img-src 'self' data: https://*.basemaps.cartocdn.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self' https://*.basemaps.cartocdn.com https://demotiles.maplibre.org; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
   "cross-origin-resource-policy": "same-origin",
-  "permissions-policy": "camera=(), microphone=(), geolocation=(self)",
+  "permissions-policy": "camera=(), microphone=(self), geolocation=(self)",
   "referrer-policy": "strict-origin-when-cross-origin",
   "x-content-type-options": "nosniff",
   "x-frame-options": "DENY",
@@ -56,6 +78,183 @@ function successEnvelope(
 
 function errorEnvelope(code, message) {
   return { schemaVersion: "1.0", error: { code, message } };
+}
+
+async function voiceSessionAdmissionResponse(request, env) {
+  const url = new URL(request.url);
+  if (request.method !== "POST") {
+    return json(
+      errorEnvelope(
+        "invalid_request",
+        "Voice session admission requires POST.",
+      ),
+      { status: 405 },
+    );
+  }
+  if (request.headers.get("origin") !== url.origin) {
+    return json(
+      errorEnvelope(
+        "origin_rejected",
+        "Voice sessions require the application origin.",
+      ),
+      { status: 403 },
+    );
+  }
+  const contentType = String(request.headers.get("content-type") || "")
+    .split(";", 1)[0]
+    .trim()
+    .toLowerCase();
+  if (contentType !== "application/json") {
+    return json(
+      errorEnvelope(
+        "invalid_request",
+        "Voice session requests must use application/json.",
+      ),
+      { status: 415 },
+    );
+  }
+  const bytes = await request.arrayBuffer();
+  if (bytes.byteLength > 64 * 1024) {
+    return json(
+      errorEnvelope("invalid_request", "Voice session request is too large."),
+      { status: 413 },
+    );
+  }
+  let body;
+  try {
+    body = JSON.parse(new TextDecoder().decode(bytes));
+  } catch {
+    return json(
+      errorEnvelope(
+        "invalid_request",
+        "Voice session request must be valid JSON.",
+      ),
+      { status: 400 },
+    );
+  }
+  if (
+    !body ||
+    typeof body !== "object" ||
+    Array.isArray(body) ||
+    body.protocolVersion !== "1.0" ||
+    body.disclosureAccepted !== true
+  ) {
+    return json(
+      errorEnvelope(
+        "invalid_request",
+        "Voice disclosure and protocol acceptance are required.",
+      ),
+      { status: 400 },
+    );
+  }
+  if (env.REALTIME_ENABLED !== "true") {
+    return json(
+      errorEnvelope(
+        "voice_disabled",
+        "Voice is currently unavailable. Please try again.",
+      ),
+      { status: 503 },
+    );
+  }
+  if (!env.RUNTIME_DB || !env.OPENAI_API_KEY) {
+    return json(
+      errorEnvelope(
+        "voice_disabled",
+        "Voice is currently unavailable. Please try again.",
+      ),
+      { status: 503 },
+    );
+  }
+  try {
+    let relay = VOICE_RELAYS.get(env);
+    if (!relay) {
+      relay = createRealtimeRelay({
+        policy: VOICE_POLICY,
+        budgetRepository: new D1VoiceBudgetRepository(env.RUNTIME_DB),
+        apiKey: env.OPENAI_API_KEY,
+        approvedCandidateIds: APPROVED_VOICE_CANDIDATE_IDS,
+        approvedCandidates: APPROVED_VOICE_CANDIDATES,
+      });
+      VOICE_RELAYS.set(env, relay);
+    }
+    const ledger =
+      relay.sessions.size >= 5
+        ? null
+        : await new D1VoiceBudgetRepository(env.RUNTIME_DB).getLedger();
+    const reservationAvailable = Boolean(
+      ledger &&
+      ledger.spentMicroUsd +
+        ledger.reservedMicroUsd +
+        VOICE_POLICY.worstCaseReservation.maxTurnReservedMicroUsd <=
+        ledger.capMicroUsd,
+    );
+    const result = await relay.admit({
+      requestUrl: request.url,
+      origin: request.headers.get("origin"),
+      contentType,
+      bodyBytes: bytes.byteLength,
+      body,
+      environmentEnabled: true,
+      providerPolicyValid: true,
+      rateCardValid: true,
+      reservationAvailable,
+      rateLimited: relay.sessions.size >= 5,
+    });
+    return json(result, { status: 201 });
+  } catch (error) {
+    const statuses = {
+      voice_disabled: 503,
+      usage_limit: 429,
+      rate_limited: 429,
+      policy_mismatch: 503,
+      invalid_request: 400,
+    };
+    const code = statuses[error?.code] ? error.code : "provider_unavailable";
+    return json(
+      errorEnvelope(
+        code,
+        code === "usage_limit"
+          ? "Voice usage is unavailable. Please try again later."
+          : "Voice is currently unavailable. Please try again.",
+      ),
+      { status: statuses[code] ?? 503 },
+    );
+  }
+}
+
+async function voiceStreamResponse(request, env, sessionId) {
+  if (
+    request.method !== "GET" ||
+    request.headers.get("origin") !== new URL(request.url).origin ||
+    request.headers.get("upgrade")?.toLowerCase() !== "websocket"
+  ) {
+    return json(
+      errorEnvelope("invalid_request", "Voice stream upgrade is invalid."),
+      { status: 400 },
+    );
+  }
+  const relay = VOICE_RELAYS.get(env);
+  if (
+    !relay ||
+    !relay.sessions.has(sessionId) ||
+    typeof globalThis.WebSocketPair !== "function"
+  ) {
+    return json(
+      errorEnvelope("provider_unavailable", "Voice session is unavailable."),
+      { status: 404 },
+    );
+  }
+  const pair = new globalThis.WebSocketPair();
+  const [client, server] = Object.values(pair);
+  try {
+    await relay.attach(sessionId, server);
+  } catch {
+    return json(
+      errorEnvelope("provider_unavailable", "Voice could not connect."),
+      { status: 503 },
+    );
+  }
+  return new Response(null, { status: 101, webSocket: client });
 }
 
 function publicTileset(value) {
@@ -116,6 +315,9 @@ function snapshotMetadata(now = new Date()) {
       landmarksRef: `${prefix}/${manifest.landmarksRef}`,
       poisRef: `${prefix}/${manifest.poisRef}`,
       tilesetRef: `${prefix}/${manifest.tilesetRef}?assetPaths=site-root-v1`,
+      ...(manifest.eventsRef
+        ? { eventsRef: `${prefix}/${manifest.eventsRef}` }
+        : {}),
       previousSnapshotId: manifest.previousSnapshotId,
       contentHash: manifest.contentHash,
     },
@@ -493,8 +695,9 @@ export default {
   async fetch(request, env, context) {
     const url = new URL(request.url);
     const canonicalLocation = canonicalRedirect(url);
-    if (canonicalLocation)
+    if (canonicalLocation) {
       return withSecurityHeaders(Response.redirect(canonicalLocation, 308));
+    }
     if (PRIVATE_PATH.test(url.pathname))
       return withSecurityHeaders(new Response("Not found", { status: 404 }));
 
@@ -520,6 +723,17 @@ export default {
       return snapshotResponse(request, url);
     if (url.pathname === "/api/restaurants")
       return restaurantResponse(request, url, env, context);
+    if (url.pathname === "/api/voice/sessions")
+      return voiceSessionAdmissionResponse(request, env);
+    const voiceStream = url.pathname.match(
+      /^\/api\/voice\/sessions\/([^/]+)\/stream$/,
+    );
+    if (voiceStream)
+      return voiceStreamResponse(
+        request,
+        env,
+        decodeURIComponent(voiceStream[1]),
+      );
     const deals = await dealResponse(request, url, env, context, {
       json,
       errorEnvelope,

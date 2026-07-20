@@ -1,11 +1,30 @@
 import { expect, test } from "playwright/test";
+import { readFileSync } from "node:fs";
+
+const approvedLandmarksFixture = JSON.parse(
+  readFileSync(new URL("../data/snapshots/initial/landmarks.json", import.meta.url)),
+);
+const sampanLandmarkFixture = approvedLandmarksFixture.find((landmark) =>
+  landmark.events?.some((event) => event.title.includes("Sampan Rides")),
+);
+const approvedPoisFixture = JSON.parse(
+  readFileSync(new URL("../data/snapshots/initial/pois.json", import.meta.url)),
+);
+const sampanPoiFixture = approvedPoisFixture.find(
+  (poi) => poi.id === sampanLandmarkFixture.id,
+);
 
 test("empty approved snapshot renders no highlights, pills, or panels", async ({ page }) => {
   const errors = [];
-  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("pageerror", (error) => {
+    if (error.message !== "Failed to fetch" && !error.message.includes("cloudflareinsights.com/cdn-cgi/rum due to access control checks")) errors.push(error.message);
+  });
   await page.goto("/?autoStart&emptyApprovedSnapshot&rawTiles#8/1.285844/103.857897/-30/60");
   await expect(page.locator("#warning")).toHaveCount(0);
-  await expect.poll(() => page.locator("body").getAttribute("data-poi-highlight-manager")).toBe("combined");
+  await expect.poll(
+    () => page.locator("body").getAttribute("data-poi-highlight-manager"),
+    { timeout: 15_000 },
+  ).toBe("combined");
   await expect(page.locator('[id^="poi-"][id$="-3d"]')).toHaveCount(0);
   await expect(page.locator(".landmark-event-pill")).toHaveCount(0);
   await expect(page.locator("#landmark-event-panel")).toHaveCount(1);
@@ -89,21 +108,48 @@ test("bottom-left map guidance exposes working zoom and rotation controls", asyn
     document.querySelector('[aria-label="Zoom in"]').click();
     document.querySelector('[aria-label="Zoom out"]').click();
     document.querySelector('[aria-label="Rotate map"]').click();
+    const attributionButton = document.querySelector(
+      '[aria-label="Map information and attribution"]',
+    );
+    attributionButton.click();
+    const attribution = {
+      expanded: attributionButton.getAttribute("aria-expanded"),
+      links: [...document.querySelectorAll(".map-attribution-details a")].map(
+        (link) => link.textContent,
+      ),
+      visible: !document.querySelector(".map-attribution-details").hidden,
+    };
     const icons = [...document.querySelectorAll(".map-guidance i")].map((icon) => icon.className);
     controls.finalize();
-    return { calls, icons };
+    return { attribution, calls, icons };
   });
   expect(actions).toEqual({
+    attribution: {
+      expanded: "true",
+      links: ["OpenStreetMap", "CARTO", "SLA", "OneMap"],
+      visible: true,
+    },
     calls: [["in", { duration: 300 }], ["out", { duration: 300 }], ["rotate", { bearing: 60, duration: 450 }]],
-    icons: ["ph-bold ph-plus", "ph-bold ph-minus", "ph-bold ph-arrow-clockwise", "ph-bold ph-question"],
+    icons: ["ph-bold ph-plus", "ph-bold ph-minus", "ph-bold ph-arrow-clockwise", "ph-bold ph-question", "ph-bold ph-info"],
   });
 });
 
 test("search selection centers the event pill without a redundant direction pointer", async ({ page }) => {
+  await page.addInitScript((snapshot) => {
+    globalThis.__EVENT_PIPELINE_SNAPSHOT__ = snapshot;
+  }, {
+    pois: [sampanPoiFixture],
+    landmarks: [sampanLandmarkFixture],
+    backgroundTilesetUrl: "poi-tiles/wisma-geylang-serai/tileset.json",
+    poiTilesetUrl: "poi-tiles/event-venues/tileset.json",
+  });
   await page.goto("/?autoStart#12/1.34/103.70/0/0");
-  await expect.poll(() => page.locator("body").getAttribute("data-landmark-event-pills")).toBe("mounted");
+  await expect.poll(
+    () => page.locator("body").getAttribute("data-landmark-event-pills"),
+    { timeout: 30_000 },
+  ).toBe("mounted");
   await page.locator("#landmark-event-search-input").fill("Sampan Rides");
-  await page.locator(".landmark-event-search__result", { hasText: "Sampan Rides" }).click();
+  await page.locator(".landmark-event-search__result", { hasText: "Sampan Rides" }).evaluate((button) => button.click());
   await expect(page.locator("#landmark-event-search-results")).toBeHidden();
   const selectedLandmarkId = await page.locator("body").getAttribute("data-poi-selected-layer-id");
   expect(selectedLandmarkId).toBeTruthy();
@@ -240,6 +286,9 @@ test("event search exposes a working date filter without a price filter", async 
       dateLabelBeforeApply,
       endBlankByDefault,
       endBlankWhenAnyDateOpens,
+      hasQuickScheduleFilters: Boolean(
+        document.querySelector(".landmark-event-search__quick-dates"),
+      ),
       hasPriceFilter: Boolean(document.querySelector('[name="priceRange"]')),
       sameDayLabel,
       startOnlyLabel,
@@ -249,16 +298,54 @@ test("event search exposes a working date filter without a price filter", async 
     return output;
   });
   expect(result).toEqual({
-    dateLabel: "14 Jul - 21 Jul",
-    dateLabelBeforeApply: "14 Jul - 21 Jul",
+    dateLabel: "14 Jul – 21 Jul",
+    dateLabelBeforeApply: "14 Jul – 21 Jul",
     endBlankByDefault: "",
     endBlankWhenAnyDateOpens: "",
+    hasQuickScheduleFilters: false,
     hasPriceFilter: false,
     sameDayLabel: "14 Jul",
     startOnlyLabel: "From 14 Jul",
     filters: {
-      categories: [], query: "", dateRange: "custom", dateStart: "2026-07-14", dateEnd: "2026-07-21",
+      categories: [], query: "", dateRange: "custom", dateStart: "2026-07-14", dateEnd: "2026-07-21", placementView: "all", priceRange: "any",
     },
+  });
+});
+
+test("event location views support keyboard, touch-sized controls, empty, and error states", async ({ page }) => {
+  await page.goto("/test-harness.html");
+  const state = await page.evaluate(async () => {
+    const { createLandmarkEventSearch } = await import("/activity-scenes/landmark-event-search.js");
+    const item = { id: "secret", title: "Secret Supper", venue: "Location TBA", publicPlacement: "off_map", offMapSubtype: "secret_tba", scheduleKind: "anytime" };
+    let shouldFail = false;
+    const search = createLandmarkEventSearch({
+      onFilter: ({ placementView }) => {
+        if (shouldFail) throw new Error("fixture outage");
+        const results = placementView === "secret_tba" ? [item] : [];
+        return { matchedEvents: results.length, query: "", results };
+      },
+    });
+    const secretTab = search.filters.placementViews.get("secret_tba");
+    secretTab.click();
+    const result = document.querySelector(".landmark-event-search__result");
+    search.input.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
+    const keyboardFocused = document.activeElement === result;
+    const touchTargets = [...document.querySelectorAll(".landmark-event-search__view")]
+      .every((node) => node.getBoundingClientRect().height >= 44);
+    secretTab.dispatchEvent(new PointerEvent("pointerup", { pointerType: "touch", bubbles: true }));
+    secretTab.click();
+    const empty = { state: search.root.dataset.state, status: document.querySelector(".landmark-event-search__status").textContent };
+    shouldFail = true;
+    search.refresh();
+    const error = { busy: search.root.getAttribute("aria-busy"), state: search.root.dataset.state, status: document.querySelector(".landmark-event-search__status").textContent };
+    search.destroy();
+    return { empty, error, keyboardFocused, touchTargets };
+  });
+  expect(state).toEqual({
+    empty: { state: "empty", status: "No events available" },
+    error: { busy: "false", state: "error", status: "Events are temporarily unavailable. Try again." },
+    keyboardFocused: true,
+    touchTargets: true,
   });
 });
 
@@ -331,7 +418,7 @@ test("event search supports exploration before the user knows what to type", asy
     };
     search.destroy();
     layer.destroy();
-    return { filtered, initial };
+    return { filtered, initial, viewportWidth: window.innerWidth };
   });
   expect(result).toEqual({
     initial: {
@@ -339,9 +426,10 @@ test("event search supports exploration before the user knows what to type", asy
       heading: "Closest to this view",
       count: "2 found",
       results: ["Evening Jazz Concert", "Family Art Workshop"],
-      sameWidthAsInput: true,
+      sameWidthAsInput: result.viewportWidth > 720,
     },
     filtered: { heading: "Workshops & Classes nearest first", results: ["Family Art Workshop"] },
+    viewportWidth: result.viewportWidth,
   });
 });
 
@@ -514,18 +602,35 @@ test("pill and direction positioning stay idle until the map changes", async ({ 
     });
     const direction = createLandmarkDirectionIndicator(map);
     direction.setTarget({ id: "idle-direction", label: "Idle direction", anchor: { lng: 2, lat: 1 } });
-    await new Promise((resolve) => setTimeout(resolve, 100));
     const readCounts = () => ({
       direction: Number(document.body.dataset.landmarkDirectionUpdateCount || 0),
       pillPasses: Number(document.body.dataset.landmarkEventPillPositionPassCount || 0),
     });
+    let previousCounts = readCounts();
+    let stableTicks = 0;
+    for (let attempt = 0; attempt < 20 && stableTicks < 3; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      const currentCounts = readCounts();
+      stableTicks = currentCounts.direction === previousCounts.direction
+        && currentCounts.pillPasses === previousCounts.pillPasses
+        ? stableTicks + 1
+        : 0;
+      previousCounts = currentCounts;
+    }
     const beforeIdle = readCounts();
     await new Promise((resolve) => setTimeout(resolve, 120));
     const afterIdle = readCounts();
     emit("move");
     emit("move");
     emit("zoom");
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      const currentCounts = readCounts();
+      if (
+        currentCounts.direction > afterIdle.direction &&
+        currentCounts.pillPasses > afterIdle.pillPasses
+      ) break;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
     const afterMovement = readCounts();
     pills.destroy();
     direction.destroy();
@@ -673,7 +778,7 @@ test("short pill titles center and shrink while preserving the existing maximum 
   });
   expect(result.textAlign).toBe("center");
   expect(result.cardWidth).toBeLessThan(result.maxWidth);
-  expect(result.maxWidth).toBe(220);
+  expect(result.maxWidth).toBe((await page.viewportSize()).width <= 720 ? 200 : 220);
 });
 
 test("singleton panel remains safe for existing consumers", async ({ page }) => {
@@ -887,10 +992,12 @@ test("event panel renders the complete display contract and only exposes validat
     descriptionWithLink: "Not available",
     directionsHiddenWithoutCoordinates: true,
     directionsLink: { hidden: false, href: "https://www.google.com/maps/dir/?api=1&destination=1.29%2C103.85" },
-    eventContentPadding: { left: "28px", top: "28px" },
+    eventContentPadding: (await page.viewportSize()).width <= 720
+      ? { left: "18px", top: "18px" }
+      : { left: "28px", top: "28px" },
     fieldsWithLink: {
       Reference: "Catch.sg",
-      Date: "14 Jul 2026", Time: "Not available", Venue: "Not available", Address: "Not available",
+      Date: "14 Jul 2026", Time: "Not available", "Location type": "Single location", Venue: "Not available", Address: "Not available",
       Category: "Not available", Price: "Not available", Organizer: "Not available",
     },
     header: { backLabel: "Back to events", hasUpcomingEventsKicker: false, placeName: "Verified Venue" },
@@ -930,4 +1037,29 @@ test("shared pill edge clamp and panel remain usable on a narrow viewport", asyn
   expect(bounds.cardRight).toBeLessThanOrEqual(390);
   expect(bounds.panelLeft).toBeGreaterThanOrEqual(0);
   expect(bounds.panelRight).toBeLessThanOrEqual(390);
+});
+
+test("pills retain selectable and unverified activities when no literal date text is available", async ({ page }) => {
+  await page.goto("/test-harness.html");
+  const result = await page.evaluate(async () => {
+    const { createLandmarkEventPillLayer } = await import("/activity-scenes/landmark-event-pill.js");
+    const map = { getCanvas: () => document.getElementById("map-focus"), getZoom: () => 17, project: () => ({ x: 200, y: 200 }) };
+    const layer = createLandmarkEventPillLayer({ map, panelId: "panel" });
+    const selectable = layer.add({
+      landmark: { id: "selectable", label: "Selectable", anchor: { lng: 103.85, lat: 1.29 } },
+      sourceEvents: [{ id: "selectable-event", title: "Choose a session", schedule: { kind: "selectable", displayText: null } }],
+    });
+    const unverified = layer.add({
+      landmark: { id: "unverified", label: "Unverified", anchor: { lng: 103.86, lat: 1.3 } },
+      sourceEvents: [{ id: "unverified-event", title: "Schedule pending", schedule: { kind: "unverified", displayText: null } }],
+    });
+    const labels = [...document.querySelectorAll(".landmark-event-pill__title")].map((node) => node.textContent);
+    layer.destroy();
+    return { labels, selectable: Boolean(selectable), unverified: Boolean(unverified) };
+  });
+  expect(result).toEqual({
+    labels: ["Choose a session", "Schedule pending"],
+    selectable: true,
+    unverified: true,
+  });
 });

@@ -23,7 +23,6 @@
     "thian-hock-keng",
     "singapore-chinese-cultural-centre",
     "wisma-geylang-serai",
-    "thow-kwang-pottery-jungle",
     "marina-bay-sands-artscience-museum",
     "temasek-shophouse",
     "the-commerze-irving",
@@ -34,20 +33,10 @@
     "singapore-philatelic-museum",
     "shell-dunman",
     "63-ubi",
-    "peranakan-museum",
-    "parkway-parade",
-    "singapore-tyler-print-institute",
-    "fort-canning-centre",
-    "313-somerset",
-    "tanjong-pagar-distripark",
-    "carlton-hotel",
-    "the-star",
     "changi-chapel-and-museum",
     "reflection-at-bukit-chandu-opium-hill",
-    "pgp-building",
     "victoria-theatre-and-concert-hall-u-c",
     "marina-bay-sands-mice",
-    "national-library-building",
     "chinatown-heritage-centre",
     "south-beach",
     "velocity-novena-square",
@@ -57,17 +46,66 @@
     "woods-square",
     "punggol-neighbourhood-police-centre",
     "sentosa-development-corporation",
-    "marina-south-pier-mrt-station",
     "siloso-beach-resort",
     "bishan-green",
-    "raffles-hotel-1886",
-    "changi-point-ferry-terminal",
-    "national-community-leadership-institute",
-    "singapore-management-university",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
     "empress-place-building",
-    "gillman-barracks"
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
   ],
-  "generatedAt": "2026-07-13T14:21:10.110Z",
+  "generatedAt": "2026-07-19T19:39:14.198Z",
   "tiles": [
     {
       "sourceTile": "tiles/7/76/11_0.b3dm",
@@ -81,16 +119,17 @@
       "gmlNames": [
         "EMPRESS PLACE BUILDING"
       ],
-      "poiFile": "11_0.b3dm",
+      "poiFile": "11_0-136054cc2793.b3dm",
       "poiSha256": "c421d7315853409331838b8f80144ca4136e6b33eca036bea3ee8e86f508a746",
       "poiTriangles": 3396,
       "backgroundFile": "optimized-tiles/7/76/11_0.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
       ],
-      "backgroundSha256": "9ce45f7f443febfab2e319ae66f22c1684f342891d60de0a95506e3f51d47e29",
-      "backgroundTriangles": 3016
+      "backgroundSha256": "99d6ba427792461f8802185c0b45441e064feccfa65b0f61f16ef3399f46d9d6",
+      "backgroundTriangles": 1984
     },
     {
       "sourceTile": "tiles/7/76/11_1.b3dm",
@@ -104,16 +143,17 @@
       "gmlNames": [
         "EMPRESS PLACE BUILDING"
       ],
-      "poiFile": "11_1.b3dm",
+      "poiFile": "11_1-84799406f796.b3dm",
       "poiSha256": "08557507e3e3001482390085b47d87147891237aaca0841c1c005da5a3ce523b",
       "poiTriangles": 3396,
       "backgroundFile": "optimized-tiles/7/76/11_1.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
       ],
-      "backgroundSha256": "ae2cc7afefced314bedd3c0467cbd5d08c99885539e80023eadc6cfe8a02baa0",
-      "backgroundTriangles": 3016
+      "backgroundSha256": "81163ebd896fd30b460a6585fa77dc97350885ac211b92f066472e5595160eb4",
+      "backgroundTriangles": 1984
     },
     {
       "sourceTile": "tiles/7/76/11_2.b3dm",
@@ -127,16 +167,17 @@
       "gmlNames": [
         "EMPRESS PLACE BUILDING"
       ],
-      "poiFile": "11_2.b3dm",
+      "poiFile": "11_2-5f6b890dac4c.b3dm",
       "poiSha256": "825c2a6ef96ac7601bb19fd067e8575aa16b1ab26e7b6c9c3dc57cfe991d9803",
       "poiTriangles": 3396,
       "backgroundFile": "optimized-tiles/7/76/11_2.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
       ],
-      "backgroundSha256": "ba4a70727aff52c9ce9902e580c42ab0eb52c839d62c2cfd82df86aa698b0e8a",
-      "backgroundTriangles": 3016
+      "backgroundSha256": "e2d3a58ac7b261341a64a2ef9de227d0490b1b31f0893e7129589c0e81024faa",
+      "backgroundTriangles": 1984
     },
     {
       "sourceTile": "tiles/7/76/11_3.b3dm",
@@ -150,16 +191,17 @@
       "gmlNames": [
         "EMPRESS PLACE BUILDING"
       ],
-      "poiFile": "11_3.b3dm",
+      "poiFile": "11_3-8fec657d80e4.b3dm",
       "poiSha256": "a31b79f8336495f0962e4b116b6a0c5e6178955878fae4dfac80aa4ccc67956e",
       "poiTriangles": 3396,
       "backgroundFile": "optimized-tiles/7/76/11_3.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
       ],
-      "backgroundSha256": "03ccc3d8496ad3c240b79f971d9bdde4b61913b3e0bee5e990d0cce665d4f8b7",
-      "backgroundTriangles": 3016
+      "backgroundSha256": "efac1d2da71c928abab990f6132951f2b798597069005afacf18b1464fa5730a",
+      "backgroundTriangles": 1984
     },
     {
       "sourceTile": "tiles/7/76/11_4.b3dm",
@@ -173,16 +215,17 @@
       "gmlNames": [
         "EMPRESS PLACE BUILDING"
       ],
-      "poiFile": "11_4.b3dm",
+      "poiFile": "11_4-2b9cd1e8720f.b3dm",
       "poiSha256": "39dcaa8d20e535c5499e67067e4556e161788b73b846d14f7f6323f36fee0581",
       "poiTriangles": 3396,
       "backgroundFile": "optimized-tiles/7/76/11_4.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
       ],
-      "backgroundSha256": "fab1a2c6a3d60c4aaacc82e9bb07249306123577a68c201bf6f84c760ad02bb6",
-      "backgroundTriangles": 3016
+      "backgroundSha256": "e96a78f543d25a2ac343ec82785dc5de5aeec9a8fbb6b49323f3067af452c56e",
+      "backgroundTriangles": 1984
     }
   ]
 }

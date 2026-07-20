@@ -19,7 +19,8 @@ export function parseManifest(markdown) {
   for (const line of markdown.split(/\r?\n/)) {
     if (!line.startsWith("|") || line.includes("---") || line.includes("| Source |")) continue;
     const cells = line.split("|").slice(1, -1).map((cell) => cell.trim().replaceAll("`", ""));
-    if (cells.length >= 5 && cells[1].toLowerCase() === "yes") sources.push({ name: cells[0], adapterId: cells[2], version: "1.0" });
+    const mode = cells[1]?.toLowerCase();
+    if (cells.length >= 5 && ["yes", "pilot", "required"].includes(mode)) sources.push({ name: cells[0], adapterId: cells[2], version: "1.0", operatingMode: mode === "pilot" ? "pilot" : "required" });
   }
   if (!sources.length) throw new Error("pull_data.md contains no enabled sources");
   return { timezone, sources };

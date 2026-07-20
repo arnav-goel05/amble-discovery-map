@@ -1,6 +1,6 @@
 # Implementation Plan: [FEATURE]
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Branch**: `develop` unless the user explicitly requested another branch | **Date**: [DATE] | **Spec**: [link]
 
 **Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
@@ -40,12 +40,15 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
+- **Branch workflow**: Confirm work remains on `develop`, or cite the user's explicit
+  instruction authorizing another branch.
 - **Evidence**: Identify authoritative sources, provenance, approval boundaries, and how
   missing or ambiguous data is represented without fabrication.
 - **Automation**: Assign deterministic workflow steps to code and bound any agent or manual
   intervention with structured inputs and outputs.
 - **Identity and publication**: Define stable identities, create/update/no-op/expire/review
-  behavior, staging, atomic publication, and partial-run rollback.
+  behavior, per-identity carry-forward or hold behavior, staging, atomic publication, and
+  release-wide rollback.
 - **Boundaries**: Name domain owners, validated contracts, evolving schema versions, and
   thin external adapters.
 - **Quality and security**: Identify required tests, build gates, recovery coverage,
@@ -53,8 +56,11 @@
 - **UX and performance**: Cover the required automated desktop/mobile Chromium, WebKit,
   and Firefox matrix, Apple HIG-informed interaction, consistent component states, and
   before/after benchmarks for rendering changes. Treat branded-browser checks as optional.
-- **Operations and privacy**: Use free/open sources only; define retention, cleanup,
-  stale-data behavior, generated-artifact policy, and single-host constraints.
+- **Operations and privacy**: Use free/open sources unless the constitution names a scoped
+  exception. For an exception, cite its approval and define its operational owner, concrete
+  usage and spending limits, credential boundary, disable control, limit-exhaustion behavior,
+  and free fallback. Also define retention, cleanup, stale-data behavior, generated-artifact
+  policy, and single-host constraints.
 
 ## Project Structure
 

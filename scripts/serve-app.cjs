@@ -7,6 +7,7 @@ const { restaurantApiPlugin } = require("./restaurant-api-plugin.cjs");
 const { approvedSnapshotApiPlugin } = require("./approved-snapshot-api-plugin.cjs");
 const { weeklyRefreshApiPlugin } = require("./weekly-refresh-api-plugin.cjs");
 const { adminApiPlugin } = require("./admin-api-plugin.cjs");
+const { realtimeVoiceApiPlugin } = require("./realtime-voice-api-plugin.cjs");
 const { applySecurityHeaders, errorEnvelope, sendJson } = require("./lib/http-contract.cjs");
 
 const root = path.resolve(__dirname, "..");
@@ -33,8 +34,9 @@ if (!Number.isInteger(port) || port < 1 || port > 65535) {
 
 const planGamePlugin = planGameApiPlugin();
 const adminPlugin = adminApiPlugin();
+const voicePlugin = realtimeVoiceApiPlugin({ root });
 planGamePlugin.startWorker();
-const apiMiddlewares = [approvedSnapshotApiPlugin({ root }).middleware, weeklyRefreshApiPlugin().middleware, adminPlugin.middleware, planGamePlugin.middleware, restaurantApiPlugin().middleware];
+const apiMiddlewares = [approvedSnapshotApiPlugin({ root }).middleware, weeklyRefreshApiPlugin().middleware, adminPlugin.middleware, voicePlugin.middleware, planGamePlugin.middleware, restaurantApiPlugin().middleware];
 const contentTypes = {
   ".b3dm": "application/octet-stream", ".css": "text/css; charset=utf-8", ".geojson": "application/geo+json; charset=utf-8",
   ".html": "text/html; charset=utf-8", ".ico": "image/x-icon", ".jpeg": "image/jpeg", ".jpg": "image/jpeg",
@@ -134,11 +136,13 @@ const server = http.createServer((request, response) => {
     response.end();
   });
 });
+voicePlugin.attachUpgrade(server);
 
 server.listen(port, host, () => console.log(`Amble server listening on http://${host}:${port}`));
 for (const signal of ["SIGINT", "SIGTERM"]) process.on(signal, () => {
   planGamePlugin.stopWorker();
   planGamePlugin.api.close();
   adminPlugin.close();
+  void voicePlugin.close();
   server.close(() => process.exit(0));
 });

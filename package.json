@@ -20,6 +20,10 @@
     "verify:site-discovery": "node scripts/verify-site-discovery.mjs",
     "test:unit": "node scripts/generate-cloudflare-snapshot.mjs && node --test tests/*.test.mjs",
     "test:smoke": "PLAYWRIGHT_FULL_MATRIX=1 playwright test -c playwright.config.mjs tests/device-support.spec.mjs --project chromium-desktop --project chromium-mobile --project webkit-desktop --project webkit-mobile --project firefox-desktop --project firefox-mobile",
+    "test:voice": "node --test tests/*voice*.test.mjs tests/assistant-*.test.mjs tests/*location*.test.mjs tests/*transit*.test.mjs",
+    "test:voice-ui": "playwright test -c playwright.config.mjs tests/voice-*.spec.mjs tests/area-discovery.spec.mjs tests/transit-location.spec.mjs",
+    "verify:voice-actions": "node scripts/verify-voice-action-coverage.mjs",
+    "build:map-context": "node scripts/build-discovery-areas.mjs && node scripts/build-transit-context.mjs",
     "benchmark:frontend": "node scripts/benchmark-frontend-performance.mjs",
     "benchmark:release": "node scripts/benchmark-frontend-performance.mjs --runs 1 --settle-ms 1000 --motion-ms 500",
     "restaurant-pipeline": "node --env-file-if-exists=.env.local scripts/restaurant-pipeline.mjs",
@@ -28,7 +32,7 @@
     "plans:migrate": "node scripts/migrate-plan-game.cjs",
     "test:plans": "node --test tests/plan-game.test.mjs && playwright test -c playwright.config.mjs tests/plan-builder.spec.mjs && npm run build && node scripts/smoke-plan-production.mjs",
     "test:restaurants": "node --test tests/restaurant-pipeline.test.mjs && playwright test -c playwright.config.mjs tests/restaurant-ui.spec.mjs",
-    "event-pipeline": "node scripts/event-pipeline.mjs",
+    "event-pipeline": "node --env-file-if-exists=.env.local scripts/event-pipeline.mjs",
     "event-pipeline:clear": "node scripts/clear-event-pipeline-data.mjs",
     "web-evidence": "node scripts/extract-web-evidence.mjs",
     "onemap-geocode": "node scripts/query-onemap-location.mjs",
@@ -91,7 +95,8 @@
     "@phosphor-icons/web": "^2.1.2",
     "maplibre-gl": "~1.15.3",
     "osm-pbf-parser": "^2.3.0",
-    "three": "^0.161.0"
+    "three": "^0.161.0",
+    "ws": "^8.21.0"
   },
   "optionalDependencies": {
     "3d-tiles-tools": "https://gitpkg.now.sh/CesiumGS/3d-tiles-validator/tools?main",

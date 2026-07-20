@@ -86,3 +86,33 @@ test("new evidence supersedes only unresolved work and validates idempotency ope
   assert.throws(() => service.decideVenueReview(other.reviewId, { decision: "defer", evidenceHash: other.evidenceHash, reason: "", idempotencyKey: "shared-key" }), (error) => error instanceof AdminRepositoryError && error.code === "idempotency_key_conflict");
   repository.close();
 });
+
+test("queue reconciliation supersedes reviews absent from the current pipeline run", (context) => {
+  const state = fixture(context);
+  const repository = new AdminRepository(state);
+  const service = new AdminService({ repository });
+  const active = service.createVenueReview({ venueId: "venue-active", evidenceHash: "1".repeat(64), evidenceSnapshot: { venue: "Active" }, candidates: [candidate] });
+  const stale = service.createVenueReview({ venueId: "venue-stale", evidenceHash: "2".repeat(64), evidenceSnapshot: { venue: "Stale" }, candidates: [candidate] });
+  const deferred = service.createVenueReview({ venueId: "venue-deferred", evidenceHash: "3".repeat(64), evidenceSnapshot: { venue: "Deferred" }, candidates: [candidate] });
+  service.decideVenueReview(deferred.reviewId, { decision: "defer", evidenceHash: deferred.evidenceHash, reason: "", idempotencyKey: "defer-before-reconcile" });
+
+  const result = repository.reconcileVenueReviewQueue([active.venueId]);
+  assert.deepEqual(result, { activeVenueIds: [active.venueId], superseded: 2, pending: 1, deferred: 0 });
+  assert.equal(repository.getVenueReview(active.reviewId).status, "pending");
+  assert.equal(repository.getVenueReview(stale.reviewId).status, "superseded");
+  assert.equal(repository.getVenueReview(deferred.reviewId).status, "superseded");
+  repository.close();
+});
+
+test("queue reconciliation retains only the current evidence hash for an active venue", (context) => {
+  const state = fixture(context);
+  const repository = new AdminRepository(state);
+  const service = new AdminService({ repository });
+  const old = service.createVenueReview({ venueId: "venue-hash", evidenceHash: "4".repeat(64), evidenceSnapshot: { venue: "Hash" }, candidates: [candidate] });
+  const current = service.createVenueReview({ venueId: "venue-hash", evidenceHash: "5".repeat(64), evidenceSnapshot: { venue: "Hash" }, candidates: [candidate] });
+  const result = repository.reconcileVenueReviewQueue([{ venueId: "venue-hash", evidenceHash: current.evidenceHash }]);
+  assert.equal(repository.getVenueReview(old.reviewId).status, "superseded");
+  assert.equal(repository.getVenueReview(current.reviewId).status, "pending");
+  assert.deepEqual(result.activeVenueIds, ["venue-hash"]);
+  repository.close();
+});

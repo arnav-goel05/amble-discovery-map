@@ -1,5 +1,10 @@
 import "@phosphor-icons/web/bold";
-import { announceOverlayOpen, closeWhenAnotherOverlayOpens, watchOverlayState } from "./overlay-coordinator";
+import {
+  announceOverlayOpen,
+  closeWhenAnotherOverlayOpens,
+  watchOverlayState,
+} from "./overlay-coordinator";
+import { eventLocationLabel } from "./events/event-location-label.js";
 
 const CATEGORY_ICONS = {
   Exhibitions: "ph-images-square",
@@ -12,16 +17,20 @@ const RESULT_BATCH_SIZE = 8;
 
 function dateLabel(start, end) {
   if (!start && !end) return "Any date";
-  const format = (value) => new Intl.DateTimeFormat("en-SG", { day: "numeric", month: "short" }).format(new Date(`${value}T00:00:00`));
+  const format = (value) =>
+    new Intl.DateTimeFormat("en-SG", { day: "numeric", month: "short" }).format(
+      new Date(`${value}T00:00:00`),
+    );
   if (start && !end) return `From ${format(start)}`;
   if (!start && end) return `Until ${format(end)}`;
   if (start === end) return format(start);
-  return `${format(start)} - ${format(end)}`;
+  return `${format(start)} – ${format(end)}`;
 }
 
 function createDateRangeFilter() {
   const wrapper = document.createElement("div");
-  wrapper.className = "landmark-event-search__filter landmark-event-search__filter--dateRange";
+  wrapper.className =
+    "landmark-event-search__filter landmark-event-search__filter--dateRange";
   const button = document.createElement("button");
   button.type = "button";
   button.className = "landmark-event-search__filter-button";
@@ -57,16 +66,38 @@ function createDateRangeFilter() {
   const end = createDateInput("dateEnd", "End date");
   const actions = document.createElement("div");
   actions.className = "landmark-event-search__date-actions";
-  const clear = Object.assign(document.createElement("button"), { type: "button", textContent: "Clear" });
-  const apply = Object.assign(document.createElement("button"), { type: "button", textContent: "Apply" });
+  const clear = Object.assign(document.createElement("button"), {
+    type: "button",
+    textContent: "Clear",
+  });
+  const apply = Object.assign(document.createElement("button"), {
+    type: "button",
+    textContent: "Apply",
+  });
   apply.className = "landmark-event-search__date-apply";
   actions.append(clear, apply);
   panel.append(start.label, end.label, actions);
   wrapper.append(button, panel);
-  return { apply, button, buttonText, clear, end: end.input, panel, start: start.input, wrapper };
+  return {
+    apply,
+    button,
+    buttonText,
+    clear,
+    end: end.input,
+    panel,
+    start: start.input,
+    wrapper,
+  };
 }
 
-export function createLandmarkEventSearch({ categories = [], discoveryModel, onFilter, onFilterResult, onResultSelect, onSearch }) {
+export function createLandmarkEventSearch({
+  categories = [],
+  discoveryModel,
+  onFilter,
+  onFilterResult,
+  onResultSelect,
+  onSearch,
+}) {
   const existing = document.getElementById("landmark-event-search");
   if (existing) return { destroy: () => {}, root: existing };
 
@@ -118,6 +149,33 @@ export function createLandmarkEventSearch({ categories = [], discoveryModel, onF
   filterList.append(dateFilter.wrapper);
   let appliedDateStart = "";
   let appliedDateEnd = "";
+  let activePriceRange = "any";
+  let activePlacementView = "all";
+
+  const viewList = document.createElement("div");
+  viewList.className = "landmark-event-search__views";
+  viewList.setAttribute("aria-label", "Filter secret-location events");
+  const viewButtons = new Map();
+  for (const [value, labelText] of [["secret_tba", "Mystery Location"]]) {
+    const button = Object.assign(document.createElement("button"), {
+      type: "button",
+      textContent: labelText,
+    });
+    button.className = "landmark-event-search__view";
+    button.setAttribute("aria-pressed", "false");
+    button.addEventListener("click", () => {
+      activePlacementView = activePlacementView === value ? "all" : value;
+      for (const [candidate, element] of viewButtons)
+        element.setAttribute(
+          "aria-pressed",
+          String(candidate === activePlacementView),
+        );
+      requestOpen();
+      update();
+    });
+    viewButtons.set(value, button);
+    viewList.append(button);
+  }
 
   const requestOpen = () => {
     const wasOpen = wantsOpen;
@@ -166,7 +224,9 @@ export function createLandmarkEventSearch({ categories = [], discoveryModel, onF
     button.addEventListener("click", () => {
       const wasActive = activeCategories.has(category);
       activeCategories.clear();
-      for (const categoryButton of categoryList.querySelectorAll(".landmark-event-search__category")) {
+      for (const categoryButton of categoryList.querySelectorAll(
+        ".landmark-event-search__category",
+      )) {
         categoryButton.setAttribute("aria-pressed", "false");
       }
       if (!wasActive) {
@@ -223,24 +283,65 @@ export function createLandmarkEventSearch({ categories = [], discoveryModel, onF
     const copy = document.createElement("span");
     copy.className = "landmark-event-search__result-copy";
     copy.append(
-      Object.assign(document.createElement("strong"), { textContent: item.title }),
-      Object.assign(document.createElement("span"), { textContent: [item.venue, item.date].filter(Boolean).join(" · ") }),
+      Object.assign(document.createElement("strong"), {
+        textContent: item.title,
+      }),
+      Object.assign(document.createElement("span"), {
+        textContent: [item.venue, item.date].filter(Boolean).join(" · "),
+      }),
     );
+    const locationLabel = eventLocationLabel(item);
+    if (
+      item.publicPlacement === "off_map" ||
+      locationLabel ||
+      item.freshness === "stale" ||
+      item.scheduleKind === "anytime"
+    ) {
+      const states = document.createElement("span");
+      states.className = "landmark-event-search__result-states";
+      if (locationLabel)
+        states.append(
+          Object.assign(document.createElement("em"), {
+            textContent: locationLabel,
+          }),
+        );
+      if (item.scheduleKind === "anytime")
+        states.append(
+          Object.assign(document.createElement("em"), {
+            textContent: "Anytime",
+          }),
+        );
+      if (item.freshness === "stale")
+        states.append(
+          Object.assign(document.createElement("em"), {
+            textContent: "May be outdated",
+          }),
+        );
+      copy.append(states);
+    }
     option.append(icon, copy);
     option.addEventListener("click", () => {
-      onResultSelect?.(item);
+      onResultSelect?.(item, option);
       closeResults();
     });
     return option;
   };
 
   const appendResultBatch = () => {
-    const nextItems = resultItems.slice(renderedResultCount, renderedResultCount + RESULT_BATCH_SIZE);
+    const nextItems = resultItems.slice(
+      renderedResultCount,
+      renderedResultCount + RESULT_BATCH_SIZE,
+    );
     for (const item of nextItems) results.appendChild(createResultOption(item));
     renderedResultCount += nextItems.length;
   };
 
-  const renderResults = (items, query, matchedEvents = items.length, scope = "nearby") => {
+  const renderResults = (
+    items,
+    query,
+    matchedEvents = items.length,
+    scope = "nearby",
+  ) => {
     results.replaceChildren();
     if (!wantsOpen || items.length === 0) {
       hideResults();
@@ -254,16 +355,22 @@ export function createLandmarkEventSearch({ categories = [], discoveryModel, onF
     const eyebrow = document.createElement("span");
     eyebrow.className = "landmark-event-search__results-eyebrow";
     const hasDateFilter = Boolean(appliedDateStart || appliedDateEnd);
-    eyebrow.textContent = query ? "Search results" : activeCategories.size || hasDateFilter ? "Filtered for you" : "";
+    eyebrow.textContent = query
+      ? "Search results"
+      : activeCategories.size || hasDateFilter
+        ? "Filtered for you"
+        : "";
     const headingTitle = document.createElement("strong");
     headingTitle.className = "landmark-event-search__results-title";
     headingTitle.textContent = query
       ? `Events matching “${query}”`
       : activeCategories.size || hasDateFilter
         ? `${[
-          ...activeCategories,
-          hasDateFilter ? dateFilter.buttonText.textContent : "",
-        ].filter(Boolean).join(" · ")} nearest first`
+            ...activeCategories,
+            hasDateFilter ? dateFilter.buttonText.textContent : "",
+          ]
+            .filter(Boolean)
+            .join(" · ")} nearest first`
         : "Closest to this view";
     headingCopy.append(eyebrow, headingTitle);
     const count = document.createElement("span");
@@ -280,23 +387,53 @@ export function createLandmarkEventSearch({ categories = [], discoveryModel, onF
   };
 
   results.addEventListener("scroll", () => {
-    const nearBottom = results.scrollTop + results.clientHeight >= results.scrollHeight - 80;
-    if (nearBottom && renderedResultCount < resultItems.length) appendResultBatch();
+    const nearBottom =
+      results.scrollTop + results.clientHeight >= results.scrollHeight - 80;
+    if (nearBottom && renderedResultCount < resultItems.length)
+      appendResultBatch();
   });
 
   const update = () => {
     const filters = {
-      categories: [...activeCategories], query: input.value,
+      categories: [...activeCategories],
+      query: input.value,
       dateRange: appliedDateStart || appliedDateEnd ? "custom" : "any",
-      dateStart: appliedDateStart, dateEnd: appliedDateEnd,
+      dateStart: appliedDateStart,
+      dateEnd: appliedDateEnd,
+      placementView: activePlacementView,
+      priceRange: activePriceRange,
     };
-    const modelResult = activeDiscoveryModel?.filter(filters);
-    const result = (modelResult
-      ? onFilterResult?.(modelResult) ?? modelResult
-      : onFilter
-      ? onFilter(filters)
-      : onSearch?.(input.value)) || { matchedEvents: 0, query: input.value.trim(), results: [] };
-    status.textContent = result.query && result.matchedEvents === 0 ? "No matching events" : "";
+    root.dataset.state = "loading";
+    root.setAttribute("aria-busy", "true");
+    let result;
+    try {
+      const modelResult = activeDiscoveryModel?.filter(filters);
+      result = (modelResult
+        ? (onFilterResult?.(modelResult) ?? modelResult)
+        : onFilter
+          ? onFilter(filters)
+          : onSearch?.(input.value)) || {
+        matchedEvents: 0,
+        query: input.value.trim(),
+        results: [],
+      };
+      root.dataset.state = result.matchedEvents === 0 ? "empty" : "ready";
+      status.textContent =
+        result.matchedEvents === 0
+          ? result.query
+            ? "No matching events"
+            : "No events available"
+          : "";
+    } catch (error) {
+      result = { matchedEvents: 0, query: input.value.trim(), results: [] };
+      root.dataset.state = "error";
+      status.textContent = "Events are temporarily unavailable. Try again.";
+      root.dispatchEvent(
+        new CustomEvent("event-search:error", { detail: { error } }),
+      );
+    } finally {
+      root.setAttribute("aria-busy", "false");
+    }
     root.classList.toggle("has-no-results", Boolean(status.textContent));
     const displayedResults = result.results || [];
     renderResults(
@@ -323,8 +460,14 @@ export function createLandmarkEventSearch({ categories = [], discoveryModel, onF
     syncDateButton(dateFilter.start.value, dateFilter.end.value);
   });
   dateFilter.apply.addEventListener("click", () => {
-    if (dateFilter.start.value && dateFilter.end.value && dateFilter.end.value < dateFilter.start.value) {
-      dateFilter.end.setCustomValidity("End date must be on or after the start date.");
+    if (
+      dateFilter.start.value &&
+      dateFilter.end.value &&
+      dateFilter.end.value < dateFilter.start.value
+    ) {
+      dateFilter.end.setCustomValidity(
+        "End date must be on or after the start date.",
+      );
       dateFilter.end.reportValidity();
       return;
     }
@@ -361,7 +504,10 @@ export function createLandmarkEventSearch({ categories = [], discoveryModel, onF
     } else if (!dateFilter.wrapper.contains(event.target)) closeDatePanel();
   };
   document.addEventListener("pointerdown", closeWhenClickingAway);
-  const stopWatchingOverlays = closeWhenAnotherOverlayOpens("event-search", closeResults);
+  const stopWatchingOverlays = closeWhenAnotherOverlayOpens(
+    "event-search",
+    closeResults,
+  );
   const stopWatchingOverlayState = watchOverlayState(({ id, open }) => {
     if (id === "event-search") {
       if (open) setCollapsed(false);
@@ -370,7 +516,7 @@ export function createLandmarkEventSearch({ categories = [], discoveryModel, onF
     setCollapsed(open);
   });
   inputShell.append(input, results);
-  controls.append(inputShell, categoryList, filterList);
+  controls.append(inputShell, viewList, categoryList, filterList);
   root.append(label, controls, status, collapsedIndicator);
   document.body.appendChild(root);
 
@@ -382,12 +528,51 @@ export function createLandmarkEventSearch({ categories = [], discoveryModel, onF
       root.remove();
     },
     input,
+    dispatch(actionId, args = {}) {
+      if (actionId === "event.search") input.value = String(args.query ?? "");
+      else if (actionId === "event.setcategory") {
+        activeCategories.clear();
+        if (args.categoryId) activeCategories.add(args.categoryId);
+        for (const button of categoryList.querySelectorAll("button"))
+          button.setAttribute(
+            "aria-pressed",
+            String(button.ariaLabel === args.categoryId),
+          );
+      } else if (actionId === "event.setdaterange") {
+        appliedDateStart = args.startDate || "";
+        appliedDateEnd = args.endDate || "";
+        dateFilter.start.value = appliedDateStart;
+        dateFilter.end.value = appliedDateEnd;
+        syncDateButton();
+      } else if (actionId === "event.setpricerange")
+        activePriceRange = args.priceBand || "any";
+      else if (actionId === "event.clearfilters") {
+        input.value = "";
+        activeCategories.clear();
+        activePriceRange = "any";
+        appliedDateStart = appliedDateEnd = "";
+        dateFilter.start.value = dateFilter.end.value = "";
+        syncDateButton();
+        for (const button of categoryList.querySelectorAll("button"))
+          button.setAttribute("aria-pressed", "false");
+      } else return false;
+      requestOpen();
+      update();
+      return true;
+    },
     filters: {
-      dateButton: dateFilter.button, dateStart: dateFilter.start, dateEnd: dateFilter.end,
-      dateApply: dateFilter.apply, dateClear: dateFilter.clear,
+      dateButton: dateFilter.button,
+      dateStart: dateFilter.start,
+      dateEnd: dateFilter.end,
+      dateApply: dateFilter.apply,
+      dateClear: dateFilter.clear,
+      placementViews: viewButtons,
     },
     refresh: update,
-    setDiscoveryModel: (nextModel) => { activeDiscoveryModel = nextModel; update(); },
+    setDiscoveryModel: (nextModel) => {
+      activeDiscoveryModel = nextModel;
+      update();
+    },
     root,
   };
 }

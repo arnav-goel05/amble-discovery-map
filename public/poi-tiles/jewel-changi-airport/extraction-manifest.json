@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "jewel-changi-airport",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:15.245Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/4/15/10_0.b3dm",
+      "sourceSha256": "bcc9ca2ea62a0e5abea2de8a717fa18bfd314ca23ae4a6243b30da7a46c85aca",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "gmlNames": [
+        "JEWEL CHANGI AIRPORT"
+      ],
+      "poiFile": "10_0-8a50d13b487a.b3dm",
+      "poiSha256": "1f7b48a616b5ef5119a1f98378263aa0948cce880add9224d111676c7e932efc",
+      "poiTriangles": 8868,
+      "backgroundFile": "optimized-tiles/4/15/10_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "backgroundSha256": "9a5293ded00846096d0d693d2d0929b1f686e276233ca4296bd201037e3d9b74",
+      "backgroundTriangles": 2176
+    },
+    {
+      "sourceTile": "tiles/4/15/10_1.b3dm",
+      "sourceSha256": "32b927cfec54ac4db801c96c303a981d7c8a876db11bea3d5d58d4d0055e601b",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "gmlNames": [
+        "JEWEL CHANGI AIRPORT"
+      ],
+      "poiFile": "10_1-5dd1d06352be.b3dm",
+      "poiSha256": "d6a72edd6a132f7aaf545e2e5ba6aa58a3e9efc94a5a6fe5716defee88d79c07",
+      "poiTriangles": 8868,
+      "backgroundFile": "optimized-tiles/4/15/10_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "backgroundSha256": "41e6feae718534a50b7676332fe1fed572a29a55632209c76f2242bb339897bc",
+      "backgroundTriangles": 2176
+    },
+    {
+      "sourceTile": "tiles/4/15/10_2.b3dm",
+      "sourceSha256": "b8aad7b6447e9cc16c9a62613197f5feb2bcbbff9e57632177489c2788d7421f",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "gmlNames": [
+        "JEWEL CHANGI AIRPORT"
+      ],
+      "poiFile": "10_2-c293a1738909.b3dm",
+      "poiSha256": "67109accc9b1be4225caafb4f793e9b0a25c346f34e190c2f6dfd1d696f66549",
+      "poiTriangles": 8868,
+      "backgroundFile": "optimized-tiles/4/15/10_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "backgroundSha256": "1fcf277554050ad33f584dfff43633268d0246e4a3727bc52c5a194abe6e7e7e",
+      "backgroundTriangles": 2176
+    },
+    {
+      "sourceTile": "tiles/4/15/10_3.b3dm",
+      "sourceSha256": "6f0175f9d37ff76270c3e38ac567dc41ba47ffeac498563fe6390b71d2e56d4e",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "gmlNames": [
+        "JEWEL CHANGI AIRPORT"
+      ],
+      "poiFile": "10_3-14c1631dd2e8.b3dm",
+      "poiSha256": "ca150247df1d086af7bab21b0db9b9635694ae90438875a60bd71af776c1fa92",
+      "poiTriangles": 8868,
+      "backgroundFile": "optimized-tiles/4/15/10_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "backgroundSha256": "5f7bfc1359711ce34264fc4b4e036e20239c28ff34dca089cf75ab46670a9869",
+      "backgroundTriangles": 2176
+    },
+    {
+      "sourceTile": "tiles/4/15/10_4.b3dm",
+      "sourceSha256": "869370a79bf1f1247eebb758ba785b0d17c4125e945a617941602afdcdb1c389",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "gmlNames": [
+        "JEWEL CHANGI AIRPORT"
+      ],
+      "poiFile": "10_4-2c7c1f3ecedd.b3dm",
+      "poiSha256": "ca6e50150a1550a75e9049f81242e4ba6cb688237bc663c7a9e02538561d7515",
+      "poiTriangles": 8868,
+      "backgroundFile": "optimized-tiles/4/15/10_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "backgroundSha256": "a1820dfd2509437a2b4a426d86dc9736a14269822a8160037f1ddd82f1cfee60",
+      "backgroundTriangles": 2176
+    },
+    {
+      "sourceTile": "tiles/4/15/10_5.b3dm",
+      "sourceSha256": "83d0bbb57b65366eb03c6e6b7a74d5bb11656731bf28170ae799dd8a7c8b64ab",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "gmlNames": [
+        "JEWEL CHANGI AIRPORT"
+      ],
+      "poiFile": "10_5-e7e36b2d8723.b3dm",
+      "poiSha256": "acbd455485b5051a37b565f6ad06b25fd0cdf4dc6ac84ee35b37f37bff00b422",
+      "poiTriangles": 8868,
+      "backgroundFile": "optimized-tiles/4/15/10_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "backgroundSha256": "82b5c12abb891d86d7a900310b7101715585df1721c3868e98878ad020f19dca",
+      "backgroundTriangles": 2176
+    }
+  ]
+}

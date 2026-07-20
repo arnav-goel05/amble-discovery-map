@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-  addPlanStop, createPlanState, movePlanStop, planWarnings, removePlanStop, routeStops,
+  addPlanStop, createPlanningCandidateState, createPlanState, movePlanStop, planWarnings, removePlanStop, routeStops,
 } from "../activity-scenes/planning/plan-model.js";
 
 const event = { id: "event-1", type: "event", title: "Jazz", place: "Esplanade", latitude: 1.2897, longitude: 103.8559, endsAt: "2026-07-15T12:00:00Z" };
@@ -47,4 +47,24 @@ test("plan state enforces twenty stops and isolates caller mutations", () => {
   assert.equal(full.reason, "limit");
   stops[0].title = "Mutated";
   assert.equal(state.stops[0].title, "Jazz");
+});
+
+test("planning candidate state exposes immutable ordered stops and allowlisted games", () => {
+  const state = createPlanState({ stops: [event, restaurant] });
+  const games = [
+    { id: "hunt-2", title: "Night hunt", status: "available", theme: "history", areaId: "city-hall", latitude: 1.29, longitude: 103.85, secret: "omit" },
+    { id: "hunt-1", title: "Garden hunt", status: "paused" },
+    { id: "hunt-1", title: "Duplicate" },
+  ];
+  const candidates = createPlanningCandidateState(state, { games });
+
+  assert.deepEqual(candidates.planStops.map(({ candidateId, position }) => ({ candidateId, position })), [
+    { candidateId: "plan-stop:event:event-1", position: 1 },
+    { candidateId: "plan-stop:restaurant:food-1", position: 2 },
+  ]);
+  assert.deepEqual(candidates.games.map(({ candidateId }) => candidateId), ["game:hunt-1", "game:hunt-2"]);
+  assert.equal("secret" in candidates.games[1], false);
+  assert.equal(Object.isFrozen(candidates), true);
+  assert.equal(Object.isFrozen(candidates.planStops), true);
+  assert.equal(Object.isFrozen(candidates.games[1]), true);
 });

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0",
+  "assetId": "singapore-transit-context-v1",
+  "status": "approved",
+  "generatorVersion": "1.1.0",
+  "sourceDatasetIds": [
+    "d_b39d3a0871985372d7e1637193335da5",
+    "d_e8bf3cff62f97300817d1fdcce382584",
+    "d_449ee0cec1f9574f8f34712da6f7456f",
+    "d_d312a5b127e1ae74299b8ae664cedd4e"
+  ],
+  "authoritativeUrls": [
+    "https://data.gov.sg/datasets/d_b39d3a0871985372d7e1637193335da5/view",
+    "https://data.gov.sg/datasets/d_e8bf3cff62f97300817d1fdcce382584/view",
+    "https://data.gov.sg/datasets/d_449ee0cec1f9574f8f34712da6f7456f/view",
+    "https://data.gov.sg/datasets/d_d312a5b127e1ae74299b8ae664cedd4e/view"
+  ],
+  "licence": "Singapore Open Data Licence",
+  "sourceObservedAt": "2026-07-18T10:28:33.537Z",
+  "generatedAt": "2026-07-18T10:28:33.537Z",
+  "sourceHashes": {
+    "d_b39d3a0871985372d7e1637193335da5": "0a94ebe6f3f7129d1620f012e2e6be3e6565055a2ac36bdcf4d2c226ec8c192f",
+    "d_e8bf3cff62f97300817d1fdcce382584": "8cbb5463171205ecdce0a701aef9b469ef8a17960f96206256275ec714e70118",
+    "d_449ee0cec1f9574f8f34712da6f7456f": "3ed7eb697cfdcf701e290d1872625e60e3e9d5f322e84b8de2cdcadcf166c5ea",
+    "d_d312a5b127e1ae74299b8ae664cedd4e": "b8c86e72fa4a679647982a29109517d37f693c0625817074e643200b3d0c2dd0"
+  },
+  "contentHash": "88b9c4995e15cb96cae479d3736e485db19e535d45380297f4985962942b91f8",
+  "featureCount": 196,
+  "featureCounts": {
+    "stations": 183,
+    "railLines": 13
+  },
+  "validationReport": {
+    "valid": true,
+    "identities": true,
+    "geometry": true,
+    "wgs84": true,
+    "stationConsolidation": true,
+    "stationNameJoin": true,
+    "stationCodeJoin": true,
+    "routeCentrelineGeneration": true,
+    "simplificationTolerance": 0.00004
+  }
+}

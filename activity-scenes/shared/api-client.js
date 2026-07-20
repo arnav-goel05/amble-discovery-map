@@ -38,14 +38,16 @@ export async function requestJson(url, { fetchImpl = fetch, timeoutMs = 12_000, 
 
 export async function loadPublicSnapshot(options = {}) {
   const snapshot = await requestJson("/api/snapshot", options);
-  const [landmarks, pois] = await Promise.all([
+  const [landmarks, pois, events] = await Promise.all([
     requestJson(snapshot.data.landmarksRef, options),
     requestJson(snapshot.data.poisRef, options),
+    snapshot.data.eventsRef ? requestJson(snapshot.data.eventsRef, options) : Promise.resolve({ data: { schemaVersion: "3.0", mapped: [], offMap: [], counts: { active: 0, mapped: 0, offMap: 0 } } }),
   ]);
   return {
     metadata: snapshot.data,
     landmarks: landmarks.data,
     pois: pois.data,
+    events: events.data,
     stale: snapshot.stale,
     warning: snapshot.warning,
   };

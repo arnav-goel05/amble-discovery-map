@@ -280,6 +280,13 @@ function unionBoundingRegions(tiles) {
   };
 }
 
+function poiTileFilename(sourceTile) {
+  const extension = path.extname(sourceTile) || ".b3dm";
+  const stem = path.basename(sourceTile, extension);
+  const sourceHash = createHash("sha256").update(sourceTile).digest("hex").slice(0, 12);
+  return `${stem}-${sourceHash}${extension}`;
+}
+
 function writePoiTileset(poi, sourceTileset, outputDir) {
   const sourceTileNodes = Object.keys(poi.tiles).map((sourceTile) => {
     const sourceTileNode = findSourceTile(sourceTileset.root, sourceTileForTileset(sourceTile));
@@ -292,7 +299,7 @@ function writePoiTileset(poi, sourceTileset, outputDir) {
       boundingVolume: sourceTileNode.boundingVolume,
       geometricError: 0,
       refine: sourceTileNode.refine ?? "REPLACE",
-      content: { uri: path.basename(sourceTile) },
+      content: { uri: poiTileFilename(sourceTile) },
     };
   });
 
@@ -379,7 +386,8 @@ for (const poi of POIS) {
     if (poiStats.keptTriangles <= 0) throw new Error(`${poi.id}: ${sourceTile} produced no POI triangles`);
     await poiDocument.transform(prune());
     const poiGlb = Buffer.from(await io.writeBinary(poiDocument));
-    const poiPath = path.join(outputDir, path.basename(sourceTile));
+    const poiFile = poiTileFilename(sourceTile);
+    const poiPath = path.join(outputDir, poiFile);
     writeB3dm(buildB3dmParts(b3dm, batchIdRemap), poiGlb, poiPath);
     const sourceBytes = fs.readFileSync(sourceCachePath(sourceTile));
     const sourceTable = batchTable(b3dm);
@@ -389,7 +397,7 @@ for (const poi of POIS) {
       originalBatchIds: batchIds,
       gmlIds: batchIds.map((batchId) => sourceTable["gml:id"]?.[batchId]),
       gmlNames: batchIds.map((batchId) => sourceTable["gml:name"]?.[batchId]),
-      poiFile: path.basename(sourceTile),
+      poiFile,
       poiSha256: sha256(fs.readFileSync(poiPath)),
       poiTriangles: poiStats.keptTriangles,
     });

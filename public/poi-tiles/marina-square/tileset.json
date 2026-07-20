@@ -1,0 +1,96 @@
+{
+  "asset": {
+    "version": "1.0",
+    "extras": {
+      "ion": {
+        "georeferenced": true,
+        "movable": false
+      }
+    }
+  },
+  "geometricError": 512,
+  "root": {
+    "boundingVolume": {
+      "region": [
+        1.812527695762618,
+        0.0224929789008368,
+        1.812739548310348,
+        0.0226848811225343,
+        0,
+        226.7042209621207
+      ]
+    },
+    "geometricError": 256,
+    "refine": "REPLACE",
+    "children": [
+      {
+        "boundingVolume": {
+          "region": [
+            1.812527695762618,
+            0.0224929789008368,
+            1.812739548310348,
+            0.0226848811225343,
+            0,
+            226.7042209621207
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "3_0-4167a213fe24.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812527695762618,
+            0.0224929789008368,
+            1.812739548310348,
+            0.0226848811225343,
+            0,
+            226.7042209621207
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "3_1-073d3ae59802.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812527695762618,
+            0.0224929789008368,
+            1.812739548310348,
+            0.0226848811225343,
+            0,
+            226.7042209621207
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "3_2-2e4d52f80cd9.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.812527695762618,
+            0.0224929789008368,
+            1.812739548310348,
+            0.0226848811225343,
+            0,
+            226.7042209621207
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "3_3-0aee21fc925c.b3dm"
+        }
+      }
+    ]
+  }
+}

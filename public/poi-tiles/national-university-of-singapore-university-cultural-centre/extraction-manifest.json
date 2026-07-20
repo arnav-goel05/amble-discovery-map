@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "national-university-of-singapore-university-cultural-centre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:09.441Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/17/11_0.b3dm",
+      "sourceSha256": "f3e45872ade896a8171ef9be6cf00a4f825da3b1f4baa478e73415c8d17b0f43",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "gmlNames": [
+        "NATIONAL UNIVERSITY OF SINGAPORE (UNIVERSITY CULTURAL CENTRE)"
+      ],
+      "poiFile": "11_0-af6546b201a3.b3dm",
+      "poiSha256": "72b457903a127fa334431df9d1f34116a6c82fefb55c6fdb0fc112e8de6bab1d",
+      "poiTriangles": 3188,
+      "backgroundFile": "optimized-tiles/6/17/11_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "backgroundSha256": "0975d7365bf4b9319598ebc387d9a0564264227caa13b7b3ade1384a553e91af",
+      "backgroundTriangles": 11253
+    },
+    {
+      "sourceTile": "tiles/6/17/11_1.b3dm",
+      "sourceSha256": "cab659dc98caa792c8c69bf6386299f6545e5b6560e6b7a1f06b83559bf418fb",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "gmlNames": [
+        "NATIONAL UNIVERSITY OF SINGAPORE (UNIVERSITY CULTURAL CENTRE)"
+      ],
+      "poiFile": "11_1-c526a382af00.b3dm",
+      "poiSha256": "1fdd09dea70b82a56119e8459384c2b238fda54c85a2735d5a8fdbf6ba138a92",
+      "poiTriangles": 3188,
+      "backgroundFile": "optimized-tiles/6/17/11_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "backgroundSha256": "99aabdeeb11ea3aacc06095991734dde849aac0698b4e762236c0477672f2cfa",
+      "backgroundTriangles": 11253
+    },
+    {
+      "sourceTile": "tiles/6/17/11_2.b3dm",
+      "sourceSha256": "58898806cb438b7a33680bbc9cb9fc7529d5937996705a53b9f74dfcf36a6132",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "gmlNames": [
+        "NATIONAL UNIVERSITY OF SINGAPORE (UNIVERSITY CULTURAL CENTRE)"
+      ],
+      "poiFile": "11_2-da3a1544c49e.b3dm",
+      "poiSha256": "a97ba0660eda1785b483427e0b89df483a37b70546b7faea352760f2f13d25aa",
+      "poiTriangles": 3188,
+      "backgroundFile": "optimized-tiles/6/17/11_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "backgroundSha256": "d313163eab65f8539c35a6959d31769e466728893e698562b4edf856bd14bbe2",
+      "backgroundTriangles": 11253
+    },
+    {
+      "sourceTile": "tiles/6/17/11_3.b3dm",
+      "sourceSha256": "c3d84ff99f27f8be55430ad2ab9f7898ad40a937ad47afbe45c41a2e72f84828",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "gmlNames": [
+        "NATIONAL UNIVERSITY OF SINGAPORE (UNIVERSITY CULTURAL CENTRE)"
+      ],
+      "poiFile": "11_3-5d90cf6815ff.b3dm",
+      "poiSha256": "11aee52223d040b13c9a6e0cd52d06ccdec0559ac4101dd98efb74005602030b",
+      "poiTriangles": 3188,
+      "backgroundFile": "optimized-tiles/6/17/11_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "backgroundSha256": "90f126f17d1a9ca9385be27a3d433eed02a7a0ab4bc2ce705cde8f95a09ac97a",
+      "backgroundTriangles": 11253
+    },
+    {
+      "sourceTile": "tiles/6/17/11_4.b3dm",
+      "sourceSha256": "903ace67e63f9eda16d858ed95ee1be914479660f0fbf586ea74661ab2605e4f",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "gmlNames": [
+        "NATIONAL UNIVERSITY OF SINGAPORE (UNIVERSITY CULTURAL CENTRE)"
+      ],
+      "poiFile": "11_4-448fa8f8d53c.b3dm",
+      "poiSha256": "70658497e3245badc49a126b6ea56d7cfeda8b33ed82963441383d97e7fbec8e",
+      "poiTriangles": 3188,
+      "backgroundFile": "optimized-tiles/6/17/11_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "backgroundSha256": "e3a0e07f64c64a78482b78809cf7707651f3e5efa9922ca50f25391c516823be",
+      "backgroundTriangles": 11253
+    },
+    {
+      "sourceTile": "tiles/6/17/11_5.b3dm",
+      "sourceSha256": "00fd42cfdf0e7344be93ae1698a863741c4f31bf30b1a9ae8f25728fa6f4f468",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "gmlNames": [
+        "NATIONAL UNIVERSITY OF SINGAPORE (UNIVERSITY CULTURAL CENTRE)"
+      ],
+      "poiFile": "11_5-64965eedc1d0.b3dm",
+      "poiSha256": "55d66f4de5e530cb54fbf2b1e757a3b236400b86deba03a65041882fc37f7fa1",
+      "poiTriangles": 3188,
+      "backgroundFile": "optimized-tiles/6/17/11_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_89b93b88-ddfc-4033-8d50-5aee6ece208e"
+      ],
+      "backgroundSha256": "39d1a999e8137c78305c92dc7e00c47f06029470b221ef93ce37e793aa18bcd8",
+      "backgroundTriangles": 11253
+    }
+  ]
+}

@@ -28,7 +28,7 @@ The complete snapshot also records `expiredEventIds` and `removedLandmarkIds`. E
 
 Use the approved record defined by `onemap-venue-resolver` as `result`, with `resolutionStatus: "approved"`, plus `inputEventIds` and attempts. The stage envelope has `status: "success"`. Persist as `stages/<poi-id>/resolve.json`.
 
-Use stage status `unresolved` for resolver outcomes `needs_review` and `not_mappable`. Include the complete `inputEventIds`, `evidenceInspected`, `finalReason`, `cacheKey`, and `evidenceHash` so unchanged later runs reuse the outcome instead of repeating research. A `needs_review` result must additionally include the exact `recoveryEvidenceRef` returned by `record-venue-recovery`, `webResearch` covering `venue_official` and `host_or_authority`, `localLookupEvidence` covering the focused address/coordinate rerun and `find-poi-tile-candidates`, numbered `recoveryAttempts` 1 and 2, and `competingCandidates` (empty only when no candidates were returned).
+Use stage status `unresolved` for resolver outcomes `needs_review` and `not_mappable`. Include the complete `inputEventIds`, `evidenceInspected`, `finalReason`, `cacheKey`, and `evidenceHash` so unchanged later runs reuse the outcome instead of repeating research. A `needs_review` result must additionally include the exact `recoveryEvidenceRef` returned by `record-venue-recovery`, `webResearch` covering `venue_official` and `host_or_authority`, `localLookupEvidence` covering the focused address/coordinate rerun and `find-poi-tile-candidates`, numbered `recoveryAttempts` 1 and 2, and `competingCandidates` (empty only when no candidates were returned). When Singapore scope and a usable general location remain reliable, this outcome is an active off-map/pending-review activity; downstream highlight is skipped, while the off-map catalogue and review queue receive the same published identity and evidence hash.
 
 For an emitted ambiguous-venue checkpoint, edit the supplied `recoveryTemplate` and run its exact `recoveryCommand`. The orchestrator creates the stage handoff after the focused rerun; the intervention agent must not create or search for that handoff itself.
 
@@ -72,7 +72,7 @@ Require browser evidence and zero relevant tile errors.
 
 The panel input is the complete canonical events referenced by `eventIds`, the approved landmark identity/anchor, and this successful pill stage.
 
-The pipeline commits pill handoffs as one complete successful snapshot. Existing `poiId` values replace their event lists, new values append, and values absent from the successful snapshot are removed. Partial or failed runs do not commit frontend handoffs.
+The pipeline commits pill, panel, mapped, and off-map handoffs as one verified immutable snapshot. Safe current changes may coexist with explicit contribution-level stale carry-forward, scoped holds, and archives. A release-wide failed gate commits nothing and leaves the prior active pointer unchanged.
 
 ## Panel result
 
@@ -89,3 +89,7 @@ The pipeline commits pill handoffs as one complete successful snapshot. Existing
 ```
 
 Never create a downstream handoff when the upstream stage status is not `success`.
+
+## Post-resolution deduplication checkpoint
+
+After every resolve branch is terminal, run `finalize-dedup`. It consumes normalized parent/session/venue-occurrence records and resolution outcomes, writes candidate and final-decision artifacts, applies prior published anchors, remaps venue branch event IDs, and records every source/editorial contribution. Confirmed merges retain all children. Uncertain or prior-anchor-conflicting candidates stay distinct as scoped held reviews. Frontend staging is forbidden until this checkpoint is terminal. Evidence-backed `needs_review` and `not_mappable` outcomes are accounted without unsafe highlights.

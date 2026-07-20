@@ -219,7 +219,7 @@ reported status has a non-personal operational source.
 
 - **FR-001**: `https://amblefinds.com/` MUST be the single canonical public homepage.
 - **FR-002**: HTTP, `www`, and the public worker-development hostname
-  `amble.amble-sg.workers.dev` MUST permanently redirect to the equivalent canonical production
+  `amble.project-hub-arnav.workers.dev` MUST permanently redirect to the equivalent canonical production
   URL without loops or multi-hop chains.
 - **FR-003**: The homepage MUST use the title `Amble: See What’s Happening in Singapore` and
   return one useful description, one absolute self-canonical URL, and explicit index/follow
@@ -320,7 +320,7 @@ reported status has a non-personal operational source.
 - The canonical product remains a single indexable homepage during this phase.
 - The public brand and structured-data site name remain `Amble`; the longer approved wording
   is the homepage title, not a brand rename.
-- The domain `amblefinds.com` is canonical; `www` and `amble.amble-sg.workers.dev` are only
+- The domain `amblefinds.com` is canonical; `www` and `amble.project-hub-arnav.workers.dev` are only
   redirecting aliases.
 - Mobile event discovery is intentionally excluded despite its negative effect on mobile-first
   search potential.

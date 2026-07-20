@@ -63,3 +63,52 @@ export function planWarnings(state, { now = new Date() } = {}) {
   if (invalid.length) warnings.push(`${invalid.length} stop${invalid.length === 1 ? " has" : "s have"} invalid coordinates and cannot be routed.`);
   return warnings;
 }
+
+function candidateCoordinates(value) {
+  if (!hasRouteCoordinates(value)) return null;
+  return Object.freeze([Number(value.longitude), Number(value.latitude)]);
+}
+
+function freezeCandidate(candidate) {
+  if (candidate.coordinates) Object.freeze(candidate.coordinates);
+  return Object.freeze(candidate);
+}
+
+export function createPlanningCandidateState(state, { games = [] } = {}) {
+  const planStops = (state?.stops || []).map((stop, index) => freezeCandidate({
+    candidateId: `plan-stop:${planStopKey(stop)}`,
+    candidateType: "plan_stop",
+    stopKey: planStopKey(stop),
+    stopType: stop.type,
+    title: String(stop.title || "").trim(),
+    place: String(stop.place || "").trim(),
+    position: index + 1,
+    coordinates: candidateCoordinates(stop),
+    areaId: typeof stop.areaId === "string" && stop.areaId ? stop.areaId : null,
+    availability: stop.availability || (stop.isAvailable === false ? "unavailable" : "available"),
+  }));
+  const gameIds = new Set();
+  const publicGames = [];
+  for (const game of Array.isArray(games) ? games : []) {
+    const gameId = String(game?.id || game?.gameId || "").trim();
+    const title = String(game?.title || game?.name || "").trim();
+    if (!gameId || !title || gameIds.has(gameId)) continue;
+    gameIds.add(gameId);
+    publicGames.push(freezeCandidate({
+      candidateId: `game:${gameId}`,
+      candidateType: "game",
+      gameId,
+      title,
+      status: String(game.status || "available"),
+      theme: typeof game.theme === "string" && game.theme ? game.theme : null,
+      coordinates: candidateCoordinates(game),
+      areaId: typeof game.areaId === "string" && game.areaId ? game.areaId : null,
+    }));
+  }
+  publicGames.sort((left, right) => left.candidateId.localeCompare(right.candidateId));
+  return Object.freeze({
+    schemaVersion: "1.0",
+    planStops: Object.freeze(planStops),
+    games: Object.freeze(publicGames),
+  });
+}

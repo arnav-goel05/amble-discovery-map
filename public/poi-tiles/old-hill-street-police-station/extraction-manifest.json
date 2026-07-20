@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "old-hill-street-police-station",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:14.092Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/36/6_0.b3dm",
+      "sourceSha256": "3c4f2060cf6ffed19b0b4d5b73932761419b4b64ab4a3e54815283c4bc49b6db",
+      "originalBatchIds": [
+        27
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "gmlNames": [
+        "OLD HILL STREET POLICE STATION"
+      ],
+      "poiFile": "6_0-b8471d22b62f.b3dm",
+      "poiSha256": "5737839426acb20a0023ca03335e9f40b0e924f4e47f8e21a5c4df747f3cc77c",
+      "poiTriangles": 2632,
+      "backgroundFile": "optimized-tiles/6/36/6_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "backgroundSha256": "35f053e9f4501df270b0b47a4dfed100ed025c22b765116ad6755257169f307e",
+      "backgroundTriangles": 7483
+    },
+    {
+      "sourceTile": "tiles/6/36/6_1.b3dm",
+      "sourceSha256": "ad818818acb5b3bc8f9e416388d0ec7e13c12fccffe32041de761158d655d139",
+      "originalBatchIds": [
+        27
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "gmlNames": [
+        "OLD HILL STREET POLICE STATION"
+      ],
+      "poiFile": "6_1-5c6c3bc9a914.b3dm",
+      "poiSha256": "d103ed5e67083eb3d6ce6aba4600d5e512353ef82f2d03475e6db94d462aa282",
+      "poiTriangles": 2632,
+      "backgroundFile": "optimized-tiles/6/36/6_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "backgroundSha256": "99412254ca8953f453aba14e753d4a4877d1940ca961ecbfb3873fc02295b80a",
+      "backgroundTriangles": 7483
+    },
+    {
+      "sourceTile": "tiles/6/36/6_2.b3dm",
+      "sourceSha256": "4cc46c31abddec831e5d08bb33565b6d57c4fb2f284492ef7776b97df6efe212",
+      "originalBatchIds": [
+        27
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "gmlNames": [
+        "OLD HILL STREET POLICE STATION"
+      ],
+      "poiFile": "6_2-eb1ac4574d88.b3dm",
+      "poiSha256": "3f91c9c63252f1bec27fe2c3a7c7762f3640698c3557f7d9bffd609136b9b218",
+      "poiTriangles": 2632,
+      "backgroundFile": "optimized-tiles/6/36/6_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "backgroundSha256": "95b916770522a452250da0b9fc35b698cacf3c6b68d68bd94814d03849dba883",
+      "backgroundTriangles": 7483
+    },
+    {
+      "sourceTile": "tiles/6/36/6_3.b3dm",
+      "sourceSha256": "0b6bed042ee6ea03cc403669fc8af19d69403eda021ec7b2d540497e34b1e785",
+      "originalBatchIds": [
+        27
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "gmlNames": [
+        "OLD HILL STREET POLICE STATION"
+      ],
+      "poiFile": "6_3-de19218bc3f4.b3dm",
+      "poiSha256": "c7822cbae73ada11bcb7fb2f5a0fa4218b7475a7ec742ebed43c3a07d5df130f",
+      "poiTriangles": 2632,
+      "backgroundFile": "optimized-tiles/6/36/6_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "backgroundSha256": "60442a22b62d1f1ee4b8441a7c415a9808e275d7541ea24d40094831b3bb2fbe",
+      "backgroundTriangles": 7483
+    },
+    {
+      "sourceTile": "tiles/6/36/6_4.b3dm",
+      "sourceSha256": "307df9365f46853b71e174d70e5fcd9fdd0f55226065d934d3992f7e9dfd28a7",
+      "originalBatchIds": [
+        27
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "gmlNames": [
+        "OLD HILL STREET POLICE STATION"
+      ],
+      "poiFile": "6_4-e7313ce898f6.b3dm",
+      "poiSha256": "53a7614be64101f4777597943eb4a00a0eff1816bd61cda372e65533dd3bf62f",
+      "poiTriangles": 2632,
+      "backgroundFile": "optimized-tiles/6/36/6_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "backgroundSha256": "ab963cbf675447be5d85fd318aece0f6080a540fba62a28690b888d890603000",
+      "backgroundTriangles": 7483
+    },
+    {
+      "sourceTile": "tiles/6/36/6_5.b3dm",
+      "sourceSha256": "fef332cd27bcb47ca9854d9a4c8eeaf56c1c0a0fee4fb89f94108b86ec28f8c4",
+      "originalBatchIds": [
+        27
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "gmlNames": [
+        "OLD HILL STREET POLICE STATION"
+      ],
+      "poiFile": "6_5-30b56bc842b7.b3dm",
+      "poiSha256": "28d91b068fd2025ec7808e611ba9df29629c956b02e27e2d3125fb795a4d459d",
+      "poiTriangles": 2632,
+      "backgroundFile": "optimized-tiles/6/36/6_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d"
+      ],
+      "backgroundSha256": "8d4d02307c70d67e39d86f05f7836a33ffda5d856fa8b029b139984b0864509a",
+      "backgroundTriangles": 7483
+    }
+  ]
+}

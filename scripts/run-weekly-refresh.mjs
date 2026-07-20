@@ -129,8 +129,11 @@ export function runWeeklyRefresh({
   try {
     atomicJson(path.join(runDirectory, "status.json"), status);
     status.events = runCompleteEvent({ config, invoke, root, env });
-    if (!status.events.complete || status.events.status !== "success") {
-      status.restaurants = { status: "skipped", coverage: [], reasonCode: "event_refresh_incomplete" };
+    const eventStale = status.events.complete === true && status.events.status === "partial";
+    const eventReleaseFailed = !status.events.complete || ["failed", "release_failed"].includes(status.events.status);
+    if (eventStale || eventReleaseFailed) {
+      status.events.publicationStatus = eventStale ? "stale" : "release_failed";
+      status.restaurants = { status: "skipped", coverage: [], reasonCode: eventStale ? "event_snapshot_stale" : "event_release_failed" };
     } else {
       for (const coverage of config.restaurants.coverage) {
         const result = runRestaurantCoverage({ config, coverage, invoke, root, env });
@@ -140,8 +143,8 @@ export function runWeeklyRefresh({
       status.restaurants.status = status.restaurants.coverage.length === config.restaurants.coverage.length
         && status.restaurants.coverage.every((item) => item.complete) ? "success" : "partial";
     }
-    status.complete = status.events.complete === true && status.events.status === "success" && status.restaurants.status === "success";
-    status.status = status.complete ? "success" : "partial";
+    status.complete = eventStale || (status.events.complete === true && status.events.status === "success" && status.restaurants.status === "success");
+    status.status = eventStale ? "stale" : eventReleaseFailed ? "release_failed" : status.complete ? "success" : "partial";
     status.completedAt = now().toISOString();
     atomicJson(path.join(runDirectory, "status.json"), status);
     atomicJson(path.join(outputRoot, "latest.json"), { schemaVersion: "1.0", runId, status: status.status, complete: status.complete, statusRef: `runs/${runId}/status.json` });

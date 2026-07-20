@@ -62,6 +62,25 @@ test("the ready state must remain stable before entry is offered", async ({ page
   await expect(enter).toBeVisible();
 });
 
+test("the intro offers entry when the initial 3D scene does not become ready", async ({ page }) => {
+  await page.goto("/test-harness.html");
+  await page.evaluate(async () => {
+    const { createExperienceIntro } = await import("/activity-scenes/experience-intro.js");
+    window.__experienceIntro = createExperienceIntro({
+      minimumDisplayMs: 0,
+      maximumWaitMs: 50,
+      sceneReady: () => false,
+    });
+  });
+
+  const enter = page.getByRole("button", { name: "Let's explore" });
+  await expect(enter).toBeVisible();
+  await expect(page.locator("#experience-intro")).toHaveAttribute(
+    "data-ready-reason",
+    "maximum-wait",
+  );
+});
+
 test("auto-start can bypass the first-load experience", async ({ page }) => {
   await page.goto("/test-harness.html");
   const state = await page.evaluate(async () => {

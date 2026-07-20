@@ -12,7 +12,7 @@ Stable identity for the public product.
 | `schemaVersion`     | string                     |      yes | `1.0`                                        |
 | `canonicalOrigin`   | absolute HTTPS URL         |      yes | `https://amblefinds.com`                     |
 | `canonicalHomepage` | absolute HTTPS URL         |      yes | `https://amblefinds.com/`                    |
-| `workerAliasHost`   | hostname                   |      yes | `amble.amble-sg.workers.dev` exact match     |
+| `workerAliasHost`   | hostname                   |      yes | `amble.project-hub-arnav.workers.dev` exact match     |
 | `siteName`          | string                     |      yes | `Amble`                                      |
 | `publisherName`     | string                     |      yes | `Amble`                                      |
 | `language`          | BCP 47 string              |      yes | `en-SG`                                      |

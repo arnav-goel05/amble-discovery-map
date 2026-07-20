@@ -15,7 +15,7 @@ function applySecurityHeaders(response) {
   response.setHeader("X-Content-Type-Options", "nosniff");
   response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   response.setHeader("X-Frame-Options", "DENY");
-  response.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(self)");
+  response.setHeader("Permissions-Policy", "camera=(), microphone=(self), geolocation=(self)");
   response.setHeader("Cross-Origin-Resource-Policy", "same-origin");
   response.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data: https://*.basemaps.cartocdn.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; connect-src 'self' https://*.basemaps.cartocdn.com https://demotiles.maplibre.org https://cloudflareinsights.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'");
 }

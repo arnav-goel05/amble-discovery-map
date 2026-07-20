@@ -2,24 +2,26 @@ import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 export const EVENT_STAGES = Object.freeze(['resolve', 'highlight', 'pill', 'panel']);
-export const TERMINAL_SOURCE_STATUSES = new Set(['success', 'blocked', 'failed']);
+export const TERMINAL_SOURCE_STATUSES = new Set(['success', 'blocked', 'failed', 'pilot_failed', 'disabled']);
 export const TERMINAL_STAGE_STATUSES = new Set(['success', 'blocked', 'failed', 'skipped', 'unresolved']);
 
 export function safeResolutionOutcome(venue) {
   const stage = venue?.stages?.resolve;
   return stage?.status === 'success'
-    || (stage?.status === 'unresolved' && stage?.resolutionStatus === 'not_mappable');
+    || (stage?.status === 'unresolved' && ['not_mappable', 'needs_review'].includes(stage?.resolutionStatus));
 }
 
 export function evaluateCommitEligibility(state, { requireVerification = true } = {}) {
   const reasons = [];
   const sources = Object.entries(state.sources ?? {});
   const venues = Object.entries(state.venues ?? {});
-  if (!sources.length || sources.some(([, source]) => source.status !== 'success')) reasons.push('required_source_incomplete');
+  const enabledSources = sources.filter(([, source]) => source.operatingMode !== 'disabled');
+  const sourceReconciliationAccounted = state.normalization?.sourceReconciliation?.accounted === true;
+  if (!enabledSources.length || enabledSources.some(([, source]) => source.operatingMode !== 'pilot' && source.status !== 'success') && !sourceReconciliationAccounted) reasons.push('required_source_incomplete');
   if (state.normalization?.status !== 'success') reasons.push('normalization_incomplete');
   if (venues.length && state.resolutionPreparation?.status !== 'success') reasons.push('venue_accounting_incomplete');
-  if (venues.some(([, venue]) => venue.stages?.resolve?.resolutionStatus === 'needs_review')) reasons.push('venue_review_pending');
   if (venues.some(([, venue]) => !safeResolutionOutcome(venue))) reasons.push('venue_resolution_incomplete');
+  if (state.deduplication && state.deduplication.status !== 'success') reasons.push('deduplication_incomplete');
   if (requireVerification) {
     if (state.verification?.status !== 'success') reasons.push('verification_incomplete');
     for (const gate of ['poiSeparation', 'build', 'eventUi', 'browser']) {
@@ -63,6 +65,8 @@ export function nextPipelineAction(state) {
     ? { action: 'resolve-local' }
     : { action: 'record-stage', venue: pendingResolve[0], stage: 'resolve' };
   const allResolvesTerminal = Object.values(state.venues ?? {}).every((venue) => TERMINAL_STAGE_STATUSES.has(venue.stages.resolve.status));
+  if (allResolvesTerminal && state.deduplication?.status === 'pending') return { action: 'finalize-dedup' };
+  if (state.deduplication?.status === 'blocked' || state.deduplication?.status === 'failed') return { action: 'finalize' };
   const frontendPending = Object.values(state.venues ?? {}).some((venue) => ['highlight', 'pill', 'panel'].some((stage) => venue.stages[stage].status === 'pending'));
   if (allResolvesTerminal && (frontendPending || state.verification?.status === 'pending')) return { action: 'stage-frontend' };
   for (const [venue, value] of Object.entries(state.venues ?? {})) {
@@ -81,15 +85,17 @@ export function terminalProblems(state) {
     if (!TERMINAL_STAGE_STATUSES.has(value.stages[stage].status)) problems.push(`${venue}/${stage} is ${value.stages[stage].status}`);
   }
   if (state.verification?.status === 'pending' && state.normalization?.status === 'success') problems.push('verification is pending');
+  if (state.deduplication?.status === 'pending') problems.push('deduplication is pending');
   return problems;
 }
 
 export function deriveTerminalStatus(state) {
   if (state.verification?.status === 'failed' || state.normalization?.status === 'failed') return 'failed';
   const sources = Object.values(state.sources ?? {});
-  if (sources.every((source) => source.status !== 'success')) return 'failed';
-  if (sources.some((source) => source.status === 'failed')) return 'failed';
-  if (sources.some((source) => source.status === 'blocked')) return 'partial';
+  const enabledSources = sources.filter((source) => source.operatingMode !== 'disabled');
+  if (!enabledSources.length || enabledSources.every((source) => source.status !== 'success')) return 'failed';
+  if (enabledSources.some((source) => source.operatingMode !== 'pilot' && source.status === 'failed')) return 'failed';
+  if (enabledSources.some((source) => source.operatingMode !== 'pilot' && source.status === 'blocked') && state.normalization?.sourceReconciliation?.accounted !== true) return 'partial';
   if (!evaluateCommitEligibility(state).eligible) return 'partial';
   return 'success';
 }

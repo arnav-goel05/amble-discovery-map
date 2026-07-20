@@ -15,12 +15,12 @@ export const FEATURE_TOUR_STEPS = [
     copy: "Search by event, venue, or activity to move quickly around Singapore.",
   },
   {
-    selector: ".landmark-event-search__categories",
+    selector: ".landmark-event-search__categories > button",
     title: "Explore by category",
     copy: "Narrow the map to exhibitions, performances, workshops, or experiences.",
   },
   {
-    selector: ".landmark-event-search__filter--dateRange",
+    selector: ".landmark-event-search__filter--dateRange button",
     title: "Choose when to go",
     copy: "Set a date range to find events that fit your schedule.",
   },
@@ -42,11 +42,17 @@ export const FEATURE_TOUR_STEPS = [
 ];
 
 function storageComplete(storage) {
-  try { return storage?.getItem(STORAGE_KEY) === "true"; } catch { return false; }
+  try {
+    return storage?.getItem(STORAGE_KEY) === "true";
+  } catch {
+    return false;
+  }
 }
 
 function saveComplete(storage) {
-  try { storage?.setItem(STORAGE_KEY, "true"); } catch {}
+  try {
+    storage?.setItem(STORAGE_KEY, "true");
+  } catch {}
 }
 
 function makeButton(className, label, iconName) {
@@ -70,20 +76,36 @@ function findTarget(step, viewport) {
   const centerY = viewport.innerHeight / 2;
   const candidates = [...document.querySelectorAll(step.selector)]
     .map((element) => ({ element, rect: element.getBoundingClientRect() }))
-    .filter(({ rect }) => rect.width > 0 && rect.height > 0
-      && rect.right > 0 && rect.bottom > 0
-      && rect.left < viewport.innerWidth && rect.top < viewport.innerHeight)
+    .filter(
+      ({ rect }) =>
+        rect.width > 0 &&
+        rect.height > 0 &&
+        rect.right > 0 &&
+        rect.bottom > 0 &&
+        rect.left < viewport.innerWidth &&
+        rect.top < viewport.innerHeight,
+    )
     .sort((a, b) => {
-      const distance = (rect) => Math.hypot(rect.left + rect.width / 2 - centerX, rect.top + rect.height / 2 - centerY);
+      const distance = (rect) =>
+        Math.hypot(
+          rect.left + rect.width / 2 - centerX,
+          rect.top + rect.height / 2 - centerY,
+        );
       return distance(a.rect) - distance(b.rect);
     });
-  return candidates[0]?.element || (step.fallbackSelector ? document.querySelector(step.fallbackSelector) : null);
+  return (
+    candidates[0]?.element ||
+    (step.fallbackSelector
+      ? document.querySelector(step.fallbackSelector)
+      : null)
+  );
 }
 
 export function createFeatureTour({
   steps = FEATURE_TOUR_STEPS,
   storage = globalThis.localStorage,
   viewport = globalThis.window,
+  dispatch = null,
 } = {}) {
   let index = 0;
   let active = false;
@@ -132,16 +154,27 @@ export function createFeatureTour({
     const right = Math.min(viewport.innerWidth - 12, rect.right + padding);
     const bottom = Math.min(viewport.innerHeight - 12, rect.bottom + padding);
     Object.assign(spotlight.style, {
-      left: `${left}px`, top: `${top}px`, width: `${Math.max(44, right - left)}px`, height: `${Math.max(44, bottom - top)}px`,
+      left: `${left}px`,
+      top: `${top}px`,
+      width: `${Math.max(44, right - left)}px`,
+      height: `${Math.max(44, bottom - top)}px`,
     });
 
     const cardRect = card.getBoundingClientRect();
     const gap = 18;
     let cardLeft = right + gap;
-    if (cardLeft + cardRect.width > viewport.innerWidth - 18) cardLeft = left - cardRect.width - gap;
-    if (cardLeft < 18) cardLeft = Math.min(Math.max(18, left), viewport.innerWidth - cardRect.width - 18);
+    if (cardLeft + cardRect.width > viewport.innerWidth - 18)
+      cardLeft = left - cardRect.width - gap;
+    if (cardLeft < 18)
+      cardLeft = Math.min(
+        Math.max(18, left),
+        viewport.innerWidth - cardRect.width - 18,
+      );
     let cardTop = top + (bottom - top - cardRect.height) / 2;
-    cardTop = Math.min(Math.max(18, cardTop), viewport.innerHeight - cardRect.height - 18);
+    cardTop = Math.min(
+      Math.max(18, cardTop),
+      viewport.innerHeight - cardRect.height - 18,
+    );
     card.style.left = `${Math.round(cardLeft)}px`;
     card.style.top = `${Math.round(cardTop)}px`;
   };
@@ -150,15 +183,18 @@ export function createFeatureTour({
     const step = steps[index];
     target = findTarget(step, viewport);
     if (!target) {
-      if (index < steps.length - 1) { index += 1; render(); }
-      else finish();
+      if (index < steps.length - 1) {
+        index += 1;
+        render();
+      } else finish();
       return;
     }
     progress.textContent = `${index + 1} of ${steps.length}`;
     title.textContent = step.title;
     copy.textContent = step.copy;
     back.hidden = index === 0;
-    next.querySelector("span").textContent = index === steps.length - 1 ? "Start exploring" : "Next";
+    next.querySelector("span").textContent =
+      index === steps.length - 1 ? "Start exploring" : "Next";
     requestAnimationFrame(position);
   };
 
@@ -175,7 +211,9 @@ export function createFeatureTour({
     lastFocused?.focus?.({ preventScroll: true });
   };
 
-  function finish() { close({ remember: true }); }
+  function finish() {
+    close({ remember: true });
+  }
 
   const start = ({ force = false } = {}) => {
     if (active || (!force && storageComplete(storage))) {
@@ -202,24 +240,64 @@ export function createFeatureTour({
     index = Math.min(steps.length - 1, Math.max(0, index + change));
     render();
   };
-  skip.addEventListener("click", finish);
-  back.addEventListener("click", () => move(-1));
-  next.addEventListener("click", () => index === steps.length - 1 ? finish() : move(1));
+  const dispatchOr = (actionId, fallback) => {
+    if (typeof dispatch === "function") return dispatch(actionId, {});
+    return fallback();
+  };
+  skip.addEventListener("click", () => dispatchOr("tour.finish", finish));
+  back.addEventListener("click", () =>
+    dispatchOr("tour.previous", () => move(-1)),
+  );
+  next.addEventListener("click", () =>
+    dispatchOr(index === steps.length - 1 ? "tour.finish" : "tour.next", () =>
+      index === steps.length - 1 ? finish() : move(1),
+    ),
+  );
   function handleKeydown(event) {
-    if (event.key === "Escape") { event.preventDefault(); finish(); return; }
-    if (event.key === "ArrowRight") { event.preventDefault(); move(1); }
-    if (event.key === "ArrowLeft") { event.preventDefault(); move(-1); }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      finish();
+      return;
+    }
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      move(1);
+    }
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      move(-1);
+    }
     if (event.key === "Tab") {
       const focusable = [...card.querySelectorAll("button:not([hidden])")];
-      const first = focusable[0], last = focusable.at(-1);
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      const first = focusable[0],
+        last = focusable.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
   }
 
   return {
-    destroy() { close({ remember: false }); root.remove(); },
+    destroy() {
+      close({ remember: false });
+      root.remove();
+    },
+    finish,
     isActive: () => active,
+    next: () => {
+      if (!active) return false;
+      move(1);
+      return true;
+    },
+    previous: () => {
+      if (!active) return false;
+      move(-1);
+      return true;
+    },
     start,
   };
 }

@@ -1,0 +1,221 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "uob-plaza",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:13.947Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/38/5_0.b3dm",
+      "sourceSha256": "3dd36682b3dbb0f73705cc88b7e4313404e86bbbdc87ceb50cd14ad9eeee7cfa",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9274f3a4-2af5-445f-85d3-3844ff778650"
+      ],
+      "gmlNames": [
+        "UOB PLAZA"
+      ],
+      "poiFile": "5_0-3e6e3f831fee.b3dm",
+      "poiSha256": "6271e1e9b0c9dddb7b569420305dcccc86e241ae21c6806cd304453a9818bbbd",
+      "poiTriangles": 9320,
+      "backgroundFile": "optimized-tiles/6/38/5_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9274f3a4-2af5-445f-85d3-3844ff778650"
+      ],
+      "backgroundSha256": "5c4baa20b2869ba55109a5cc43982385ff9e5a691a952b5b77508da7bd3c9982",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/6/38/5_1.b3dm",
+      "sourceSha256": "fcb1c92694375b9b15385809d9d451e551c64ffd4f791bed9c81d5dfcdc5adbf",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9274f3a4-2af5-445f-85d3-3844ff778650"
+      ],
+      "gmlNames": [
+        "UOB PLAZA"
+      ],
+      "poiFile": "5_1-b04e13ca6667.b3dm",
+      "poiSha256": "aa9ee5137ff4fba3b89107f8e226ffecfb462c2d7f484c2dbea9852472fb6543",
+      "poiTriangles": 9320,
+      "backgroundFile": "optimized-tiles/6/38/5_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9274f3a4-2af5-445f-85d3-3844ff778650"
+      ],
+      "backgroundSha256": "5c4baa20b2869ba55109a5cc43982385ff9e5a691a952b5b77508da7bd3c9982",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/6/38/5_2.b3dm",
+      "sourceSha256": "5a6423a5e32708d64ef7f1b6d97e4fda068d4ce8bec766bfb934085a85b11ad8",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9274f3a4-2af5-445f-85d3-3844ff778650"
+      ],
+      "gmlNames": [
+        "UOB PLAZA"
+      ],
+      "poiFile": "5_2-8f156469b469.b3dm",
+      "poiSha256": "65c2afd8ed4965582616bb0476765c46d0d3f5789b4d9706f288afcbd0a8aabf",
+      "poiTriangles": 9320,
+      "backgroundFile": "optimized-tiles/6/38/5_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9274f3a4-2af5-445f-85d3-3844ff778650"
+      ],
+      "backgroundSha256": "5c4baa20b2869ba55109a5cc43982385ff9e5a691a952b5b77508da7bd3c9982",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/6/38/5_3.b3dm",
+      "sourceSha256": "6c0528a88c554f40dc2bc41be7dbd10bd9b82e0ef721d74887d86a04076033a4",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9274f3a4-2af5-445f-85d3-3844ff778650"
+      ],
+      "gmlNames": [
+        "UOB PLAZA"
+      ],
+      "poiFile": "5_3-60a0909c9f9c.b3dm",
+      "poiSha256": "2f0ec92519581dcc97b8a12097a2d4e131c64a303c843ff4a15f059bbbc50a8d",
+      "poiTriangles": 9320,
+      "backgroundFile": "optimized-tiles/6/38/5_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9274f3a4-2af5-445f-85d3-3844ff778650"
+      ],
+      "backgroundSha256": "5c4baa20b2869ba55109a5cc43982385ff9e5a691a952b5b77508da7bd3c9982",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/6/38/5_4.b3dm",
+      "sourceSha256": "7737157f5ec74001c586e5338b867fe8c88d0903a99b18d3e1b3b99fccf79543",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9274f3a4-2af5-445f-85d3-3844ff778650"
+      ],
+      "gmlNames": [
+        "UOB PLAZA"
+      ],
+      "poiFile": "5_4-1e4a1980d9e9.b3dm",
+      "poiSha256": "0845a376ac52663851e1df4fbdd182bb15247c9c600a121d6c087187b60967ae",
+      "poiTriangles": 9320,
+      "backgroundFile": "optimized-tiles/6/38/5_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9274f3a4-2af5-445f-85d3-3844ff778650"
+      ],
+      "backgroundSha256": "5c4baa20b2869ba55109a5cc43982385ff9e5a691a952b5b77508da7bd3c9982",
+      "backgroundTriangles": 0
+    }
+  ]
+}

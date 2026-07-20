@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "hall-7-singapore-expo",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:12.443Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/62/29_0.b3dm",
+      "sourceSha256": "d473003b40172d894ecbb142a40e197220fd1191f1ca970121af475564f934ae",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "gmlNames": [
+        "HALL 7 (SINGAPORE EXPO)"
+      ],
+      "poiFile": "29_0-e1921dc9d792.b3dm",
+      "poiSha256": "2ae2f3f11c7be4bd2dae5b21e47a8b6e3e470adb101c17bc343899dfb759e0b8",
+      "poiTriangles": 465,
+      "backgroundFile": "optimized-tiles/6/62/29_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "backgroundSha256": "fd8636edd978d2cf3ffa915ab63e825b28ebbdcd4c7384a572baa1507d416493",
+      "backgroundTriangles": 8509
+    },
+    {
+      "sourceTile": "tiles/6/62/29_1.b3dm",
+      "sourceSha256": "86c53d5c5f8ae67a423d05a7ed8cdae720befcd3284aac4d973a2c5f235e3e6a",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "gmlNames": [
+        "HALL 7 (SINGAPORE EXPO)"
+      ],
+      "poiFile": "29_1-bc04c4d473e0.b3dm",
+      "poiSha256": "4667148cce7662e351d85c960feeaeeae3ec91d0c4cb4a8ea9c0463d3503b966",
+      "poiTriangles": 465,
+      "backgroundFile": "optimized-tiles/6/62/29_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "backgroundSha256": "336fdb77ec51c610c02be0d7643d47a3b8af850f912248582d092608c902417e",
+      "backgroundTriangles": 8509
+    },
+    {
+      "sourceTile": "tiles/6/62/29_2.b3dm",
+      "sourceSha256": "9aa2d7d08ba1c2c6bc78d348546b7f6304291bf48428e9569bdc0c495d276a3f",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "gmlNames": [
+        "HALL 7 (SINGAPORE EXPO)"
+      ],
+      "poiFile": "29_2-d09d10148cb1.b3dm",
+      "poiSha256": "da6e694c5cf595ab22747f95c7fdf635453ee294070e57de7a260b74b63a3489",
+      "poiTriangles": 465,
+      "backgroundFile": "optimized-tiles/6/62/29_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "backgroundSha256": "013f54058ba69a0ddd79d8af0d10106ae0f1a440832fd1c50e49ecab7e3ea774",
+      "backgroundTriangles": 8509
+    },
+    {
+      "sourceTile": "tiles/6/62/29_3.b3dm",
+      "sourceSha256": "104b5042ff7e507847cc4f3b8b82a011247f62cfe5d00eab25a7cd2b4f83a7a9",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "gmlNames": [
+        "HALL 7 (SINGAPORE EXPO)"
+      ],
+      "poiFile": "29_3-4b6eaaaf97eb.b3dm",
+      "poiSha256": "e72aefb239a7c9725b9c9856154d0b3209bef37ac93f2284ea33936094fa12f4",
+      "poiTriangles": 465,
+      "backgroundFile": "optimized-tiles/6/62/29_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "backgroundSha256": "a98f1a4615d2b0d12b604dbef984e6ce97c844c2738a4483fd9a62e7ea1c5561",
+      "backgroundTriangles": 8509
+    },
+    {
+      "sourceTile": "tiles/6/62/29_4.b3dm",
+      "sourceSha256": "be9814970aa625c8851365a8b1301a6c3562594eb5e4e907b21a2b5ee2926d8c",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "gmlNames": [
+        "HALL 7 (SINGAPORE EXPO)"
+      ],
+      "poiFile": "29_4-59dbc852dc11.b3dm",
+      "poiSha256": "913fe746a27e1126d4c65a804ffe4385e642d4b6018ff9fb1f640f0d1f5b9e2f",
+      "poiTriangles": 465,
+      "backgroundFile": "optimized-tiles/6/62/29_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "backgroundSha256": "bbe4fe5fabf9c3d06817aed8ebc3ef7cf11577c78c267b59715ef4f9e2d64e00",
+      "backgroundTriangles": 8509
+    },
+    {
+      "sourceTile": "tiles/6/62/29_5.b3dm",
+      "sourceSha256": "5e86850b5388cb56d584bde38a47a25dc5ad0e49bef5aed1d25c60d5ab28c7b8",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "gmlNames": [
+        "HALL 7 (SINGAPORE EXPO)"
+      ],
+      "poiFile": "29_5-f647b1073382.b3dm",
+      "poiSha256": "9d9c5687b4a0653529ad422c28cbd7a33e157aaa9c461dbf466d094e11d7d907",
+      "poiTriangles": 465,
+      "backgroundFile": "optimized-tiles/6/62/29_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f6e10f2-446d-4849-bdd5-255f643d9df8"
+      ],
+      "backgroundSha256": "cabf90413d73a444358186f711d4ac096c5a5c51971b0bac661b5075e2ea183d",
+      "backgroundTriangles": 8509
+    }
+  ]
+}

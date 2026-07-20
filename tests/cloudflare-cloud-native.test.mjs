@@ -85,7 +85,7 @@ test("cloud runtime normalizes canonical aliases and preserves true asset 404s",
     ["http://amblefinds.com/path?q=1", "https://amblefinds.com/path?q=1"],
     ["https://www.amblefinds.com/path?q=1", "https://amblefinds.com/path?q=1"],
     [
-      "https://amble.amble-sg.workers.dev/path?q=1",
+      "https://amble.project-hub-arnav.workers.dev/path?q=1",
       "https://amblefinds.com/path?q=1",
     ],
     ["https://amblefinds.com/index.html", "https://amblefinds.com/"],
@@ -292,4 +292,103 @@ test("cloud deal discovery uses TinyFish and caches the completed result in D1",
   assert.equal(payload.result.provider.id, "tinyfish-fetch");
   assert.match(payload.result.deals[0].evidence, /20% off dinner/);
   assert.equal(dealRow.status, "complete");
+});
+
+const voiceSessionRequest = ({
+  origin = "https://amble.example",
+  contentType = "application/json",
+  body = JSON.stringify({
+    protocolVersion: "1.0",
+    disclosureAccepted: true,
+    capabilities: { audioInput: true, audioOutput: true, text: true },
+  }),
+} = {}) =>
+  new Request("https://amble.example/api/voice/sessions", {
+    method: "POST",
+    headers: { origin, "content-type": contentType },
+    body,
+  });
+
+test("cloud security headers allow only self microphone and same-origin voice relay", async () => {
+  const response = await worker.fetch(
+    new Request("https://amble.example/"),
+    {
+      ASSETS: {
+        async fetch() {
+          return new Response("app");
+        },
+      },
+    },
+    {},
+  );
+
+  assert.equal(
+    response.headers.get("permissions-policy"),
+    "camera=(), microphone=(self), geolocation=(self)",
+  );
+  const csp = response.headers.get("content-security-policy");
+  assert.match(csp, /(?:^|;)\s*connect-src\s[^;]*'self'/);
+  assert.doesNotMatch(csp, /api\.openai\.com|wss:\/\/[^;]*openai/i);
+});
+
+test("disabled cloud voice admission fails closed without disclosing server secrets", async () => {
+  const secret = "fixture-openai-secret-must-not-leak";
+  const response = await worker.fetch(
+    voiceSessionRequest(),
+    {
+      REALTIME_ENABLED: "false",
+      OPENAI_API_KEY: secret,
+    },
+    {},
+  );
+  const responseText = await response.text();
+  const payload = JSON.parse(responseText);
+
+  assert.equal(response.status, 503);
+  assert.equal(payload.error.code, "voice_disabled");
+  assert.doesNotMatch(responseText, new RegExp(secret));
+  assert.doesNotMatch(
+    JSON.stringify([...response.headers]),
+    new RegExp(secret),
+  );
+  assert.equal(response.headers.get("cache-control"), "no-store");
+});
+
+test("cloud voice admission rejects cross-origin, non-JSON, and oversized requests", async () => {
+  const enabledEnv = {
+    REALTIME_ENABLED: "true",
+    OPENAI_API_KEY: "fixture-server-only-key",
+  };
+  const cases = [
+    {
+      id: "cross-origin",
+      request: voiceSessionRequest({ origin: "https://attacker.example" }),
+      status: 403,
+      code: "origin_rejected",
+    },
+    {
+      id: "non-json",
+      request: voiceSessionRequest({
+        contentType: "text/plain",
+        body: "not-json",
+      }),
+      status: 415,
+      code: "invalid_request",
+    },
+    {
+      id: "oversized",
+      request: voiceSessionRequest({
+        body: JSON.stringify({ padding: "x".repeat(64 * 1024) }),
+      }),
+      status: 413,
+      code: "invalid_request",
+    },
+  ];
+
+  for (const fixture of cases) {
+    const response = await worker.fetch(fixture.request, enabledEnv, {});
+    const payload = await response.json();
+    assert.equal(response.status, fixture.status, fixture.id);
+    assert.equal(payload.error.code, fixture.code, fixture.id);
+  }
 });

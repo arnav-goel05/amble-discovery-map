@@ -1,6 +1,7 @@
 import { plainText } from "./plain-text.js";
 import { landmarkInputIdentity } from "./events/event-map-reconciliation.js";
 import { createEventDiscoveryModel, eventIdentity } from "./events/event-discovery-model.js";
+import { eventLocationLabel } from "./events/event-location-label.js";
 import { LANDMARK_PILL_MIN_ZOOM } from "./map-location-focus.js";
 
 const DEFAULT_ROTATION_MS = 3000;
@@ -50,7 +51,9 @@ export function eventCategory(event = {}) {
 function normalizeEvent(event, landmarkId, index) {
   const title = plainText(event.title);
   const time = text(event.timeText || event.timeRange || event.time);
-  const date = text(event.dateText || event.dateRange || event.date);
+  const scheduleKind = text(event.schedule?.kind);
+  const date = text(event.dateText || event.dateRange || event.date || event.schedule?.displayText)
+    || ({ selectable: "Select a date", anytime: "Available anytime", unverified: "Date to be confirmed" }[scheduleKind] ?? "");
   if (!title || (!time && !date)) return null;
   return {
     id: event.id || `${landmarkId}-event-${index + 1}`,
@@ -59,6 +62,7 @@ function normalizeEvent(event, landmarkId, index) {
     date,
     temporalText: [date, time].filter(Boolean).join(" · "),
     category: eventCategory(event),
+    locationLabel: eventLocationLabel(event),
   };
 }
 
@@ -83,6 +87,7 @@ function createPillDom(landmark, panelId) {
 
   const copy = makeElement("div", "landmark-event-pill__copy");
   copy.append(makeElement("div", "landmark-event-pill__title"));
+  copy.append(makeElement("div", "landmark-event-pill__location"));
   card.append(copy);
   root.appendChild(card);
   document.body.appendChild(root);
@@ -92,6 +97,9 @@ function createPillDom(landmark, panelId) {
 function renderState(state) {
   const event = state.events[state.activeIndex];
   state.root.querySelector(".landmark-event-pill__title").textContent = event.title;
+  const location = state.root.querySelector(".landmark-event-pill__location");
+  location.textContent = event.locationLabel;
+  location.hidden = !event.locationLabel;
 }
 
 function updatePosition(map, state, minZoom, onHidden) {
@@ -359,6 +367,10 @@ export function createLandmarkEventPillLayer({
     updateAllPositions();
     const results = [];
     for (const event of discoveryResult?.events ?? []) {
+      if (event.publicPlacement === "off_map") {
+        results.push({ ...event, distanceFromCenter: Number.POSITIVE_INFINITY, inView: false });
+        continue;
+      }
       const state = findState(event.landmarkId);
       if (!state || !state.events[event.eventIndex]) continue;
       results.push({
@@ -369,6 +381,9 @@ export function createLandmarkEventPillLayer({
         landmarkId: state.landmark.id,
         title: state.events[event.eventIndex].title,
         venue: state.sourceEvents[event.eventIndex]?.venue || state.landmark.label,
+        offMapSubtype: state.sourceEvents[event.eventIndex]?.offMapSubtype,
+        venueOccurrences:
+          state.sourceEvents[event.eventIndex]?.venueOccurrences || [],
         inView: state.isVisible,
       });
     }

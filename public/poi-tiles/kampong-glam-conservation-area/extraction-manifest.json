@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "kampong-glam-conservation-area",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:09.826Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/38/8_0.b3dm",
+      "sourceSha256": "511d6ca8213557d1d190418465dee412e87f98284b8badf8843c99d1f42e696e",
+      "originalBatchIds": [
+        120
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "gmlNames": [
+        "KAMPONG GLAM CONSERVATION AREA"
+      ],
+      "poiFile": "8_0-dbdb90bd822a.b3dm",
+      "poiSha256": "a85fa148c0532636e616cd525280879a99746561fdf4635ab4981a2175ac6252",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/6/38/8_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "backgroundSha256": "1649567bf76ba0f936698a0e4c9165ee757f3dca5df0681bcfc1c81650073f15",
+      "backgroundTriangles": 23721
+    },
+    {
+      "sourceTile": "tiles/6/38/8_1.b3dm",
+      "sourceSha256": "8e2ccf03dca6c97bc393088487dc1fa7895944d8e8f3dbe56ecefabe07e8df39",
+      "originalBatchIds": [
+        120
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "gmlNames": [
+        "KAMPONG GLAM CONSERVATION AREA"
+      ],
+      "poiFile": "8_1-ff815b41fe39.b3dm",
+      "poiSha256": "2c47195dfca17e457aa6d7ca4807c3582e29cfaf8c24a04b1e88109567cce363",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/6/38/8_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "backgroundSha256": "66e053997585562c41c0605bf17cd67f1100c58a40ee7d7d03f14f2c95e5824f",
+      "backgroundTriangles": 23721
+    },
+    {
+      "sourceTile": "tiles/6/38/8_2.b3dm",
+      "sourceSha256": "e83e66ceb13a47a4e2bdb4ab891415d411e7be3880c0ce584279cd61130361a0",
+      "originalBatchIds": [
+        120
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "gmlNames": [
+        "KAMPONG GLAM CONSERVATION AREA"
+      ],
+      "poiFile": "8_2-bee8713a341d.b3dm",
+      "poiSha256": "190cdfb218fa64c2ae1900243d3880b1ce6eaa25cd8aaaac97dee212bd3f7815",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/6/38/8_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "backgroundSha256": "8161eefc348e6c50d1f95f081409c0bce963e2e30f37349fa69c436bd3743aaf",
+      "backgroundTriangles": 23721
+    },
+    {
+      "sourceTile": "tiles/6/38/8_3.b3dm",
+      "sourceSha256": "54ac5631c0aded27bc8426967d52f9d7ecfd0361e2578fc53bed96c75f57e37f",
+      "originalBatchIds": [
+        120
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "gmlNames": [
+        "KAMPONG GLAM CONSERVATION AREA"
+      ],
+      "poiFile": "8_3-ba0a020fa1bc.b3dm",
+      "poiSha256": "462b89233c771437e8410d3b4080ba7f58bfecf53a9d0d1131e05151825ce26a",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/6/38/8_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "backgroundSha256": "4c070d0f8976accd36533b9523b6aea78b2b6701e5f710ff25b2a398691960cc",
+      "backgroundTriangles": 23721
+    },
+    {
+      "sourceTile": "tiles/6/38/8_4.b3dm",
+      "sourceSha256": "650d40751dc5ed37f1d3e57d3fc548c04cd244afe5e0bf2b2e20b79d8e2ce171",
+      "originalBatchIds": [
+        120
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "gmlNames": [
+        "KAMPONG GLAM CONSERVATION AREA"
+      ],
+      "poiFile": "8_4-330aa9f3be2d.b3dm",
+      "poiSha256": "523f1acd39f9b6a780041e8b50f10dd84063e33e5d2768468137f80e4d2f3b95",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/6/38/8_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "backgroundSha256": "0ead6b4cc06efbfb61b8345127d809fdd3d6f227332fa54afb5e795f0951422e",
+      "backgroundTriangles": 23721
+    },
+    {
+      "sourceTile": "tiles/6/38/8_5.b3dm",
+      "sourceSha256": "299f7be82f5c2867ff9c5f264597b7bbcfa103637660138537696041a6271d5c",
+      "originalBatchIds": [
+        120
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "gmlNames": [
+        "KAMPONG GLAM CONSERVATION AREA"
+      ],
+      "poiFile": "8_5-4b7b890fa4c0.b3dm",
+      "poiSha256": "06a159b7092279b3afbb6aaaf7a66c45db4d405e6bf510617791c3aa70d24b28",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/6/38/8_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4dbd04ff-33bc-4cec-9df9-94c910ddfc64"
+      ],
+      "backgroundSha256": "43189f5ebcf78330006cca212ab0d137c453bfda3fd6cce374e8ca0525b27874",
+      "backgroundTriangles": 23721
+    }
+  ]
+}

@@ -163,6 +163,37 @@ test("event details add the selected event and expose its Google Maps destinatio
   expect(maps.searchParams.get("destination")).toBe("1.2897,103.8559");
 });
 
+test("planner controller publishes stable current plan and game candidates", async ({ page }) => {
+  await page.goto("/test-harness.html");
+  const snapshots = await page.evaluate(async () => {
+    const { addPlanBuilder } = await import("/activity-scenes/plan-builder.js");
+    const game = { id: "hunt-1", title: "Garden hunt", status: "available", secret: "omit" };
+    const controller = addPlanBuilder({ gameCandidates: [game] });
+    const revisions = [];
+    const unsubscribe = controller.subscribeCandidateState((state) => revisions.push(state.revision));
+    window.dispatchEvent(new CustomEvent("whats-here:add-to-plan", { detail: {
+      id: "event-1", type: "event", title: "Jazz", place: "Esplanade", latitude: 1.2897, longitude: 103.8559,
+    } }));
+    const afterStop = controller.getCandidateState();
+    game.title = "Caller mutation";
+    controller.setGameCandidates([{ id: "hunt-2", title: "Night hunt", status: "available" }]);
+    const afterGames = controller.getCandidateState();
+    unsubscribe();
+    return { initialRevision: revisions[0], revisions, afterStop, afterGames };
+  });
+
+  expect(snapshots.initialRevision).toBe(0);
+  expect(snapshots.revisions).toEqual([0, 1, 2]);
+  expect(snapshots.afterStop.planStops).toEqual([expect.objectContaining({
+    candidateId: "plan-stop:event:event-1",
+    candidateType: "plan_stop",
+    position: 1,
+  })]);
+  expect(snapshots.afterStop.games[0].title).toBe("Garden hunt");
+  expect(snapshots.afterStop.games[0].secret).toBeUndefined();
+  expect(snapshots.afterGames.games.map(({ candidateId }) => candidateId)).toEqual(["game:hunt-2"]);
+});
+
 test("the route planner remains usable on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 760 });
   await page.goto("/test-harness.html");

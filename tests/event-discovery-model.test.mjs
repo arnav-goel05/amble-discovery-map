@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { createEventDiscoveryModel, reconcileEventSelection } from "../activity-scenes/events/event-discovery-model.js";
+import { createEventDiscoveryModel, eventCandidateIdentity, reconcileEventSelection } from "../activity-scenes/events/event-discovery-model.js";
 
 const landmarks = [
   {
@@ -56,4 +56,79 @@ test("duplicate event identities remain distinct across landmarks but not within
   assert.throws(() => createEventDiscoveryModel([{ id: "a", label: "A", events: [
     { id: "same", title: "One" }, { id: "same", title: "Two" },
   ] }]), /duplicate event identity/i);
+});
+
+test("approved event candidates expose grounded attributes and stable selection without changing filters", () => {
+  const model = createEventDiscoveryModel([
+    {
+      id: "esplanade",
+      label: "Esplanade",
+      areaId: "ura-subzone:city-hall",
+      anchor: { lng: 103.8554, lat: 1.2898 },
+      events: [
+        {
+          id: "event-1",
+          title: "Waterfront evening programme",
+          dateText: "18 Jul 2026",
+          category: "Performances",
+          price: "Free",
+          sources: [{ sourceId: "event-1", recordRef: "approved-event:event-1" }],
+        },
+      ],
+    },
+  ], { sourceSnapshotId: "approved-snapshot-2026-07-18" });
+
+  assert.deepEqual(model.approvedCandidates(), [
+    {
+      candidateId: "event:esplanade:event-1",
+      candidateType: "event",
+      sourceSnapshotId: "approved-snapshot-2026-07-18",
+      areaId: "ura-subzone:city-hall",
+      coordinates: [103.8554, 1.2898],
+      attributes: {
+        name: "Waterfront evening programme",
+        venue: "Esplanade",
+        category: "Performances",
+        date: "18 Jul 2026",
+        time: "",
+        priceKind: "free",
+        priceValue: 0,
+      },
+      evidenceRefs: ["approved-event:event-1", "event-1"],
+    },
+  ]);
+  assert.deepEqual(model.selectionForCandidate("event:esplanade:event-1"), {
+    landmarkId: "esplanade",
+    eventId: "event-1",
+    eventIndex: 0,
+  });
+  assert.equal(model.selectionForCandidate("event:unknown"), null);
+  assert.equal(eventCandidateIdentity("esplanade", "event-1"), "event:esplanade:event-1");
+  assert.deepEqual(model.filter({ query: "waterfront", categories: ["Performances"] }).events.map(({ eventId }) => eventId), ["event-1"]);
+});
+
+test("mapped and off-map activities project once without inventing coordinates", () => {
+  const landmarks = [{ id: "mapped-hall", label: "Mapped Hall", anchor: { lng: 103.8, lat: 1.3 }, events: [{ id: "mapped", title: "Mapped Show", publicPlacement: "mapped", mappingStatus: "approved", schedule: { kind: "exact", start: "2026-07-20T20:00:00+08:00" } }] }];
+  const offMapEvents = [
+    { id: "secret", title: "Secret Supper", venue: "Secret location", publicPlacement: "off_map", mappingStatus: "not_required", offMapSubtype: "secret_tba", schedule: { kind: "anytime" }, freshness: "current" },
+    { id: "multi", title: "Studio Trail", venue: "Various venues", publicPlacement: "off_map", mappingStatus: "not_required", offMapSubtype: "multiple_locations", schedule: { kind: "selectable" }, freshness: "stale" },
+    { id: "route", title: "Cycling Route", venue: "Marina Bay route", publicPlacement: "off_map", mappingStatus: "not_required", offMapSubtype: "mobile_route", schedule: { kind: "exact", start: "2026-07-19T08:00:00+08:00" } },
+    { id: "area", title: "Park Picnic", venue: "East Coast Park", publicPlacement: "off_map", mappingStatus: "not_required", offMapSubtype: "broad_area", schedule: { kind: "anytime" } },
+  ];
+  const model = createEventDiscoveryModel(landmarks, { offMapEvents, now: () => new Date("2026-07-18T00:00:00+08:00") });
+  assert.deepEqual(new Set(model.events().map(({ eventId }) => eventId)), new Set(["mapped", "secret", "multi", "route", "area"]));
+  assert.equal(model.events().find(({ eventId }) => eventId === "secret").candidateCoordinates, null);
+  assert.deepEqual(model.filter({ placementView: "secret_tba" }).events.map(({ eventId }) => eventId), ["secret"]);
+  assert.deepEqual(model.filter({ dateRange: "anytime" }).events.map(({ eventId }) => eventId), ["secret", "area"]);
+  assert.equal(model.filter({ placementView: "multiple_locations" }).events[0].freshness, "stale");
+  assert.deepEqual(model.filter({ placementView: "mobile_route" }).events.map(({ eventId }) => eventId), ["route"]);
+  assert.deepEqual(model.filter({ placementView: "broad_area" }).events.map(({ eventId }) => eventId), ["area"]);
+});
+
+test("candidate exposure fails closed while literal event filtering remains available", () => {
+  const model = createEventDiscoveryModel(landmarks, { sourceSnapshotId: "approved-snapshot-2026-07-18" });
+
+  assert.deepEqual(model.approvedCandidates(), []);
+  assert.equal(model.selectionForCandidate("event:library:late"), null);
+  assert.equal(model.filter({ query: "journey" }).events[0].eventId, "late");
 });

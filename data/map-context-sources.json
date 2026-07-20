@@ -1,0 +1,131 @@
+{
+  "schemaVersion": "1.0.0",
+  "manifestId": "map-context-sources",
+  "catalogueObservedOn": "2026-07-18",
+  "licence": {
+    "name": "Singapore Open Data Licence",
+    "url": "https://data.gov.sg/open-data-licence",
+    "commercialUseAllowed": true
+  },
+  "refreshPolicy": {
+    "mode": "on-demand-before-generation",
+    "catalogue": "data.gov.sg",
+    "checkForUpstreamChangeBeforeBuild": true,
+    "downloadApiMethod": "GET",
+    "downloadApiResponseUrlField": "data.url",
+    "preserveApprovedOutputsOnFailure": true,
+    "recordInGeneratedManifest": [
+      "sourceObservedAt",
+      "sourceDatasetIds",
+      "authoritativeUrls",
+      "licence",
+      "sourceHashes"
+    ]
+  },
+  "datasets": {
+    "uraSubzones": {
+      "datasetId": "d_8594ae9ff96d0c708bc2af633048edfb",
+      "title": "Master Plan 2019 Subzone Boundary (No Sea) (GEOJSON)",
+      "agency": "Urban Redevelopment Authority",
+      "format": "GeoJSON",
+      "authoritativeUrl": "https://data.gov.sg/datasets/d_8594ae9ff96d0c708bc2af633048edfb/view",
+      "pollDownloadUrl": "https://api-open.data.gov.sg/v1/public/api/datasets/d_8594ae9ff96d0c708bc2af633048edfb/poll-download",
+      "licence": "Singapore Open Data Licence",
+      "sourcePeriod": "2021-09",
+      "catalogueLastUpdatedOn": "2025-12-03"
+    },
+    "ltaMrtStationExits": {
+      "datasetId": "d_b39d3a0871985372d7e1637193335da5",
+      "title": "LTA MRT Station Exit (GEOJSON)",
+      "agency": "Land Transport Authority",
+      "format": "GeoJSON",
+      "authoritativeUrl": "https://data.gov.sg/datasets/d_b39d3a0871985372d7e1637193335da5/view",
+      "pollDownloadUrl": "https://api-open.data.gov.sg/v1/public/api/datasets/d_b39d3a0871985372d7e1637193335da5/poll-download",
+      "licence": "Singapore Open Data Licence",
+      "sourcePeriod": "2025-08",
+      "catalogueLastUpdatedOn": "2026-07-16"
+    },
+    "ltaTrainStationCodes": {
+      "datasetId": "d_d312a5b127e1ae74299b8ae664cedd4e",
+      "title": "Train Station Chinese Names",
+      "agency": "Land Transport Authority",
+      "format": "JSON",
+      "authoritativeUrl": "https://data.gov.sg/datasets/d_d312a5b127e1ae74299b8ae664cedd4e/view",
+      "downloadUrl": "https://data.gov.sg/api/action/datastore_search?resource_id=d_d312a5b127e1ae74299b8ae664cedd4e&limit=500",
+      "licence": "Singapore Open Data Licence",
+      "sourcePeriod": "2024",
+      "catalogueLastUpdatedOn": "2025-01-27"
+    },
+    "uraRailLines": {
+      "datasetId": "d_e8bf3cff62f97300817d1fdcce382584",
+      "title": "Amendment to Master Plan 2019 Rail Line layer",
+      "agency": "Urban Redevelopment Authority",
+      "format": "GeoJSON",
+      "authoritativeUrl": "https://data.gov.sg/datasets/d_e8bf3cff62f97300817d1fdcce382584/view",
+      "pollDownloadUrl": "https://api-open.data.gov.sg/v1/public/api/datasets/d_e8bf3cff62f97300817d1fdcce382584/poll-download",
+      "licence": "Singapore Open Data Licence",
+      "sourcePeriod": "2025-09",
+      "catalogueLastUpdatedOn": "2025-12-26"
+    },
+    "uraRailStationNames": {
+      "datasetId": "d_449ee0cec1f9574f8f34712da6f7456f",
+      "title": "Master Plan 2025 Rail Station Name Layer (GEOJSON)",
+      "agency": "Urban Redevelopment Authority",
+      "format": "GeoJSON",
+      "authoritativeUrl": "https://data.gov.sg/datasets/d_449ee0cec1f9574f8f34712da6f7456f/view",
+      "pollDownloadUrl": "https://api-open.data.gov.sg/v1/public/api/datasets/d_449ee0cec1f9574f8f34712da6f7456f/poll-download",
+      "licence": "Singapore Open Data Licence",
+      "sourcePeriod": "2025",
+      "catalogueLastUpdatedOn": "2026-01-30"
+    }
+  },
+  "generatedOutputs": {
+    "discoveryAreas": {
+      "sourceDatasetKeys": [
+        "uraSubzones"
+      ],
+      "staging": {
+        "assetPath": "outputs/map-context-staging/discovery-areas.geojson",
+        "manifestPath": "outputs/map-context-staging/discovery-areas-manifest.json"
+      },
+      "final": {
+        "assetPath": "data/discovery-areas.geojson",
+        "manifestPath": "data/discovery-areas-manifest.json"
+      }
+    },
+    "transitContext": {
+      "sourceDatasetKeys": [
+        "ltaMrtStationExits",
+        "ltaTrainStationCodes",
+        "uraRailLines",
+        "uraRailStationNames"
+      ],
+      "staging": {
+        "assetPath": "outputs/map-context-staging/transit-context.geojson",
+        "manifestPath": "outputs/map-context-staging/transit-context-manifest.json"
+      },
+      "final": {
+        "assetPath": "data/transit-context.geojson",
+        "manifestPath": "data/transit-context-manifest.json"
+      }
+    }
+  },
+  "provenance": {
+    "hashAlgorithm": "sha256",
+    "hashEncoding": "hex",
+    "sourceHashScope": "exact downloaded response bytes before parsing or transformation",
+    "runtimeContentHashScope": "canonical generated GeoJSON bytes",
+    "requireSourceHashPerDataset": true,
+    "requireResolvedDownloadUrl": true,
+    "requireSourceObservedAt": true,
+    "requireGeneratorVersion": true,
+    "requireValidationReport": true,
+    "allowedReconciliationResults": [
+      "create",
+      "update",
+      "noop",
+      "review"
+    ],
+    "publicationRule": "Publish final asset and manifest together only after all validation gates pass; otherwise preserve the last approved pair."
+  }
+}

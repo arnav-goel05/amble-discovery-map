@@ -3,7 +3,7 @@ const argument = (name, fallback) => {
   return index >= 0 ? process.argv[index + 1] : fallback;
 };
 
-const origin = new URL(argument("origin", "https://amble.amble-sg.workers.dev"));
+const origin = new URL(argument("origin", "https://amble.project-hub-arnav.workers.dev"));
 
 function firstContentUri(node) {
   if (!node || typeof node !== "object") return null;

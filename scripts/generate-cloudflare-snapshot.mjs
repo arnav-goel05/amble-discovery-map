@@ -19,6 +19,7 @@ const payload = {
     [manifest.landmarksRef]: readAsset(manifest.landmarksRef),
     [manifest.poisRef]: readAsset(manifest.poisRef),
     [manifest.tilesetRef]: readAsset(manifest.tilesetRef),
+    ...(manifest.eventsRef ? { [manifest.eventsRef]: readAsset(manifest.eventsRef) } : {}),
   },
 };
 const output = path.join(root, "cloudflare/generated-approved-snapshot.mjs");

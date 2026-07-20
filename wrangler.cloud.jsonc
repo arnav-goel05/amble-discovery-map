@@ -5,6 +5,9 @@
   "compatibility_date": "2026-07-16",
   "workers_dev": true,
   "preview_urls": false,
+  "vars": {
+    "REALTIME_ENABLED": "false",
+  },
   "assets": {
     "directory": "./dist-cloudflare",
     "binding": "ASSETS",

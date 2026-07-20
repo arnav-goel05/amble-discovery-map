@@ -1,0 +1,261 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "kreta-ayer-people-s-theatre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport"
+  ],
+  "generatedAt": "2026-07-19T19:39:12.239Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/34/4_0.b3dm",
+      "sourceSha256": "875d2306fe8ecfcb76efc26d2ec535b27596e9bca6ae7987a216cb5df86171aa",
+      "originalBatchIds": [
+        57
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5"
+      ],
+      "gmlNames": [
+        "KRETA AYER PEOPLE'S THEATRE"
+      ],
+      "poiFile": "4_0-bd861e41183c.b3dm",
+      "poiSha256": "a248a234e3c700d4fada7854541616707bb81a941740a28e9b6224d2f2f1b0d4",
+      "poiTriangles": 996,
+      "backgroundFile": "optimized-tiles/6/34/4_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+      ],
+      "backgroundSha256": "cd5fdfce4787607f6b98646cb703e025c1af7ecf20e6608d8bf624fc8ae6e88b",
+      "backgroundTriangles": 18971
+    },
+    {
+      "sourceTile": "tiles/6/34/4_1.b3dm",
+      "sourceSha256": "6f0f9ab2e3f66269233a11dee74777c9ee905babaadf9016de6f9e83e45ce9b0",
+      "originalBatchIds": [
+        57
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5"
+      ],
+      "gmlNames": [
+        "KRETA AYER PEOPLE'S THEATRE"
+      ],
+      "poiFile": "4_1-d4495a063898.b3dm",
+      "poiSha256": "6812c5009bd4c83077c43458de17369e09a0cf8d7a85d9fe7f8b462931dac93e",
+      "poiTriangles": 996,
+      "backgroundFile": "optimized-tiles/6/34/4_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+      ],
+      "backgroundSha256": "93a2fccfc27bda4ac62ffea14d1a51021630761778fcdb82b1e9d537440b6e3c",
+      "backgroundTriangles": 18971
+    },
+    {
+      "sourceTile": "tiles/6/34/4_2.b3dm",
+      "sourceSha256": "36b3be41294617827fb9b10ce4a795002c3d1d6751a08b93c14e957a0a61df32",
+      "originalBatchIds": [
+        57
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5"
+      ],
+      "gmlNames": [
+        "KRETA AYER PEOPLE'S THEATRE"
+      ],
+      "poiFile": "4_2-a74e8d40bcac.b3dm",
+      "poiSha256": "1c3db3022a7440c5a45d9498e573fef8e6a9198b3d661b288a1423c939f23239",
+      "poiTriangles": 996,
+      "backgroundFile": "optimized-tiles/6/34/4_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+      ],
+      "backgroundSha256": "2b460aa1b367c8894ae0a38b617fa4f3bbf7ebda62fd40d877df912925d5a44d",
+      "backgroundTriangles": 18971
+    },
+    {
+      "sourceTile": "tiles/6/34/4_3.b3dm",
+      "sourceSha256": "eaff5c3b1ef0da6dbb78a3526981249e233d4dfef2f1066d2ab491c3d1a11506",
+      "originalBatchIds": [
+        57
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5"
+      ],
+      "gmlNames": [
+        "KRETA AYER PEOPLE'S THEATRE"
+      ],
+      "poiFile": "4_3-8549349cf20f.b3dm",
+      "poiSha256": "b3d84d863e40797b89131ef6d16b989c909ce6b8f4087c3682efb192ba986302",
+      "poiTriangles": 996,
+      "backgroundFile": "optimized-tiles/6/34/4_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+      ],
+      "backgroundSha256": "6eed140be920943cff3506364bf49ca9ca6fa446ef32d66793009361c237dc1a",
+      "backgroundTriangles": 18971
+    },
+    {
+      "sourceTile": "tiles/6/34/4_4.b3dm",
+      "sourceSha256": "4ec93ceab0184a6087a4ddc77f83a09f2751335c80186dd45d999b535c706428",
+      "originalBatchIds": [
+        57
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5"
+      ],
+      "gmlNames": [
+        "KRETA AYER PEOPLE'S THEATRE"
+      ],
+      "poiFile": "4_4-a73460028362.b3dm",
+      "poiSha256": "37145b5bfbae3abd0bfea1aa8cf288b1184eebd6d7a20d7728bd254206953074",
+      "poiTriangles": 996,
+      "backgroundFile": "optimized-tiles/6/34/4_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+      ],
+      "backgroundSha256": "3cc8ac7a067d7cebbd76077fc933dea792efb5b595afef1ebb0dda0ac8b1bd50",
+      "backgroundTriangles": 18971
+    },
+    {
+      "sourceTile": "tiles/6/34/4_5.b3dm",
+      "sourceSha256": "56fa54c6e3c34b0ba160949575643357678a3acf38e2081374f8abc2b4867f4e",
+      "originalBatchIds": [
+        57
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5"
+      ],
+      "gmlNames": [
+        "KRETA AYER PEOPLE'S THEATRE"
+      ],
+      "poiFile": "4_5-9eaf94c0cbb5.b3dm",
+      "poiSha256": "cd1c7be33a111189d78b5b76a0a86dbd05b4b2109890ceb175135771e434516b",
+      "poiTriangles": 996,
+      "backgroundFile": "optimized-tiles/6/34/4_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+      ],
+      "backgroundSha256": "635845438c8829e8910ba48b9ed778efe9bccb76607ba60416ad79dbee39b51a",
+      "backgroundTriangles": 18971
+    }
+  ]
+}

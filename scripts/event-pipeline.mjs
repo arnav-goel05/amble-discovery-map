@@ -26,8 +26,12 @@ import {
   saveRunState,
   terminalProblems as stateTerminalProblems,
 } from './lib/event-pipeline/run-state.mjs';
-import { progressResponse as stateProgressResponse, renderStatus as renderPipelineStatus } from './lib/event-pipeline/reporting.mjs';
+import { progressResponse as stateProgressResponse, renderStatus as renderPipelineStatus, statusSummary, summarizeEvidenceLevels } from './lib/event-pipeline/reporting.mjs';
 import { computeVenueEvidenceHash } from './lib/event-pipeline/evidence-hash.mjs';
+import { finalizeDeduplication, generateDedupCandidates } from './lib/event-sources/deduplicate.mjs';
+import { assessActivityInclusion } from './lib/event-sources/activity-policy.mjs';
+import { stableEventKey } from './reconcile-event-content.mjs';
+import { createTraceWriter, redactTraceValue } from './lib/event-sources/trace.mjs';
 import { parseArgs, parseManifest, singaporeWindowForDays } from './lib/event-pipeline/cli-contract.mjs';
 
 const require = createRequire(import.meta.url);
@@ -45,18 +49,27 @@ const aliasRegistryPath = () => process.env.EVENT_PIPELINE_ALIAS_REGISTRY ? reso
 const venueRecoveryPath = (runDir) => join(runDir, 'normalized/venue-recovery-evidence.json');
 const deterministicRecoveryPath = (runDir) => join(runDir, 'normalized/deterministic-location-recovery.json');
 const STAGES = ['resolve', 'highlight', 'pill', 'panel'];
-const TERMINAL_SOURCE = new Set(['success', 'blocked', 'failed']);
+const TERMINAL_SOURCE = new Set(['success', 'blocked', 'failed', 'pilot_failed', 'disabled']);
 const TERMINAL_STAGE = new Set(['success', 'blocked', 'failed', 'skipped', 'unresolved']);
 const EXTERNAL_BLOCKER_CODES = new Set([
   'authentication_or_captcha',
   'layout_contract_changed',
   'pagination_inaccessible',
   'persistent_rate_limit',
-  'source_unavailable'
+  'source_unavailable',
+  'provider_policy_invalid',
+  'retrieval_credential_missing',
+  'official_reference_invalid',
+  'adapter_missing'
 ]);
 const CONTINUE_EXIT_CODE = 3;
 const adminDatabasePath = () => process.env.ADMIN_DATABASE_PATH ? resolve(process.env.ADMIN_DATABASE_PATH)
   : process.env.EVENT_PIPELINE_OUTPUT_ROOT ? join(OUTPUT_ROOT, 'admin.sqlite') : join(ROOT, 'outputs/admin/admin.sqlite');
+
+function pipelineTrace(runDir, record) {
+  const run = readJson(join(runDir, 'run.json'));
+  return createTraceWriter({ path: join(runDir, 'logs/trace.jsonl'), runId: run.runId, window: run.window }).write({ outcome: 'recorded', ...record });
+}
 
 function fail(message, code = 1) {
   const error = new Error(message);
@@ -124,7 +137,7 @@ function selectDeterministicOneMapAddress(address, response) {
 }
 
 async function enrichRecoveryCoordinates(normalized, geocode = queryOneMap) {
-  if (normalized.notMappableEvidence || normalized.coordinateCandidates.length || !normalized.addressCandidates.length) return normalized;
+  if (normalized.notMappableEvidence || !normalized.addressCandidates.length) return normalized;
   for (const address of normalized.addressCandidates) {
     let response;
     try { response = await geocode(address); } catch { continue; }
@@ -264,7 +277,7 @@ function validateVenueRecoveryEvidence(value, expectedVenue = null) {
   }
   for (const candidate of coordinateCandidates) {
     const matchedEvidence = submittedEvidence.find((evidence) => evidence.url === candidate.recordRef);
-    if (matchedEvidence && /\bno\b.{0,40}\b(?:pin|coordinate|map location)\b/i.test(matchedEvidence.outcome)) {
+    if (matchedEvidence && /\b(?:no|without)\s+(?:visible\s+|usable\s+|published\s+)?(?:map\s+)?(?:pin|coordinates?|map location)\b|\b(?:pin|coordinates?|map location)\s+(?:is\s+|are\s+)?(?:not\s+)?(?:shown|available|provided|present|exposed|found)\b/i.test(matchedEvidence.outcome)) {
       fail('A page recorded as exposing no map pin or coordinate cannot be used as the coordinate recordRef');
     }
     if (/onemap/i.test(candidate.evidenceField) && candidate.recordRef) {
@@ -294,8 +307,27 @@ function validateNotMappableAgainstLocalCandidates(recovery, venueName, localRow
 }
 
 function readPipelineConfig() {
-  const config = readJson(CONFIG_PATH);
-  if (config.schemaVersion !== '1.0' || config.timezone !== 'Asia/Singapore') fail('Invalid event pipeline configuration');
+  const stored = readJson(CONFIG_PATH);
+  if (!['1.0', '2.0'].includes(stored.schemaVersion) || stored.timezone !== 'Asia/Singapore') fail('Invalid event pipeline configuration');
+  const config = {
+    ...stored,
+    sources: (stored.sources ?? []).map((source) => {
+      const evidenceRole = source.evidenceRole
+        ?? (source.operatingMode === 'disabled' ? 'unavailable' : source.sourceRole === 'discovery' ? 'editorial' : 'direct');
+      const operatingState = source.operatingState ?? (source.enabled === false || source.operatingMode === 'disabled' ? 'disabled' : 'enabled');
+      const editorialPolicy = evidenceRole === 'editorial' ? source.editorialPolicy ?? {
+        version: '2.0', corroborateFirst: true, allowSufficientEditorialOnly: true,
+        outboundLabels: source.confirmation?.outboundLabels ?? [],
+      } : null;
+      return {
+        ...source, evidenceRole, operatingState, editorialPolicy,
+        enabled: operatingState === 'enabled',
+        sourceRole: evidenceRole === 'editorial' ? 'discovery' : 'authoritative',
+        operatingMode: operatingState === 'disabled' ? 'disabled' : 'required',
+        confirmation: editorialPolicy ? { policyVersion: editorialPolicy.version, outboundLabels: editorialPolicy.outboundLabels ?? [] } : source.confirmation,
+      };
+    }),
+  };
   if (!Number.isInteger(config.windowDaysAfterStart) || config.windowDaysAfterStart < 0) fail('Invalid windowDaysAfterStart');
   const requestPolicy = config.requestPolicy ?? {};
   if (!Number.isInteger(requestPolicy.timeoutMs) || requestPolicy.timeoutMs < 100 || requestPolicy.timeoutMs > 60_000
@@ -304,10 +336,20 @@ function readPipelineConfig() {
     || !Number.isInteger(requestPolicy.maximumBackoffMs) || requestPolicy.maximumBackoffMs < requestPolicy.initialBackoffMs) {
     fail('Invalid bounded requestPolicy');
   }
-  const ids = new Set();
+  const ids = new Set(), collectionOrders = new Set(), precedences = new Set();
   for (const source of config.sources ?? []) {
     if (!source.name || !source.adapterId || !source.version || ids.has(source.adapterId)) fail('Each source requires a unique name, adapterId, and version');
     ids.add(source.adapterId);
+    if (!['direct', 'editorial', 'unavailable'].includes(source.evidenceRole) || !['enabled', 'disabled'].includes(source.operatingState)
+      || !['authoritative', 'discovery'].includes(source.sourceRole) || !['required', 'disabled'].includes(source.operatingMode)
+      || source.enabled !== (source.operatingMode !== 'disabled') || !Number.isInteger(source.collectionOrder) || collectionOrders.has(source.collectionOrder)) {
+      fail(`Invalid role, mode, enabled state, or collection order for ${source.name}`);
+    }
+    collectionOrders.add(source.collectionOrder);
+    if (source.evidenceRole !== 'editorial') {
+      if (!Number.isInteger(source.precedence) || precedences.has(source.precedence)) fail(`Invalid authoritative precedence for ${source.name}`);
+      precedences.add(source.precedence);
+    } else if (source.precedence !== null || source.editorialPolicy?.version !== '2.0') fail(`Invalid editorial policy/precedence for ${source.name}`);
     for (const endpoint of [source.listing, source.detail]) {
       if (!endpoint?.url || !['GET', 'POST'].includes(endpoint.method)) fail(`Invalid endpoint configuration for ${source.name}`);
       try { if (new URL(endpoint.url).protocol !== 'https:') throw new Error(); } catch { fail(`Source endpoints must use HTTPS: ${source.name}`); }
@@ -454,8 +496,8 @@ function start(options) {
   const manifestBytes = readFileSync(MANIFEST_PATH);
   const configBytes = readFileSync(CONFIG_PATH);
   const config = readPipelineConfig();
-  const manifest = { timezone: config.timezone, sources: config.sources.filter((source) => source.enabled) };
-  if (!manifest.sources.length) fail('Pipeline configuration contains no enabled sources');
+  const manifest = { timezone: config.timezone, sources: config.sources };
+  if (!manifest.sources.some((source) => source.enabled)) fail('Pipeline configuration contains no enabled sources');
   const window = singaporeWindow(options.date, config.windowDaysAfterStart);
   const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
   const runId = `${timestamp}-${compactWindow(window.start)}-${compactWindow(window.end)}`;
@@ -467,7 +509,7 @@ function start(options) {
     copyFileSync(CONFIG_PATH, join(runDir, 'pipeline-config.snapshot.json'));
     const manifestSha256 = sha(manifestBytes);
     const definitionSha256 = sha(configBytes);
-    const adapters = manifest.sources.map(({ adapterId, version }) => ({
+    const adapters = manifest.sources.filter((source) => source.enabled).map(({ adapterId, version }) => ({
       id: adapterId, version, definitionSha256
     })).sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
     const configSha256 = sha(JSON.stringify({ manifestSha256, adapters }));
@@ -482,14 +524,21 @@ function start(options) {
     writeJson(statePath(runDir), {
       schemaVersion: '1.0', runId, createdAt: now, updatedAt: now, overallStatus: 'pending',
       sources: Object.fromEntries(manifest.sources.map((source) => [source.name, {
-        adapterId: source.adapterId, status: 'pending', counts: null, artifactRefs: [], error: null
+        adapterId: source.adapterId, sourceRole: source.sourceRole, operatingMode: source.operatingMode,
+        collectionOrder: source.collectionOrder, precedence: source.precedence,
+        status: source.operatingMode === 'disabled' ? 'disabled' : 'pending', counts: null, artifactRefs: [],
+        error: source.operatingMode === 'disabled' ? `Source unavailable: ${source.unavailableReason ?? 'operator_disabled'}` : null,
+        blockerReasonCode: source.operatingMode === 'disabled' ? (source.unavailableReason ?? 'operator_disabled') : null
       }])),
       normalization: { status: 'pending', counts: null, artifactRefs: [], venueBranches: [], error: null },
+      deduplication: { status: 'pending', counts: null, artifactRefs: [], blockingReviews: [], error: null },
       resolutionPreparation: { status: 'pending', artifactRefs: [], error: null },
       venues: {}, verification: { status: 'pending', build: null, eventUi: null, browser: null, error: null },
       publication: { decision: 'none', reasonCodes: [], candidateSnapshotId: runId, activeSnapshotId: loadCurrentApprovedData(ROOT).snapshot?.snapshotId ?? null },
       finalizedAt: null
     });
+    pipelineTrace(runDir, { stage: 'run', action: 'run_started', outcome: 'started', entityType: 'run', entityId: runId, counts: { sources: manifest.sources.length }, resumeDisposition: 'new' });
+    for (const source of manifest.sources) pipelineTrace(runDir, { stage: 'configuration', action: 'source_configured', outcome: source.operatingMode === 'disabled' ? 'disabled' : 'success', sourceName: source.name, sourceRole: source.sourceRole, operatingMode: source.operatingMode, adapterId: source.adapterId, adapterVersion: source.version, entityType: 'source', entityId: source.name, reasonCode: source.operatingMode === 'disabled' ? (source.unavailableReason ?? 'operator_disabled') : null });
     if (!options.quiet) {
       process.stdout.write(`${JSON.stringify({ runDir, ...progressResponse(loadState(runId)) }, null, 2)}\n`);
       process.exitCode = CONTINUE_EXIT_CODE;
@@ -512,7 +561,7 @@ function readResult(path) {
 }
 
 function validateSourceResult(result) {
-  if (![...TERMINAL_SOURCE, 'pending'].includes(result.status)) fail('Source status must be pending, success, blocked, or failed');
+  if (![...TERMINAL_SOURCE, 'pending', 'pilot_failed'].includes(result.status)) fail('Source status must be pending, success, pilot_failed, blocked, or failed');
   if (result.status === 'success') {
     const required = ['pages', 'sourceRecordsReceived', 'invalidSourceRecords', 'processedSourceRecords', 'occurrencesEmitted', 'excludedOccurrences', 'eligiblePreDedup'];
     for (const key of required) if (!Number.isInteger(result.counts?.[key]) || result.counts[key] < 0) fail(`Invalid source count: ${key}`);
@@ -523,9 +572,11 @@ function validateSourceResult(result) {
     if (result.completion?.paginationComplete !== true) fail('A successful source requires completion.paginationComplete');
     if (!Array.isArray(result.completion.pagesVisited) || result.completion.pagesVisited.length !== c.pages) fail('completion.pagesVisited must account for every page');
     if (result.completion.sourceRecordsDiscovered !== c.sourceRecordsReceived) fail('completion.sourceRecordsDiscovered must match sourceRecordsReceived');
-    if (!Number.isInteger(result.completion.providerReportedTotal) || result.completion.providerReportedTotal !== c.sourceRecordsReceived) fail('completion.providerReportedTotal must match sourceRecordsReceived');
+    const rendered = result.completion.providerReportedTotal === null;
+    if (rendered && result.completion.derivedTotal !== c.sourceRecordsReceived) fail('completion.derivedTotal must match sourceRecordsReceived');
+    if (!rendered && (!Number.isInteger(result.completion.providerReportedTotal) || result.completion.providerReportedTotal !== c.sourceRecordsReceived)) fail('completion.providerReportedTotal must match sourceRecordsReceived');
     if (!Array.isArray(result.completion.pageRecordCounts) || result.completion.pageRecordCounts.length !== c.pages || result.completion.pageRecordCounts.some((count) => !Number.isInteger(count) || count < 0)) fail('completion.pageRecordCounts must provide a non-negative count for every page');
-    if (result.completion.pageRecordCounts.reduce((sum, count) => sum + count, 0) !== c.sourceRecordsReceived) fail('completion.pageRecordCounts must sum to sourceRecordsReceived');
+    if (!rendered && result.completion.pageRecordCounts.reduce((sum, count) => sum + count, 0) !== c.sourceRecordsReceived) fail('completion.pageRecordCounts must sum to sourceRecordsReceived');
     if (c.sourceRecordsReceived === 0 && result.completion.zeroResultConfirmed !== true) fail('A zero-record success requires completion.zeroResultConfirmed');
     if (!Array.isArray(result.sourceRecordRefs) || result.sourceRecordRefs.length !== c.sourceRecordsReceived) fail('sourceRecordRefs must account for every received source record');
     if (!Array.isArray(result.invalidSourceRecordRefs) || result.invalidSourceRecordRefs.length !== c.invalidSourceRecords) fail('invalidSourceRecordRefs must account for every invalid source record');
@@ -542,6 +593,8 @@ function validateSourceResult(result) {
       fail(`Blocked source requires a genuine external blockerReasonCode: ${[...EXTERNAL_BLOCKER_CODES].join(', ')}`);
     }
     if (!result.error) fail('Blocked source requires an error');
+  } else if (result.status === 'pilot_failed') {
+    if (!result.error) fail('Pilot failure requires an error');
   } else if (!result.error) fail('Failed source requires an error');
 }
 
@@ -586,20 +639,27 @@ function eventInterval(event) {
   return { start, end: end ?? start };
 }
 
+function eventFinalBoundary(event) {
+  for (const value of [event.schedule?.finalKnownOccurrence, event.schedule?.end, event.endDateTime]) {
+    const boundary = parseEventBoundary(value, true);
+    if (boundary !== null) return boundary;
+  }
+  if (['selectable', 'recurring', 'anytime', 'unverified'].includes(event.schedule?.kind)) return null;
+  return eventInterval(event)?.end ?? null;
+}
+
 function validateNormalizedSemantics(runDir, normalizedEvents, result, runWindow) {
   const events = normalizedEvents.records;
   if (result.counts.acceptedPrimary !== events.length) fail('acceptedPrimary must equal normalized event records');
   const ids = new Set();
   const byId = new Map();
-  const windowStart = Date.parse(runWindow.start);
-  const windowEnd = Date.parse(runWindow.end);
   for (const event of events) {
     if (typeof event.id !== 'string' || !event.id || ids.has(event.id)) fail('Normalized events require unique non-empty ids');
     ids.add(event.id);
     byId.set(event.id, event);
     if (event.isOnline !== true && (typeof event.venue !== 'string' || !event.venue.trim())) fail(`Physical event ${event.id} requires a venue`);
-    const interval = eventInterval(event);
-    if (interval && (interval.end < windowStart || interval.start > windowEnd)) fail(`Normalized event ${event.id} falls outside the run window`);
+    const finalBoundary = eventFinalBoundary(event);
+    if (finalBoundary !== null && finalBoundary < Date.parse(runWindow.start) && event.lifecycleState !== 'archived') fail(`Normalized event ${event.id} ended before the run and was not archived`);
   }
   const branched = new Set();
   for (const branch of result.venueBranches) {
@@ -613,7 +673,7 @@ function validateNormalizedSemantics(runDir, normalizedEvents, result, runWindow
       branched.add(eventId);
     }
   }
-  const expectedBranched = events.filter((event) => event.isOnline !== true).map((event) => event.id);
+  const expectedBranched = events.filter((event) => event.isOnline !== true && (event.lifecycleState ?? 'active') === 'active' && (event.publicPlacement !== 'off_map' || event.mappingStatus === 'pending_review')).map((event) => event.id);
   if (branched.size !== expectedBranched.length || expectedBranched.some((id) => !branched.has(id))) fail('Venue branches must exactly partition physical normalized events');
 }
 
@@ -771,12 +831,23 @@ function validateSourceEvidence(runDir, state, result) {
   const runPath = join(runDir, 'run.json');
   const run = existsSync(runPath) ? readJson(runPath) : null;
   const declared = new Set(result.artifactRefs);
+  if (result.sourceRole === 'discovery') {
+    for (const ref of result.artifactRefs) if (!existsSync(artifactPath(runDir, ref))) fail(`Discovery evidence does not exist: ${ref}`);
+    for (const recordRef of result.processedSourceRecordRefs) {
+      const base = baseArtifactRef(recordRef), envelope = readJson(artifactPath(runDir, base));
+      const index = Number(recordRef.match(/#\/records\/(\d+)$/)?.[1]);
+      if (envelope.records?.[index]?.recordType !== 'discovery') fail(`Discovery record pointer does not resolve: ${recordRef}`);
+    }
+    return;
+  }
   const totalEvidence = result.completion.providerTotalEvidence;
-  if (!totalEvidence?.artifactRef || !totalEvidence?.jsonPointer) fail('A successful source requires providerTotalEvidence artifactRef and jsonPointer');
-  if (!/^raw\/[^/]+\/listings\/page-\d{4}\.json$/.test(totalEvidence.artifactRef)) fail('providerTotalEvidence must target a raw listing JSON response');
-  if (!declared.has(totalEvidence.artifactRef)) fail('providerTotalEvidence artifact is not declared in artifactRefs');
-  const providerTotal = jsonPointer(readJson(artifactPath(runDir, totalEvidence.artifactRef)), totalEvidence.jsonPointer);
-  if (providerTotal !== result.completion.providerReportedTotal) fail('providerReportedTotal does not match the raw provider response');
+  if (result.completion.providerReportedTotal !== null) {
+    if (!totalEvidence?.artifactRef || !totalEvidence?.jsonPointer) fail('A successful API source requires providerTotalEvidence artifactRef and jsonPointer');
+    if (!/^raw\/[^/]+\/listings\/page-\d{4}\.json$/.test(totalEvidence.artifactRef)) fail('providerTotalEvidence must target a raw listing JSON response');
+    if (!declared.has(totalEvidence.artifactRef)) fail('providerTotalEvidence artifact is not declared in artifactRefs');
+    const providerTotal = jsonPointer(readJson(artifactPath(runDir, totalEvidence.artifactRef)), totalEvidence.jsonPointer);
+    if (providerTotal !== result.completion.providerReportedTotal) fail('providerReportedTotal does not match the raw provider response');
+  }
   for (const pageRef of result.completion.pagesVisited) {
     if (!/^raw\/[^/]+\/listings\/page-\d{4}\.json$/.test(pageRef)) fail(`API pagination evidence must be an untouched listing JSON response: ${pageRef}`);
     if (!declared.has(pageRef)) fail(`Pagination evidence is not declared in artifactRefs: ${pageRef}`);
@@ -836,9 +907,23 @@ function validateSourceEvidence(runDir, state, result) {
 
 function validateSourceSemantics(runDir, state, result) {
   if (result.status !== 'success') return;
+  if (result.sourceRole === 'discovery') {
+    const publishableDecisions = new Set(['authority_confirmed', 'already_collected_authority', 'direct_reused', 'editorial_sufficient']);
+    const outcomes = Object.entries(result.counts.confirmationOutcomeCounts ?? {});
+    if (outcomes.some(([, count]) => !Number.isInteger(count) || count < 0)) fail('Discovery confirmation outcome counts are invalid');
+    const occurrencesEmitted = outcomes.reduce((sum, [, count]) => sum + count, 0);
+    const eligiblePreDedup = outcomes.reduce((sum, [decision, count]) => sum + (publishableDecisions.has(decision) ? count : 0), 0);
+    const excludedOccurrences = occurrencesEmitted - eligiblePreDedup;
+    if (result.counts.discoveryRecordsReceived !== result.counts.sourceRecordsReceived
+      || result.counts.processedSourceRecords !== result.processedSourceRecordRefs.length
+      || result.counts.occurrencesEmitted !== occurrencesEmitted
+      || result.counts.eligiblePreDedup !== eligiblePreDedup
+      || result.counts.excludedOccurrences !== excludedOccurrences) {
+      fail('Discovery source accounting does not match authority-confirmation outcomes');
+    }
+    return;
+  }
   const run = readJson(join(runDir, 'run.json'));
-  const windowStart = Date.parse(run.window.start);
-  const windowEnd = Date.parse(run.window.end);
   let occurrencesEmitted = 0;
   let excludedOccurrences = 0;
   let eligiblePreDedup = 0;
@@ -852,9 +937,8 @@ function validateSourceSemantics(runDir, state, result) {
     const occurrences = Array.isArray(record.performances) && record.performances.length ? record.performances : [record];
     for (const performance of occurrences) {
       occurrencesEmitted += 1;
-      const interval = eventInterval({ ...record, ...performance });
-      const overlapsWindow = interval && interval.end >= windowStart && interval.start <= windowEnd;
-      const mapEligible = record.recordType !== 'membership_offer' && (overlapsWindow || !interval) && record.mode !== 'online'
+      const policy = assessActivityInclusion({ ...record, ...performance }, { asOf: run.window.start });
+      const mapEligible = !record.reasonCode && policy.eligible && record.mode !== 'online'
         && typeof record.venue === 'string' && record.venue.trim();
       if (mapEligible) eligiblePreDedup += 1;
       else excludedOccurrences += 1;
@@ -879,6 +963,9 @@ function recordSource(options) {
     artifactRefs: result.artifactRefs ?? [], error: result.error ?? null,
     message: result.message ?? null, blockerReasonCode: result.blockerReasonCode ?? null,
     completion: result.completion ?? null,
+    sourceRole: result.sourceRole ?? state.sources[options.source].sourceRole,
+    operatingMode: result.operatingMode ?? state.sources[options.source].operatingMode,
+    confirmationRefs: result.confirmationRefs ?? [], authorityRefs: result.authorityRefs ?? [],
     sourceRecordRefs: result.sourceRecordRefs ?? [],
     invalidSourceRecordRefs: result.invalidSourceRecordRefs ?? [],
     processedSourceRecordRefs: result.processedSourceRecordRefs ?? []
@@ -888,20 +975,27 @@ function recordSource(options) {
   printNext(state);
 }
 
-function updateLastSuccessfulUse(sourceName, timestamp) {
-  const markdown = readFileSync(MANIFEST_PATH, 'utf8');
+function replaceLastSuccessfulUse(markdown, sourceName, timestamp) {
   const lines = markdown.split(/\r?\n/);
   let updated = false;
   const next = lines.map((line) => {
-    if (!line.startsWith(`| ${sourceName} |`)) return line;
     const cells = line.split('|');
-    if (cells.length < 7) return line;
-    cells[5] = ` \`${timestamp}\` `;
+    if (cells.length < 7 || cells[1]?.trim() !== sourceName) return line;
+    const previous = cells[5] ?? ' ';
+    const leading = previous.match(/^\s*/)?.[0] || ' ';
+    const trailing = previous.match(/\s*$/)?.[0] || ' ';
+    cells[5] = `${leading}\`${timestamp}\`${trailing}`;
     updated = true;
     return cells.join('|');
   });
+  return { markdown: next.join('\n'), updated };
+}
+
+function updateLastSuccessfulUse(sourceName, timestamp) {
+  const result = replaceLastSuccessfulUse(readFileSync(MANIFEST_PATH, 'utf8'), sourceName, timestamp);
+  const { updated } = result;
   if (!updated) fail(`Cannot update Last successful use for ${sourceName}`);
-  atomicWrite(MANIFEST_PATH, next.join('\n'));
+  atomicWrite(MANIFEST_PATH, result.markdown);
 }
 
 async function collectSourceCommand(options) {
@@ -912,15 +1006,29 @@ async function collectSourceCommand(options) {
   const source = config.sources.find((item) => item.enabled && item.name === options.source);
   if (!source) fail(`No enabled executable adapter for source: ${options.source}`);
   const resultPath = join(runDir, `${source.adapterId}.result.json`);
+  const corroborationRecords = Object.entries(state.sources).flatMap(([sourceName, collected]) => {
+    if (sourceName === options.source || collected.status !== 'success') return [];
+    return (collected.processedSourceRecordRefs ?? []).flatMap((recordRef) => {
+      try {
+        const envelope = readJson(artifactPath(runDir, baseArtifactRef(recordRef)));
+        const index = Number(recordRef.match(/#\/records\/(\d+)$/)?.[1]);
+        const record = envelope.records?.[index];
+        return record ? [{ ...record, sourceRecordId: record.sourceRecordId ?? record.sourceId ?? record.discoveryRecordId, sourceRole: collected.sourceRole }] : [];
+      } catch { return []; }
+    });
+  });
   const result = await collectSource({
     runDir,
     run: readJson(join(runDir, 'run.json')),
     source,
     paginationCeiling: config.paginationCeiling,
     requestPolicy: config.requestPolicy,
+    corroborationRecords,
+    logger: (record) => pipelineTrace(runDir, { stage: record.stage ?? 'retrieval', action: record.action ?? 'retrieval', outcome: record.action?.includes('complete') ? 'success' : 'started', sourceName: options.source, entityType: 'request', entityId: record.entityId ?? `${options.source}:${record.pageIndex ?? 'batch'}`, attempt: record.attempt, durationMs: record.durationMs, counts: { urls: record.urls, results: record.results, errors: record.errors } }),
   });
   writeJson(resultPath, result);
   recordSource({ run: options.run, source: options.source, result: resultPath });
+  pipelineTrace(runDir, { stage: 'collection', action: 'source_terminal', outcome: result.status, sourceName: options.source, sourceRole: source.sourceRole, operatingMode: source.operatingMode, adapterId: source.adapterId, adapterVersion: source.version, entityType: 'source', entityId: options.source, counts: result.counts, reasonCode: result.blockerReasonCode ?? null, blocker: result.error ?? null, nextAction: `npm run event-pipeline -- advance --run ${options.run}` });
   if (result.status === 'success') updateLastSuccessfulUse(options.source, new Date().toISOString());
 }
 
@@ -940,7 +1048,7 @@ function recordNormalization(options) {
     for (const [name, envelope] of [['events', normalizedEvents], ['excluded', normalizedExcluded], ['invalid', normalizedInvalid]]) {
       if (!Array.isArray(envelope.records) || envelope.counts?.records !== envelope.records.length) fail(`normalized/${name}.json record count does not match its records`);
     }
-    const successfulSources = Object.values(state.sources).filter((source) => source.status === 'success');
+    const successfulSources = Object.values(state.sources).filter((source) => source.status === 'success' && source.operatingMode !== 'pilot');
     for (const [sourceName, recordRefs] of Object.entries(result.sourceReclassifications ?? {})) {
       const source = state.sources[sourceName];
       if (!source || source.status !== 'success' || !Array.isArray(recordRefs)) fail(`Invalid source reclassification: ${sourceName}`);
@@ -999,12 +1107,14 @@ function recordNormalization(options) {
   } else if (!result.error) fail('Failed normalization requires an error');
   state.normalization = {
     status: result.status, counts: result.counts ?? null, artifactRefs: result.artifactRefs ?? [],
-    venueBranches: result.venueBranches ?? [], sourceAccounting: result.sourceAccounting ?? {}, error: result.error ?? null
+    venueBranches: result.venueBranches ?? [], sourceAccounting: result.sourceAccounting ?? {}, evidence: result.evidence ?? null, sourceReconciliation: result.sourceReconciliation ?? null, error: result.error ?? null
   };
+  state.deduplication = { status: 'pending', counts: null, artifactRefs: [], blockingReviews: [], error: null };
   if (result.status === 'success' && result.venueBranches?.length === 0) state.resolutionPreparation = { status: 'success', artifactRefs: [], error: null };
   else if (normalizationChangedBranch) state.resolutionPreparation = { status: 'pending', artifactRefs: [], error: null };
   state.verification = { status: 'pending', build: null, eventUi: null, browser: null, error: null };
   saveState(runDir, state);
+  pipelineTrace(runDir, { stage: 'normalization', action: 'normalization_terminal', outcome: result.status, entityType: 'run', entityId: options.run, counts: result.counts, blocker: result.error ?? null, nextAction: `npm run event-pipeline -- advance --run ${options.run}` });
   printNext(state);
 }
 
@@ -1015,6 +1125,47 @@ function normalize(options) {
   const resultPath = join(runDir, 'normalization-result.json');
   writeJson(resultPath, normalizeRun({ runDir, state, run: readJson(join(runDir, 'run.json')) }));
   recordNormalization({ run: options.run, result: resultPath });
+}
+
+function finalizeDedupCommand(options) {
+  const runDir = runDirectory(options.run), state = loadState(options.run);
+  if (state.normalization?.status !== 'success') fail('Cannot finalize duplicates before successful normalization');
+  if (Object.values(state.venues).some((venue) => !TERMINAL_STAGE.has(venue.stages.resolve.status))) fail('Cannot finalize duplicates before every venue resolution is terminal');
+  const eventsPath = join(runDir, 'normalized/events.json'), envelope = readJson(eventsPath), originalEvents = envelope.records;
+  const resolutions = {};
+  for (const [venueId, venue] of Object.entries(state.venues)) {
+    const resolveStage = venue.stages.resolve;
+    resolutions[venueId] = resolveStage.status === 'success' && resolveStage.outputRef
+      ? readJson(join(runDir, resolveStage.outputRef)).result
+      : { resolutionStatus: resolveStage.resolutionStatus ?? 'needs_review' };
+  }
+  const currentLandmarks = environmentRecords('EVENT_PIPELINE_CURRENT_LANDMARKS') ?? loadCurrentApprovedData(process.env.EVENT_PIPELINE_FRONTEND_ROOT ? resolve(process.env.EVENT_PIPELINE_FRONTEND_ROOT) : ROOT).landmarks;
+  const priorClusters = currentLandmarks.flatMap((landmark) => (landmark.events ?? []).map((event) => ({
+    identityAnchor: event.identityAnchor ?? stableEventKey(event),
+    memberIds: event.sourceOccurrenceIds ?? (event.sources ?? []).map(({ source, sourceId }) => `${source}:${sourceId}`),
+  })));
+  const sourcePrecedence = Object.fromEntries(readPipelineConfig().sources.filter(({ sourceRole }) => sourceRole === 'authoritative').map(({ name, precedence }) => [name, precedence]));
+  const candidates = generateDedupCandidates(originalEvents);
+  const result = finalizeDeduplication({ events: originalEvents, candidates, resolutions, priorClusters, sourcePrecedence });
+  const isolatedReviewIds = new Set(result.blockingReviews.flatMap(({ occurrenceIds = [] }) => occurrenceIds));
+  for (const event of result.events) if ((event.sourceOccurrenceIds ?? []).some((id) => isolatedReviewIds.has(id))) {
+    Object.assign(event, { lifecycleState: 'held', publicPlacement: 'none', mappingStatus: 'pending_review', reviewStatus: 'review', reviewReason: 'prior_cluster_join_review' });
+  }
+  const candidatesRef = 'normalized/dedup-candidates.json', decisionsRef = 'normalized/dedup-final-decisions.json';
+  writeJson(join(runDir, candidatesRef), { schemaVersion: '1.0', runId: options.run, counts: { records: candidates.length }, records: candidates });
+  writeJson(join(runDir, decisionsRef), { schemaVersion: '1.0', runId: options.run, counts: { records: result.decisions.length }, records: result.decisions });
+  writeJson(eventsPath, { ...envelope, counts: { records: result.events.length }, records: result.events });
+  for (const venue of Object.values(state.venues)) venue.eventIds = [...new Set(venue.eventIds.map((id) => result.events.find((event) => event.sourceOccurrenceIds.includes(id))?.id ?? id))];
+  state.deduplication = {
+    status: 'success', counts: result.counts,
+    evidence: summarizeEvidenceLevels(result.events),
+    artifactRefs: [candidatesRef, decisionsRef, 'normalized/events.json'], blockingReviews: result.blockingReviews,
+    isolatedReviewEventIds: [...isolatedReviewIds], error: null, completedAt: new Date().toISOString(),
+  };
+  registerArtifacts(runDir, [candidatesRef, decisionsRef, 'normalized/events.json']);
+  saveState(runDir, state);
+  pipelineTrace(runDir, { stage: 'deduplication', action: 'deduplication_terminal', outcome: state.deduplication.status, entityType: 'run', entityId: options.run, counts: result.counts, reasonCode: result.blockingReviews.length ? 'prior_cluster_join_review' : null, blocker: state.deduplication.error, nextAction: `npm run event-pipeline -- advance --run ${options.run}` });
+  printNext(state);
 }
 
 function prepareVenues(options) {
@@ -1148,6 +1299,7 @@ function recordStageValue(options, result, resultPath) {
     for (const downstream of STAGES.slice(stageIndex + 1)) venue.stages[downstream] = { status: 'skipped', outputRef: null, error: `Upstream ${options.stage} was ${result.status}` };
   }
   saveState(runDir, state);
+  pipelineTrace(runDir, { stage: options.stage, action: 'venue_stage_terminal', outcome: result.status, entityType: 'venue', entityId: options.venue, counts: { events: venue.eventIds.length }, reasonCode: result.result?.resolutionStatus ?? null, blocker: result.error ?? null, nextAction: `npm run event-pipeline -- advance --run ${options.run}` });
   if (!options.quiet) printNext(state);
   return state;
 }
@@ -1373,8 +1525,13 @@ function branchEvidenceHash(runDir, venue) {
   });
 }
 
-function reusableResolutionEntry(cache, normalizedVenue, evidenceHash, eventIds = []) {
-  const entries = cache.entries?.filter((entry) => entry.normalizedVenue === normalizedVenue) ?? [];
+function reusableResolutionEntry(cache, normalizedVenue, evidenceHash, eventIds = [], expectedGmlIds = []) {
+  const coversCurrentCandidates = (entry) => {
+    if (entry.result?.resolutionStatus !== 'needs_review' || !expectedGmlIds.length) return true;
+    const cached = new Set((entry.result.competingCandidates ?? []).flatMap((candidate) => candidate?.gmlIds ?? (candidate?.gmlId ? [candidate.gmlId] : [])));
+    return expectedGmlIds.every((gmlId) => cached.has(gmlId));
+  };
+  const entries = cache.entries?.filter((entry) => entry.normalizedVenue === normalizedVenue && coversCurrentCandidates(entry)) ?? [];
   const sameEvents = (entry) => {
     const cached = entry.result?.inputEventIds;
     return Array.isArray(cached) && cached.length === eventIds.length && cached.every((id) => eventIds.includes(id));
@@ -1387,11 +1544,14 @@ function reusableResolutionEntry(cache, normalizedVenue, evidenceHash, eventIds 
 
 function reuseCachedResolutions(runId) {
   const runDir = runDirectory(runId), state = loadState(runId), cache = readResolutionCache();
+  const localResolutionPath = join(runDir, 'local-venue-resolution.json');
+  const localRows = new Map((existsSync(localResolutionPath) ? readJson(localResolutionPath).results ?? [] : []).map((row) => [row.venueId, row]));
   let reused = 0;
   for (const [venueId, venue] of Object.entries(state.venues)) {
     if (venue.stages.resolve.status !== 'pending') continue;
     const evidenceHash = branchEvidenceHash(runDir, venue);
-    const entry = reusableResolutionEntry(cache, normalizeText(venue.venue), evidenceHash, venue.eventIds);
+    const expectedGmlIds = [...new Set((localRows.get(venueId)?.alternatives ?? []).flatMap((candidate) => candidate.gmlIds ?? []))];
+    const entry = reusableResolutionEntry(cache, normalizeText(venue.venue), evidenceHash, venue.eventIds, expectedGmlIds);
     if (!entry) continue;
     const timestamp = new Date().toISOString();
     const result = { schemaVersion: '1.0', runId, stage: 'resolve', status: 'unresolved', startedAt: timestamp, endedAt: timestamp,
@@ -1423,7 +1583,8 @@ function plainLocationText(value) {
 function collectLocationClues(value, output = []) {
   if (output.length >= 8 || value === null || value === undefined) return output;
   if (typeof value === 'string') {
-    const text = plainLocationText(value);
+    const primary = String(value).split(/(?:^|\n)\s*(?:#{1,6}\s*)?(?:similar experiences|discover our top experiences|nearby|recommended|related|you may also like)\s*(?:\n|$)/i)[0];
+    const text = plainLocationText(primary);
     const match = /\baddress\b|\bSingapore\s+\d{6}\b|\b\d{1,4}[A-Za-z]?\s+[A-Za-z][^,.]{1,60}\b(?:Road|Street|Avenue|Lane|Drive|Crescent|Walk|Boulevard|Terrace|Place|Parkway)\b/i.exec(text);
     if (match) output.push(text.slice(Math.max(0, match.index - 180), Math.min(text.length, match.index + 520)));
     return output;
@@ -1607,7 +1768,7 @@ function compactLocalEvidence(localRow) {
 }
 
 async function advance(options) {
-  const actions = new Set(['collect-source', 'normalize', 'prepare-venues', 'resolve-local', 'stage-frontend', 'verify', 'finalize']);
+  const actions = new Set(['collect-source', 'normalize', 'prepare-venues', 'resolve-local', 'finalize-dedup', 'stage-frontend', 'verify', 'finalize']);
   const executed = [];
   while (true) {
     const state = loadState(options.run);
@@ -1674,7 +1835,7 @@ async function advance(options) {
 function verify(options) {
   const runDir = runDirectory(options.run);
   const state = loadState(options.run);
-  if (state.normalization.status !== 'success') fail('Cannot verify before successful normalization');
+  if (state.normalization.status !== 'success' || state.deduplication && state.deduplication.status !== 'success') fail('Cannot verify before successful normalization and deduplication');
   const unfinished = Object.values(state.venues).some((venue) => STAGES.some((stage) => !TERMINAL_STAGE.has(venue.stages[stage].status)));
   if (unfinished) fail('Cannot verify while venue stages remain pending');
   const results = {};
@@ -1694,6 +1855,7 @@ function verify(options) {
   writeJson(join(runDir, 'verification.json'), state.verification);
   registerArtifacts(runDir, ['verification.json']);
   saveState(runDir, state);
+  pipelineTrace(runDir, { stage: 'verification', action: 'verification_terminal', outcome: state.verification.status, entityType: 'run', entityId: options.run, blocker: state.verification.error, nextAction: `npm run event-pipeline -- advance --run ${options.run}` });
   printNext(state);
 }
 
@@ -1701,32 +1863,47 @@ async function stageFrontend(options) {
   const runDir = runDirectory(options.run);
   const state = loadState(options.run);
   if (Object.values(state.venues).some((venue) => !TERMINAL_STAGE.has(venue.stages.resolve.status))) fail('Cannot stage frontend before every resolver branch is terminal');
+  if (state.deduplication && state.deduplication.status !== 'success') fail('Cannot stage frontend before successful post-venue deduplication');
   const plan = await prepareFrontendPlan(options.run);
+  for (const outcome of plan.sourceReconciliation?.traces ?? []) pipelineTrace(runDir, {
+    stage: 'reconciliation', action: outcome.outcome, outcome: 'success', entityType: 'event', entityId: outcome.eventId,
+    reasonCode: outcome.reasonCode ?? outcome.outcome, evidenceRefs: outcome.sourceRecordIds ?? [],
+  });
   const preliminaryEligibility = evaluateCommitEligibility(state, { requireVerification: false });
   const registry = join(runDir, 'frontend/approved-pois.json');
   const assetsRoot = join(runDir, 'frontend/assets');
   const results = {};
+  const boundedDiagnostic = (value) => {
+    const redacted = String(redactTraceValue(String(value ?? '')))
+      .replace(/\b(authorization|cookie|api[-_]?key|token|secret|password)\b\s*[:=]\s*[^\s,;]+/gi, '$1=[REDACTED]')
+      .trim();
+    return redacted.length > 4000 ? `[truncated ${redacted.length - 4000} chars]\n${redacted.slice(-4000)}` : redacted;
+  };
   const execute = (name, command, args, env = process.env) => {
-    try {
-      execFileSync(command, args, { cwd: ROOT, stdio: 'inherit', env });
-      results[name] = { status: 'success', command: [command, ...args].join(' ') };
-    } catch (error) {
-      results[name] = { status: 'failed', exitCode: error.status ?? 1, command: [command, ...args].join(' ') };
-    }
+    const child = spawnSync(command, args, { cwd: ROOT, encoding: 'utf8', env, maxBuffer: 16 * 1024 * 1024 });
+    if (child.stdout) process.stdout.write(child.stdout);
+    if (child.stderr) process.stderr.write(child.stderr);
+    const diagnostics = boundedDiagnostic(`${child.error?.message ?? ''}\n${child.stderr ?? ''}\n${child.stdout ?? ''}`);
+    results[name] = {
+      status: child.status === 0 ? 'success' : 'failed', exitCode: child.status ?? 1,
+      command: [command, ...args].join(' '), ...(diagnostics ? { diagnostics } : {})
+    };
+    pipelineTrace(runDir, { stage: 'verification', action: `${name}_terminal`, outcome: results[name].status, entityType: 'gate', entityId: name, counts: { exitCode: results[name].exitCode }, blocker: results[name].status === 'failed' ? diagnostics : null });
   };
   if (plan.geometryChanged) {
     execute('extraction', process.execPath, ['scripts/extract-cbd-poi-tilesets.mjs', '--registry', registry, '--publish-root', assetsRoot, '--work-root', join(runDir, 'frontend/extraction-work')]);
     if (results.extraction.status === 'success') {
       const tileset = readJson(join(ROOT, 'optimized-tiles/tileset.json'));
-      const runRelative = relative(ROOT, runDir).split(/[/\\]/).join('/');
+      const verificationAssets = join(runDir, 'frontend/verification-assets');
+      const relativeAssetUrl = (path) => relative(verificationAssets, path).split(/[/\\]/).join('/');
       const rewrite = (tile) => {
         const content = tile.content;
         if (content) {
           const key = content.uri ? 'uri' : content.url ? 'url' : null;
           if (key && !/^(?:https?:|\/)/.test(content[key])) {
             const uri = content[key];
-            content[key] = existsSync(join(assetsRoot, 'optimized-tiles', uri))
-              ? `/${runRelative}/frontend/assets/optimized-tiles/${uri}` : `/optimized-tiles/${uri}`;
+            content[key] = relativeAssetUrl(existsSync(join(assetsRoot, 'optimized-tiles', uri))
+              ? join(assetsRoot, 'optimized-tiles', uri) : join(ROOT, 'optimized-tiles', uri));
           }
         }
         for (const child of tile.children ?? []) rewrite(child);
@@ -1738,17 +1915,16 @@ async function stageFrontend(options) {
   if (results.extraction.status === 'success') {
     try {
       const stagedPois = readJson(registry).records;
-      const runRelative = relative(ROOT, runDir).split(/[/\\]/).join('/');
+      const combinedOutput = join(assetsRoot, 'public/poi-tiles/event-venues/tileset.json');
       buildCombinedPoiTileset({
         pois: stagedPois,
-        outputPath: join(assetsRoot, 'public/poi-tiles/event-venues/tileset.json'),
+        outputPath: combinedOutput,
         resolveTilesetPath: (poi) => {
           const staged = join(assetsRoot, 'public', poi.data);
           return existsSync(staged) ? staged : join(ROOT, 'public', poi.data);
         },
-        resolveContentUri: (poi) => existsSync(join(assetsRoot, 'public', poi.data))
-          ? `/${runRelative}/frontend/assets/public/${poi.data}`
-          : `/${poi.data}`,
+        resolveContentUri: (poi) => relative(dirname(combinedOutput), existsSync(join(assetsRoot, 'public', poi.data))
+          ? join(assetsRoot, 'public', poi.data) : join(ROOT, 'public', poi.data)).split(/[/\\]/).join('/'),
       });
       results.combinedPoiTileset = { status: 'success', command: 'generated from staged approved POIs' };
     } catch (error) {
@@ -1769,7 +1945,7 @@ async function stageFrontend(options) {
     plan.status = 'verified'; plan.verifiedAt = new Date().toISOString();
     writeJson(join(runDir, 'frontend/plan.json'), plan);
     const stageRefs = writeVerifiedStageHandoffs({ runDir, state, plan, verification });
-    registerArtifacts(runDir, ['frontend/plan.json', 'frontend/approved-pois.json', 'frontend/approved-landmarks.json', ...stageRefs]);
+    registerArtifacts(runDir, ['frontend/plan.json', 'frontend/approved-pois.json', 'frontend/approved-landmarks.json', 'frontend/approved-events.json', ...stageRefs]);
     const publication = commitFrontendSnapshot({
       runDir,
       root: process.env.EVENT_PIPELINE_FRONTEND_ROOT ? resolve(process.env.EVENT_PIPELINE_FRONTEND_ROOT) : ROOT,
@@ -1801,6 +1977,7 @@ async function stageFrontend(options) {
     }
   }
   saveState(runDir, state);
+  pipelineTrace(runDir, { stage: 'publication', action: 'staged_publication_terminal', outcome: state.publication?.decision ?? verification.status, entityType: 'snapshot', entityId: state.publication?.candidateSnapshotId ?? options.run, reasonCode: state.publication?.reasonCodes?.join(',') || null, blocker: verification.error, nextAction: `npm run event-pipeline -- advance --run ${options.run}` });
   printNext(state);
 }
 
@@ -1853,13 +2030,31 @@ function finalize(options) {
   const state = loadState(options.run);
   const problems = terminalProblems(state);
   if (problems.length) fail(`Refusing to finalize an incomplete run:\n- ${problems.join('\n- ')}`, 2);
+  const activeReviewVenues = Object.entries(state.venues ?? {})
+    .filter(([, venue]) => venue.stages?.resolve?.resolutionStatus === 'needs_review')
+    .map(([venueId, venue]) => ({ venueId, evidenceHash: venue.evidenceHash ?? branchEvidenceHash(runDir, venue) }));
+  const repository = new AdminRepository({ databasePath: adminDatabasePath() });
+  try {
+    state.adminReviewReconciliation = {
+      ...repository.reconcileVenueReviewQueue(activeReviewVenues),
+      reconciledAt: new Date().toISOString(),
+    };
+  } finally { repository.close(); }
   state.overallStatus = deriveTerminalStatus(state);
   state.finalizedAt = new Date().toISOString();
   saveState(runDir, state);
   const run = readJson(join(runDir, 'run.json'));
   const frontendPlanPath = join(runDir, 'frontend/plan.json');
-  atomicWrite(join(runDir, 'status.md'), renderStatus(state, run, existsSync(frontendPlanPath) ? readJson(frontendPlanPath) : null));
-  process.stdout.write(`${JSON.stringify({ ...progressResponse(state), statusPath: join(runDir, 'status.md') }, null, 2)}\n`);
+  const frontendPlan = existsSync(frontendPlanPath) ? readJson(frontendPlanPath) : null;
+  pipelineTrace(runDir, { stage: 'run', action: 'run_finalized', outcome: state.overallStatus, entityType: 'run', entityId: options.run, reasonCode: state.publication?.reasonCodes?.join(',') || null, blocker: state.verification?.error ?? null, nextAction: null });
+  pipelineTrace(runDir, { stage: 'run', action: 'admin_review_queue_reconciled', outcome: 'success', entityType: 'run', entityId: options.run,
+    counts: { active: state.adminReviewReconciliation.activeVenueIds.length, superseded: state.adminReviewReconciliation.superseded,
+      pending: state.adminReviewReconciliation.pending, deferred: state.adminReviewReconciliation.deferred }, reasonCode: null, blocker: null, nextAction: null });
+  const tracePath = join(runDir, 'logs/trace.jsonl');
+  const summary = { ...statusSummary(state, run, frontendPlan), trace: { path: 'logs/trace.jsonl', sha256: existsSync(tracePath) ? sha(readFileSync(tracePath)) : null } };
+  atomicWrite(join(runDir, 'status.json'), `${JSON.stringify(summary, null, 2)}\n`);
+  atomicWrite(join(runDir, 'status.md'), renderStatus(state, run, frontendPlan));
+  process.stdout.write(`${JSON.stringify({ ...progressResponse(state), statusPath: join(runDir, 'status.md'), statusJsonPath: join(runDir, 'status.json'), tracePath }, null, 2)}\n`);
 }
 
 function printNext(state) {
@@ -1874,15 +2069,15 @@ function status(options) {
 }
 
 function usage() {
-  process.stdout.write(`Usage:\n  npm run event-pipeline -- run [--date YYYY-MM-DD]\n  npm run event-pipeline -- start [--date YYYY-MM-DD]\n  npm run event-pipeline -- resume --run <run-id>\n  npm run event-pipeline -- advance --run <run-id>\n  npm run event-pipeline -- status --run <run-id>\n  npm run event-pipeline -- collect-source --run <run-id> --source <name>\n  npm run event-pipeline -- record-source --run <run-id> --source <name> --result <json>\n  npm run event-pipeline -- normalize --run <run-id>\n  npm run event-pipeline -- record-normalization --run <run-id> --result <json>\n  npm run event-pipeline -- prepare-venues --run <run-id>\n  npm run event-pipeline -- resolve-local --run <run-id>\n  npm run event-pipeline -- reprocess-unresolved --run <run-id>\n  npm run event-pipeline -- record-venue-recovery --run <run-id> --venue <id> --evidence <json>\n  npm run event-pipeline -- reuse-resolution-cache --run <run-id>\n  npm run event-pipeline -- plan-frontend --run <run-id>\n  npm run event-pipeline -- stage-frontend --run <run-id>\n  npm run event-pipeline -- record-stage --run <run-id> --venue <id> --stage <stage> --result <json>\n  npm run event-pipeline -- verify --run <run-id>\n  npm run event-pipeline -- finalize --run <run-id>\n`);
+  process.stdout.write(`Usage:\n  npm run event-pipeline -- run [--date YYYY-MM-DD]\n  npm run event-pipeline -- start [--date YYYY-MM-DD]\n  npm run event-pipeline -- resume --run <run-id>\n  npm run event-pipeline -- advance --run <run-id>\n  npm run event-pipeline -- status --run <run-id>\n  npm run event-pipeline -- collect-source --run <run-id> --source <name>\n  npm run event-pipeline -- record-source --run <run-id> --source <name> --result <json>\n  npm run event-pipeline -- normalize --run <run-id>\n  npm run event-pipeline -- record-normalization --run <run-id> --result <json>\n  npm run event-pipeline -- prepare-venues --run <run-id>\n  npm run event-pipeline -- resolve-local --run <run-id>\n  npm run event-pipeline -- finalize-dedup --run <run-id>\n  npm run event-pipeline -- reprocess-unresolved --run <run-id>\n  npm run event-pipeline -- record-venue-recovery --run <run-id> --venue <id> --evidence <json>\n  npm run event-pipeline -- reuse-resolution-cache --run <run-id>\n  npm run event-pipeline -- plan-frontend --run <run-id>\n  npm run event-pipeline -- stage-frontend --run <run-id>\n  npm run event-pipeline -- record-stage --run <run-id> --venue <id> --stage <stage> --result <json>\n  npm run event-pipeline -- verify --run <run-id>\n  npm run event-pipeline -- finalize --run <run-id>\n`);
 }
 
-export { branchEvidenceHash, canCommitFrontendSnapshot, classifyNonBuildingRecovery, collectLocationClues, collectOfficialCandidatePages, enrichRecoveryCoordinates, eventInterval, explicitMultiVenueSourceUrls, jsonPointer, nextAction, parseManifest, progressResponse, readPipelineConfig, reconcileNormalizedVenueBranches, renderStatus, reopenImprovedLocalCandidates, reusableResolutionEntry, selectDeterministicOneMapAddress, singaporeWindow, terminalProblems, validateApprovedResolution, validateHighlightArtifacts, validateNormalizedSemantics, validateNotMappableAgainstLocalCandidates, validateResolveRecoveryEvidence, validateSourceEvidence, validateSourceResult, validateSourceSemantics, validateStageEventIds, validateVenueRecoveryEvidence };
+export { branchEvidenceHash, canCommitFrontendSnapshot, classifyNonBuildingRecovery, collectLocationClues, collectOfficialCandidatePages, enrichRecoveryCoordinates, eventInterval, explicitMultiVenueSourceUrls, jsonPointer, nextAction, parseManifest, progressResponse, readPipelineConfig, reconcileNormalizedVenueBranches, renderStatus, reopenImprovedLocalCandidates, replaceLastSuccessfulUse, reusableResolutionEntry, selectDeterministicOneMapAddress, singaporeWindow, terminalProblems, validateApprovedResolution, validateHighlightArtifacts, validateNormalizedSemantics, validateNotMappableAgainstLocalCandidates, validateResolveRecoveryEvidence, validateSourceEvidence, validateSourceResult, validateSourceSemantics, validateStageEventIds, validateVenueRecoveryEvidence };
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   try {
     const { command, options } = parseArgs(process.argv.slice(2));
-    const commands = { run: runAll, start, resume, advance, status, 'collect-source': collectSourceCommand, 'record-source': recordSource, normalize, 'record-normalization': recordNormalization, 'prepare-venues': prepareVenues, 'resolve-local': resolveLocal, 'reprocess-unresolved': reprocessUnresolved, 'record-venue-recovery': recordVenueRecovery, 'reuse-resolution-cache': reuseResolutionCacheCommand, 'plan-frontend': planFrontend, 'stage-frontend': stageFrontend, 'record-stage': recordStage, verify, finalize };
+    const commands = { run: runAll, start, resume, advance, status, 'collect-source': collectSourceCommand, 'record-source': recordSource, normalize, 'record-normalization': recordNormalization, 'prepare-venues': prepareVenues, 'resolve-local': resolveLocal, 'finalize-dedup': finalizeDedupCommand, 'reprocess-unresolved': reprocessUnresolved, 'record-venue-recovery': recordVenueRecovery, 'reuse-resolution-cache': reuseResolutionCacheCommand, 'plan-frontend': planFrontend, 'stage-frontend': stageFrontend, 'record-stage': recordStage, verify, finalize };
     if (!command || command === 'help' || !commands[command]) usage();
     else if (command === 'run' || command === 'start' || command === 'status' || command === 'advance') await commands[command](options);
     else {

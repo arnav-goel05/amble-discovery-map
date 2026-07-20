@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { reconcileEventMap } from "../activity-scenes/events/event-map-reconciliation.js";
+import { assessLocationState } from "../scripts/lib/event-sources/activity-policy.mjs";
 
 const landmark = (id, title = "Event", contentHash) => ({
   id, label: `Venue ${id}`, anchor: { lng: 103.85, lat: 1.29 },
@@ -32,4 +33,31 @@ test("duplicate landmark and occurrence identities fail before rendering", () =>
   const duplicateOccurrence = landmark("venue");
   duplicateOccurrence.events.push({ ...duplicateOccurrence.events[0] });
   assert.throws(() => reconcileEventMap([], [duplicateOccurrence]), /duplicate event identity/i);
+});
+
+test("frontend reconciliation emits one logical activity while preserving sessions and venue occurrences", () => {
+  const next = landmark("venue");
+  next.events = [
+    { id: "source-a", publishedEventId: "published-one", title: "Shared", sessions: [{ sessionId: "one" }], venueOccurrences: [{ venueOccurrenceId: "venue-one" }] },
+    { id: "source-b", publishedEventId: "published-one", title: "Shared", sessions: [{ sessionId: "two" }], venueOccurrences: [{ venueOccurrenceId: "venue-two" }] },
+  ];
+  const [projected] = reconcileEventMap([], [next]).landmarks;
+  assert.equal(projected.events.length, 1);
+  assert.deepEqual(projected.events[0].sessions.map(({ sessionId }) => sessionId), ["one", "two"]);
+  assert.deepEqual(projected.events[0].venueOccurrences.map(({ venueOccurrenceId }) => venueOccurrenceId), ["venue-one", "venue-two"]);
+});
+
+test("location policy separates mapped approval, intentional off-map, reviewable ambiguity, and held conflicts", () => {
+  assert.deepEqual(assessLocationState({ approvedLocationId: "poi:funan", geometryApproved: true }), { publicPlacement: "mapped", mappingStatus: "approved", offMapSubtype: null, lifecycleState: "active", reasonCode: "building_approved" });
+  for (const subtype of ["secret_tba", "multiple_locations", "mobile_route", "broad_area", "geometry_unavailable"]) {
+    const result = assessLocationState({ offMapSubtype: subtype });
+    assert.deepEqual([result.publicPlacement, result.mappingStatus, result.lifecycleState], ["off_map", "not_required", "active"], subtype);
+  }
+  assert.deepEqual(assessLocationState({ singaporeScopeReliable: true, generalLocationUsable: true }), { publicPlacement: "off_map", mappingStatus: "pending_review", offMapSubtype: "geometry_unavailable", lifecycleState: "active", reasonCode: "location_conflict" });
+  assert.deepEqual(assessLocationState({ singaporeScopeReliable: false, generalLocationUsable: false }), { publicPlacement: "none", mappingStatus: "pending_review", offMapSubtype: null, lifecycleState: "held", reasonCode: "location_conflict" });
+  assert.deepEqual(
+    assessLocationState({ approvedLocationId: "poi:funan", geometryApproved: true, venueText: "Funan #03-30" }),
+    { publicPlacement: "mapped", mappingStatus: "approved", offMapSubtype: null, lifecycleState: "active", reasonCode: "building_approved" },
+    "a unit address maps to its geometry-approved parent building without inventing separate geometry",
+  );
 });
