@@ -1697,6 +1697,185 @@ test("Time Out ignores empty markdown address fields and derives conservative ve
   }
 });
 
+test("Time Out extracts only a complete numbered hotlist HTML zone and excludes recommendation cards", () => {
+  const source = readPipelineConfig().sources.find(
+    ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
+  );
+  const adapter = renderedAdapterFor(source.adapterId);
+  const card = (ordinal, href, title, tags = "") =>
+    `<article data-testid="tile-zone-large-list_testID"><div><a href="${href}" data-testid="tile-link_testID"><h3 data-testid="tile-title_testID"><span>${ordinal}.</span>&nbsp;${title}</h3></a><ul>${tags}</ul></div></article>`;
+  const result = {
+    url: source.listing.url,
+    text: `<h2 data-testid="zone-title_testID"><span>Best events in Singapore this week</span></h2>${card(1, "/singapore/news/event-one", "Event One")}${card(2, "/singapore/things-to-do/event-two", "Event Two", "<li><span>Until 26 Jul 2026</span></li>")}<h2 data-testid="zone-title_testID"><span>Explore Singapore</span></h2>${card(1, "/singapore/things-to-do/evergreen", "Evergreen guide")}`,
+  };
+  const parsed = adapter.listing(result, source);
+  assert.equal(parsed.evidence, "bounded_numbered_hotlist_cards");
+  assert.deepEqual(
+    parsed.detailItems.map(({ url, record }) => [
+      url,
+      record.title,
+      record.dateText,
+    ]),
+    [
+      ["https://www.timeout.com/singapore/news/event-one", "Event One", null],
+      [
+        "https://www.timeout.com/singapore/things-to-do/event-two",
+        "Event Two",
+        "Until 26 Jul 2026",
+      ],
+    ],
+  );
+  const gap = adapter.listing(
+    {
+      ...result,
+      text: result.text.replace("<span>2.</span>", "<span>3.</span>"),
+    },
+    source,
+  );
+  assert.equal(gap.evidence, "numbered_hotlist_gap");
+  assert.equal(gap.detailItems.length, 0);
+  const semantic = adapter.listing(
+    {
+      url: source.listing.url,
+      text: "<main><h2>Best events in Singapore this week</h2><article><ul><li>Until 26 Jul 2026</li></ul><p>First summary</p></article><article><p>Second summary</p></article><h2>Explore Singapore</h2><article>Evergreen</article></main>",
+      links: [
+        "https://www.timeout.com/singapore/things-to-do/recommended-once",
+        "https://www.timeout.com/singapore/news/event-one",
+        "https://www.timeout.com/singapore/news/event-one",
+        "https://www.timeout.com/singapore/news/inline-related",
+        "https://www.timeout.com/singapore/news/event-one",
+        "https://www.timeout.com/singapore/things-to-do/event-two",
+        "https://www.timeout.com/singapore/things-to-do/event-two",
+        "https://www.timeout.com/singapore/things-to-do/event-two",
+        "https://www.timeout.com/singapore/things-to-do/evergreen",
+        "https://www.timeout.com/singapore/things-to-do/evergreen",
+      ],
+    },
+    source,
+  );
+  assert.equal(semantic.evidence, "bounded_numbered_hotlist_cards");
+  assert.deepEqual(
+    semantic.detailItems.map(({ url, record }) => [
+      url,
+      record.hotlistOrdinal,
+      record.dateText,
+    ]),
+    [
+      [
+        "https://www.timeout.com/singapore/news/event-one",
+        1,
+        "Until 26 Jul 2026",
+      ],
+      ["https://www.timeout.com/singapore/things-to-do/event-two", 2, null],
+    ],
+  );
+  assert.deepEqual(source.listing.retrieval, { format: "html", ttl: 0 });
+});
+
+test("Time Out parses real schedules and venues without confusing publication dates or headings for dates", () => {
+  const source = readPipelineConfig().sources.find(
+    ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
+  );
+  const adapter = renderedAdapterFor(source.adapterId);
+  const scheduled = adapter.detail(
+    {
+      url: "https://www.timeout.com/singapore/things-to-do/show",
+      title: "Gallery Show",
+      text: "* Until 30 Aug 2026\n\nMonday 5 January 2026\n\n### Details\n\n**Address**: National Gallery Singapore\n: 1 St Andrew’s Rd\n: Singapore\n: 178957\n\n### Dates and times\n\nFri, 17 Jul 2026\n\nGallery Show 10:00\n\nSat, 18 Jul 2026\n\nGallery Show 10:00",
+    },
+    source,
+    "https://www.timeout.com/singapore/things-to-do/show",
+  );
+  assert.equal(scheduled.claims.dateText, "17 Jul 2026 to 18 Jul 2026");
+  assert.notEqual(scheduled.claims.dateText, "and times");
+  assert.equal(
+    scheduled.claims.venue,
+    "National Gallery Singapore, 1 St Andrew’s Rd, Singapore, 178957",
+  );
+  const titleDated = adapter.detail(
+    {
+      url: "https://www.timeout.com/singapore/things-to-do/cat-expo",
+      title: "Asia Cat Expo returns on 27 & 28 June, 2026",
+      text: "Monday 22 June 2026\n\nAsia Cat Expo returns to the Suntec Convention Centre for a weekend.\n\n### Details\n\n**Address**\n\n**Opening hours:** 10am-8pm",
+    },
+    source,
+    "https://www.timeout.com/singapore/things-to-do/cat-expo",
+  );
+  assert.equal(titleDated.claims.dateText, "27 June 2026 to 28 June 2026");
+  assert.equal(titleDated.claims.venue, "the Suntec Convention Centre");
+  const emptyAddress = adapter.detail(
+    {
+      url: "https://www.timeout.com/singapore/things-to-do/unknown",
+      title: "Undated event",
+      text: "Monday 22 June 2026\n\n### Details\n\n**Address**\n\n**Opening hours:** 4pm to 7pm\n\nAdvertising\n\nLatest news",
+    },
+    source,
+    "https://www.timeout.com/singapore/things-to-do/unknown",
+  );
+  assert.equal(emptyAddress.claims.dateText, null);
+  assert.equal(emptyAddress.claims.venue, null);
+});
+
+test("Time Out carries bounded listing evidence into discovery confirmation", async () => {
+  const state = temporaryState();
+  try {
+    const source = readPipelineConfig().sources.find(
+      ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
+    );
+    const detailUrl =
+      "https://www.timeout.com/singapore/things-to-do/event-one";
+    const contexts = [];
+    const renderedClient = {
+      fetchBatch: async ([url], context) => {
+        contexts.push(context);
+        const result =
+          url === source.listing.url
+            ? {
+                url,
+                text: "<main><h2>Best events in Singapore this week</h2><article><ul><li>Until 26 Jul 2026</li></ul><p>Event summary</p></article><h2>Explore Singapore</h2></main>",
+                links: [detailUrl, detailUrl, detailUrl],
+              }
+            : {
+                url,
+                title: "Event One",
+                text: "### Details\n\n**Address**: National Gallery Singapore\n: 1 St Andrew’s Rd\n: Singapore\n: 178957",
+              };
+        return { results: [result], errors: [], payloadHash: `hash-${url}` };
+      },
+    };
+    const result = await collectRenderedSource({
+      runDir: state.root,
+      run: { runId: "run-a", window: singaporeWindow("2026-07-20") },
+      source,
+      renderedClient,
+      now: () => "2026-07-20T00:00:00.000Z",
+    });
+    assert.equal(result.status, "success");
+    assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(
+      result.counts.confirmationOutcomeCounts.editorial_sufficient,
+      1,
+    );
+    assert.deepEqual(contexts[0].requestOptions, { format: "html", ttl: 0 });
+    const discovery = JSON.parse(
+      fs.readFileSync(
+        path.join(
+          state.root,
+          result.processedSourceRecordRefs[0].split("#")[0],
+        ),
+        "utf8",
+      ),
+    ).records[0];
+    assert.equal(discovery.dateText, "Until 26 Jul 2026");
+    assert.equal(
+      discovery.venue,
+      "National Gallery Singapore, 1 St Andrew’s Rd, Singapore, 178957",
+    );
+  } finally {
+    state.cleanup();
+  }
+});
+
 test("ArtsEquator retains attendable programmes mentioned beside opportunities", () => {
   const source = readPipelineConfig().sources.find(
     ({ name }) => name === "ArtsEquator",
@@ -1721,4 +1900,82 @@ test("ArtsEquator retains attendable programmes mentioned beside opportunities",
     detailUrl,
   );
   assert.equal(record.reasonCode, null);
+});
+
+test("ArtsEquator parses The Events Calendar headings and venue blocks as sufficient editorial evidence", async () => {
+  const state = temporaryState();
+  try {
+    const source = readPipelineConfig().sources.find(
+      ({ name }) => name === "ArtsEquator",
+    );
+    const detailUrl = "https://artsequator.com/event/benchmarks";
+    const logs = [];
+    const renderedClient = {
+      fetchBatch: async ([url]) => ({
+        results: [
+          url === source.listing.url
+            ? { url, text: "### Benchmarks", links: [detailUrl] }
+            : {
+                url,
+                final_url: `${detailUrl}/`,
+                title: "Benchmarks",
+                text: "# Benchmarks\n\n## August 2, 2023 - July 31, 2026\n\nA public art trail.\n\nWebsite: https://artshouselimited.sg/civic-district\n\n## Details\n\n**Start:** : August 2, 2023\n **End:** : July 31\n\n## Venue\n\n: The Arts House\n: 1 Old Parliament Lane\nSingapore,\nSingapore\n+ Google Map",
+                links: [],
+              },
+        ],
+        errors: [],
+        payloadHash: `hash-${url}`,
+      }),
+    };
+    const result = await collectRenderedSource({
+      runDir: state.root,
+      run: { runId: "run-a", window: singaporeWindow("2026-07-20") },
+      source,
+      renderedClient,
+      logger: (entry) => logs.push(entry),
+      now: () => "2026-07-20T00:00:00.000Z",
+    });
+    assert.equal(result.status, "success");
+    assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(
+      result.counts.confirmationOutcomeCounts.editorial_sufficient,
+      1,
+    );
+    const discovery = JSON.parse(
+      fs.readFileSync(
+        path.join(
+          state.root,
+          result.processedSourceRecordRefs[0].split("#")[0],
+        ),
+        "utf8",
+      ),
+    ).records[0];
+    assert.equal(discovery.dateText, "August 2, 2023 - July 31, 2026");
+    assert.equal(
+      discovery.venue,
+      "The Arts House, 1 Old Parliament Lane, Singapore, Singapore",
+    );
+    assert.ok(
+      discovery.outboundLinks.some(
+        ({ url, text }) =>
+          url === "https://artshouselimited.sg/civic-district" &&
+          text === "Event Website",
+      ),
+    );
+    assert.ok(
+      logs.some(
+        ({ action, hasSchedule, hasVenue }) =>
+          action === "discovery_detail_parsed" && hasSchedule && hasVenue,
+      ),
+    );
+    assert.ok(
+      logs.some(
+        ({ action, decision }) =>
+          action === "discovery_confirmation_decided" &&
+          decision === "editorial_sufficient",
+      ),
+    );
+  } finally {
+    state.cleanup();
+  }
 });

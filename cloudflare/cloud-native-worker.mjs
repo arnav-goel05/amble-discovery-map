@@ -268,6 +268,11 @@ function publicTileset(value) {
           content[key].startsWith("/poi-tiles/")
         ) {
           content[key] = `../../../../${content[key].slice(1)}`;
+        } else if (
+          typeof content[key] === "string" &&
+          content[key].startsWith("../")
+        ) {
+          content[key] = `../../../../poi-tiles/${content[key].slice(3)}`;
         }
       }
     for (const child of tile?.children ?? []) visit(child);
@@ -314,7 +319,7 @@ function snapshotMetadata(now = new Date()) {
       sourceHealth,
       landmarksRef: `${prefix}/${manifest.landmarksRef}`,
       poisRef: `${prefix}/${manifest.poisRef}`,
-      tilesetRef: `${prefix}/${manifest.tilesetRef}?assetPaths=site-root-v1`,
+      tilesetRef: `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(manifest.snapshotId)}&assetPaths=site-root-v1`,
       ...(manifest.eventsRef
         ? { eventsRef: `${prefix}/${manifest.eventsRef}` }
         : {}),

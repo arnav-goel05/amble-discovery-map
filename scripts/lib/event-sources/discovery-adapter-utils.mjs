@@ -22,7 +22,12 @@ export function parseDiscoveryDetail(
   result,
   source,
   detailUrl,
-  { classify = () => null, roundupParentId = null, itemKey = null } = {},
+  {
+    classify = () => null,
+    roundupParentId = null,
+    itemKey = null,
+    listingRecord = null,
+  } = {},
 ) {
   const document = renderedDocument(result);
   const labels = source.confirmation.outboundLabels.map(normalized);
@@ -51,11 +56,23 @@ export function parseDiscoveryDetail(
     rawPointer: `rendered:${sha(`${link.url}:${link.text}`)}`,
   }));
   const claims = {
-    title: clean(document.title ?? field(document, ["Title", "Event"])),
-    dateText: field(document, ["Date", "Dates", "When"]),
-    timeText: field(document, ["Time", "Times"]),
-    venue: field(document, ["Venue", "Location", "Address"]),
-    scope: field(document, ["Country", "City"]) ?? "Singapore",
+    title: clean(
+      document.title ??
+        field(document, ["Title", "Event"]) ??
+        listingRecord?.title,
+    ),
+    dateText:
+      field(document, ["Date", "Dates", "When"]) ??
+      clean(listingRecord?.dateText),
+    timeText:
+      field(document, ["Time", "Times"]) ?? clean(listingRecord?.timeText),
+    venue:
+      field(document, ["Venue", "Location", "Address"]) ??
+      clean(listingRecord?.venue),
+    scope:
+      field(document, ["Country", "City"]) ??
+      clean(listingRecord?.scope) ??
+      "Singapore",
   };
   const reasonCode = classify({ document, claims, outboundLinks });
   return {

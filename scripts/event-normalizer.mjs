@@ -9,6 +9,7 @@ import {
 import { dirname, join } from "node:path";
 import {
   assessActivityInclusion,
+  inferOffMapSubtype,
   isOrdinaryAttractionAdmission,
   normalizeSchedule,
 } from "./lib/event-sources/activity-policy.mjs";
@@ -82,18 +83,18 @@ export function buildActivityHierarchy(input = {}) {
           session.venueOccurrenceIds.push(venueOccurrenceId);
         const name = venue.name ?? venue.publishedVenueName;
         const normalizedName = normalizeText(name);
-        const subtype = /\bsecret\b|\btba\b|\bto be announced\b/.test(
-          normalizedName,
-        )
-          ? "secret_tba"
-          : /\bvarious venues\b|\bmultiple locations\b/.test(normalizedName)
-            ? "multiple_locations"
-            : /\bmobile\b|\broute\b|\bmoving\b/.test(normalizedName)
-              ? "mobile_route"
-              : /\bpark\b|\bdistrict\b|\barea\b/.test(normalizedName) &&
-                  !venue.address
-                ? "broad_area"
-                : null;
+        const subtype =
+          inferOffMapSubtype({ ...input, ...venue, venue: name }) ??
+          (/\bsecret\b|\btba\b|\bto be announced\b/.test(normalizedName)
+            ? "secret_tba"
+            : /\bvarious venues\b|\bmultiple locations\b/.test(normalizedName)
+              ? "multiple_locations"
+              : /\bmobile\b|\broute\b|\bmoving\b/.test(normalizedName)
+                ? "mobile_route"
+                : /\bpark\b|\bdistrict\b|\barea\b/.test(normalizedName) &&
+                    !venue.address
+                  ? "broad_area"
+                  : null);
         return {
           venueOccurrenceId,
           parentActivityId,
@@ -270,6 +271,9 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
     sourceName,
     sourceRecordId: record.sourceId,
     title: record.title,
+    description: record.description,
+    sourceCoordinates:
+      performance.sourceCoordinates ?? record.sourceCoordinates,
     schedule: record.schedule,
     sessions: (record.performances?.length
       ? record.performances
@@ -290,6 +294,10 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
               venueKey: item.venue ?? record.venue,
               name: item.venue ?? record.venue,
               address: item.address ?? record.address,
+              postalCode: item.postalCode ?? record.postalCode,
+              sourceCoordinates:
+                item.sourceCoordinates ?? record.sourceCoordinates,
+              offMapSubtype: item.offMapSubtype ?? record.offMapSubtype,
             },
           ],
         ),
@@ -351,6 +359,10 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
     schedule,
     sessions: hierarchy.sessions,
     venueOccurrences: hierarchy.venueOccurrences,
+    offMapSubtype:
+      hierarchy.venueOccurrences.find(
+        (item) => item.publicPlacement === "off_map",
+      )?.offMapSubtype ?? null,
     publicPlacement:
       record.publicPlacement ??
       (hierarchy.venueOccurrences.some(

@@ -316,6 +316,40 @@ export function assessLocationState(location = {}) {
   };
 }
 
+export function inferOffMapSubtype(record = {}) {
+  if (OFF_MAP_SUBTYPES.has(record.offMapSubtype)) return record.offMapSubtype;
+  const title = normalized(record.title);
+  const venue = normalized(
+    record.venue ?? record.venueName ?? record.publishedVenueName,
+  );
+  const description = normalized(record.description);
+  const activityEvidence = [title, description].filter(Boolean).join(" ");
+  const coordinates = record.sourceCoordinates ?? record.coordinates;
+  const hasCoordinates =
+    Number.isFinite(Number(coordinates?.lat)) &&
+    Number.isFinite(Number(coordinates?.lng));
+  const hasSingleMeetingPoint = Boolean(
+    clean(record.address) || clean(record.postalCode) || hasCoordinates,
+  );
+  const routeInTitle =
+    /\b(?:bike|bicycle|cycling|walking)\b.*\btour\b|\btour\b.*\b(?:bike|bicycle|cycling|walking)\b|\bpub crawl\b/.test(
+      title,
+    );
+  const operatorCorroboratesTour =
+    /\btour\b/.test(title) && /\btour\b/.test(venue) && title !== venue;
+  const explicitMultiStopRoute =
+    /\bhop on hop off\b/.test(activityEvidence) &&
+    /\b(?:between|continuous loop|boarding points?|hop on points?|disembark|multiple stops?)\b/.test(
+      activityEvidence,
+    );
+  if (
+    explicitMultiStopRoute ||
+    (!hasSingleMeetingPoint && (routeInTitle || operatorCorroboratesTour))
+  )
+    return "mobile_route";
+  return null;
+}
+
 export function deriveEventFreshness(contributions = [], materialFields = []) {
   const fieldFreshness = Object.fromEntries(
     materialFields.map((field) => {
