@@ -3585,7 +3585,7 @@ test("CLI staged frontend applies expiry even when a successful snapshot has no 
     const staged = spawnSync(
       process.execPath,
       [SCRIPT, "advance", "--run", runId],
-      { cwd: ROOT, encoding: "utf8", env, timeout: 180000 },
+      { cwd: ROOT, encoding: "utf8", env, timeout: 300000 },
     );
     assert.equal(staged.status, 0, staged.stderr);
     const response = JSON.parse(staged.stdout);

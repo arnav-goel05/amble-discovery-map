@@ -1,0 +1,94 @@
+name: Production uptime
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: production-uptime
+  cancel-in-progress: true
+
+jobs:
+  monitor:
+    name: Check amblefinds.com
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Check production
+        id: smoke
+        continue-on-error: true
+        env:
+          PRODUCTION_SMOKE_ATTEMPTS: 3
+          PRODUCTION_SMOKE_REQUIRED_SUCCESSES: 2
+          PRODUCTION_SMOKE_DELAY_MS: 3000
+        run: node scripts/verify-cloudflare-deployment.mjs
+
+      - name: Open outage issue
+        if: steps.smoke.outcome == 'failure'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const title = "[uptime] amblefinds.com is unhealthy";
+            const { owner, repo } = context.repo;
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: "open",
+              per_page: 100,
+            });
+            if (!issues.some((issue) => issue.title === title && !issue.pull_request)) {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body: `The production smoke check failed.\n\nRun: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+              });
+            }
+
+      - name: Close recovered outage issue
+        if: steps.smoke.outcome == 'success'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const title = "[uptime] amblefinds.com is unhealthy";
+            const { owner, repo } = context.repo;
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: "open",
+              per_page: 100,
+            });
+            for (const issue of issues) {
+              if (issue.title === title && !issue.pull_request) {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  body: "The production smoke check is passing again. Closing this incident.",
+                });
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  state: "closed",
+                });
+              }
+            }
+
+      - name: Fail unhealthy monitor
+        if: steps.smoke.outcome == 'failure'
+        run: exit 1

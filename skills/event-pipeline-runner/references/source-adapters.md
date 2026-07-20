@@ -55,6 +55,8 @@ Editorial assessment first reuses already collected compatible direct evidence, 
 
 Source-specific scope rules are executable in `scripts/lib/event-sources/`: Fever retains selectable/anytime/waitlist activities and behaviorally excludes only ordinary attraction admission; Visit Singapore freshly scopes TinyFish to `stb-event-and-festivals`, emits every embedded `cardmultifield` item as a stable listing-native record, and splits guide headings only when each entry has both schedule and venue evidence; Singapore Film Society preserves screenings and access restrictions; Roots/HAN reports unavailable; Honeycombers and Time Out retain valid roundup/evergreen entries while rejecting pure promotion; ArtsEquator retains attendable programmes and rejects standalone non-attendable opportunities.
 
+Time Out uses one bounded multi-surface listing contract: the weekly hotlist, weekend roundup, art-exhibition roundup, annual concert roundup, and the current monthly roundup discovered from the `THIS MONTH` homepage planner link. Extract only the complete numbered section configured for each roundup and stop at its next section heading. Missing headings, ordinal gaps, a missing/ambiguous current-month route, an unapproved route, or traversal beyond the shared ceiling makes the source incomplete instead of silently accepting partial coverage. Collapse identical canonical detail URLs across all Time Out surfaces before fetching details; retain the first bounded listing evidence and let normal all-source deduplication handle semantically equivalent events exposed under different URLs.
+
 ## `catch-official-listing-v1`
 
 - Source: Catch.sg
