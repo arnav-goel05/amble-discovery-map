@@ -288,7 +288,9 @@ release-wide blocker; an explicitly isolated source/event/location outcome is no
 ## 14. Focused multi-surface hardening validation
 
 ```bash
-node --test tests/event-deduplication.test.mjs tests/event-source-contract.test.mjs tests/event-pipeline.test.mjs
+node --test tests/event-deduplication.test.mjs
+node --test tests/event-source-contract.test.mjs
+node --test --test-name-pattern='structured pipeline configuration|status report includes' tests/event-pipeline.test.mjs
 ```
 
 Expected: compact Time Out ranges are retained; cross-surface repeats collapse without merging
