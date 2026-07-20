@@ -328,3 +328,10 @@ filters without yet changing publication or UI behavior.
 
 - [x] T168 Add focused normalizer regressions for an authoritative no-address cycling/walking tour, a multi-stop hop-on/hop-off route, a fixed venue whose title contains “tour”, and independently classified occurrences sharing one published venue label per FR-014, FR-019, US2/AC5, and SC-003 (partial)
 - [x] T169 Infer `mobile_route` from sufficiently strong activity-level evidence only when no single usable meeting point is available, apply placement before venue resolution without venue-specific hardcoding, and run only the focused normalizer, reconciliation, and map-reconciliation tests per FR-012, FR-014, FR-019, and Constitution VII (partial)
+
+## Phase 14: Time Out Multi-Surface Discovery
+
+- [x] T170 Add failing Time Out regressions for bounded weekend, current-month, art, and concert sections; homepage month-route discovery; cross-surface URL collapse; and traversal accounting in `tests/event-source-contract.test.mjs`
+- [x] T171 Extend bounded rendered-source traversal to checked-in and adapter-discovered listing surfaces with approved-domain validation, a shared ceiling, deterministic ordering, and trace logging in `scripts/event-source-collector.mjs` and `scripts/verify-event-source-adapters.mjs`
+- [x] T172 Generalize the Time Out adapter and checked-in definition for weekly, weekend, dynamically discovered monthly, art-exhibition, and concert roundups while excluding navigation/recommendation zones in `scripts/lib/event-sources/time-out-singapore.mjs` and `data/event-pipeline-config.json`
+- [x] T173 Run focused source-contract and adapter validation tests plus the production build without launching the complete live pipeline

@@ -205,8 +205,12 @@ export function validateSourcePolicy(
       url: `https://${domain}/`,
     });
   }
-  for (const endpoint of [source.listing, source.detail]) {
-    assertProviderAllowed(policy, source.providerId, { url: endpoint?.url });
+  for (const url of [
+    source.listing?.url,
+    ...asArray(source.listing?.urls),
+    source.detail?.url,
+  ]) {
+    assertProviderAllowed(policy, source.providerId, { url });
   }
   if (source.retrieval) {
     const retrieval = assertProviderAllowed(
@@ -1255,12 +1259,30 @@ export async function collectRenderedSource({
     detailUrls = new Set(),
     detailListingRecords = new Map(),
     listingRecords = [];
-  let pageUrl = source.listing.url;
+  const listingQueue = [
+    ...new Map(
+      [source.listing.url, ...asArray(source.listing.urls)].map((url) => [
+        canonicalRenderedUrl(url),
+        url,
+      ]),
+    ).values(),
+  ];
+  const queuedListingUrls = new Set(listingQueue.map(canonicalRenderedUrl)),
+    visitedListingUrls = new Set();
   for (
     let pageIndex = 1;
-    pageIndex <= source.listing.paginationCeiling;
+    pageIndex <= source.listing.paginationCeiling && listingQueue.length;
     pageIndex += 1
   ) {
+    const pageUrl = listingQueue.shift();
+    visitedListingUrls.add(canonicalRenderedUrl(pageUrl));
+    logger({
+      action: "listing_surface_started",
+      sourceName: source.name,
+      pageIndex,
+      listingSurface: pageUrl,
+      remainingSurfaces: listingQueue.length,
+    });
     let batch;
     try {
       if (pageIndex === 1 && listingCapture?.result) {
@@ -1355,34 +1377,61 @@ export async function collectRenderedSource({
       action: "listing_parsed",
       sourceName: source.name,
       pageIndex,
+      listingSurface: pageUrl,
       listingAppearances: parsed.appearances ?? parsed.detailUrls.length,
       detailUrls: parsed.detailUrls.length,
       detailItems: asArray(parsed.detailItems).length,
       listingRecords: asArray(parsed.records).length,
       terminalEvidence: parsed.evidence,
     });
-    if (parsed.complete) break;
-    if (!parsed.nextUrl || pageIndex === source.listing.paginationCeiling)
+    const discoveredListingUrls = [
+      ...asArray(parsed.listingUrls),
+      ...(!parsed.complete && parsed.nextUrl ? [parsed.nextUrl] : []),
+    ];
+    if (!parsed.complete && !parsed.nextUrl)
       return {
         status: "blocked",
         blockerReasonCode: "pagination_inaccessible",
         error: `${source.name} listing pagination did not reach a terminal state`,
       };
-    try {
-      validateOfficialReference(source, parsed.nextUrl, {
-        ok: true,
-        status: 200,
-        url: parsed.nextUrl,
+    for (const discoveredUrl of discoveredListingUrls) {
+      let canonicalUrl;
+      try {
+        canonicalUrl = canonicalRenderedUrl(discoveredUrl);
+        validateOfficialReference(source, canonicalUrl, {
+          ok: true,
+          status: 200,
+          url: canonicalUrl,
+        });
+      } catch (validationError) {
+        return {
+          status: "blocked",
+          blockerReasonCode: "official_reference_invalid",
+          error: validationError.message,
+        };
+      }
+      if (
+        visitedListingUrls.has(canonicalUrl) ||
+        queuedListingUrls.has(canonicalUrl)
+      )
+        continue;
+      listingQueue.push(canonicalUrl);
+      queuedListingUrls.add(canonicalUrl);
+      logger({
+        action: "listing_surface_queued",
+        sourceName: source.name,
+        pageIndex,
+        listingSurface: canonicalUrl,
+        discoveredFrom: pageUrl,
       });
-    } catch (validationError) {
-      return {
-        status: "blocked",
-        blockerReasonCode: "official_reference_invalid",
-        error: validationError.message,
-      };
     }
-    pageUrl = parsed.nextUrl;
   }
+  if (listingQueue.length)
+    return {
+      status: "blocked",
+      blockerReasonCode: "pagination_inaccessible",
+      error: `${source.name} listing surfaces exceeded the configured ceiling`,
+    };
   if (
     detailUrls.size === 0 &&
     listingRecords.length === 0 &&

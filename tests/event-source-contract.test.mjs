@@ -82,6 +82,14 @@ test("event sources fail closed when their free/open policy no longer matches", 
       }),
     /not approved/i,
   );
+  assert.throws(
+    () =>
+      validateSourcePolicy({
+        ...source,
+        listing: { ...source.listing, urls: ["https://example.com/events"] },
+      }),
+    /not approved/i,
+  );
 });
 
 test("requests retry transient failures with bounded exponential backoff", async () => {
@@ -1819,9 +1827,13 @@ test("Time Out parses real schedules and venues without confusing publication da
 test("Time Out carries bounded listing evidence into discovery confirmation", async () => {
   const state = temporaryState();
   try {
-    const source = readPipelineConfig().sources.find(
+    const configured = readPipelineConfig().sources.find(
       ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
     );
+    const source = {
+      ...configured,
+      listing: { ...configured.listing, urls: [], paginationCeiling: 1 },
+    };
     const detailUrl =
       "https://www.timeout.com/singapore/things-to-do/event-one";
     const contexts = [];
@@ -1870,6 +1882,197 @@ test("Time Out carries bounded listing evidence into discovery confirmation", as
     assert.equal(
       discovery.venue,
       "National Gallery Singapore, 1 St Andrew’s Rd, Singapore, 178957",
+    );
+  } finally {
+    state.cleanup();
+  }
+});
+
+test("Time Out extracts each approved roundup surface only inside its bounded numbered section", () => {
+  const source = readPipelineConfig().sources.find(
+    ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
+  );
+  const adapter = renderedAdapterFor(source.adapterId);
+  const card = (ordinal, href, title, date = null) =>
+    `<article data-testid="tile-zone-large-list_testID"><a href="${href}" data-testid="tile-link_testID"><h3 data-testid="tile-title_testID">${ordinal}. ${title}</h3></a>${date ? `<span>${date}</span>` : ""}</article>`;
+  const cases = [
+    [
+      source.listing.urls.find((url) => url.includes("this-weekend")),
+      "What’s on in Singapore this weekend",
+      "Explore Singapore",
+      "/singapore/news/weekend-event",
+      "weekend",
+    ],
+    [
+      "https://www.timeout.com/singapore/things-to-do/the-best-things-to-do-in-singapore-in-july",
+      "July's best activities",
+      "More things to do",
+      "/singapore/things-to-do/month-event",
+      "month",
+    ],
+    [
+      source.listing.urls.find((url) => url.includes("art-exhibitions")),
+      "Best art exhibitions in Singapore",
+      "More to explore",
+      "/singapore/art/art-event",
+      "art",
+    ],
+    [
+      source.listing.urls.find((url) => url.includes("upcoming-concerts")),
+      "What's in 2026",
+      "More performances to catch on stage",
+      "/singapore/music/concert-event",
+      "concerts",
+    ],
+  ];
+  for (const [url, heading, trailingHeading, href, surface] of cases) {
+    const result = {
+      url,
+      text: `<h2 data-testid="zone-title_testID">${heading}</h2>${card(1, href, `${surface} event`, "Until 31 Jul 2026")}<h2 data-testid="zone-title_testID">${trailingHeading}</h2>${card(1, "/singapore/things-to-do/evergreen", "Evergreen guide")}`,
+    };
+    const parsed = adapter.listing(result, source, url);
+    assert.equal(parsed.evidence, `bounded_numbered_${surface}_cards`);
+    assert.deepEqual(
+      parsed.detailItems.map(({ url: detailUrl, record }) => [
+        detailUrl,
+        record.surface,
+        record.surfaceOrdinal,
+        record.dateText,
+      ]),
+      [[new URL(href, url).href, surface, 1, "Until 31 Jul 2026"]],
+    );
+    assert.equal(parsed.listingUrls.length, 0);
+  }
+});
+
+test("Time Out homepage discovers only the current approved monthly roundup route", () => {
+  const source = readPipelineConfig().sources.find(
+    ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
+  );
+  const adapter = renderedAdapterFor(source.adapterId);
+  const homepage = source.listing.urls.find(
+    (url) => new URL(url).pathname === "/singapore",
+  );
+  const parsed = adapter.listing(
+    {
+      url: homepage,
+      text: "## Things to do in Singapore",
+      links: [
+        {
+          url: "/singapore/things-to-do/things-to-do-in-singapore-today",
+          text: "TODAY",
+        },
+        {
+          url: "/singapore/things-to-do/the-best-things-to-do-in-singapore-in-august",
+          text: "THIS MONTH",
+        },
+        {
+          url: "https://example.com/singapore/things-to-do/the-best-things-to-do-in-singapore-in-september",
+          text: "THIS MONTH",
+        },
+        { url: "/singapore/restaurants/best-restaurants", text: "THIS MONTH" },
+      ],
+    },
+    source,
+    homepage,
+  );
+  assert.deepEqual(parsed.listingUrls, [
+    "https://www.timeout.com/singapore/things-to-do/the-best-things-to-do-in-singapore-in-august",
+  ]);
+  assert.equal(parsed.evidence, "current_month_route_discovered");
+  assert.equal(parsed.detailItems.length, 0);
+});
+
+test("rendered collection traverses bounded Time Out surfaces and fetches overlapping details once", async () => {
+  const state = temporaryState();
+  try {
+    const configured = readPipelineConfig().sources.find(
+      ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
+    );
+    const homepage = configured.listing.urls.find(
+      (url) => new URL(url).pathname === "/singapore",
+    );
+    const weekend = configured.listing.urls.find((url) =>
+      url.includes("this-weekend"),
+    );
+    const month =
+      "https://www.timeout.com/singapore/things-to-do/the-best-things-to-do-in-singapore-in-august";
+    const source = {
+      ...configured,
+      listing: {
+        ...configured.listing,
+        urls: [homepage, weekend],
+        paginationCeiling: 4,
+      },
+    };
+    const shared = "https://www.timeout.com/singapore/news/shared-event";
+    const monthly =
+      "https://www.timeout.com/singapore/things-to-do/monthly-event";
+    const card = (href, title) =>
+      `<article data-testid="tile-zone-large-list_testID"><a href="${href}" data-testid="tile-link_testID"><h3 data-testid="tile-title_testID">1. ${title}</h3></a><span>Until 31 Aug 2026</span></article>`;
+    const calls = [],
+      logs = [];
+    const renderedClient = {
+      fetchBatch: async ([url]) => {
+        calls.push(url);
+        let result;
+        if (url === source.listing.url)
+          result = {
+            url,
+            text: `<h2>Best events in Singapore this week</h2>${card(shared, "Shared event")}<h2>Explore Singapore</h2>`,
+          };
+        else if (url === homepage)
+          result = {
+            url,
+            text: "Things to do in Singapore",
+            links: [{ url: month, text: "THIS MONTH" }],
+          };
+        else if (url === weekend)
+          result = {
+            url,
+            text: `<h2>What’s on in Singapore this weekend</h2>${card(shared, "Shared event")}<h2>Explore Singapore</h2>`,
+          };
+        else if (url === month)
+          result = {
+            url,
+            text: `<h2>August's best activities</h2>${card(monthly, "Monthly event")}<h2>More things to do</h2>`,
+          };
+        else
+          result = {
+            url,
+            title: url === shared ? "Shared event" : "Monthly event",
+            text: "Until 31 Aug 2026\n\n### Details\n\n**Address**: National Gallery Singapore\n: 1 St Andrew’s Rd\n: Singapore\n: 178957",
+          };
+        return { results: [result], errors: [], payloadHash: `hash-${url}` };
+      },
+    };
+    const collected = await collectRenderedSource({
+      runDir: state.root,
+      run: { runId: "timeout-surfaces", window: singaporeWindow("2026-07-20") },
+      source,
+      renderedClient,
+      logger: (entry) => logs.push(entry),
+      now: () => "2026-07-20T00:00:00.000Z",
+    });
+    assert.equal(collected.status, "success");
+    assert.equal(collected.counts.pages, 4);
+    assert.equal(collected.counts.discoveryRecordsReceived, 2);
+    assert.equal(calls.filter((url) => url === shared).length, 1);
+    assert.deepEqual(calls.slice(0, 4), [
+      source.listing.url,
+      homepage,
+      weekend,
+      month,
+    ]);
+    assert.equal(
+      logs.filter(({ action }) => action === "listing_surface_started").length,
+      4,
+    );
+    assert.ok(
+      logs.some(
+        ({ action, listingSurface }) =>
+          action === "listing_surface_queued" && listingSurface === month,
+      ),
     );
   } finally {
     state.cleanup();
