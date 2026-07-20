@@ -344,11 +344,11 @@ filters without yet changing publication or UI behavior.
 surface accounting/failure isolation, provider-policy classification, and unavailable-source
 behavior without network access.
 
-- [ ] T174 [P] [US1] Add failing cross-surface repeat and sibling-preservation fixtures in `tests/event-deduplication.test.mjs`
-- [ ] T175 [P] [US1] Add failing compact-date, overlap-accounting, surface-failure, HTTP-469, and unavailable-source fixtures in `tests/event-source-contract.test.mjs` and `tests/event-pipeline.test.mjs`
-- [ ] T176 [US1] Implement conservative same-source cross-surface candidate generation in `scripts/lib/event-sources/deduplicate.mjs`
-- [ ] T177 [US1] Implement compact shared-year date parsing in `scripts/lib/event-sources/time-out-singapore.mjs`
-- [ ] T178 [US1] Implement per-surface terminal accounting and blocked-source diagnostics in `scripts/event-source-collector.mjs`
-- [ ] T179 [US1] Preserve provider HTTP status and bounded policy classification in `scripts/lib/event-sources/tinyfish-fetch.mjs` and `scripts/event-source-collector.mjs`
-- [ ] T180 [US1] Expose source-surface accounting in `scripts/lib/event-pipeline/reporting.mjs`
-- [ ] T181 [US1] Run the focused tests from `specs/002-add-web-event-sources/quickstart.md` and keep the separate live-run task T156 open
+- [x] T174 [P] [US1] Add failing cross-surface repeat and sibling-preservation fixtures in `tests/event-deduplication.test.mjs`
+- [x] T175 [P] [US1] Add failing compact-date, overlap-accounting, surface-failure, HTTP-469, and unavailable-source fixtures in `tests/event-source-contract.test.mjs` and `tests/event-pipeline.test.mjs`
+- [x] T176 [US1] Implement conservative same-source cross-surface candidate generation in `scripts/lib/event-sources/deduplicate.mjs`
+- [x] T177 [US1] Implement compact shared-year date parsing in `scripts/lib/event-sources/time-out-singapore.mjs`
+- [x] T178 [US1] Implement per-surface terminal accounting and blocked-source diagnostics in `scripts/event-source-collector.mjs`
+- [x] T179 [US1] Preserve provider HTTP status and bounded policy classification in `scripts/lib/event-sources/tinyfish-fetch.mjs` and `scripts/event-source-collector.mjs`
+- [x] T180 [US1] Expose source-surface accounting in `scripts/lib/event-pipeline/reporting.mjs`
+- [x] T181 [US1] Run the focused tests from `specs/002-add-web-event-sources/quickstart.md` and keep the separate live-run task T156 open
