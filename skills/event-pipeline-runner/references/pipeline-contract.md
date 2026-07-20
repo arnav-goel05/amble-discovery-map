@@ -30,7 +30,12 @@ Start a new run by default. Resume only when invoked with an explicit run ID (`r
   "parentActivityId": "<stable parent id>",
   "publishedEventId": "<stable public anchor>",
   "title": "<required>",
-  "schedule": { "kind": "exact | range | recurring | selectable | anytime | unverified", "start": null, "end": null, "finalKnownOccurrence": null },
+  "schedule": {
+    "kind": "exact | range | recurring | selectable | anytime | unverified",
+    "start": null,
+    "end": null,
+    "finalKnownOccurrence": null
+  },
   "sessions": [],
   "venueOccurrences": [],
   "timeText": "<time or range, or null>",
@@ -49,7 +54,12 @@ Start a new run by default. Resume only when invoked with an explicit run ID (`r
   "parentEventId": "<listing id>",
   "sourceContributions": [],
   "sources": [
-    { "source": "<adapter name>", "sourceId": "<id>", "sourceUrl": "<url or null>", "recordRef": "<raw artifact pointer>" }
+    {
+      "source": "<adapter name>",
+      "sourceId": "<id>",
+      "sourceUrl": "<url or null>",
+      "recordRef": "<raw artifact pointer>"
+    }
   ]
 }
 ```
@@ -91,7 +101,14 @@ Write under `outputs/event-pipeline/<run-id>/`:
 Every record-collection JSON artifact uses this envelope; `run.json` and stage handoffs use their dedicated schemas:
 
 ```json
-{ "schemaVersion": "1.0", "runId": "", "createdAt": "", "source": null, "counts": {}, "records": [] }
+{
+  "schemaVersion": "1.0",
+  "runId": "",
+  "createdAt": "",
+  "source": null,
+  "counts": {},
+  "records": []
+}
 ```
 
 `excluded.json` and `invalid.json` add a stable `reasonCode` and `sourceRecordRef` to every record. `dedup-decisions.json` records input IDs, output ID, decision, evidence, and primary-source attribution.
@@ -108,12 +125,19 @@ Use this exact `run.json` schema:
   "timezone": "Asia/Singapore",
   "window": { "start": "", "end": "", "inclusive": true },
   "manifestSnapshot": { "path": "manifest.snapshot.md", "sha256": "" },
-  "adapterDefinitionsSnapshot": { "path": "pipeline-config.snapshot.json", "sha256": "" },
+  "adapterDefinitionsSnapshot": {
+    "path": "pipeline-config.snapshot.json",
+    "sha256": ""
+  },
   "configSha256": "",
   "adapters": [{ "id": "", "version": "", "definitionSha256": "" }],
   "resume": { "requestedRunId": null, "parentRunId": null },
   "artifacts": {
-    "relative/path.json": { "sha256": "", "status": "pending | success | invalidated", "inputSha256": [] }
+    "relative/path.json": {
+      "sha256": "",
+      "status": "pending | success | invalidated",
+      "inputSha256": []
+    }
   }
 }
 ```
@@ -123,7 +147,16 @@ At run creation, copy `data/event-pipeline-config.json` to `pipeline-config.snap
 Compute `configSha256` from one UTF-8 byte string serialized exactly as compact JSON with no insignificant whitespace and keys in this order:
 
 ```json
-{"manifestSha256":"<lowercase hex>","adapters":[{"id":"<adapter id>","version":"<adapter version>","definitionSha256":"<lowercase hex>"}]}
+{
+  "manifestSha256": "<lowercase hex>",
+  "adapters": [
+    {
+      "id": "<adapter id>",
+      "version": "<adapter version>",
+      "definitionSha256": "<lowercase hex>"
+    }
+  ]
+}
 ```
 
 Order `adapters` by Unicode code-point order of `id`; encode strings with standard JSON escaping and no ASCII-only escaping; append no newline before hashing with SHA-256 lowercase hex. The manifest hash is over the exact bytes of `manifest.snapshot.md`, also copied without rewriting. Store both snapshot paths in `run.json`; resume hashes their bytes again and rejects the run if either stored hash differs. Update `artifacts` atomically after each artifact write; resume compares each artifact's `inputSha256` with current upstream hashes and recursively marks mismatches `invalidated`.

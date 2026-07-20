@@ -455,8 +455,7 @@ export function createAssistantController({
     onStopVoice: (reason) => stopVoice(reason),
     onPushToTalkStart: () => {
       explicitBargeIn = true;
-      if (audioController?.beginPushToTalk() === false)
-        explicitBargeIn = false;
+      if (audioController?.beginPushToTalk() === false) explicitBargeIn = false;
     },
     onPushToTalkEnd: () => {
       audioController?.endPushToTalk();

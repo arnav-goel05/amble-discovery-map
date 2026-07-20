@@ -34,9 +34,7 @@ export function resolveCandidateArea(candidate, featureCollection) {
 
 export function resolveCandidateEnvelopeAreas(envelope, featureCollection) {
   const resolve = createResolver(featureCollection);
-  const candidates = (envelope?.candidates || [])
-    .map(resolve)
-    .filter(Boolean);
+  const candidates = (envelope?.candidates || []).map(resolve).filter(Boolean);
   return {
     ...clone(envelope),
     candidates,

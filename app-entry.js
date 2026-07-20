@@ -21,14 +21,19 @@ function showUnsupportedDevice(support) {
   document.body.appendChild(gate);
 }
 
-const support = getDeviceSupport({ screen: globalThis.screen, navigator: globalThis.navigator });
+const support = getDeviceSupport({
+  screen: globalThis.screen,
+  navigator: globalThis.navigator,
+});
 const queryParams = new URLSearchParams(globalThis.location?.search ?? "");
-const allowNarrowEmptyFixture = !support.mobileOrTablet
-  && queryParams.has("autoStart")
-  && queryParams.has("emptyApprovedSnapshot");
+const allowNarrowEmptyFixture =
+  !support.mobileOrTablet &&
+  queryParams.has("autoStart") &&
+  queryParams.has("emptyApprovedSnapshot");
 
 if (support.supported || allowNarrowEmptyFixture) {
-  document.body.dataset.deviceSupport = support.mode === "degraded" ? "degraded" : "supported";
+  document.body.dataset.deviceSupport =
+    support.mode === "degraded" ? "degraded" : "supported";
   import("./main.js").catch((error) => {
     document.body.dataset.applicationState = "failed";
     document.body.dataset.applicationError = "application_module_failed";

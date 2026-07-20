@@ -120,11 +120,7 @@ test("station exits consolidate by normalized source name and join approved stat
   );
   assert.deepEqual(
     stations.map(({ properties }) => properties.stationId),
-    [
-      "mrt-station:city-hall",
-      "mrt-station:esplanade",
-      "mrt-station:kallang",
-    ],
+    ["mrt-station:city-hall", "mrt-station:esplanade", "mrt-station:kallang"],
   );
   assert.deepEqual(stations[0].properties.exitIdentities, [
     "exit-city-a",

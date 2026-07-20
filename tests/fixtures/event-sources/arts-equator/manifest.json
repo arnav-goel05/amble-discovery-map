@@ -1,1 +1,12 @@
-{"schemaVersion":"1.0","source":"ArtsEquator","cases":["singapore-event","foreign","online","open-call","missing-link","zero-current"]}
+{
+  "schemaVersion": "1.0",
+  "source": "ArtsEquator",
+  "cases": [
+    "singapore-event",
+    "foreign",
+    "online",
+    "open-call",
+    "missing-link",
+    "zero-current"
+  ]
+}

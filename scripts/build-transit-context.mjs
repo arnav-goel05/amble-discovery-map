@@ -393,17 +393,29 @@ const ROUTE_DEFINITIONS = Object.freeze([
 
 function stationCodes(station) {
   return (station.properties.lineReferences || []).flatMap((reference) =>
-    [...String(reference).toUpperCase().matchAll(/(NS|EW|CG|NE|CC|CE|DT|TE|BP|SE|SW|PE|PW)(\d+)/g)].map(
-      (match) => ({ prefix: match[1], number: Number(match[2]) }),
-    ),
+    [
+      ...String(reference)
+        .toUpperCase()
+        .matchAll(/(NS|EW|CG|NE|CC|CE|DT|TE|BP|SE|SW|PE|PW)(\d+)/g),
+    ].map((match) => ({ prefix: match[1], number: Number(match[2]) })),
   );
 }
 
-function buildLines(collection, configs, sourceObservedAt, tolerance, stations) {
+function buildLines(
+  collection,
+  configs,
+  sourceObservedAt,
+  tolerance,
+  stations,
+) {
   for (const feature of collection.features) {
     const type = property(feature.properties, ["RAIL_TYPE", "TYPE"]);
     if (type && !/^(?:mrt|lrt)$/i.test(type)) continue;
-    const identity = property(feature.properties, ["INC_CRC", "OBJECTID", "ID"]);
+    const identity = property(feature.properties, [
+      "INC_CRC",
+      "OBJECTID",
+      "ID",
+    ]);
     if (!identity)
       fail("rail_identity_missing", "Rail source identity is required");
     const geometry = simplifyGeometry(feature.geometry, tolerance);
@@ -411,7 +423,10 @@ function buildLines(collection, configs, sourceObservedAt, tolerance, stations) 
   }
 
   const stationsByKey = new Map(
-    stations.map((station) => [stationKey(station.properties.stationName), station]),
+    stations.map((station) => [
+      stationKey(station.properties.stationName),
+      station,
+    ]),
   );
   return ROUTE_DEFINITIONS.flatMap((definition) => {
     const stops = new Map();
@@ -431,28 +446,32 @@ function buildLines(collection, configs, sourceObservedAt, tolerance, stations) 
     if (ordered.length < 2) return [];
     const geometry = {
       type: "LineString",
-      coordinates: ordered.map((station) => clone(station.geometry.coordinates)),
+      coordinates: ordered.map((station) =>
+        clone(station.geometry.coordinates),
+      ),
     };
     validateLineGeometry(geometry);
-    return [{
-      type: "Feature",
-      properties: {
-        featureClass: "rail_line",
-        railLineId: `rail-route:${definition.routeId}`,
-        railType: definition.railType,
-        railLineCode: definition.lineCode,
-        routeId: definition.routeId,
-        stationIds: ordered.map((station) => station.properties.stationId),
-        sourceDatasetIds: [
-          configs.railLines.datasetId,
-          configs.exits.datasetId,
-          configs.stationCodes.datasetId,
-        ],
-        sourceObservedAt,
-        simplificationTolerance: tolerance,
+    return [
+      {
+        type: "Feature",
+        properties: {
+          featureClass: "rail_line",
+          railLineId: `rail-route:${definition.routeId}`,
+          railType: definition.railType,
+          railLineCode: definition.lineCode,
+          routeId: definition.routeId,
+          stationIds: ordered.map((station) => station.properties.stationId),
+          sourceDatasetIds: [
+            configs.railLines.datasetId,
+            configs.exits.datasetId,
+            configs.stationCodes.datasetId,
+          ],
+          sourceObservedAt,
+          simplificationTolerance: tolerance,
+        },
+        geometry,
       },
-      geometry,
-    }];
+    ];
   });
 }
 

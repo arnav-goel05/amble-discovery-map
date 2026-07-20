@@ -7,20 +7,20 @@ HTML metadata, edge responses, owned assets, and ephemeral validation evidence.
 
 Stable identity for the public product.
 
-| Field               | Type                       | Required | Value/rule                                   |
-| ------------------- | -------------------------- | -------: | -------------------------------------------- |
-| `schemaVersion`     | string                     |      yes | `1.0`                                        |
-| `canonicalOrigin`   | absolute HTTPS URL         |      yes | `https://amblefinds.com`                     |
-| `canonicalHomepage` | absolute HTTPS URL         |      yes | `https://amblefinds.com/`                    |
-| `workerAliasHost`   | hostname                   |      yes | `amble.project-hub-arnav.workers.dev` exact match     |
-| `siteName`          | string                     |      yes | `Amble`                                      |
-| `publisherName`     | string                     |      yes | `Amble`                                      |
-| `language`          | BCP 47 string              |      yes | `en-SG`                                      |
-| `locale`            | Open Graph locale          |      yes | `en_SG`                                      |
-| `description`       | string                     |      yes | Accurate approved desktop 3D-map description |
-| `websiteId`         | absolute URL with fragment |      yes | `https://amblefinds.com/#website`            |
-| `organizationId`    | absolute URL with fragment |      yes | `https://amblefinds.com/#organization`       |
-| `logoUrl`           | same-origin absolute URL   |      yes | Stable public Amble-owned logo               |
+| Field               | Type                       | Required | Value/rule                                        |
+| ------------------- | -------------------------- | -------: | ------------------------------------------------- |
+| `schemaVersion`     | string                     |      yes | `1.0`                                             |
+| `canonicalOrigin`   | absolute HTTPS URL         |      yes | `https://amblefinds.com`                          |
+| `canonicalHomepage` | absolute HTTPS URL         |      yes | `https://amblefinds.com/`                         |
+| `workerAliasHost`   | hostname                   |      yes | `amble.project-hub-arnav.workers.dev` exact match |
+| `siteName`          | string                     |      yes | `Amble`                                           |
+| `publisherName`     | string                     |      yes | `Amble`                                           |
+| `language`          | BCP 47 string              |      yes | `en-SG`                                           |
+| `locale`            | Open Graph locale          |      yes | `en_SG`                                           |
+| `description`       | string                     |      yes | Accurate approved desktop 3D-map description      |
+| `websiteId`         | absolute URL with fragment |      yes | `https://amblefinds.com/#website`                 |
+| `organizationId`    | absolute URL with fragment |      yes | `https://amblefinds.com/#organization`            |
+| `logoUrl`           | same-origin absolute URL   |      yes | Stable public Amble-owned logo                    |
 
 ### Validation
 

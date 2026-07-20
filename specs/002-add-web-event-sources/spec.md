@@ -38,7 +38,7 @@ record is maintained in [policy-review.md](policy-review.md).
 - Q: What should block publication? → A: Isolate source, event, deduplication, and venue
   uncertainty; preserve the entire prior snapshot only when the assembled release is unsafe.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Discover Active Singapore Activities (Priority: P1)
 
@@ -223,7 +223,7 @@ release-wide validation failure, and atomic-activation failure fixtures.
   be proven.
 - A stale review item remains after its source record was replaced or its conflict resolved.
 
-## Scope and Constraints *(mandatory)*
+## Scope and Constraints _(mandatory)_
 
 - **In scope**: Maintain Catch.sg and SISTIC; integrate Fever Singapore, Visit Singapore,
   Singapore Film Society, Roots/HAN, Honeycombers, ArtsEquator, and Time Out Singapore;
@@ -261,7 +261,7 @@ release-wide validation failure, and atomic-activation failure fixtures.
   through the following seven days, while retaining all active and future eligible records
   exposed by each configured bounded source surface.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -407,7 +407,7 @@ release-wide validation failure, and atomic-activation failure fixtures.
 - **Operational Trace Record**: Privacy-safe lineage record connecting run, source, entity,
   stage, action, evidence, reason, timing, and terminal outcome.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -21,7 +21,24 @@ Use the documented official JSON APIs below. Do not crawl provider pages or redi
 For each listing page, store the untouched API response and collect its detail identifier. Call each unique official detail API once, store the untouched response, and extract labeled values into this fixture before canonical normalization. Store the fixture as `records[0]` inside the universal JSON artifact envelope:
 
 ```json
-{ "adapterVersion": "", "listingPage": 1, "detailUrl": "", "sourceId": "", "title": "", "mode": "physical | online | hybrid | unknown", "dateText": null, "timeText": null, "venue": null, "address": null, "sourceCoordinates": null, "category": null, "price": null, "description": null, "organizer": null, "performances": [] }
+{
+  "adapterVersion": "",
+  "listingPage": 1,
+  "detailUrl": "",
+  "sourceId": "",
+  "title": "",
+  "mode": "physical | online | hybrid | unknown",
+  "dateText": null,
+  "timeText": null,
+  "venue": null,
+  "address": null,
+  "sourceCoordinates": null,
+  "category": null,
+  "price": null,
+  "description": null,
+  "organizer": null,
+  "performances": []
+}
 ```
 
 Each `performances[]` item contains `{ "startDateTime", "endDateTime", "dateText", "timeText" }`. Missing optional fields remain null and are tracked in provenance. Mark a record invalid only when a required identity or title contract fails; do not invent values.

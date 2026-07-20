@@ -54,7 +54,9 @@ async function openLocalAreaResults(page) {
   await page.routeWebSocket(
     "**/api/voice/sessions/area-list-session/stream",
     (socket) => {
-      socket.send(JSON.stringify({ type: "session.state", state: "listening" }));
+      socket.send(
+        JSON.stringify({ type: "session.state", state: "listening" }),
+      );
       socket.send(
         JSON.stringify({
           type: "transcript.final",

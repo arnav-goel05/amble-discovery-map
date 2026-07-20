@@ -129,8 +129,8 @@ export function matchLocalDiscovery(
         fallbackUsed
           ? "No exact saved-fact match was available, so these are broad options to help narrow the conversation."
           : transitRequested && group.nearestMrtMeters !== null
-          ? `MRT access was explicitly requested, so this ranking favours options nearer an approved station (about ${Math.round(group.nearestMrtMeters / 50) * 50} m for the closest option).`
-          : "This local match uses approved saved facts and may not reflect current crowd levels.",
+            ? `MRT access was explicitly requested, so this ranking favours options nearer an approved station (about ${Math.round(group.nearestMrtMeters / 50) * 50} m for the closest option).`
+            : "This local match uses approved saved facts and may not reflect current crowd levels.",
       ],
       candidateIds,
     };

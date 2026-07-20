@@ -49,7 +49,12 @@ A `not_mappable` result must include `notMappableEvidence` with `reasonCode` equ
   "backgroundTileRefs": [],
   "frontendLayerId": "event-venues-3d",
   "eventIds": [],
-  "verification": { "browserUrl": "", "zoomLevels": [], "tileErrors": 0, "evidence": [] }
+  "verification": {
+    "browserUrl": "",
+    "zoomLevels": [],
+    "tileErrors": 0,
+    "evidence": []
+  }
 }
 ```
 
@@ -66,7 +71,12 @@ Require browser evidence and zero relevant tile errors.
   "updateMode": "successful-snapshot-reconcile",
   "eventIds": [],
   "selectedEventId": "",
-  "verification": { "closeZoom": 17, "overviewZoom": 15.5, "keyboard": true, "evidence": [] }
+  "verification": {
+    "closeZoom": 17,
+    "overviewZoom": 15.5,
+    "keyboard": true,
+    "evidence": []
+  }
 }
 ```
 
@@ -84,7 +94,13 @@ The pipeline commits pill, panel, mapped, and off-map handoffs as one verified i
   "eventIds": [],
   "fieldContractVersion": "1.0",
   "refreshMode": "replace-active-landmark-events",
-  "verification": { "mouse": true, "keyboard": true, "responsive": true, "fallbacks": true, "evidence": [] }
+  "verification": {
+    "mouse": true,
+    "keyboard": true,
+    "responsive": true,
+    "fallbacks": true,
+    "evidence": []
+  }
 }
 ```
 

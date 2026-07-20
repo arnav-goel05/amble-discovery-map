@@ -477,10 +477,7 @@ async function bootstrapApplication() {
           offMapEvents: approvedOffMapEvents,
           areaIdOf: ({ event, landmark }) => {
             const explicit =
-              event?.areaId ||
-              landmark?.areaId ||
-              landmark?.subzoneId ||
-              null;
+              event?.areaId || landmark?.areaId || landmark?.subzoneId || null;
             if (explicit) return explicit;
             const source = event?.coordinates || landmark?.anchor;
             const coordinates = Array.isArray(source)

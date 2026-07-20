@@ -8,45 +8,78 @@ import { prune } from "@gltf-transform/functions";
 import draco3d from "draco3dgltf";
 import { APPROVED_POIS } from "../data/approved-pois.js";
 
-const TILESET_ROOT = "https://www.onemap.gov.sg/omapi/tilesets/sg_noterrain_tiles/";
+const TILESET_ROOT =
+  "https://www.onemap.gov.sg/omapi/tilesets/sg_noterrain_tiles/";
 const REQUEST_HEADERS = {
   Referer: "https://www.onemap.gov.sg/3d",
   Origin: "https://www.onemap.gov.sg",
   "User-Agent": "Mozilla/5.0",
 };
-const argument = (name, fallback = null) => { const index = process.argv.indexOf(`--${name}`); return index >= 0 ? process.argv[index + 1] : fallback; };
-const SOURCE_CACHE_DIR = path.resolve(argument('source-cache', "public/poi-tiles/source"));
-const SOURCE_TILESET_PATH = path.resolve(argument('source-tileset', "optimized-tiles/tileset.json"));
-const STAGING_DIR = path.resolve(argument('work-root', path.join("tmp", `poi-extraction-${process.pid}`)));
-const PUBLISH_ROOT = path.resolve(argument('publish-root', '.'));
-const registryPath = argument('registry');
+const argument = (name, fallback = null) => {
+  const index = process.argv.indexOf(`--${name}`);
+  return index >= 0 ? process.argv[index + 1] : fallback;
+};
+const SOURCE_CACHE_DIR = path.resolve(
+  argument("source-cache", "public/poi-tiles/source"),
+);
+const SOURCE_TILESET_PATH = path.resolve(
+  argument("source-tileset", "optimized-tiles/tileset.json"),
+);
+const STAGING_DIR = path.resolve(
+  argument("work-root", path.join("tmp", `poi-extraction-${process.pid}`)),
+);
+const PUBLISH_ROOT = path.resolve(argument("publish-root", "."));
+const registryPath = argument("registry");
 
-const onlyIdsArg = process.argv.indexOf('--ids');
-const onlyIds = onlyIdsArg >= 0 ? new Set((process.argv[onlyIdsArg + 1] || '').split(',').filter(Boolean)) : null;
-const configuredPois = registryPath ? JSON.parse(fs.readFileSync(path.resolve(registryPath), 'utf8')).records : APPROVED_POIS;
-if (!Array.isArray(configuredPois)) throw new Error('--registry must contain { "records": [...] }');
-const POIS = onlyIds ? configuredPois.filter((poi) => onlyIds.has(poi.id)) : configuredPois;
-if (onlyIds && POIS.length !== onlyIds.size) throw new Error('One or more --ids values are not present in APPROVED_POIS');
-const emptyMappings = POIS.filter((poi) => !Object.keys(poi.tiles || {}).length).map((poi) => poi.id);
-if (emptyMappings.length) throw new Error(`Cannot extract POIs without source tile mappings: ${emptyMappings.join(', ')}`);
+const onlyIdsArg = process.argv.indexOf("--ids");
+const onlyIds =
+  onlyIdsArg >= 0
+    ? new Set((process.argv[onlyIdsArg + 1] || "").split(",").filter(Boolean))
+    : null;
+const configuredPois = registryPath
+  ? JSON.parse(fs.readFileSync(path.resolve(registryPath), "utf8")).records
+  : APPROVED_POIS;
+if (!Array.isArray(configuredPois))
+  throw new Error('--registry must contain { "records": [...] }');
+const POIS = onlyIds
+  ? configuredPois.filter((poi) => onlyIds.has(poi.id))
+  : configuredPois;
+if (onlyIds && POIS.length !== onlyIds.size)
+  throw new Error("One or more --ids values are not present in APPROVED_POIS");
+const emptyMappings = POIS.filter(
+  (poi) => !Object.keys(poi.tiles || {}).length,
+).map((poi) => poi.id);
+if (emptyMappings.length)
+  throw new Error(
+    `Cannot extract POIs without source tile mappings: ${emptyMappings.join(", ")}`,
+  );
 
 function readB3dm(filePath) {
   const bytes = fs.readFileSync(filePath);
-  if (bytes.toString("utf8", 0, 4) !== "b3dm") throw new Error(`${filePath} is not a b3dm tile`);
+  if (bytes.toString("utf8", 0, 4) !== "b3dm")
+    throw new Error(`${filePath} is not a b3dm tile`);
 
   const featureTableJsonByteLength = bytes.readUInt32LE(12);
   const featureTableBinaryByteLength = bytes.readUInt32LE(16);
   const batchTableJsonByteLength = bytes.readUInt32LE(20);
   const batchTableBinaryByteLength = bytes.readUInt32LE(24);
   const featureTableJsonStart = 28;
-  const featureTableBinaryStart = featureTableJsonStart + featureTableJsonByteLength;
-  const batchTableJsonStart = featureTableBinaryStart + featureTableBinaryByteLength;
+  const featureTableBinaryStart =
+    featureTableJsonStart + featureTableJsonByteLength;
+  const batchTableJsonStart =
+    featureTableBinaryStart + featureTableBinaryByteLength;
   const batchTableBinaryStart = batchTableJsonStart + batchTableJsonByteLength;
   const glbStart = batchTableBinaryStart + batchTableBinaryByteLength;
 
   return {
-    featureTableJson: bytes.subarray(featureTableJsonStart, featureTableBinaryStart),
-    featureTableBinary: bytes.subarray(featureTableBinaryStart, batchTableJsonStart),
+    featureTableJson: bytes.subarray(
+      featureTableJsonStart,
+      featureTableBinaryStart,
+    ),
+    featureTableBinary: bytes.subarray(
+      featureTableBinaryStart,
+      batchTableJsonStart,
+    ),
     batchTableJson: bytes.subarray(batchTableJsonStart, batchTableBinaryStart),
     batchTableBinary: bytes.subarray(batchTableBinaryStart, glbStart),
     glb: bytes.subarray(glbStart),
@@ -64,7 +97,10 @@ function paddedJsonBuffer(value) {
 }
 
 function sourceCachePath(sourceTile) {
-  return path.join(SOURCE_CACHE_DIR, sourceTile.replace(/^(optimized-tiles|tiles)\//, ""));
+  return path.join(
+    SOURCE_CACHE_DIR,
+    sourceTile.replace(/^(optimized-tiles|tiles)\//, ""),
+  );
 }
 
 function sourceTileForTileset(sourceTile) {
@@ -78,11 +114,17 @@ async function preserveSourceTile(sourceTile) {
   const sourceUri = sourceTile.replace(/^(optimized-tiles|tiles)\//, "");
   let response = null;
   for (let attempt = 1; attempt <= 4; attempt += 1) {
-    response = await fetch(new URL(sourceUri, TILESET_ROOT), { headers: REQUEST_HEADERS });
+    response = await fetch(new URL(sourceUri, TILESET_ROOT), {
+      headers: REQUEST_HEADERS,
+    });
     if (response.ok) break;
-    if (attempt < 4) await new Promise((resolve) => setTimeout(resolve, attempt * 750));
+    if (attempt < 4)
+      await new Promise((resolve) => setTimeout(resolve, attempt * 750));
   }
-  if (!response?.ok) throw new Error(`Failed ${response?.status} while downloading ${sourceUri}`);
+  if (!response?.ok)
+    throw new Error(
+      `Failed ${response?.status} while downloading ${sourceUri}`,
+    );
   fs.mkdirSync(path.dirname(cachePath), { recursive: true });
   fs.writeFileSync(cachePath, Buffer.from(await response.arrayBuffer()));
 }
@@ -111,7 +153,14 @@ function writeB3dm(parts, glb, filePath) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(
     filePath,
-    Buffer.concat([header, parts.featureTableJson, parts.featureTableBinary, parts.batchTableJson, parts.batchTableBinary, glb]),
+    Buffer.concat([
+      header,
+      parts.featureTableJson,
+      parts.featureTableBinary,
+      parts.batchTableJson,
+      parts.batchTableBinary,
+      glb,
+    ]),
   );
 }
 
@@ -131,7 +180,9 @@ function buildB3dmParts(parts, batchIdRemap) {
   const filteredBatchTable = {};
 
   for (const [key, value] of Object.entries(batchTable)) {
-    filteredBatchTable[key] = Array.isArray(value) ? keptBatchIds.map((batchId) => value[batchId]) : value;
+    filteredBatchTable[key] = Array.isArray(value)
+      ? keptBatchIds.map((batchId) => value[batchId])
+      : value;
   }
 
   return {
@@ -145,15 +196,32 @@ function buildB3dmParts(parts, batchIdRemap) {
   };
 }
 
-function copyElement(accessor, sourceIndex, targetArray, targetIndex, mapValue = (value) => value) {
+function copyElement(
+  accessor,
+  sourceIndex,
+  targetArray,
+  targetIndex,
+  mapValue = (value) => value,
+) {
   const sourceArray = accessor.getArray();
   const elementSize = accessor.getElementSize();
-  for (let componentIndex = 0; componentIndex < elementSize; componentIndex += 1) {
-    targetArray[targetIndex * elementSize + componentIndex] = mapValue(sourceArray[sourceIndex * elementSize + componentIndex]);
+  for (
+    let componentIndex = 0;
+    componentIndex < elementSize;
+    componentIndex += 1
+  ) {
+    targetArray[targetIndex * elementSize + componentIndex] = mapValue(
+      sourceArray[sourceIndex * elementSize + componentIndex],
+    );
   }
 }
 
-function createFilteredPrimitive(document, primitive, selectedTriangles, batchIdRemap) {
+function createFilteredPrimitive(
+  document,
+  primitive,
+  selectedTriangles,
+  batchIdRemap,
+) {
   const vertexMap = new Map();
   const oldIndices = primitive.getIndices().getArray();
   const newIndices = [];
@@ -170,31 +238,59 @@ function createFilteredPrimitive(document, primitive, selectedTriangles, batchId
     }
   }
 
-  const newPrimitive = document.createPrimitive().setMode(primitive.getMode()).setMaterial(primitive.getMaterial());
+  const newPrimitive = document
+    .createPrimitive()
+    .setMode(primitive.getMode())
+    .setMaterial(primitive.getMaterial());
   const buffer = document.getRoot().listBuffers()[0] || document.createBuffer();
-  const indexArray = vertexMap.size <= 65534 ? new Uint16Array(newIndices) : new Uint32Array(newIndices);
-  newPrimitive.setIndices(document.createAccessor().setType(Accessor.Type.SCALAR).setArray(indexArray).setBuffer(buffer));
+  const indexArray =
+    vertexMap.size <= 65534
+      ? new Uint16Array(newIndices)
+      : new Uint32Array(newIndices);
+  newPrimitive.setIndices(
+    document
+      .createAccessor()
+      .setType(Accessor.Type.SCALAR)
+      .setArray(indexArray)
+      .setBuffer(buffer),
+  );
 
   const oldToNew = Array.from(vertexMap.entries());
   for (const semantic of primitive.listSemantics()) {
     const oldAccessor = primitive.getAttribute(semantic);
     const oldArray = oldAccessor.getArray();
     const ArrayType = oldArray.constructor;
-    const newArray = new ArrayType(vertexMap.size * oldAccessor.getElementSize());
+    const newArray = new ArrayType(
+      vertexMap.size * oldAccessor.getElementSize(),
+    );
     const mapValue =
       semantic === "_BATCHID"
         ? (value) => {
             const remapped = batchIdRemap.get(Math.round(value));
-            if (remapped === undefined) throw new Error(`Unexpected batch id ${value} in filtered primitive`);
+            if (remapped === undefined)
+              throw new Error(
+                `Unexpected batch id ${value} in filtered primitive`,
+              );
             return remapped;
           }
         : (value) => value;
     for (const [oldVertexIndex, newVertexIndex] of oldToNew) {
-      copyElement(oldAccessor, oldVertexIndex, newArray, newVertexIndex, mapValue);
+      copyElement(
+        oldAccessor,
+        oldVertexIndex,
+        newArray,
+        newVertexIndex,
+        mapValue,
+      );
     }
     newPrimitive.setAttribute(
       semantic,
-      document.createAccessor().setType(oldAccessor.getType()).setArray(newArray).setNormalized(oldAccessor.getNormalized()).setBuffer(buffer),
+      document
+        .createAccessor()
+        .setType(oldAccessor.getType())
+        .setArray(newArray)
+        .setNormalized(oldAccessor.getNormalized())
+        .setBuffer(buffer),
     );
   }
 
@@ -219,7 +315,11 @@ function filterDocument(document, keepBatchIds, batchIdRemap) {
       const batchIds = batchAccessor.getArray();
       const indices = indexAccessor.getArray();
       const selectedTriangles = [];
-      for (let triangleIndex = 0; triangleIndex < indices.length / 3; triangleIndex += 1) {
+      for (
+        let triangleIndex = 0;
+        triangleIndex < indices.length / 3;
+        triangleIndex += 1
+      ) {
         const a = Math.round(batchIds[indices[triangleIndex * 3]]);
         const b = Math.round(batchIds[indices[triangleIndex * 3 + 1]]);
         const c = Math.round(batchIds[indices[triangleIndex * 3 + 2]]);
@@ -236,7 +336,12 @@ function filterDocument(document, keepBatchIds, batchIdRemap) {
       }
 
       keptTriangles += selectedTriangles.length;
-      const filteredPrimitive = createFilteredPrimitive(document, primitive, selectedTriangles, batchIdRemap);
+      const filteredPrimitive = createFilteredPrimitive(
+        document,
+        primitive,
+        selectedTriangles,
+        batchIdRemap,
+      );
       mesh.addPrimitive(filteredPrimitive);
       mesh.removePrimitive(primitive);
       primitive.dispose();
@@ -265,7 +370,9 @@ function findSourceTile(tile, sourceTile) {
 function unionBoundingRegions(tiles) {
   const regions = tiles.map((tile) => tile.boundingVolume?.region);
   if (regions.some((region) => !Array.isArray(region) || region.length !== 6)) {
-    throw new Error("POI tileset root union only supports region bounding volumes.");
+    throw new Error(
+      "POI tileset root union only supports region bounding volumes.",
+    );
   }
 
   return {
@@ -283,14 +390,21 @@ function unionBoundingRegions(tiles) {
 function poiTileFilename(sourceTile) {
   const extension = path.extname(sourceTile) || ".b3dm";
   const stem = path.basename(sourceTile, extension);
-  const sourceHash = createHash("sha256").update(sourceTile).digest("hex").slice(0, 12);
+  const sourceHash = createHash("sha256")
+    .update(sourceTile)
+    .digest("hex")
+    .slice(0, 12);
   return `${stem}-${sourceHash}${extension}`;
 }
 
 function writePoiTileset(poi, sourceTileset, outputDir) {
   const sourceTileNodes = Object.keys(poi.tiles).map((sourceTile) => {
-    const sourceTileNode = findSourceTile(sourceTileset.root, sourceTileForTileset(sourceTile));
-    if (!sourceTileNode) throw new Error(`Could not find ${sourceTile} in source tileset`);
+    const sourceTileNode = findSourceTile(
+      sourceTileset.root,
+      sourceTileForTileset(sourceTile),
+    );
+    if (!sourceTileNode)
+      throw new Error(`Could not find ${sourceTile} in source tileset`);
     return { sourceTile, sourceTileNode };
   });
 
@@ -307,22 +421,34 @@ function writePoiTileset(poi, sourceTileset, outputDir) {
     asset: sourceTileset.asset,
     geometricError: 512,
     root: {
-      boundingVolume: unionBoundingRegions(sourceTileNodes.map(({ sourceTileNode }) => sourceTileNode)),
+      boundingVolume: unionBoundingRegions(
+        sourceTileNodes.map(({ sourceTileNode }) => sourceTileNode),
+      ),
       geometricError: 256,
       refine: "REPLACE",
       children,
     },
   };
-  fs.writeFileSync(path.join(outputDir, "tileset.json"), `${JSON.stringify(tileset, null, 2)}\n`);
+  fs.writeFileSync(
+    path.join(outputDir, "tileset.json"),
+    `${JSON.stringify(tileset, null, 2)}\n`,
+  );
 }
 
-function validateBatchNames(sourceTile, parts, selectedBatchIds, expectedNames) {
+function validateBatchNames(
+  sourceTile,
+  parts,
+  selectedBatchIds,
+  expectedNames,
+) {
   const batchTable = parsePaddedJson(parts.batchTableJson);
   const names = batchTable["gml:name"] || [];
   for (const batchId of selectedBatchIds) {
     const name = names[batchId];
     if (!expectedNames.includes(name)) {
-      throw new Error(`${sourceTile} batch ${batchId} is "${name}", expected one of ${expectedNames.join(", ")}`);
+      throw new Error(
+        `${sourceTile} batch ${batchId} is "${name}", expected one of ${expectedNames.join(", ")}`,
+      );
     }
   }
 }
@@ -331,7 +457,8 @@ const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 const batchTable = (parts) => parsePaddedJson(parts.batchTableJson);
 const identities = (parts) => batchTable(parts)["gml:id"] || [];
 const sorted = (values) => [...values].sort();
-const sameValues = (left, right) => JSON.stringify(sorted(left)) === JSON.stringify(sorted(right));
+const sameValues = (left, right) =>
+  JSON.stringify(sorted(left)) === JSON.stringify(sorted(right));
 
 function publishFile(stagedPath, destination) {
   fs.mkdirSync(path.dirname(destination), { recursive: true });
@@ -342,10 +469,12 @@ function publishFile(stagedPath, destination) {
 
 const decoder = await draco3d.createDecoderModule();
 const encoder = await draco3d.createEncoderModule();
-const io = new NodeIO().registerExtensions([KHRDracoMeshCompression]).registerDependencies({
-  "draco3d.decoder": decoder,
-  "draco3d.encoder": encoder,
-});
+const io = new NodeIO()
+  .registerExtensions([KHRDracoMeshCompression])
+  .registerDependencies({
+    "draco3d.decoder": decoder,
+    "draco3d.encoder": encoder,
+  });
 
 const sourceTileset = JSON.parse(fs.readFileSync(SOURCE_TILESET_PATH, "utf8"));
 const allSourceTiles = new Set(POIS.flatMap((poi) => Object.keys(poi.tiles)));
@@ -358,11 +487,19 @@ fs.mkdirSync(STAGING_DIR, { recursive: true });
 const claimedBatches = new Map();
 for (const poi of POIS) {
   for (const [sourceTile, batchIds] of Object.entries(poi.tiles)) {
-    validateBatchNames(sourceTile, readSourceB3dm(sourceTile), batchIds, poi.names);
+    validateBatchNames(
+      sourceTile,
+      readSourceB3dm(sourceTile),
+      batchIds,
+      poi.names,
+    );
     for (const batchId of batchIds) {
       const key = `${sourceTile}:${batchId}`;
       const owner = claimedBatches.get(key);
-      if (owner && owner !== poi.id) throw new Error(`Source batch collision: ${key} is claimed by ${owner} and ${poi.id}`);
+      if (owner && owner !== poi.id)
+        throw new Error(
+          `Source batch collision: ${key} is claimed by ${owner} and ${poi.id}`,
+        );
       claimedBatches.set(key, poi.id);
     }
   }
@@ -373,7 +510,13 @@ const manifests = new Map();
 for (const poi of POIS) {
   const outputDir = path.join(STAGING_DIR, "public", "poi-tiles", poi.id);
   fs.mkdirSync(outputDir, { recursive: true });
-  const manifest = { schemaVersion: "1.0", poiId: poi.id, extractionPoiIds: POIS.map(({ id }) => id), generatedAt: new Date().toISOString(), tiles: [] };
+  const manifest = {
+    schemaVersion: "1.0",
+    poiId: poi.id,
+    extractionPoiIds: POIS.map(({ id }) => id),
+    generatedAt: new Date().toISOString(),
+    tiles: [],
+  };
 
   let poiTotalTriangles = 0;
   let poiTotalRemovedPrimitives = 0;
@@ -382,8 +525,13 @@ for (const poi of POIS) {
     validateBatchNames(sourceTile, b3dm, batchIds, poi.names);
     const batchIdRemap = makeBatchIdRemap(batchIds);
     const poiDocument = await io.readBinary(new Uint8Array(b3dm.glb));
-    const poiStats = filterDocument(poiDocument, new Set(batchIds), batchIdRemap);
-    if (poiStats.keptTriangles <= 0) throw new Error(`${poi.id}: ${sourceTile} produced no POI triangles`);
+    const poiStats = filterDocument(
+      poiDocument,
+      new Set(batchIds),
+      batchIdRemap,
+    );
+    if (poiStats.keptTriangles <= 0)
+      throw new Error(`${poi.id}: ${sourceTile} produced no POI triangles`);
     await poiDocument.transform(prune());
     const poiGlb = Buffer.from(await io.writeBinary(poiDocument));
     const poiFile = poiTileFilename(sourceTile);
@@ -410,35 +558,69 @@ for (const poi of POIS) {
   }
   writePoiTileset(poi, sourceTileset, outputDir);
   manifests.set(poi.id, manifest);
-  console.log(`${poi.id}: ${poiTotalTriangles} triangles kept, ${poiTotalRemovedPrimitives} primitives removed.`);
+  console.log(
+    `${poi.id}: ${poiTotalTriangles} triangles kept, ${poiTotalRemovedPrimitives} primitives removed.`,
+  );
 }
 
 let backgroundTotalTriangles = 0;
 let backgroundTotalRemovedPrimitives = 0;
 for (const [sourceTile, removedBatchIds] of removalsByTile.entries()) {
   const b3dm = readSourceB3dm(sourceTile);
-  const backgroundBatchIds = getBatchIds(b3dm).filter((batchId) => !removedBatchIds.has(batchId));
+  const backgroundBatchIds = getBatchIds(b3dm).filter(
+    (batchId) => !removedBatchIds.has(batchId),
+  );
   const batchIdRemap = makeBatchIdRemap(backgroundBatchIds);
   const backgroundDocument = await io.readBinary(new Uint8Array(b3dm.glb));
-  const backgroundStats = filterDocument(backgroundDocument, new Set(backgroundBatchIds), batchIdRemap);
-  const expectedBackgroundIds = backgroundBatchIds.map((batchId) => identities(b3dm)[batchId]);
+  const backgroundStats = filterDocument(
+    backgroundDocument,
+    new Set(backgroundBatchIds),
+    batchIdRemap,
+  );
+  const expectedBackgroundIds = backgroundBatchIds.map(
+    (batchId) => identities(b3dm)[batchId],
+  );
   if (backgroundStats.keptTriangles <= 0 && expectedBackgroundIds.length > 0) {
     throw new Error(`${sourceTile} lost unrelated background geometry`);
   }
   await backgroundDocument.transform(prune());
   const backgroundGlb = Buffer.from(await io.writeBinary(backgroundDocument));
-  const stagedBackground = path.join(STAGING_DIR, sourceTileForTileset(sourceTile));
-  writeB3dm(buildB3dmParts(b3dm, batchIdRemap), backgroundGlb, stagedBackground);
+  const stagedBackground = path.join(
+    STAGING_DIR,
+    sourceTileForTileset(sourceTile),
+  );
+  writeB3dm(
+    buildB3dmParts(b3dm, batchIdRemap),
+    backgroundGlb,
+    stagedBackground,
+  );
   const actualBackgroundIds = identities(readB3dm(stagedBackground));
-  if (!sameValues(expectedBackgroundIds, actualBackgroundIds)) throw new Error(`${sourceTile} background identity set does not match pristine source minus selected batches`);
+  if (!sameValues(expectedBackgroundIds, actualBackgroundIds))
+    throw new Error(
+      `${sourceTile} background identity set does not match pristine source minus selected batches`,
+    );
   for (const poi of POIS) {
-    const entry = manifests.get(poi.id)?.tiles.find((tile) => tile.sourceTile === sourceTile);
+    const entry = manifests
+      .get(poi.id)
+      ?.tiles.find((tile) => tile.sourceTile === sourceTile);
     if (!entry) continue;
-    const poiIds = identities(readB3dm(path.join(STAGING_DIR, "public", "poi-tiles", poi.id, entry.poiFile)));
-    if (!sameValues(entry.gmlIds, poiIds)) throw new Error(`${poi.id}: ${sourceTile} POI identity set does not match selected pristine batches`);
-    if (entry.gmlIds.some((gmlId) => actualBackgroundIds.includes(gmlId))) throw new Error(`${poi.id}: ${sourceTile} selected GML identity remains in background`);
+    const poiIds = identities(
+      readB3dm(
+        path.join(STAGING_DIR, "public", "poi-tiles", poi.id, entry.poiFile),
+      ),
+    );
+    if (!sameValues(entry.gmlIds, poiIds))
+      throw new Error(
+        `${poi.id}: ${sourceTile} POI identity set does not match selected pristine batches`,
+      );
+    if (entry.gmlIds.some((gmlId) => actualBackgroundIds.includes(gmlId)))
+      throw new Error(
+        `${poi.id}: ${sourceTile} selected GML identity remains in background`,
+      );
     entry.backgroundFile = sourceTileForTileset(sourceTile);
-    entry.backgroundRemovedGmlIds = [...removedBatchIds].map((batchId) => identities(b3dm)[batchId]);
+    entry.backgroundRemovedGmlIds = [...removedBatchIds].map(
+      (batchId) => identities(b3dm)[batchId],
+    );
     entry.backgroundSha256 = sha256(fs.readFileSync(stagedBackground));
     entry.backgroundTriangles = backgroundStats.keptTriangles;
   }
@@ -450,10 +632,21 @@ for (const [sourceTile, removedBatchIds] of removalsByTile.entries()) {
 for (const poi of POIS) {
   const stagedPoiDir = path.join(STAGING_DIR, "public", "poi-tiles", poi.id);
   const manifest = manifests.get(poi.id);
-  fs.writeFileSync(path.join(stagedPoiDir, "extraction-manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
-  for (const file of fs.readdirSync(stagedPoiDir)) publishFile(path.join(stagedPoiDir, file), path.join(PUBLISH_ROOT, "public", "poi-tiles", poi.id, file));
+  fs.writeFileSync(
+    path.join(stagedPoiDir, "extraction-manifest.json"),
+    `${JSON.stringify(manifest, null, 2)}\n`,
+  );
+  for (const file of fs.readdirSync(stagedPoiDir))
+    publishFile(
+      path.join(stagedPoiDir, file),
+      path.join(PUBLISH_ROOT, "public", "poi-tiles", poi.id, file),
+    );
 }
-for (const sourceTile of removalsByTile.keys()) publishFile(path.join(STAGING_DIR, sourceTileForTileset(sourceTile)), path.join(PUBLISH_ROOT, sourceTileForTileset(sourceTile)));
+for (const sourceTile of removalsByTile.keys())
+  publishFile(
+    path.join(STAGING_DIR, sourceTileForTileset(sourceTile)),
+    path.join(PUBLISH_ROOT, sourceTileForTileset(sourceTile)),
+  );
 fs.rmSync(STAGING_DIR, { recursive: true, force: true });
 
 console.log(

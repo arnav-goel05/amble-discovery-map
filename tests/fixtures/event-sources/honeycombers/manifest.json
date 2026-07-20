@@ -1,1 +1,11 @@
-{"schemaVersion":"1.0","source":"Honeycombers","cases":["authority-link","featured-repeat","promotion","generic-link","authority-conflict"]}
+{
+  "schemaVersion": "1.0",
+  "source": "Honeycombers",
+  "cases": [
+    "authority-link",
+    "featured-repeat",
+    "promotion",
+    "generic-link",
+    "authority-conflict"
+  ]
+}

@@ -24,6 +24,7 @@ Sync Impact Report
 - Deferred items: runtime runner references remain aligned to current implementation until
   implementation tasks T141-T142 update them with the approved v3 behavior.
 -->
+
 # What's Here Constitution
 
 ## Core Principles

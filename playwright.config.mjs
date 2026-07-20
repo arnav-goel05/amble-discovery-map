@@ -44,8 +44,7 @@ export default defineConfig({
     viewport: { width: 1280, height: 720 },
   },
   webServer: {
-    command:
-      `PLAN_STORE_ROOT=/tmp/onemap-plan-playwright ADMIN_DATABASE_PATH=/tmp/onemap-admin-playwright.sqlite ADMIN_SECURE_COOKIES=0 ADMIN_PASSWORD_HASH='scrypt$v1$playwright-test-salt$h2xsKXSwyvwSJcOnD7jT1Rk_ZmaQsTCrbV_a4Hl8roNa_aXf0vca7ZiZv1So0degt4ElNIZPwUkPv6emJ4ZgAA' TELEGRAM_BOT_USERNAME=WhatsHereTestBot TELEGRAM_WEBHOOK_SECRET=test-secret npm run dev -- --host 127.0.0.1 --port ${testPort}`,
+    command: `PLAN_STORE_ROOT=/tmp/onemap-plan-playwright ADMIN_DATABASE_PATH=/tmp/onemap-admin-playwright.sqlite ADMIN_SECURE_COOKIES=0 ADMIN_PASSWORD_HASH='scrypt$v1$playwright-test-salt$h2xsKXSwyvwSJcOnD7jT1Rk_ZmaQsTCrbV_a4Hl8roNa_aXf0vca7ZiZv1So0degt4ElNIZPwUkPv6emJ4ZgAA' TELEGRAM_BOT_USERNAME=WhatsHereTestBot TELEGRAM_WEBHOOK_SECRET=test-secret npm run dev -- --host 127.0.0.1 --port ${testPort}`,
     url: `http://127.0.0.1:${testPort}`,
     reuseExistingServer: true,
     timeout: 30_000,

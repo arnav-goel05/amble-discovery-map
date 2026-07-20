@@ -14,13 +14,15 @@ const areas = {
       properties: { areaId: "ura-subzone:dtsz02", areaName: "CITY HALL" },
       geometry: {
         type: "Polygon",
-        coordinates: [[
-          [103.84, 1.28],
-          [103.86, 1.28],
-          [103.86, 1.3],
-          [103.84, 1.3],
-          [103.84, 1.28],
-        ]],
+        coordinates: [
+          [
+            [103.84, 1.28],
+            [103.86, 1.28],
+            [103.86, 1.3],
+            [103.84, 1.3],
+            [103.84, 1.28],
+          ],
+        ],
       },
     },
   ],

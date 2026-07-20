@@ -210,7 +210,9 @@ test("material ambiguity asks one focused clarification inside the voice flow", 
   await expect(
     clarification.getByRole("button", { name: "Garden walk" }),
   ).toBeVisible();
-  await expect(page.locator('[data-testid="assistant-text-input"]')).toHaveCount(0);
+  await expect(
+    page.locator('[data-testid="assistant-text-input"]'),
+  ).toHaveCount(0);
   expect(relay.providerUrls).toEqual([]);
 });
 
@@ -260,7 +262,9 @@ test("provider failure keeps the voice pill retryable without a text chatbot", a
 
   await startVoice(page);
   await expect(page.locator(selectors.error)).toContainText(/try again/i);
-  await expect(page.locator('[data-testid="assistant-text-input"]')).toHaveCount(0);
+  await expect(
+    page.locator('[data-testid="assistant-text-input"]'),
+  ).toHaveCount(0);
   expect(sessionRequests).toBe(1);
   expect(providerUrls).toEqual([]);
 });

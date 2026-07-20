@@ -85,7 +85,10 @@ Source result:
   "sourceRecordRefs": ["raw/catch/details/<hash>.json#/records/0"],
   "invalidSourceRecordRefs": [],
   "processedSourceRecordRefs": ["raw/catch/details/<hash>.json#/records/0"],
-  "artifactRefs": ["raw/catch/listings/page-0001.dom.md", "raw/catch/details/<hash>.json"],
+  "artifactRefs": [
+    "raw/catch/listings/page-0001.dom.md",
+    "raw/catch/details/<hash>.json"
+  ],
   "error": null
 }
 ```

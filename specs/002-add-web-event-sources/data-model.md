@@ -23,19 +23,19 @@ must not be collapsed into one key.
 
 Versioned checked-in source contract.
 
-| Field | Type | Rules |
-|---|---|---|
-| `name` | string | Unique display name |
-| `adapterId`, `version` | string | Required; version changes when interpretation changes |
-| `providerId`, `owner`, `domains` | string / string[] | Source identity and validated destinations |
-| `evidenceRole` | enum | `direct`, `editorial`, or `unavailable` |
-| `operatingState` | enum | `enabled` or `disabled` |
-| `collectionOrder` | integer | Unique deterministic run/report order |
-| `retrieval` | object | Approved free provider and bounded request rules |
-| `listing` | object | Entry URLs, canonical patterns, pagination bounds, terminal rules |
-| `identityRule` | object | Stable source-record identity strategy |
-| `editorialPolicy` | object/null | Corroboration and sufficiency rules for editorial sources |
-| `unavailableReason` | string/null | Required when disabled/unavailable |
+| Field                            | Type              | Rules                                                             |
+| -------------------------------- | ----------------- | ----------------------------------------------------------------- |
+| `name`                           | string            | Unique display name                                               |
+| `adapterId`, `version`           | string            | Required; version changes when interpretation changes             |
+| `providerId`, `owner`, `domains` | string / string[] | Source identity and validated destinations                        |
+| `evidenceRole`                   | enum              | `direct`, `editorial`, or `unavailable`                           |
+| `operatingState`                 | enum              | `enabled` or `disabled`                                           |
+| `collectionOrder`                | integer           | Unique deterministic run/report order                             |
+| `retrieval`                      | object            | Approved free provider and bounded request rules                  |
+| `listing`                        | object            | Entry URLs, canonical patterns, pagination bounds, terminal rules |
+| `identityRule`                   | object            | Stable source-record identity strategy                            |
+| `editorialPolicy`                | object/null       | Corroboration and sufficiency rules for editorial sources         |
+| `unavailableReason`              | string/null       | Required when disabled/unavailable                                |
 
 ### Validation
 
@@ -57,17 +57,17 @@ Repeated appearances remain countable even when they collapse to one source reco
 
 The stable source-level processing unit.
 
-| Field | Type | Rules |
-|---|---|---|
-| `sourceRecordId` | string | Qualified stable source identity |
-| `appearanceIds` | string[] | One or more observed appearances |
-| `canonicalUrl` | URL | Validated event/activity/detail page or parent article URL |
-| `itemKey` | string/null | Stable bounded roundup entry key when applicable |
-| `evidenceRole` | enum | Direct or editorial |
-| `rawRefs` | string[] | Immutable evidence pointers |
-| `adapterVersion`, `payloadHash` | string | Reproducibility and change detection |
-| `claims` | object | Extracted values without fabrication |
-| `terminalOutcome`, `reasonCode` | string | Exactly one accounted result |
+| Field                           | Type        | Rules                                                      |
+| ------------------------------- | ----------- | ---------------------------------------------------------- |
+| `sourceRecordId`                | string      | Qualified stable source identity                           |
+| `appearanceIds`                 | string[]    | One or more observed appearances                           |
+| `canonicalUrl`                  | URL         | Validated event/activity/detail page or parent article URL |
+| `itemKey`                       | string/null | Stable bounded roundup entry key when applicable           |
+| `evidenceRole`                  | enum        | Direct or editorial                                        |
+| `rawRefs`                       | string[]    | Immutable evidence pointers                                |
+| `adapterVersion`, `payloadHash` | string      | Reproducibility and change detection                       |
+| `claims`                        | object      | Extracted values without fabrication                       |
+| `terminalOutcome`, `reasonCode` | string      | Exactly one accounted result                               |
 
 Identity must not depend on roundup ordinal alone.
 
@@ -75,15 +75,15 @@ Identity must not depend on roundup ordinal alone.
 
 Determines whether one or more source records establish a publishable activity.
 
-| Field | Type | Rules |
-|---|---|---|
-| `assessmentId` | string | Evidence inputs plus policy version |
-| `sourceRecordIds` | string[] | Direct and/or editorial contributors |
-| `primaryEvidenceId` | string | Deterministic current-fact source |
-| `evidenceLevel` | enum | `direct`, `direct_corroborated`, `editorial_authoritative`, `incomplete`, `conflict`, `excluded` |
-| `compatibility` | object | Activity identity, schedule, Singapore scope, organizer, and location comparisons |
-| `decision`, `reasonCode` | string | Publish, review, or exclude outcome |
-| `evidenceRefs` | string[] | Source and comparison evidence |
+| Field                    | Type     | Rules                                                                                            |
+| ------------------------ | -------- | ------------------------------------------------------------------------------------------------ |
+| `assessmentId`           | string   | Evidence inputs plus policy version                                                              |
+| `sourceRecordIds`        | string[] | Direct and/or editorial contributors                                                             |
+| `primaryEvidenceId`      | string   | Deterministic current-fact source                                                                |
+| `evidenceLevel`          | enum     | `direct`, `direct_corroborated`, `editorial_authoritative`, `incomplete`, `conflict`, `excluded` |
+| `compatibility`          | object   | Activity identity, schedule, Singapore scope, organizer, and location comparisons                |
+| `decision`, `reasonCode` | string   | Publish, review, or exclude outcome                                                              |
+| `evidenceRefs`           | string[] | Source and comparison evidence                                                                   |
 
 Rules:
 
@@ -106,14 +106,14 @@ occurrences.
 
 ## ScheduleState
 
-| Field | Type | Rules |
-|---|---|---|
-| `kind` | enum | `exact`, `range`, `recurring`, `selectable`, `anytime`, `unverified` |
-| `start`, `end` | datetime/null | Singapore time semantics when known |
-| `recurrence` | object/null | Source-supported recurrence rule; not unlimited instances |
-| `sessionRefs` | string[] | Finite explicit sessions where supplied |
-| `displayText` | string/null | Preserved source schedule text |
-| `finalKnownOccurrence` | datetime/null | Expiry boundary when evidence supports it |
+| Field                  | Type          | Rules                                                                |
+| ---------------------- | ------------- | -------------------------------------------------------------------- |
+| `kind`                 | enum          | `exact`, `range`, `recurring`, `selectable`, `anytime`, `unverified` |
+| `start`, `end`         | datetime/null | Singapore time semantics when known                                  |
+| `recurrence`           | object/null   | Source-supported recurrence rule; not unlimited instances            |
+| `sessionRefs`          | string[]      | Finite explicit sessions where supplied                              |
+| `displayText`          | string/null   | Preserved source schedule text                                       |
+| `finalKnownOccurrence` | datetime/null | Expiry boundary when evidence supports it                            |
 
 `anytime` is intentional availability. `unverified` is a date-dependent record lacking a
 reliable schedule. Neither receives an invented date.
@@ -132,18 +132,18 @@ Sibling sessions remain distinct even when title and venue match.
 
 One location-specific manifestation of a parent activity or session.
 
-| Field | Type | Rules |
-|---|---|---|
-| `venueOccurrenceId` | string | Stable parent/session plus source venue identity |
-| `parentActivityId`, `sessionIds` | string / string[] | Required relationship |
-| `publishedVenueName` | string/null | Preserved source value |
-| `address`, `postalCode`, `unit` | string/null | Never invented |
-| `sourceCoordinates` | object/null | Evidence only until resolved |
-| `publicPlacement` | enum | `mapped`, `off_map`, or `none` |
-| `mappingStatus` | enum | `approved`, `not_required`, or `pending_review` |
-| `offMapSubtype` | enum/null | `secret_tba`, `multiple_locations`, `mobile_route`, `broad_area`, `geometry_unavailable` |
-| `approvedLocationId` | string/null | Required only for mapped placement |
-| `locationAssessmentId` | string | Decision lineage |
+| Field                            | Type              | Rules                                                                                    |
+| -------------------------------- | ----------------- | ---------------------------------------------------------------------------------------- |
+| `venueOccurrenceId`              | string            | Stable parent/session plus source venue identity                                         |
+| `parentActivityId`, `sessionIds` | string / string[] | Required relationship                                                                    |
+| `publishedVenueName`             | string/null       | Preserved source value                                                                   |
+| `address`, `postalCode`, `unit`  | string/null       | Never invented                                                                           |
+| `sourceCoordinates`              | object/null       | Evidence only until resolved                                                             |
+| `publicPlacement`                | enum              | `mapped`, `off_map`, or `none`                                                           |
+| `mappingStatus`                  | enum              | `approved`, `not_required`, or `pending_review`                                          |
+| `offMapSubtype`                  | enum/null         | `secret_tba`, `multiple_locations`, `mobile_route`, `broad_area`, `geometry_unavailable` |
+| `approvedLocationId`             | string/null       | Required only for mapped placement                                                       |
+| `locationAssessmentId`           | string            | Decision lineage                                                                         |
 
 Reliable multi-location pairings produce multiple venue occurrences. Unresolved pairings
 produce one `multiple_locations` occurrence.
@@ -190,22 +190,22 @@ anchor, published event ID, source precedence, and evidence refs.
 
 ## PublishedEvent
 
-| Field | Type | Rules |
-|---|---|---|
-| `publishedEventId` | string | Stable prior anchor when matched; deterministic new anchor otherwise |
-| `parentActivityIds` | string[] | Compatible merged parents |
-| `sourceRecordIds` | string[] | Complete provenance |
-| `primaryEvidenceId` | string | Current-fact attribution |
-| `sessionIds`, `venueOccurrenceIds` | string[] | Preserved child identities |
-| `displayFields` | object | Provenance-backed user fields |
-| `evidenceLevel` | enum | From EvidenceAssessment |
-| `lifecycleState` | enum | `active`, `held`, `archived`, or `excluded` |
-| `publicPlacement` | enum | `mapped`, `off_map`, or `none`; active public records use mapped/off-map |
-| `mappingStatus` | enum | `approved`, `not_required`, or `pending_review` |
-| `freshness` | enum | `current` or `stale`, derived from field/source contributions |
-| `staleSince`, `staleReason` | datetime/string/null | Required for carry-forward |
-| `fieldFreshness` | object | Per displayed field/source evidence freshness for merged activities |
-| `contentHash` | string | Excludes irrelevant source ordering |
+| Field                              | Type                 | Rules                                                                    |
+| ---------------------------------- | -------------------- | ------------------------------------------------------------------------ |
+| `publishedEventId`                 | string               | Stable prior anchor when matched; deterministic new anchor otherwise     |
+| `parentActivityIds`                | string[]             | Compatible merged parents                                                |
+| `sourceRecordIds`                  | string[]             | Complete provenance                                                      |
+| `primaryEvidenceId`                | string               | Current-fact attribution                                                 |
+| `sessionIds`, `venueOccurrenceIds` | string[]             | Preserved child identities                                               |
+| `displayFields`                    | object               | Provenance-backed user fields                                            |
+| `evidenceLevel`                    | enum                 | From EvidenceAssessment                                                  |
+| `lifecycleState`                   | enum                 | `active`, `held`, `archived`, or `excluded`                              |
+| `publicPlacement`                  | enum                 | `mapped`, `off_map`, or `none`; active public records use mapped/off-map |
+| `mappingStatus`                    | enum                 | `approved`, `not_required`, or `pending_review`                          |
+| `freshness`                        | enum                 | `current` or `stale`, derived from field/source contributions            |
+| `staleSince`, `staleReason`        | datetime/string/null | Required for carry-forward                                               |
+| `fieldFreshness`                   | object               | Per displayed field/source evidence freshness for merged activities      |
+| `contentHash`                      | string               | Excludes irrelevant source ordering                                      |
 
 Source membership, evidence upgrade, location revelation, and freshness update this entity
 without changing its stable ID. Placement, mapping, lifecycle, and freshness are orthogonal:

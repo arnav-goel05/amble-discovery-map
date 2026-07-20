@@ -231,7 +231,9 @@ test("vague requests without an exact saved-fact match still return grounded are
   assert.ok(result.areas.length > 0);
   assert.ok(
     result.areas.every((area) =>
-      area.tradeoffs.some((tradeoff) => /No exact saved-fact match/.test(tradeoff)),
+      area.tradeoffs.some((tradeoff) =>
+        /No exact saved-fact match/.test(tradeoff),
+      ),
     ),
   );
   assert.ok(

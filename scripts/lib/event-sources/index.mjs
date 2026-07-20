@@ -6,6 +6,25 @@ import { honeycombersAdapter } from "./honeycombers.mjs";
 import { artsEquatorAdapter } from "./arts-equator.mjs";
 import { timeOutSingaporeAdapter } from "./time-out-singapore.mjs";
 
-const adapters = new Map([feverAdapter, visitSingaporeAdapter, singaporeFilmSocietyAdapter, rootsHanAdapter, honeycombersAdapter, artsEquatorAdapter, timeOutSingaporeAdapter].map((adapter) => [adapter.id, adapter]));
-export const renderedAdapterFor = (adapterId) => adapters.get(adapterId) ?? null;
-export { feverAdapter, visitSingaporeAdapter, singaporeFilmSocietyAdapter, rootsHanAdapter, honeycombersAdapter, artsEquatorAdapter, timeOutSingaporeAdapter };
+const adapters = new Map(
+  [
+    feverAdapter,
+    visitSingaporeAdapter,
+    singaporeFilmSocietyAdapter,
+    rootsHanAdapter,
+    honeycombersAdapter,
+    artsEquatorAdapter,
+    timeOutSingaporeAdapter,
+  ].map((adapter) => [adapter.id, adapter]),
+);
+export const renderedAdapterFor = (adapterId) =>
+  adapters.get(adapterId) ?? null;
+export {
+  feverAdapter,
+  visitSingaporeAdapter,
+  singaporeFilmSocietyAdapter,
+  rootsHanAdapter,
+  honeycombersAdapter,
+  artsEquatorAdapter,
+  timeOutSingaporeAdapter,
+};

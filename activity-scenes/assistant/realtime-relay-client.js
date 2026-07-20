@@ -95,11 +95,7 @@ export function createRealtimeRelayClient({
   const emit = (event) => onEvent?.(structuredClone(event));
 
   const releasePendingListening = () => {
-    if (
-      !pendingListeningEvent ||
-      playbackRunning ||
-      playbackQueue.length
-    )
+    if (!pendingListeningEvent || playbackRunning || playbackQueue.length)
       return false;
     const event = pendingListeningEvent;
     pendingListeningEvent = null;

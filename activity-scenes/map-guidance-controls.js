@@ -120,7 +120,10 @@ export function addMapGuidanceControls(map, { onShowTour, dispatch } = {}) {
   return {
     id: "map-guidance",
     finalize: () => {
-      document.removeEventListener("pointerdown", closeAttributionOnPointerDown);
+      document.removeEventListener(
+        "pointerdown",
+        closeAttributionOnPointerDown,
+      );
       document.removeEventListener("keydown", closeAttributionOnEscape);
       root.remove();
     },

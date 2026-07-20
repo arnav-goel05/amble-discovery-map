@@ -53,21 +53,21 @@ and one shared reconciliation/publication path
 
 ### Source matrix
 
-| Order | Source | Evidence role | Operating state | Publication behavior |
-|---:|---|---|---|---|
-| 10 | Catch.sg | direct | enabled | Publish eligible direct records |
-| 20 | SISTIC | direct | enabled | Publish eligible direct records |
-| 30 | Fever Singapore | direct | enabled | Include dated, selectable, and anytime activities |
-| 40 | Visit Singapore | direct | enabled | Include individual happenings extracted from details/guides |
-| 50 | Singapore Film Society | direct | enabled | Include public and access-restricted programmes |
-| 60 | Roots/HAN | unavailable | disabled | Report only until source contract revalidation |
-| 70 | Honeycombers | editorial | enabled | Corroborate first; publish sufficient editorial-only evidence |
-| 80 | ArtsEquator | editorial | enabled | Corroborate first; publish sufficient editorial-only evidence |
-| 90 | Time Out Singapore | editorial | enabled | Corroborate first; publish sufficient editorial-only evidence |
+| Order | Source                 | Evidence role | Operating state | Publication behavior                                          |
+| ----: | ---------------------- | ------------- | --------------- | ------------------------------------------------------------- |
+|    10 | Catch.sg               | direct        | enabled         | Publish eligible direct records                               |
+|    20 | SISTIC                 | direct        | enabled         | Publish eligible direct records                               |
+|    30 | Fever Singapore        | direct        | enabled         | Include dated, selectable, and anytime activities             |
+|    40 | Visit Singapore        | direct        | enabled         | Include individual happenings extracted from details/guides   |
+|    50 | Singapore Film Society | direct        | enabled         | Include public and access-restricted programmes               |
+|    60 | Roots/HAN              | unavailable   | disabled        | Report only until source contract revalidation                |
+|    70 | Honeycombers           | editorial     | enabled         | Corroborate first; publish sufficient editorial-only evidence |
+|    80 | ArtsEquator            | editorial     | enabled         | Corroborate first; publish sufficient editorial-only evidence |
+|    90 | Time Out Singapore     | editorial     | enabled         | Corroborate first; publish sufficient editorial-only evidence |
 
 ## Constitution Check
 
-*GATE: Passed before research and re-checked after design against Constitution v2.3.0.*
+_GATE: Passed before research and re-checked after design against Constitution v2.3.0._
 
 - **Branch workflow — PASS**: All work remains on `develop`; no feature branch is created or
   selected by the SpecKit feature directory.

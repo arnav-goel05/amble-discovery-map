@@ -95,7 +95,9 @@ test("MRT visibility is visual-only until the user explicitly requests a transit
   await page.routeWebSocket(
     "**/api/voice/sessions/transit-voice-session/stream",
     (socket) => {
-      socket.send(JSON.stringify({ type: "session.state", state: "listening" }));
+      socket.send(
+        JSON.stringify({ type: "session.state", state: "listening" }),
+      );
       socket.send(
         JSON.stringify({
           type: "transcript.final",
