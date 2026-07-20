@@ -254,6 +254,22 @@ allEncounteredRecords = publishedContributions + review + excluded + archived + 
 Counts may overlap only where explicitly labeled as source contributions rather than unique
 published events.
 
+### ListingSurfaceOutcome
+
+| Field                      | Type                | Rules                                               |
+| -------------------------- | ------------------- | --------------------------------------------------- |
+| `listingSurface`           | canonical URL       | One configured or boundedly discovered surface      |
+| `status`                   | enum                | `success` or `blocked`                              |
+| `appearances`              | integer             | Event cards or rows encountered on this surface     |
+| `uniquePointers`           | integer             | Unique detail or inline pointers from this surface  |
+| `newUniquePointers`        | integer             | Pointers not seen on earlier surfaces               |
+| `duplicatesCollapsed`      | integer             | Exact repeated pointers on or across surfaces       |
+| `reasonCode`, `httpStatus` | string/integer/null | Redacted failure metadata; never a body or secret   |
+| `evidenceRef`              | string/null         | Same-run immutable capture when retrieval succeeded |
+
+All configured surfaces terminate explicitly. Source-wide appearances are summed; unique
+pointers are unioned. A blocked surface prevents complete-source claims and unproven deletion.
+
 ## ReconciliationOutcome
 
 One terminal identity decision: `create`, `update`, `no_op`, `expire`, `review`,

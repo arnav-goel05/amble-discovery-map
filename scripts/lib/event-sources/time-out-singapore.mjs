@@ -82,6 +82,22 @@ function listingDate(text) {
   const date = `(?:${DATE}|${MONTH_FIRST_DATE})`;
   const until = text.match(new RegExp(`\\bUntil\\s+(${date})`, "i"))?.[1];
   if (until) return `Until ${until}`;
+  const sharedYear = text.match(
+    new RegExp(
+      `\\b(\\d{1,2})\\s+(${MONTH})\\s*(?:[-–]|to)?\\s*(\\d{1,2})\\s+(${MONTH})[,]?\\s+(20\\d{2})\\b`,
+      "i",
+    ),
+  );
+  if (sharedYear)
+    return `${sharedYear[1]} ${sharedYear[2]} ${sharedYear[5]} to ${sharedYear[3]} ${sharedYear[4]} ${sharedYear[5]}`;
+  const sameMonth = text.match(
+    new RegExp(
+      `\\b(${MONTH})\\s+(\\d{1,2})\\s*(?:[-–]|to)\\s*(\\d{1,2})[,]?\\s+(20\\d{2})\\b`,
+      "i",
+    ),
+  );
+  if (sameMonth)
+    return `${sameMonth[1]} ${sameMonth[2]}, ${sameMonth[4]} to ${sameMonth[1]} ${sameMonth[3]}, ${sameMonth[4]}`;
   const range = text.match(
     new RegExp(`\\b(${date})\\s*(?:[-–]|to)\\s*(${date})`, "i"),
   );
@@ -331,7 +347,8 @@ export const timeOutSingaporeAdapter = {
         detailUrls: [],
         detailItems: [],
         listingUrls,
-        appearances: listingUrls.length,
+        // The homepage route is traversal metadata, not an event appearance.
+        appearances: 0,
         complete: listingUrls.length === 1,
         nextUrl: null,
         evidence:

@@ -259,6 +259,13 @@ Reports distinguish source contributions from unique published activities. Every
 record, evidence assessment, session, venue occurrence, dedup decision, reconciliation
 outcome, and review item terminates exactly once.
 
+For multi-surface rendered sources, results also expose `completion.surfaceOutcomes` and the
+counts `listingAppearances`, `uniqueSourcePointers`, and `listingDuplicatesCollapsed`. Each
+configured surface has a terminal success or blocked outcome. Any blocked surface blocks the
+source, retains completed same-run capture references and diagnostics, and cannot authorize
+deletion or claim zero results. An HTTP status may be retained as an integer; response bodies,
+credentials, and authorization values are forbidden in diagnostics.
+
 ## 11. Operational trace contract
 
 Trace path: `outputs/event-pipeline/<run-id>/logs/trace.jsonl`.

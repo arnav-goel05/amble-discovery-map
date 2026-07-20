@@ -335,3 +335,20 @@ filters without yet changing publication or UI behavior.
 - [x] T171 Extend bounded rendered-source traversal to checked-in and adapter-discovered listing surfaces with approved-domain validation, a shared ceiling, deterministic ordering, and trace logging in `scripts/event-source-collector.mjs` and `scripts/verify-event-source-adapters.mjs`
 - [x] T172 Generalize the Time Out adapter and checked-in definition for weekly, weekend, dynamically discovered monthly, art-exhibition, and concert roundups while excluding navigation/recommendation zones in `scripts/lib/event-sources/time-out-singapore.mjs` and `data/event-pipeline-config.json`
 - [x] T173 Run focused source-contract and adapter validation tests plus the production build without launching the complete live pipeline
+
+## Phase 15: Multi-Surface Hardening Amendment
+
+**Goal**: Make remaining source coverage gaps observable and safe without launching a live run.
+
+**Independent Test**: Focused fixtures prove cross-surface deduplication, compact dates,
+surface accounting/failure isolation, provider-policy classification, and unavailable-source
+behavior without network access.
+
+- [ ] T174 [P] [US1] Add failing cross-surface repeat and sibling-preservation fixtures in `tests/event-deduplication.test.mjs`
+- [ ] T175 [P] [US1] Add failing compact-date, overlap-accounting, surface-failure, HTTP-469, and unavailable-source fixtures in `tests/event-source-contract.test.mjs` and `tests/event-pipeline.test.mjs`
+- [ ] T176 [US1] Implement conservative same-source cross-surface candidate generation in `scripts/lib/event-sources/deduplicate.mjs`
+- [ ] T177 [US1] Implement compact shared-year date parsing in `scripts/lib/event-sources/time-out-singapore.mjs`
+- [ ] T178 [US1] Implement per-surface terminal accounting and blocked-source diagnostics in `scripts/event-source-collector.mjs`
+- [ ] T179 [US1] Preserve provider HTTP status and bounded policy classification in `scripts/lib/event-sources/tinyfish-fetch.mjs` and `scripts/event-source-collector.mjs`
+- [ ] T180 [US1] Expose source-surface accounting in `scripts/lib/event-pipeline/reporting.mjs`
+- [ ] T181 [US1] Run the focused tests from `specs/002-add-web-event-sources/quickstart.md` and keep the separate live-run task T156 open

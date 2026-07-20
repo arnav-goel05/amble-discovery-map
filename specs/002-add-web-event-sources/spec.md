@@ -371,6 +371,21 @@ release-wide validation failure, and atomic-activation failure fixtures.
 - **FR-036**: The public experience MUST provide one representation per published logical
   activity and accessible mapped, secret/location-TBA, multiple-location, loading, empty,
   stale, missing-data, and error states.
+- **FR-037**: Repeated editorial coverage of the same activity on different bounded surfaces
+  of one source MUST collapse only when schedule, distinctive title, venue, and at least one
+  additional identity signal agree; distinct editions and sibling sessions MUST remain separate.
+- **FR-038**: Every configured listing surface MUST have an explicit terminal outcome. A failed
+  surface MUST NOT be reported as an empty or complete source, MUST NOT cause unproven deletion,
+  and MUST preserve accounting and evidence from completed surfaces for diagnosis and retry.
+- **FR-039**: Source results and operator reports MUST distinguish listing appearances, unique
+  source records, exact repeated pointers collapsed, and per-surface failures.
+- **FR-040**: Date extraction MUST recognize shared-year and same-month compact ranges while
+  preserving the original evidence and MUST NOT infer ambiguous endpoints.
+- **FR-041**: Non-standard provider access responses, including HTTP 469, MUST be classified as
+  bounded external provider-policy failures, logged without response bodies or credentials, and
+  handled through stale carry-forward rather than empty success.
+- **FR-042**: An intentionally unavailable configured source MUST remain explicit in state and
+  reports, perform no retrieval, and contribute no fabricated records.
 
 ### Key Entities
 
@@ -440,6 +455,9 @@ release-wide validation failure, and atomic-activation failure fixtures.
 - **SC-010**: Required desktop/mobile Chromium, WebKit, and Firefox tests show one
   representation per published logical activity and no regression in mapped, off-map,
   loading, empty, stale, missing-data, or error states.
+- **SC-011**: Focused fixtures achieve 100% expected outcomes for cross-surface repeat versus
+  sibling identity, compact date ranges, exact pointer accounting, isolated surface failure,
+  HTTP 469 classification, and intentionally unavailable-source handling.
 
 ## Assumptions
 
