@@ -21,8 +21,6 @@ const projects = [
       viewport: { width: 390, height: 844 },
       screen: { width: 390, height: 844 },
       hasTouch: true,
-      userAgent:
-        "Mozilla/5.0 (Android 14; Mobile; rv:151.0) Gecko/151.0 Firefox/151.0",
     },
   },
 ];
