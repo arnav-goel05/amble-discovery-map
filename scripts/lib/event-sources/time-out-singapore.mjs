@@ -13,6 +13,35 @@ import {
 const MONTH =
   "(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)";
 const DATE = `\\d{1,2}\\s+${MONTH}\\s+20\\d{2}`;
+const MONTH_FIRST_DATE = `${MONTH}\\s+\\d{1,2},?\\s+20\\d{2}`;
+
+const SURFACES = [
+  {
+    key: "hotlist",
+    path: /\/singapore\/things-to-do\/the-time-out-singapore-hotlist$/,
+    heading: /^Best events in Singapore this week$/i,
+  },
+  {
+    key: "weekend",
+    path: /\/singapore\/things-to-do\/things-to-do-in-singapore-this-weekend$/,
+    heading: /^What['’]s on in Singapore this weekend$/i,
+  },
+  {
+    key: "month",
+    path: /\/singapore\/things-to-do\/the-best-things-to-do-in-singapore-in-[a-z]+$/,
+    heading: /^[A-Z][a-z]+['’]s best activities$/i,
+  },
+  {
+    key: "art",
+    path: /\/singapore\/art\/the-best-art-exhibitions-in-singapore$/,
+    heading: /^Best art exhibitions in Singapore$/i,
+  },
+  {
+    key: "concerts",
+    path: /\/singapore\/music\/upcoming-concerts-in-singapore$/,
+    heading: /^What['’]s in 20\d{2}$/i,
+  },
+];
 
 function rawMarkup(result) {
   for (const value of [
@@ -32,40 +61,47 @@ function attribute(tag, name) {
   );
 }
 
-function eventZone(markup) {
-  const heading =
-    /<h2\b[^>]*data-testid=["']zone-title_testID["'][^>]*>[\s\S]*?Best events in Singapore this week[\s\S]*?<\/h2>/i.exec(
-      markup,
-    );
-  if (!heading) return "";
-  const rest = markup.slice(heading.index + heading[0].length);
-  const nextZone = rest.search(
-    /<h2\b[^>]*data-testid=["']zone-title_testID["']/i,
-  );
-  return nextZone < 0 ? rest : rest.slice(0, nextZone);
+function surfaceFor(url) {
+  const path = new URL(url).pathname;
+  return SURFACES.find((surface) => surface.path.test(path)) ?? null;
 }
 
-function semanticEventZone(markup) {
-  const heading =
-    /<h2\b[^>]*>\s*Best events in Singapore this week\s*<\/h2>/i.exec(markup);
-  if (!heading) return "";
-  const rest = markup.slice(heading.index + heading[0].length);
-  const nextZone = rest.search(/<h2\b[^>]*>\s*Explore Singapore\s*<\/h2>/i);
-  return nextZone < 0 ? "" : rest.slice(0, nextZone);
+function boundedEventZone(markup, surface) {
+  const headings = [...markup.matchAll(/<h2\b[^>]*>[\s\S]*?<\/h2>/gi)];
+  const index = headings.findIndex((heading) =>
+    surface.heading.test(readableText(heading[0])),
+  );
+  if (index < 0 || !headings[index + 1]) return "";
+  return markup.slice(
+    headings[index].index + headings[index][0].length,
+    headings[index + 1].index,
+  );
 }
 
 function listingDate(text) {
-  const until = text.match(new RegExp(`\\bUntil\\s+(${DATE})`, "i"))?.[1];
+  const date = `(?:${DATE}|${MONTH_FIRST_DATE})`;
+  const until = text.match(new RegExp(`\\bUntil\\s+(${date})`, "i"))?.[1];
   if (until) return `Until ${until}`;
   const range = text.match(
-    new RegExp(`\\b(${DATE})\\s*(?:[-–]|to)\\s*(${DATE})`, "i"),
+    new RegExp(`\\b(${date})\\s*(?:[-–]|to)\\s*(${date})`, "i"),
   );
   if (range) return `${range[1]} to ${range[2]}`;
-  return text.match(new RegExp(`\\b(${DATE})\\b`, "i"))?.[1] ?? null;
+  return text.match(new RegExp(`\\b(${date})\\b`, "i"))?.[1] ?? null;
 }
 
-function structuredHotlistCards(result, source, baseUrl) {
-  const zone = eventZone(rawMarkup(result));
+function listingRecord(surface, ordinal, title, text) {
+  return {
+    title,
+    dateText: listingDate(text),
+    scope: "Singapore",
+    surface: surface.key,
+    surfaceOrdinal: ordinal,
+    ...(surface.key === "hotlist" ? { hotlistOrdinal: ordinal } : {}),
+  };
+}
+
+function structuredSurfaceCards(result, source, baseUrl, surface) {
+  const zone = boundedEventZone(rawMarkup(result), surface);
   const items = [],
     appearances = [];
   for (const match of zone.matchAll(
@@ -98,19 +134,11 @@ function structuredHotlistCards(result, source, baseUrl) {
     }
     const text = readableText(article);
     appearances.push(ordinal);
-    items.push({
-      url,
-      record: {
-        title,
-        dateText: listingDate(text),
-        scope: "Singapore",
-        hotlistOrdinal: ordinal,
-      },
-    });
+    items.push({ url, record: listingRecord(surface, ordinal, title, text) });
   }
   items.sort(
     (a, b) =>
-      a.record.hotlistOrdinal - b.record.hotlistOrdinal ||
+      a.record.surfaceOrdinal - b.record.surfaceOrdinal ||
       a.url.localeCompare(b.url),
   );
   const uniqueItems = [
@@ -119,7 +147,7 @@ function structuredHotlistCards(result, source, baseUrl) {
   const completeSequence =
     uniqueItems.length > 0 &&
     uniqueItems.every(
-      (item, index) => item.record.hotlistOrdinal === index + 1,
+      (item, index) => item.record.surfaceOrdinal === index + 1,
     );
   return {
     items: completeSequence ? uniqueItems : [],
@@ -128,8 +156,8 @@ function structuredHotlistCards(result, source, baseUrl) {
   };
 }
 
-function semanticHotlistCards(result, source, baseUrl) {
-  const zone = semanticEventZone(rawMarkup(result));
+function semanticSurfaceCards(result, source, baseUrl, surface) {
+  const zone = boundedEventZone(rawMarkup(result), surface);
   const articles = [
     ...zone.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/gi),
   ].map((match) => match[1]);
@@ -176,12 +204,7 @@ function semanticHotlistCards(result, source, baseUrl) {
     };
   const items = articles.map((article, index) => ({
     url: primaryUrls[index],
-    record: {
-      title: null,
-      dateText: listingDate(readableText(article)),
-      scope: "Singapore",
-      hotlistOrdinal: index + 1,
-    },
+    record: listingRecord(surface, index + 1, null, readableText(article)),
   }));
   return {
     items,
@@ -190,11 +213,33 @@ function semanticHotlistCards(result, source, baseUrl) {
   };
 }
 
-function hotlistCards(result, source, baseUrl) {
-  const structured = structuredHotlistCards(result, source, baseUrl);
+function surfaceCards(result, source, baseUrl, surface) {
+  const structured = structuredSurfaceCards(result, source, baseUrl, surface);
   return structured.appearances.length
     ? structured
-    : semanticHotlistCards(result, source, baseUrl);
+    : semanticSurfaceCards(result, source, baseUrl, surface);
+}
+
+function currentMonthRoute(result, source, baseUrl) {
+  const base = new URL(baseUrl),
+    pattern = new RegExp(source.listing.monthlyPathPattern);
+  return [
+    ...new Set(
+      renderedDocument(result).links.flatMap((link) => {
+        if (!/^this month$/i.test(clean(link.text) ?? "")) return [];
+        try {
+          const url = canonicalRenderedUrl(new URL(link.url, base).href),
+            parsed = new URL(url);
+          return parsed.hostname === base.hostname &&
+            pattern.test(parsed.pathname)
+            ? [url]
+            : [];
+        } catch {
+          return [];
+        }
+      }),
+    ),
+  ].sort();
 }
 
 function detailSchedule(document, listingRecord) {
@@ -280,22 +325,52 @@ function enrichDetail(result, listingRecord) {
 export const timeOutSingaporeAdapter = {
   id: "time-out-singapore-discovery-v1",
   listing(result, source, url = source.listing.url) {
+    if (new URL(url).pathname === "/singapore") {
+      const listingUrls = currentMonthRoute(result, source, url);
+      return {
+        detailUrls: [],
+        detailItems: [],
+        listingUrls,
+        appearances: listingUrls.length,
+        complete: listingUrls.length === 1,
+        nextUrl: null,
+        evidence:
+          listingUrls.length === 1
+            ? "current_month_route_discovered"
+            : "current_month_route_missing",
+        zeroResultConfirmed: false,
+      };
+    }
+    const surface = surfaceFor(url);
+    if (!surface)
+      return {
+        detailUrls: [],
+        detailItems: [],
+        listingUrls: [],
+        appearances: 0,
+        complete: false,
+        nextUrl: null,
+        evidence: "unapproved_listing_surface",
+        zeroResultConfirmed: false,
+      };
     const {
       items: detailItems,
       appearances,
       completeSequence,
-    } = hotlistCards(result, source, url);
+    } = surfaceCards(result, source, url, surface);
+    const evidenceSurface = surface.key === "hotlist" ? "hotlist" : surface.key;
     return {
       detailUrls: [],
       detailItems,
+      listingUrls: [],
       appearances: appearances.length,
-      complete: true,
+      complete: completeSequence,
       nextUrl: null,
       evidence: detailItems.length
-        ? "bounded_numbered_hotlist_cards"
-        : completeSequence
-          ? "hotlist_cards_missing"
-          : "numbered_hotlist_gap",
+        ? `bounded_numbered_${evidenceSurface}_cards`
+        : surface.key === "hotlist"
+          ? "numbered_hotlist_gap"
+          : "numbered_surface_gap",
       zeroResultConfirmed: false,
     };
   },

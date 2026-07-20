@@ -189,12 +189,25 @@
       "collectionOrder": 90,
       "precedence": null,
       "adapterId": "time-out-singapore-discovery-v1",
-      "version": "1.0",
+      "version": "1.1",
       "providerId": "time-out-singapore",
       "owner": "Time Out England Limited",
       "officialDomains": ["timeout.com"],
       "costClass": "free",
-      "listing": { "url": "https://www.timeout.com/singapore/things-to-do/the-time-out-singapore-hotlist", "method": "GET", "paginationCeiling": 1, "detailPathPattern": "^/singapore/(?:things-to-do|news)/", "retrieval": { "format": "html", "ttl": 0 } },
+      "listing": {
+        "url": "https://www.timeout.com/singapore/things-to-do/the-time-out-singapore-hotlist",
+        "urls": [
+          "https://www.timeout.com/singapore",
+          "https://www.timeout.com/singapore/things-to-do/things-to-do-in-singapore-this-weekend",
+          "https://www.timeout.com/singapore/art/the-best-art-exhibitions-in-singapore",
+          "https://www.timeout.com/singapore/music/upcoming-concerts-in-singapore"
+        ],
+        "method": "GET",
+        "paginationCeiling": 6,
+        "detailPathPattern": "^/singapore/(?:things-to-do|news|art|music)/",
+        "monthlyPathPattern": "^/singapore/things-to-do/the-best-things-to-do-in-singapore-in-[a-z]+$",
+        "retrieval": { "format": "html", "ttl": 0 }
+      },
       "detail": { "url": "https://www.timeout.com/singapore/things-to-do/", "method": "GET" },
       "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 },
       "editorialPolicy": { "version": "2.0", "corroborateFirst": true, "allowSufficientEditorialOnly": true, "outboundLabels": ["event website", "website"] }
