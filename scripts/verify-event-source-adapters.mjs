@@ -197,9 +197,17 @@ export function validateEventSourceDefinitions(
       }
     }
     if (source.listing?.urls !== undefined) {
-      if (!Array.isArray(source.listing.urls) || source.listing.urls.length > source.listing.paginationCeiling - 1) throw new Error(`${source.name} has invalid bounded listing surfaces`);
+      if (
+        !Array.isArray(source.listing.urls) ||
+        source.listing.urls.length > source.listing.paginationCeiling - 1
+      )
+        throw new Error(`${source.name} has invalid bounded listing surfaces`);
       const canonical = source.listing.urls.map((url) => new URL(url).href);
-      if (new Set(canonical).size !== canonical.length || canonical.includes(new URL(source.listing.url).href)) throw new Error(`${source.name} has duplicate listing surfaces`);
+      if (
+        new Set(canonical).size !== canonical.length ||
+        canonical.includes(new URL(source.listing.url).href)
+      )
+        throw new Error(`${source.name} has duplicate listing surfaces`);
     }
     validateSourcePolicy(source);
     names.add(source.name);
