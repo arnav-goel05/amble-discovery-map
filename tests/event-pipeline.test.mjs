@@ -16,6 +16,7 @@ import { Accessor, Document, NodeIO } from "@gltf-transform/core";
 
 import {
   branchEvidenceHash,
+  browserVerificationEnvironment,
   canCommitFrontendSnapshot,
   classifyNonBuildingRecovery,
   collectLocationClues,
@@ -114,6 +115,33 @@ const SCRIPT = resolve(ROOT, "scripts/event-pipeline.mjs");
 const require = createRequire(import.meta.url);
 const { AdminRepository } = require("../scripts/lib/admin-repository.cjs");
 const { AdminService } = require("../scripts/lib/admin-service.cjs");
+
+test("pipeline browser verification uses a stable isolated strict-server port", () => {
+  const first = browserVerificationEnvironment("run-alpha");
+  const repeated = browserVerificationEnvironment("run-alpha");
+  const second = browserVerificationEnvironment("run-beta");
+  assert.equal(first.PLAYWRIGHT_PORT, repeated.PLAYWRIGHT_PORT);
+  assert.notEqual(first.PLAYWRIGHT_PORT, second.PLAYWRIGHT_PORT);
+  assert.equal(first.PLAYWRIGHT_REUSE_EXISTING_SERVER, "0");
+  assert.equal(
+    first.EVENT_PIPELINE_BROWSER_ORIGIN,
+    `http://127.0.0.1:${first.PLAYWRIGHT_PORT}`,
+  );
+  assert.ok(Number(first.PLAYWRIGHT_PORT) >= 40_000);
+  assert.ok(Number(first.PLAYWRIGHT_PORT) < 50_000);
+});
+
+test("pipeline config permanently enables bounded TinyFish missing-venue recovery", () => {
+  const recovery = readPipelineConfig().missingVenueRecovery;
+  assert.equal(recovery.enabled, true);
+  assert.equal(recovery.maxCandidates, 3);
+  assert.equal(recovery.search.providerId, "tinyfish-search");
+  assert.equal(recovery.search.endpoint, "https://api.search.tinyfish.ai");
+  assert.equal(recovery.fetch.providerId, "tinyfish-fetch");
+  assert.equal(recovery.fetch.batchSize, 3);
+  assert.ok(recovery.search.timeoutMs <= 20_000);
+  assert.ok(recovery.fetch.maximumUrlsPerMinute < 150);
+});
 
 test("v3 activity contracts keep schedule, identity, placement, mapping, lifecycle, and freshness orthogonal", () => {
   const activity = normalizeActivityContract({
@@ -339,6 +367,19 @@ test("active and future activity policy preserves exact, range, recurring, selec
     ],
     [
       {
+        title: "Past editorial date range",
+        scope: "Singapore",
+        dateText: "July 10, 2026 to July 17, 2026",
+        schedule: {
+          kind: "exact",
+          displayText: "July 10, 2026 to July 17, 2026",
+        },
+      },
+      false,
+      "archived",
+    ],
+    [
+      {
         title: "Discount only",
         scope: "Singapore",
         purePromotion: true,
@@ -379,6 +420,24 @@ test("active and future activity policy preserves exact, range, recurring, selec
     }).sessionRefs.length,
     0,
     "recurrence is not expanded infinitely",
+  );
+  assert.deepEqual(
+    normalizeSchedule(
+      {
+        kind: "exact",
+        displayText: "July 10, 2026 to July 19, 2026",
+      },
+      { dateText: "July 10, 2026 to July 19, 2026" },
+    ),
+    {
+      kind: "range",
+      start: "July 10, 2026",
+      end: "July 19, 2026",
+      recurrence: null,
+      sessionRefs: [],
+      displayText: "July 10, 2026 to July 19, 2026",
+      finalKnownOccurrence: "July 19, 2026",
+    },
   );
 });
 
@@ -1222,6 +1281,9 @@ test("executable source collector captures full SISTIC evidence and accounts inv
       occurrencesEmitted: 1,
       excludedOccurrences: 0,
       eligiblePreDedup: 1,
+      listingAppearances: 2,
+      uniqueSourcePointers: 1,
+      listingDuplicatesCollapsed: 0,
     });
     assert.equal(
       result.invalidReasonCodes[result.invalidSourceRecordRefs[0]],
@@ -1311,6 +1373,9 @@ test("executable source collector deduplicates repeated detail URLs before captu
       occurrencesEmitted: 1,
       excludedOccurrences: 0,
       eligiblePreDedup: 1,
+      listingAppearances: 2,
+      uniqueSourcePointers: 1,
+      listingDuplicatesCollapsed: 1,
     });
     assert.equal(
       result.invalidReasonCodes[result.invalidSourceRecordRefs[0]],
@@ -1393,6 +1458,47 @@ test("executable Catch collector performs bootstrap and detail API capture", asy
     assert.equal(result.counts.eligiblePreDedup, 1);
     assert.equal(requests[1].method, "GET");
     assert.match(requests[2].body, /eventPageID=42/);
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("Catch detail bootstrap preserves HTTP provider-policy classification", async () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-source-catch-detail-block-${process.pid}-${Date.now()}`,
+  );
+  const source = structuredClone(
+    readPipelineConfig().sources.find(
+      (item) => item.adapterId === "catch-official-listing-v1",
+    ),
+  );
+  const responses = [
+    {
+      status: 200,
+      ok: true,
+      body: {
+        data: {
+          ItemTotal: 1,
+          PageTotal: 1,
+          Items: [{ Url: "/event/show", Title: "Show" }],
+        },
+      },
+      text: "",
+    },
+    { status: 469, ok: false, body: null, text: "do not retain" },
+  ];
+  try {
+    const result = await collectSource({
+      runDir,
+      run: { runId: "run-a", window: singaporeWindow("2026-07-11") },
+      source,
+      transport: async () => responses.shift(),
+    });
+    assert.equal(result.status, "blocked");
+    assert.equal(result.blockerReasonCode, "provider_policy_invalid");
+    assert.equal(result.httpStatus, 469);
+    assert.doesNotMatch(JSON.stringify(result), /do not retain/);
   } finally {
     rmSync(runDir, { recursive: true, force: true });
   }
@@ -1544,6 +1650,169 @@ test("code normalizer filters, preserves cross-source candidates, provenance, an
       "membership_offer",
       "online",
     ]);
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("normalizer classifies expanded performances by their own schedule", () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-normalizer-performance-schedule-${process.pid}-${Date.now()}`,
+  );
+  const fixtureRef = "raw/time-out/details/festival.json";
+  mkdirSync(dirname(join(runDir, fixtureRef)), { recursive: true });
+  writeFileSync(
+    join(runDir, fixtureRef),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      counts: { records: 1 },
+      records: [
+        {
+          adapterVersion: "1.0",
+          detailUrl: "https://www.timeout.com/singapore/news/festival",
+          sourceId: "festival",
+          title: "Festival",
+          mode: "physical",
+          venue: "Festival Hall",
+          schedule: { kind: "selectable", sessionRefs: ["old", "current"] },
+          performances: [
+            {
+              startDateTime: "2026-07-10T10:00:00+08:00",
+              endDateTime: "2026-07-10T12:00:00+08:00",
+              dateText: "10 Jul 2026",
+            },
+            {
+              startDateTime: "2026-07-25T10:00:00+08:00",
+              endDateTime: "2026-07-25T12:00:00+08:00",
+              dateText: "25 Jul 2026",
+            },
+          ],
+        },
+      ],
+    }),
+  );
+  try {
+    const result = normalizeRun({
+      runDir,
+      state: {
+        sources: {
+          "Time Out Singapore": {
+            status: "success",
+            invalidSourceRecordRefs: [],
+            processedSourceRecordRefs: [`${fixtureRef}#/records/0`],
+          },
+        },
+      },
+      run: { runId: "run-a", window: singaporeWindow("2026-07-20") },
+    });
+    assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(
+      result.sourceAccounting["Time Out Singapore"].occurrencesEmitted,
+      2,
+    );
+    assert.equal(
+      result.sourceAccounting["Time Out Singapore"].excludedOccurrences,
+      1,
+    );
+    const events = JSON.parse(
+      readFileSync(join(runDir, "normalized/events.json"), "utf8"),
+    ).records;
+    assert.equal(events.length, 1);
+    assert.equal(events[0].startsAt, "2026-07-25T10:00:00+08:00");
+    const excluded = JSON.parse(
+      readFileSync(join(runDir, "normalized/excluded.json"), "utf8"),
+    ).records;
+    assert.equal(excluded[0].reasonCode, "expired");
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("normalizer consumes healthy records from an incomplete blocked source", () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-normalizer-incomplete-${process.pid}-${Date.now()}`,
+  );
+  const goodRef = "raw/fever/details/good.json";
+  const failedRef = "raw/fever/details/failed.json";
+  mkdirSync(join(runDir, "raw/fever/details"), { recursive: true });
+  writeFileSync(
+    join(runDir, goodRef),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      counts: { records: 1 },
+      records: [
+        {
+          adapterVersion: "1.0",
+          detailUrl: "https://feverup.com/m/good",
+          sourceId: "fever:good",
+          title: "Healthy event from incomplete source",
+          mode: "physical",
+          dateText: "27 Jul 2026",
+          venue: "The Arts House",
+          performances: [],
+        },
+      ],
+    }),
+  );
+  writeFileSync(
+    join(runDir, failedRef),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      records: [
+        {
+          recordType: "retrieval_failure",
+          sourceId: "failure:failed",
+          detailUrl: "https://feverup.com/m/failed",
+        },
+      ],
+    }),
+  );
+  const state = {
+    sources: {
+      "Fever Singapore": {
+        status: "blocked",
+        operatingMode: "required",
+        counts: {
+          sourceRecordsReceived: 2,
+          invalidSourceRecords: 1,
+          processedSourceRecords: 1,
+        },
+        invalidSourceRecordRefs: [`${failedRef}#/records/0`],
+        invalidReasonCodes: {
+          [`${failedRef}#/records/0`]: "source_unavailable",
+        },
+        processedSourceRecordRefs: [`${goodRef}#/records/0`],
+      },
+    },
+  };
+  try {
+    const result = normalizeRun({
+      runDir,
+      state,
+      run: { runId: "run-a", window: singaporeWindow("2026-07-20") },
+    });
+    assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(
+      result.sourceReconciliation.statuses["Fever Singapore"],
+      "blocked",
+    );
+    assert.equal(
+      JSON.parse(readFileSync(join(runDir, "normalized/events.json"), "utf8"))
+        .records.length,
+      1,
+    );
+    assert.deepEqual(
+      JSON.parse(readFileSync(join(runDir, "normalized/invalid.json"), "utf8"))
+        .records,
+      [
+        {
+          reasonCode: "source_unavailable",
+          sourceRecordRef: `${failedRef}#/records/0`,
+        },
+      ],
+    );
   } finally {
     rmSync(runDir, { recursive: true, force: true });
   }
@@ -1785,6 +2054,84 @@ test("normalizer retains undated venue events and audits partial records without
       readFileSync(join(runDir, "normalized/excluded.json"), "utf8"),
     ).records;
     assert.equal(excluded[0].reasonCode, "missing_venue");
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("normalizer discards structural venue labels, logs them, and only recovers from address evidence", () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-normalizer-structural-venue-${process.pid}-${Date.now()}`,
+  );
+  mkdirSync(join(runDir, "raw/fever/details"), { recursive: true });
+  const records = [
+    {
+      adapterVersion: "1.0",
+      sourceId: "description",
+      detailUrl: "https://feverup.com/m/description",
+      title: "Live at Cool Cats",
+      mode: "physical",
+      dateText: "18 Jul 2026",
+      venue: "Description",
+      performances: [],
+    },
+    {
+      adapterVersion: "1.0",
+      sourceId: "accessibility",
+      detailUrl: "https://feverup.com/m/accessibility",
+      title: "Friday Night Magic",
+      mode: "physical",
+      dateText: "18 Jul 2026",
+      venue: "Accessibility",
+      address: "3 Lor Salleh, Singapore 416747",
+      performances: [],
+    },
+  ];
+  writeFileSync(
+    join(runDir, "raw/fever/details/all.json"),
+    JSON.stringify({ schemaVersion: "1.0", runId: "run-a", records }),
+  );
+  const refs = records.map(
+    (_, index) => `raw/fever/details/all.json#/records/${index}`,
+  );
+  try {
+    const result = normalizeRun({
+      runDir,
+      state: {
+        sources: {
+          Fever: {
+            status: "success",
+            invalidSourceRecordRefs: [],
+            processedSourceRecordRefs: refs,
+          },
+        },
+      },
+      run: { runId: "run-a", window: singaporeWindow("2026-07-11") },
+    });
+    assert.equal(result.diagnostics.length, 2);
+    assert.deepEqual(
+      result.diagnostics.map(({ observedValue, action }) => ({
+        observedValue,
+        action,
+      })),
+      [
+        { observedValue: "Description", action: "discarded" },
+        {
+          observedValue: "Accessibility",
+          action: "replaced_with_address",
+        },
+      ],
+    );
+    assert.equal(result.counts.acceptedPostDedup, 1);
+    assert.equal(
+      result.venueBranches[0].venue,
+      "3 Lor Salleh, Singapore 416747",
+    );
+    const excluded = JSON.parse(
+      readFileSync(join(runDir, "normalized/excluded.json"), "utf8"),
+    ).records;
+    assert.equal(excluded[0].reasonCode, "structural_venue_label");
   } finally {
     rmSync(runDir, { recursive: true, force: true });
   }
@@ -2803,6 +3150,117 @@ test("source accounting rejects incomplete reconciliation", () => {
         },
       }),
     /does not reconcile/,
+  );
+});
+
+test("blocked source accounting rejects inconsistent surface and record evidence", () => {
+  const base = {
+    status: "blocked",
+    blockerReasonCode: "source_unavailable",
+    error: "one detail failed",
+    sourceRole: "authoritative",
+    counts: {
+      pages: 1,
+      listingAppearances: 2,
+      uniqueSourcePointers: 2,
+      listingDuplicatesCollapsed: 0,
+      sourceRecordsReceived: 2,
+      invalidSourceRecords: 1,
+      processedSourceRecords: 1,
+      occurrencesEmitted: 1,
+      excludedOccurrences: 0,
+      eligiblePreDedup: 1,
+    },
+    completion: {
+      paginationComplete: true,
+      pagesVisited: ["raw/source/listings/page-0001.json"],
+      sourceRecordsDiscovered: 2,
+      providerReportedTotal: null,
+      derivedTotal: 2,
+      pageRecordCounts: [2],
+      detailUrlsDiscovered: 2,
+      detailPagesCaptured: 1,
+      detailFailures: 1,
+      zeroResultConfirmed: false,
+      surfaceOutcomes: [
+        {
+          listingSurface: "https://example.com/events",
+          status: "success",
+          appearances: 2,
+          uniquePointers: 2,
+          newUniquePointers: 2,
+          duplicatesCollapsed: 0,
+          reasonCode: null,
+          httpStatus: null,
+          evidenceRef: "raw/source/listings/page-0001.json",
+        },
+      ],
+    },
+    sourceRecordRefs: [
+      "raw/source/details/good.json#/records/0",
+      "raw/source/details/failed.json#/records/0",
+    ],
+    invalidSourceRecordRefs: ["raw/source/details/failed.json#/records/0"],
+    processedSourceRecordRefs: ["raw/source/details/good.json#/records/0"],
+    invalidReasonCodes: {
+      "raw/source/details/failed.json#/records/0": "source_unavailable",
+    },
+    artifactRefs: [
+      "raw/source/listings/page-0001.json",
+      "raw/source/details/good.json",
+      "raw/source/details/failed.json",
+    ],
+  };
+  assert.doesNotThrow(() => validateSourceResult(base));
+  assert.doesNotThrow(() =>
+    validateSourceResult({
+      ...base,
+      status: "success",
+      blockerReasonCode: null,
+      error: null,
+    }),
+  );
+  assert.throws(
+    () =>
+      validateSourceResult({
+        ...base,
+        counts: { ...base.counts, listingAppearances: 3 },
+      }),
+    /surface appearances/i,
+  );
+  assert.throws(
+    () =>
+      validateSourceResult({
+        ...base,
+        invalidSourceRecordRefs: [],
+      }),
+    /partition/i,
+  );
+  const surfaceOnly = {
+    status: "blocked",
+    blockerReasonCode: "source_unavailable",
+    error: "one listing surface failed",
+    counts: {
+      pages: 1,
+      listingAppearances: 2,
+      uniqueSourcePointers: 2,
+      listingDuplicatesCollapsed: 0,
+    },
+    completion: {
+      paginationComplete: false,
+      pagesVisited: ["raw/source/listings/page-0001.json"],
+      surfaceOutcomes: base.completion.surfaceOutcomes,
+    },
+    artifactRefs: ["raw/source/listings/page-0001.json"],
+  };
+  assert.doesNotThrow(() => validateSourceResult(surfaceOnly));
+  assert.throws(
+    () =>
+      validateSourceResult({
+        ...surfaceOnly,
+        counts: { ...surfaceOnly.counts, uniqueSourcePointers: 1 },
+      }),
+    /surface unique pointers/i,
   );
 });
 

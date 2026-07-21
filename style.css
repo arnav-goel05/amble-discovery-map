@@ -2679,7 +2679,8 @@ button {
 
 .assistant-shell[data-mode="consent"],
 .assistant-shell[data-mode="confirmation"],
-.assistant-shell[data-mode="error"] {
+.assistant-shell[data-mode="error"],
+.assistant-shell[data-mode="results"] {
   width: min(30rem, calc(100vw - 2rem));
   height: auto;
   border-radius: 1.75rem;

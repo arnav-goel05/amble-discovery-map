@@ -45,7 +45,7 @@ async function openLocalAreaResults(page) {
           sessionId: "area-list-session",
           protocolVersion: "1.0",
           streamPath: "/api/voice/sessions/area-list-session/stream",
-          expiresAt: "2026-07-18T12:05:00.000Z",
+          expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
           limits: { maxSessionSeconds: 300, idleSeconds: 60, maxResponses: 6 },
         },
       }),
@@ -170,7 +170,7 @@ test("mocked voice area selection uses the same drill-down path without a live p
           sessionId: "area-session-fixture",
           protocolVersion: "1.0",
           streamPath: "/api/voice/sessions/area-session-fixture/stream",
-          expiresAt: "2026-07-18T12:05:00.000Z",
+          expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
           limits: {
             maxSessionSeconds: 300,
             idleSeconds: 60,

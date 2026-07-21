@@ -181,7 +181,7 @@ async function installVoiceHarness(page) {
           sessionId: "voice-action-session",
           protocolVersion: "1.0",
           streamPath: "/api/voice/sessions/voice-action-session/stream",
-          expiresAt: "2026-07-18T12:05:00.000Z",
+          expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
           limits: {
             maxSessionSeconds: 300,
             idleSeconds: 60,

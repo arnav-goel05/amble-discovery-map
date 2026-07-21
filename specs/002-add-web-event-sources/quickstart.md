@@ -297,3 +297,28 @@ Expected: compact Time Out ranges are retained; cross-surface repeats collapse w
 siblings; exact listing overlap is reported; a failed surface blocks the source with per-surface
 diagnostics; HTTP 469 is a non-retried provider-policy blocker; and Roots/HAN performs no fetch.
 This focused check does not satisfy the separate live-run task.
+
+## 15. Focused missing-venue recovery validation
+
+```bash
+node --test tests/event-venue-recovery.test.mjs
+node --test --test-name-pattern='pipeline config permanently|normalizer.*missing|CLI normalize command' tests/event-pipeline.test.mjs
+node scripts/verify-event-source-adapters.mjs
+```
+
+Expected: one search and at most three official candidate fetches per otherwise eligible
+location-less physical occurrence; unique verified Singapore locations enter normalization;
+ambiguous, overseas, directory, social, and unverified results remain unpromoted; provider
+failures remain occurrence-scoped; and an unchanged rerun reuses every saved overlay entry with
+zero network attempts.
+
+### Focused stored-run evidence (2026-07-21)
+
+- The recovery-only command inspected the latest stored run's 56 exact `missing_venue`
+  occurrences without recollecting any source or publishing a snapshot.
+- It recovered 7 unique authoritative Singapore venues: Fever 1, Visit Singapore 5, and Time
+  Out 1. Three outcomes remained ambiguous and 46 had no verified location; all provider
+  failures cleared on the bounded failed-only resume.
+- A subsequent unchanged command reused all 56 overlay entries with zero searches or fetches.
+- Temporary normalization replay reduced `missing_venue` from 56 to 49 and increased accepted
+  post-dedup activities from 468 to 475. The finalized stored snapshot was not republished.

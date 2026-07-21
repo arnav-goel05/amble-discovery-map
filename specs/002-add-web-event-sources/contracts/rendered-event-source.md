@@ -309,3 +309,17 @@ Source states are `pending`, `collecting`, `complete`, `unavailable`, and `incom
 An isolated unavailable/incomplete source does not itself block unrelated safe identities.
 A release-wide accounting, schema, identity, geometry, security, build, browser, or activation
 failure preserves the whole previous snapshot.
+
+## 14. Missing-venue recovery overlay
+
+Before normalization, each otherwise eligible physical occurrence with neither usable venue nor
+address may issue one TinyFish Search query and fetch at most three public candidates. A recovery
+is accepted only when exactly one fetched event-specific authoritative page matches the activity,
+establishes Singapore scope, and exposes an explicit venue or address. Search snippets,
+directories, social pages, generic homepages, and conflicting candidates are diagnostic only.
+
+The immutable raw record is never rewritten. Recovery is stored in a schema-versioned overlay
+keyed by source name, source-record reference, stable source occurrence, and occurrence index.
+Each entry contains the query hash, outcome, recovered fields when approved, inspected URL refs,
+and redacted reason code. Existing compatible entries are reused without network access.
+Attempted, recovered, ambiguous, not-found, skipped, and failed counts reconcile per source.

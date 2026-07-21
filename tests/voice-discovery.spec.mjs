@@ -70,6 +70,7 @@ async function startVoice(page) {
 async function mockRealtime(page, { initialResult, refinementResult } = {}) {
   const requests = [];
   const providerUrls = [];
+  let sendRefinement = null;
   page.on("request", (request) => {
     if (/api\.openai\.com|openai\.com\/v1\/realtime/i.test(request.url()))
       providerUrls.push(request.url());
@@ -85,7 +86,7 @@ async function mockRealtime(page, { initialResult, refinementResult } = {}) {
           sessionId: "session-fixture-001",
           protocolVersion: "1.0",
           streamPath: "/api/voice/sessions/session-fixture-001/stream",
-          expiresAt: "2026-07-18T12:05:00.000Z",
+          expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
           limits: {
             maxSessionSeconds: 300,
             idleSeconds: 60,
@@ -120,28 +121,37 @@ async function mockRealtime(page, { initialResult, refinementResult } = {}) {
           }),
         );
         if (refinementResult) {
-          socket.send(
-            JSON.stringify({
-              type: "transcript.final",
-              itemId: "user-item-002",
-              role: "user",
-              modality: "audio",
-              text: "Make it livelier",
-            }),
-          );
-          socket.send(JSON.stringify(discoveryEvent(refinementResult, 2)));
-          socket.send(
-            JSON.stringify({
-              type: "assistant.text.done",
-              itemId: "assistant-item-002",
-              text: "I moved the livelier arts area to the top.",
-            }),
-          );
+          sendRefinement = () => {
+            socket.send(
+              JSON.stringify({
+                type: "transcript.final",
+                itemId: "user-item-002",
+                role: "user",
+                modality: "audio",
+                text: "Make it livelier",
+              }),
+            );
+            socket.send(JSON.stringify(discoveryEvent(refinementResult, 2)));
+            socket.send(
+              JSON.stringify({
+                type: "assistant.text.done",
+                itemId: "assistant-item-002",
+                text: "I moved the livelier arts area to the top.",
+              }),
+            );
+          };
         }
       }
     },
   );
-  return { requests, providerUrls };
+  return {
+    requests,
+    providerUrls,
+    refine() {
+      if (!sendRefinement) throw new Error("Refinement relay is not connected");
+      sendRefinement();
+    },
+  };
 }
 
 async function openAssistant(page) {
@@ -180,6 +190,7 @@ test("vague voice discovery presents grounded areas and accepts voice refinement
     /crowd levels/i,
   );
 
+  relay.refine();
   await expect(page.locator(selectors.transcriptUser)).toContainText(
     "Make it livelier",
   );

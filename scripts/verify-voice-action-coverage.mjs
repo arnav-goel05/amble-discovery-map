@@ -12,7 +12,7 @@ import {
   createPublicActionContracts,
   PUBLIC_ACTION_PARITY_CASES,
 } from "../activity-scenes/assistant/actions/index.js";
-import { ASSISTANT_OWNED_ACTION_IDS } from "../activity-scenes/assistant/assistant-controller.js";
+import { ASSISTANT_OWNED_ACTION_IDS } from "../activity-scenes/assistant/assistant-owned-actions.js";
 import { createRuntimeActionDispatcher } from "../activity-scenes/assistant/runtime-action-dispatcher.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");

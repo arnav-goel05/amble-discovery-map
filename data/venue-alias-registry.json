@@ -5137,71 +5137,6 @@
     },
     {
       "status": "approved",
-      "rawVenue": "Cool Cats",
-      "normalizedVenue": "cool cats",
-      "canonicalVenue": "SOUTH BEACH",
-      "verifiedAddress": null,
-      "coordinates": {
-        "lng": 103.85511351811824,
-        "lat": 1.2941524356691765
-      },
-      "poiId": "south-beach",
-      "gmlId": "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-      "gmlIds": [
-        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6"
-      ],
-      "acceptedGmlNames": [
-        "SOUTH BEACH"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/6/38/6_0.b3dm",
-          "batchIds": [
-            0
-          ]
-        },
-        {
-          "path": "tiles/6/38/6_1.b3dm",
-          "batchIds": [
-            0
-          ]
-        },
-        {
-          "path": "tiles/6/38/6_2.b3dm",
-          "batchIds": [
-            0
-          ]
-        },
-        {
-          "path": "tiles/6/38/6_3.b3dm",
-          "batchIds": [
-            0
-          ]
-        },
-        {
-          "path": "tiles/6/38/6_4.b3dm",
-          "batchIds": [
-            0
-          ]
-        },
-        {
-          "path": "tiles/6/38/6_5.b3dm",
-          "batchIds": [
-            0
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-18T16:40:26.152Z"
-        }
-      ],
-      "verifiedAt": "2026-07-18T16:40:33.492Z"
-    },
-    {
-      "status": "approved",
       "rawVenue": "IMBA Theatre (Gallery), Gardens by the Bay",
       "normalizedVenue": "imba theatre gallery gardens by the bay",
       "canonicalVenue": "GARDENS BY THE BAY",
@@ -5549,55 +5484,120 @@
     },
     {
       "status": "approved",
-      "rawVenue": "Marina South Pier",
-      "normalizedVenue": "marina south pier",
-      "canonicalVenue": "MARINA SOUTH PIER",
+      "rawVenue": "Singapore Oceanarium",
+      "normalizedVenue": "singapore oceanarium",
+      "canonicalVenue": "MARITIME XPERIENTIAL MUSEUM",
       "verifiedAddress": null,
       "coordinates": {
-        "lng": 103.8632496839345,
-        "lat": 1.2709028701496756
+        "lng": 103.82046847155313,
+        "lat": 1.2583018488997462
       },
-      "poiId": "marina-south-pier",
-      "gmlId": "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
+      "poiId": "maritime-xperiential-museum",
+      "gmlId": "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00",
       "gmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0"
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
       ],
       "acceptedGmlNames": [
-        "MARINA SOUTH PIER"
+        "MARITIME XPERIENTIAL MUSEUM"
       ],
       "sourceTiles": [
         {
-          "path": "tiles/5/20/0_0.b3dm",
+          "path": "tiles/6/26/1_0.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/1_1.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/1_2.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/1_3.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/1_4.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/1_5.b3dm",
+          "batchIds": [
+            24
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-19T19:30:07.957Z"
+        }
+      ],
+      "verifiedAt": "2026-07-19T19:30:10.643Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "KELE, 78 Airport Blvd, Jewel Changi Airport, #01-K213",
+      "normalizedVenue": "kele 78 airport blvd jewel changi airport 01 k213",
+      "canonicalVenue": "JEWEL CHANGI AIRPORT",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.98933257610221,
+        "lat": 1.3596958721695571
+      },
+      "poiId": "jewel-changi-airport",
+      "gmlId": "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b",
+      "gmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "acceptedGmlNames": [
+        "JEWEL CHANGI AIRPORT"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/4/15/10_0.b3dm",
           "batchIds": [
             9
           ]
         },
         {
-          "path": "tiles/5/20/0_1.b3dm",
+          "path": "tiles/4/15/10_1.b3dm",
           "batchIds": [
             9
           ]
         },
         {
-          "path": "tiles/5/20/0_2.b3dm",
+          "path": "tiles/4/15/10_2.b3dm",
           "batchIds": [
             9
           ]
         },
         {
-          "path": "tiles/5/20/0_3.b3dm",
+          "path": "tiles/4/15/10_3.b3dm",
           "batchIds": [
             9
           ]
         },
         {
-          "path": "tiles/5/20/0_4.b3dm",
+          "path": "tiles/4/15/10_4.b3dm",
           "batchIds": [
             9
           ]
         },
         {
-          "path": "tiles/5/20/0_5.b3dm",
+          "path": "tiles/4/15/10_5.b3dm",
           "batchIds": [
             9
           ]
@@ -5607,10 +5607,278 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T18:45:20.918Z"
+          "verifiedAt": "2026-07-19T19:30:07.957Z"
         }
       ],
-      "verifiedAt": "2026-07-19T18:45:24.989Z"
+      "verifiedAt": "2026-07-19T19:30:13.097Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Asian Civilisations Museum",
+      "normalizedVenue": "asian civilisations museum",
+      "canonicalVenue": "EMPRESS PLACE BUILDING",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.85141343750463,
+        "lat": 1.2874487009217126
+      },
+      "poiId": "empress-place-building",
+      "gmlId": "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
+      "gmlIds": [
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+      ],
+      "acceptedGmlNames": [
+        "EMPRESS PLACE BUILDING"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/76/11_0.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_1.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_2.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_3.b3dm",
+          "batchIds": [
+            6
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_4.b3dm",
+          "batchIds": [
+            6
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-19T19:30:07.957Z"
+        }
+      ],
+      "verifiedAt": "2026-07-19T19:30:13.144Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "ArtScience Museum",
+      "normalizedVenue": "artscience museum",
+      "canonicalVenue": "MARINA BAY SANDS (ARTSCIENCE MUSEUM)",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.85927402663303,
+        "lat": 1.2862040338634544
+      },
+      "poiId": "marina-bay-sands-artscience-museum",
+      "gmlId": "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e",
+      "gmlIds": [
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e"
+      ],
+      "acceptedGmlNames": [
+        "MARINA BAY SANDS (ARTSCIENCE MUSEUM)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/39/5_0.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_1.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_2.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_3.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_4.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_5.b3dm",
+          "batchIds": [
+            14
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-19T19:30:07.957Z"
+        }
+      ],
+      "verifiedAt": "2026-07-19T19:30:13.168Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "the Singapore Art Museum",
+      "normalizedVenue": "the singapore art museum",
+      "canonicalVenue": "TANJONG PAGAR DISTRIPARK",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.83664260831985,
+        "lat": 1.2718859563161569
+      },
+      "poiId": "tanjong-pagar-distripark",
+      "gmlId": "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3",
+      "gmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "acceptedGmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/31/4_0.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_1.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_2.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_3.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_4.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_5.b3dm",
+          "batchIds": [
+            2
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-19T19:30:07.957Z"
+        }
+      ],
+      "verifiedAt": "2026-07-19T19:30:13.201Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "IMBA Theatre, 18 Marina Gardens Dr, #01-23, Singapore 018953",
+      "normalizedVenue": "imba theatre 18 marina gardens dr 01 23 singapore 018953",
+      "canonicalVenue": "GARDENS BY THE BAY",
+      "verifiedAddress": "18 Marina Gardens Dr, #01-23, Singapore 018953",
+      "coordinates": {
+        "lng": 103.86295132783188,
+        "lat": 1.2825368258537109
+      },
+      "poiId": "gardens-by-the-bay",
+      "gmlId": null,
+      "gmlIds": [
+        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
+        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
+        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+      ],
+      "acceptedGmlNames": [
+        "GARDENS BY THE BAY"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/20/0_0.b3dm",
+          "batchIds": [
+            20,
+            14,
+            17
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_1.b3dm",
+          "batchIds": [
+            20,
+            14,
+            17
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_2.b3dm",
+          "batchIds": [
+            20,
+            14,
+            17
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_3.b3dm",
+          "batchIds": [
+            20,
+            14,
+            17
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_4.b3dm",
+          "batchIds": [
+            20,
+            14,
+            17
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_5.b3dm",
+          "batchIds": [
+            20,
+            14,
+            17
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T09:35:55.201Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T09:36:06.176Z"
     },
     {
       "status": "approved",
@@ -5672,10 +5940,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T18:45:20.918Z"
+          "verifiedAt": "2026-07-20T09:35:55.201Z"
         }
       ],
-      "verifiedAt": "2026-07-19T18:45:25.056Z"
+      "verifiedAt": "2026-07-20T09:36:11.511Z"
     },
     {
       "status": "approved",
@@ -5863,10 +6131,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T18:45:20.918Z"
+          "verifiedAt": "2026-07-20T09:35:55.201Z"
         }
       ],
-      "verifiedAt": "2026-07-19T18:45:25.089Z"
+      "verifiedAt": "2026-07-20T09:36:11.594Z"
     },
     {
       "status": "approved",
@@ -5928,10 +6196,75 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T18:45:20.918Z"
+          "verifiedAt": "2026-07-20T09:35:55.201Z"
         }
       ],
-      "verifiedAt": "2026-07-19T18:45:25.186Z"
+      "verifiedAt": "2026-07-20T09:36:11.933Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Accessibility",
+      "normalizedVenue": "accessibility",
+      "canonicalVenue": "KEMBANGAN ESTATE",
+      "verifiedAddress": "3 Lor Salleh, Level 4, Singapore 416747",
+      "coordinates": {
+        "lng": 103.9064998992459,
+        "lat": 1.3244863097029875
+      },
+      "poiId": "kembangan-estate",
+      "gmlId": "SLA_BLDG2_4fe9a373-b171-4671-a734-4a789d10085a",
+      "gmlIds": [
+        "SLA_BLDG2_4fe9a373-b171-4671-a734-4a789d10085a"
+      ],
+      "acceptedGmlNames": [
+        "KEMBANGAN ESTATE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/48/23_0.b3dm",
+          "batchIds": [
+            38
+          ]
+        },
+        {
+          "path": "tiles/6/48/23_1.b3dm",
+          "batchIds": [
+            38
+          ]
+        },
+        {
+          "path": "tiles/6/48/23_2.b3dm",
+          "batchIds": [
+            38
+          ]
+        },
+        {
+          "path": "tiles/6/48/23_3.b3dm",
+          "batchIds": [
+            38
+          ]
+        },
+        {
+          "path": "tiles/6/48/23_4.b3dm",
+          "batchIds": [
+            38
+          ]
+        },
+        {
+          "path": "tiles/6/48/23_5.b3dm",
+          "batchIds": [
+            38
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T09:35:55.201Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T09:36:12.008Z"
     },
     {
       "status": "approved",
@@ -5993,10 +6326,270 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T18:45:20.918Z"
+          "verifiedAt": "2026-07-20T09:35:55.201Z"
         }
       ],
-      "verifiedAt": "2026-07-19T18:45:25.359Z"
+      "verifiedAt": "2026-07-20T09:36:12.377Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "The White Space at \\*SCAPE (2 Orchard Link, Singapore 237978)",
+      "normalizedVenue": "the white space at scape 2 orchard link singapore 237978",
+      "canonicalVenue": "SCAPE",
+      "verifiedAddress": "2 Orchard Link, Singapore 237978",
+      "coordinates": {
+        "lng": 103.83574842041503,
+        "lat": 1.3010131553541873
+      },
+      "poiId": "scape",
+      "gmlId": "SLA_BLDG2_115253b8-cc64-46a8-b00b-8a196d8d472d",
+      "gmlIds": [
+        "SLA_BLDG2_115253b8-cc64-46a8-b00b-8a196d8d472d"
+      ],
+      "acceptedGmlNames": [
+        "SCAPE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/31/11_0.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/31/11_1.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/31/11_2.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/31/11_3.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/31/11_4.b3dm",
+          "batchIds": [
+            36
+          ]
+        },
+        {
+          "path": "tiles/6/31/11_5.b3dm",
+          "batchIds": [
+            36
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T09:35:55.201Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T09:36:12.452Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Marina South Pier",
+      "normalizedVenue": "marina south pier",
+      "canonicalVenue": "MARINA SOUTH PIER",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.8632496839345,
+        "lat": 1.2709028701496756
+      },
+      "poiId": "marina-south-pier",
+      "gmlId": "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
+      "gmlIds": [
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0"
+      ],
+      "acceptedGmlNames": [
+        "MARINA SOUTH PIER"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/20/0_0.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_1.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_2.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_3.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_4.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/5/20/0_5.b3dm",
+          "batchIds": [
+            9
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T13:10:05.706Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T13:10:09.960Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Cool Cats",
+      "normalizedVenue": "cool cats",
+      "canonicalVenue": "SOUTH BEACH",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.85511351811824,
+        "lat": 1.2941524356691765
+      },
+      "poiId": "south-beach",
+      "gmlId": "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+      "gmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6"
+      ],
+      "acceptedGmlNames": [
+        "SOUTH BEACH"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/38/6_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_4.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_5.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T13:10:05.706Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T13:10:10.117Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Singapore",
+      "normalizedVenue": "singapore",
+      "canonicalVenue": "PHOON HUAT INDUSTRIAL BUILDING",
+      "verifiedAddress": "37 MacTaggart Road, #02-01 LIREA Industrial Building, Singapore 368083",
+      "coordinates": {
+        "lng": 103.88353417501412,
+        "lat": 1.333877591432407
+      },
+      "poiId": "phoon-huat-industrial-building",
+      "gmlId": "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77",
+      "gmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "acceptedGmlNames": [
+        "PHOON HUAT INDUSTRIAL BUILDING"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/44/28_5.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/44/28_4.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/44/28_2.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/44/28_1.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/44/28_0.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/44/28_3.b3dm",
+          "batchIds": [
+            21
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-20T13:20:29.950Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T13:20:34.382Z"
     },
     {
       "status": "approved",
@@ -6046,10 +6639,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:09.740Z"
+      "verifiedAt": "2026-07-20T14:11:24.380Z"
     },
     {
       "status": "approved",
@@ -6111,10 +6704,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:09.768Z"
+      "verifiedAt": "2026-07-20T14:11:24.456Z"
     },
     {
       "status": "approved",
@@ -6176,10 +6769,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:09.789Z"
+      "verifiedAt": "2026-07-20T14:11:24.519Z"
     },
     {
       "status": "approved",
@@ -6241,10 +6834,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:09.810Z"
+      "verifiedAt": "2026-07-20T14:11:24.605Z"
     },
     {
       "status": "approved",
@@ -6306,10 +6899,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:09.839Z"
+      "verifiedAt": "2026-07-20T14:11:24.672Z"
     },
     {
       "status": "approved",
@@ -6371,10 +6964,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:09.874Z"
+      "verifiedAt": "2026-07-20T14:11:24.731Z"
     },
     {
       "status": "approved",
@@ -6430,10 +7023,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:09.897Z"
+      "verifiedAt": "2026-07-20T14:11:24.789Z"
     },
     {
       "status": "approved",
@@ -6495,10 +7088,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:09.932Z"
+      "verifiedAt": "2026-07-20T14:11:24.841Z"
     },
     {
       "status": "approved",
@@ -6560,10 +7153,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:09.968Z"
+      "verifiedAt": "2026-07-20T14:11:24.898Z"
     },
     {
       "status": "approved",
@@ -6619,10 +7212,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:09.990Z"
+      "verifiedAt": "2026-07-20T14:11:24.961Z"
     },
     {
       "status": "approved",
@@ -6678,10 +7271,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.013Z"
+      "verifiedAt": "2026-07-20T14:11:25.024Z"
     },
     {
       "status": "approved",
@@ -6743,10 +7336,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.037Z"
+      "verifiedAt": "2026-07-20T14:11:25.101Z"
     },
     {
       "status": "approved",
@@ -6936,10 +7529,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.069Z"
+      "verifiedAt": "2026-07-20T14:11:25.164Z"
     },
     {
       "status": "approved",
@@ -7001,10 +7594,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.095Z"
+      "verifiedAt": "2026-07-20T14:11:25.214Z"
     },
     {
       "status": "approved",
@@ -7066,10 +7659,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.118Z"
+      "verifiedAt": "2026-07-20T14:11:25.262Z"
     },
     {
       "status": "approved",
@@ -7131,10 +7724,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.141Z"
+      "verifiedAt": "2026-07-20T14:11:25.309Z"
     },
     {
       "status": "approved",
@@ -7196,10 +7789,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.176Z"
+      "verifiedAt": "2026-07-20T14:11:25.362Z"
     },
     {
       "status": "approved",
@@ -7261,10 +7854,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.202Z"
+      "verifiedAt": "2026-07-20T14:11:25.418Z"
     },
     {
       "status": "approved",
@@ -7326,10 +7919,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.232Z"
+      "verifiedAt": "2026-07-20T14:11:25.468Z"
     },
     {
       "status": "approved",
@@ -7391,10 +7984,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.271Z"
+      "verifiedAt": "2026-07-20T14:11:25.529Z"
     },
     {
       "status": "approved",
@@ -7456,10 +8049,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.297Z"
+      "verifiedAt": "2026-07-20T14:11:25.577Z"
     },
     {
       "status": "approved",
@@ -7515,10 +8108,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.317Z"
+      "verifiedAt": "2026-07-20T14:11:25.609Z"
     },
     {
       "status": "approved",
@@ -7580,10 +8173,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.350Z"
+      "verifiedAt": "2026-07-20T14:11:25.648Z"
     },
     {
       "status": "approved",
@@ -7645,10 +8238,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.384Z"
+      "verifiedAt": "2026-07-20T14:11:25.706Z"
     },
     {
       "status": "approved",
@@ -7710,75 +8303,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.407Z"
-    },
-    {
-      "status": "approved",
-      "rawVenue": "National Gallery Singapore",
-      "normalizedVenue": "national gallery singapore",
-      "canonicalVenue": "NATIONAL GALLERY SINGAPORE",
-      "verifiedAddress": null,
-      "coordinates": {
-        "lng": 103.8515234999511,
-        "lat": 1.2902843735283591
-      },
-      "poiId": "national-gallery-singapore",
-      "gmlId": "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736",
-      "gmlIds": [
-        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
-      ],
-      "acceptedGmlNames": [
-        "NATIONAL GALLERY SINGAPORE"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/7/76/12_0.b3dm",
-          "batchIds": [
-            3
-          ]
-        },
-        {
-          "path": "tiles/7/76/12_1.b3dm",
-          "batchIds": [
-            3
-          ]
-        },
-        {
-          "path": "tiles/7/76/12_2.b3dm",
-          "batchIds": [
-            3
-          ]
-        },
-        {
-          "path": "tiles/7/76/12_3.b3dm",
-          "batchIds": [
-            3
-          ]
-        },
-        {
-          "path": "tiles/7/76/12_4.b3dm",
-          "batchIds": [
-            3
-          ]
-        },
-        {
-          "path": "tiles/7/76/12_5.b3dm",
-          "batchIds": [
-            3
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
-        }
-      ],
-      "verifiedAt": "2026-07-19T19:30:10.432Z"
+      "verifiedAt": "2026-07-20T14:11:25.767Z"
     },
     {
       "status": "approved",
@@ -7822,75 +8350,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.449Z"
-    },
-    {
-      "status": "approved",
-      "rawVenue": "National Gallery",
-      "normalizedVenue": "national gallery",
-      "canonicalVenue": "NATIONAL GALLERY SINGAPORE",
-      "verifiedAddress": null,
-      "coordinates": {
-        "lng": 103.8515234999511,
-        "lat": 1.2902843735283591
-      },
-      "poiId": "national-gallery-singapore",
-      "gmlId": "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736",
-      "gmlIds": [
-        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
-      ],
-      "acceptedGmlNames": [
-        "NATIONAL GALLERY SINGAPORE"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/7/76/12_0.b3dm",
-          "batchIds": [
-            3
-          ]
-        },
-        {
-          "path": "tiles/7/76/12_1.b3dm",
-          "batchIds": [
-            3
-          ]
-        },
-        {
-          "path": "tiles/7/76/12_2.b3dm",
-          "batchIds": [
-            3
-          ]
-        },
-        {
-          "path": "tiles/7/76/12_3.b3dm",
-          "batchIds": [
-            3
-          ]
-        },
-        {
-          "path": "tiles/7/76/12_4.b3dm",
-          "batchIds": [
-            3
-          ]
-        },
-        {
-          "path": "tiles/7/76/12_5.b3dm",
-          "batchIds": [
-            3
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
-        }
-      ],
-      "verifiedAt": "2026-07-19T19:30:10.467Z"
+      "verifiedAt": "2026-07-20T14:11:25.802Z"
     },
     {
       "status": "approved",
@@ -7952,10 +8415,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.489Z"
+      "verifiedAt": "2026-07-20T14:11:25.850Z"
     },
     {
       "status": "approved",
@@ -8017,10 +8480,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.507Z"
+      "verifiedAt": "2026-07-20T14:11:25.891Z"
     },
     {
       "status": "approved",
@@ -8076,10 +8539,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.528Z"
+      "verifiedAt": "2026-07-20T14:11:25.941Z"
     },
     {
       "status": "approved",
@@ -8141,75 +8604,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.558Z"
-    },
-    {
-      "status": "approved",
-      "rawVenue": "Lee Kong Chian Natural History Museum",
-      "normalizedVenue": "lee kong chian natural history museum",
-      "canonicalVenue": "LEE KONG CHIAN NATURAL HISTORY MUSEUM",
-      "verifiedAddress": "2 Conservatory Drive Singapore 117377",
-      "coordinates": {
-        "lng": 103.77320276765114,
-        "lat": 1.3015969541573367
-      },
-      "poiId": "lee-kong-chian-natural-history-museum",
-      "gmlId": "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1",
-      "gmlIds": [
-        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1"
-      ],
-      "acceptedGmlNames": [
-        "LEE KONG CHIAN NATURAL HISTORY MUSEUM"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/6/18/11_0.b3dm",
-          "batchIds": [
-            11
-          ]
-        },
-        {
-          "path": "tiles/6/18/11_1.b3dm",
-          "batchIds": [
-            11
-          ]
-        },
-        {
-          "path": "tiles/6/18/11_2.b3dm",
-          "batchIds": [
-            11
-          ]
-        },
-        {
-          "path": "tiles/6/18/11_3.b3dm",
-          "batchIds": [
-            11
-          ]
-        },
-        {
-          "path": "tiles/6/18/11_4.b3dm",
-          "batchIds": [
-            11
-          ]
-        },
-        {
-          "path": "tiles/6/18/11_5.b3dm",
-          "batchIds": [
-            11
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
-        }
-      ],
-      "verifiedAt": "2026-07-19T19:30:10.586Z"
+      "verifiedAt": "2026-07-20T14:11:26.048Z"
     },
     {
       "status": "approved",
@@ -8271,64 +8669,64 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.608Z"
+      "verifiedAt": "2026-07-20T14:11:26.114Z"
     },
     {
       "status": "approved",
-      "rawVenue": "Singapore Oceanarium",
-      "normalizedVenue": "singapore oceanarium",
-      "canonicalVenue": "MARITIME XPERIENTIAL MUSEUM",
-      "verifiedAddress": null,
+      "rawVenue": "Lee Kong Chian Natural History Museum",
+      "normalizedVenue": "lee kong chian natural history museum",
+      "canonicalVenue": "LEE KONG CHIAN NATURAL HISTORY MUSEUM",
+      "verifiedAddress": "2 Conservatory Drive Singapore 117377",
       "coordinates": {
-        "lng": 103.82046847155313,
-        "lat": 1.2583018488997462
+        "lng": 103.77320276765114,
+        "lat": 1.3015969541573367
       },
-      "poiId": "maritime-xperiential-museum",
-      "gmlId": "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00",
+      "poiId": "lee-kong-chian-natural-history-museum",
+      "gmlId": "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1",
       "gmlIds": [
-        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+        "SLA_BLDG2_44ba6182-b4e7-4cf0-b759-2e7e8e4080e1"
       ],
       "acceptedGmlNames": [
-        "MARITIME XPERIENTIAL MUSEUM"
+        "LEE KONG CHIAN NATURAL HISTORY MUSEUM"
       ],
       "sourceTiles": [
         {
-          "path": "tiles/6/26/1_0.b3dm",
+          "path": "tiles/6/18/11_0.b3dm",
           "batchIds": [
-            24
+            11
           ]
         },
         {
-          "path": "tiles/6/26/1_1.b3dm",
+          "path": "tiles/6/18/11_1.b3dm",
           "batchIds": [
-            24
+            11
           ]
         },
         {
-          "path": "tiles/6/26/1_2.b3dm",
+          "path": "tiles/6/18/11_2.b3dm",
           "batchIds": [
-            24
+            11
           ]
         },
         {
-          "path": "tiles/6/26/1_3.b3dm",
+          "path": "tiles/6/18/11_3.b3dm",
           "batchIds": [
-            24
+            11
           ]
         },
         {
-          "path": "tiles/6/26/1_4.b3dm",
+          "path": "tiles/6/18/11_4.b3dm",
           "batchIds": [
-            24
+            11
           ]
         },
         {
-          "path": "tiles/6/26/1_5.b3dm",
+          "path": "tiles/6/18/11_5.b3dm",
           "batchIds": [
-            24
+            11
           ]
         }
       ],
@@ -8336,10 +8734,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.643Z"
+      "verifiedAt": "2026-07-20T14:11:26.212Z"
     },
     {
       "status": "approved",
@@ -8401,10 +8799,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.671Z"
+      "verifiedAt": "2026-07-20T14:11:26.283Z"
     },
     {
       "status": "approved",
@@ -8466,10 +8864,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.715Z"
+      "verifiedAt": "2026-07-20T14:11:26.363Z"
     },
     {
       "status": "approved",
@@ -8531,10 +8929,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.732Z"
+      "verifiedAt": "2026-07-20T14:11:26.396Z"
     },
     {
       "status": "approved",
@@ -8596,10 +8994,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.760Z"
+      "verifiedAt": "2026-07-20T14:11:26.444Z"
     },
     {
       "status": "approved",
@@ -8661,10 +9059,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.792Z"
+      "verifiedAt": "2026-07-20T14:11:26.490Z"
     },
     {
       "status": "approved",
@@ -8726,10 +9124,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.814Z"
+      "verifiedAt": "2026-07-20T14:11:26.536Z"
     },
     {
       "status": "approved",
@@ -8791,10 +9189,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.847Z"
+      "verifiedAt": "2026-07-20T14:11:26.596Z"
     },
     {
       "status": "approved",
@@ -8856,89 +9254,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.874Z"
-    },
-    {
-      "status": "approved",
-      "rawVenue": "IMBA Theatre, 18 Marina Gardens Dr, #01-23, Singapore 018953",
-      "normalizedVenue": "imba theatre 18 marina gardens dr 01 23 singapore 018953",
-      "canonicalVenue": "GARDENS BY THE BAY",
-      "verifiedAddress": "18 Marina Gardens Dr, #01-23, Singapore 018953",
-      "coordinates": {
-        "lng": 103.86295132783188,
-        "lat": 1.2825368258537109
-      },
-      "poiId": "gardens-by-the-bay",
-      "gmlId": null,
-      "gmlIds": [
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
-      ],
-      "acceptedGmlNames": [
-        "GARDENS BY THE BAY"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/5/20/0_0.b3dm",
-          "batchIds": [
-            20,
-            14,
-            17
-          ]
-        },
-        {
-          "path": "tiles/5/20/0_1.b3dm",
-          "batchIds": [
-            20,
-            14,
-            17
-          ]
-        },
-        {
-          "path": "tiles/5/20/0_2.b3dm",
-          "batchIds": [
-            20,
-            14,
-            17
-          ]
-        },
-        {
-          "path": "tiles/5/20/0_3.b3dm",
-          "batchIds": [
-            20,
-            14,
-            17
-          ]
-        },
-        {
-          "path": "tiles/5/20/0_4.b3dm",
-          "batchIds": [
-            20,
-            14,
-            17
-          ]
-        },
-        {
-          "path": "tiles/5/20/0_5.b3dm",
-          "batchIds": [
-            20,
-            14,
-            17
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
-        }
-      ],
-      "verifiedAt": "2026-07-19T19:30:10.901Z"
+      "verifiedAt": "2026-07-20T14:11:26.660Z"
     },
     {
       "status": "approved",
@@ -8994,10 +9313,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.923Z"
+      "verifiedAt": "2026-07-20T14:11:26.699Z"
     },
     {
       "status": "approved",
@@ -9103,10 +9422,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.959Z"
+      "verifiedAt": "2026-07-20T14:11:26.761Z"
     },
     {
       "status": "approved",
@@ -9168,10 +9487,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.980Z"
+      "verifiedAt": "2026-07-20T14:11:26.807Z"
     },
     {
       "status": "approved",
@@ -9233,10 +9552,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:10.998Z"
+      "verifiedAt": "2026-07-20T14:11:26.855Z"
     },
     {
       "status": "approved",
@@ -9298,10 +9617,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.020Z"
+      "verifiedAt": "2026-07-20T14:11:26.926Z"
     },
     {
       "status": "approved",
@@ -9363,10 +9682,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.053Z"
+      "verifiedAt": "2026-07-20T14:11:26.999Z"
     },
     {
       "status": "approved",
@@ -9428,10 +9747,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.073Z"
+      "verifiedAt": "2026-07-20T14:11:27.047Z"
     },
     {
       "status": "approved",
@@ -9487,10 +9806,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.094Z"
+      "verifiedAt": "2026-07-20T14:11:27.095Z"
     },
     {
       "status": "approved",
@@ -9546,10 +9865,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.113Z"
+      "verifiedAt": "2026-07-20T14:11:27.138Z"
     },
     {
       "status": "approved",
@@ -9611,10 +9930,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.141Z"
+      "verifiedAt": "2026-07-20T14:11:27.180Z"
     },
     {
       "status": "approved",
@@ -9676,10 +9995,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.166Z"
+      "verifiedAt": "2026-07-20T14:11:27.236Z"
     },
     {
       "status": "approved",
@@ -9748,10 +10067,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.193Z"
+      "verifiedAt": "2026-07-20T14:11:27.304Z"
     },
     {
       "status": "approved",
@@ -9807,10 +10126,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.220Z"
+      "verifiedAt": "2026-07-20T14:11:27.384Z"
     },
     {
       "status": "approved",
@@ -9866,10 +10185,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.237Z"
+      "verifiedAt": "2026-07-20T14:11:27.444Z"
     },
     {
       "status": "approved",
@@ -9931,10 +10250,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.256Z"
+      "verifiedAt": "2026-07-20T14:11:27.497Z"
     },
     {
       "status": "approved",
@@ -9996,10 +10315,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.277Z"
+      "verifiedAt": "2026-07-20T14:11:27.545Z"
     },
     {
       "status": "approved",
@@ -10061,10 +10380,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.298Z"
+      "verifiedAt": "2026-07-20T14:11:27.606Z"
     },
     {
       "status": "approved",
@@ -10126,10 +10445,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.319Z"
+      "verifiedAt": "2026-07-20T14:11:27.654Z"
     },
     {
       "status": "approved",
@@ -10191,10 +10510,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.346Z"
+      "verifiedAt": "2026-07-20T14:11:27.699Z"
     },
     {
       "status": "approved",
@@ -10256,10 +10575,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.365Z"
+      "verifiedAt": "2026-07-20T14:11:27.741Z"
     },
     {
       "status": "approved",
@@ -10315,10 +10634,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.390Z"
+      "verifiedAt": "2026-07-20T14:11:27.779Z"
     },
     {
       "status": "approved",
@@ -10380,10 +10699,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.420Z"
+      "verifiedAt": "2026-07-20T14:11:27.837Z"
     },
     {
       "status": "approved",
@@ -10445,10 +10764,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.438Z"
+      "verifiedAt": "2026-07-20T14:11:27.872Z"
     },
     {
       "status": "approved",
@@ -10510,10 +10829,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.470Z"
+      "verifiedAt": "2026-07-20T14:11:27.918Z"
     },
     {
       "status": "approved",
@@ -10575,10 +10894,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.511Z"
+      "verifiedAt": "2026-07-20T14:11:27.980Z"
     },
     {
       "status": "approved",
@@ -10796,10 +11115,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.550Z"
+      "verifiedAt": "2026-07-20T14:11:28.060Z"
     },
     {
       "status": "approved",
@@ -10855,10 +11174,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.579Z"
+      "verifiedAt": "2026-07-20T14:11:28.107Z"
     },
     {
       "status": "approved",
@@ -10920,10 +11239,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.601Z"
+      "verifiedAt": "2026-07-20T14:11:28.163Z"
     },
     {
       "status": "approved",
@@ -10985,10 +11304,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.623Z"
+      "verifiedAt": "2026-07-20T14:11:28.217Z"
     },
     {
       "status": "approved",
@@ -11044,10 +11363,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.651Z"
+      "verifiedAt": "2026-07-20T14:11:28.262Z"
     },
     {
       "status": "approved",
@@ -11109,10 +11428,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.686Z"
+      "verifiedAt": "2026-07-20T14:11:28.329Z"
     },
     {
       "status": "approved",
@@ -11174,10 +11493,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.709Z"
+      "verifiedAt": "2026-07-20T14:11:28.371Z"
     },
     {
       "status": "approved",
@@ -11233,75 +11552,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.727Z"
-    },
-    {
-      "status": "approved",
-      "rawVenue": "Gardens by the Bay",
-      "normalizedVenue": "gardens by the bay",
-      "canonicalVenue": "GARDENS BY THE BAY",
-      "verifiedAddress": null,
-      "coordinates": {
-        "lng": 103.86478864013044,
-        "lat": 1.2846112125188787
-      },
-      "poiId": "gardens-by-the-bay",
-      "gmlId": "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d",
-      "gmlIds": [
-        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
-      ],
-      "acceptedGmlNames": [
-        "GARDENS BY THE BAY"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/6/41/2_0.b3dm",
-          "batchIds": [
-            7
-          ]
-        },
-        {
-          "path": "tiles/6/41/2_1.b3dm",
-          "batchIds": [
-            7
-          ]
-        },
-        {
-          "path": "tiles/6/41/2_2.b3dm",
-          "batchIds": [
-            7
-          ]
-        },
-        {
-          "path": "tiles/6/41/2_3.b3dm",
-          "batchIds": [
-            7
-          ]
-        },
-        {
-          "path": "tiles/6/41/2_4.b3dm",
-          "batchIds": [
-            7
-          ]
-        },
-        {
-          "path": "tiles/6/41/2_5.b3dm",
-          "batchIds": [
-            7
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
-        }
-      ],
-      "verifiedAt": "2026-07-19T19:30:11.755Z"
+      "verifiedAt": "2026-07-20T14:11:28.421Z"
     },
     {
       "status": "approved",
@@ -11363,10 +11617,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.781Z"
+      "verifiedAt": "2026-07-20T14:11:28.473Z"
     },
     {
       "status": "approved",
@@ -11428,10 +11682,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.814Z"
+      "verifiedAt": "2026-07-20T14:11:28.538Z"
     },
     {
       "status": "approved",
@@ -11537,10 +11791,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.844Z"
+      "verifiedAt": "2026-07-20T14:11:28.593Z"
     },
     {
       "status": "approved",
@@ -11602,10 +11856,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.874Z"
+      "verifiedAt": "2026-07-20T14:11:28.640Z"
     },
     {
       "status": "approved",
@@ -11667,10 +11921,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.919Z"
+      "verifiedAt": "2026-07-20T14:11:28.701Z"
     },
     {
       "status": "approved",
@@ -11732,10 +11986,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.943Z"
+      "verifiedAt": "2026-07-20T14:11:28.740Z"
     },
     {
       "status": "approved",
@@ -11797,10 +12051,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:11.978Z"
+      "verifiedAt": "2026-07-20T14:11:28.791Z"
     },
     {
       "status": "approved",
@@ -11862,10 +12116,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.009Z"
+      "verifiedAt": "2026-07-20T14:11:28.828Z"
     },
     {
       "status": "approved",
@@ -11927,10 +12181,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.038Z"
+      "verifiedAt": "2026-07-20T14:11:28.872Z"
     },
     {
       "status": "approved",
@@ -11992,10 +12246,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.070Z"
+      "verifiedAt": "2026-07-20T14:11:28.914Z"
     },
     {
       "status": "approved",
@@ -12057,10 +12311,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.102Z"
+      "verifiedAt": "2026-07-20T14:11:28.956Z"
     },
     {
       "status": "approved",
@@ -12122,10 +12376,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.137Z"
+      "verifiedAt": "2026-07-20T14:11:28.993Z"
     },
     {
       "status": "approved",
@@ -12187,10 +12441,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.188Z"
+      "verifiedAt": "2026-07-20T14:11:29.034Z"
     },
     {
       "status": "approved",
@@ -12252,10 +12506,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.234Z"
+      "verifiedAt": "2026-07-20T14:11:29.095Z"
     },
     {
       "status": "approved",
@@ -12317,10 +12571,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.266Z"
+      "verifiedAt": "2026-07-20T14:11:29.154Z"
     },
     {
       "status": "approved",
@@ -12376,10 +12630,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.294Z"
+      "verifiedAt": "2026-07-20T14:11:29.195Z"
     },
     {
       "status": "approved",
@@ -12441,10 +12695,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.324Z"
+      "verifiedAt": "2026-07-20T14:11:29.259Z"
     },
     {
       "status": "approved",
@@ -12506,10 +12760,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.349Z"
+      "verifiedAt": "2026-07-20T14:11:29.313Z"
     },
     {
       "status": "approved",
@@ -12571,10 +12825,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.379Z"
+      "verifiedAt": "2026-07-20T14:11:29.363Z"
     },
     {
       "status": "approved",
@@ -12636,10 +12890,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.429Z"
+      "verifiedAt": "2026-07-20T14:11:29.437Z"
     },
     {
       "status": "approved",
@@ -12701,10 +12955,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.466Z"
+      "verifiedAt": "2026-07-20T14:11:29.515Z"
     },
     {
       "status": "approved",
@@ -12766,10 +13020,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.517Z"
+      "verifiedAt": "2026-07-20T14:11:29.574Z"
     },
     {
       "status": "approved",
@@ -12831,10 +13085,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.552Z"
+      "verifiedAt": "2026-07-20T14:11:29.636Z"
     },
     {
       "status": "approved",
@@ -12896,10 +13150,69 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.590Z"
+      "verifiedAt": "2026-07-20T14:11:29.715Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Jurong  Ballroom",
+      "normalizedVenue": "jurong ballroom",
+      "canonicalVenue": "SHANGRI-LA HOTEL",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.82642839108709,
+        "lat": 1.3113592622406118
+      },
+      "poiId": "shangri-la-hotel",
+      "gmlId": "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547",
+      "gmlIds": [
+        "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547"
+      ],
+      "acceptedGmlNames": [
+        "SHANGRI-LA HOTEL"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/14/7_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/14/7_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/14/7_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/14/7_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/14/7_4.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:11:29.771Z"
     },
     {
       "status": "approved",
@@ -12961,10 +13274,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.635Z"
+      "verifiedAt": "2026-07-20T14:11:29.838Z"
     },
     {
       "status": "approved",
@@ -13020,10 +13333,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.658Z"
+      "verifiedAt": "2026-07-20T14:11:29.907Z"
     },
     {
       "status": "approved",
@@ -13085,10 +13398,69 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.682Z"
+      "verifiedAt": "2026-07-20T14:11:29.946Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "The Arts House, 1 Old Parliament Lane, Singapore, Singapore",
+      "normalizedVenue": "the arts house 1 old parliament lane singapore singapore",
+      "canonicalVenue": "ARTS HOUSE AT THE OLD PARLIAMENT",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.85106633381234,
+        "lat": 1.288653514363568
+      },
+      "poiId": "arts-house-at-the-old-parliament",
+      "gmlId": "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
+      "gmlIds": [
+        "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257"
+      ],
+      "acceptedGmlNames": [
+        "ARTS HOUSE AT THE OLD PARLIAMENT"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/76/11_0.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_1.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_2.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_3.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_4.b3dm",
+          "batchIds": [
+            3
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:11:29.984Z"
     },
     {
       "status": "approved",
@@ -13144,10 +13516,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.706Z"
+      "verifiedAt": "2026-07-20T14:11:30.020Z"
     },
     {
       "status": "approved",
@@ -13209,10 +13581,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.759Z"
+      "verifiedAt": "2026-07-20T14:11:30.091Z"
     },
     {
       "status": "approved",
@@ -13288,10 +13660,63 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.786Z"
+      "verifiedAt": "2026-07-20T14:11:30.124Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Raffles Boulevard Marina Square",
+      "normalizedVenue": "raffles boulevard marina square",
+      "canonicalVenue": "MARINA SQUARE",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.8577154279406,
+        "lat": 1.2915196583549364
+      },
+      "poiId": "marina-square",
+      "gmlId": "SLA_BLDG2_dab3a105-987a-410a-9bce-ff750ac33233",
+      "gmlIds": [
+        "SLA_BLDG2_dab3a105-987a-410a-9bce-ff750ac33233"
+      ],
+      "acceptedGmlNames": [
+        "MARINA SQUARE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/19/3_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/19/3_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/19/3_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/5/19/3_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:11:30.158Z"
     },
     {
       "status": "approved",
@@ -13353,10 +13778,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.827Z"
+      "verifiedAt": "2026-07-20T14:11:30.206Z"
     },
     {
       "status": "approved",
@@ -13418,205 +13843,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.854Z"
-    },
-    {
-      "status": "approved",
-      "rawVenue": "The Magic Bar (2 Havelock Road #01-11 Singapore, 059763)",
-      "normalizedVenue": "the magic bar 2 havelock road 01 11 singapore 059763",
-      "canonicalVenue": "HAVELOCK2",
-      "verifiedAddress": null,
-      "coordinates": {
-        "lng": 103.84514698803511,
-        "lat": 1.2870513653829136
-      },
-      "poiId": "havelock2",
-      "gmlId": "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772",
-      "gmlIds": [
-        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772"
-      ],
-      "acceptedGmlNames": [
-        "HAVELOCK2"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/6/35/5_0.b3dm",
-          "batchIds": [
-            1
-          ]
-        },
-        {
-          "path": "tiles/6/35/5_1.b3dm",
-          "batchIds": [
-            1
-          ]
-        },
-        {
-          "path": "tiles/6/35/5_2.b3dm",
-          "batchIds": [
-            1
-          ]
-        },
-        {
-          "path": "tiles/6/35/5_3.b3dm",
-          "batchIds": [
-            1
-          ]
-        },
-        {
-          "path": "tiles/6/35/5_4.b3dm",
-          "batchIds": [
-            1
-          ]
-        },
-        {
-          "path": "tiles/6/35/5_5.b3dm",
-          "batchIds": [
-            1
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
-        }
-      ],
-      "verifiedAt": "2026-07-19T19:30:12.884Z"
-    },
-    {
-      "status": "approved",
-      "rawVenue": "Accessibility",
-      "normalizedVenue": "accessibility",
-      "canonicalVenue": "KEMBANGAN ESTATE",
-      "verifiedAddress": "3 Lor Salleh, Level 4, Singapore 416747",
-      "coordinates": {
-        "lng": 103.9064998992459,
-        "lat": 1.3244863097029875
-      },
-      "poiId": "kembangan-estate",
-      "gmlId": "SLA_BLDG2_4fe9a373-b171-4671-a734-4a789d10085a",
-      "gmlIds": [
-        "SLA_BLDG2_4fe9a373-b171-4671-a734-4a789d10085a"
-      ],
-      "acceptedGmlNames": [
-        "KEMBANGAN ESTATE"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/6/48/23_0.b3dm",
-          "batchIds": [
-            38
-          ]
-        },
-        {
-          "path": "tiles/6/48/23_1.b3dm",
-          "batchIds": [
-            38
-          ]
-        },
-        {
-          "path": "tiles/6/48/23_2.b3dm",
-          "batchIds": [
-            38
-          ]
-        },
-        {
-          "path": "tiles/6/48/23_3.b3dm",
-          "batchIds": [
-            38
-          ]
-        },
-        {
-          "path": "tiles/6/48/23_4.b3dm",
-          "batchIds": [
-            38
-          ]
-        },
-        {
-          "path": "tiles/6/48/23_5.b3dm",
-          "batchIds": [
-            38
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
-        }
-      ],
-      "verifiedAt": "2026-07-19T19:30:12.914Z"
-    },
-    {
-      "status": "approved",
-      "rawVenue": "3 Lor Salleh, Level 4, Singapore 416747",
-      "normalizedVenue": "3 lor salleh level 4 singapore 416747",
-      "canonicalVenue": "KEMBANGAN ESTATE",
-      "verifiedAddress": "3 Lor Salleh, Level 4, Singapore 416747",
-      "coordinates": {
-        "lng": 103.9064998992459,
-        "lat": 1.3244863097029875
-      },
-      "poiId": "kembangan-estate",
-      "gmlId": "SLA_BLDG2_4fe9a373-b171-4671-a734-4a789d10085a",
-      "gmlIds": [
-        "SLA_BLDG2_4fe9a373-b171-4671-a734-4a789d10085a"
-      ],
-      "acceptedGmlNames": [
-        "KEMBANGAN ESTATE"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/6/48/23_0.b3dm",
-          "batchIds": [
-            38
-          ]
-        },
-        {
-          "path": "tiles/6/48/23_1.b3dm",
-          "batchIds": [
-            38
-          ]
-        },
-        {
-          "path": "tiles/6/48/23_2.b3dm",
-          "batchIds": [
-            38
-          ]
-        },
-        {
-          "path": "tiles/6/48/23_3.b3dm",
-          "batchIds": [
-            38
-          ]
-        },
-        {
-          "path": "tiles/6/48/23_4.b3dm",
-          "batchIds": [
-            38
-          ]
-        },
-        {
-          "path": "tiles/6/48/23_5.b3dm",
-          "batchIds": [
-            38
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
-        }
-      ],
-      "verifiedAt": "2026-07-19T19:30:12.938Z"
+      "verifiedAt": "2026-07-20T14:11:30.249Z"
     },
     {
       "status": "approved",
@@ -13678,10 +13908,140 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.962Z"
+      "verifiedAt": "2026-07-20T14:11:30.293Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "The Magic Bar (2 Havelock Road #01-11 Singapore, 059763)",
+      "normalizedVenue": "the magic bar 2 havelock road 01 11 singapore 059763",
+      "canonicalVenue": "HAVELOCK2",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.84514698803511,
+        "lat": 1.2870513653829136
+      },
+      "poiId": "havelock2",
+      "gmlId": "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772",
+      "gmlIds": [
+        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772"
+      ],
+      "acceptedGmlNames": [
+        "HAVELOCK2"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/35/5_0.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/6/35/5_1.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/6/35/5_2.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/6/35/5_3.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/6/35/5_4.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/6/35/5_5.b3dm",
+          "batchIds": [
+            1
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:11:30.347Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "3 Lor Salleh, Level 4, Singapore 416747",
+      "normalizedVenue": "3 lor salleh level 4 singapore 416747",
+      "canonicalVenue": "KEMBANGAN ESTATE",
+      "verifiedAddress": "3 Lor Salleh, Level 4, Singapore 416747",
+      "coordinates": {
+        "lng": 103.9064998992459,
+        "lat": 1.3244863097029875
+      },
+      "poiId": "kembangan-estate",
+      "gmlId": "SLA_BLDG2_4fe9a373-b171-4671-a734-4a789d10085a",
+      "gmlIds": [
+        "SLA_BLDG2_4fe9a373-b171-4671-a734-4a789d10085a"
+      ],
+      "acceptedGmlNames": [
+        "KEMBANGAN ESTATE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/48/23_0.b3dm",
+          "batchIds": [
+            38
+          ]
+        },
+        {
+          "path": "tiles/6/48/23_1.b3dm",
+          "batchIds": [
+            38
+          ]
+        },
+        {
+          "path": "tiles/6/48/23_2.b3dm",
+          "batchIds": [
+            38
+          ]
+        },
+        {
+          "path": "tiles/6/48/23_3.b3dm",
+          "batchIds": [
+            38
+          ]
+        },
+        {
+          "path": "tiles/6/48/23_4.b3dm",
+          "batchIds": [
+            38
+          ]
+        },
+        {
+          "path": "tiles/6/48/23_5.b3dm",
+          "batchIds": [
+            38
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:11:30.398Z"
     },
     {
       "status": "approved",
@@ -13743,10 +14103,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:12.989Z"
+      "verifiedAt": "2026-07-20T14:11:30.474Z"
     },
     {
       "status": "approved",
@@ -13802,10 +14162,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:13.010Z"
+      "verifiedAt": "2026-07-20T14:11:30.519Z"
     },
     {
       "status": "approved",
@@ -13867,10 +14227,10 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:13.040Z"
+      "verifiedAt": "2026-07-20T14:11:30.584Z"
     },
     {
       "status": "approved",
@@ -13932,64 +14292,64 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:13.068Z"
+      "verifiedAt": "2026-07-20T14:11:30.646Z"
     },
     {
       "status": "approved",
-      "rawVenue": "KELE, 78 Airport Blvd, Jewel Changi Airport, #01-K213",
-      "normalizedVenue": "kele 78 airport blvd jewel changi airport 01 k213",
-      "canonicalVenue": "JEWEL CHANGI AIRPORT",
+      "rawVenue": "National Gallery Singapore",
+      "normalizedVenue": "national gallery singapore",
+      "canonicalVenue": "NATIONAL GALLERY SINGAPORE",
       "verifiedAddress": null,
       "coordinates": {
-        "lng": 103.98933257610221,
-        "lat": 1.3596958721695571
+        "lng": 103.8515234999511,
+        "lat": 1.2902843735283591
       },
-      "poiId": "jewel-changi-airport",
-      "gmlId": "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b",
+      "poiId": "national-gallery-singapore",
+      "gmlId": "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736",
       "gmlIds": [
-        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
       ],
       "acceptedGmlNames": [
-        "JEWEL CHANGI AIRPORT"
+        "NATIONAL GALLERY SINGAPORE"
       ],
       "sourceTiles": [
         {
-          "path": "tiles/4/15/10_0.b3dm",
+          "path": "tiles/7/76/12_0.b3dm",
           "batchIds": [
-            9
+            3
           ]
         },
         {
-          "path": "tiles/4/15/10_1.b3dm",
+          "path": "tiles/7/76/12_1.b3dm",
           "batchIds": [
-            9
+            3
           ]
         },
         {
-          "path": "tiles/4/15/10_2.b3dm",
+          "path": "tiles/7/76/12_2.b3dm",
           "batchIds": [
-            9
+            3
           ]
         },
         {
-          "path": "tiles/4/15/10_3.b3dm",
+          "path": "tiles/7/76/12_3.b3dm",
           "batchIds": [
-            9
+            3
           ]
         },
         {
-          "path": "tiles/4/15/10_4.b3dm",
+          "path": "tiles/7/76/12_4.b3dm",
           "batchIds": [
-            9
+            3
           ]
         },
         {
-          "path": "tiles/4/15/10_5.b3dm",
+          "path": "tiles/7/76/12_5.b3dm",
           "batchIds": [
-            9
+            3
           ]
         }
       ],
@@ -13997,206 +14357,17 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:13.097Z"
+      "verifiedAt": "2026-07-20T14:11:30.700Z"
     },
     {
       "status": "approved",
-      "rawVenue": "The White Space at \\*SCAPE (2 Orchard Link, Singapore 237978)",
-      "normalizedVenue": "the white space at scape 2 orchard link singapore 237978",
-      "canonicalVenue": "SCAPE",
-      "verifiedAddress": "2 Orchard Link, Singapore 237978",
-      "coordinates": {
-        "lng": 103.83574842041503,
-        "lat": 1.3010131553541873
-      },
-      "poiId": "scape",
-      "gmlId": "SLA_BLDG2_115253b8-cc64-46a8-b00b-8a196d8d472d",
-      "gmlIds": [
-        "SLA_BLDG2_115253b8-cc64-46a8-b00b-8a196d8d472d"
-      ],
-      "acceptedGmlNames": [
-        "SCAPE"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/6/31/11_0.b3dm",
-          "batchIds": [
-            36
-          ]
-        },
-        {
-          "path": "tiles/6/31/11_1.b3dm",
-          "batchIds": [
-            36
-          ]
-        },
-        {
-          "path": "tiles/6/31/11_2.b3dm",
-          "batchIds": [
-            36
-          ]
-        },
-        {
-          "path": "tiles/6/31/11_3.b3dm",
-          "batchIds": [
-            36
-          ]
-        },
-        {
-          "path": "tiles/6/31/11_4.b3dm",
-          "batchIds": [
-            36
-          ]
-        },
-        {
-          "path": "tiles/6/31/11_5.b3dm",
-          "batchIds": [
-            36
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
-        }
-      ],
-      "verifiedAt": "2026-07-19T19:30:13.124Z"
-    },
-    {
-      "status": "approved",
-      "rawVenue": "Asian Civilisations Museum",
-      "normalizedVenue": "asian civilisations museum",
-      "canonicalVenue": "EMPRESS PLACE BUILDING",
-      "verifiedAddress": null,
-      "coordinates": {
-        "lng": 103.85141343750463,
-        "lat": 1.2874487009217126
-      },
-      "poiId": "empress-place-building",
-      "gmlId": "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
-      "gmlIds": [
-        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
-      ],
-      "acceptedGmlNames": [
-        "EMPRESS PLACE BUILDING"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/7/76/11_0.b3dm",
-          "batchIds": [
-            6
-          ]
-        },
-        {
-          "path": "tiles/7/76/11_1.b3dm",
-          "batchIds": [
-            6
-          ]
-        },
-        {
-          "path": "tiles/7/76/11_2.b3dm",
-          "batchIds": [
-            6
-          ]
-        },
-        {
-          "path": "tiles/7/76/11_3.b3dm",
-          "batchIds": [
-            6
-          ]
-        },
-        {
-          "path": "tiles/7/76/11_4.b3dm",
-          "batchIds": [
-            6
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
-        }
-      ],
-      "verifiedAt": "2026-07-19T19:30:13.144Z"
-    },
-    {
-      "status": "approved",
-      "rawVenue": "ArtScience Museum",
-      "normalizedVenue": "artscience museum",
-      "canonicalVenue": "MARINA BAY SANDS (ARTSCIENCE MUSEUM)",
-      "verifiedAddress": null,
-      "coordinates": {
-        "lng": 103.85927402663303,
-        "lat": 1.2862040338634544
-      },
-      "poiId": "marina-bay-sands-artscience-museum",
-      "gmlId": "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e",
-      "gmlIds": [
-        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e"
-      ],
-      "acceptedGmlNames": [
-        "MARINA BAY SANDS (ARTSCIENCE MUSEUM)"
-      ],
-      "sourceTiles": [
-        {
-          "path": "tiles/6/39/5_0.b3dm",
-          "batchIds": [
-            14
-          ]
-        },
-        {
-          "path": "tiles/6/39/5_1.b3dm",
-          "batchIds": [
-            14
-          ]
-        },
-        {
-          "path": "tiles/6/39/5_2.b3dm",
-          "batchIds": [
-            14
-          ]
-        },
-        {
-          "path": "tiles/6/39/5_3.b3dm",
-          "batchIds": [
-            14
-          ]
-        },
-        {
-          "path": "tiles/6/39/5_4.b3dm",
-          "batchIds": [
-            14
-          ]
-        },
-        {
-          "path": "tiles/6/39/5_5.b3dm",
-          "batchIds": [
-            14
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "type": "approved_alias_local_index",
-          "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
-        }
-      ],
-      "verifiedAt": "2026-07-19T19:30:13.168Z"
-    },
-    {
-      "status": "approved",
-      "rawVenue": "the Singapore Art Museum",
-      "normalizedVenue": "the singapore art museum",
+      "rawVenue": "Level 1, Gallery 1",
+      "normalizedVenue": "level 1 gallery 1",
       "canonicalVenue": "TANJONG PAGAR DISTRIPARK",
-      "verifiedAddress": null,
+      "verifiedAddress": "6001 Beach Road, #05-00, Singapore 199589",
       "coordinates": {
         "lng": 103.83664260831985,
         "lat": 1.2718859563161569
@@ -14251,50 +14422,966 @@
         {
           "type": "approved_alias_local_index",
           "detail": "Approved alias registry entry backed by local OneMap metadata",
-          "verifiedAt": "2026-07-19T19:30:07.957Z"
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:30:13.201Z"
+      "verifiedAt": "2026-07-20T14:11:30.756Z"
     },
     {
       "status": "approved",
-      "rawVenue": "Raffles Boulevard Marina Square",
-      "normalizedVenue": "raffles boulevard marina square",
-      "canonicalVenue": "MARINA SQUARE",
-      "verifiedAddress": "6 Raffles Boulevard, Marina Square, #01-207, Singapore 039594",
+      "rawVenue": "National Gallery",
+      "normalizedVenue": "national gallery",
+      "canonicalVenue": "NATIONAL GALLERY SINGAPORE",
+      "verifiedAddress": null,
       "coordinates": {
-        "lng": 103.8577154279406,
-        "lat": 1.2915196583549364
+        "lng": 103.8515234999511,
+        "lat": 1.2902843735283591
       },
-      "poiId": "marina-square",
-      "gmlId": "SLA_BLDG2_dab3a105-987a-410a-9bce-ff750ac33233",
+      "poiId": "national-gallery-singapore",
+      "gmlId": "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736",
       "gmlIds": [
-        "SLA_BLDG2_dab3a105-987a-410a-9bce-ff750ac33233"
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
       ],
       "acceptedGmlNames": [
-        "MARINA SQUARE"
+        "NATIONAL GALLERY SINGAPORE"
       ],
       "sourceTiles": [
         {
-          "path": "tiles/5/19/3_0.b3dm",
+          "path": "tiles/7/76/12_0.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_1.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_2.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_3.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_4.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_5.b3dm",
+          "batchIds": [
+            3
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:11:30.809Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Gardens by the Bay",
+      "normalizedVenue": "gardens by the bay",
+      "canonicalVenue": "GARDENS BY THE BAY",
+      "verifiedAddress": null,
+      "coordinates": {
+        "lng": 103.86478864013044,
+        "lat": 1.2846112125188787
+      },
+      "poiId": "gardens-by-the-bay",
+      "gmlId": "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d",
+      "gmlIds": [
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
+      ],
+      "acceptedGmlNames": [
+        "GARDENS BY THE BAY"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/41/2_0.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/6/41/2_1.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/6/41/2_2.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/6/41/2_3.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/6/41/2_4.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/6/41/2_5.b3dm",
+          "batchIds": [
+            7
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "approved_alias_local_index",
+          "detail": "Approved alias registry entry backed by local OneMap metadata",
+          "verifiedAt": "2026-07-20T14:11:17.387Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:11:30.859Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Asian Civilisations Museum, 1 Empress Pl, Singapore, 179555",
+      "normalizedVenue": "asian civilisations museum 1 empress pl singapore 179555",
+      "canonicalVenue": "EMPRESS PLACE BUILDING",
+      "verifiedAddress": "Asian Civilisations Museum, 1 Empress Place, Singapore 179555",
+      "coordinates": {
+        "lng": 103.85122375903849,
+        "lat": 1.2876758566501407
+      },
+      "poiId": "empress-place-building",
+      "gmlId": null,
+      "gmlIds": [
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
+        "SLA_BLDG2_7bc35123-6dbc-4ca0-9c70-4fe158894ad3"
+      ],
+      "acceptedGmlNames": [
+        "EMPRESS PLACE BUILDING"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/76/11_2.b3dm",
+          "batchIds": [
+            6,
+            2
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_3.b3dm",
+          "batchIds": [
+            6,
+            2
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_4.b3dm",
+          "batchIds": [
+            6,
+            2
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_0.b3dm",
+          "batchIds": [
+            6,
+            2
+          ]
+        },
+        {
+          "path": "tiles/7/76/11_1.b3dm",
+          "batchIds": [
+            6,
+            2
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:15:15.813Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:15:23.936Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Singapore Oceanarium, Resorts World Sentosa, 24 Sentosa Gateway, Sentosa Island, Singapore",
+      "normalizedVenue": "singapore oceanarium resorts world sentosa 24 sentosa gateway sentosa island singapore",
+      "canonicalVenue": "MARITIME XPERIENTIAL MUSEUM",
+      "verifiedAddress": "Singapore Oceanarium, 24 Sentosa Gateway, Singapore 098137",
+      "coordinates": {
+        "lng": 103.82046847155313,
+        "lat": 1.2583018488997462
+      },
+      "poiId": "maritime-xperiential-museum",
+      "gmlId": "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00",
+      "gmlIds": [
+        "SLA_BLDG2_068d290c-3a81-4a18-b093-d29a0e52ab00"
+      ],
+      "acceptedGmlNames": [
+        "MARITIME XPERIENTIAL MUSEUM"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/26/1_2.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/1_0.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/1_1.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/1_3.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/1_4.b3dm",
+          "batchIds": [
+            24
+          ]
+        },
+        {
+          "path": "tiles/6/26/1_5.b3dm",
+          "batchIds": [
+            24
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:16:47.117Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:16:55.726Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "National Gallery Singapore, 1 St Andrew’s Rd, Singapore, 178957",
+      "normalizedVenue": "national gallery singapore 1 st andrew s rd singapore 178957",
+      "canonicalVenue": "NATIONAL GALLERY SINGAPORE",
+      "verifiedAddress": "National Gallery Singapore, 1 St Andrew’s Road, Singapore 178957",
+      "coordinates": {
+        "lng": 103.8515234999511,
+        "lat": 1.2902843735283591
+      },
+      "poiId": "national-gallery-singapore",
+      "gmlId": "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736",
+      "gmlIds": [
+        "SLA_BLDG2_c0148aa1-6366-415d-9701-4e1e2546c736"
+      ],
+      "acceptedGmlNames": [
+        "NATIONAL GALLERY SINGAPORE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/76/12_0.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_1.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_2.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_3.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_4.b3dm",
+          "batchIds": [
+            3
+          ]
+        },
+        {
+          "path": "tiles/7/76/12_5.b3dm",
+          "batchIds": [
+            3
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:20:58.442Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:21:02.633Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "ArtScience Museum, Marina Bay Sands, 6 Bayfront Avenue, Singapore",
+      "normalizedVenue": "artscience museum marina bay sands 6 bayfront avenue singapore",
+      "canonicalVenue": "MARINA BAY SANDS (ARTSCIENCE MUSEUM)",
+      "verifiedAddress": "ArtScience Museum, 6 Bayfront Avenue, Singapore 018974",
+      "coordinates": {
+        "lng": 103.85927402663303,
+        "lat": 1.2862040338634544
+      },
+      "poiId": "marina-bay-sands-artscience-museum",
+      "gmlId": "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e",
+      "gmlIds": [
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e"
+      ],
+      "acceptedGmlNames": [
+        "MARINA BAY SANDS (ARTSCIENCE MUSEUM)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/39/5_0.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_1.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_2.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_3.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_4.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_5.b3dm",
+          "batchIds": [
+            14
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:21:44.707Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:21:48.141Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Peranakan Museum, 39 Armenian St, Singapore, 179941",
+      "normalizedVenue": "peranakan museum 39 armenian st singapore 179941",
+      "canonicalVenue": "PERANAKAN MUSEUM",
+      "verifiedAddress": "Peranakan Museum, 39 Armenian Street, Singapore 179941",
+      "coordinates": {
+        "lng": 103.84904934146827,
+        "lat": 1.294292363604709
+      },
+      "poiId": "peranakan-museum",
+      "gmlId": "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da",
+      "gmlIds": [
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da"
+      ],
+      "acceptedGmlNames": [
+        "PERANAKAN MUSEUM"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/37/6_1.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_0.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_2.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_3.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_4.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_5.b3dm",
+          "batchIds": [
+            21
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:23:24.387Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:23:27.924Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Esplanade Theatres on the Bay, 1 Esplanade Dr, Singapore, 038981",
+      "normalizedVenue": "esplanade theatres on the bay 1 esplanade dr singapore 038981",
+      "canonicalVenue": "ESPLANADE - THEATRES ON THE BAY",
+      "verifiedAddress": "Esplanade – Theatres on the Bay, 1 Esplanade Drive, Singapore 038981",
+      "coordinates": {
+        "lng": 103.85532007007397,
+        "lat": 1.2898528657029187
+      },
+      "poiId": "esplanade-theatres-on-the-bay",
+      "gmlId": "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "acceptedGmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/78/12_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:24:16.839Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:24:27.327Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Jewel Changi Airport, Jewel Changi Airport, 78 Airport Blvd, Singapore",
+      "normalizedVenue": "jewel changi airport jewel changi airport 78 airport blvd singapore",
+      "canonicalVenue": "JEWEL CHANGI AIRPORT",
+      "verifiedAddress": "Jewel Changi Airport, 78 Airport Boulevard, Singapore 819666",
+      "coordinates": {
+        "lng": 103.98933257610221,
+        "lat": 1.3596958721695571
+      },
+      "poiId": "jewel-changi-airport",
+      "gmlId": "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b",
+      "gmlIds": [
+        "SLA_BLDG2_ed0c5449-df3d-47d0-9ab8-7b126f214f8b"
+      ],
+      "acceptedGmlNames": [
+        "JEWEL CHANGI AIRPORT"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/4/15/10_0.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/4/15/10_1.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/4/15/10_2.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/4/15/10_3.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/4/15/10_4.b3dm",
+          "batchIds": [
+            9
+          ]
+        },
+        {
+          "path": "tiles/4/15/10_5.b3dm",
+          "batchIds": [
+            9
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:26:30.890Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:26:35.302Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Gajah Gallery, #03-04 Tanjong Pagar Distripark, 39 Keppel Road, Singapore",
+      "normalizedVenue": "gajah gallery 03 04 tanjong pagar distripark 39 keppel road singapore",
+      "canonicalVenue": "TANJONG PAGAR DISTRIPARK",
+      "verifiedAddress": "Gajah Gallery, #03-04 Tanjong Pagar Distripark, 39 Keppel Road, Singapore 089065",
+      "coordinates": {
+        "lng": 103.83664260831985,
+        "lat": 1.2718859563161569
+      },
+      "poiId": "tanjong-pagar-distripark",
+      "gmlId": "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3",
+      "gmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "acceptedGmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/31/4_4.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_3.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_2.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_1.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_0.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_5.b3dm",
+          "batchIds": [
+            2
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:27:17.899Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:27:21.548Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Singapore Art Museum, 39 Keppel Rd, #01-02, Singapore, 089065",
+      "normalizedVenue": "singapore art museum 39 keppel rd 01 02 singapore 089065",
+      "canonicalVenue": "TANJONG PAGAR DISTRIPARK",
+      "verifiedAddress": "Singapore Art Museum, #01-02 Tanjong Pagar Distripark, 39 Keppel Road, Singapore 089065",
+      "coordinates": {
+        "lng": 103.83664260831985,
+        "lat": 1.2718859563161569
+      },
+      "poiId": "tanjong-pagar-distripark",
+      "gmlId": "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3",
+      "gmlIds": [
+        "SLA_BLDG2_39af9993-ebbd-492a-902e-a8650dad4ef3"
+      ],
+      "acceptedGmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/31/4_4.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_3.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_2.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_1.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_0.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/31/4_5.b3dm",
+          "batchIds": [
+            2
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:28:02.525Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:28:07.953Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Flower Dome, Flower Dome, 18 Marina Gardens Dr, Singapore",
+      "normalizedVenue": "flower dome flower dome 18 marina gardens dr singapore",
+      "canonicalVenue": "GARDENS BY THE BAY",
+      "verifiedAddress": "Flower Dome, Gardens by the Bay, 18 Marina Gardens Drive, Singapore 018953",
+      "coordinates": {
+        "lng": 103.86478864013044,
+        "lat": 1.2846112125188787
+      },
+      "poiId": "gardens-by-the-bay",
+      "gmlId": "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d",
+      "gmlIds": [
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
+      ],
+      "acceptedGmlNames": [
+        "GARDENS BY THE BAY"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/41/2_4.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/6/41/2_3.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/6/41/2_2.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/6/41/2_1.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/6/41/2_0.b3dm",
+          "batchIds": [
+            7
+          ]
+        },
+        {
+          "path": "tiles/6/41/2_5.b3dm",
+          "batchIds": [
+            7
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:30:05.671Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:30:10.221Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Singapore Chinese Cultural Centre (SCCC), Raffles Place, 1 Straits Boulevard, Singapore",
+      "normalizedVenue": "singapore chinese cultural centre sccc raffles place 1 straits boulevard singapore",
+      "canonicalVenue": "SINGAPORE CHINESE CULTURAL CENTRE",
+      "verifiedAddress": "Singapore Chinese Cultural Centre, 1 Straits Boulevard, Singapore 018906",
+      "coordinates": {
+        "lng": 103.84957033668435,
+        "lat": 1.2758291819866812
+      },
+      "poiId": "singapore-chinese-cultural-centre",
+      "gmlId": "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb",
+      "gmlIds": [
+        "SLA_BLDG2_d315c0d7-f628-440c-8ffb-4c70f5380ceb"
+      ],
+      "acceptedGmlNames": [
+        "SINGAPORE CHINESE CULTURAL CENTRE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/75/5_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/75/5_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:33:17.344Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:33:24.934Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "STPI Creative Workshop and Gallery, 41 Robertson Quay, Singapore, 238236",
+      "normalizedVenue": "stpi creative workshop and gallery 41 robertson quay singapore 238236",
+      "canonicalVenue": "SINGAPORE TYLER PRINT INSTITUTE",
+      "verifiedAddress": "STPI Creative Workshop and Gallery, 41 Robertson Quay, Singapore 238236",
+      "coordinates": {
+        "lng": 103.84026414836612,
+        "lat": 1.291049926847979
+      },
+      "poiId": "singapore-tyler-print-institute",
+      "gmlId": "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0",
+      "gmlIds": [
+        "SLA_BLDG2_ae0b8b40-c131-4376-ae9c-a661b30d79d0"
+      ],
+      "acceptedGmlNames": [
+        "SINGAPORE TYLER PRINT INSTITUTE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/65/12_2.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/65/12_0.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/65/12_1.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/65/12_3.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/65/12_4.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/65/12_5.b3dm",
+          "batchIds": [
+            1
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:34:11.189Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:34:17.775Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "The Star Theatre",
+      "normalizedVenue": "the star theatre",
+      "canonicalVenue": "THE STAR",
+      "verifiedAddress": "The Star Theatre, The Star Performing Arts Centre, 1 Vista Exchange Green, Singapore 138617",
+      "coordinates": {
+        "lng": 103.78843736435559,
+        "lat": 1.3067969894460119
+      },
+      "poiId": "the-star",
+      "gmlId": "SLA_BLDG2_c1aa8a65-aa52-48cf-ba3d-4e54814ab9f6",
+      "gmlIds": [
+        "SLA_BLDG2_c1aa8a65-aa52-48cf-ba3d-4e54814ab9f6"
+      ],
+      "acceptedGmlNames": [
+        "THE STAR"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/8/82/51_0.b3dm",
           "batchIds": [
             0
           ]
         },
         {
-          "path": "tiles/5/19/3_1.b3dm",
+          "path": "tiles/8/82/51_1.b3dm",
           "batchIds": [
             0
           ]
         },
         {
-          "path": "tiles/5/19/3_2.b3dm",
+          "path": "tiles/8/82/51_2.b3dm",
           "batchIds": [
             0
           ]
         },
         {
-          "path": "tiles/5/19/3_3.b3dm",
+          "path": "tiles/8/82/51_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/8/82/51_4.b3dm",
           "batchIds": [
             0
           ]
@@ -14304,10 +15391,940 @@
         {
           "type": "executable_local_resolution",
           "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
-          "verifiedAt": "2026-07-19T19:38:04.173Z"
+          "verifiedAt": "2026-07-20T14:36:22.348Z"
         }
       ],
-      "verifiedAt": "2026-07-19T19:38:08.286Z"
+      "verifiedAt": "2026-07-20T14:36:27.344Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Appetite, 72A Amoy Street, Singapore, 069891",
+      "normalizedVenue": "appetite 72a amoy street singapore 069891",
+      "canonicalVenue": "TELOK AYER CONSERVATION AREA",
+      "verifiedAddress": "Appetite, 72A Amoy Street, Singapore 069891",
+      "coordinates": {
+        "lng": 103.84656549429408,
+        "lat": 1.2802784186244722
+      },
+      "poiId": "telok-ayer-conservation-area",
+      "gmlId": "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec",
+      "gmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "acceptedGmlNames": [
+        "TELOK AYER CONSERVATION AREA"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/36/3_0.b3dm",
+          "batchIds": [
+            49
+          ]
+        },
+        {
+          "path": "tiles/6/36/3_1.b3dm",
+          "batchIds": [
+            49
+          ]
+        },
+        {
+          "path": "tiles/6/36/3_2.b3dm",
+          "batchIds": [
+            49
+          ]
+        },
+        {
+          "path": "tiles/6/36/3_3.b3dm",
+          "batchIds": [
+            49
+          ]
+        },
+        {
+          "path": "tiles/6/36/3_4.b3dm",
+          "batchIds": [
+            49
+          ]
+        },
+        {
+          "path": "tiles/6/36/3_5.b3dm",
+          "batchIds": [
+            49
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:37:43.752Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:37:51.209Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Filmhouse, #05-00, Golden Mile Tower, 6001 Beach Rd",
+      "normalizedVenue": "filmhouse 05 00 golden mile tower 6001 beach rd",
+      "canonicalVenue": "GOLDEN MILE TOWER",
+      "verifiedAddress": "Filmhouse, #05-00 Golden Mile Tower, 6001 Beach Road, Singapore 199589",
+      "coordinates": {
+        "lng": 103.86411707012142,
+        "lat": 1.3019182569025696
+      },
+      "poiId": "golden-mile-tower",
+      "gmlId": "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3",
+      "gmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "acceptedGmlNames": [
+        "GOLDEN MILE TOWER"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/81/17_0.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/81/17_1.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/81/17_2.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/81/17_3.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/81/17_4.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/7/81/17_5.b3dm",
+          "batchIds": [
+            1
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:38:31.708Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:38:38.314Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Science Centre Singapore, 15 Science Centre Dr, Singapore, 609081",
+      "normalizedVenue": "science centre singapore 15 science centre dr singapore 609081",
+      "canonicalVenue": "SCIENCE CENTRE SINGAPORE",
+      "verifiedAddress": "Science Centre Singapore, 15 Science Centre Road, Singapore 609081",
+      "coordinates": {
+        "lng": 103.73596251038015,
+        "lat": 1.332592213388047
+      },
+      "poiId": "science-centre-singapore",
+      "gmlId": "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052",
+      "gmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "acceptedGmlNames": [
+        "SCIENCE CENTRE SINGAPORE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/12/26_3.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/12/26_2.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/12/26_0.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/12/26_1.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/12/26_4.b3dm",
+          "batchIds": [
+            21
+          ]
+        },
+        {
+          "path": "tiles/6/12/26_5.b3dm",
+          "batchIds": [
+            21
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:39:17.466Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:39:34.939Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Sands Theatre, Sands Theatre, Marina Bay Sands, Singapore, 018956",
+      "normalizedVenue": "sands theatre sands theatre marina bay sands singapore 018956",
+      "canonicalVenue": "MARINA BAY SANDS (THEATRE)",
+      "verifiedAddress": "4 Bayfront Avenue, Marina Bay Sands (Mastercard Theatres), Singapore 018973",
+      "coordinates": {
+        "lng": 103.8599918733797,
+        "lat": 1.2850308891753741
+      },
+      "poiId": "marina-bay-sands-theatre",
+      "gmlId": "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534",
+      "gmlIds": [
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "acceptedGmlNames": [
+        "MARINA BAY SANDS (THEATRE)"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/39/5_0.b3dm",
+          "batchIds": [
+            15
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_1.b3dm",
+          "batchIds": [
+            15
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_2.b3dm",
+          "batchIds": [
+            15
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_3.b3dm",
+          "batchIds": [
+            15
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_4.b3dm",
+          "batchIds": [
+            15
+          ]
+        },
+        {
+          "path": "tiles/6/39/5_5.b3dm",
+          "batchIds": [
+            15
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:42:04.041Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:42:11.131Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Oldham Theatre, National Archives of Singapore, 1 Canning Rise, Singapore",
+      "normalizedVenue": "oldham theatre national archives of singapore 1 canning rise singapore",
+      "canonicalVenue": "NATIONAL ARCHIVES OF SINGAPORE",
+      "verifiedAddress": "1 Canning Rise, National Archives of Singapore, Singapore 179868",
+      "coordinates": {
+        "lng": 103.84833011398109,
+        "lat": 1.2932347829903061
+      },
+      "poiId": "national-archives-of-singapore",
+      "gmlId": null,
+      "gmlIds": [
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737"
+      ],
+      "acceptedGmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/36/6_5.b3dm",
+          "batchIds": [
+            4,
+            23
+          ]
+        },
+        {
+          "path": "tiles/6/36/6_4.b3dm",
+          "batchIds": [
+            4,
+            23
+          ]
+        },
+        {
+          "path": "tiles/6/36/6_3.b3dm",
+          "batchIds": [
+            4,
+            23
+          ]
+        },
+        {
+          "path": "tiles/6/36/6_2.b3dm",
+          "batchIds": [
+            4,
+            23
+          ]
+        },
+        {
+          "path": "tiles/6/36/6_1.b3dm",
+          "batchIds": [
+            4,
+            23
+          ]
+        },
+        {
+          "path": "tiles/6/36/6_0.b3dm",
+          "batchIds": [
+            4,
+            23
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_0.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_1.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_2.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_3.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_4.b3dm",
+          "batchIds": [
+            2
+          ]
+        },
+        {
+          "path": "tiles/6/37/6_5.b3dm",
+          "batchIds": [
+            2
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:43:39.354Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:43:44.734Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Wild Rice @ Funan, Funan, 107 North Bridge Rd, #04-08 ll, Singapore",
+      "normalizedVenue": "wild rice funan funan 107 north bridge rd 04 08 ll singapore",
+      "canonicalVenue": "FUNAN",
+      "verifiedAddress": "107 North Bridge Road, #04-08 Funan, Singapore 179105",
+      "coordinates": {
+        "lng": 103.85002259422048,
+        "lat": 1.2913254627239268
+      },
+      "poiId": "funan",
+      "gmlId": "SLA_BLDG2_40f92c0a-72e4-43e9-8c9a-34bdb14c86f7",
+      "gmlIds": [
+        "SLA_BLDG2_40f92c0a-72e4-43e9-8c9a-34bdb14c86f7"
+      ],
+      "acceptedGmlNames": [
+        "FUNAN"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/18/3_4.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/18/3_3.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/18/3_2.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/18/3_1.b3dm",
+          "batchIds": [
+            1
+          ]
+        },
+        {
+          "path": "tiles/5/18/3_0.b3dm",
+          "batchIds": [
+            1
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:44:41.388Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:44:45.359Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Our Tampines Hub, 1 Tampines Walk, Singapore, 528523",
+      "normalizedVenue": "our tampines hub 1 tampines walk singapore 528523",
+      "canonicalVenue": "OUR TAMPINES HUB",
+      "verifiedAddress": "1 Tampines Walk, Our Tampines Hub, Singapore 528523",
+      "coordinates": {
+        "lng": 103.94029088719775,
+        "lat": 1.353058195438635
+      },
+      "poiId": "our-tampines-hub",
+      "gmlId": "SLA_BLDG2_f7847aa9-6f27-473c-869e-8a9400b9cf1c",
+      "gmlIds": [
+        "SLA_BLDG2_f7847aa9-6f27-473c-869e-8a9400b9cf1c"
+      ],
+      "acceptedGmlNames": [
+        "OUR TAMPINES HUB"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/4/13/9_4.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/4/13/9_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/4/13/9_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/4/13/9_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/4/13/9_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:46:34.619Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:46:40.397Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Esplanade Theatre Studio, Esplanade, Theatres on the Bay, 1 Esplanade Drive, Singapore",
+      "normalizedVenue": "esplanade theatre studio esplanade theatres on the bay 1 esplanade drive singapore",
+      "canonicalVenue": "ESPLANADE - THEATRES ON THE BAY",
+      "verifiedAddress": "1 Esplanade Drive, Esplanade - Theatres on the Bay, Singapore 038981",
+      "coordinates": {
+        "lng": 103.85532007007397,
+        "lat": 1.2898528657029187
+      },
+      "poiId": "esplanade-theatres-on-the-bay",
+      "gmlId": "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442",
+      "gmlIds": [
+        "SLA_BLDG2_e9850f77-b4a1-4b67-9b2c-61c38941e442"
+      ],
+      "acceptedGmlNames": [
+        "ESPLANADE - THEATRES ON THE BAY"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/7/78/12_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/7/78/12_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:48:54.724Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:49:01.759Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Tanjong Pagar Distripark, Blk 39 Tanjong Pagar Distripark, 39 Keppel Rd, Singapore",
+      "normalizedVenue": "tanjong pagar distripark blk 39 tanjong pagar distripark 39 keppel rd singapore",
+      "canonicalVenue": "TANJONG PAGAR DISTRIPARK",
+      "verifiedAddress": "37 Keppel Road, Tanjong Pagar Distripark, Singapore 089064",
+      "coordinates": {
+        "lng": 103.83830662640266,
+        "lat": 1.2719466066453573
+      },
+      "poiId": "tanjong-pagar-distripark",
+      "gmlId": "SLA_BLDG2_6841d098-f11e-4944-b469-cd83b42ed932",
+      "gmlIds": [
+        "SLA_BLDG2_6841d098-f11e-4944-b469-cd83b42ed932"
+      ],
+      "acceptedGmlNames": [
+        "TANJONG PAGAR DISTRIPARK"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/32/2_5.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/32/2_4.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/32/2_3.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/32/2_2.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/32/2_1.b3dm",
+          "batchIds": [
+            14
+          ]
+        },
+        {
+          "path": "tiles/6/32/2_0.b3dm",
+          "batchIds": [
+            14
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:50:01.081Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:50:05.381Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "the National Stadium",
+      "normalizedVenue": "the national stadium",
+      "canonicalVenue": "NATIONAL STADIUM",
+      "verifiedAddress": "1 Stadium Drive, National Stadium, Singapore 397629",
+      "coordinates": {
+        "lng": 103.87433028576724,
+        "lat": 1.3051554568814263
+      },
+      "poiId": "national-stadium",
+      "gmlId": "SLA_BLDG2_31cf6c75-b8fc-4b33-af89-e789837f57e9",
+      "gmlIds": [
+        "SLA_BLDG2_31cf6c75-b8fc-4b33-af89-e789837f57e9"
+      ],
+      "acceptedGmlNames": [
+        "NATIONAL STADIUM"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/3/5/1_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/3/5/1_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/3/5/1_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/3/5/1_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/3/5/1_4.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:52:30.321Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:52:34.931Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "Singapore Indoor Stadium, 2 Stadium Walk, Singapore, 397691",
+      "normalizedVenue": "singapore indoor stadium 2 stadium walk singapore 397691",
+      "canonicalVenue": "SINGAPORE INDOOR STADIUM",
+      "verifiedAddress": "2 Stadium Walk, Singapore Indoor Stadium, Singapore 397691",
+      "coordinates": {
+        "lng": 103.87488966127991,
+        "lat": 1.3006999649177593
+      },
+      "poiId": "singapore-indoor-stadium",
+      "gmlId": "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458",
+      "gmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "acceptedGmlNames": [
+        "SINGAPORE INDOOR STADIUM"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/21/4_0.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/5/21/4_1.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/5/21/4_2.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/5/21/4_3.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/5/21/4_4.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/5/21/4_5.b3dm",
+          "batchIds": [
+            19
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:53:41.494Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:53:48.579Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "the Singapore National Stadium",
+      "normalizedVenue": "the singapore national stadium",
+      "canonicalVenue": "NATIONAL STADIUM",
+      "verifiedAddress": "1 Stadium Drive, National Stadium, Singapore 397629",
+      "coordinates": {
+        "lng": 103.87433028576724,
+        "lat": 1.3051554568814263
+      },
+      "poiId": "national-stadium",
+      "gmlId": "SLA_BLDG2_31cf6c75-b8fc-4b33-af89-e789837f57e9",
+      "gmlIds": [
+        "SLA_BLDG2_31cf6c75-b8fc-4b33-af89-e789837f57e9"
+      ],
+      "acceptedGmlNames": [
+        "NATIONAL STADIUM"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/3/5/1_0.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/3/5/1_1.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/3/5/1_2.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/3/5/1_3.b3dm",
+          "batchIds": [
+            0
+          ]
+        },
+        {
+          "path": "tiles/3/5/1_4.b3dm",
+          "batchIds": [
+            0
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:56:15.191Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:56:23.963Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "the Singapore Indoor Stadium",
+      "normalizedVenue": "the singapore indoor stadium",
+      "canonicalVenue": "SINGAPORE INDOOR STADIUM",
+      "verifiedAddress": "2 Stadium Walk, Singapore Indoor Stadium, Singapore 397691",
+      "coordinates": {
+        "lng": 103.87488966127991,
+        "lat": 1.3006999649177593
+      },
+      "poiId": "singapore-indoor-stadium",
+      "gmlId": "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458",
+      "gmlIds": [
+        "SLA_BLDG2_0a738074-bf78-4546-8df9-17042dc5c458"
+      ],
+      "acceptedGmlNames": [
+        "SINGAPORE INDOOR STADIUM"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/5/21/4_0.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/5/21/4_1.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/5/21/4_2.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/5/21/4_3.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/5/21/4_4.b3dm",
+          "batchIds": [
+            19
+          ]
+        },
+        {
+          "path": "tiles/5/21/4_5.b3dm",
+          "batchIds": [
+            19
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Verified authoritative venue evidence names one unique nearby OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:57:30.952Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:57:39.512Z"
+    },
+    {
+      "status": "approved",
+      "rawVenue": "City Hall MRT Exit A (Take escalator up to meet at Taxi Stand outside One Assembly Departmental Store), 150 North Bridge Rd, 179100, Singapore",
+      "normalizedVenue": "city hall mrt exit a take escalator up to meet at taxi stand outside one assembly departmental store 150 north bridge rd 179100 singapore",
+      "canonicalVenue": "RAFFLES CITY TOWER",
+      "verifiedAddress": "252 North Bridge Road, Raffles City Shopping Centre, Singapore 179103",
+      "coordinates": {
+        "lng": 103.85331861850338,
+        "lat": 1.2939177187115316
+      },
+      "poiId": "raffles-city-tower",
+      "gmlId": "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e",
+      "gmlIds": [
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "acceptedGmlNames": [
+        "RAFFLES CITY TOWER"
+      ],
+      "sourceTiles": [
+        {
+          "path": "tiles/6/38/6_4.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_3.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_2.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_1.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_0.b3dm",
+          "batchIds": [
+            4
+          ]
+        },
+        {
+          "path": "tiles/6/38/6_5.b3dm",
+          "batchIds": [
+            4
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "type": "executable_local_resolution",
+          "detail": "Official provider pin has one clearly nearest named OneMap 3D building",
+          "verifiedAt": "2026-07-20T14:59:16.519Z"
+        }
+      ],
+      "verifiedAt": "2026-07-20T14:59:21.794Z"
     }
   ]
 }

@@ -403,6 +403,64 @@ test("source reconciliation carries stale contributions per identity, accepts co
   );
 });
 
+test("an incomplete source publishes healthy current identities and carries only missing siblings stale", () => {
+  const previous = [
+    {
+      id: "healthy",
+      identityAnchor: "healthy",
+      title: "Old healthy title",
+      schedule: { kind: "anytime" },
+      sources: [{ source: "Fever Singapore", sourceId: "healthy" }],
+      sourceContributions: [
+        {
+          sourceRecordId: "fever:healthy",
+          sourceName: "Fever Singapore",
+          freshness: "current",
+          fields: ["title"],
+        },
+      ],
+    },
+    {
+      id: "failed",
+      identityAnchor: "failed",
+      title: "Temporarily unavailable detail",
+      schedule: { kind: "anytime" },
+      sources: [{ source: "Fever Singapore", sourceId: "failed" }],
+      sourceContributions: [
+        {
+          sourceRecordId: "fever:failed",
+          sourceName: "Fever Singapore",
+          freshness: "current",
+          fields: ["title"],
+        },
+      ],
+    },
+  ];
+  const current = [
+    {
+      ...previous[0],
+      title: "Updated healthy title",
+      sourceContributions: previous[0].sourceContributions,
+    },
+  ];
+  const result = reconcileSourceAvailability({
+    previousEvents: previous,
+    currentEvents: current,
+    sourceStatuses: { "Fever Singapore": "blocked" },
+    asOf: "2026-07-20T00:00:00+08:00",
+  });
+  assert.equal(result.events.length, 2);
+  assert.equal(
+    result.events.find(({ id }) => id === "healthy").title,
+    "Updated healthy title",
+  );
+  assert.equal(
+    result.events.find(({ id }) => id === "failed").freshness,
+    "stale",
+  );
+  assert.equal(result.counts.carriedForwardStale, 1);
+});
+
 test("candidate assembly keeps lifecycle, placement, mapping, and freshness orthogonal and rejects unsafe release geometry", () => {
   const candidate = assembleCandidateSnapshot({
     previousSnapshotId: "prior",
@@ -460,6 +518,21 @@ test("candidate assembly keeps lifecycle, placement, mapping, and freshness orth
         ],
       }),
     /duplicated/i,
+  );
+  assert.throws(
+    () =>
+      assembleCandidateSnapshot({
+        events: [
+          {
+            id: "structural-venue",
+            venue: "Accessibility",
+            lifecycleState: "active",
+            publicPlacement: "mapped",
+            mappingStatus: "approved",
+          },
+        ],
+      }),
+    /structural venue label/i,
   );
 });
 

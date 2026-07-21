@@ -3,12 +3,18 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadEventAuthorityRegistry } from "./lib/provider-policy.mjs";
+import {
+  assertProviderAllowed,
+  loadEventAuthorityRegistry,
+  loadProviderPolicy,
+} from "./lib/provider-policy.mjs";
+import { validateMissingVenueRecoveryConfig } from "./lib/event-sources/tinyfish-venue-recovery.mjs";
 import { validateSourcePolicy } from "./event-source-collector.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CONFIG_PATH = path.join(ROOT, "data/event-pipeline-config.json");
 const AUTHORITY_PATH = path.join(ROOT, "data/event-authority-registry.json");
+const PROVIDER_PATH = path.join(ROOT, "data/provider-policy.json");
 const ROLES = new Set(["direct", "editorial", "unavailable"]);
 const STATES = new Set(["enabled", "disabled"]);
 
@@ -67,6 +73,18 @@ export function validateEventSourceDefinitions(
     names = new Set(),
     orders = new Set(),
     precedences = new Set();
+  validateMissingVenueRecoveryConfig(config.missingVenueRecovery);
+  const providerPolicy = loadProviderPolicy(PROVIDER_PATH);
+  assertProviderAllowed(
+    providerPolicy,
+    config.missingVenueRecovery.search.providerId,
+    { url: config.missingVenueRecovery.search.endpoint },
+  );
+  assertProviderAllowed(
+    providerPolicy,
+    config.missingVenueRecovery.fetch.providerId,
+    { url: config.missingVenueRecovery.fetch.endpoint },
+  );
   const sources = config.sources
     .map(migrateSourceDefinition)
     .toSorted((a, b) => a.collectionOrder - b.collectionOrder);
@@ -197,9 +215,17 @@ export function validateEventSourceDefinitions(
       }
     }
     if (source.listing?.urls !== undefined) {
-      if (!Array.isArray(source.listing.urls) || source.listing.urls.length > source.listing.paginationCeiling - 1) throw new Error(`${source.name} has invalid bounded listing surfaces`);
+      if (
+        !Array.isArray(source.listing.urls) ||
+        source.listing.urls.length > source.listing.paginationCeiling - 1
+      )
+        throw new Error(`${source.name} has invalid bounded listing surfaces`);
       const canonical = source.listing.urls.map((url) => new URL(url).href);
-      if (new Set(canonical).size !== canonical.length || canonical.includes(new URL(source.listing.url).href)) throw new Error(`${source.name} has duplicate listing surfaces`);
+      if (
+        new Set(canonical).size !== canonical.length ||
+        canonical.includes(new URL(source.listing.url).href)
+      )
+        throw new Error(`${source.name} has duplicate listing surfaces`);
     }
     validateSourcePolicy(source);
     names.add(source.name);

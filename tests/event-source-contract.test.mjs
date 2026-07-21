@@ -37,6 +37,10 @@ test("the weekly source window contains the run date and seven following dates",
     inclusive: true,
   });
   assert.equal(readPipelineConfig().windowDaysAfterStart, 7);
+  assert.equal(
+    readPipelineConfig().missingVenueRecovery.search.providerId,
+    "tinyfish-search",
+  );
 });
 
 test("source record provenance repeats adapter, retrieval, window, and immutable pointers", () => {
@@ -278,6 +282,9 @@ test("duplicate captured detail URLs remain one immutable artifact", async () =>
     assert.equal(result.status, "success");
     assert.equal(result.counts.processedSourceRecords, 1);
     assert.equal(result.counts.invalidSourceRecords, 1);
+    assert.equal(result.counts.listingAppearances, 2);
+    assert.equal(result.counts.uniqueSourcePointers, 1);
+    assert.equal(result.counts.listingDuplicatesCollapsed, 1);
     assert.deepEqual(Object.values(result.invalidReasonCodes), [
       "duplicate_detail_url",
     ]);
@@ -744,6 +751,31 @@ test("Fever detail parsing recognizes Date and time and uses listing evidence on
     formattedLocation.venue,
     "Green Canvas, Mandai Wildlife Reserve",
   );
+  const venueDescription = adapter.detail(
+    {
+      url,
+      title: "Live at Cool Cats",
+      text: "Venue Description\nA jazz lounge.\nGeneral Info\n📍 Venue: Cool Cats",
+      links: [],
+    },
+    source,
+    url,
+  );
+  assert.equal(venueDescription.venue, "Cool Cats");
+  const venueAccessibility = adapter.detail(
+    {
+      url,
+      title: "Friday Night Magic",
+      text: "📍 Location: 3 Lor Salleh, Level 4, Singapore 416747\n### Venue & Accessibility\nYes, seats are provided.",
+      links: [],
+    },
+    source,
+    url,
+  );
+  assert.equal(
+    venueAccessibility.venue,
+    "3 Lor Salleh, Level 4, Singapore 416747",
+  );
   const multiple = adapter.detail(
     {
       url,
@@ -755,6 +787,46 @@ test("Fever detail parsing recognizes Date and time and uses listing evidence on
     url,
   );
   assert.equal(multiple.venue, "Multiple locations");
+  const fixedDirections = adapter.detail(
+    {
+      url,
+      title: "Vespa Night Tour of Singapore",
+      text: [
+        "Date and time: select during purchase",
+        "Location: Singapore",
+        "## Getting there",
+        "Singapore Sidecars, Sultan Gate",
+        "37 MacTaggart Road, #02-01 LIREA INDUSTRIAL BUILDING, Singapore, 368083",
+        "## Need help?",
+        "Contact Support",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    "https://feverup.com/m/135442",
+  );
+  assert.equal(fixedDirections.venue, "Singapore Sidecars, Sultan Gate");
+  assert.equal(
+    fixedDirections.address,
+    "37 MacTaggart Road, #02-01 LIREA INDUSTRIAL BUILDING, Singapore, 368083",
+  );
+  const explicitLocationWins = adapter.detail(
+    {
+      url,
+      title: "Fixed Hall Event",
+      text: [
+        "Location: Capitol Theatre",
+        "## Getting there",
+        "Ticket collection desk",
+        "13 Stamford Road, Singapore 178905",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    "https://feverup.com/m/fixture",
+  );
+  assert.equal(explicitLocationWins.venue, "Capitol Theatre");
+  assert.equal(explicitLocationWins.address, null);
 });
 
 test("rendered Fever collection carries card evidence into detail parsing and logs fallback accounting", async () => {
@@ -1111,6 +1183,119 @@ test("Visit Singapore does not turn generic guide headings into events without s
   assert.equal(records[0].venue, null);
 });
 
+test("Visit Singapore extracts guarded event-summary and labelled-table venues from saved pages", () => {
+  const source = readPipelineConfig().sources.find(
+    ({ adapterId }) => adapterId === "visit-singapore-rendered-v1",
+  );
+  const adapter = renderedAdapterFor(source.adapterId);
+  const nativeUrl =
+    "https://www.visitsingapore.com/whats-happening/all-happenings/light-trail";
+  const native = adapter.detail(
+    {
+      url: nativeUrl,
+      title: "Light Trail",
+      text: [
+        "# Light Trail",
+        "20 Jul 2026 - 31 Jul 2026",
+        "Civic Plaza",
+        "391 Orchard Road, Singapore 238874",
+        "A limited-run installation.",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    nativeUrl,
+    { listingRecord: { title: "Light Trail", sourceId: "visit-light" } },
+  );
+  assert.equal(native.venue, "Civic Plaza");
+  assert.equal(native.address, "391 Orchard Road, Singapore 238874");
+
+  const ticketUrl = "https://ticketing.example/events/des-bishop";
+  const ticket = adapter.detail(
+    {
+      url: ticketUrl,
+      title: "Events",
+      text: [
+        "# EVENTS",
+        "Event Date & Time",
+        "Event Name",
+        "Venue",
+        "Status",
+        "26 Oct 2026 (Mon.) 08:00 pm",
+        "Des Bishop Live in Singapore",
+        "Victoria Theatre",
+        "Find tickets",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    ticketUrl,
+    {
+      listingRecord: {
+        title: "Des Bishop Live in Singapore",
+        sourceId: "visit-des-bishop",
+      },
+    },
+  );
+  assert.equal(ticket.title, "Des Bishop Live in Singapore");
+  assert.equal(ticket.venue, "Victoria Theatre");
+  assert.ok(ticket.listingFallbackFields.includes("title"));
+
+  const mismatched = adapter.detail(
+    {
+      url: ticketUrl,
+      title: "Events",
+      text: [
+        "Event Date & Time",
+        "Event Name",
+        "Venue",
+        "Status",
+        "26 Oct 2026 (Mon.) 08:00 pm",
+        "A Different Event",
+        "Wrong Hall",
+        "Find tickets",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    ticketUrl,
+    {
+      listingRecord: {
+        title: "Des Bishop Live in Singapore",
+        sourceId: "visit-des-bishop",
+      },
+    },
+  );
+  assert.equal(mismatched.venue, null);
+
+  const structural = adapter.detail(
+    {
+      url: ticketUrl,
+      title: "Events",
+      text: [
+        "Event Date & Time",
+        "Event Name",
+        "Venue",
+        "Status",
+        "26 Oct 2026 (Mon.) 08:00 pm",
+        "Des Bishop Live in Singapore",
+        "Venue Description",
+        "Find tickets",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    ticketUrl,
+    {
+      listingRecord: {
+        title: "Des Bishop Live in Singapore",
+        sourceId: "visit-des-bishop",
+      },
+    },
+  );
+  assert.equal(structural.venue, null);
+});
+
 test("Visit Singapore turns safe embedded event CTAs into detail work and retains unsafe cards inline", () => {
   const source = readPipelineConfig().sources.find(
     ({ adapterId }) => adapterId === "visit-singapore-rendered-v1",
@@ -1455,6 +1640,86 @@ test("rendered collection rejects off-domain pagination and rendered redirects",
     } finally {
       state.cleanup();
     }
+  }
+});
+
+test("rendered collection isolates one failed detail and retains healthy direct records", async () => {
+  const state = temporaryState();
+  try {
+    const source = readPipelineConfig().sources.find(
+      ({ adapterId }) => adapterId === "fever-singapore-rendered-v1",
+    );
+    const good = "https://feverup.com/m/100";
+    const failed = "https://feverup.com/m/200";
+    const renderedClient = {
+      fetchBatch: async ([url]) => {
+        if (url === source.listing.url)
+          return {
+            results: [
+              {
+                url,
+                document: {
+                  links: [
+                    { url: good, text: "Good event" },
+                    { url: failed, text: "Unavailable event" },
+                  ],
+                },
+              },
+            ],
+            errors: [],
+            payloadHash: "listing",
+          };
+        if (url === failed)
+          return {
+            results: [],
+            errors: [{ url, code: "target_unreachable", status: 503 }],
+            payloadHash: "failed",
+          };
+        return {
+          results: [
+            {
+              url,
+              document: {
+                title: "Good event",
+                fields: {
+                  Date: "2026-07-27",
+                  Time: "19:00",
+                  Venue: "The Arts House",
+                },
+                links: [],
+              },
+            },
+          ],
+          errors: [],
+          payloadHash: "good",
+        };
+      },
+    };
+    const result = await collectRenderedSource({
+      runDir: state.root,
+      run: { runId: "partial-fever", window: singaporeWindow("2026-07-20") },
+      source,
+      renderedClient,
+      now: () => "2026-07-20T00:00:00.000Z",
+    });
+    assert.equal(result.status, "blocked");
+    assert.equal(result.counts.sourceRecordsReceived, 2);
+    assert.equal(result.counts.processedSourceRecords, 1);
+    assert.equal(result.counts.invalidSourceRecords, 1);
+    assert.equal(result.completion.detailFailures, 1);
+    assert.equal(result.processedSourceRecordRefs.length, 1);
+    assert.equal(result.invalidSourceRecordRefs.length, 1);
+    assert.equal(
+      result.invalidReasonCodes[result.invalidSourceRecordRefs[0]],
+      "source_unavailable",
+    );
+    assert.ok(
+      result.artifactRefs.includes(
+        result.invalidSourceRecordRefs[0].split("#")[0],
+      ),
+    );
+  } finally {
+    state.cleanup();
   }
 });
 
@@ -2053,6 +2318,68 @@ test("Time Out homepage discovers only the current approved monthly roundup rout
   ]);
   assert.equal(parsed.evidence, "current_month_route_discovered");
   assert.equal(parsed.detailItems.length, 0);
+
+  const unlabelled = adapter.listing(
+    {
+      url: homepage,
+      text: "## Things to do in Singapore",
+      links: [
+        "/singapore/things-to-do/the-best-things-to-do-in-singapore-in-july",
+      ],
+    },
+    source,
+    homepage,
+  );
+  assert.deepEqual(unlabelled.listingUrls, [
+    "https://www.timeout.com/singapore/things-to-do/the-best-things-to-do-in-singapore-in-july",
+  ]);
+
+  const ambiguous = adapter.listing(
+    {
+      url: homepage,
+      text: "## Things to do in Singapore",
+      links: [
+        "/singapore/things-to-do/the-best-things-to-do-in-singapore-in-july",
+        "/singapore/things-to-do/the-best-things-to-do-in-singapore-in-august",
+      ],
+    },
+    source,
+    homepage,
+  );
+  assert.deepEqual(ambiguous.listingUrls, []);
+  assert.equal(ambiguous.evidence, "current_month_route_missing");
+});
+
+test("Time Out accepts a terminal art zone and ignores capture placeholders", () => {
+  const source = readPipelineConfig().sources.find(
+    ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
+  );
+  const adapter = renderedAdapterFor(source.adapterId);
+  const url = source.listing.urls.find((value) =>
+    value.includes("art-exhibitions"),
+  );
+  const first = "https://www.timeout.com/singapore/art/exhibition-one";
+  const second = "https://www.timeout.com/singapore/art/exhibition-two";
+  const parsed = adapter.listing(
+    {
+      url,
+      text: "<main><h2>Best art exhibitions in Singapore</h2><article><p>First exhibition through 31 Jul 2026.</p></article><article><p>Second exhibition at a gallery.</p></article><article>[title]</article><article>[image]</article></main>",
+      links: [first, first, first, second, second, second],
+    },
+    source,
+    url,
+  );
+  assert.equal(parsed.evidence, "bounded_numbered_art_cards");
+  assert.deepEqual(
+    parsed.detailItems.map(({ url: detailUrl, record }) => [
+      detailUrl,
+      record.surfaceOrdinal,
+    ]),
+    [
+      [first, 1],
+      [second, 2],
+    ],
+  );
 });
 
 test("rendered collection traverses bounded Time Out surfaces and fetches overlapping details once", async () => {
@@ -2209,6 +2536,75 @@ test("rendered collection accounts for every surface and blocks partial Time Out
       ["success", "blocked"],
     );
     assert.equal(result.artifactRefs.length, 1);
+  } finally {
+    state.cleanup();
+  }
+});
+
+test("editorial collection isolates one failed detail and retains healthy discoveries", async () => {
+  const state = temporaryState();
+  try {
+    const configured = readPipelineConfig().sources.find(
+      ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
+    );
+    const source = {
+      ...configured,
+      listing: { ...configured.listing, urls: [], paginationCeiling: 1 },
+    };
+    const good = "https://www.timeout.com/singapore/news/good-event";
+    const failed = "https://www.timeout.com/singapore/news/failed-event";
+    const card = (ordinal, url, title) =>
+      `<article data-testid="tile-zone-large-list_testID"><a href="${url}" data-testid="tile-link_testID"><h3 data-testid="tile-title_testID">${ordinal}. ${title}</h3></a><span>Until 31 Aug 2026</span></article>`;
+    const renderedClient = {
+      fetchBatch: async ([url]) => {
+        if (url === source.listing.url)
+          return {
+            results: [
+              {
+                url,
+                text: `<h2>Best events in Singapore this week</h2>${card(1, failed, "Failed event")}${card(2, good, "Good event")}<h2>Explore Singapore</h2>`,
+              },
+            ],
+            errors: [],
+            payloadHash: "listing",
+          };
+        if (url === failed)
+          throw Object.assign(new Error("TinyFish request timed out"), {
+            code: "source_unavailable",
+          });
+        return {
+          results: [
+            {
+              url,
+              title: "Good event",
+              text: "Until 31 Aug 2026\n\n### Details\n\n**Address**: National Gallery Singapore\n: 1 St Andrew’s Rd\n: Singapore\n: 178957",
+            },
+          ],
+          errors: [],
+          payloadHash: "good",
+        };
+      },
+    };
+    const result = await collectRenderedSource({
+      runDir: state.root,
+      run: {
+        runId: "partial-timeout",
+        window: singaporeWindow("2026-07-20"),
+      },
+      source,
+      renderedClient,
+      now: () => "2026-07-20T00:00:00.000Z",
+    });
+    assert.equal(result.status, "blocked");
+    assert.equal(result.counts.sourceRecordsReceived, 2);
+    assert.equal(result.counts.processedSourceRecords, 1);
+    assert.equal(result.counts.invalidSourceRecords, 1);
+    assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(result.completion.detailFailures, 1);
+    assert.equal(
+      result.invalidReasonCodes[result.invalidSourceRecordRefs[0]],
+      "source_unavailable",
+    );
   } finally {
     state.cleanup();
   }

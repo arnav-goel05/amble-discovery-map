@@ -54,11 +54,20 @@ import {
   summarizeEvidenceLevels,
 } from "./lib/event-pipeline/reporting.mjs";
 import { computeVenueEvidenceHash } from "./lib/event-pipeline/evidence-hash.mjs";
+import { isStructuralVenueLabel } from "./lib/event-pipeline/venue-values.mjs";
 import {
   finalizeDeduplication,
   generateDedupCandidates,
 } from "./lib/event-sources/deduplicate.mjs";
 import { assessActivityInclusion } from "./lib/event-sources/activity-policy.mjs";
+import {
+  recoverMissingEventVenues,
+  validateMissingVenueRecoveryConfig,
+} from "./lib/event-sources/tinyfish-venue-recovery.mjs";
+import {
+  assertProviderAllowed,
+  loadProviderPolicy,
+} from "./lib/provider-policy.mjs";
 import { stableEventKey } from "./reconcile-event-content.mjs";
 import {
   createTraceWriter,
@@ -95,6 +104,17 @@ const venueRecoveryPath = (runDir) =>
 const deterministicRecoveryPath = (runDir) =>
   join(runDir, "normalized/deterministic-location-recovery.json");
 const STAGES = ["resolve", "highlight", "pill", "panel"];
+const browserVerificationEnvironment = (runId, overrides = {}) => {
+  const offset = Number.parseInt(sha(runId).slice(0, 8), 16) % 10_000;
+  const port = 40_000 + offset;
+  return {
+    ...process.env,
+    PLAYWRIGHT_PORT: String(port),
+    PLAYWRIGHT_REUSE_EXISTING_SERVER: "0",
+    EVENT_PIPELINE_BROWSER_ORIGIN: `http://127.0.0.1:${port}`,
+    ...overrides,
+  };
+};
 const TERMINAL_SOURCE = new Set([
   "success",
   "blocked",
@@ -738,6 +758,24 @@ function readPipelineConfig() {
   ) {
     fail("Invalid bounded requestPolicy");
   }
+  try {
+    validateMissingVenueRecoveryConfig(config.missingVenueRecovery);
+    const providerPolicy = loadProviderPolicy(
+      join(ROOT, "data/provider-policy.json"),
+    );
+    assertProviderAllowed(
+      providerPolicy,
+      config.missingVenueRecovery.search.providerId,
+      { url: config.missingVenueRecovery.search.endpoint },
+    );
+    assertProviderAllowed(
+      providerPolicy,
+      config.missingVenueRecovery.fetch.providerId,
+      { url: config.missingVenueRecovery.fetch.endpoint },
+    );
+  } catch (error) {
+    fail(error.message);
+  }
   const ids = new Set(),
     collectionOrders = new Set(),
     precedences = new Set();
@@ -1190,12 +1228,65 @@ function readResult(path) {
   return readJson(resolve(ROOT, path));
 }
 
+function validateSurfaceOutcomes(result) {
+  const surfaceOutcomes = result.completion?.surfaceOutcomes;
+  if (surfaceOutcomes === undefined) return;
+  if (!Array.isArray(surfaceOutcomes) || surfaceOutcomes.length === 0)
+    fail("surface outcomes must be a non-empty array when provided");
+  if (!Array.isArray(result.artifactRefs))
+    fail("Surface outcomes require artifactRefs");
+  let appearances = 0,
+    uniquePointers = 0,
+    duplicatesCollapsed = 0;
+  for (const outcome of surfaceOutcomes) {
+    if (!["success", "blocked"].includes(outcome.status))
+      fail("surface outcome status must be success or blocked");
+    for (const key of [
+      "appearances",
+      "uniquePointers",
+      "newUniquePointers",
+      "duplicatesCollapsed",
+    ])
+      if (!Number.isInteger(outcome[key]) || outcome[key] < 0)
+        fail(`Invalid surface outcome count: ${key}`);
+    if (outcome.status === "blocked" && !outcome.reasonCode)
+      fail("Blocked surface outcome requires a reasonCode");
+    if (outcome.status === "success" && !outcome.evidenceRef)
+      fail("Successful surface outcome requires evidenceRef");
+    if (
+      outcome.httpStatus != null &&
+      (!Number.isInteger(outcome.httpStatus) ||
+        outcome.httpStatus < 100 ||
+        outcome.httpStatus > 599)
+    )
+      fail("Surface outcome httpStatus must be a valid HTTP status");
+    if (
+      outcome.evidenceRef &&
+      !result.artifactRefs.includes(outcome.evidenceRef)
+    )
+      fail("Surface outcome evidenceRef must be declared in artifactRefs");
+    appearances += outcome.appearances;
+    uniquePointers += outcome.newUniquePointers;
+    duplicatesCollapsed += outcome.duplicatesCollapsed;
+  }
+  if (result.counts?.listingAppearances !== appearances)
+    fail("Source surface appearances do not reconcile");
+  if (result.counts?.uniqueSourcePointers !== uniquePointers)
+    fail("Source surface unique pointers do not reconcile");
+  if (result.counts?.listingDuplicatesCollapsed !== duplicatesCollapsed)
+    fail("Source surface duplicate accounting does not reconcile");
+}
+
 function validateSourceResult(result) {
   if (![...TERMINAL_SOURCE, "pending", "pilot_failed"].includes(result.status))
     fail(
       "Source status must be pending, success, pilot_failed, blocked, or failed",
     );
-  if (result.status === "success") {
+  const fullyAccounted =
+    result.status === "success" ||
+    (result.status === "blocked" &&
+      Number.isInteger(result.counts?.sourceRecordsReceived));
+  if (fullyAccounted) {
     const required = [
       "pages",
       "sourceRecordsReceived",
@@ -1217,9 +1308,17 @@ function validateSourceResult(result) {
     if (c.occurrencesEmitted !== c.excludedOccurrences + c.eligiblePreDedup)
       fail("Occurrence accounting does not reconcile");
     if (!Array.isArray(result.artifactRefs) || result.artifactRefs.length === 0)
-      fail("A successful source requires artifactRefs");
-    if (result.completion?.paginationComplete !== true)
+      fail("An accounted source requires artifactRefs");
+    if (
+      result.status === "success" &&
+      result.completion?.paginationComplete !== true
+    )
       fail("A successful source requires completion.paginationComplete");
+    if (
+      result.status === "blocked" &&
+      typeof result.completion?.paginationComplete !== "boolean"
+    )
+      fail("An accounted blocked source requires pagination completion state");
     if (
       !Array.isArray(result.completion.pagesVisited) ||
       result.completion.pagesVisited.length !== c.pages
@@ -1257,6 +1356,7 @@ function validateSourceResult(result) {
     )
       fail("completion.pageRecordCounts must sum to sourceRecordsReceived");
     if (
+      result.status === "success" &&
       c.sourceRecordsReceived === 0 &&
       result.completion.zeroResultConfirmed !== true
     )
@@ -1271,14 +1371,14 @@ function validateSourceResult(result) {
       result.invalidSourceRecordRefs.length !== c.invalidSourceRecords
     )
       fail(
-        "invalidSourceRecordRefs must account for every invalid source record",
+        "Source record partition invalidSourceRecordRefs must account for every invalid source record",
       );
     if (
       !Array.isArray(result.processedSourceRecordRefs) ||
       result.processedSourceRecordRefs.length !== c.processedSourceRecords
     )
       fail(
-        "processedSourceRecordRefs must account for every processed source record",
+        "Source record partition processedSourceRecordRefs must account for every processed source record",
       );
     const received = new Set(result.sourceRecordRefs);
     const partition = [
@@ -1295,7 +1395,9 @@ function validateSourceResult(result) {
         "Invalid and processed source record refs must exactly partition unique sourceRecordRefs",
       );
     }
-  } else if (result.status === "pending") {
+  }
+  validateSurfaceOutcomes(result);
+  if (result.status === "pending") {
     if (typeof result.message !== "string" || !result.message.trim())
       fail("Pending source requires a progress message");
   } else if (result.status === "blocked") {
@@ -1314,7 +1416,8 @@ function validateSourceResult(result) {
       fail("Blocked source httpStatus must be a valid HTTP status");
   } else if (result.status === "pilot_failed") {
     if (!result.error) fail("Pilot failure requires an error");
-  } else if (!result.error) fail("Failed source requires an error");
+  } else if (result.status === "failed" && !result.error)
+    fail("Failed source requires an error");
 }
 
 function baseArtifactRef(recordRef) {
@@ -1409,6 +1512,8 @@ function validateNormalizedSemantics(
       (typeof event.venue !== "string" || !event.venue.trim())
     )
       fail(`Physical event ${event.id} requires a venue`);
+    if (isStructuralVenueLabel(event.venue))
+      fail(`Normalized event ${event.id} contains a structural venue label`);
     const finalBoundary = eventFinalBoundary(event);
     if (
       finalBoundary !== null &&
@@ -1836,10 +1941,27 @@ function validateApprovedResolution(result, root = ROOT) {
 }
 
 function validateSourceEvidence(runDir, state, result) {
-  if (result.status !== "success") return;
+  const fullyAccounted =
+    result.status === "success" ||
+    (result.status === "blocked" &&
+      Number.isInteger(result.counts?.sourceRecordsReceived));
+  const hasSurfaceAccounting =
+    result.status === "blocked" &&
+    Array.isArray(result.completion?.surfaceOutcomes);
+  if (!fullyAccounted && !hasSurfaceAccounting) return;
   const runPath = join(runDir, "run.json");
   const run = existsSync(runPath) ? readJson(runPath) : null;
   const declared = new Set(result.artifactRefs);
+  if (hasSurfaceAccounting) {
+    for (const outcome of result.completion.surfaceOutcomes) {
+      if (
+        outcome.evidenceRef &&
+        !existsSync(artifactPath(runDir, outcome.evidenceRef))
+      )
+        fail(`Surface outcome evidence does not exist: ${outcome.evidenceRef}`);
+    }
+    if (!fullyAccounted) return;
+  }
   if (result.sourceRole === "discovery") {
     for (const ref of result.artifactRefs)
       if (!existsSync(artifactPath(runDir, ref)))
@@ -2007,16 +2129,30 @@ function validateSourceEvidence(runDir, state, result) {
         readJson(artifactPath(runDir, base)),
         pointerFromArtifactRef(recordRef),
       );
+    } else if (/^raw\/[^/]+\/detail-index\/[^/]+\.json$/.test(base)) {
+      jsonPointer(
+        readJson(artifactPath(runDir, base)),
+        pointerFromArtifactRef(recordRef),
+      );
     } else if (!/^raw\/[^/]+\/details\/[^/]+\.json$/.test(base)) {
       fail(
-        `Invalid source record must target raw listing evidence or a detail fixture: ${recordRef}`,
+        `Invalid source record must target raw listing evidence, a detail index, or a detail fixture: ${recordRef}`,
       );
+    } else if (!existsSync(artifactPath(runDir, base))) {
+      fail(`Invalid source record evidence does not exist: ${recordRef}`);
     }
   }
 }
 
 function validateSourceSemantics(runDir, state, result) {
-  if (result.status !== "success") return;
+  if (
+    result.status !== "success" &&
+    !(
+      result.status === "blocked" &&
+      Number.isInteger(result.counts?.sourceRecordsReceived)
+    )
+  )
+    return;
   if (result.sourceRole === "discovery") {
     const publishableDecisions = new Set([
       "authority_confirmed",
@@ -2109,7 +2245,12 @@ function recordSource(options) {
   validateSourceResult(result);
   validateSourceEvidence(runDir, state, result);
   validateSourceSemantics(runDir, state, result);
-  if (result.status === "success")
+  if (
+    result.status === "success" ||
+    (result.status === "blocked" &&
+      (Number.isInteger(result.counts?.sourceRecordsReceived) ||
+        Array.isArray(result.completion?.surfaceOutcomes)))
+  )
     registerArtifacts(runDir, result.artifactRefs);
   state.sources[options.source] = {
     ...state.sources[options.source],
@@ -2305,9 +2446,12 @@ function recordNormalization(options) {
       )
         fail(`normalized/${name}.json record count does not match its records`);
     }
-    const successfulSources = Object.values(state.sources).filter(
+    const normalizableSources = Object.values(state.sources).filter(
       (source) =>
-        source.status === "success" && source.operatingMode !== "pilot",
+        source.operatingMode !== "pilot" &&
+        (source.status === "success" ||
+          (source.status === "blocked" &&
+            Number.isInteger(source.counts?.sourceRecordsReceived))),
     );
     for (const [sourceName, recordRefs] of Object.entries(
       result.sourceReclassifications ?? {},
@@ -2345,7 +2489,7 @@ function recordNormalization(options) {
       }
     }
     const expectedInvalidRefs = new Set(
-      successfulSources.flatMap((source) => source.invalidSourceRecordRefs),
+      normalizableSources.flatMap((source) => source.invalidSourceRecordRefs),
     );
     if (
       normalizedInvalid.records.some(
@@ -2374,7 +2518,7 @@ function recordNormalization(options) {
       ...normalizedExcluded.records.map((record) => record.sourceRecordRef),
     ]);
     const expectedProcessedRefs = new Set(
-      successfulSources.flatMap((source) => source.processedSourceRecordRefs),
+      normalizableSources.flatMap((source) => source.processedSourceRecordRefs),
     );
     if (
       [...expectedProcessedRefs].some(
@@ -2408,7 +2552,7 @@ function recordNormalization(options) {
         );
       Object.assign(source.counts, accounting);
     }
-    const eligiblePreDedup = successfulSources.reduce(
+    const eligiblePreDedup = normalizableSources.reduce(
       (total, source) => total + source.counts.eligiblePreDedup,
       0,
     );
@@ -2450,7 +2594,7 @@ function recordNormalization(options) {
     registerArtifacts(
       runDir,
       requiredArtifacts,
-      successfulSources.flatMap((source) =>
+      normalizableSources.flatMap((source) =>
         source.artifactRefs
           .map(
             (reference) =>
@@ -2466,6 +2610,7 @@ function recordNormalization(options) {
     artifactRefs: result.artifactRefs ?? [],
     venueBranches: result.venueBranches ?? [],
     sourceAccounting: result.sourceAccounting ?? {},
+    diagnostics: result.diagnostics ?? [],
     evidence: result.evidence ?? null,
     sourceReconciliation: result.sourceReconciliation ?? null,
     error: result.error ?? null,
@@ -2510,7 +2655,78 @@ function recordNormalization(options) {
   printNext(state);
 }
 
-function normalize(options) {
+async function recoverMissingVenues(options, { force = false } = {}) {
+  const runDir = runDirectory(options.run);
+  const state = loadState(options.run);
+  if (
+    Object.values(state.sources).some(
+      (source) => !TERMINAL_SOURCE.has(source.status),
+    )
+  )
+    fail(
+      "Cannot recover missing venues until every source is terminally accounted for",
+    );
+  const config = readPipelineConfig();
+  const result = await recoverMissingEventVenues({
+    runDir,
+    state,
+    run: readJson(join(runDir, "run.json")),
+    config: config.missingVenueRecovery,
+    sourceDefinitions: config.sources,
+    force,
+    logger: (record) =>
+      pipelineTrace(runDir, {
+        stage: record.stage ?? "venue_search_recovery",
+        action: record.action ?? "missing_venue_recovery",
+        outcome:
+          record.outcome ??
+          (record.action?.includes("failed")
+            ? "failed"
+            : record.action?.includes("reused")
+              ? "reused"
+              : record.action?.includes("recovered")
+                ? "success"
+                : "started"),
+        sourceName: record.sourceName ?? null,
+        entityType: "source_occurrence",
+        entityId: record.entityId ?? options.run,
+        reasonCode: record.reasonCode ?? null,
+        httpStatus: record.httpStatus ?? null,
+        counts: record.counts ?? null,
+        evidenceRef: record.evidenceRef ?? null,
+      }),
+  });
+  registerArtifacts(runDir, [result.artifactRef]);
+  state.missingVenueRecovery = {
+    status: "success",
+    counts: result.counts,
+    perSource: result.perSource,
+    artifactRef: result.artifactRef,
+    completedAt: new Date().toISOString(),
+  };
+  saveState(runDir, state);
+  pipelineTrace(runDir, {
+    stage: "venue_search_recovery",
+    action: "missing_venue_recovery_terminal",
+    outcome: "success",
+    entityType: "run",
+    entityId: options.run,
+    counts: result.counts,
+    evidenceRef: result.artifactRef,
+  });
+  return result;
+}
+
+async function recoverMissingVenuesCommand(options) {
+  const result = await recoverMissingVenues(options, {
+    force: options.force === true || options.force === "true",
+  });
+  process.stdout.write(
+    `${JSON.stringify({ artifactRef: result.artifactRef, counts: result.counts, perSource: result.perSource }, null, 2)}\n`,
+  );
+}
+
+async function normalize(options) {
   const runDir = runDirectory(options.run);
   const state = loadState(options.run);
   if (
@@ -2519,10 +2735,16 @@ function normalize(options) {
     )
   )
     fail("Cannot normalize until every source is terminally accounted for");
+  await recoverMissingVenues(options);
+  const refreshedState = loadState(options.run);
   const resultPath = join(runDir, "normalization-result.json");
   writeJson(
     resultPath,
-    normalizeRun({ runDir, state, run: readJson(join(runDir, "run.json")) }),
+    normalizeRun({
+      runDir,
+      state: refreshedState,
+      run: readJson(join(runDir, "run.json")),
+    }),
   );
   recordNormalization({ run: options.run, result: resultPath });
 }
@@ -4346,10 +4568,9 @@ async function stageFrontend(options) {
       "playwright.config.mjs",
       "tests/event-ui.spec.mjs",
     ],
-    {
-      ...process.env,
+    browserVerificationEnvironment(options.run, {
       PLAYWRIGHT_WORKERS: process.env.PLAYWRIGHT_WORKERS ?? "2",
-    },
+    }),
   );
   execute(
     "browser",
@@ -4361,7 +4582,9 @@ async function stageFrontend(options) {
       "playwright.config.mjs",
       "tests/event-pipeline-staged.spec.mjs",
     ],
-    { ...process.env, EVENT_PIPELINE_RUN_DIR: runDir },
+    browserVerificationEnvironment(options.run, {
+      EVENT_PIPELINE_RUN_DIR: runDir,
+    }),
   );
   const failed = Object.entries(results)
     .filter(([, value]) => value.status !== "success")
@@ -4614,12 +4837,13 @@ function status(options) {
 
 function usage() {
   process.stdout.write(
-    `Usage:\n  npm run event-pipeline -- run [--date YYYY-MM-DD]\n  npm run event-pipeline -- start [--date YYYY-MM-DD]\n  npm run event-pipeline -- resume --run <run-id>\n  npm run event-pipeline -- advance --run <run-id>\n  npm run event-pipeline -- status --run <run-id>\n  npm run event-pipeline -- collect-source --run <run-id> --source <name>\n  npm run event-pipeline -- record-source --run <run-id> --source <name> --result <json>\n  npm run event-pipeline -- normalize --run <run-id>\n  npm run event-pipeline -- record-normalization --run <run-id> --result <json>\n  npm run event-pipeline -- prepare-venues --run <run-id>\n  npm run event-pipeline -- resolve-local --run <run-id>\n  npm run event-pipeline -- finalize-dedup --run <run-id>\n  npm run event-pipeline -- reprocess-unresolved --run <run-id>\n  npm run event-pipeline -- record-venue-recovery --run <run-id> --venue <id> --evidence <json>\n  npm run event-pipeline -- reuse-resolution-cache --run <run-id>\n  npm run event-pipeline -- plan-frontend --run <run-id>\n  npm run event-pipeline -- stage-frontend --run <run-id>\n  npm run event-pipeline -- record-stage --run <run-id> --venue <id> --stage <stage> --result <json>\n  npm run event-pipeline -- verify --run <run-id>\n  npm run event-pipeline -- finalize --run <run-id>\n`,
+    `Usage:\n  npm run event-pipeline -- run [--date YYYY-MM-DD]\n  npm run event-pipeline -- start [--date YYYY-MM-DD]\n  npm run event-pipeline -- resume --run <run-id>\n  npm run event-pipeline -- advance --run <run-id>\n  npm run event-pipeline -- status --run <run-id>\n  npm run event-pipeline -- collect-source --run <run-id> --source <name>\n  npm run event-pipeline -- record-source --run <run-id> --source <name> --result <json>\n  npm run event-pipeline -- recover-missing-venues --run <run-id> [--force]\n  npm run event-pipeline -- normalize --run <run-id>\n  npm run event-pipeline -- record-normalization --run <run-id> --result <json>\n  npm run event-pipeline -- prepare-venues --run <run-id>\n  npm run event-pipeline -- resolve-local --run <run-id>\n  npm run event-pipeline -- finalize-dedup --run <run-id>\n  npm run event-pipeline -- reprocess-unresolved --run <run-id>\n  npm run event-pipeline -- record-venue-recovery --run <run-id> --venue <id> --evidence <json>\n  npm run event-pipeline -- reuse-resolution-cache --run <run-id>\n  npm run event-pipeline -- plan-frontend --run <run-id>\n  npm run event-pipeline -- stage-frontend --run <run-id>\n  npm run event-pipeline -- record-stage --run <run-id> --venue <id> --stage <stage> --result <json>\n  npm run event-pipeline -- verify --run <run-id>\n  npm run event-pipeline -- finalize --run <run-id>\n`,
   );
 }
 
 export {
   branchEvidenceHash,
+  browserVerificationEnvironment,
   canCommitFrontendSnapshot,
   classifyNonBuildingRecovery,
   collectLocationClues,
@@ -4635,6 +4859,7 @@ export {
   reconcileNormalizedVenueBranches,
   renderStatus,
   reopenImprovedLocalCandidates,
+  recoverMissingVenues,
   replaceLastSuccessfulUse,
   reusableResolutionEntry,
   selectDeterministicOneMapAddress,
@@ -4663,6 +4888,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       status,
       "collect-source": collectSourceCommand,
       "record-source": recordSource,
+      "recover-missing-venues": recoverMissingVenuesCommand,
       normalize,
       "record-normalization": recordNormalization,
       "prepare-venues": prepareVenues,

@@ -17,6 +17,7 @@ import {
   createBrowserPcmCapture,
   createBrowserPcmPlayback,
 } from "./browser-audio-io.js";
+export { ASSISTANT_OWNED_ACTION_IDS } from "./assistant-owned-actions.js";
 
 const EMPTY_ENVELOPE = Object.freeze({
   schemaVersion: "1.0",
@@ -25,15 +26,6 @@ const EMPTY_ENVELOPE = Object.freeze({
   candidates: [],
   sources: [],
 });
-export const ASSISTANT_OWNED_ACTION_IDS = Object.freeze([
-  "map.openarea",
-  "map.selectarea",
-  "map.compareareas",
-  "map.dismissarea",
-  "navigation.openassistant",
-  "navigation.closeassistant",
-]);
-
 export function createAssistantController({
   getCandidateEnvelope,
   getTransitStations = () => [],

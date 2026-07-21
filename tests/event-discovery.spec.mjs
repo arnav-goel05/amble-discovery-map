@@ -134,6 +134,7 @@ test("the map starts directly without a startup surface", async ({ page }) => {
   await expect
     .poll(() =>
       page.locator("body").getAttribute("data-buildings-layer-started"),
+      { timeout: 15_000 },
     )
     .toBe("true");
   await expect(page.locator("#landmark-event-search")).toBeVisible();

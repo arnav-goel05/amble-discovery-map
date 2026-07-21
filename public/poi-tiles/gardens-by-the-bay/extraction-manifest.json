@@ -103,195 +103,153 @@
     "peranakan-museum",
     "maritime-xperiential-museum",
     "marina-square",
-    "jewel-changi-airport"
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower"
   ],
-  "generatedAt": "2026-07-19T19:39:14.673Z",
+  "generatedAt": "2026-07-20T15:00:01.183Z",
   "tiles": [
     {
-      "sourceTile": "tiles/5/20/0_0.b3dm",
-      "sourceSha256": "2df2d559433df781efa2ec594b4f8bbb7e1929d7dff6c138cf8f8d54ef069fd6",
+      "sourceTile": "tiles/6/41/2_0.b3dm",
+      "sourceSha256": "3dc5da2d71ee1a865bd33d84d15ab28974255b9d9f0e2558016f595c0b12208c",
       "originalBatchIds": [
-        20,
-        14,
-        17
+        7
       ],
       "gmlIds": [
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
       "gmlNames": [
-        "GARDENS BY THE BAY",
-        "GARDENS BY THE BAY",
         "GARDENS BY THE BAY"
       ],
-      "poiFile": "0_0-223e366f9dde.b3dm",
-      "poiSha256": "4f9cecfd8078203aadbee1b3db15628790f2aad5f6b3a2c7521eadbd87795496",
-      "poiTriangles": 1012,
-      "backgroundFile": "optimized-tiles/5/20/0_0.b3dm",
+      "poiFile": "2_0-ada26437e29d.b3dm",
+      "poiSha256": "a24b1754ca3251a82a874c29183b0e7e5cea202505831e14734f71c364758bf6",
+      "poiTriangles": 9284,
+      "backgroundFile": "optimized-tiles/6/41/2_0.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
-      "backgroundSha256": "db436bcf1dd6f9764a98c339b827244a2125b93d64103cc33f7d0781461421b1",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "27d0254970f340a997ddc3144b43ac99a2cae45c061f87e922b58b36f690b628",
+      "backgroundTriangles": 11284
     },
     {
-      "sourceTile": "tiles/5/20/0_1.b3dm",
-      "sourceSha256": "7317303123ec7cfbe23ebc853d5928619e4ae3a494f938096f467d93e4e62864",
+      "sourceTile": "tiles/6/41/2_1.b3dm",
+      "sourceSha256": "93a4b9187c9711705e832957593d424b79e5ae978e10d82fdd852954a5a60a94",
       "originalBatchIds": [
-        20,
-        14,
-        17
+        7
       ],
       "gmlIds": [
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
       "gmlNames": [
-        "GARDENS BY THE BAY",
-        "GARDENS BY THE BAY",
         "GARDENS BY THE BAY"
       ],
-      "poiFile": "0_1-cb1e3083e7ed.b3dm",
-      "poiSha256": "7adedbcbb0e07ad0d30d2de26b20247b6acbe1c207d522d500605c897f874944",
-      "poiTriangles": 1012,
-      "backgroundFile": "optimized-tiles/5/20/0_1.b3dm",
+      "poiFile": "2_1-736acc950cf5.b3dm",
+      "poiSha256": "c5fa1976c8af9e42967c9e255f21bd58825c511054bb4e5e75cb100a9f712775",
+      "poiTriangles": 9284,
+      "backgroundFile": "optimized-tiles/6/41/2_1.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
-      "backgroundSha256": "e1f6b40a48e2ce0109331fa67e0895512c21dfc49817802ea38bf25fb752a8ef",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "3b3d33a65c7a133a40455a3e9c9ca6c688f10be209fc8b475bf9f0cbbc9cea48",
+      "backgroundTriangles": 11284
     },
     {
-      "sourceTile": "tiles/5/20/0_2.b3dm",
-      "sourceSha256": "533b100b335bcd360ab99eb4df0085373d2360379adf3477286f422b24d8497d",
+      "sourceTile": "tiles/6/41/2_2.b3dm",
+      "sourceSha256": "ca6d582089be474b221db90d140bb5e042c77084e3033135898ab822bb291bdf",
       "originalBatchIds": [
-        20,
-        14,
-        17
+        7
       ],
       "gmlIds": [
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
       "gmlNames": [
-        "GARDENS BY THE BAY",
-        "GARDENS BY THE BAY",
         "GARDENS BY THE BAY"
       ],
-      "poiFile": "0_2-9eee6851b510.b3dm",
-      "poiSha256": "ca61a0ae66f4174fad5153acae51529a29e3311478efd2ec066fffeca51e79c5",
-      "poiTriangles": 1012,
-      "backgroundFile": "optimized-tiles/5/20/0_2.b3dm",
+      "poiFile": "2_2-53d199ec7c27.b3dm",
+      "poiSha256": "6e70aa664421107d9313560eccf18552897644133252675bc47641f01d346c99",
+      "poiTriangles": 9284,
+      "backgroundFile": "optimized-tiles/6/41/2_2.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
-      "backgroundSha256": "f875755c138eced053ff956c8efdff5784d8f3b20a9d4daf9dfd0d7f987ca9a1",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "c340ddaee945bf6ebd3c5fb928516218c11e93e05ef8ea5e7d68cdcb1a27355d",
+      "backgroundTriangles": 11284
     },
     {
-      "sourceTile": "tiles/5/20/0_3.b3dm",
-      "sourceSha256": "5e4c90ed7ec32910df825774d2014ee67acb9128f60cdeb52785f9bf5b18fab6",
+      "sourceTile": "tiles/6/41/2_3.b3dm",
+      "sourceSha256": "2b24e8c64ea1bb837836d3db5680a1e9d569f52e18ead589cd94cec266f09ca0",
       "originalBatchIds": [
-        20,
-        14,
-        17
+        7
       ],
       "gmlIds": [
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
       "gmlNames": [
-        "GARDENS BY THE BAY",
-        "GARDENS BY THE BAY",
         "GARDENS BY THE BAY"
       ],
-      "poiFile": "0_3-fe908db4d68b.b3dm",
-      "poiSha256": "b10383c6251d7928faba2adb4b868b4c42549cfca51ce27aca1236ae11e4bdf5",
-      "poiTriangles": 1012,
-      "backgroundFile": "optimized-tiles/5/20/0_3.b3dm",
+      "poiFile": "2_3-139ff3770d10.b3dm",
+      "poiSha256": "27f163be044cd1b17489ff57c09c1e0ea379215296a96d7cea19076ff5a6fd33",
+      "poiTriangles": 9284,
+      "backgroundFile": "optimized-tiles/6/41/2_3.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
-      "backgroundSha256": "852cf60f1869b81a44001880851200ab57d893055dcbc1490a373bab0f467f2c",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "2b2d1d0b51101877b26e5d663e5ecd8ce1938086235e7ede96aa4de9762dfe68",
+      "backgroundTriangles": 11284
     },
     {
-      "sourceTile": "tiles/5/20/0_4.b3dm",
-      "sourceSha256": "5a300dae2c6116b48d4fd808412d2c4ddeb197b27bfa99f52c2f6fbd5dbca4b8",
+      "sourceTile": "tiles/6/41/2_4.b3dm",
+      "sourceSha256": "d7b9fc3d94c925f1864eb5be47dc5ecbace0e74b00d695cb6590dfc2fcf35cd1",
       "originalBatchIds": [
-        20,
-        14,
-        17
+        7
       ],
       "gmlIds": [
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
       "gmlNames": [
-        "GARDENS BY THE BAY",
-        "GARDENS BY THE BAY",
         "GARDENS BY THE BAY"
       ],
-      "poiFile": "0_4-eaa12ff75956.b3dm",
-      "poiSha256": "062433836d1dec5fdd06edbcdccc5f226d1a5b11462e3fc7a95b2281affac6a3",
-      "poiTriangles": 1012,
-      "backgroundFile": "optimized-tiles/5/20/0_4.b3dm",
+      "poiFile": "2_4-1d94fe3cdcea.b3dm",
+      "poiSha256": "2dfc3059044fb92366c0a5f3fc6a5bf52096aea99b3fb02d536183c5446c06b4",
+      "poiTriangles": 9284,
+      "backgroundFile": "optimized-tiles/6/41/2_4.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
-      "backgroundSha256": "3aabc871e1ff3651f0c3644560c630ac1aa272d1e50392097c697878534efa71",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "88bfafd94d08c64b9b5628149fced8df01274369140411bd96bb940c23489192",
+      "backgroundTriangles": 11284
     },
     {
-      "sourceTile": "tiles/5/20/0_5.b3dm",
-      "sourceSha256": "af5f4eb8428fc0df38c96f7fdb95b2e08d6920c6ade4970d0b26c9b7433cb958",
+      "sourceTile": "tiles/6/41/2_5.b3dm",
+      "sourceSha256": "97d54394a7be037a40d161189c2f976d9df32074f36b35b288f54b465c0cd2a8",
       "originalBatchIds": [
-        20,
-        14,
-        17
+        7
       ],
       "gmlIds": [
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
       "gmlNames": [
-        "GARDENS BY THE BAY",
-        "GARDENS BY THE BAY",
         "GARDENS BY THE BAY"
       ],
-      "poiFile": "0_5-f90882c480cf.b3dm",
-      "poiSha256": "8bced03af7733df5a0c1df1caff419114d7dc8115901a12dcccdc72c8eae39ab",
-      "poiTriangles": 1012,
-      "backgroundFile": "optimized-tiles/5/20/0_5.b3dm",
+      "poiFile": "2_5-ec1588a20c93.b3dm",
+      "poiSha256": "5bcff89d6f41365f563da0cf11019d39e4d9668e855b2bc9b6e52f2f0bd4eafc",
+      "poiTriangles": 9284,
+      "backgroundFile": "optimized-tiles/6/41/2_5.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_136d04c6-2354-48d0-885e-97b3624ed79d"
       ],
-      "backgroundSha256": "1ad2043b4880cf957a005f626487356602cda04bc96c7079f298a8e0f922ddc8",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "7b27adcea7c920e38e3c65baa4187cdde93bfc704eb2691617838124b9af6b0c",
+      "backgroundTriangles": 11284
     }
   ]
 }

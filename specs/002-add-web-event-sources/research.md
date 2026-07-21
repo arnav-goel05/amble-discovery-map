@@ -257,6 +257,22 @@ adapter contract is deliberately revalidated.
 **Alternatives considered**: Remove it from reporting; reuse old captures; enable best-effort
 scraping.
 
+## Decision 22: Recover missing venues with a bounded verified search overlay
+
+**Decision**: Immediately before normalization, use TinyFish Search once for each physical
+source occurrence that still lacks venue and address evidence. Fetch at most three public
+candidates through TinyFish Fetch and recover a location only when exactly one candidate is an
+event-specific authoritative Singapore page with explicit venue or address evidence. Persist a
+versioned overlay rather than modifying raw captures, and reuse it on resume.
+
+**Rationale**: Known source pages sometimes establish the activity but omit its venue. A bounded
+verified search can recover those activities without weakening building evidence or turning a
+search snippet into authority. The overlay keeps provenance and resumption deterministic.
+
+**Alternatives considered**: Keep excluding every missing venue; trust search snippets; mutate raw
+source artifacts; search during venue resolution after normalization has already discarded the
+occurrence; perform unbounded general-web research.
+
 ## Primary References
 
 - [spec.md](spec.md) and [policy-review.md](policy-review.md)

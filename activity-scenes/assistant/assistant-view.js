@@ -277,6 +277,7 @@ export function createAssistantView({
     },
     renderDiscovery(result) {
       setOpen(true);
+      shell.dataset.mode = "results";
       clearStatus();
       results.replaceChildren();
       if (!result.areas.length && result.clarification) {
@@ -410,7 +411,8 @@ export function createAssistantView({
       if (
         ["connecting", "listening", "processing", "speaking", "muted"].includes(
           state,
-        )
+        ) &&
+        shell.dataset.mode !== "results"
       )
         shell.dataset.mode = "voice";
       open.dataset.state = state;

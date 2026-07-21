@@ -103,9 +103,21 @@
     "peranakan-museum",
     "maritime-xperiential-museum",
     "marina-square",
-    "jewel-changi-airport"
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower"
   ],
-  "generatedAt": "2026-07-19T19:39:06.856Z",
+  "generatedAt": "2026-07-20T14:59:44.530Z",
   "tiles": [
     {
       "sourceTile": "tiles/7/76/11_0.b3dm",
@@ -126,10 +138,11 @@
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
-        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
+        "SLA_BLDG2_7bc35123-6dbc-4ca0-9c70-4fe158894ad3"
       ],
-      "backgroundSha256": "99d6ba427792461f8802185c0b45441e064feccfa65b0f61f16ef3399f46d9d6",
-      "backgroundTriangles": 1984
+      "backgroundSha256": "a94872acca85176a7beb29e014a7aa5f6e348f2569daf1b41e4b652d3f7f54ab",
+      "backgroundTriangles": 1960
     },
     {
       "sourceTile": "tiles/7/76/11_1.b3dm",
@@ -150,10 +163,11 @@
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
-        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
+        "SLA_BLDG2_7bc35123-6dbc-4ca0-9c70-4fe158894ad3"
       ],
-      "backgroundSha256": "81163ebd896fd30b460a6585fa77dc97350885ac211b92f066472e5595160eb4",
-      "backgroundTriangles": 1984
+      "backgroundSha256": "a95ae862e2e548ed36ff62055e7d8478b98533b1a568769823ea0ba0639fd101",
+      "backgroundTriangles": 1960
     },
     {
       "sourceTile": "tiles/7/76/11_2.b3dm",
@@ -174,10 +188,11 @@
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
-        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
+        "SLA_BLDG2_7bc35123-6dbc-4ca0-9c70-4fe158894ad3"
       ],
-      "backgroundSha256": "e2d3a58ac7b261341a64a2ef9de227d0490b1b31f0893e7129589c0e81024faa",
-      "backgroundTriangles": 1984
+      "backgroundSha256": "67250cc7ac546b4b0256882396edde11dc290702f7314c3442ffe4969bad3ca9",
+      "backgroundTriangles": 1960
     },
     {
       "sourceTile": "tiles/7/76/11_3.b3dm",
@@ -198,10 +213,11 @@
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
-        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
+        "SLA_BLDG2_7bc35123-6dbc-4ca0-9c70-4fe158894ad3"
       ],
-      "backgroundSha256": "efac1d2da71c928abab990f6132951f2b798597069005afacf18b1464fa5730a",
-      "backgroundTriangles": 1984
+      "backgroundSha256": "d55ceb0ee39eda4db8a175a0b889aa7cb0d08b0083471b0ccd8e0d1daf1b272e",
+      "backgroundTriangles": 1960
     },
     {
       "sourceTile": "tiles/7/76/11_4.b3dm",
@@ -222,10 +238,11 @@
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
-        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
+        "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
+        "SLA_BLDG2_7bc35123-6dbc-4ca0-9c70-4fe158894ad3"
       ],
-      "backgroundSha256": "e96a78f543d25a2ac343ec82785dc5de5aeec9a8fbb6b49323f3067af452c56e",
-      "backgroundTriangles": 1984
+      "backgroundSha256": "e9b25437eb1c7f20247d62d162525034687280e7f443353250d5eba4769d3786",
+      "backgroundTriangles": 1960
     }
   ]
 }

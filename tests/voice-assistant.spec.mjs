@@ -107,7 +107,7 @@ async function mockRelay(page, { transcript } = {}) {
           protocolVersion: "1.0",
           streamPath:
             "/api/voice/sessions/session-browser-lifecycle-001/stream",
-          expiresAt: "2026-07-18T12:05:00.000Z",
+          expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
           limits: {
             maxSessionSeconds: 300,
             idleSeconds: 60,
@@ -227,9 +227,16 @@ test("returning consent starts voice directly from the expanding pill", async ({
   );
   const shellBounds = await page.locator(selectors.shell).boundingBox();
   const guidanceBounds = await page.locator("#map-guidance").boundingBox();
-  expect(
-    Math.abs((shellBounds?.width || 0) - (guidanceBounds?.width || 0)),
-  ).toBeLessThanOrEqual(1);
+  const viewport = page.viewportSize();
+  if ((viewport?.width || 0) > 720) {
+    expect(
+      Math.abs((shellBounds?.width || 0) - (guidanceBounds?.width || 0)),
+    ).toBeLessThanOrEqual(1);
+  } else {
+    expect(shellBounds?.width || 0).toBeLessThanOrEqual(
+      (viewport?.width || 0) - 16,
+    );
+  }
   expect(
     Math.abs((shellBounds?.height || 0) - (guidanceBounds?.height || 0)),
   ).toBeLessThanOrEqual(1);

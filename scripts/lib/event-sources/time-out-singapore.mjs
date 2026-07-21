@@ -71,10 +71,10 @@ function boundedEventZone(markup, surface) {
   const index = headings.findIndex((heading) =>
     surface.heading.test(readableText(heading[0])),
   );
-  if (index < 0 || !headings[index + 1]) return "";
+  if (index < 0) return "";
   return markup.slice(
     headings[index].index + headings[index][0].length,
-    headings[index + 1].index,
+    headings[index + 1]?.index ?? markup.length,
   );
 }
 
@@ -174,9 +174,12 @@ function structuredSurfaceCards(result, source, baseUrl, surface) {
 
 function semanticSurfaceCards(result, source, baseUrl, surface) {
   const zone = boundedEventZone(rawMarkup(result), surface);
-  const articles = [
-    ...zone.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/gi),
-  ].map((match) => match[1]);
+  const articles = [...zone.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/gi)]
+    .map((match) => match[1])
+    .filter((article) => {
+      const text = readableText(article);
+      return text && !/^\[(?:title|image)\]$/i.test(text);
+    });
   if (!articles.length)
     return { items: [], appearances: [], completeSequence: false };
   const base = new URL(baseUrl),
@@ -239,23 +242,25 @@ function surfaceCards(result, source, baseUrl, surface) {
 function currentMonthRoute(result, source, baseUrl) {
   const base = new URL(baseUrl),
     pattern = new RegExp(source.listing.monthlyPathPattern);
-  return [
+  const candidates = renderedDocument(result).links.flatMap((link) => {
+    try {
+      const url = canonicalRenderedUrl(new URL(link.url, base).href),
+        parsed = new URL(url);
+      return parsed.hostname === base.hostname && pattern.test(parsed.pathname)
+        ? [{ url, labelled: /^this month$/i.test(clean(link.text) ?? "") }]
+        : [];
+    } catch {
+      return [];
+    }
+  });
+  const labelled = [
     ...new Set(
-      renderedDocument(result).links.flatMap((link) => {
-        if (!/^this month$/i.test(clean(link.text) ?? "")) return [];
-        try {
-          const url = canonicalRenderedUrl(new URL(link.url, base).href),
-            parsed = new URL(url);
-          return parsed.hostname === base.hostname &&
-            pattern.test(parsed.pathname)
-            ? [url]
-            : [];
-        } catch {
-          return [];
-        }
-      }),
+      candidates.filter(({ labelled }) => labelled).map(({ url }) => url),
     ),
   ].sort();
+  if (labelled.length) return labelled;
+  const unlabelled = [...new Set(candidates.map(({ url }) => url))].sort();
+  return unlabelled.length === 1 ? unlabelled : [];
 }
 
 function detailSchedule(document, listingRecord) {

@@ -824,14 +824,22 @@ async function requestDetail(source, listing, transport, publicUrl) {
   const bootstrap = await transport({ url: publicUrl, method: "GET" });
   if (!bootstrap.ok)
     return {
-      blocked: `Catch detail bootstrap returned HTTP ${bootstrap.status}`,
+      blocked: {
+        reasonCode: externalBlockerCodeForStatus(bootstrap.status),
+        httpStatus: bootstrap.status,
+        message: `Catch detail bootstrap returned HTTP ${bootstrap.status}`,
+      },
     };
   const eventPageID = bootstrap.text.match(
     /event-detail-page-id=["']([^"']+)["']/i,
   )?.[1];
   if (!eventPageID)
     return {
-      blocked: "Catch detail bootstrap no longer exposes event-detail-page-id",
+      blocked: {
+        reasonCode: "layout_contract_changed",
+        message:
+          "Catch detail bootstrap no longer exposes event-detail-page-id",
+      },
     };
   const body = new URLSearchParams({
     pathUrl: publicUrl,
@@ -901,6 +909,24 @@ function httpStatusOfProviderError(value) {
     : null;
 }
 
+const RENDERED_BLOCKER_CODES = new Set([
+  "authentication_or_captcha",
+  "layout_contract_changed",
+  "pagination_inaccessible",
+  "persistent_rate_limit",
+  "source_unavailable",
+  "provider_policy_invalid",
+  "retrieval_credential_missing",
+  "official_reference_invalid",
+  "adapter_missing",
+]);
+
+function renderedBlockerReason(value, fallback = "source_unavailable") {
+  if (RENDERED_BLOCKER_CODES.has(value?.code)) return value.code;
+  const status = httpStatusOfProviderError(value);
+  return status ? externalBlockerCodeForStatus(status) : fallback;
+}
+
 function validateRenderedResult(source, requestedUrl, result) {
   const finalUrl = canonicalRenderedUrl(
     result?.final_url ?? result?.finalUrl ?? result?.url ?? requestedUrl,
@@ -941,6 +967,51 @@ async function collectDiscoveryDetails({
     confirmationOutcomeCounts = {};
   const confirmationRefs = [],
     authorityRefs = [];
+  const detailFailures = [];
+  const captureDetailFailure = ({
+    detailUrl,
+    error,
+    reasonCode,
+    httpStatus,
+  }) => {
+    const retrievedAt = now();
+    const fixtureRef = `raw/${source.adapterId}/discoveries/${sha(detailUrl)}.failure.json`;
+    const recordRef = `${fixtureRef}#/records/0`;
+    writeJson(join(runDir, fixtureRef), {
+      schemaVersion: "1.0",
+      runId: run.runId,
+      createdAt: retrievedAt,
+      source: { name: source.name, role: source.sourceRole },
+      counts: { records: 1 },
+      records: [
+        {
+          recordType: "retrieval_failure",
+          sourceId: `failure:${sha(detailUrl)}`,
+          detailUrl,
+          reasonCode,
+          httpStatus: httpStatus ?? null,
+        },
+      ],
+    });
+    artifactRefs.push(fixtureRef);
+    sourceRecordRefs.push(recordRef);
+    invalidSourceRecordRefs.push(recordRef);
+    invalidReasonCodes[recordRef] = reasonCode;
+    detailFailures.push({
+      detailUrl,
+      reasonCode,
+      httpStatus: httpStatus ?? null,
+    });
+    logger({
+      action: "discovery_detail_failed",
+      sourceName: source.name,
+      entityId: detailUrl,
+      reasonCode,
+      httpStatus: httpStatus ?? null,
+      error: error?.message ?? String(error ?? reasonCode),
+      evidenceRef: fixtureRef,
+    });
+  };
   for (const detailUrl of [...detailUrls].sort()) {
     let batch;
     try {
@@ -950,42 +1021,53 @@ async function collectDiscoveryDetails({
         entityId: detailUrl,
       });
     } catch (error) {
-      return {
-        status: source.operatingMode === "pilot" ? "pilot_failed" : "blocked",
-        blockerReasonCode: error.code ?? "source_unavailable",
+      captureDetailFailure({
+        detailUrl,
+        error,
+        reasonCode: renderedBlockerReason(error),
         httpStatus: Number.isInteger(error.status) ? error.status : null,
-        error: error.message,
-      };
+      });
+      continue;
     }
     const { result, error } = tinyfishResult(batch, detailUrl);
-    if (error || !result)
-      return {
-        status: source.operatingMode === "pilot" ? "pilot_failed" : "blocked",
-        blockerReasonCode: error?.code ?? "source_unavailable",
-        httpStatus: httpStatusOfProviderError(error),
+    if (error || !result) {
+      captureDetailFailure({
+        detailUrl,
         error:
-          (error
-            ? `${source.name} discovery detail retrieval failed (${error.code ?? "source_unavailable"})`
-            : null) ?? `${source.name} discovery detail returned no result`,
-      };
+          error ??
+          new Error(`${source.name} discovery detail returned no result`),
+        reasonCode: renderedBlockerReason(error),
+        httpStatus: httpStatusOfProviderError(error),
+      });
+      continue;
+    }
     let finalUrl;
     try {
       finalUrl = validateRenderedResult(source, detailUrl, result).finalUrl;
     } catch (validationError) {
-      return {
-        status: "blocked",
-        blockerReasonCode: "official_reference_invalid",
-        error: validationError.message,
-      };
+      captureDetailFailure({
+        detailUrl,
+        error: validationError,
+        reasonCode: "official_reference_invalid",
+      });
+      continue;
     }
     const listingRecord =
       detailListingRecords.get(detailUrl)?.record ??
       detailListingRecords.get(finalUrl)?.record ??
       null;
-    const discovery = adapter.detail(result, source, finalUrl, {
-        listingRecord,
-      }),
-      hash = sha(discovery.discoveryRecordId),
+    let discovery;
+    try {
+      discovery = adapter.detail(result, source, finalUrl, { listingRecord });
+    } catch (error) {
+      captureDetailFailure({
+        detailUrl,
+        error,
+        reasonCode: "layout_contract_changed",
+      });
+      continue;
+    }
+    const hash = sha(discovery.discoveryRecordId),
       retrievedAt = now();
     logger({
       action: "discovery_detail_parsed",
@@ -1190,16 +1272,16 @@ async function collectDiscoveryDetails({
   const indexRef = "raw/authority/index.json";
   if (!artifactRefs.includes(indexRef)) artifactRefs.push(indexRef);
   return {
-    status: "success",
+    status: detailFailures.length ? "blocked" : "success",
     sourceRole: "discovery",
     operatingMode: source.operatingMode,
     counts: {
       pages: pages.length,
-      sourceRecordsReceived: detailUrls.size,
-      invalidSourceRecords: 0,
-      processedSourceRecords: detailUrls.size,
-      discoveryRecordsReceived: detailUrls.size,
-      occurrencesEmitted: detailUrls.size,
+      sourceRecordsReceived: sourceRecordRefs.length,
+      invalidSourceRecords: invalidSourceRecordRefs.length,
+      processedSourceRecords: processedSourceRecordRefs.length,
+      discoveryRecordsReceived: sourceRecordRefs.length,
+      occurrencesEmitted: processedSourceRecordRefs.length,
       excludedOccurrences: [...Object.entries(confirmationOutcomeCounts)]
         .filter(
           ([decision]) =>
@@ -1226,14 +1308,15 @@ async function collectDiscoveryDetails({
     completion: {
       paginationComplete: true,
       pagesVisited: pages.map(({ ref }) => ref),
-      sourceRecordsDiscovered: detailUrls.size,
+      sourceRecordsDiscovered: sourceRecordRefs.length,
       providerReportedTotal: null,
-      derivedTotal: detailUrls.size,
+      derivedTotal: sourceRecordRefs.length,
       providerTotalEvidence: null,
       terminalEvidence: pages.at(-1)?.terminalEvidence,
       pageRecordCounts: pages.map(({ count }) => count),
       detailUrlsDiscovered: detailUrls.size,
-      detailPagesCaptured: detailUrls.size,
+      detailPagesCaptured: processedSourceRecordRefs.length,
+      detailFailures: detailFailures.length,
       zeroResultConfirmed: detailUrls.size === 0,
     },
     sourceRecordRefs,
@@ -1243,7 +1326,11 @@ async function collectDiscoveryDetails({
     confirmationRefs,
     authorityRefs,
     artifactRefs,
-    error: null,
+    blockerReasonCode: detailFailures[0]?.reasonCode ?? null,
+    httpStatus: detailFailures[0]?.httpStatus ?? null,
+    error: detailFailures.length
+      ? `${detailFailures.length} discovery detail retrievals were isolated`
+      : null,
   };
 }
 
@@ -1356,14 +1443,14 @@ export async function collectRenderedSource({
         });
       }
     } catch (error) {
-      recordSurfaceFailure(pageUrl, error.code ?? "source_unavailable", error);
+      recordSurfaceFailure(pageUrl, renderedBlockerReason(error), error);
       continue;
     }
     const { result, error } = tinyfishResult(batch, pageUrl);
     if (error || !result) {
       recordSurfaceFailure(
         pageUrl,
-        error?.code ?? "source_unavailable",
+        renderedBlockerReason(error),
         error ??
           new Error(`${source.name} listing retrieval returned no result`),
         { httpStatus: httpStatusOfProviderError(error) },
@@ -1601,7 +1688,7 @@ export async function collectRenderedSource({
       } catch (error) {
         return {
           status: "blocked",
-          blockerReasonCode: error.code ?? "source_unavailable",
+          blockerReasonCode: renderedBlockerReason(error),
           error: error.message,
         };
       }
@@ -1667,6 +1754,51 @@ export async function collectRenderedSource({
     invalidSourceRecordRefs = [...expansionInvalidRecordRefs],
     processedSourceRecordRefs = [],
     invalidReasonCodes = { ...expansionInvalidReasonCodes };
+  const detailFailures = [];
+  const captureDetailFailure = ({
+    detailUrl,
+    error,
+    reasonCode,
+    httpStatus = null,
+  }) => {
+    const retrievedAt = now();
+    const fixtureRef = `raw/${slug}/details/${sha(detailUrl)}.json`;
+    const recordRef = `${fixtureRef}#/records/0`;
+    writeJson(join(runDir, fixtureRef), {
+      schemaVersion: "1.0",
+      runId: run.runId,
+      createdAt: retrievedAt,
+      source: {
+        name: source.name,
+        role: source.sourceRole,
+        mode: source.operatingMode,
+      },
+      counts: { records: 1 },
+      records: [
+        {
+          recordType: "retrieval_failure",
+          sourceId: `failure:${sha(detailUrl)}`,
+          detailUrl,
+          reasonCode,
+          httpStatus,
+        },
+      ],
+    });
+    artifactRefs.push(fixtureRef);
+    sourceRecordRefs.push(recordRef);
+    invalidSourceRecordRefs.push(recordRef);
+    invalidReasonCodes[recordRef] = reasonCode;
+    detailFailures.push({ detailUrl, reasonCode, httpStatus });
+    logger({
+      action: "detail_failed",
+      sourceName: source.name,
+      entityId: detailUrl,
+      reasonCode,
+      httpStatus,
+      error: error?.message ?? String(error ?? reasonCode),
+      evidenceRef: fixtureRef,
+    });
+  };
   const captureOutboundListingFallback = ({
     detailUrl,
     listingEvidence,
@@ -1844,18 +1976,20 @@ export async function collectRenderedSource({
           listingEvidence,
           batch: null,
           error: {
-            code: error.code ?? "source_unavailable",
+            code: renderedBlockerReason(error),
             message: error.message,
           },
-          reasonCode: error.code ?? "source_unavailable",
+          reasonCode: renderedBlockerReason(error),
         });
         continue;
       }
-      return {
-        status: "blocked",
-        blockerReasonCode: error.code ?? "source_unavailable",
-        error: error.message,
-      };
+      captureDetailFailure({
+        detailUrl,
+        error,
+        reasonCode: renderedBlockerReason(error),
+        httpStatus: Number.isInteger(error.status) ? error.status : null,
+      });
+      continue;
     }
     const { result, error } = tinyfishResult(batch, detailUrl);
     if (error || !result) {
@@ -1866,17 +2000,19 @@ export async function collectRenderedSource({
           batch,
           result,
           error,
-          reasonCode: error?.code ?? "source_unavailable",
+          reasonCode: renderedBlockerReason(error),
         });
         continue;
       }
-      return {
-        status: "blocked",
-        blockerReasonCode: "source_unavailable",
+      captureDetailFailure({
+        detailUrl,
         error:
-          error?.message ??
-          `${source.name} detail retrieval returned no result`,
-      };
+          error ??
+          new Error(`${source.name} detail retrieval returned no result`),
+        reasonCode: "source_unavailable",
+        httpStatus: httpStatusOfProviderError(error),
+      });
+      continue;
     }
     const finalUrl = canonicalRenderedUrl(
       result.final_url ?? result.finalUrl ?? result.url ?? detailUrl,
@@ -1899,18 +2035,29 @@ export async function collectRenderedSource({
         });
         continue;
       }
-      return {
-        status: "blocked",
-        blockerReasonCode: "official_reference_invalid",
-        error: validationError.message,
-      };
+      captureDetailFailure({
+        detailUrl,
+        error: validationError,
+        reasonCode: "official_reference_invalid",
+      });
+      continue;
     }
     const finalListingEvidence =
       listingEvidence ?? detailListingRecords.get(finalUrl) ?? null;
     const listingRecord = finalListingEvidence?.record ?? null;
-    const fixtures = adapter.details
-      ? adapter.details(result, source, finalUrl, { listingRecord })
-      : [adapter.detail(result, source, finalUrl, { listingRecord })];
+    let fixtures;
+    try {
+      fixtures = adapter.details
+        ? adapter.details(result, source, finalUrl, { listingRecord })
+        : [adapter.detail(result, source, finalUrl, { listingRecord })];
+    } catch (error) {
+      captureDetailFailure({
+        detailUrl,
+        error,
+        reasonCode: "layout_contract_changed",
+      });
+      continue;
+    }
     const hash = sha(finalUrl),
       retrievedAt = now();
     const responseRef = `raw/${slug}/details/${hash}.response.json`,
@@ -2005,7 +2152,7 @@ export async function collectRenderedSource({
     }
   }
   return attachSurfaceAccounting({
-    status: "success",
+    status: detailFailures.length ? "blocked" : "success",
     sourceRole: source.sourceRole,
     operatingMode: source.operatingMode,
     counts: {
@@ -2030,6 +2177,7 @@ export async function collectRenderedSource({
       detailPagesCaptured: new Set(
         processedSourceRecordRefs.map((ref) => ref.split("#")[0]),
       ).size,
+      detailFailures: detailFailures.length,
       zeroResultConfirmed:
         detailUrls.size === 0 && listingRecords.length === 0
           ? pages.at(-1)?.zeroResultConfirmed === true
@@ -2040,7 +2188,11 @@ export async function collectRenderedSource({
     processedSourceRecordRefs,
     invalidReasonCodes,
     artifactRefs,
-    error: null,
+    blockerReasonCode: detailFailures[0]?.reasonCode ?? null,
+    httpStatus: detailFailures[0]?.httpStatus ?? null,
+    error: detailFailures.length
+      ? `${detailFailures.length} detail retrievals were isolated`
+      : null,
   });
 }
 
@@ -2158,12 +2310,20 @@ export async function collectSource({
       resilientTransport,
       detailUrl.publicUrl,
     );
-    if (detail.blocked)
+    if (detail.blocked) {
+      const blocker =
+        typeof detail.blocked === "string"
+          ? { reasonCode: "layout_contract_changed", message: detail.blocked }
+          : detail.blocked;
       return {
         status: "blocked",
-        blockerReasonCode: "layout_contract_changed",
-        error: detail.blocked,
+        blockerReasonCode: blocker.reasonCode ?? "layout_contract_changed",
+        ...(Number.isInteger(blocker.httpStatus)
+          ? { httpStatus: blocker.httpStatus }
+          : {}),
+        error: blocker.message ?? String(detail.blocked),
       };
+    }
     if (detail.invalid) {
       sourceRecordRefs.push(listing.listingRef);
       invalidSourceRecordRefs.push(listing.listingRef);
@@ -2296,6 +2456,11 @@ export async function collectSource({
       occurrencesEmitted,
       excludedOccurrences,
       eligiblePreDedup,
+      listingAppearances: listings.length,
+      uniqueSourcePointers: seenDetailUrls.size,
+      listingDuplicatesCollapsed: Object.values(invalidReasonCodes).filter(
+        (reason) => reason === "duplicate_detail_url",
+      ).length,
     },
     completion: {
       paginationComplete: true,

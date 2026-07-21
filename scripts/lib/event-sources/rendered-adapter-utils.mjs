@@ -160,7 +160,7 @@ export function field(document, names) {
     const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const match = document.text.match(
       new RegExp(
-        `(?:^|\\n)[^\\p{L}\\p{N}\\n]{0,12}${escaped}(?:\\s*(?:&|and)\\s*(?:time|date))?[^\\p{L}\\p{N}\\n]{1,12}([^\\n]+)`,
+        `(?:^|\\n)[^\\p{L}\\p{N}\\n]{0,12}${escaped}(?:\\s*(?:&|and)\\s*(?:time|date))?\\*{0,2}\\s*(?:[:：]|[-–—])\\s*([^\\n]+)`,
         "iu",
       ),
     );
@@ -218,11 +218,7 @@ function inferredVenue(document) {
     )
   )
     return "Multiple locations";
-  return clean(
-    document.text.match(
-      /(?:^|\n)[^\p{L}\p{N}\n]{0,12}Starting point[^\p{L}\p{N}\n]{1,12}([^\n]+)/iu,
-    )?.[1],
-  );
+  return null;
 }
 
 export function parseAuthorityDetail(

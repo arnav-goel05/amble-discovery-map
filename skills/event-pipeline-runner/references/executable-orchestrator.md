@@ -12,10 +12,15 @@ Use `npm run event-pipeline -- <command>` as the authoritative state machine. Th
 5. `prepare-venues --run <run-id>` validates or builds the local index, enriches every pending venue branch, and writes the local recovery candidate set. Resolve results are rejected until this succeeds.
 6. `resolve-local --run <run-id>` submits every unambiguous executable local match. Only remaining ambiguous branches may request agent adjudication.
 7. `record-venue-recovery --run <run-id> --venue <id> --evidence <json>` records newly verified address/coordinate evidence and reruns only that venue through the local resolver. If no exact candidate is approved, it writes the validated `needs_review` handoff itself. It preserves every completed branch.
-8. `finalize-dedup --run <run-id>` completes same-source/all-source deduplication after every venue resolve result is terminal. It uses approved POI or strong compatible off-map evidence, preserves prior anchors/children/contributions, and isolates uncertain identities for review.
-9. `stage-frontend --run <run-id>` reconciles current contributions with stale carry-forward and expiry, stages mapped/off-map/held/archive outcomes, performs create/update/noop geometry work, runs release-wide asset/build/UI/staged-browser verification, writes evidence-backed handoffs, and atomically activates the immutable candidate only when every release gate passes.
-10. `verify --run <run-id>` handles the zero-landmark path and compatibility verification after all venue stages are terminal and deduplication succeeds.
-11. `finalize --run <run-id>` writes `status.json`, `status.md`, and the final trace event only when no required work remains pending. It exits with code 2 for an incomplete run.
+8. `normalize --run <run-id>` first creates or reuses
+   `normalized/missing-venue-recovery.json`, then normalizes with recovered fields applied as an
+   immutable overlay. `recover-missing-venues --run <run-id> [--force]` exposes only that bounded
+   pre-normalization stage for focused diagnostics; it never recollects sources or publishes a
+   snapshot.
+9. `finalize-dedup --run <run-id>` completes same-source/all-source deduplication after every venue resolve result is terminal. It uses approved POI or strong compatible off-map evidence, preserves prior anchors/children/contributions, and isolates uncertain identities for review.
+10. `stage-frontend --run <run-id>` reconciles current contributions with stale carry-forward and expiry, stages mapped/off-map/held/archive outcomes, performs create/update/noop geometry work, runs release-wide asset/build/UI/staged-browser verification, writes evidence-backed handoffs, and atomically activates the immutable candidate only when every release gate passes.
+11. `verify --run <run-id>` handles the zero-landmark path and compatibility verification after all venue stages are terminal and deduplication succeeds.
+12. `finalize --run <run-id>` writes `status.json`, `status.md`, and the final trace event only when no required work remains pending. It exits with code 2 for an incomplete run.
 
 `advance --run <run-id>` follows executable actions autonomously until finalization or a structured intervention is emitted. Normal progression never asks an agent to choose or manufacture the next checkpoint.
 

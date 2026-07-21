@@ -20,8 +20,8 @@ secret/location-TBA, and multiple-location views.
 **Language/Version**: Node.js 24+ JavaScript, primarily ECMAScript modules
 
 **Primary Dependencies**: Node.js standard library and built-in `fetch`; approved free
-TinyFish Fetch REST capability; existing Vite 8, Playwright 1.61, MapLibre, deck.gl, and Three.js
-stack; no new runtime package
+TinyFish Search and Fetch REST capabilities; existing Vite 8, Playwright 1.61, MapLibre,
+deck.gl, and Three.js stack; no new runtime package
 
 **Storage**: Versioned JSON source/policy/venue configuration; immutable
 `data/snapshots/<run-id>/` catalogues and `data/approved-snapshot.json`; ignored captures,
@@ -217,6 +217,10 @@ No constitution violations or exceptions.
     refusing partial-success claims, classifying provider-policy responses, parsing compact
     date ranges, and conservatively collapsing same-source cross-surface repeats. Validate this
     amendment with fixtures only; a live weekly run remains a separate operational gate.
+13. Before normalization, apply a resumable missing-venue recovery overlay. Search once per
+    otherwise location-less physical occurrence, fetch at most three candidates, require one
+    event-specific authoritative Singapore location, and leave ambiguous/not-found outcomes
+    unchanged. Keep raw captures immutable and make recovery diagnostics part of run evidence.
 
 ## Phase 0 Research Output
 

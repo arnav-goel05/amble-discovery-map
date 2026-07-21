@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { validateApprovedSnapshot } from "./contracts/baseline-contracts.mjs";
+import { isStructuralVenueLabel } from "./event-pipeline/venue-values.mjs";
 
 export class ApprovedSnapshotError extends Error {
   constructor(code, message) {
@@ -120,6 +121,14 @@ export function assembleCandidateSnapshot({
         `Candidate event identity is missing or duplicated: ${publishedEventId ?? "missing"}`,
       );
     identities.add(publishedEventId);
+    if (
+      isStructuralVenueLabel(event.venue) ||
+      isStructuralVenueLabel(event.venueName)
+    )
+      fail(
+        "snapshot_event_venue_invalid",
+        `Candidate event contains a structural venue label: ${publishedEventId}`,
+      );
     const lifecycleState = event.lifecycleState ?? "held";
     if (!(lifecycleState in outcomes))
       fail(

@@ -12,14 +12,14 @@ This file is the human-readable source schedule. Executable adapter and window c
 | Source                         | Enabled  | Adapter                              | Date filter                                         | Last successful use        |
 | ------------------------------ | -------- | ------------------------------------ | --------------------------------------------------- | -------------------------- |
 | Catch.sg                       | yes      | `catch-official-listing-v1`          | shared window                                       | `2026-07-17T18:59:40.768Z` |
-| SISTIC                         | yes      | `sistic-official-listing-v1`         | shared window                                       | `2026-07-19T19:18:21.712Z` |
-| Fever Singapore                | yes      | `fever-singapore-rendered-v1`        | shared window                                       | `2026-07-19T19:23:10.668Z` |
-| Visit Singapore All Happenings | yes      | `visit-singapore-rendered-v1`        | shared window                                       | `2026-07-19T19:23:20.344Z` |
-| Singapore Film Society         | yes      | `singapore-film-society-rendered-v1` | shared window                                       | `2026-07-19T19:23:36.872Z` |
+| SISTIC                         | yes      | `sistic-official-listing-v1`         | shared window                                       | `2026-07-20T13:52:23.726Z` |
+| Fever Singapore                | yes      | `fever-singapore-rendered-v1`        | shared window                                       | `2026-07-20T13:56:42.649Z` |
+| Visit Singapore All Happenings | yes      | `visit-singapore-rendered-v1`        | shared window                                       | `2026-07-20T13:58:11.034Z` |
+| Singapore Film Society         | yes      | `singapore-film-society-rendered-v1` | shared window                                       | `2026-07-20T13:58:26.044Z` |
 | Roots HAN                      | disabled | `roots-han-rendered-v1`              | layout contract changed; revalidate before enabling | `2026-07-17T12:35:48.168Z` |
-| Honeycombers                   | pilot    | `honeycombers-discovery-v1`          | shared window                                       | `2026-07-19T19:24:06.666Z` |
-| ArtsEquator                    | pilot    | `arts-equator-discovery-v1`          | shared window                                       | `2026-07-19T19:24:10.067Z` |
-| Time Out Singapore             | pilot    | `time-out-singapore-discovery-v1`    | shared window                                       | `2026-07-19T19:24:42.996Z` |
+| Honeycombers                   | pilot    | `honeycombers-discovery-v1`          | shared window                                       | `2026-07-20T13:59:03.492Z` |
+| ArtsEquator                    | pilot    | `arts-equator-discovery-v1`          | shared window                                       | `2026-07-20T13:59:06.675Z` |
+| Time Out Singapore             | pilot    | `time-out-singapore-discovery-v1`    | shared window                                       | `2026-07-20T14:01:18.485Z` |
 
 Adapter definitions are in `data/event-pipeline-config.json`. Update `Last successful use` only after executable source collection completes every configured page and validation step successfully.
 

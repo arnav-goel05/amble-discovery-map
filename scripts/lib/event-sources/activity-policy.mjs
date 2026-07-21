@@ -52,6 +52,12 @@ const stableId = (prefix, parts) =>
 const validDate = (value) =>
   clean(value) && Number.isFinite(Date.parse(value)) ? clean(value) : null;
 
+function displayRange(value) {
+  const parts = clean(value)?.split(/\s+to\s+/i) ?? [];
+  if (parts.length !== 2) return { start: null, end: null };
+  return { start: validDate(parts[0]), end: validDate(parts[1]) };
+}
+
 export function normalizeSchedule(schedule = {}, record = {}) {
   const suppliedKind = clean(schedule.kind);
   let kind = SCHEDULE_KINDS.has(suppliedKind) ? suppliedKind : null;
@@ -61,17 +67,25 @@ export function normalizeSchedule(schedule = {}, record = {}) {
       displayText ?? "",
     );
   if (unreliableText) kind = "unverified";
-  const start = validDate(
-    schedule.start ?? record.startDateTime ?? record.dateText,
-  );
-  const end = validDate(
-    schedule.end ??
-      record.endDateTime ??
-      (start &&
-      !/\b(?:to|until|through)\b|\s[-–]\s/i.test(record.dateText ?? "")
+  const range = displayRange(displayText);
+  const start =
+    validDate(schedule.start ?? record.startDateTime) ?? range.start ?? validDate(record.dateText);
+  const end =
+    validDate(schedule.end ?? record.endDateTime) ??
+    range.end ??
+    validDate(
+      start &&
+        !/\b(?:to|until|through)\b|\s[-–]\s/i.test(record.dateText ?? "")
         ? record.dateText
-        : null),
-  );
+        : null,
+    );
+  if (
+    kind === "exact" &&
+    range.start &&
+    range.end &&
+    Date.parse(range.start) !== Date.parse(range.end)
+  )
+    kind = "range";
   const sessionRefs = [
     ...new Set((schedule.sessionRefs ?? []).filter(Boolean).map(String)),
   ].sort();

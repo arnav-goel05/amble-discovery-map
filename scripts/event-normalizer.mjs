@@ -13,6 +13,7 @@ import {
   isOrdinaryAttractionAdmission,
   normalizeSchedule,
 } from "./lib/event-sources/activity-policy.mjs";
+import { isStructuralVenueLabel } from "./lib/event-pipeline/venue-values.mjs";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 const normalizeText = (value = "") =>
@@ -261,12 +262,30 @@ function visibleContentHash(event) {
   );
 }
 
+function occurrenceSchedule(record, performance) {
+  const hasOccurrenceSchedule =
+    performance.schedule != null ||
+    performance.startDateTime != null ||
+    performance.endDateTime != null ||
+    performance.dateText != null;
+  return normalizeSchedule(
+    hasOccurrenceSchedule ? (performance.schedule ?? {}) : record.schedule,
+    { ...record, ...performance },
+  );
+}
+
 function canonicalEvent(sourceName, recordRef, record, performance, index) {
   const sourceId = sourceOccurrenceId(record, performance, index);
   const occurrenceId = qualifiedOccurrenceId(sourceName, sourceId);
   const parentListingId = `${sourceName}:${record.sourceId}`;
   const startsAt = performance.startDateTime ?? null;
   const endsAt = performance.endDateTime ?? null;
+  const rawVenue = (performance.venue ?? record.venue)?.trim() || null;
+  const address = (performance.address ?? record.address)?.trim() || null;
+  const locationRecovery =
+    performance.locationRecovery ?? record.locationRecovery ?? null;
+  const rejectedVenueValue = isStructuralVenueLabel(rawVenue) ? rawVenue : null;
+  const venue = rejectedVenueValue ? address : rawVenue;
   const hierarchy = buildActivityHierarchy({
     sourceName,
     sourceRecordId: record.sourceId,
@@ -283,16 +302,24 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
       schedule: normalizeSchedule(item.schedule, { ...record, ...item }),
       availability: item.availability ?? record.availability,
       accessRestriction: item.accessRestriction ?? record.accessRestriction,
-      venueKey: item.venue ?? record.venue,
+      venueKey: isStructuralVenueLabel(item.venue ?? record.venue)
+        ? (item.address ?? record.address ?? null)
+        : (item.venue ?? record.venue),
     })),
     venues: [
       ...new Map(
         (record.performances?.length ? record.performances : [record]).map(
           (item) => [
-            item.venue ?? record.venue,
+            isStructuralVenueLabel(item.venue ?? record.venue)
+              ? (item.address ?? record.address ?? null)
+              : (item.venue ?? record.venue),
             {
-              venueKey: item.venue ?? record.venue,
-              name: item.venue ?? record.venue,
+              venueKey: isStructuralVenueLabel(item.venue ?? record.venue)
+                ? (item.address ?? record.address ?? null)
+                : (item.venue ?? record.venue),
+              name: isStructuralVenueLabel(item.venue ?? record.venue)
+                ? (item.address ?? record.address ?? null)
+                : (item.venue ?? record.venue),
               address: item.address ?? record.address,
               postalCode: item.postalCode ?? record.postalCode,
               sourceCoordinates:
@@ -304,10 +331,7 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
       ).values(),
     ],
   });
-  const schedule = normalizeSchedule(performance.schedule ?? record.schedule, {
-    ...record,
-    ...performance,
-  });
+  const schedule = occurrenceSchedule(record, performance);
   return {
     schemaVersion: "3.0",
     id: occurrenceId,
@@ -333,15 +357,30 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
     allDay: /^full day$/i.test(performance.timeText ?? record.timeText ?? ""),
     timezone: "Asia/Singapore",
     venueId: null,
-    venueName: (performance.venue ?? record.venue)?.trim() || null,
-    venue: (performance.venue ?? record.venue)?.trim() || null,
+    venueName: venue,
+    venue,
     venueVerified: false,
-    address: performance.address ?? record.address ?? null,
+    address,
     addressEvidence:
       (performance.address ?? record.address)
-        ? [{ value: performance.address ?? record.address, recordRef }]
+        ? [
+            {
+              value: performance.address ?? record.address,
+              recordRef: locationRecovery?.evidenceUrls?.[0] ?? recordRef,
+              method: locationRecovery
+                ? "tinyfish_search_verified"
+                : "source_record",
+            },
+          ]
         : [],
     coordinates: null,
+    locationEvidenceIssue: rejectedVenueValue
+      ? {
+          reasonCode: "structural_venue_label",
+          observedValue: rejectedVenueValue,
+          action: address ? "replaced_with_address" : "discarded",
+        }
+      : null,
     category: record.category ?? null,
     price: record.price ?? null,
     description: record.description ?? null,
@@ -351,7 +390,11 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
     isOnline: record.mode === "online",
     parentEventId: record.sourceId,
     contentHash: null,
-    provenanceRefs: [recordRef],
+    provenanceRefs: [
+      recordRef,
+      ...(locationRecovery?.artifactRef ? [locationRecovery.artifactRef] : []),
+      ...(locationRecovery?.evidenceUrls ?? []),
+    ],
     reviewStatus:
       startsAt || performance.dateText || record.dateText
         ? "eligible"
@@ -478,7 +521,42 @@ export function normalizeRun({ runDir, state, run }) {
   const eligible = [],
     excluded = [],
     invalid = [],
-    decisions = [];
+    decisions = [],
+    diagnostics = [];
+  const recoveryPath = join(runDir, "normalized/missing-venue-recovery.json");
+  const recoveryOverlay = existsSync(recoveryPath)
+    ? JSON.parse(readFileSync(recoveryPath, "utf8"))
+    : null;
+  if (
+    recoveryOverlay &&
+    (recoveryOverlay.schemaVersion !== "1.0" ||
+      recoveryOverlay.runId !== run.runId ||
+      !Array.isArray(recoveryOverlay.records))
+  )
+    throw new Error("Invalid missing-venue recovery overlay");
+  const recoveryRecords = recoveryOverlay?.records ?? [];
+  for (const recovery of recoveryRecords) {
+    if (
+      recovery.outcome === "recovered" &&
+      ((!recovery.venue && !recovery.address) ||
+        !Array.isArray(recovery.evidenceUrls) ||
+        recovery.evidenceUrls.length === 0 ||
+        recovery.evidenceUrls.some((url) => {
+          try {
+            return new URL(url).protocol !== "https:";
+          } catch {
+            return true;
+          }
+        }))
+    )
+      throw new Error("Recovered venue requires HTTPS authoritative evidence");
+  }
+  const recoveryByOccurrence = new Map(
+    recoveryRecords.map((record) => [
+      `${record.sourceName}\u0000${record.recordRef}\u0000${record.occurrenceIndex}`,
+      record,
+    ]),
+  );
   const sourceReclassifications = {};
   const sourceOrder = new Map(
     Object.keys(state.sources).map((name, index) => [name, index]),
@@ -496,22 +574,28 @@ export function normalizeRun({ runDir, state, run }) {
     ]),
   );
   for (const [sourceName, source] of Object.entries(state.sources)) {
-    if (source.status !== "success") continue;
+    const fullyAccounted =
+      source.status === "success" ||
+      (source.status === "blocked" &&
+        Number.isInteger(source.counts?.sourceRecordsReceived));
+    if (!fullyAccounted) continue;
     if (source.operatingMode === "pilot") {
       sourceReclassifications[sourceName] = [];
       continue;
     }
-    const reclassifiedRefs = (source.invalidSourceRecordRefs ?? []).filter(
-      (recordRef) => {
-        const reason = source.invalidReasonCodes?.[recordRef];
-        return (
-          ["invalid_date", "invalid_mode"].includes(reason) &&
-          recordRef.includes("#/records/") &&
-          existsSync(join(runDir, recordRef.split("#")[0]))
-        );
-      },
-    );
-    sourceReclassifications[sourceName] = reclassifiedRefs;
+    const reclassifiedRefs =
+      source.status === "success"
+        ? (source.invalidSourceRecordRefs ?? []).filter((recordRef) => {
+            const reason = source.invalidReasonCodes?.[recordRef];
+            return (
+              ["invalid_date", "invalid_mode"].includes(reason) &&
+              recordRef.includes("#/records/") &&
+              existsSync(join(runDir, recordRef.split("#")[0]))
+            );
+          })
+        : [];
+    if (source.status === "success")
+      sourceReclassifications[sourceName] = reclassifiedRefs;
     for (const recordRef of source.invalidSourceRecordRefs ?? []) {
       if (reclassifiedRefs.includes(recordRef)) continue;
       invalid.push({
@@ -551,25 +635,56 @@ export function normalizeRun({ runDir, state, run }) {
             recordType = "membership_offer";
         }
       }
-      const performances = record.performances?.length
-        ? record.performances
-        : [record];
+      const applyRecovery = (value, performanceIndex) => {
+        const recovery = recoveryByOccurrence.get(
+          `${sourceName}\u0000${recordRef}\u0000${performanceIndex}`,
+        );
+        if (recovery?.outcome !== "recovered") return value;
+        return {
+          ...value,
+          venue: recovery.venue ?? recovery.address ?? value.venue,
+          address: recovery.address ?? value.address,
+          locationRecovery: {
+            method: "tinyfish_search_verified",
+            artifactRef: `normalized/missing-venue-recovery.json#/records/${recoveryRecords.indexOf(recovery)}`,
+            evidenceUrls: recovery.evidenceUrls ?? [],
+            queryHash: recovery.queryHash,
+          },
+        };
+      };
+      const effectiveRecord = record.performances?.length
+        ? {
+            ...record,
+            performances: record.performances.map(applyRecovery),
+          }
+        : applyRecovery(record, 0);
+      const performances = effectiveRecord.performances?.length
+        ? effectiveRecord.performances
+        : [effectiveRecord];
       performances.forEach((performance, performanceIndex) => {
         sourceAccounting[sourceName].occurrencesEmitted += 1;
         const event = canonicalEvent(
           sourceName,
           recordRef,
-          record,
+          effectiveRecord,
           performance,
           performanceIndex,
         );
+        if (event.locationEvidenceIssue)
+          diagnostics.push({
+            stage: "normalization",
+            sourceName,
+            sourceRecordRef: recordRef,
+            occurrenceIndex: performanceIndex,
+            ...event.locationEvidenceIssue,
+          });
         const policy = assessActivityInclusion(
-          { ...record, ...event, schedule: event.schedule },
+          { ...effectiveRecord, ...event, schedule: event.schedule },
           { asOf: run.window.start },
         );
         const reasonCode =
-          record.reasonCode ??
-          normalizationReason(record, event) ??
+          effectiveRecord.reasonCode ??
+          normalizationReason(effectiveRecord, event) ??
           (recordType === "membership_offer"
             ? "membership_offer"
             : !event.title
@@ -577,7 +692,9 @@ export function normalizeRun({ runDir, state, run }) {
               : record.mode === "online"
                 ? "online"
                 : !event.venue
-                  ? "missing_venue"
+                  ? event.locationEvidenceIssue
+                    ? "structural_venue_label"
+                    : "missing_venue"
                   : !policy.eligible
                     ? policy.reasonCode
                     : null);
@@ -661,7 +778,12 @@ export function normalizeRun({ runDir, state, run }) {
     event.sourceOccurrenceIds = event.sources.map((source) =>
       qualifiedOccurrenceId(source.source, source.sourceId),
     );
-    event.provenanceRefs = event.sources.map((source) => source.recordRef);
+    event.provenanceRefs = [
+      ...new Set([
+        ...event.sources.map((source) => source.recordRef),
+        ...(event.provenanceRefs ?? []),
+      ]),
+    ];
     event.occurrenceId = event.sourceOccurrenceIds[0];
     event.id = event.occurrenceId;
     event.sourceName = event.sources[0].source;
@@ -742,6 +864,7 @@ export function normalizeRun({ runDir, state, run }) {
     },
     venueBranches: [...venues.values()],
     sourceAccounting,
+    diagnostics,
     sourceReclassifications,
     evidence: {
       uniqueActivities: events.length,

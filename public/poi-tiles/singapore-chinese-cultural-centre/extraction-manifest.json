@@ -103,9 +103,21 @@
     "peranakan-museum",
     "maritime-xperiential-museum",
     "marina-square",
-    "jewel-changi-airport"
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower"
   ],
-  "generatedAt": "2026-07-19T19:39:05.677Z",
+  "generatedAt": "2026-07-20T14:59:41.185Z",
   "tiles": [
     {
       "sourceTile": "tiles/7/75/5_0.b3dm",

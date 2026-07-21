@@ -39,7 +39,7 @@
     "test:event-pipeline": "node --test tests/event-pipeline.test.mjs",
     "test:event-sources": "node scripts/verify-event-source-adapters.mjs",
     "test:event-ui": "playwright test -c playwright.config.mjs",
-    "test:poi-separation": "node scripts/verify-poi-background-separation.mjs",
+    "test:poi-separation": "node scripts/verify-active-poi-background-separation.mjs",
     "verify:artifacts": "node scripts/verify-artifact-policy.mjs",
     "smoke:baseline": "node scripts/smoke-production-baseline.mjs",
     "verify": "node scripts/verify-production-baseline.mjs",

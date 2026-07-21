@@ -386,6 +386,32 @@ release-wide validation failure, and atomic-activation failure fixtures.
   handled through stale carry-forward rather than empty success.
 - **FR-042**: An intentionally unavailable configured source MUST remain explicit in state and
   reports, perform no retrieval, and contribute no fabricated records.
+- **FR-043**: A section heading or structural label MUST NOT become venue evidence. Rendered-text
+  fields MUST use an explicit label separator, discarded structural values MUST be logged, and
+  normalization and snapshot assembly MUST prevent them from authorizing a building highlight.
+  A source adapter MAY consume a documented structured event row or event-summary tuple only when
+  the layout contains its complete ordered labels, the row title matches the source occurrence,
+  and the extracted value passes the same location safeguards; this MUST NOT relax the shared
+  rendered-field parser.
+- **FR-044**: Before a physical source occurrence terminates as `missing_venue`, the pipeline MUST
+  perform at most one bounded TinyFish Search query for that stable occurrence, inspect no more
+  than three public candidate pages through the approved TinyFish Fetch transport, and accept
+  venue or address evidence only when exactly one event-specific authoritative candidate matches
+  the activity and Singapore scope. Search snippets, directories, social pages, generic
+  homepages, and conflicting candidates MUST NOT supply recovered location fields.
+- **FR-045**: Missing-venue recovery MUST run before normalization without mutating immutable raw
+  captures. It MUST persist a versioned overlay keyed by source-record and occurrence identity,
+  reuse that overlay on resume, and log attempted, recovered, ambiguous, not-found, skipped, and
+  failed outcomes without exposing credentials or response bodies. Recovery failure MUST remain
+  isolated to the affected occurrence and MUST NOT make a complete source appear incomplete.
+- **FR-046**: Candidate-page retrieval errors returned inside a successful bounded fetch batch
+  MUST be terminally accounted as recovery failures rather than `no_verified_location`, including
+  the bounded provider reason and HTTP status when no inspected authoritative candidate verifies
+  the location. One uniquely verified exact organizer or host page MAY recover the occurrence when
+  a sibling ticket page fails, and the partial fetch failure MUST remain visible in redacted trace
+  counts. A checked-in direct-source definition MAY constrain that same single query to an
+  authoritative promoter partner for a persistently blocked ticket host. Singapore authority
+  checks MUST use an actual `.sg` domain suffix and MUST reject social-network subdomains.
 
 ### Key Entities
 
@@ -458,6 +484,13 @@ release-wide validation failure, and atomic-activation failure fixtures.
 - **SC-011**: Focused fixtures achieve 100% expected outcomes for cross-surface repeat versus
   sibling identity, compact date ranges, exact pointer accounting, isolated surface failure,
   HTTP 469 classification, and intentionally unavailable-source handling.
+- **SC-012**: Exact rendered-page fixtures containing `Venue Description`, `Venue &
+Accessibility`, and a later explicit venue or location field produce the explicit location (or
+  a terminal missing-location outcome) and publish zero structural-label highlights.
+- **SC-013**: Focused missing-venue fixtures issue no more than one search and three candidate
+  fetches per occurrence, recover the uniquely verified authoritative venue before normalization,
+  reject ambiguous or non-authoritative results, reuse saved overlays without network access,
+  and expose fully reconciled per-source recovery counts and redacted traces.
 
 ## Assumptions
 

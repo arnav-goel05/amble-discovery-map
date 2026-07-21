@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runCommandSuite } from "./run-command-suite.mjs";
+import { stableIsolatedPort } from "./lib/isolated-port.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const nodeTests = fs
@@ -24,11 +25,22 @@ const isolatedBrowserSpecs = [
 const remainingBrowserSpecs = browserSpecs.filter(
   (file) => !isolatedBrowserSpecs.includes(file),
 );
+const browserPort = stableIsolatedPort(
+  `production-verify-browser:${process.pid}`,
+);
+const performancePort = stableIsolatedPort(
+  `production-verify-performance:${process.pid}`,
+  { base: 50_000 },
+);
 const browserCommand = (name, specs) => ({
   name,
   command: "npx",
   args: ["playwright", "test", "-c", "playwright.config.mjs", ...specs],
-  env: { PLAYWRIGHT_FULL_MATRIX: "1" },
+  env: {
+    PLAYWRIGHT_FULL_MATRIX: "1",
+    PLAYWRIGHT_PORT: String(browserPort),
+    PLAYWRIGHT_REUSE_EXISTING_SERVER: "0",
+  },
 });
 
 const result = runCommandSuite(
@@ -103,6 +115,8 @@ const result = runCommandSuite(
         "1000",
         "--motion-ms",
         "500",
+        "--port",
+        String(performancePort),
       ],
     },
   ],

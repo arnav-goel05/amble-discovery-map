@@ -1,0 +1,255 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "golden-mile-tower",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower"
+  ],
+  "generatedAt": "2026-07-20T15:00:04.158Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/81/17_0.b3dm",
+      "sourceSha256": "c9c45d66dbf903546f46f18e2d5cf5d9c4f29040dccd2c7ac17f879400f23469",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "gmlNames": [
+        "GOLDEN MILE TOWER"
+      ],
+      "poiFile": "17_0-b0fe070f426b.b3dm",
+      "poiSha256": "551af4c3766327f39951849cdfbde02a732562f32350c271881fd3aaf28523da",
+      "poiTriangles": 2776,
+      "backgroundFile": "optimized-tiles/7/81/17_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "backgroundSha256": "cd0b122346cbd6ff7a6fae3032ca2af72881942e021d9b00d2988fbf303b708b",
+      "backgroundTriangles": 6012
+    },
+    {
+      "sourceTile": "tiles/7/81/17_1.b3dm",
+      "sourceSha256": "5afea00ae1029c20e1b1370babeff315d85aec53765708cb1604bdc7860a433a",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "gmlNames": [
+        "GOLDEN MILE TOWER"
+      ],
+      "poiFile": "17_1-704e4a6971bd.b3dm",
+      "poiSha256": "0c79a6e282fbb734e67b71760593b5009c45cfc858bbc57d8dcb67958cc8b6b5",
+      "poiTriangles": 2776,
+      "backgroundFile": "optimized-tiles/7/81/17_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "backgroundSha256": "7fa0fa5878b5f9ad47599de22a77b880c3f3e3662e6afceffbf1556c2ae6ea0c",
+      "backgroundTriangles": 6012
+    },
+    {
+      "sourceTile": "tiles/7/81/17_2.b3dm",
+      "sourceSha256": "03f03bfce8eb2fc789b44483802d8eefd301fdf3f055e80cc7cabdbc952c6e8d",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "gmlNames": [
+        "GOLDEN MILE TOWER"
+      ],
+      "poiFile": "17_2-068fc2582e8c.b3dm",
+      "poiSha256": "649a486608b61eb07ab6910cbae211303aa749f47c8e84c975bafb1ff66a9aa5",
+      "poiTriangles": 2776,
+      "backgroundFile": "optimized-tiles/7/81/17_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "backgroundSha256": "51b9fa31dff040b4e978a907bf9c22bbeaa6693ac39420c9c89692e9b4c6ecda",
+      "backgroundTriangles": 6012
+    },
+    {
+      "sourceTile": "tiles/7/81/17_3.b3dm",
+      "sourceSha256": "4353e11e9b18e0e4139dec5ca194ddc7e831a05cd2182ba3354f799e2289bbdf",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "gmlNames": [
+        "GOLDEN MILE TOWER"
+      ],
+      "poiFile": "17_3-d503c945ae58.b3dm",
+      "poiSha256": "4960cd23eeee7c323e32c4c1efe42014daf2237e23caa1976cadc538e4eac0df",
+      "poiTriangles": 2776,
+      "backgroundFile": "optimized-tiles/7/81/17_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "backgroundSha256": "985726e900dce6cb5d1bddb6fd3e902b0ece99707510259ce496a452adfe16a4",
+      "backgroundTriangles": 6012
+    },
+    {
+      "sourceTile": "tiles/7/81/17_4.b3dm",
+      "sourceSha256": "3ad81cdffbae7dc50e3910a020629ae0732cb7044d07345cc176ce09df27a5d1",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "gmlNames": [
+        "GOLDEN MILE TOWER"
+      ],
+      "poiFile": "17_4-e382c312f042.b3dm",
+      "poiSha256": "ed9fbe2f7144c6966bc95493c537b19aed497a0ac47b81a0f5ca026c9645833f",
+      "poiTriangles": 2776,
+      "backgroundFile": "optimized-tiles/7/81/17_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "backgroundSha256": "5fdf70747d4a319f5ca049b9aaeb7a62f58bc4ddad7bbecc011b2a811be4ffb1",
+      "backgroundTriangles": 6012
+    },
+    {
+      "sourceTile": "tiles/7/81/17_5.b3dm",
+      "sourceSha256": "cba25997763449054f16787e0333c8c870e46fcb6c853a273abe1bd3b1054353",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "gmlNames": [
+        "GOLDEN MILE TOWER"
+      ],
+      "poiFile": "17_5-8915ca43370c.b3dm",
+      "poiSha256": "8457a27e0e6c8a24a440435f82cd0006c90a3bc76df1ae2d47fabb117b315d09",
+      "poiTriangles": 2776,
+      "backgroundFile": "optimized-tiles/7/81/17_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_415bbe53-d4b2-44c7-95b6-b1f4720626e3"
+      ],
+      "backgroundSha256": "0f8aa3a561ec4dea3b4a34fbb55763e03aa806a78b1807acecb1e834ef41a583",
+      "backgroundTriangles": 6012
+    }
+  ]
+}

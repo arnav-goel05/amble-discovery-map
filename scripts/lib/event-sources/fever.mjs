@@ -6,6 +6,7 @@ import {
   normalized,
   parseAuthorityDetail,
   readableText,
+  renderedDocument,
   terminalPagination,
 } from "./rendered-adapter-utils.mjs";
 import { isOrdinaryAttractionAdmission } from "./activity-policy.mjs";
@@ -121,6 +122,39 @@ function planCards(result, source, baseUrl) {
   };
 }
 
+function gettingThere(document) {
+  const block = document.text.match(
+    /(?:^|\n)#{1,6}\s*Getting there\s*\n([\s\S]*?)(?=\n#{1,6}\s|$)/i,
+  )?.[1];
+  if (!block) return null;
+  const lines = block
+    .split("\n")
+    .map((line) => clean(line.replace(/^[-*]\s*/, "")))
+    .filter(Boolean);
+  const postalAddressIndex = lines.findIndex(
+    (line) => /\bSingapore\b/i.test(line) && /\b\d{6}\b/.test(line),
+  );
+  const addressIndex =
+    postalAddressIndex >= 0
+      ? postalAddressIndex
+      : lines.findIndex(
+          (line) =>
+            /\bSingapore\b/i.test(line) &&
+            /\b(?:road|rd|street|st|avenue|ave|drive|dr|lane|ln|way|crescent|close|boulevard|walk)\b/i.test(
+              line,
+            ),
+        );
+  if (addressIndex < 0) return null;
+  return {
+    venue: clean(lines[addressIndex - 1]),
+    address: lines[addressIndex],
+  };
+}
+
+function isGenericSingaporeVenue(value) {
+  return /^(?:singapore(?:, singapore)?)$/i.test(clean(value) ?? "");
+}
+
 export const feverAdapter = {
   id: "fever-singapore-rendered-v1",
   listing(result, source, url = source.listing.url) {
@@ -142,7 +176,7 @@ export const feverAdapter = {
     };
   },
   detail(result, source, detailUrl, { listingRecord = null } = {}) {
-    return parseAuthorityDetail(result, {
+    const parsed = parseAuthorityDetail(result, {
       source,
       detailUrl,
       listingRecord,
@@ -168,5 +202,16 @@ export const feverAdapter = {
         return null;
       },
     });
+    const directions = gettingThere(renderedDocument(result));
+    if (
+      directions?.address &&
+      (!parsed.venue || isGenericSingaporeVenue(parsed.venue))
+    )
+      return {
+        ...parsed,
+        venue: directions.venue ?? parsed.venue,
+        address: directions.address,
+      };
+    return parsed;
   },
 };

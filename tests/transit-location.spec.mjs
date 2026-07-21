@@ -30,15 +30,16 @@ test.beforeEach(async ({ page }) => {
       value: { getUserMedia: async () => ({ getTracks: () => [track] }) },
     });
   });
-  await page.goto("/?autoStart&emptyApprovedSnapshot#11/1.35/103.82/0/0");
 });
 
 test("mobile map always shows distinct MRT context and the available user location", async ({
   page,
 }) => {
+  await page.goto("/?autoStart&emptyApprovedSnapshot#11/1.35/103.82/0/0");
   await expect
     .poll(() =>
       page.evaluate(() => Boolean(window._map?.getLayer("mrt-lines-context"))),
+      { timeout: 15_000 },
     )
     .toBe(true);
   await expect
@@ -68,14 +69,7 @@ test("mobile map always shows distinct MRT context and the available user locati
 test("MRT visibility is visual-only until the user explicitly requests a transit constraint", async ({
   page,
 }) => {
-  const before = await page.evaluate(
-    () => document.body.dataset.selectedDiscoveryArea || null,
-  );
-  expect(
-    await page.evaluate(
-      () => document.body.dataset.selectedDiscoveryArea || null,
-    ),
-  ).toBe(before);
+  let sendToBrowser = null;
   await page.route("**/api/voice/sessions", (route) =>
     route.fulfill({
       status: 201,
@@ -86,7 +80,7 @@ test("MRT visibility is visual-only until the user explicitly requests a transit
           sessionId: "transit-voice-session",
           protocolVersion: "1.0",
           streamPath: "/api/voice/sessions/transit-voice-session/stream",
-          expiresAt: "2026-07-18T12:05:00.000Z",
+          expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
           limits: { maxSessionSeconds: 300, idleSeconds: 60, maxResponses: 6 },
         },
       }),
@@ -95,22 +89,36 @@ test("MRT visibility is visual-only until the user explicitly requests a transit
   await page.routeWebSocket(
     "**/api/voice/sessions/transit-voice-session/stream",
     (socket) => {
+      sendToBrowser = (event) => socket.send(JSON.stringify(event));
       socket.send(
         JSON.stringify({ type: "session.state", state: "listening" }),
       );
-      socket.send(
-        JSON.stringify({
-          type: "transcript.final",
-          itemId: "transit-request-001",
-          role: "user",
-          modality: "audio",
-          text: "Only suggest areas convenient to MRT",
-        }),
-      );
     },
   );
+  await page.goto("/?autoStart&emptyApprovedSnapshot#11/1.35/103.82/0/0");
+  await expect
+    .poll(() => page.evaluate(() => Boolean(window._map)), {
+      timeout: 15_000,
+    })
+    .toBe(true);
+  const before = await page.evaluate(
+    () => document.body.dataset.selectedDiscoveryArea || null,
+  );
+  expect(
+    await page.evaluate(
+      () => document.body.dataset.selectedDiscoveryArea || null,
+    ),
+  ).toBe(before);
   await page.locator('[data-testid="assistant-open"]').click();
   await page.locator('[data-testid="assistant-disclosure-accept"]').click();
+  await expect.poll(() => typeof sendToBrowser).toBe("function");
+  sendToBrowser({
+    type: "transcript.final",
+    itemId: "transit-request-001",
+    role: "user",
+    modality: "audio",
+    text: "Only suggest areas convenient to MRT",
+  });
   await expect
     .poll(() =>
       page.evaluate(() => document.body.dataset.transitConstraintActive),

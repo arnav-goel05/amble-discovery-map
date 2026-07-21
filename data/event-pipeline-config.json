@@ -9,6 +9,28 @@
     "maximumBackoffMs": 4000
   },
   "paginationCeiling": 50,
+  "missingVenueRecovery": {
+    "enabled": true,
+    "maxCandidates": 3,
+    "search": {
+      "providerId": "tinyfish-search",
+      "endpoint": "https://api.search.tinyfish.ai",
+      "location": "SG",
+      "language": "en",
+      "timeoutMs": 20000,
+      "maximumResponseBytes": 524288
+    },
+    "fetch": {
+      "providerId": "tinyfish-fetch",
+      "endpoint": "https://api.fetch.tinyfish.ai",
+      "format": "markdown",
+      "batchSize": 3,
+      "maximumUrlsPerMinute": 149,
+      "timeoutMs": 110000,
+      "maxAttempts": 3,
+      "maximumResponseBytes": 5242880
+    }
+  },
   "sources": [
     {
       "name": "Catch.sg",
@@ -95,10 +117,15 @@
       "collectionOrder": 40,
       "precedence": 40,
       "adapterId": "visit-singapore-rendered-v1",
-      "version": "1.2",
+      "version": "1.3",
       "providerId": "visit-singapore",
       "owner": "Singapore Tourism Board",
       "officialDomains": ["visitsingapore.com"],
+      "venueRecovery": {
+        "partnerDomainsByHost": {
+          "ticketmaster.sg": ["livenation.sg"]
+        }
+      },
       "costClass": "free",
       "listing": {
         "url": "https://www.visitsingapore.com/whats-happening/all-happenings/",
