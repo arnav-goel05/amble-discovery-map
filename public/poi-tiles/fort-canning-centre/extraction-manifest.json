@@ -23,7 +23,6 @@
     "thian-hock-keng",
     "singapore-chinese-cultural-centre",
     "wisma-geylang-serai",
-    "thow-kwang-pottery-jungle",
     "marina-bay-sands-artscience-museum",
     "temasek-shophouse",
     "the-commerze-irving",
@@ -34,20 +33,10 @@
     "singapore-philatelic-museum",
     "shell-dunman",
     "63-ubi",
-    "peranakan-museum",
-    "parkway-parade",
-    "singapore-tyler-print-institute",
-    "fort-canning-centre",
-    "313-somerset",
-    "tanjong-pagar-distripark",
-    "carlton-hotel",
-    "the-star",
     "changi-chapel-and-museum",
     "reflection-at-bukit-chandu-opium-hill",
-    "pgp-building",
     "victoria-theatre-and-concert-hall-u-c",
     "marina-bay-sands-mice",
-    "national-library-building",
     "chinatown-heritage-centre",
     "south-beach",
     "velocity-novena-square",
@@ -57,17 +46,110 @@
     "woods-square",
     "punggol-neighbourhood-police-centre",
     "sentosa-development-corporation",
-    "marina-south-pier-mrt-station",
     "siloso-beach-resort",
     "bishan-green",
-    "raffles-hotel-1886",
-    "changi-point-ferry-terminal",
-    "national-community-leadership-institute",
-    "singapore-management-university",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
     "empress-place-building",
-    "gillman-barracks"
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "geylang-east-public-library",
+    "tan-tock-seng-hospital",
+    "b-central",
+    "tong-fong-building",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "stamford-arts-centre",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre"
   ],
-  "generatedAt": "2026-07-13T14:21:07.392Z",
+  "generatedAt": "2026-07-21T18:57:05.610Z",
   "tiles": [
     {
       "sourceTile": "tiles/6/36/6_0.b3dm",
@@ -81,15 +163,18 @@
       "gmlNames": [
         "FORT CANNING CENTRE"
       ],
-      "poiFile": "6_0.b3dm",
+      "poiFile": "6_0-b8471d22b62f.b3dm",
       "poiSha256": "cee77f0b6058c07293941380b8a8e177353fd6f249ad709fec9124916e4adcb7",
       "poiTriangles": 1352,
       "backgroundFile": "optimized-tiles/6/36/6_0.b3dm",
       "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
         "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
       ],
-      "backgroundSha256": "482420f281563b638c613921143d04eebd349fb3cef1680f7e5f092f471f1280",
-      "backgroundTriangles": 8763
+      "backgroundSha256": "2aca31d03f516e285cdf9ee51c5516c0cf93cf50c36fa69a11b2d05bd198e931",
+      "backgroundTriangles": 4669
     },
     {
       "sourceTile": "tiles/6/36/6_1.b3dm",
@@ -103,15 +188,18 @@
       "gmlNames": [
         "FORT CANNING CENTRE"
       ],
-      "poiFile": "6_1.b3dm",
+      "poiFile": "6_1-5c6c3bc9a914.b3dm",
       "poiSha256": "aa06902ab84b0b8802aeec8ea1a7ca989601d31db0a3b3eba9cd4d71312d7253",
       "poiTriangles": 1352,
       "backgroundFile": "optimized-tiles/6/36/6_1.b3dm",
       "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
         "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
       ],
-      "backgroundSha256": "4fb88a44df29ca945a54f249879b9e5cffe3db6600371e7a95c38b0d98b020ab",
-      "backgroundTriangles": 8763
+      "backgroundSha256": "0e01c6c40085775c86ca2a1dae6ea352e4cbf2a150f153032a2d850f283fa002",
+      "backgroundTriangles": 4669
     },
     {
       "sourceTile": "tiles/6/36/6_2.b3dm",
@@ -125,15 +213,18 @@
       "gmlNames": [
         "FORT CANNING CENTRE"
       ],
-      "poiFile": "6_2.b3dm",
+      "poiFile": "6_2-eb1ac4574d88.b3dm",
       "poiSha256": "044edd864928ba8d34203bc163056acd098fe6e91abf4f64430151e449935cb3",
       "poiTriangles": 1352,
       "backgroundFile": "optimized-tiles/6/36/6_2.b3dm",
       "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
         "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
       ],
-      "backgroundSha256": "b1c2f476499b5e0b536eceaec77d614b901c432674ee40998f34bbe685ff75ec",
-      "backgroundTriangles": 8763
+      "backgroundSha256": "7ba99482efc969b77fe72735f19236c955b23d51d3c61143bbf9768d6ea71598",
+      "backgroundTriangles": 4669
     },
     {
       "sourceTile": "tiles/6/36/6_3.b3dm",
@@ -147,15 +238,18 @@
       "gmlNames": [
         "FORT CANNING CENTRE"
       ],
-      "poiFile": "6_3.b3dm",
+      "poiFile": "6_3-de19218bc3f4.b3dm",
       "poiSha256": "1245ea658639751104281f9226e490c04cb5271a8e55f3580e6f1dae75c9168f",
       "poiTriangles": 1352,
       "backgroundFile": "optimized-tiles/6/36/6_3.b3dm",
       "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
         "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
       ],
-      "backgroundSha256": "6ec5b35388c102d93772d80db734e4147d3d9bbebcd60447e17a9df486b60170",
-      "backgroundTriangles": 8763
+      "backgroundSha256": "9c5603be7febc57247279ed5a8e7b7c9e84a9f32a028e3c07a58e2cf5347eb0d",
+      "backgroundTriangles": 4669
     },
     {
       "sourceTile": "tiles/6/36/6_4.b3dm",
@@ -169,15 +263,18 @@
       "gmlNames": [
         "FORT CANNING CENTRE"
       ],
-      "poiFile": "6_4.b3dm",
+      "poiFile": "6_4-e7313ce898f6.b3dm",
       "poiSha256": "7db15b95ea8dd522e7449e1966f374a0389ef981fb3e19af08cb308499cd3232",
       "poiTriangles": 1352,
       "backgroundFile": "optimized-tiles/6/36/6_4.b3dm",
       "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
         "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
       ],
-      "backgroundSha256": "80f505b48b6c536d6101c1b8a5a96ebc03d6741c00cb3113e7ff128e20d4a0ca",
-      "backgroundTriangles": 8763
+      "backgroundSha256": "f884d2eabdf87fadec632690069887e3b7e6365baf27306388f5e8dc797d1922",
+      "backgroundTriangles": 4669
     },
     {
       "sourceTile": "tiles/6/36/6_5.b3dm",
@@ -191,15 +288,18 @@
       "gmlNames": [
         "FORT CANNING CENTRE"
       ],
-      "poiFile": "6_5.b3dm",
+      "poiFile": "6_5-30b56bc842b7.b3dm",
       "poiSha256": "1a7d1af83b851857ce7574e6bb772055a69e196d71b0e1f51687a9e157c9d265",
       "poiTriangles": 1352,
       "backgroundFile": "optimized-tiles/6/36/6_5.b3dm",
       "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
         "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
       ],
-      "backgroundSha256": "d137d55eb06339ef9c46197174440e03e3d9e780820ece13d9e0f87bb6c2292b",
-      "backgroundTriangles": 8763
+      "backgroundSha256": "cd7f367d9849cc5322a58bc92195f8c18ed6aaf05fe9f11cfae26eeacddf3fda",
+      "backgroundTriangles": 4669
     }
   ]
 }

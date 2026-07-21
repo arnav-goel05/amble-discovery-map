@@ -294,41 +294,37 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
     sourceCoordinates:
       performance.sourceCoordinates ?? record.sourceCoordinates,
     schedule: record.schedule,
-    sessions: (record.performances?.length
-      ? record.performances
-      : [record]
-    ).map((item, sessionIndex) => ({
-      sourceSessionId: sourceOccurrenceId(record, item, sessionIndex),
-      schedule: normalizeSchedule(item.schedule, { ...record, ...item }),
-      availability: item.availability ?? record.availability,
-      accessRestriction: item.accessRestriction ?? record.accessRestriction,
-      venueKey: isStructuralVenueLabel(item.venue ?? record.venue)
-        ? (item.address ?? record.address ?? null)
-        : (item.venue ?? record.venue),
-    })),
+    sessions: [
+      {
+        sourceSessionId: sourceOccurrenceId(record, performance, index),
+        schedule: normalizeSchedule(performance.schedule, {
+          ...record,
+          ...performance,
+        }),
+        availability: performance.availability ?? record.availability,
+        accessRestriction:
+          performance.accessRestriction ?? record.accessRestriction,
+        venueKey: isStructuralVenueLabel(
+          performance.venue ?? record.venue,
+        )
+          ? (performance.address ?? record.address ?? null)
+          : (performance.venue ?? record.venue),
+      },
+    ],
     venues: [
-      ...new Map(
-        (record.performances?.length ? record.performances : [record]).map(
-          (item) => [
-            isStructuralVenueLabel(item.venue ?? record.venue)
-              ? (item.address ?? record.address ?? null)
-              : (item.venue ?? record.venue),
-            {
-              venueKey: isStructuralVenueLabel(item.venue ?? record.venue)
-                ? (item.address ?? record.address ?? null)
-                : (item.venue ?? record.venue),
-              name: isStructuralVenueLabel(item.venue ?? record.venue)
-                ? (item.address ?? record.address ?? null)
-                : (item.venue ?? record.venue),
-              address: item.address ?? record.address,
-              postalCode: item.postalCode ?? record.postalCode,
-              sourceCoordinates:
-                item.sourceCoordinates ?? record.sourceCoordinates,
-              offMapSubtype: item.offMapSubtype ?? record.offMapSubtype,
-            },
-          ],
-        ),
-      ).values(),
+      {
+        venueKey: isStructuralVenueLabel(performance.venue ?? record.venue)
+          ? (performance.address ?? record.address ?? null)
+          : (performance.venue ?? record.venue),
+        name: isStructuralVenueLabel(performance.venue ?? record.venue)
+          ? (performance.address ?? record.address ?? null)
+          : (performance.venue ?? record.venue),
+        address: performance.address ?? record.address,
+        postalCode: performance.postalCode ?? record.postalCode,
+        sourceCoordinates:
+          performance.sourceCoordinates ?? record.sourceCoordinates,
+        offMapSubtype: performance.offMapSubtype ?? record.offMapSubtype,
+      },
     ],
   });
   const schedule = occurrenceSchedule(record, performance);

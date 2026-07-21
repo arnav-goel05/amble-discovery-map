@@ -1,0 +1,287 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "buddhist-tzu-chi-foundation",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "geylang-east-public-library",
+    "tan-tock-seng-hospital",
+    "b-central",
+    "tong-fong-building",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "stamford-arts-centre",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre"
+  ],
+  "generatedAt": "2026-07-21T18:57:06.425Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/56/48_0.b3dm",
+      "sourceSha256": "e7cb43915ac4228e8994d5d7ffd24681ddda00fbcf8295678ae6e25d7f2c6375",
+      "originalBatchIds": [
+        31
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "gmlNames": [
+        "BUDDHIST TZU CHI FOUNDATION"
+      ],
+      "poiFile": "48_0-5bb76045be3a.b3dm",
+      "poiSha256": "00ac75a50222bd47ab83af4713267d2e1bbab750913ebfcc5fc9aef284271f51",
+      "poiTriangles": 1340,
+      "backgroundFile": "optimized-tiles/6/56/48_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "backgroundSha256": "07490e55b64751a5a624cce1aab86c8773deefef0b9742db99aefb67913c2b12",
+      "backgroundTriangles": 10028
+    },
+    {
+      "sourceTile": "tiles/6/56/48_1.b3dm",
+      "sourceSha256": "2b7bd3a88f7923980655b92966c45f6bf4772f5cddcbe113b5963b6b95b82a16",
+      "originalBatchIds": [
+        31
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "gmlNames": [
+        "BUDDHIST TZU CHI FOUNDATION"
+      ],
+      "poiFile": "48_1-81097434de80.b3dm",
+      "poiSha256": "df8c6831c1915dc1e6f970a3f5b9a40e6bd33879ad3fc1758af91c28ca90a2fe",
+      "poiTriangles": 1340,
+      "backgroundFile": "optimized-tiles/6/56/48_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "backgroundSha256": "0ec4fabf713bdb77b87d591816c9e757b35accfb7f1145c179b2501594d91e68",
+      "backgroundTriangles": 10028
+    },
+    {
+      "sourceTile": "tiles/6/56/48_2.b3dm",
+      "sourceSha256": "b52b7a1cd2605549f0ff572e7b3931056ffffa8adf47e6c38eb97ac192431141",
+      "originalBatchIds": [
+        31
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "gmlNames": [
+        "BUDDHIST TZU CHI FOUNDATION"
+      ],
+      "poiFile": "48_2-3bb747388f1e.b3dm",
+      "poiSha256": "42fad52f5770add74e7dff1bb46c0dfa4ff028d8d4210fe363b6919195c91193",
+      "poiTriangles": 1340,
+      "backgroundFile": "optimized-tiles/6/56/48_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "backgroundSha256": "9c99fd6359d3887c8539092d14e9c98a92380c1279b18d8fe9b76adcaa519dc5",
+      "backgroundTriangles": 10028
+    },
+    {
+      "sourceTile": "tiles/6/56/48_3.b3dm",
+      "sourceSha256": "a82d975aaabbbd79667a252d37cb0ee0773069d9e74ba98382b48038d1d094f2",
+      "originalBatchIds": [
+        31
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "gmlNames": [
+        "BUDDHIST TZU CHI FOUNDATION"
+      ],
+      "poiFile": "48_3-d10658ed6535.b3dm",
+      "poiSha256": "6ba6ab31ad9b58678a22828d3dc52f72bd914fd818554a9f41aac5fab3ad4f61",
+      "poiTriangles": 1340,
+      "backgroundFile": "optimized-tiles/6/56/48_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "backgroundSha256": "3d0d86f9846f9e37087b420d39c4e91d71a493ccfd7d4db660eca9e988919a80",
+      "backgroundTriangles": 10028
+    },
+    {
+      "sourceTile": "tiles/6/56/48_4.b3dm",
+      "sourceSha256": "84e1e4d31dcb6c6407582a82239c3e0290c6801f12f088967148e83a3af5b7ff",
+      "originalBatchIds": [
+        31
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "gmlNames": [
+        "BUDDHIST TZU CHI FOUNDATION"
+      ],
+      "poiFile": "48_4-0ef3225f91e9.b3dm",
+      "poiSha256": "453410f936c817ea77f0fb29ea5d4a1cd5ea0644125342da7de48e48510ee43f",
+      "poiTriangles": 1340,
+      "backgroundFile": "optimized-tiles/6/56/48_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "backgroundSha256": "5aff3af4af4cb56c67178ed31615a95606161e12be05eb7a5dc2a9b44c6df6c4",
+      "backgroundTriangles": 10028
+    },
+    {
+      "sourceTile": "tiles/6/56/48_5.b3dm",
+      "sourceSha256": "99193a05053fb62340129f7b4398f2c661cebdef1f4096672fe129af9381ab1b",
+      "originalBatchIds": [
+        31
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "gmlNames": [
+        "BUDDHIST TZU CHI FOUNDATION"
+      ],
+      "poiFile": "48_5-426f89a7a0f8.b3dm",
+      "poiSha256": "805b88078644e4a20b6314e0e27a64bce0a6ea3a18a9b0765496030485d3b1f1",
+      "poiTriangles": 1340,
+      "backgroundFile": "optimized-tiles/6/56/48_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4a061159-78b1-4af1-bdf6-6b0729fbdbdb"
+      ],
+      "backgroundSha256": "39584e3ab2d5b0f5be70d312233e40591b1292b25bc2ee15f0a7031686372c52",
+      "backgroundTriangles": 10028
+    }
+  ]
+}

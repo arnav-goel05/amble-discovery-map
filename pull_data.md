@@ -11,14 +11,14 @@ This file is the human-readable source schedule. Executable adapter and window c
 
 | Source                         | Enabled  | Adapter                              | Date filter                                         | Last successful use        |
 | ------------------------------ | -------- | ------------------------------------ | --------------------------------------------------- | -------------------------- |
-| Catch.sg                       | yes      | `catch-official-listing-v1`          | shared window                                       | `2026-07-17T18:59:40.768Z` |
-| SISTIC                         | yes      | `sistic-official-listing-v1`         | shared window                                       | `2026-07-21T10:22:18.289Z` |
-| Fever Singapore                | yes      | `fever-singapore-rendered-v1`        | shared window                                       | `2026-07-21T10:25:30.045Z` |
-| Visit Singapore All Happenings | yes      | `visit-singapore-rendered-v1`        | shared window                                       | `2026-07-21T10:27:14.683Z` |
-| Singapore Film Society         | yes      | `singapore-film-society-rendered-v1` | shared window                                       | `2026-07-21T10:27:49.612Z` |
-| Honeycombers                   | pilot    | `honeycombers-discovery-v1`          | shared window                                       | `2026-07-21T10:28:08.883Z` |
-| ArtsEquator                    | pilot    | `arts-equator-discovery-v1`          | shared window                                       | `2026-07-21T10:28:16.079Z` |
-| Time Out Singapore             | pilot    | `time-out-singapore-discovery-v1`    | shared window                                       | `2026-07-21T10:30:22.876Z` |
+| Catch.sg                       | yes      | `catch-official-listing-v1`          | shared window                                       | `2026-07-21T16:49:27.064Z` |
+| SISTIC                         | yes      | `sistic-official-listing-v1`         | shared window                                       | `2026-07-21T16:52:04.008Z` |
+| Fever Singapore                | yes      | `fever-singapore-rendered-v1`        | shared window                                       | `2026-07-21T16:53:45.756Z` |
+| Visit Singapore All Happenings | yes      | `visit-singapore-rendered-v1`        | shared window                                       | `2026-07-21T16:55:35.909Z` |
+| Singapore Film Society         | yes      | `singapore-film-society-rendered-v1` | shared window                                       | `2026-07-21T16:56:37.478Z` |
+| Honeycombers                   | pilot    | `honeycombers-discovery-v1`          | shared window                                       | `2026-07-21T16:56:52.403Z` |
+| ArtsEquator                    | pilot    | `arts-equator-discovery-v1`          | shared window                                       | `2026-07-21T16:56:59.290Z` |
+| Time Out Singapore             | pilot    | `time-out-singapore-discovery-v1`    | shared window                                       | `2026-07-21T16:58:59.238Z` |
 
 Adapter definitions are in `data/event-pipeline-config.json`. Update `Last successful use` only after executable source collection completes every configured page and validation step successfully.
 

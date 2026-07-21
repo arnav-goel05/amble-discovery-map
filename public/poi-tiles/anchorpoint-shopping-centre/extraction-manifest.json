@@ -1,0 +1,397 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "anchorpoint-shopping-centre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "geylang-east-public-library",
+    "tan-tock-seng-hospital",
+    "b-central",
+    "tong-fong-building",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "stamford-arts-centre",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre"
+  ],
+  "generatedAt": "2026-07-21T18:57:07.418Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/11/3_0.b3dm",
+      "sourceSha256": "64f6f3aae300d9851b6d0cb4dd6ffc5a3550a9e7b9e883d6652dbfa3fd11e8e5",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_38bdd149-11b5-4f9f-a7b8-6acbc7266935"
+      ],
+      "gmlNames": [
+        "ANCHORPOINT SHOPPING CENTRE"
+      ],
+      "poiFile": "3_0-0444dfa78f97.b3dm",
+      "poiSha256": "ee8c9d5eceea2109a2763e36d9ae83517f81ed37f06d2f2d8d060945f221433b",
+      "poiTriangles": 3716,
+      "backgroundFile": "optimized-tiles/5/11/3_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_38bdd149-11b5-4f9f-a7b8-6acbc7266935"
+      ],
+      "backgroundSha256": "1333acfdf07bdc0a1a7f9352066c0842907cd5080c28406b9338d9d7513e5c90",
+      "backgroundTriangles": 10388
+    },
+    {
+      "sourceTile": "tiles/5/11/3_1.b3dm",
+      "sourceSha256": "fc0fe0997c3f09fa9123b137ce2d8fcc00e2fdd270105d367b205b07240c31f4",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_38bdd149-11b5-4f9f-a7b8-6acbc7266935"
+      ],
+      "gmlNames": [
+        "ANCHORPOINT SHOPPING CENTRE"
+      ],
+      "poiFile": "3_1-cc0ee4290c54.b3dm",
+      "poiSha256": "7a072c637729e38c653b4e080a7f800466646c80228c7867f8e9c0726030781e",
+      "poiTriangles": 3716,
+      "backgroundFile": "optimized-tiles/5/11/3_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_38bdd149-11b5-4f9f-a7b8-6acbc7266935"
+      ],
+      "backgroundSha256": "4080618bc44118a9a26f5cd1d6b34277438c349761e693edba50813e4c41bfc2",
+      "backgroundTriangles": 10388
+    },
+    {
+      "sourceTile": "tiles/5/11/3_2.b3dm",
+      "sourceSha256": "0cd9a623a5488e3f348089383a8c06d6475d5e634f1d957fd4f91e96f50dd1a5",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_38bdd149-11b5-4f9f-a7b8-6acbc7266935"
+      ],
+      "gmlNames": [
+        "ANCHORPOINT SHOPPING CENTRE"
+      ],
+      "poiFile": "3_2-d99879f12f6a.b3dm",
+      "poiSha256": "423623ac0fb97ed760df3dbdb8bf95572a79332d8a40d418326c9d846cb05fcb",
+      "poiTriangles": 3716,
+      "backgroundFile": "optimized-tiles/5/11/3_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_38bdd149-11b5-4f9f-a7b8-6acbc7266935"
+      ],
+      "backgroundSha256": "5883fd2e69c3cacecbc31d49566acd4ec9002f9a41918acfc136eb7070112908",
+      "backgroundTriangles": 10388
+    },
+    {
+      "sourceTile": "tiles/5/11/3_3.b3dm",
+      "sourceSha256": "f3ded386a7c0e417cb0e61e0d774722767754bb65648d678e01849816260578f",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_38bdd149-11b5-4f9f-a7b8-6acbc7266935"
+      ],
+      "gmlNames": [
+        "ANCHORPOINT SHOPPING CENTRE"
+      ],
+      "poiFile": "3_3-3401a2309f67.b3dm",
+      "poiSha256": "b9fb12472a0db100c40fbf387886258293d35f2d774a4e0d3231f0bd9e6e1928",
+      "poiTriangles": 3716,
+      "backgroundFile": "optimized-tiles/5/11/3_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_38bdd149-11b5-4f9f-a7b8-6acbc7266935"
+      ],
+      "backgroundSha256": "983772801aa9212d21527708aba7ce778881b9417b0ee3784f32339f5611be10",
+      "backgroundTriangles": 10388
+    },
+    {
+      "sourceTile": "tiles/5/11/3_4.b3dm",
+      "sourceSha256": "4990b797e37c9527348c68422938cf221674ed1cf45bfd2156aa22715f65ed3f",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_38bdd149-11b5-4f9f-a7b8-6acbc7266935"
+      ],
+      "gmlNames": [
+        "ANCHORPOINT SHOPPING CENTRE"
+      ],
+      "poiFile": "3_4-3e11fd660fc8.b3dm",
+      "poiSha256": "dd910e215fad78ce03737efbacffb52c9b7c6df7d27972899049bdbb4e3dba58",
+      "poiTriangles": 3716,
+      "backgroundFile": "optimized-tiles/5/11/3_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_38bdd149-11b5-4f9f-a7b8-6acbc7266935"
+      ],
+      "backgroundSha256": "d56a8d616fba0c3ceae227ca29f1d70993c6942db9c790c73cfdc8df65f8c474",
+      "backgroundTriangles": 10388
+    },
+    {
+      "sourceTile": "tiles/6/23/7_3.b3dm",
+      "sourceSha256": "92c32a0d8f13437a1c69b942c1097dc0f9edea5c9f133360c207139c54570f18",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "gmlNames": [
+        "ANCHORPOINT SHOPPING CENTRE"
+      ],
+      "poiFile": "7_3-0f3227679e31.b3dm",
+      "poiSha256": "0bfbdebd1644e2210e636099f10c9e31cdc71d5175d1bc846403bc860bb7d248",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/23/7_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "backgroundSha256": "11c791a988ae6aeb53da4e116e845197559adbf39a828d76ba26502593a0f9fc",
+      "backgroundTriangles": 25472
+    },
+    {
+      "sourceTile": "tiles/6/23/7_2.b3dm",
+      "sourceSha256": "c0d4ea030b69fb26c5d7db381ee13265d8b81b0c0e53336047a22a2f5d825bd8",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "gmlNames": [
+        "ANCHORPOINT SHOPPING CENTRE"
+      ],
+      "poiFile": "7_2-d281821edc1c.b3dm",
+      "poiSha256": "2e5964afcda44872232d528fec293000159c53612ccf80748bf2fee630b42dc4",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/23/7_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "backgroundSha256": "b9a5da8538691244b5d9e2084cdb206a8f44d0d4936a2d7fdc657d865a0d838e",
+      "backgroundTriangles": 25472
+    },
+    {
+      "sourceTile": "tiles/6/23/7_0.b3dm",
+      "sourceSha256": "8dc28b45374913db9b9393950b9c1ec76114567430f6eb8510b4de939e3b74d6",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "gmlNames": [
+        "ANCHORPOINT SHOPPING CENTRE"
+      ],
+      "poiFile": "7_0-0561d05c6759.b3dm",
+      "poiSha256": "45592e4fe89e48abec6f1c7df0c80dd589248b1246d576c40edee307334c192a",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/23/7_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "backgroundSha256": "74a2e59f7fc211ba201d9ed8928cb7c0fc075bf67568f7d68bc2bc2dad97d480",
+      "backgroundTriangles": 25472
+    },
+    {
+      "sourceTile": "tiles/6/23/7_1.b3dm",
+      "sourceSha256": "5b62a99adf81208825a9afaa44e52628fe4a67accb9adc6ceccfb723a0ea9d81",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "gmlNames": [
+        "ANCHORPOINT SHOPPING CENTRE"
+      ],
+      "poiFile": "7_1-333cbafa22f7.b3dm",
+      "poiSha256": "9ff5652ee0fb2082c2228d6ee6d5bc33f0bcfefc8c96dfe5354a86dc2768565c",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/23/7_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "backgroundSha256": "4ec6c911d72f22937951dc63b5b215e2f11709bfa013b693ecbc5b9b25c0986d",
+      "backgroundTriangles": 25472
+    },
+    {
+      "sourceTile": "tiles/6/23/7_4.b3dm",
+      "sourceSha256": "b9d840775815fcb7d11a5ce80926ad70dc6eb71b4bdb80378ddb348e04cfb553",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "gmlNames": [
+        "ANCHORPOINT SHOPPING CENTRE"
+      ],
+      "poiFile": "7_4-2ebcab506b20.b3dm",
+      "poiSha256": "8499a12ce34ae5d8e2d6dd280fd2c61140c514a1cafd81181aca776285784b2c",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/23/7_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "backgroundSha256": "807b63df14d205aa48bfc8d36fad0974359f81182d2ab8fdf0a5a1637dd41b2c",
+      "backgroundTriangles": 25472
+    },
+    {
+      "sourceTile": "tiles/6/23/7_5.b3dm",
+      "sourceSha256": "8fa104a87a826ef48b31ea50a4e689a87f55f1d30ffe1d461dfe0e8f63ad9f35",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "gmlNames": [
+        "ANCHORPOINT SHOPPING CENTRE"
+      ],
+      "poiFile": "7_5-1f45f869daca.b3dm",
+      "poiSha256": "d0e824b2406787ab11fe412bbe8f0aac58b70e788a1236c93d7d52fcfa7969d0",
+      "poiTriangles": 168,
+      "backgroundFile": "optimized-tiles/6/23/7_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4f96f5f8-0d97-403a-8ea8-6df551ca351a"
+      ],
+      "backgroundSha256": "3675324ab716f8da731bbcaf6e08cdd420f6d886d0ca03191cc21cc4208576b8",
+      "backgroundTriangles": 25472
+    }
+  ]
+}

@@ -114,13 +114,50 @@ const sameSourceSemanticRepeat = (a, b) => {
   );
 };
 
+function scheduleCompatiblePairs(events) {
+  const pairKeys = new Set();
+  const addPair = (a, b) => {
+    const left = Math.min(a, b),
+      right = Math.max(a, b);
+    if (left !== right) pairKeys.add(`${left}:${right}`);
+  };
+  const exact = events
+    .map((event, index) => ({ event, index, window: interval(event) }))
+    .filter(({ window }) => window)
+    .sort(
+      (a, b) =>
+        a.window.start - b.window.start ||
+        a.window.end - b.window.end ||
+        a.index - b.index,
+    );
+  for (let left = 0; left < exact.length; left += 1) {
+    const a = exact[left];
+    for (let right = left + 1; right < exact.length; right += 1) {
+      const b = exact[right];
+      if (b.window.start > a.window.end) break;
+      if (scheduleCompatible(a.event, b.event)) addPair(a.index, b.index);
+    }
+  }
+  const anytime = events
+    .map((event, index) => ({ event, index }))
+    .filter(({ event }) => scheduleKind(event) === "anytime");
+  for (let left = 0; left < anytime.length; left += 1)
+    for (let right = left + 1; right < anytime.length; right += 1)
+      if (scheduleCompatible(anytime[left].event, anytime[right].event))
+        addPair(anytime[left].index, anytime[right].index);
+  return [...pairKeys]
+    .map((key) => key.split(":").map(Number))
+    .sort(([aLeft, aRight], [bLeft, bRight]) =>
+      aLeft - bLeft || aRight - bRight,
+    );
+}
+
 export function generateDedupCandidates(events) {
   const candidates = [];
   const sorted = [...events].sort((a, b) =>
     compare(a.occurrenceId ?? a.id, b.occurrenceId ?? b.id),
   );
-  for (let left = 0; left < sorted.length; left += 1)
-    for (let right = left + 1; right < sorted.length; right += 1) {
+  for (const [left, right] of scheduleCompatiblePairs(sorted)) {
       const a = sorted[left],
         b = sorted[right];
       const aSources = new Set((a.sources ?? []).map(({ source }) => source));
@@ -166,7 +203,7 @@ export function generateDedupCandidates(events) {
         offMapCompatible,
         sameParentRepeat: sharesSource,
       });
-    }
+  }
   return candidates;
 }
 

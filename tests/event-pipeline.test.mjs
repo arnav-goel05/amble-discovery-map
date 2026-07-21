@@ -1795,6 +1795,11 @@ test("normalizer classifies expanded performances by their own schedule", () => 
     ).records;
     assert.equal(events.length, 1);
     assert.equal(events[0].startsAt, "2026-07-25T10:00:00+08:00");
+    assert.equal(events[0].sessions.length, 1);
+    assert.equal(
+      events[0].sessions[0].sourceSessionIds[0],
+      "festival#2026-07-25T10:00:00+08:00",
+    );
     const excluded = JSON.parse(
       readFileSync(join(runDir, "normalized/excluded.json"), "utf8"),
     ).records;

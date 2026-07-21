@@ -352,3 +352,21 @@ test("generic titles, sibling sessions, distinct editions, and uncertain locatio
     2,
   );
 });
+
+test("candidate generation scales with overlapping schedules rather than all occurrence pairs", () => {
+  const base = Date.parse("2026-07-22T00:00:00+08:00");
+  const events = Array.from({ length: 10_000 }, (_, index) => {
+    const instant = new Date(base + index * 60_000).toISOString();
+    return event("Catch.sg", `scaled-${String(index).padStart(5, "0")}`, {
+      title: "A unique scheduled performance",
+      startDateTime: instant,
+      endDateTime: instant,
+    });
+  });
+  const startedAt = Date.now();
+  const candidates = generateDedupCandidates(events);
+  const elapsedMs = Date.now() - startedAt;
+
+  assert.equal(candidates.length, 0);
+  assert.ok(elapsedMs < 2_000, `candidate generation took ${elapsedMs}ms`);
+});

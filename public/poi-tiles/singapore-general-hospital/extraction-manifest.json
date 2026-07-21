@@ -1,0 +1,287 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "singapore-general-hospital",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "geylang-east-public-library",
+    "tan-tock-seng-hospital",
+    "b-central",
+    "tong-fong-building",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "stamford-arts-centre",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre"
+  ],
+  "generatedAt": "2026-07-21T18:57:06.767Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/61/11_4.b3dm",
+      "sourceSha256": "be2e2d8441eb6cd91758462ea6097d7756a88d2df75627962f1f96758a299a1e",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "gmlNames": [
+        "SINGAPORE GENERAL HOSPITAL"
+      ],
+      "poiFile": "11_4-583f5816132a.b3dm",
+      "poiSha256": "cd25e61ba1f6c915f7e4d65c90cb63cc6c97c2f4840ed9cc9fee58f2f3c65e2b",
+      "poiTriangles": 84,
+      "backgroundFile": "optimized-tiles/7/61/11_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "backgroundSha256": "3f7dea8c2f9d5760e58c5f641141b7ff33bcefc2a729e3d7b81f1f530e365508",
+      "backgroundTriangles": 8999
+    },
+    {
+      "sourceTile": "tiles/7/61/11_3.b3dm",
+      "sourceSha256": "8c5dfa72514d8b32adb44ddda9e95c348b35a24ee5769ce32a93bc0325724d7c",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "gmlNames": [
+        "SINGAPORE GENERAL HOSPITAL"
+      ],
+      "poiFile": "11_3-d2c907b16c11.b3dm",
+      "poiSha256": "bf85809b1ced09b3cb4334115d8da97d789eaf93fc61154f09df524697147513",
+      "poiTriangles": 84,
+      "backgroundFile": "optimized-tiles/7/61/11_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "backgroundSha256": "f368ef5b3b74ab83fd4966a68f3ee74d79c5b09a59bff9870424f19a7f76ea8a",
+      "backgroundTriangles": 8999
+    },
+    {
+      "sourceTile": "tiles/7/61/11_2.b3dm",
+      "sourceSha256": "1a8d6802acc726d07be0e6b2540a1f77649934f2745c7c6dfc792809b3120139",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "gmlNames": [
+        "SINGAPORE GENERAL HOSPITAL"
+      ],
+      "poiFile": "11_2-ee19114d4215.b3dm",
+      "poiSha256": "31e61d41fc88180761ab81944f91983123054ad0ce9f597aa15267a61e42c935",
+      "poiTriangles": 84,
+      "backgroundFile": "optimized-tiles/7/61/11_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "backgroundSha256": "c3dad36263ddc4448035000b2b9d8e4f0e38222c9381c55e4a6a6af24bfb3edf",
+      "backgroundTriangles": 8999
+    },
+    {
+      "sourceTile": "tiles/7/61/11_1.b3dm",
+      "sourceSha256": "a37047d90a9b8014e25d80da4947d612d01640db0283c4ca1f90ad610a412cfa",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "gmlNames": [
+        "SINGAPORE GENERAL HOSPITAL"
+      ],
+      "poiFile": "11_1-89bd0f63d736.b3dm",
+      "poiSha256": "c3e3b0728cea756a6b7a0fa6126be2d253f4dafbc3e6872e7e658b520f6940e6",
+      "poiTriangles": 84,
+      "backgroundFile": "optimized-tiles/7/61/11_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "backgroundSha256": "cd045ce16eeeb828140e6b962c0ced5d864f579303a2379d0cefe3099b9f9263",
+      "backgroundTriangles": 8999
+    },
+    {
+      "sourceTile": "tiles/7/61/11_0.b3dm",
+      "sourceSha256": "a81211b372790a22071999e3c612c3396146a5fba4e976232d7f6157a155c643",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "gmlNames": [
+        "SINGAPORE GENERAL HOSPITAL"
+      ],
+      "poiFile": "11_0-2343521ab01b.b3dm",
+      "poiSha256": "f37f6296c47000af495087b38cafebc82f6197f85adb3c830ab240cf55d0a2e5",
+      "poiTriangles": 84,
+      "backgroundFile": "optimized-tiles/7/61/11_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "backgroundSha256": "3c0fb8b0505e9647134542b2f6a4a1a72b7a6a263997e67cf51a818b155d74c8",
+      "backgroundTriangles": 8999
+    },
+    {
+      "sourceTile": "tiles/7/61/11_5.b3dm",
+      "sourceSha256": "0e033c90e7611bf98f9ac6c59c86f1209313d60af9b31c73e436c95f315b7622",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "gmlNames": [
+        "SINGAPORE GENERAL HOSPITAL"
+      ],
+      "poiFile": "11_5-1339084889f2.b3dm",
+      "poiSha256": "ae1ed064c3d724b2c445e330606ccd3fa166831e0db623de3348823718ae517c",
+      "poiTriangles": 84,
+      "backgroundFile": "optimized-tiles/7/61/11_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_46674831-35da-44bb-ac39-a0d28540ea20"
+      ],
+      "backgroundSha256": "3c1b0981d37c4f11d35782642dbc31fbc5461f28d08e2d4d5c77bad345dffc5f",
+      "backgroundTriangles": 8999
+    }
+  ]
+}

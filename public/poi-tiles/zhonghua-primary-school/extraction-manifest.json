@@ -1,0 +1,375 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "zhonghua-primary-school",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "geylang-east-public-library",
+    "tan-tock-seng-hospital",
+    "b-central",
+    "tong-fong-building",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "stamford-arts-centre",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre"
+  ],
+  "generatedAt": "2026-07-21T18:57:06.515Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/4/10/10_0.b3dm",
+      "sourceSha256": "f052c7d59eba8d7cee1c68a52b2c4ab5fee6f596e9d7ae3afb47df74f8c12049",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_fc0d5554-5509-45b2-b390-fe2d13a0e8fb"
+      ],
+      "gmlNames": [
+        "ZHONGHUA PRIMARY SCHOOL"
+      ],
+      "poiFile": "10_0-f4674fbee6d4.b3dm",
+      "poiSha256": "4cc98fb173d44c2cbbc42fecb532c9c36fe57e96d45d60de4bd22c1693531b87",
+      "poiTriangles": 2852,
+      "backgroundFile": "optimized-tiles/4/10/10_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_fc0d5554-5509-45b2-b390-fe2d13a0e8fb"
+      ],
+      "backgroundSha256": "703d2641c5b8e88c027fb34c89a366f27f3ac4b7967826f86d8e3e9983c04432",
+      "backgroundTriangles": 10508
+    },
+    {
+      "sourceTile": "tiles/4/10/10_1.b3dm",
+      "sourceSha256": "8839603e53be0d983fa72d9cc32a08951d1ba7f3c5800176d4d2e6e13dc5185e",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_fc0d5554-5509-45b2-b390-fe2d13a0e8fb"
+      ],
+      "gmlNames": [
+        "ZHONGHUA PRIMARY SCHOOL"
+      ],
+      "poiFile": "10_1-09afbef83204.b3dm",
+      "poiSha256": "1723be98ef9fac576058ef6ab09c4925e36439faa35805dc4bf93ff083f47674",
+      "poiTriangles": 2852,
+      "backgroundFile": "optimized-tiles/4/10/10_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_fc0d5554-5509-45b2-b390-fe2d13a0e8fb"
+      ],
+      "backgroundSha256": "3b690fea5197639f50049e15f59f946926f2dc1d8002b497ea648b753659ebe8",
+      "backgroundTriangles": 10508
+    },
+    {
+      "sourceTile": "tiles/4/10/10_2.b3dm",
+      "sourceSha256": "bc57fef75426b2608dcbbc7bbcb3d38e0f1f0326815f0d69c4edf83fef7ec920",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_fc0d5554-5509-45b2-b390-fe2d13a0e8fb"
+      ],
+      "gmlNames": [
+        "ZHONGHUA PRIMARY SCHOOL"
+      ],
+      "poiFile": "10_2-df16626985d1.b3dm",
+      "poiSha256": "3f41600bb63f06a5022d06b5381605eb7b81fe6d0ab5d2b6793aebaefbbd18fd",
+      "poiTriangles": 2852,
+      "backgroundFile": "optimized-tiles/4/10/10_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_fc0d5554-5509-45b2-b390-fe2d13a0e8fb"
+      ],
+      "backgroundSha256": "6813d3f478f1d2304f50e174dd09be6223ff142d740ba4e3f4df4f29721dfe11",
+      "backgroundTriangles": 10508
+    },
+    {
+      "sourceTile": "tiles/4/10/10_3.b3dm",
+      "sourceSha256": "0df0c6e5b9985b1893e087fd4ca40c845a108b073187cd8881566e0c482b9efa",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_fc0d5554-5509-45b2-b390-fe2d13a0e8fb"
+      ],
+      "gmlNames": [
+        "ZHONGHUA PRIMARY SCHOOL"
+      ],
+      "poiFile": "10_3-2654d0fbd735.b3dm",
+      "poiSha256": "fce6652da3e03f8f706afed10000dc8dc89bff56cbfacdd38723b0f832a02e3b",
+      "poiTriangles": 2852,
+      "backgroundFile": "optimized-tiles/4/10/10_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_fc0d5554-5509-45b2-b390-fe2d13a0e8fb"
+      ],
+      "backgroundSha256": "db70f5cd9300b8f5f27a507f1546bc680c94e8fcdcd0ca8cceced3759a315924",
+      "backgroundTriangles": 10508
+    },
+    {
+      "sourceTile": "tiles/4/10/10_4.b3dm",
+      "sourceSha256": "7233777278dbb2a0a6cb897b4dd6a27b95c631355863b854c27f9723610cb897",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_fc0d5554-5509-45b2-b390-fe2d13a0e8fb"
+      ],
+      "gmlNames": [
+        "ZHONGHUA PRIMARY SCHOOL"
+      ],
+      "poiFile": "10_4-53a80b31bba6.b3dm",
+      "poiSha256": "9545dcd9aedc2785c36caf07bc5f22e6edece721a1677dd2863999ad2d8166a2",
+      "poiTriangles": 2852,
+      "backgroundFile": "optimized-tiles/4/10/10_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_fc0d5554-5509-45b2-b390-fe2d13a0e8fb"
+      ],
+      "backgroundSha256": "c55f06ecb99ee05216dc0f2c37310d33b18017e95fb51854c563beec0119673e",
+      "backgroundTriangles": 10508
+    },
+    {
+      "sourceTile": "tiles/6/40/41_4.b3dm",
+      "sourceSha256": "e38073dd439014f5ac4d3a49d2e37bdc108fc523ee8835f307bd8c6608a0f38c",
+      "originalBatchIds": [
+        18
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39708611-56a9-4833-b676-ed436d9f0676"
+      ],
+      "gmlNames": [
+        "ZHONGHUA PRIMARY SCHOOL"
+      ],
+      "poiFile": "41_4-10638eda386c.b3dm",
+      "poiSha256": "5d26dd86120fcd5450268ebc9bd7dafd4fcacf3b481bc2a6fb12ead7ac2d96bf",
+      "poiTriangles": 32,
+      "backgroundFile": "optimized-tiles/6/40/41_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39708611-56a9-4833-b676-ed436d9f0676"
+      ],
+      "backgroundSha256": "2c7e39101085c8aed5a8c63510fd55115e10f1b21e7b5cd2638b9968ad521456",
+      "backgroundTriangles": 12987
+    },
+    {
+      "sourceTile": "tiles/6/40/41_3.b3dm",
+      "sourceSha256": "21cb7a0360f3ae2a9192800f8d87db0ef80741421b707900f55f2b3a6620a00d",
+      "originalBatchIds": [
+        18
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39708611-56a9-4833-b676-ed436d9f0676"
+      ],
+      "gmlNames": [
+        "ZHONGHUA PRIMARY SCHOOL"
+      ],
+      "poiFile": "41_3-cd5eb16db358.b3dm",
+      "poiSha256": "04bcaf59626b601620d4f678d42ae17cf1c8089e73a878c6ae4f3b2fe4123c58",
+      "poiTriangles": 32,
+      "backgroundFile": "optimized-tiles/6/40/41_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39708611-56a9-4833-b676-ed436d9f0676"
+      ],
+      "backgroundSha256": "76b09dbb430b1d0bafb6123317b30ed818dedffef5b19a25193b9a7a05c11017",
+      "backgroundTriangles": 12987
+    },
+    {
+      "sourceTile": "tiles/6/40/41_2.b3dm",
+      "sourceSha256": "655eccf22c060537f4d1257b5fbf18821d191c143ba064047600d5e08f8ea3bc",
+      "originalBatchIds": [
+        18
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39708611-56a9-4833-b676-ed436d9f0676"
+      ],
+      "gmlNames": [
+        "ZHONGHUA PRIMARY SCHOOL"
+      ],
+      "poiFile": "41_2-0e1bed67fc1f.b3dm",
+      "poiSha256": "e1064b5a1cf72756612e2cb0ad2eedb3c2195c4a68149879c75c7bf58c8316e9",
+      "poiTriangles": 32,
+      "backgroundFile": "optimized-tiles/6/40/41_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39708611-56a9-4833-b676-ed436d9f0676"
+      ],
+      "backgroundSha256": "199350dfff897976e7bc74355b2aaff22209167b94d1ae9112897191f36cd3f6",
+      "backgroundTriangles": 12987
+    },
+    {
+      "sourceTile": "tiles/6/40/41_1.b3dm",
+      "sourceSha256": "cec778d10637add07e5c604e3fda65ec6ad34ceb10dca2e005db501eeb2cd0de",
+      "originalBatchIds": [
+        18
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39708611-56a9-4833-b676-ed436d9f0676"
+      ],
+      "gmlNames": [
+        "ZHONGHUA PRIMARY SCHOOL"
+      ],
+      "poiFile": "41_1-544d1733ea1a.b3dm",
+      "poiSha256": "38ead6d15e218491c75b03b8f590bebb4a40d06ef4aa3a4d3cf44c06a7cb0a18",
+      "poiTriangles": 32,
+      "backgroundFile": "optimized-tiles/6/40/41_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39708611-56a9-4833-b676-ed436d9f0676"
+      ],
+      "backgroundSha256": "04db55df80ef03db86d6cf50075c2f3cfee0322e169946686e0125312d55326d",
+      "backgroundTriangles": 12987
+    },
+    {
+      "sourceTile": "tiles/6/40/41_0.b3dm",
+      "sourceSha256": "ebb404eaf5a9e8a0ad2ad198a9969647b2733f902eca785cf882bbba6e1a9ae3",
+      "originalBatchIds": [
+        18
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39708611-56a9-4833-b676-ed436d9f0676"
+      ],
+      "gmlNames": [
+        "ZHONGHUA PRIMARY SCHOOL"
+      ],
+      "poiFile": "41_0-cadf8acdbc9f.b3dm",
+      "poiSha256": "6ee56bdd63dff4785595389e0beac30bf72c30288d2b228f11cc792bfb639567",
+      "poiTriangles": 32,
+      "backgroundFile": "optimized-tiles/6/40/41_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39708611-56a9-4833-b676-ed436d9f0676"
+      ],
+      "backgroundSha256": "8d6d78139273c179affe62cbfbfbb7737b08ed5f6b2bdc85a9da17e9a38751bf",
+      "backgroundTriangles": 12987
+    }
+  ]
+}

@@ -124,9 +124,32 @@
     "little-india-mrt-station",
     "chinatown-point",
     "masjid-sultan",
-    "pgp-building"
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "geylang-east-public-library",
+    "tan-tock-seng-hospital",
+    "b-central",
+    "tong-fong-building",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "stamford-arts-centre",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre"
   ],
-  "generatedAt": "2026-07-21T11:52:43.867Z",
+  "generatedAt": "2026-07-21T18:56:56.615Z",
   "tiles": [
     {
       "sourceTile": "tiles/6/35/6_0.b3dm",
@@ -145,10 +168,11 @@
       "poiTriangles": 1792,
       "backgroundFile": "optimized-tiles/6/35/6_0.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4"
+        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4",
+        "SLA_BLDG2_a58e1fb0-e056-4e80-b156-499b485878ba"
       ],
-      "backgroundSha256": "657fe2820bc6d1c010149c1e8c13c19ed26699ff82399a389cf35f6c49211d92",
-      "backgroundTriangles": 13624
+      "backgroundSha256": "7c93ef41db972bedded147c057b45a470f791f585ffb54e30e84934ba2ac7fe0",
+      "backgroundTriangles": 12196
     },
     {
       "sourceTile": "tiles/6/35/6_1.b3dm",
@@ -167,10 +191,11 @@
       "poiTriangles": 1792,
       "backgroundFile": "optimized-tiles/6/35/6_1.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4"
+        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4",
+        "SLA_BLDG2_a58e1fb0-e056-4e80-b156-499b485878ba"
       ],
-      "backgroundSha256": "1f5c2029c8af824823dff3fcf242d4a711a85ed2c7e2ec39b1212b2cd6f098dc",
-      "backgroundTriangles": 13624
+      "backgroundSha256": "8a60ae050e0cca256ceb39f6e2222e99031d6baa664272b789545672fcffde22",
+      "backgroundTriangles": 12196
     },
     {
       "sourceTile": "tiles/6/35/6_2.b3dm",
@@ -189,10 +214,11 @@
       "poiTriangles": 1792,
       "backgroundFile": "optimized-tiles/6/35/6_2.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4"
+        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4",
+        "SLA_BLDG2_a58e1fb0-e056-4e80-b156-499b485878ba"
       ],
-      "backgroundSha256": "7b09df3fd8051e5706f27e09bf86c87054d8816c87e1b5578b3e6b26f679b112",
-      "backgroundTriangles": 13624
+      "backgroundSha256": "6651e32d38f728d1d1524db5b45dbea10a1802e252ee7e454ab7bab6594c96b0",
+      "backgroundTriangles": 12196
     },
     {
       "sourceTile": "tiles/6/35/6_3.b3dm",
@@ -211,10 +237,11 @@
       "poiTriangles": 1792,
       "backgroundFile": "optimized-tiles/6/35/6_3.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4"
+        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4",
+        "SLA_BLDG2_a58e1fb0-e056-4e80-b156-499b485878ba"
       ],
-      "backgroundSha256": "4a22903a4af309980950da0ca7eb81c320abb1ca355edfcdc264e631f159f0e3",
-      "backgroundTriangles": 13624
+      "backgroundSha256": "b61aa5e808e801d03d35af5c1285033ea11b318d46708b84f44ece46218545d8",
+      "backgroundTriangles": 12196
     },
     {
       "sourceTile": "tiles/6/35/6_4.b3dm",
@@ -233,10 +260,11 @@
       "poiTriangles": 1792,
       "backgroundFile": "optimized-tiles/6/35/6_4.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4"
+        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4",
+        "SLA_BLDG2_a58e1fb0-e056-4e80-b156-499b485878ba"
       ],
-      "backgroundSha256": "aacc85fc6591a87deb9fa07f23808ffb4b62b041c951e481af60aa06b8ae1cc9",
-      "backgroundTriangles": 13624
+      "backgroundSha256": "e2f38e7c14be4da881ecf13579674ddaf0613e2254bb54dbb09bb9184804523f",
+      "backgroundTriangles": 12196
     },
     {
       "sourceTile": "tiles/6/35/6_5.b3dm",
@@ -255,10 +283,11 @@
       "poiTriangles": 1792,
       "backgroundFile": "optimized-tiles/6/35/6_5.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4"
+        "SLA_BLDG2_ef1a3bb4-4d23-4ea0-91b1-0e0da9ab87f4",
+        "SLA_BLDG2_a58e1fb0-e056-4e80-b156-499b485878ba"
       ],
-      "backgroundSha256": "cf156a5574fb7bdfcc6b089d8730f37b5bf99b0d9dfcbf8df23ab26be37f6380",
-      "backgroundTriangles": 13624
+      "backgroundSha256": "d3a0975c87a80883171cb3f445241ff10def0c89f9806e04448beb1175d93289",
+      "backgroundTriangles": 12196
     }
   ]
 }
