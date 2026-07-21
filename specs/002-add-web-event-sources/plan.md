@@ -4,7 +4,7 @@
 
 ## Summary
 
-Evolve the implemented nine-source event pipeline from a weekly, fixed-building,
+Evolve the implemented eight-source event pipeline from a weekly, fixed-building,
 direct-authority-only publication model into the approved activity-discovery model. Keep the
 existing rendered-source transport, adapters, evidence capture, venue recovery, deduplication,
 logging, admin review, and atomic snapshot boundaries. Change shared normalization to retain
@@ -57,7 +57,7 @@ retention cannot create unbounded recurrence expansion; exact building highlight
 require approved OneMap evidence; isolated failures cannot delete or block unrelated safe
 identities; release-wide invalidity preserves the prior snapshot
 
-**Scale/Scope**: Nine configured sources—five direct, three editorial, one unavailable—with
+**Scale/Scope**: Eight configured sources—five direct and three editorial—with
 hundreds of source records, potentially longer future horizons, mapped and off-map outputs,
 and one shared reconciliation/publication path
 
@@ -70,7 +70,6 @@ and one shared reconciliation/publication path
 |    30 | Fever Singapore        | direct        | enabled         | Include dated, selectable, and anytime activities             |
 |    40 | Visit Singapore        | direct        | enabled         | Include individual happenings extracted from details/guides   |
 |    50 | Singapore Film Society | direct        | enabled         | Include public and access-restricted programmes               |
-|    60 | Roots/HAN              | unavailable   | disabled        | Report only until source contract revalidation                |
 |    70 | Honeycombers           | editorial     | enabled         | Corroborate first; publish sufficient editorial-only evidence |
 |    80 | ArtsEquator            | editorial     | enabled         | Corroborate first; publish sufficient editorial-only evidence |
 |    90 | Time Out Singapore     | editorial     | enabled         | Corroborate first; publish sufficient editorial-only evidence |

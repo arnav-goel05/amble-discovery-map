@@ -23,14 +23,14 @@ const event = (source, id, overrides = {}) => ({
 });
 const approved = (poiId) => ({ resolutionStatus: "approved", poiId });
 
-test("nine-source candidate generation preserves edition years and schedule conflicts", () => {
+test("cross-source candidate generation preserves edition years and schedule conflicts", () => {
   const events = [
     event("Catch.sg", "one"),
     event("SISTIC", "two", { title: "Singapore Night Festival — 2026" }),
     event("Fever Singapore", "three", {
       title: "Singapore Night Festival 2027",
     }),
-    event("Roots HAN", "four", {
+    event("Visit Singapore All Happenings", "four", {
       startDateTime: "2026-07-18T19:00:00+08:00",
       endDateTime: "2026-07-18T21:00:00+08:00",
     }),

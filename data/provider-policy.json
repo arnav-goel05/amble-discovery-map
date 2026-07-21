@@ -60,7 +60,6 @@
     { "id": "fever-sg", "owner": "Fever Labs, Inc.", "domains": ["feverup.com"], "costClass": "free", "enabled": true, "purpose": ["event-listing", "event-detail"] },
     { "id": "visit-singapore", "owner": "Singapore Tourism Board", "domains": ["visitsingapore.com"], "costClass": "free", "enabled": true, "purpose": ["event-listing", "event-detail"] },
     { "id": "singapore-film-society", "owner": "Singapore Film Society", "domains": ["singaporefilmsociety.com"], "costClass": "free", "enabled": true, "purpose": ["event-listing", "event-detail"] },
-    { "id": "roots-han", "owner": "National Heritage Board Singapore", "domains": ["roots.gov.sg"], "costClass": "free", "enabled": true, "purpose": ["event-listing", "event-detail"] },
     { "id": "honeycombers", "owner": "The Honeycombers Pte Ltd", "domains": ["thehoneycombers.com"], "costClass": "free", "enabled": true, "purpose": ["event-discovery"] },
     { "id": "arts-equator", "owner": "ArtsEquator Ltd", "domains": ["artsequator.com"], "costClass": "free", "enabled": true, "purpose": ["event-discovery"] },
     { "id": "time-out-singapore", "owner": "Time Out England Limited", "domains": ["timeout.com"], "costClass": "free", "enabled": true, "purpose": ["event-discovery"] },

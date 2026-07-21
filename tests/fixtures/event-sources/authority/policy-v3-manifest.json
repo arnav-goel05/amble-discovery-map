@@ -16,12 +16,6 @@
         "corroborateFirst": true,
         "allowSufficientEditorialOnly": true
       }
-    },
-    {
-      "name": "Roots HAN",
-      "evidenceRole": "unavailable",
-      "operatingState": "disabled",
-      "unavailableReason": "layout_contract_changed"
     }
   ],
   "assessments": [

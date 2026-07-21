@@ -37,7 +37,7 @@ runtime data.
 
 ### Implementation
 
-- [x] T088 Update all nine definitions to direct/editorial/unavailable roles, enabled/disabled state, and editorial policy v2 while retaining Roots unavailability in `data/event-pipeline-config.json`
+- [x] T088 Update the source definitions to direct/editorial/unavailable roles, enabled/disabled state, and editorial policy v2 in `data/event-pipeline-config.json`
 - [x] T089 Extend source-definition migration and validation for the new role/state contract in `scripts/verify-event-source-adapters.mjs`
 - [x] T090 Add pure shared inclusion, schedule, editorial-sufficiency, public-placement, mapping-status, lifecycle, and freshness primitives in `scripts/lib/event-sources/activity-policy.mjs`
 - [x] T091 Extend normalized artifact schema and v2 migration for parent activities, schedule states, sessions, and venue occurrences in `scripts/event-normalizer.mjs`
@@ -423,3 +423,8 @@ behavior without network access.
 - [x] T220 Compare final published mapped/off-map placements and nested per-source exclusions instead of pre-venue normalized placeholders, with regression coverage, per FR-052 and SC-016
 - [x] T221 Add unchanged-evidence reuse, changed-contract invalidation, and retryable extraction-failure regressions for field completeness metadata per FR-050, SC-015, and T215
 - [x] T222 Re-run focused and release verification, regenerate the clean-run comparison, and record corrected convergence evidence per FR-052, SC-016, and T218
+
+## Phase 26: Remove Retired Event Source
+
+- [x] T223 Remove the retired source from active specification, configuration, policy registries, adapter registration, tests, fixtures, operator documentation, and runner contracts while preserving immutable historical snapshots and run evidence
+- [x] T224 Remove the retired zero-result row from the event dashboard, run focused source/deduplication/publication tests and both production builds, then publish the updated dashboard

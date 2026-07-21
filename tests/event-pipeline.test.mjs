@@ -964,12 +964,6 @@ test("structured pipeline configuration is authoritative for sources and window"
       "time-out-singapore-discovery-v1",
     ],
   );
-  const roots = config.sources.find(
-    (source) => source.adapterId === "roots-han-rendered-v1",
-  );
-  assert.equal(roots.enabled, false);
-  assert.equal(roots.operatingMode, "disabled");
-  assert.equal(roots.unavailableReason, "layout_contract_changed");
   assert.ok(
     config.sources.find(
       (source) => source.adapterId === "sistic-official-listing-v1",

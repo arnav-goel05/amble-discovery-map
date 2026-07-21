@@ -6,7 +6,7 @@ fixture, build, browser, artifact, and full verification gates pass.
 ## Prerequisites
 
 - Node.js 24+
-- Checked-in definitions for all nine sources and approved free provider policy
+- Checked-in definitions for all eight sources and approved free provider policy
 - `TINYFISH_API_KEY` in the server environment only for the final bounded live verification
 - Immutable fixtures under `tests/fixtures/event-sources/`
 - Existing approved snapshot and venue evidence fixtures for migration/reconciliation tests
@@ -20,7 +20,6 @@ Run the adapter verifier and provider/source contract tests.
 Expected:
 
 - five direct and three editorial sources validate as enabled;
-- Roots/HAN validates as unavailable/disabled with an explicit reason;
 - editorial sources require versioned corroboration/sufficiency policy;
 - paid, policy-mismatched, unsafe-destination, redirect, body-size, timeout, and credential
   failures occur before unsafe retrieval.
@@ -211,7 +210,6 @@ or reuse old run artifacts.
 Expected:
 
 - every source and identity has a terminal accounted outcome;
-- Roots/HAN remains reported unavailable;
 - active/future and anytime records survive normalization;
 - editorial-only evidence and off-map states appear as designed;
 - duplicate, review, stale carry-forward, and archive counts reconcile;
@@ -220,9 +218,8 @@ Expected:
 ### Bounded live-run evidence (2026-07-18)
 
 - Run `20260718T130213Z-20260718T000000+0800-20260725T235959+0800` reached its terminal
-  continuation with `complete: true`. Catch.sg was isolated after HTTP 469 and Roots/HAN was
-  reported unavailable with `layout_contract_changed`; every other configured source reached a
-  terminal outcome.
+  continuation with `complete: true`. Catch.sg was isolated after HTTP 469 and every other
+  enabled source reached a terminal outcome.
 - Source accounting produced 359 accepted SISTIC occurrences, 88 Fever activities, 9 Singapore
   Film Society activities, 2 Honeycombers activities, and no accepted Visit Singapore,
   ArtsEquator, or Time Out activities. The run normalized 458 eligible activities, collapsed no
@@ -254,7 +251,7 @@ Expected:
   browser tests all passed.
 - SISTIC accepted 345 activities, Fever 70, Singapore Film Society 9, and Honeycombers 1.
   Visit Singapore, ArtsEquator, and Time Out accepted none in this capture. Catch.sg was safely
-  isolated after HTTP 469, while Roots/HAN remained explicitly disabled/unavailable.
+  isolated after HTTP 469.
 - The run accepted 425 unique activities, with 424 direct and 1 editorial-authoritative evidence
   outcome. No cross-source duplicate was collapsed and no blocking deduplication review remained.
 - Venue accounting completed for all 159 branches: 121 approved, 16 safely not mappable, and 22
@@ -294,8 +291,8 @@ node --test --test-name-pattern='structured pipeline configuration|status report
 ```
 
 Expected: compact Time Out ranges are retained; cross-surface repeats collapse without merging
-siblings; exact listing overlap is reported; a failed surface blocks the source with per-surface
-diagnostics; HTTP 469 is a non-retried provider-policy blocker; and Roots/HAN performs no fetch.
+siblings; exact listing overlap is reported; and a failed surface blocks the source with
+per-surface diagnostics while HTTP 469 remains a non-retried provider-policy blocker.
 This focused check does not satisfy the separate live-run task.
 
 ## 15. Focused missing-venue recovery validation

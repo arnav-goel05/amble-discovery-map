@@ -183,18 +183,7 @@ boundary and real credential integration.
 **Alternatives considered**: General web search; paid agent/browser retrieval; a second
 transport stack.
 
-## Decision 15: Keep Roots/HAN explicitly unavailable
-
-**Decision**: Retain Roots/HAN in configuration and reporting but skip collection until its
-changed source contract is revalidated with representative evidence.
-
-**Rationale**: Explicit unavailability is more honest and safer than fabricated success or
-old-run reuse.
-
-**Alternatives considered**: Remove the source silently; reuse historical capture; bypass the
-contract change.
-
-## Decision 16: Defer ArtEvents.sg
+## Decision 15: Defer ArtEvents.sg
 
 **Decision**: Keep ArtEvents.sg outside this feature.
 
@@ -203,7 +192,7 @@ its own evidence and adapter review.
 
 **Alternatives considered**: Add it without a separate source decision.
 
-## Decision 17: Account for each surface without publishing partial collection
+## Decision 16: Account for each surface without publishing partial collection
 
 **Decision**: Continue bounded independent listing surfaces after a recoverable surface error,
 retain completed surface evidence and terminal diagnostics, then return the source as blocked if
@@ -215,7 +204,7 @@ while reconciliation never mistakes a partial scrape for authoritative absence.
 **Alternatives considered**: Fail on the first surface; publish healthy surfaces as complete;
 treat a failed surface as zero results.
 
-## Decision 18: Deduplicate cross-surface repeats with multiple identity signals
+## Decision 17: Deduplicate cross-surface repeats with multiple identity signals
 
 **Decision**: A same-source record with a different listing parent is a merge candidate only
 when title, schedule, venue, and organizer or descriptive evidence strongly agree. Existing
@@ -227,7 +216,7 @@ date alone are insufficient to merge distinct sessions or editions.
 **Alternatives considered**: Never merge different same-source parents; merge on fuzzy title;
 canonicalize every source URL to one parent.
 
-## Decision 19: Expose appearance and overlap accounting
+## Decision 18: Expose appearance and overlap accounting
 
 **Decision**: Report per-surface appearances and unique pointers, plus source-wide exact pointer
 overlap collapsed before detail retrieval.
@@ -237,7 +226,7 @@ instead of an opaque total.
 
 **Alternatives considered**: Log only unique details; infer overlap from raw captures manually.
 
-## Decision 20: Treat HTTP 469 as provider policy, not empty data
+## Decision 19: Treat HTTP 469 as provider policy, not empty data
 
 **Decision**: Preserve the numeric status as redacted diagnostic metadata and use the existing
 provider-policy blocker class without retrying the non-transient response.
@@ -247,17 +236,7 @@ provider-policy blocker class without retrying the non-transient response.
 **Alternatives considered**: Retry as a server outage; special-case Catch as success; log the
 response body.
 
-## Decision 21: Keep unavailable sources executable only after contract revalidation
-
-**Decision**: Roots/HAN stays explicit and disabled, with zero network attempts, until its
-adapter contract is deliberately revalidated.
-
-**Rationale**: Visible unavailability is safer than silent removal or synthetic data.
-
-**Alternatives considered**: Remove it from reporting; reuse old captures; enable best-effort
-scraping.
-
-## Decision 22: Recover missing venues with a bounded verified search overlay
+## Decision 20: Recover missing venues with a bounded verified search overlay
 
 **Decision**: Immediately before normalization, use TinyFish Search once for each physical
 source occurrence that still lacks venue and address evidence. Fetch at most three public
@@ -281,7 +260,7 @@ occurrence; perform unbounded general-web research.
 - `skills/event-pipeline-runner/references/` runtime contracts
 - Current approved provider and source configuration under `data/`
 
-## Decision 23: Extract official structured page evidence before rendered prose
+## Decision 21: Extract official structured page evidence before rendered prose
 
 **Decision**: For event detail pages, attempt bounded direct retrieval from the source's approved
 official domains and interpret Event JSON-LD, supported microdata, and documented source HTML
@@ -297,7 +276,7 @@ browser dependency.
 **Alternatives considered**: Rely on TinyFish's selected fields; use a paid browser/agent API;
 run general web search for every optional omission; add independent source-specific pipelines.
 
-## Decision 24: Model absence independently from extraction failure
+## Decision 22: Model absence independently from extraction failure
 
 **Decision**: Every contracted field receives `present`, `not_published_by_source`, or
 `extraction_failed`, plus the page evidence hash, contract version, and extraction method. Cache a
@@ -310,7 +289,7 @@ prevents a partially successful extraction from being reduced to one misleading 
 **Alternatives considered**: Leave every missing field as null; retry all nulls; permanently cache
 absence by URL; make optional fields source-specific and therefore incomparable.
 
-## Decision 25: Reconcile enrichment through existing identities and publication gates
+## Decision 23: Reconcile enrichment through existing identities and publication gates
 
 **Decision**: Merge richer fields into current source records and evidence assessments; do not
 create a parallel catalogue. Structured schedules, organizers, locations, and canonical URLs may

@@ -16,7 +16,6 @@ This file is the human-readable source schedule. Executable adapter and window c
 | Fever Singapore                | yes      | `fever-singapore-rendered-v1`        | shared window                                       | `2026-07-21T10:25:30.045Z` |
 | Visit Singapore All Happenings | yes      | `visit-singapore-rendered-v1`        | shared window                                       | `2026-07-21T10:27:14.683Z` |
 | Singapore Film Society         | yes      | `singapore-film-society-rendered-v1` | shared window                                       | `2026-07-21T10:27:49.612Z` |
-| Roots HAN                      | disabled | `roots-han-rendered-v1`              | layout contract changed; revalidate before enabling | `2026-07-17T12:35:48.168Z` |
 | Honeycombers                   | pilot    | `honeycombers-discovery-v1`          | shared window                                       | `2026-07-21T10:28:08.883Z` |
 | ArtsEquator                    | pilot    | `arts-equator-discovery-v1`          | shared window                                       | `2026-07-21T10:28:16.079Z` |
 | Time Out Singapore             | pilot    | `time-out-singapore-discovery-v1`    | shared window                                       | `2026-07-21T10:30:22.876Z` |

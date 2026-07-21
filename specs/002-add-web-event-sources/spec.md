@@ -9,7 +9,7 @@
 **Status**: Ready for planning
 
 **Input**: Expand Singapore activity discovery through Fever Singapore, Visit Singapore,
-Singapore Film Society, Roots/HAN, Honeycombers, ArtsEquator, and Time Out Singapore;
+Singapore Film Society, Honeycombers, ArtsEquator, and Time Out Singapore;
 integrate them with Catch.sg and SISTIC; retain all active and future activities exposed by
 the configured source surfaces; support off-map activities; deduplicate across every source;
 and make collection, review, and publication traceable and failure-safe. The approved policy
@@ -66,10 +66,6 @@ outcome, with active and future eligible activities retained regardless of week.
 4. **Given** a date-dependent activity has no reliable schedule, **When** normalization
    completes, **Then** it is retained as `schedule_unverified` for review without an invented
    date.
-5. **Given** Roots/HAN remains unavailable because its source contract is not reliable,
-   **When** collection runs, **Then** it is reported as unavailable, is not fetched, and does
-   not fabricate or reuse unapproved records.
-
 ---
 
 ### User Story 2 - Discover Activities Without Exact Buildings (Priority: P1)
@@ -226,7 +222,7 @@ release-wide validation failure, and atomic-activation failure fixtures.
 ## Scope and Constraints _(mandatory)_
 
 - **In scope**: Maintain Catch.sg and SISTIC; integrate Fever Singapore, Visit Singapore,
-  Singapore Film Society, Roots/HAN, Honeycombers, ArtsEquator, and Time Out Singapore;
+  Singapore Film Society, Honeycombers, ArtsEquator, and Time Out Singapore;
   retrieve bounded public source surfaces; retain all exposed active and future eligible
   activities; normalize schedule, placement, and mapping states; split reliable multi-location
   occurrences; support mapped and off-map discovery; corroborate or independently qualify
@@ -244,8 +240,7 @@ release-wide validation failure, and atomic-activation failure fixtures.
 - **Source roles**: Catch.sg, SISTIC, Fever Singapore, Visit Singapore, and Singapore Film
   Society provide direct source evidence. Honeycombers, ArtsEquator, and Time Out provide
   trusted editorial evidence that first seeks direct corroboration but may authorize a
-  sufficiently evidenced activity independently. Roots/HAN remains explicitly unavailable
-  until its source contract is revalidated.
+  sufficiently evidenced activity independently.
 - **Evidence and dependencies**: Collection uses only approved free retrieval capability.
   Every activity retains its source page and evidence state. Event authority and exact
   building authority are evaluated separately. Missing optional values remain unavailable.
@@ -265,13 +260,11 @@ release-wide validation failure, and atomic-activation failure fixtures.
 
 ### Functional Requirements
 
-- **FR-001**: The system MUST define all nine configured sources independently with a direct,
-  editorial, or unavailable role and deterministic bounded collection rules.
+- **FR-001**: The system MUST define all eight configured sources independently with a direct
+  or editorial role and deterministic bounded collection rules.
 - **FR-002**: Collection MUST use only an approved free retrieval capability and MUST fail
   closed before network access when its credential, policy, destination, or free-use status
   is invalid.
-- **FR-003**: Roots/HAN MUST remain visible as explicitly unavailable, MUST NOT be fetched,
-  and MUST NOT contribute fabricated or copied historical records until revalidated.
 - **FR-004**: Every enabled source MUST account for every encountered listing or reliably
   bounded roundup entry across all reachable configured pages, without repeated canonical
   records causing duplicate captures.
@@ -536,7 +529,6 @@ Accessibility`, and a later explicit venue or location field produce the explici
   sources for their public records.
 - Honeycombers, ArtsEquator, and Time Out are trusted editorial sources that may publish
   independently when their evidence satisfies FR-021.
-- Roots/HAN remains unavailable until an operator revalidates its changed source contract.
 - The existing event pipeline, admin review, map, snapshot, and browser-test boundaries are
   extended rather than replaced with a parallel system.
 - Exact building approval and activity publication are separate decisions; a valid activity

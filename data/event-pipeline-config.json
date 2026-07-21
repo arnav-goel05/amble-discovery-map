@@ -158,24 +158,6 @@
       "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 }
     },
     {
-      "name": "Roots HAN",
-      "enabled": false,
-      "evidenceRole": "unavailable",
-      "operatingState": "disabled",
-      "collectionOrder": 60,
-      "precedence": 60,
-      "adapterId": "roots-han-rendered-v1",
-      "version": "1.0",
-      "providerId": "roots-han",
-      "owner": "National Heritage Board Singapore",
-      "unavailableReason": "layout_contract_changed",
-      "officialDomains": ["roots.gov.sg"],
-      "costClass": "free",
-      "listing": { "url": "https://www.roots.gov.sg/han/han-whats-on?type=%7BE241AEED-FE34-4B38-AE5F-3B9B7EB33DEA%7D", "method": "GET", "paginationCeiling": 50, "detailPathPattern": "^/han/Neighborhoods/.+/HAN-Programme-Folder/" },
-      "detail": { "url": "https://www.roots.gov.sg/han/", "method": "GET" },
-      "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 }
-    },
-    {
       "name": "Honeycombers",
       "enabled": true,
       "evidenceRole": "editorial",

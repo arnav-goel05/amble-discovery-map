@@ -298,9 +298,9 @@ test("duplicate captured detail URLs remain one immutable artifact", async () =>
   }
 });
 
-test("all nine definitions have deterministic evidence role, operating state, collection order, and direct precedence", () => {
+test("all eight definitions have deterministic evidence role, operating state, collection order, and direct precedence", () => {
   const report = validateEventSourceDefinitions();
-  assert.equal(report.sources.length, 9);
+  assert.equal(report.sources.length, 8);
   assert.deepEqual(
     report.sources
       .filter(({ evidenceRole }) => evidenceRole === "editorial")
@@ -313,11 +313,11 @@ test("all nine definitions have deterministic evidence role, operating state, co
   );
   assert.deepEqual(
     report.sources.map(({ collectionOrder }) => collectionOrder),
-    [10, 20, 30, 40, 50, 60, 70, 80, 90],
+    [10, 20, 30, 40, 50, 70, 80, 90],
   );
 });
 
-test("v3 source definitions migrate legacy roles and validate direct, editorial, and unavailable states", () => {
+test("v3 source definitions retain unavailable migration support while current sources validate as enabled", () => {
   const direct = migrateSourceDefinition({
     sourceRole: "authoritative",
     operatingMode: "required",
@@ -363,7 +363,6 @@ test("v3 source definitions migrate legacy roles and validate direct, editorial,
       "direct",
       "direct",
       "direct",
-      "unavailable",
       "editorial",
       "editorial",
       "editorial",
@@ -377,7 +376,6 @@ test("v3 source definitions migrate legacy roles and validate direct, editorial,
       "enabled",
       "enabled",
       "enabled",
-      "disabled",
       "enabled",
       "enabled",
       "enabled",
@@ -611,23 +609,21 @@ test("authority capture index reuses raw captures separately from parser fixture
   }
 });
 
-test("four authoritative rendered adapters map source semantics into the universal fixture", () => {
+test("three authoritative rendered adapters map source semantics into the universal fixture", () => {
   const sources = readPipelineConfig().sources.filter(
     ({ sourceRole, retrieval }) => sourceRole === "authoritative" && retrieval,
   );
   for (const source of sources) {
     const adapter = renderedAdapterFor(source.adapterId);
     const detailUrl =
-      source.name === "Roots HAN"
-        ? "https://www.roots.gov.sg/han/Neighborhoods/Punggol/HAN-Programme-Folder/example"
-        : source.name === "Singapore Film Society"
-          ? "https://events.singaporefilmsociety.com/events/example"
-          : new URL(
-              source.listing.detailPathPattern.includes("[0-9]")
-                ? "/m/123"
-                : "/whats-happening/example",
-              source.listing.url,
-            ).href;
+      source.name === "Singapore Film Society"
+        ? "https://events.singaporefilmsociety.com/events/example"
+        : new URL(
+            source.listing.detailPathPattern.includes("[0-9]")
+              ? "/m/123"
+              : "/whats-happening/example",
+            source.listing.url,
+          ).href;
     const fixture = adapter.detail(
       {
         url: detailUrl,

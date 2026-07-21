@@ -632,7 +632,7 @@ test("explicitly disabled source remains accounted without blocking publication"
   const state = {
     sources: {
       Catch: { status: "success", operatingMode: "required" },
-      "Roots HAN": {
+      "Unavailable Source": {
         status: "disabled",
         operatingMode: "disabled",
         blockerReasonCode: "layout_contract_changed",
