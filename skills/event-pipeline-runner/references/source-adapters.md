@@ -80,7 +80,7 @@ Time Out uses one bounded multi-surface listing contract: the weekly hotlist, we
 - Detail API: `POST https://www.catch.sg/api/site/GetEventDetail` as form data with `pathUrl`, `eventPageID`, `articlePageSize=6`, `photosPageSize=8`, `isPhotosPaginated=false`, `articlePageIndex=1`, and `photosPageIndex=1`
 - Detail response: use `/data`; a successful record has non-empty `/data/ID` and `/data/DisplayEventTitle`
 - Pagination: request page indexes `1..PageTotal`; deduplicate repeated canonical detail URLs before detail capture
-- Stable source ID: final event-detail URL path; block the record when absent
+- Stable source ID: final event-detail URL path; account a missing or malformed provider detail URL as an invalid record and continue complete source pagination
 
 ## `sistic-official-listing-v1`
 

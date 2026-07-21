@@ -584,7 +584,17 @@ function detailUrlForListing(source, listing) {
   }
   const rawPath = text(listing.Url) ?? text(listing.URL) ?? text(listing.Link);
   if (!rawPath) return { invalid: "missing_detail_url" };
-  return { publicUrl: canonicalDetailUrl(rawPath, "https://www.catch.sg") };
+  try {
+    const publicUrl = canonicalDetailUrl(rawPath, "https://www.catch.sg");
+    const slug = decodeURIComponent(
+      new URL(publicUrl).pathname.split("/").filter(Boolean).at(-1) ?? "",
+    );
+    if (!slug || slug.startsWith("*"))
+      return { invalid: "invalid_detail_url" };
+    return { publicUrl };
+  } catch {
+    return { invalid: "invalid_detail_url" };
+  }
 }
 
 export function mapSisticDetail(detail, listing, detailUrl, listingPage) {

@@ -1465,6 +1465,79 @@ test("executable Catch collector performs bootstrap and detail API capture", asy
   }
 });
 
+test("Catch collector isolates malformed provider detail links and continues", async () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-source-catch-malformed-link-${process.pid}-${Date.now()}`,
+  );
+  const source = structuredClone(
+    readPipelineConfig().sources.find(
+      (item) => item.adapterId === "catch-official-listing-v1",
+    ),
+  );
+  const requests = [];
+  const responses = [
+    {
+      status: 200,
+      ok: true,
+      body: {
+        data: {
+          ItemTotal: 2,
+          PageTotal: 1,
+          Items: [
+            { Url: "/Event/*broken", Title: "Broken listing" },
+            { Url: "/Event/show", Title: "Show" },
+          ],
+        },
+      },
+      text: "",
+    },
+    {
+      status: 200,
+      ok: true,
+      body: null,
+      text: '<div id="event-detail-page" event-detail-page-id="42"></div>',
+    },
+    {
+      status: 200,
+      ok: true,
+      body: {
+        data: {
+          ID: "42",
+          DisplayEventTitle: "Show",
+          Location: "Hall",
+          EventFormat: "Physical",
+          DisplayEventDate: "12 Jul 2026",
+        },
+      },
+      text: "",
+    },
+  ];
+  const transport = async (request) => {
+    requests.push(request);
+    return responses.shift();
+  };
+  try {
+    const result = await collectSource({
+      runDir,
+      run: { runId: "run-a", window: singaporeWindow("2026-07-11") },
+      source,
+      transport,
+    });
+    assert.equal(result.status, "success");
+    assert.equal(result.counts.sourceRecordsReceived, 2);
+    assert.equal(result.counts.processedSourceRecords, 1);
+    assert.equal(result.counts.invalidSourceRecords, 1);
+    assert.deepEqual(Object.values(result.invalidReasonCodes), [
+      "invalid_detail_url",
+    ]);
+    assert.equal(requests.length, 3);
+    assert.equal(requests[1].url, "https://www.catch.sg/Event/show");
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
 test("Catch detail bootstrap preserves HTTP provider-policy classification", async () => {
   const runDir = resolve(
     tmpdir(),
