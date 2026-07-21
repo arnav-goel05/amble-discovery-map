@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "paya-lebar-mrt-station",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building"
+  ],
+  "generatedAt": "2026-07-21T11:52:56.997Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/23/9_4.b3dm",
+      "sourceSha256": "478db9fd4aaeec7fe9249f86714975ebf89a5dab830e087372947b278df2536e",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR MRT STATION"
+      ],
+      "poiFile": "9_4-2fb0c8b836eb.b3dm",
+      "poiSha256": "f8da013010917873da0313702baa4fde2ed7ef15b7bf931625c8e9fb17ed1250",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/5/23/9_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "backgroundSha256": "0413ff8f89b39567c7ccbd095397da1b022bb05cf14cd1d9acdfd54cf738425d",
+      "backgroundTriangles": 9279
+    },
+    {
+      "sourceTile": "tiles/5/23/9_3.b3dm",
+      "sourceSha256": "783cf55af87beeb14d8cbc70cc121b6a6b4c6ad4b8b4573e2d056dcc84b665c7",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR MRT STATION"
+      ],
+      "poiFile": "9_3-c8f2fb8aa8aa.b3dm",
+      "poiSha256": "91949cb9ab2cada9813f2ccd77359d2cdf0a57a8e4ba246460f11fd9490e226f",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/5/23/9_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "backgroundSha256": "1a370084644442730962ad429af8ff8189e719649b6651e2a6ec2e95d49a608c",
+      "backgroundTriangles": 9279
+    },
+    {
+      "sourceTile": "tiles/5/23/9_2.b3dm",
+      "sourceSha256": "aeffeaf13a9ffd552eb888e8d9da366740b2f90608a4b24a5db7613a87de1904",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR MRT STATION"
+      ],
+      "poiFile": "9_2-2259a2ac98a7.b3dm",
+      "poiSha256": "36b67c736904d08f85375d9f58a49fa23ff1521f05437bb2f33d334769b27166",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/5/23/9_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "backgroundSha256": "9574131827aab7959aaba2625e0f6e7015688883af928f4eb4777b99bb404cdb",
+      "backgroundTriangles": 9279
+    },
+    {
+      "sourceTile": "tiles/5/23/9_1.b3dm",
+      "sourceSha256": "1244ea951a652530fdca0c1ef533b8ad9f1650cabae7e4798e024c7e350995c8",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR MRT STATION"
+      ],
+      "poiFile": "9_1-e831c4b24eff.b3dm",
+      "poiSha256": "5a86ae4ae9a7f4b3a2f2a59ca22cfdc96a0665b5bab2dfff6415cf17b7e9c10a",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/5/23/9_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "backgroundSha256": "3d06ab357d62aac94043cd820ee5e3b1413782024b6986e82cec5d5d02ffa674",
+      "backgroundTriangles": 9279
+    },
+    {
+      "sourceTile": "tiles/5/23/9_0.b3dm",
+      "sourceSha256": "94cb9d47aed3283b6bf575063dfc287abca0adaa415df8a6b1bb009ad0d4531c",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR MRT STATION"
+      ],
+      "poiFile": "9_0-d4a995e96fec.b3dm",
+      "poiSha256": "5f1a58353d784c6ad175128e72de147c73d724b76d9e65c22b83aaa27771879e",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/5/23/9_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "backgroundSha256": "33b8e2f27909fc25dfc680cbd154a1c5b9958f228b4eb1510a1decab436b8112",
+      "backgroundTriangles": 9279
+    },
+    {
+      "sourceTile": "tiles/5/23/9_5.b3dm",
+      "sourceSha256": "21395d5c20484a24210d9fe3528fff7cdcfdcf00c4a2dff69c72f5ea11843aa1",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR MRT STATION"
+      ],
+      "poiFile": "9_5-c4847580fde9.b3dm",
+      "poiSha256": "f8cb602739cd9248379f5bb1b6d332d4a82b55a53af6ccf90bd06649ce3aa20c",
+      "poiTriangles": 240,
+      "backgroundFile": "optimized-tiles/5/23/9_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_4aec910a-d691-42cc-8e12-24f74088e9d6"
+      ],
+      "backgroundSha256": "0b636cc9aee98127c8ded24cd71826cdaac80b519e3296cd0ef90bead6347910",
+      "backgroundTriangles": 9279
+    }
+  ]
+}

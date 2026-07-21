@@ -1,6 +1,10 @@
 import { createHash } from "node:crypto";
 import { canonicalRenderedUrl } from "./tinyfish-fetch.mjs";
 import { normalizeSchedule } from "./activity-policy.mjs";
+import {
+  applyEventFieldCompleteness,
+  extractEventPageEvidence,
+} from "./event-field-extraction.mjs";
 
 export const sha = (value) => createHash("sha256").update(value).digest("hex");
 export const clean = (value) =>
@@ -62,13 +66,14 @@ export function renderedDocument(result) {
     result?.document ?? result?.data ?? result?.content ?? result ?? {};
   if (typeof document === "string")
     return { title: null, text: document, links: [] };
-  const text = readableText(
+  const rawContent =
     document.markdown ??
       document.text ??
       document.content ??
       result?.markdown ??
-      result?.text,
-  );
+      result?.text ??
+      "";
+  const text = readableText(rawContent);
   const links = [
     ...markdownLinks(text),
     ...array(document.links ?? result?.links).map((link) =>
@@ -82,11 +87,17 @@ export function renderedDocument(result) {
       links.map((link) => [`${link.url}\u0000${link.text ?? ""}`, link]),
     ).values(),
   ];
+  const structured = extractEventPageEvidence({
+    html: /<[^>]+>/.test(rawContent) ? rawContent : "",
+    jsonLd: array(document.jsonLd ?? document.json_ld ?? result?.jsonLd),
+    finalUrl: result?.final_url ?? result?.finalUrl ?? result?.url ?? null,
+  });
   return {
     title: clean(document.title ?? result?.title),
     text,
     links: dedupedLinks,
-    jsonLd: array(document.jsonLd ?? document.json_ld ?? result?.jsonLd),
+    jsonLd: structured.jsonLd,
+    structured,
     fields: document.fields ?? result?.fields ?? {},
     finalUrl: result?.final_url ?? result?.finalUrl ?? result?.url ?? null,
   };
@@ -233,7 +244,8 @@ export function parseAuthorityDetail(
 ) {
   const document = renderedDocument(result),
     event = jsonLdEvent(document),
-    location = locationFields(event);
+    location = locationFields(event),
+    structured = document.structured ?? { fields: {}, methods: {} };
   const calendarLine = document.text.match(
     /^(?:(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s+)?(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4}(?:[^\n]*)$/im,
   )?.[0];
@@ -255,11 +267,12 @@ export function parseAuthorityDetail(
     return fallback;
   };
   const title = withListingFallback(
-    event?.name ?? document.title ?? field(document, ["Event", "Title"]),
+    structured.fields.title ?? event?.name ?? document.title ?? field(document, ["Event", "Title"]),
     "title",
   );
   const dateText = withListingFallback(
-    event?.startDate ??
+    structured.fields.schedule?.start ??
+      event?.startDate ??
       field(document, ["Date", "Dates", "When"]) ??
       calendarLine,
     "dateText",
@@ -269,7 +282,8 @@ export function parseAuthorityDetail(
     "timeText",
   );
   const venue = withListingFallback(
-    location.venue ??
+    structured.fields.venue ??
+      location.venue ??
       field(document, [
         "Venue",
         "Location",
@@ -281,7 +295,7 @@ export function parseAuthorityDetail(
     "venue",
   );
   const address = withListingFallback(
-    location.address ?? field(document, ["Address"]),
+    structured.fields.address ?? location.address ?? field(document, ["Address"]),
     "address",
   );
   const organizerValue =
@@ -289,7 +303,7 @@ export function parseAuthorityDetail(
       ? event.organizer.name
       : event?.organizer;
   const modeText = normalized(
-    event?.eventAttendanceMode ?? field(document, ["Mode", "Format"]),
+    structured.attendanceMode ?? event?.eventAttendanceMode ?? field(document, ["Mode", "Format"]),
   );
   const mode =
     modeText.includes("online") &&
@@ -301,12 +315,14 @@ export function parseAuthorityDetail(
         : venue
           ? "physical"
           : "unknown";
+  const structuredStart = structured.fields.schedule?.start ?? event?.startDate;
+  const structuredEnd = structured.fields.schedule?.end ?? event?.endDate;
   const basePerformance =
-    event?.startDate || event?.endDate
+    structuredStart || structuredEnd
       ? [
           {
-            startDateTime: clean(event.startDate),
-            endDateTime: clean(event.endDate),
+            startDateTime: clean(structuredStart),
+            endDateTime: clean(structuredEnd),
             dateText,
             timeText,
           },
@@ -341,18 +357,20 @@ export function parseAuthorityDetail(
             : "unverified";
   const schedule = normalizeSchedule({
     kind: scheduleKind,
-    start: clean(event?.startDate),
-    end: clean(event?.endDate),
+    start: clean(structuredStart),
+    end: clean(structuredEnd),
     sessionRefs: performances.map(
       (_, index) => `${detailUrl}#session-${index + 1}`,
     ),
     displayText: scheduleText,
   });
-  const availability = /\bwaitlist\b/.test(selectorText)
-    ? "waitlist"
-    : /\bsold out\b/.test(selectorText)
-      ? "sold_out"
-      : "unknown";
+  const availability =
+    structured.fields.availability ??
+    (/\bwaitlist\b/.test(selectorText)
+      ? "waitlist"
+      : /\bsold out\b/.test(selectorText)
+        ? "sold_out"
+        : "unknown");
   const accessRestriction = /\bmembers? only\b|\bmembership required\b/.test(
     selectorText,
   )
@@ -373,22 +391,22 @@ export function parseAuthorityDetail(
     accessRestriction,
   });
   const category = withListingFallback(
-    event?.eventType ?? field(document, ["Category", "Type"]),
+    structured.fields.category ?? event?.eventType ?? field(document, ["Category", "Type"]),
     "category",
   );
   const price = withListingFallback(
-    event?.offers?.price ?? field(document, ["Price", "Admission"]),
+    structured.fields.price ?? event?.offers?.price ?? field(document, ["Price", "Admission"]),
     "price",
   );
   const description = withListingFallback(
-    event?.description ?? field(document, ["Description"]),
+    structured.fields.description ?? event?.description ?? field(document, ["Description"]),
     "description",
   );
   const organizer = withListingFallback(
-    organizerValue ?? field(document, ["Organizer", "Presented by"]),
+    structured.fields.organizer ?? organizerValue ?? field(document, ["Organizer", "Presented by"]),
     "organizer",
   );
-  return {
+  const record = {
     adapterVersion: source.version,
     listingPage: 1,
     detailUrl,
@@ -399,11 +417,13 @@ export function parseAuthorityDetail(
     timeText,
     venue,
     address,
-    sourceCoordinates: null,
+    sourceCoordinates: structured.coordinates ?? null,
+    structuredLocations: structured.locations ?? [],
     category,
     price,
     description,
     organizer,
+    officialUrl: structured.fields.url ?? detailUrl,
     performances,
     schedule,
     availability,
@@ -413,6 +433,10 @@ export function parseAuthorityDetail(
     rawDocumentHash: sha(JSON.stringify(document)),
     listingFallbackFields: listingFallbackFields.sort(),
   };
+  return applyEventFieldCompleteness(record, {
+    evidenceHash: record.rawDocumentHash,
+    methods: structured.methods,
+  });
 }
 
 export function terminalPagination(

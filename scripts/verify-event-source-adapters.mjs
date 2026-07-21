@@ -214,6 +214,23 @@ export function validateEventSourceDefinitions(
         }
       }
     }
+    if (source.directHtml) {
+      const bounds = source.directHtml;
+      if (
+        bounds.enabled !== true ||
+        bounds.respectRobots !== true ||
+        !Number.isInteger(bounds.timeoutMs) ||
+        bounds.timeoutMs < 1 ||
+        bounds.timeoutMs > 30_000 ||
+        !Number.isInteger(bounds.maximumRedirects) ||
+        bounds.maximumRedirects < 0 ||
+        bounds.maximumRedirects > 5 ||
+        !Number.isInteger(bounds.maximumResponseBytes) ||
+        bounds.maximumResponseBytes < 1 ||
+        bounds.maximumResponseBytes > 5 * 1024 * 1024
+      )
+        throw new Error(`${source.name} has invalid direct HTML retrieval bounds`);
+    }
     if (source.listing?.urls !== undefined) {
       if (
         !Array.isArray(source.listing.urls) ||

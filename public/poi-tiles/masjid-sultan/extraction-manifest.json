@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "masjid-sultan",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building"
+  ],
+  "generatedAt": "2026-07-21T11:52:59.320Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/38/9_0.b3dm",
+      "sourceSha256": "9b65bc9a758783a45a5163f0bd26ad03768e69f39064749e9c9e0861fe507897",
+      "originalBatchIds": [
+        123
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "gmlNames": [
+        "MASJID SULTAN"
+      ],
+      "poiFile": "9_0-5fe3e7e32db9.b3dm",
+      "poiSha256": "5f578417d0da6d25e03b2bbb02a10cd71e25fe0602a4f2fbd8f1fcb8a2dfbf1f",
+      "poiTriangles": 7900,
+      "backgroundFile": "optimized-tiles/6/38/9_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "backgroundSha256": "9a29cefdbc09d1b79b13796e5eb1269a22858af63f657adf95ee0afae6b89234",
+      "backgroundTriangles": 22248
+    },
+    {
+      "sourceTile": "tiles/6/38/9_1.b3dm",
+      "sourceSha256": "013746c06f87c93680878f5584b2a4dab38f48bcaf9fb48512bb8dd3e1d6dbf5",
+      "originalBatchIds": [
+        123
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "gmlNames": [
+        "MASJID SULTAN"
+      ],
+      "poiFile": "9_1-fb48cd50183c.b3dm",
+      "poiSha256": "0a01b83dbb3c52f97711fbacc09f6fb8d85eaf0edf0ca28d69083443b94684fe",
+      "poiTriangles": 7900,
+      "backgroundFile": "optimized-tiles/6/38/9_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "backgroundSha256": "f584510be23a3a6fa5f9fe1864f435fce5be22d5a1fae7c34cd6a80ec3fbbce6",
+      "backgroundTriangles": 22248
+    },
+    {
+      "sourceTile": "tiles/6/38/9_2.b3dm",
+      "sourceSha256": "87928ed377d51b7e266d4539c04a8fb44f30595c3efde323a14915f5bc11a56b",
+      "originalBatchIds": [
+        123
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "gmlNames": [
+        "MASJID SULTAN"
+      ],
+      "poiFile": "9_2-cd021feeb59b.b3dm",
+      "poiSha256": "dbac8fc66bfeace98f7daa2e8492716b0f0a8ff2cec488ca0c75f37839866abb",
+      "poiTriangles": 7900,
+      "backgroundFile": "optimized-tiles/6/38/9_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "backgroundSha256": "527e510964c9fad90f3db049cf90aeb4ca6edbb7aee5d9eb54ee6f174d4f897e",
+      "backgroundTriangles": 22248
+    },
+    {
+      "sourceTile": "tiles/6/38/9_3.b3dm",
+      "sourceSha256": "a268ca1bf8a5e06fb8b1a40bce369b11314cfda62fa7535f0043004b00bcda01",
+      "originalBatchIds": [
+        123
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "gmlNames": [
+        "MASJID SULTAN"
+      ],
+      "poiFile": "9_3-a66a52d33520.b3dm",
+      "poiSha256": "136a21f4959ed0f811aaa5a7a9861e3aad4d8d5814668842fed8c911ab0f31fb",
+      "poiTriangles": 7900,
+      "backgroundFile": "optimized-tiles/6/38/9_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "backgroundSha256": "66be41b58005f4201050a04592aa1b4c9b8284ef1e4ac363e02ef65439fa7ada",
+      "backgroundTriangles": 22248
+    },
+    {
+      "sourceTile": "tiles/6/38/9_4.b3dm",
+      "sourceSha256": "acec942dc530fc4f6c021bb53b33cb67b45b581a414689563176ece3e3b28823",
+      "originalBatchIds": [
+        123
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "gmlNames": [
+        "MASJID SULTAN"
+      ],
+      "poiFile": "9_4-8e2d125808db.b3dm",
+      "poiSha256": "a1fc5ba401828a8e95553ddfaaaf82c5cc90fda5362ba00af496552cb1d0339c",
+      "poiTriangles": 7900,
+      "backgroundFile": "optimized-tiles/6/38/9_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "backgroundSha256": "97a9a4b9fd31a00f101afbf6ef4521607151b1a476acb57fa747f33c96b74b11",
+      "backgroundTriangles": 22248
+    },
+    {
+      "sourceTile": "tiles/6/38/9_5.b3dm",
+      "sourceSha256": "dda0fcf84650534729fca496c0d2c9a3d4b51afe51341ad4102d2462cef73875",
+      "originalBatchIds": [
+        123
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "gmlNames": [
+        "MASJID SULTAN"
+      ],
+      "poiFile": "9_5-2b6efd828060.b3dm",
+      "poiSha256": "669e71ef046116af5680fa47e82bd64c23f5a183898dbafdb2221bf513b9b752",
+      "poiTriangles": 7900,
+      "backgroundFile": "optimized-tiles/6/38/9_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_b9d707d0-368f-4ee1-a119-a7aee3698341"
+      ],
+      "backgroundSha256": "6d2c4f6eb05918f50b84e13a20faeb70a84b42bead4567239dd05c837f06dab9",
+      "backgroundTriangles": 22248
+    }
+  ]
+}

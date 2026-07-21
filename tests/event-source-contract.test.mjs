@@ -810,6 +810,8 @@ test("Fever detail parsing recognizes Date and time and uses listing evidence on
     fixedDirections.address,
     "37 MacTaggart Road, #02-01 LIREA INDUSTRIAL BUILDING, Singapore, 368083",
   );
+  assert.equal(fixedDirections.fieldCompleteness.venue.status, "present");
+  assert.equal(fixedDirections.fieldCompleteness.address.status, "present");
   const explicitLocationWins = adapter.detail(
     {
       url,
@@ -869,6 +871,8 @@ test("rendered Fever collection carries card evidence into detail parsing and lo
     });
     assert.equal(collected.status, "success");
     assert.equal(collected.counts.sourceRecordsReceived, 1);
+    assert.equal(collected.counts.fieldCompleteness.title.present, 1);
+    assert.equal(collected.counts.fieldCompleteness.venue.present, 1);
     const fixtureRef = collected.sourceRecordRefs[0].split("#")[0];
     const fixture = JSON.parse(
       fs.readFileSync(path.join(state.root, fixtureRef), "utf8"),
@@ -1843,6 +1847,9 @@ test("Singapore Film Society expands film seeds into screening occurrences and a
     assert.equal(result.counts.invalidSourceRecords, 1);
     assert.equal(result.counts.processedSourceRecords, 1);
     assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(result.counts.fieldCompleteness.title.present, 1);
+    assert.equal(result.counts.fieldCompleteness.schedule.present, 1);
+    assert.equal(result.counts.fieldCompleteness.venue.present, 1);
     assert.deepEqual(Object.values(result.invalidReasonCodes), [
       "detail_index_unavailable",
     ]);

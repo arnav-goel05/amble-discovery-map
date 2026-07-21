@@ -280,3 +280,46 @@ occurrence; perform unbounded general-web research.
   reporting, admin review, and frontend discovery modules named in [plan.md](plan.md)
 - `skills/event-pipeline-runner/references/` runtime contracts
 - Current approved provider and source configuration under `data/`
+
+## Decision 23: Extract official structured page evidence before rendered prose
+
+**Decision**: For event detail pages, attempt bounded direct retrieval from the source's approved
+official domains and interpret Event JSON-LD, supported microdata, and documented source HTML
+before generic rendered text. Use the approved free TinyFish Fetch/Search capabilities only for a
+bounded fallback or an already-defined recovery branch.
+
+**Rationale**: Current rendered prose reliably exposes titles but can omit venue, address,
+organizer, price, availability, and descriptions that remain present in page markup. Direct HTML
+also preserves exact structured timestamps and nested location/offer objects, improving schedule
+identity, multi-location handling, venue resolution, and deduplication without adding a paid
+browser dependency.
+
+**Alternatives considered**: Rely on TinyFish's selected fields; use a paid browser/agent API;
+run general web search for every optional omission; add independent source-specific pipelines.
+
+## Decision 24: Model absence independently from extraction failure
+
+**Decision**: Every contracted field receives `present`, `not_published_by_source`, or
+`extraction_failed`, plus the page evidence hash, contract version, and extraction method. Cache a
+terminal source omission only while both evidence hash and contract version remain unchanged.
+
+**Rationale**: An official page that genuinely omits price or organizer should not be retried every
+week, while a network/parser failure must remain observable and retryable. Field-level evidence
+prevents a partially successful extraction from being reduced to one misleading page outcome.
+
+**Alternatives considered**: Leave every missing field as null; retry all nulls; permanently cache
+absence by URL; make optional fields source-specific and therefore incomparable.
+
+## Decision 25: Reconcile enrichment through existing identities and publication gates
+
+**Decision**: Merge richer fields into current source records and evidence assessments; do not
+create a parallel catalogue. Structured schedules, organizers, locations, and canonical URLs may
+change occurrence expansion, editorial sufficiency, deduplication, venue branches, and expiry, so
+the amendment ends with one clean complete run and an explicit comparison to the current snapshot.
+
+**Rationale**: Field enrichment is behaviorally significant even when the public layout is
+unchanged. Existing stable identities, provenance, review isolation, and atomic activation rules
+already provide the necessary safety boundary.
+
+**Alternatives considered**: Treat enrichment as display-only; patch only Visit Singapore;
+republish a partially replayed stored run.

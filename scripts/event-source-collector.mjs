@@ -14,6 +14,9 @@ import { renderedAdapterFor } from "./lib/event-sources/index.mjs";
 import { createAuthorityCaptureIndex } from "./lib/event-sources/authority-capture.mjs";
 import { confirmDiscoveryRecord } from "./lib/event-sources/authority-confirmation.mjs";
 import { parseAuthorityDetail } from "./lib/event-sources/rendered-adapter-utils.mjs";
+import { createDirectHtmlFetchClient } from "./lib/event-sources/direct-html-fetch.mjs";
+import { createLayeredDetailFetchClient } from "./lib/event-sources/layered-detail-fetch.mjs";
+import { applyEventFieldCompleteness } from "./lib/event-sources/event-field-extraction.mjs";
 import {
   assertAuthorityUrlAllowed,
   loadEventAuthorityRegistry,
@@ -52,6 +55,27 @@ const first = (value, paths) =>
 const text = (value) =>
   typeof value === "string" && value.trim() ? value.trim() : null;
 const asArray = (value) => (Array.isArray(value) ? value : []);
+const addFieldCompletenessCounts = (target, record) => {
+  for (const [field, assessment] of Object.entries(
+    record?.fieldCompleteness ?? {},
+  )) {
+    target[field] ??= {
+      present: 0,
+      not_published_by_source: 0,
+      extraction_failed: 0,
+    };
+    if (assessment?.status in target[field])
+      target[field][assessment.status] += 1;
+  }
+};
+const failedExtractionRecord = (detailUrl) =>
+  applyEventFieldCompleteness(
+    { detailUrl },
+    {
+      evidenceHash: sha(detailUrl),
+      extractionFailed: true,
+    },
+  );
 const RETRYABLE_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
 const DEFAULT_PROVIDER_POLICY = fileURLToPath(
   new URL("../data/provider-policy.json", import.meta.url),
@@ -964,7 +988,8 @@ async function collectDiscoveryDetails({
     processedSourceRecordRefs = [],
     invalidSourceRecordRefs = [],
     invalidReasonCodes = {},
-    confirmationOutcomeCounts = {};
+    confirmationOutcomeCounts = {},
+    fieldCompletenessCounts = {};
   const confirmationRefs = [],
     authorityRefs = [];
   const detailFailures = [];
@@ -985,6 +1010,7 @@ async function collectDiscoveryDetails({
       counts: { records: 1 },
       records: [
         {
+          ...failedExtractionRecord(detailUrl),
           recordType: "retrieval_failure",
           sourceId: `failure:${sha(detailUrl)}`,
           detailUrl,
@@ -993,6 +1019,10 @@ async function collectDiscoveryDetails({
         },
       ],
     });
+    addFieldCompletenessCounts(
+      fieldCompletenessCounts,
+      failedExtractionRecord(detailUrl),
+    );
     artifactRefs.push(fixtureRef);
     sourceRecordRefs.push(recordRef);
     invalidSourceRecordRefs.push(recordRef);
@@ -1160,6 +1190,20 @@ async function collectDiscoveryDetails({
           title: parsed.title,
           dateText: parsed.dateText,
           venue: parsed.venue,
+          claims: {
+            title: parsed.title,
+            dateText: parsed.dateText,
+            timeText: parsed.timeText,
+            venue: parsed.venue,
+            address: parsed.address,
+            description: parsed.description,
+            category: parsed.category,
+            price: parsed.price,
+            organizer: parsed.organizer,
+            availability: parsed.availability,
+            url: parsed.officialUrl ?? canonicalUrl,
+          },
+          fieldCompleteness: parsed.fieldCompleteness,
           performances: performances.map((performance, index) => ({
             authorityOccurrenceId:
               performance.authorityOccurrenceId ??
@@ -1184,7 +1228,13 @@ async function collectDiscoveryDetails({
       evidenceLevel: decision.evidenceLevel ?? null,
       eligible: eligibleDecision,
     });
-    const claims = discovery.claims ?? {};
+    const discoveryClaims = discovery.claims ?? {};
+    const claims = { ...discoveryClaims };
+    for (const [fieldName, value] of Object.entries(
+      decision.authorityClaims ?? {},
+    ))
+      if (value !== null && value !== undefined && value !== "")
+        claims[fieldName] = value;
     const venue = claims.venue ?? null;
     const offMapSubtype = /secret|tba|to be announced/i.test(venue ?? "")
       ? "secret_tba"
@@ -1211,6 +1261,13 @@ async function collectDiscoveryDetails({
       dateText: claims.dateText,
       timeText: claims.timeText,
       venue,
+      address: claims.address ?? null,
+      description: claims.description ?? null,
+      category: claims.category ?? null,
+      price: claims.price ?? null,
+      organizer: claims.organizer ?? null,
+      availability: claims.availability ?? "unknown",
+      officialUrl: claims.url ?? discovery.detailUrl,
       scope: claims.scope ?? "Singapore",
       schedule: normalizeSchedule({
         kind: claims.dateText
@@ -1242,11 +1299,23 @@ async function collectDiscoveryDetails({
           sourceName: source.name,
           evidenceLevel: decision.evidenceLevel,
           freshness: "current",
-          fields: ["title", "schedule", "location"],
+          fields: Object.entries(discovery.fieldCompleteness ?? {})
+            .filter(([, assessment]) => assessment.status === "present")
+            .map(([field]) => field),
           evidenceRefs: discovery.evidenceRefs,
         },
       ],
     });
+    if (decision.authorityFieldCompleteness)
+      discovery.fieldCompleteness = {
+        ...(discovery.fieldCompleteness ?? {}),
+        ...Object.fromEntries(
+          Object.entries(decision.authorityFieldCompleteness).filter(
+            ([, assessment]) => assessment.status === "present",
+          ),
+        ),
+      };
+    addFieldCompletenessCounts(fieldCompletenessCounts, discovery);
     writeJson(join(runDir, fixtureRef), {
       schemaVersion: "1.0",
       runId: run.runId,
@@ -1303,6 +1372,7 @@ async function collectDiscoveryDetails({
         0,
       ),
       confirmationOutcomeCounts,
+      fieldCompleteness: fieldCompletenessCounts,
       authorityCaptures: authorityRefs.length,
     },
     completion: {
@@ -1354,7 +1424,24 @@ export async function collectRenderedSource({
     };
   let client = renderedClient;
   try {
-    client ??= createTinyfishFetchClient({ ...source.retrieval, logger });
+    if (!client) {
+      const fallbackClient = createTinyfishFetchClient({
+        ...source.retrieval,
+        logger,
+      });
+      const directBounds = source.directHtml;
+      client = directBounds?.enabled
+        ? createLayeredDetailFetchClient({
+            directClient: createDirectHtmlFetchClient({
+              ...directBounds,
+              officialDomains: source.officialDomains,
+              logger,
+            }),
+            fallbackClient,
+            logger,
+          })
+        : fallbackClient;
+    }
   } catch (error) {
     return {
       status: "blocked",
@@ -1368,7 +1455,8 @@ export async function collectRenderedSource({
     surfaceOutcomes = [],
     detailUrls = new Set(),
     detailListingRecords = new Map(),
-    listingRecords = [];
+    listingRecords = [],
+    fieldCompletenessCounts = {};
   let listingAppearances = 0;
   const recordSurfaceFailure = (pageUrl, reasonCode, error, extras = {}) => {
     const outcome = {
@@ -1776,6 +1864,7 @@ export async function collectRenderedSource({
       counts: { records: 1 },
       records: [
         {
+          ...failedExtractionRecord(detailUrl),
           recordType: "retrieval_failure",
           sourceId: `failure:${sha(detailUrl)}`,
           detailUrl,
@@ -1784,6 +1873,10 @@ export async function collectRenderedSource({
         },
       ],
     });
+    addFieldCompletenessCounts(
+      fieldCompletenessCounts,
+      failedExtractionRecord(detailUrl),
+    );
     artifactRefs.push(fixtureRef);
     sourceRecordRefs.push(recordRef);
     invalidSourceRecordRefs.push(recordRef);
@@ -1829,24 +1922,31 @@ export async function collectRenderedSource({
       contentHash: listingEvidence.record.rawDocumentHash,
       retrievedAt,
     });
-    const fixture = {
-      ...listingEvidence.record,
-      detailUrl,
-      ...sourceRecordProvenance({
-        run,
-        source,
-        retrievedAt,
-        listingRef: listingEvidence.listingRef,
-        responseRef,
-        officialReferenceRef,
-        officialReference: {
-          requestedUrl: listingUrl,
-          finalUrl: listingUrl,
-          status: 200,
-        },
+    const fixture = applyEventFieldCompleteness(
+      {
+        ...listingEvidence.record,
         detailUrl,
-      }),
-    };
+        ...sourceRecordProvenance({
+          run,
+          source,
+          retrievedAt,
+          listingRef: listingEvidence.listingRef,
+          responseRef,
+          officialReferenceRef,
+          officialReference: {
+            requestedUrl: listingUrl,
+            finalUrl: listingUrl,
+            status: 200,
+          },
+          detailUrl,
+        }),
+      },
+      {
+        evidenceHash: listingEvidence.record.rawDocumentHash,
+        evidenceRef: listingEvidence.listingRef,
+        extractionFailed: true,
+      },
+    );
     writeJson(join(runDir, fixtureRef), {
       schemaVersion: "1.0",
       runId: run.runId,
@@ -1863,6 +1963,7 @@ export async function collectRenderedSource({
     const recordRef = `${fixtureRef}#/records/0`;
     sourceRecordRefs.push(recordRef);
     processedSourceRecordRefs.push(recordRef);
+    addFieldCompletenessCounts(fieldCompletenessCounts, fixture);
     logger({
       action: "detail_outbound_fallback_applied",
       sourceName: source.name,
@@ -1892,24 +1993,31 @@ export async function collectRenderedSource({
     });
     artifactRefs.push(officialReferenceRef);
     const fixtures = listingRecords.map(
-      ({ record, listingRef, listingUrl }) => ({
-        ...record,
-        detailUrl: canonicalRenderedUrl(listingUrl),
-        ...sourceRecordProvenance({
-          run,
-          source,
-          retrievedAt,
-          listingRef,
-          responseRef: listingRef,
-          officialReferenceRef,
-          officialReference: {
-            requestedUrl: listingUrl,
-            finalUrl: listingUrl,
-            status: 200,
+      ({ record, listingRef, listingUrl }) =>
+        applyEventFieldCompleteness(
+          {
+            ...record,
+            detailUrl: canonicalRenderedUrl(listingUrl),
+            ...sourceRecordProvenance({
+              run,
+              source,
+              retrievedAt,
+              listingRef,
+              responseRef: listingRef,
+              officialReferenceRef,
+              officialReference: {
+                requestedUrl: listingUrl,
+                finalUrl: listingUrl,
+                status: 200,
+              },
+              detailUrl: canonicalRenderedUrl(listingUrl),
+            }),
           },
-          detailUrl: canonicalRenderedUrl(listingUrl),
-        }),
-      }),
+          {
+            evidenceHash: record.rawDocumentHash,
+            evidenceRef: listingRef,
+          },
+        ),
     );
     writeJson(join(runDir, fixtureRef), {
       schemaVersion: "1.0",
@@ -1925,6 +2033,7 @@ export async function collectRenderedSource({
     });
     artifactRefs.push(fixtureRef);
     fixtures.forEach((fixture, index) => {
+      addFieldCompletenessCounts(fieldCompletenessCounts, fixture);
       const recordRef = `${fixtureRef}#/records/${index}`;
       sourceRecordRefs.push(recordRef);
       if (!fixture.sourceId || !fixture.title) {
@@ -2108,6 +2217,7 @@ export async function collectRenderedSource({
     });
     artifactRefs.push(responseRef, officialReferenceRef, fixtureRef);
     fixtures.forEach((fixture, index) => {
+      addFieldCompletenessCounts(fieldCompletenessCounts, fixture);
       const recordRef = `${fixtureRef}#/records/${index}`;
       sourceRecordRefs.push(recordRef);
       if (fixture.listingFallbackFields?.length)
@@ -2163,6 +2273,7 @@ export async function collectRenderedSource({
       occurrencesEmitted,
       excludedOccurrences,
       eligiblePreDedup,
+      fieldCompleteness: fieldCompletenessCounts,
     },
     completion: {
       paginationComplete: true,
@@ -2286,7 +2397,8 @@ export async function collectSource({
     sourceRecordRefs = [],
     invalidSourceRecordRefs = [],
     processedSourceRecordRefs = [],
-    invalidReasonCodes = {};
+    invalidReasonCodes = {},
+    fieldCompletenessCounts = {};
   let detailUrlsDiscovered = 0;
   const seenDetailUrls = new Set();
   for (const listing of listings) {
@@ -2392,6 +2504,14 @@ export async function collectSource({
         detailUrl: detail.publicUrl,
       }),
     );
+    Object.assign(
+      fixture,
+      applyEventFieldCompleteness(fixture, {
+        evidenceHash: sha(JSON.stringify(rawDetail)),
+        evidenceRef: responseRef,
+      }),
+    );
+    addFieldCompletenessCounts(fieldCompletenessCounts, fixture);
     writeJson(join(runDir, responseRef), detail.response.body);
     writeJson(join(runDir, officialReferenceRef), {
       schemaVersion: "1.0",
@@ -2461,6 +2581,7 @@ export async function collectSource({
       listingDuplicatesCollapsed: Object.values(invalidReasonCodes).filter(
         (reason) => reason === "duplicate_detail_url",
       ).length,
+      fieldCompleteness: fieldCompletenessCounts,
     },
     completion: {
       paginationComplete: true,

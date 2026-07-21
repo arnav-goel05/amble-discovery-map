@@ -115,9 +115,18 @@
     "national-archives-of-singapore",
     "our-tampines-hub",
     "national-stadium",
-    "raffles-city-tower"
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building"
   ],
-  "generatedAt": "2026-07-20T14:59:59.120Z",
+  "generatedAt": "2026-07-21T11:52:48.702Z",
   "tiles": [
     {
       "sourceTile": "tiles/5/25/6_0.b3dm",
@@ -208,10 +217,11 @@
         "SLA_BLDG2_d5b938b1-30b7-48d9-9b35-af3c9879e549",
         "SLA_BLDG2_ef6ec051-5e46-497e-b11e-cff927b7948b",
         "SLA_BLDG2_f191487a-fad4-4a46-8c16-63490351ed8d",
-        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493"
+        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493",
+        "SLA_BLDG2_623c5e9d-6d92-4cee-80dc-c7f816c70e66"
       ],
-      "backgroundSha256": "74cac800f16cecc64e8ec80b589b5cf3fd4f3807afada5ea747da05dc579fddd",
-      "backgroundTriangles": 27150
+      "backgroundSha256": "f5a5f208e8d1de581f6eaf11aa8eb7b9f9a47541849a9261b1a7fb40a3de81fc",
+      "backgroundTriangles": 26426
     },
     {
       "sourceTile": "tiles/5/25/6_1.b3dm",
@@ -302,10 +312,11 @@
         "SLA_BLDG2_d5b938b1-30b7-48d9-9b35-af3c9879e549",
         "SLA_BLDG2_ef6ec051-5e46-497e-b11e-cff927b7948b",
         "SLA_BLDG2_f191487a-fad4-4a46-8c16-63490351ed8d",
-        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493"
+        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493",
+        "SLA_BLDG2_623c5e9d-6d92-4cee-80dc-c7f816c70e66"
       ],
-      "backgroundSha256": "cd3a0e8ef91795db62e40e08772dc5681b0bb64512712c583a64ab240fe1166a",
-      "backgroundTriangles": 27150
+      "backgroundSha256": "8783b1079c9466dee018ff78effd471f4078678e04fca49e2353aed7850e1c7d",
+      "backgroundTriangles": 26426
     },
     {
       "sourceTile": "tiles/5/25/6_2.b3dm",
@@ -396,10 +407,11 @@
         "SLA_BLDG2_d5b938b1-30b7-48d9-9b35-af3c9879e549",
         "SLA_BLDG2_ef6ec051-5e46-497e-b11e-cff927b7948b",
         "SLA_BLDG2_f191487a-fad4-4a46-8c16-63490351ed8d",
-        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493"
+        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493",
+        "SLA_BLDG2_623c5e9d-6d92-4cee-80dc-c7f816c70e66"
       ],
-      "backgroundSha256": "2a982f42d833efbc9a47bc84268e75bb777091abe4b3cb1302c6154ee03778f4",
-      "backgroundTriangles": 27150
+      "backgroundSha256": "c87712af06a85e1bf945e349fcbbbdd97370752b2973f0357def9b299f23b33c",
+      "backgroundTriangles": 26426
     },
     {
       "sourceTile": "tiles/5/25/6_3.b3dm",
@@ -490,10 +502,11 @@
         "SLA_BLDG2_d5b938b1-30b7-48d9-9b35-af3c9879e549",
         "SLA_BLDG2_ef6ec051-5e46-497e-b11e-cff927b7948b",
         "SLA_BLDG2_f191487a-fad4-4a46-8c16-63490351ed8d",
-        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493"
+        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493",
+        "SLA_BLDG2_623c5e9d-6d92-4cee-80dc-c7f816c70e66"
       ],
-      "backgroundSha256": "253d10b7b1d2b269067195057148eda2e96e83e1c548de806b127328c92dd595",
-      "backgroundTriangles": 27150
+      "backgroundSha256": "ba1883e1bdba8e627365c5bd08e61546cc4b66e0551a3703d5e5c386b47617d6",
+      "backgroundTriangles": 26426
     },
     {
       "sourceTile": "tiles/5/25/6_4.b3dm",
@@ -584,10 +597,11 @@
         "SLA_BLDG2_d5b938b1-30b7-48d9-9b35-af3c9879e549",
         "SLA_BLDG2_ef6ec051-5e46-497e-b11e-cff927b7948b",
         "SLA_BLDG2_f191487a-fad4-4a46-8c16-63490351ed8d",
-        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493"
+        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493",
+        "SLA_BLDG2_623c5e9d-6d92-4cee-80dc-c7f816c70e66"
       ],
-      "backgroundSha256": "38c9ce9a5e7338b04503c59c93dc9a389411a77cdd8b88f1ee61cea60753be4a",
-      "backgroundTriangles": 27150
+      "backgroundSha256": "b87d3656f0970df1389474266c3f042c0e46f091f4763333367bef0e79674fee",
+      "backgroundTriangles": 26426
     },
     {
       "sourceTile": "tiles/5/25/6_5.b3dm",
@@ -678,10 +692,11 @@
         "SLA_BLDG2_d5b938b1-30b7-48d9-9b35-af3c9879e549",
         "SLA_BLDG2_ef6ec051-5e46-497e-b11e-cff927b7948b",
         "SLA_BLDG2_f191487a-fad4-4a46-8c16-63490351ed8d",
-        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493"
+        "SLA_BLDG2_f3425a0d-c430-4308-aaa1-56ea943ac493",
+        "SLA_BLDG2_623c5e9d-6d92-4cee-80dc-c7f816c70e66"
       ],
-      "backgroundSha256": "a89e3ffdc882cca81b773e83a086ed4389370e8adacfd52f14e52c105adef475",
-      "backgroundTriangles": 27150
+      "backgroundSha256": "06f63a09fc36b30c18049886ead6d685bc7ae3f1a6235c3177b4f45cad2a5fb7",
+      "backgroundTriangles": 26426
     }
   ]
 }

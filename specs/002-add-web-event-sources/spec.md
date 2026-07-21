@@ -4,7 +4,7 @@
 
 **Created**: 2026-07-17
 
-**Updated**: 2026-07-18
+**Updated**: 2026-07-21
 
 **Status**: Ready for planning
 
@@ -412,6 +412,30 @@ release-wide validation failure, and atomic-activation failure fixtures.
   counts. A checked-in direct-source definition MAY constrain that same single query to an
   authoritative promoter partner for a persistently blocked ticket host. Singapore authority
   checks MUST use an actual `.sg` domain suffix and MUST reject social-network subdomains.
+- **FR-047**: Every successfully retrieved event page MUST be evaluated against one shared
+  extraction contract containing title, schedule, venue, address, description, category, price,
+  organizer, availability, and canonical event URL. More-specific official structured evidence
+  MUST outrank less-specific page text, while material conflicts MUST remain visible and MUST NOT
+  be silently resolved by fabrication.
+- **FR-048**: For each field in FR-047, the pipeline MUST record exactly one completeness outcome:
+  `present`, `not_published_by_source`, or `extraction_failed`, together with the immutable page
+  evidence hash and extraction-contract version. A successful page with no supported value MUST
+  NOT be classified as an extraction failure.
+- **FR-049**: Structured page metadata and documented source structure MUST be interpreted before
+  generic rendered text. Official-page retrieval MUST remain free, bounded, public-network-only,
+  redirect-validated, response-size-limited, and source-domain-constrained; an approved rendered
+  retrieval MAY be used as a bounded fallback when direct official-page retrieval cannot supply
+  usable evidence.
+- **FR-050**: A terminal `not_published_by_source` outcome MUST be reusable while its page evidence
+  hash and extraction-contract version remain unchanged. A changed capture or contract version
+  MUST re-evaluate completeness, while `extraction_failed` MUST remain eligible for bounded retry.
+- **FR-051**: Enriched fields MUST participate in existing schedule identity, multi-location
+  splitting, editorial sufficiency, venue resolution, and cross-source deduplication without
+  collapsing sibling sessions, guessing venue pairings, or weakening authority requirements.
+- **FR-052**: Before publishing the enriched behavior, representative current pages from every
+  enabled source MUST be checked against the shared contract, then one clean complete pipeline run
+  MUST reconcile through publication and report per-source before/after field completeness,
+  exclusions, placement, mapping, review, and deduplication changes.
 
 ### Key Entities
 
@@ -491,6 +515,15 @@ Accessibility`, and a later explicit venue or location field produce the explici
   fetches per occurrence, recover the uniquely verified authoritative venue before normalization,
   reject ambiguous or non-authoritative results, reuse saved overlays without network access,
   and expose fully reconciled per-source recovery counts and redacted traces.
+- **SC-014**: Representative structured-data, source-HTML, and missing-field fixtures assign the
+  expected value and one of the three FR-048 outcomes for 100% of the ten contracted fields, with
+  zero values invented from navigation, headings, snippets, or unrelated page content.
+- **SC-015**: Reprocessing unchanged successful evidence performs zero repeated recovery for fields
+  marked `not_published_by_source`; changed evidence or contract versions re-evaluate those fields,
+  and failed retrievals remain separately retryable.
+- **SC-016**: The first clean complete run after enrichment publishes only after its per-source
+  completeness comparison and all existing accounting, identity, venue, build, and browser gates
+  pass, while preserving the prior active snapshot if any release-wide gate fails.
 
 ## Assumptions
 

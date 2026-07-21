@@ -115,115 +115,31 @@
     "national-archives-of-singapore",
     "our-tampines-hub",
     "national-stadium",
-    "raffles-city-tower"
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building"
   ],
-  "generatedAt": "2026-07-20T14:59:58.286Z",
+  "generatedAt": "2026-07-21T11:52:47.978Z",
   "tiles": [
-    {
-      "sourceTile": "tiles/6/34/4_0.b3dm",
-      "sourceSha256": "875d2306fe8ecfcb76efc26d2ec535b27596e9bca6ae7987a216cb5df86171aa",
-      "originalBatchIds": [
-        3,
-        2,
-        62
-      ],
-      "gmlIds": [
-        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
-      ],
-      "gmlNames": [
-        "CHINATOWN COMPLEX",
-        "CHINATOWN COMPLEX",
-        "CHINATOWN COMPLEX"
-      ],
-      "poiFile": "4_0-bd861e41183c.b3dm",
-      "poiSha256": "34ba4d7aa89c5afb6c5576d86b0746147e6a0661672bce32615bb9a584002bc1",
-      "poiTriangles": 11624,
-      "backgroundFile": "optimized-tiles/6/34/4_0.b3dm",
-      "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
-        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
-      ],
-      "backgroundSha256": "cd5fdfce4787607f6b98646cb703e025c1af7ecf20e6608d8bf624fc8ae6e88b",
-      "backgroundTriangles": 18971
-    },
-    {
-      "sourceTile": "tiles/6/34/4_1.b3dm",
-      "sourceSha256": "6f0f9ab2e3f66269233a11dee74777c9ee905babaadf9016de6f9e83e45ce9b0",
-      "originalBatchIds": [
-        3,
-        2,
-        62
-      ],
-      "gmlIds": [
-        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
-      ],
-      "gmlNames": [
-        "CHINATOWN COMPLEX",
-        "CHINATOWN COMPLEX",
-        "CHINATOWN COMPLEX"
-      ],
-      "poiFile": "4_1-d4495a063898.b3dm",
-      "poiSha256": "ee4084353dcd747aa2a87c978cddc7d330b7a38694101effe2a6cfd3e3275a3a",
-      "poiTriangles": 11624,
-      "backgroundFile": "optimized-tiles/6/34/4_1.b3dm",
-      "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
-        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
-      ],
-      "backgroundSha256": "93a2fccfc27bda4ac62ffea14d1a51021630761778fcdb82b1e9d537440b6e3c",
-      "backgroundTriangles": 18971
-    },
-    {
-      "sourceTile": "tiles/6/34/4_2.b3dm",
-      "sourceSha256": "36b3be41294617827fb9b10ce4a795002c3d1d6751a08b93c14e957a0a61df32",
-      "originalBatchIds": [
-        3,
-        2,
-        62
-      ],
-      "gmlIds": [
-        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
-      ],
-      "gmlNames": [
-        "CHINATOWN COMPLEX",
-        "CHINATOWN COMPLEX",
-        "CHINATOWN COMPLEX"
-      ],
-      "poiFile": "4_2-a74e8d40bcac.b3dm",
-      "poiSha256": "6311748df1298d3cfb9ce625096bd83346346a60a171858d8820c672a0c37ddd",
-      "poiTriangles": 11624,
-      "backgroundFile": "optimized-tiles/6/34/4_2.b3dm",
-      "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
-        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
-      ],
-      "backgroundSha256": "2b460aa1b367c8894ae0a38b617fa4f3bbf7ebda62fd40d877df912925d5a44d",
-      "backgroundTriangles": 18971
-    },
     {
       "sourceTile": "tiles/6/34/4_3.b3dm",
       "sourceSha256": "eaff5c3b1ef0da6dbb78a3526981249e233d4dfef2f1066d2ab491c3d1a11506",
       "originalBatchIds": [
+        62,
         3,
-        2,
-        62
+        2
       ],
       "gmlIds": [
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
         "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
       ],
       "gmlNames": [
         "CHINATOWN COMPLEX",
@@ -231,30 +147,123 @@
         "CHINATOWN COMPLEX"
       ],
       "poiFile": "4_3-8549349cf20f.b3dm",
-      "poiSha256": "6bf884e98fd27fcf419d99517093043160b134825298f49fd375f792bcc4c43e",
+      "poiSha256": "942dbb727f75249e47663885955fc1554e2b972445faf89960062388ca5076eb",
       "poiTriangles": 11624,
       "backgroundFile": "optimized-tiles/6/34/4_3.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
         "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
       ],
       "backgroundSha256": "6eed140be920943cff3506364bf49ca9ca6fa446ef32d66793009361c237dc1a",
+      "backgroundTriangles": 18971
+    },
+    {
+      "sourceTile": "tiles/6/34/4_2.b3dm",
+      "sourceSha256": "36b3be41294617827fb9b10ce4a795002c3d1d6751a08b93c14e957a0a61df32",
+      "originalBatchIds": [
+        62,
+        3,
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
+      ],
+      "gmlNames": [
+        "CHINATOWN COMPLEX",
+        "CHINATOWN COMPLEX",
+        "CHINATOWN COMPLEX"
+      ],
+      "poiFile": "4_2-a74e8d40bcac.b3dm",
+      "poiSha256": "7f81bfbdedffeba5c37b433232cc42426012911eedc0507463e3c4bca17952de",
+      "poiTriangles": 11624,
+      "backgroundFile": "optimized-tiles/6/34/4_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
+      ],
+      "backgroundSha256": "2b460aa1b367c8894ae0a38b617fa4f3bbf7ebda62fd40d877df912925d5a44d",
+      "backgroundTriangles": 18971
+    },
+    {
+      "sourceTile": "tiles/6/34/4_1.b3dm",
+      "sourceSha256": "6f0f9ab2e3f66269233a11dee74777c9ee905babaadf9016de6f9e83e45ce9b0",
+      "originalBatchIds": [
+        62,
+        3,
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
+      ],
+      "gmlNames": [
+        "CHINATOWN COMPLEX",
+        "CHINATOWN COMPLEX",
+        "CHINATOWN COMPLEX"
+      ],
+      "poiFile": "4_1-d4495a063898.b3dm",
+      "poiSha256": "8ceb38cf33d0ceca3dea020828ad79c0891e3e8e52123e7f0901941fdd89b27f",
+      "poiTriangles": 11624,
+      "backgroundFile": "optimized-tiles/6/34/4_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
+      ],
+      "backgroundSha256": "93a2fccfc27bda4ac62ffea14d1a51021630761778fcdb82b1e9d537440b6e3c",
+      "backgroundTriangles": 18971
+    },
+    {
+      "sourceTile": "tiles/6/34/4_0.b3dm",
+      "sourceSha256": "875d2306fe8ecfcb76efc26d2ec535b27596e9bca6ae7987a216cb5df86171aa",
+      "originalBatchIds": [
+        62,
+        3,
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
+      ],
+      "gmlNames": [
+        "CHINATOWN COMPLEX",
+        "CHINATOWN COMPLEX",
+        "CHINATOWN COMPLEX"
+      ],
+      "poiFile": "4_0-bd861e41183c.b3dm",
+      "poiSha256": "223515be807dfb3da329471593e12ac864c6cf16d020cda8a39dce7d226b2587",
+      "poiTriangles": 11624,
+      "backgroundFile": "optimized-tiles/6/34/4_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
+        "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
+      ],
+      "backgroundSha256": "cd5fdfce4787607f6b98646cb703e025c1af7ecf20e6608d8bf624fc8ae6e88b",
       "backgroundTriangles": 18971
     },
     {
       "sourceTile": "tiles/6/34/4_4.b3dm",
       "sourceSha256": "4ec93ceab0184a6087a4ddc77f83a09f2751335c80186dd45d999b535c706428",
       "originalBatchIds": [
+        62,
         3,
-        2,
-        62
+        2
       ],
       "gmlIds": [
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
         "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
       ],
       "gmlNames": [
         "CHINATOWN COMPLEX",
@@ -262,14 +271,14 @@
         "CHINATOWN COMPLEX"
       ],
       "poiFile": "4_4-a73460028362.b3dm",
-      "poiSha256": "c949370e811d78fe80cdebf533c32486b6bc824e51f44c9bf4c218cb3c80d8ea",
+      "poiSha256": "c05b1f61fbec3e0dcb27bc23cfca21447833eaf196f14002b1bc2713b64b1358",
       "poiTriangles": 11624,
       "backgroundFile": "optimized-tiles/6/34/4_4.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
         "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
       ],
       "backgroundSha256": "3cc8ac7a067d7cebbd76077fc933dea792efb5b595afef1ebb0dda0ac8b1bd50",
       "backgroundTriangles": 18971
@@ -278,14 +287,14 @@
       "sourceTile": "tiles/6/34/4_5.b3dm",
       "sourceSha256": "56fa54c6e3c34b0ba160949575643357678a3acf38e2081374f8abc2b4867f4e",
       "originalBatchIds": [
+        62,
         3,
-        2,
-        62
+        2
       ],
       "gmlIds": [
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
         "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
       ],
       "gmlNames": [
         "CHINATOWN COMPLEX",
@@ -293,14 +302,14 @@
         "CHINATOWN COMPLEX"
       ],
       "poiFile": "4_5-9eaf94c0cbb5.b3dm",
-      "poiSha256": "b41bf283f388bec95e2acca19ab37837991f8f0d0bc2e21e0862268d7ea830e7",
+      "poiSha256": "42fdb76937206ce457bc1f8e0abcfb5b97f34eaab509636ef5f2175544e3dbd0",
       "poiTriangles": 11624,
       "backgroundFile": "optimized-tiles/6/34/4_5.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_1b4b895b-c8d8-4cf4-ba52-de3fd38e22c5",
+        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b",
         "SLA_BLDG2_4cddc080-1bda-46de-a2d9-b254760d7724",
-        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8",
-        "SLA_BLDG2_e26ba88a-24ad-4f87-a763-4e469a45c18b"
+        "SLA_BLDG2_6b9b31d0-1135-4b28-9922-997cf47ee8b8"
       ],
       "backgroundSha256": "635845438c8829e8910ba48b9ed778efe9bccb76607ba60416ad79dbee39b51a",
       "backgroundTriangles": 18971

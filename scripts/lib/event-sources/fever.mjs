@@ -10,6 +10,7 @@ import {
   terminalPagination,
 } from "./rendered-adapter-utils.mjs";
 import { isOrdinaryAttractionAdmission } from "./activity-policy.mjs";
+import { applyEventFieldCompleteness } from "./event-field-extraction.mjs";
 
 function rawMarkup(result) {
   for (const value of [
@@ -206,12 +207,27 @@ export const feverAdapter = {
     if (
       directions?.address &&
       (!parsed.venue || isGenericSingaporeVenue(parsed.venue))
-    )
-      return {
+    ) {
+      const repaired = {
         ...parsed,
         venue: directions.venue ?? parsed.venue,
         address: directions.address,
       };
+      const assessments = Object.values(parsed.fieldCompleteness ?? {});
+      return applyEventFieldCompleteness(repaired, {
+        evidenceHash:
+          assessments.find(({ evidenceHash }) => evidenceHash)?.evidenceHash ??
+          parsed.rawDocumentHash,
+        evidenceRef:
+          assessments.find(({ evidenceRef }) => evidenceRef)?.evidenceRef ?? null,
+        methods: Object.fromEntries(
+          Object.entries(parsed.fieldCompleteness ?? {}).flatMap(
+            ([field, assessment]) =>
+              assessment?.method ? [[field, assessment.method]] : [],
+          ),
+        ),
+      });
+    }
     return parsed;
   },
 };

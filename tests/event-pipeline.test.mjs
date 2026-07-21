@@ -1284,7 +1284,13 @@ test("executable source collector captures full SISTIC evidence and accounts inv
       listingAppearances: 2,
       uniqueSourcePointers: 1,
       listingDuplicatesCollapsed: 0,
+      fieldCompleteness: result.counts.fieldCompleteness,
     });
+    assert.equal(result.counts.fieldCompleteness.title.present, 1);
+    assert.equal(
+      result.counts.fieldCompleteness.organizer.not_published_by_source,
+      1,
+    );
     assert.equal(
       result.invalidReasonCodes[result.invalidSourceRecordRefs[0]],
       "missing_detail_url",
@@ -1376,7 +1382,9 @@ test("executable source collector deduplicates repeated detail URLs before captu
       listingAppearances: 2,
       uniqueSourcePointers: 1,
       listingDuplicatesCollapsed: 1,
+      fieldCompleteness: result.counts.fieldCompleteness,
     });
+    assert.equal(result.counts.fieldCompleteness.url.present, 1);
     assert.equal(
       result.invalidReasonCodes[result.invalidSourceRecordRefs[0]],
       "duplicate_detail_url",

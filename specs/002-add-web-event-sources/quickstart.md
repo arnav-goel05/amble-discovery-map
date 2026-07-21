@@ -322,3 +322,60 @@ zero network attempts.
 - A subsequent unchanged command reused all 56 overlay entries with zero searches or fetches.
 - Temporary normalization replay reduced `missing_venue` from 56 to 49 and increased accepted
   post-dedup activities from 468 to 475. The finalized stored snapshot was not republished.
+
+## 16. Shared event-field extraction validation
+
+Run the focused contract before any clean live pipeline:
+
+```bash
+node --test tests/event-field-extraction.test.mjs
+node --test tests/event-source-contract.test.mjs
+node --test --test-name-pattern='field completeness|structured event extraction|enrichment cache' tests/event-pipeline.test.mjs
+node scripts/verify-event-source-adapters.mjs
+npm run event-field-validate -- --output outputs/event-field-validation/latest.json
+npm run build
+```
+
+Expected: event JSON-LD, supported microdata, documented source HTML, explicit rendered fields, and
+listing fallback follow their declared evidence priority; all ten contracted fields receive one of
+`present`, `not_published_by_source`, or `extraction_failed`; unchanged terminal omissions reuse
+their evidence-hash cache; retrieval failures remain retryable; logs contain hashes, methods, and
+counts but no response bodies, credentials, or authorization values.
+
+Then validate one or two current detail pages for every enabled source with the checked-in bounded
+retrieval definitions. A source access failure is an explicit blocked validation result, never a
+silent pass or an empty source. Do not use this focused validation to mutate the active snapshot.
+
+## 17. Clean enriched pipeline and comparison
+
+After Step 16 passes, preserve the current active snapshot ID as the comparison baseline and run:
+
+```bash
+npm run event-pipeline -- start
+```
+
+Follow every returned continuation command exactly until `complete: true`. The run must collect
+fresh evidence and proceed through normalization, venue recovery/resolution, deduplication,
+reconciliation, staging, build, event UI, browser verification, and atomic publication. Compare the
+new run with the baseline by source for field completeness, exclusions, mapped/off-map/review
+placements, deduplication, and unique published activities. If any release-wide gate fails, verify
+that the prior approved snapshot remains active.
+
+### Completed enriched-run evidence (2026-07-21)
+
+- Live page validation covered all eight enabled sources with one current page each and no blocked
+  validation result; evidence is stored in ignored
+  `outputs/event-field-validation/2026-07-21.json`.
+- Clean run `20260721T101644Z-20260721T000000+0800-20260728T235959+0800` completed every
+  continuation and publication gate and atomically published its matching immutable snapshot.
+- Compared with `20260720T134842Z-20260720T000000+0800-20260727T235959+0800`, normalized unique
+  activities increased from 467 to 510, exclusions fell from 150 to 106, and duplicate collapse
+  remained one. Final published placements changed from 379 mapped / 64 off-map to 418 mapped /
+  59 off-map. The corrected report is stored in ignored
+  `outputs/event-field-validation/full-run-comparison.json`.
+- The final convergence fixes count rendered-detail completeness, refresh Fever completeness after
+  venue repair, expose JSON-LD/microdata conflicts, distinguish final published placements from
+  pre-venue records, and prove cache reuse, contract-version invalidation, and failure retry.
+- Focused contract tests passed 66/66; adapter verification, production build, and repository-wide
+  `npm run verify` all passed. The remaining Vite dependency `eval` and chunk-size messages are
+  warnings, not failed gates.

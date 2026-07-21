@@ -115,9 +115,18 @@
     "national-archives-of-singapore",
     "our-tampines-hub",
     "national-stadium",
-    "raffles-city-tower"
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building"
   ],
-  "generatedAt": "2026-07-20T14:59:39.410Z",
+  "generatedAt": "2026-07-21T11:52:31.588Z",
   "tiles": [
     {
       "sourceTile": "tiles/6/38/11_0.b3dm",

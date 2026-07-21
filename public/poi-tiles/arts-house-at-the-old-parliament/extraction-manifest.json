@@ -115,134 +115,163 @@
     "national-archives-of-singapore",
     "our-tampines-hub",
     "national-stadium",
-    "raffles-city-tower"
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building"
   ],
-  "generatedAt": "2026-07-20T14:59:52.765Z",
+  "generatedAt": "2026-07-21T11:52:43.732Z",
   "tiles": [
     {
       "sourceTile": "tiles/7/76/11_0.b3dm",
       "sourceSha256": "5f34f00d30e2e9d8c526d913d154cf0b9247f23db512086ee5de533c6014b897",
       "originalBatchIds": [
+        4,
         3
       ],
       "gmlIds": [
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257"
       ],
       "gmlNames": [
+        "ARTS HOUSE AT THE OLD PARLIAMENT",
         "ARTS HOUSE AT THE OLD PARLIAMENT"
       ],
       "poiFile": "11_0-136054cc2793.b3dm",
-      "poiSha256": "a46520b14e1062513748939fba1db9da28c093d336332fb767458e8b8b6aa15b",
-      "poiTriangles": 1032,
+      "poiSha256": "d4e18959e943358993facd0136c05c38fb417e1d8677b91ed95dd207fec70d0d",
+      "poiTriangles": 2780,
       "backgroundFile": "optimized-tiles/7/76/11_0.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
         "SLA_BLDG2_7bc35123-6dbc-4ca0-9c70-4fe158894ad3"
       ],
-      "backgroundSha256": "a94872acca85176a7beb29e014a7aa5f6e348f2569daf1b41e4b652d3f7f54ab",
-      "backgroundTriangles": 1960
+      "backgroundSha256": "37509afc929c6b5060d8d5da5bcd7847aaf2b9fba79c57817db359067ee0d9fa",
+      "backgroundTriangles": 212
     },
     {
       "sourceTile": "tiles/7/76/11_1.b3dm",
       "sourceSha256": "3477384d5ff44a317d1f4304ee96661a0c8b16b93d89d7eb7b5372c37fb3f598",
       "originalBatchIds": [
+        4,
         3
       ],
       "gmlIds": [
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257"
       ],
       "gmlNames": [
+        "ARTS HOUSE AT THE OLD PARLIAMENT",
         "ARTS HOUSE AT THE OLD PARLIAMENT"
       ],
       "poiFile": "11_1-84799406f796.b3dm",
-      "poiSha256": "d1a7b73e3cf324918b7922b952e70c4368f31704d82b7d5030333d6e8df6bb59",
-      "poiTriangles": 1032,
+      "poiSha256": "6d0b87f7d9098a75152510ecf38e77d22a4572e3a472d2ec1d3939fdcf3127db",
+      "poiTriangles": 2780,
       "backgroundFile": "optimized-tiles/7/76/11_1.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
         "SLA_BLDG2_7bc35123-6dbc-4ca0-9c70-4fe158894ad3"
       ],
-      "backgroundSha256": "a95ae862e2e548ed36ff62055e7d8478b98533b1a568769823ea0ba0639fd101",
-      "backgroundTriangles": 1960
+      "backgroundSha256": "84add83cf31de805b7b71a5c9ac8d119ac7639985ceb9cec79a2c5677dd6efe0",
+      "backgroundTriangles": 212
     },
     {
       "sourceTile": "tiles/7/76/11_2.b3dm",
       "sourceSha256": "2120892f4f27f0b72ed17f5fe3fb9657c244256d88f233ea2e34fe303db5ba1f",
       "originalBatchIds": [
+        4,
         3
       ],
       "gmlIds": [
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257"
       ],
       "gmlNames": [
+        "ARTS HOUSE AT THE OLD PARLIAMENT",
         "ARTS HOUSE AT THE OLD PARLIAMENT"
       ],
       "poiFile": "11_2-5f6b890dac4c.b3dm",
-      "poiSha256": "2d9686ec471d3a5c55af464884a849e49dc764a2d1e46a1d2dcd1f31009bbcb3",
-      "poiTriangles": 1032,
+      "poiSha256": "ffc4dd68b4c9e8667cfe2468c962db6257ed45a18523db4138d0c70e0da756d5",
+      "poiTriangles": 2780,
       "backgroundFile": "optimized-tiles/7/76/11_2.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
         "SLA_BLDG2_7bc35123-6dbc-4ca0-9c70-4fe158894ad3"
       ],
-      "backgroundSha256": "67250cc7ac546b4b0256882396edde11dc290702f7314c3442ffe4969bad3ca9",
-      "backgroundTriangles": 1960
+      "backgroundSha256": "d88296c7a290f834e36b7807da489ff125cf68132e3cdd1602efe0d5f080dbf2",
+      "backgroundTriangles": 212
     },
     {
       "sourceTile": "tiles/7/76/11_3.b3dm",
       "sourceSha256": "4cd9bee3459cd8604c81d482f2e01b3523b811c0eafd4a0a3fb42b2bfae84cca",
       "originalBatchIds": [
+        4,
         3
       ],
       "gmlIds": [
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257"
       ],
       "gmlNames": [
+        "ARTS HOUSE AT THE OLD PARLIAMENT",
         "ARTS HOUSE AT THE OLD PARLIAMENT"
       ],
       "poiFile": "11_3-8fec657d80e4.b3dm",
-      "poiSha256": "5ba7059c53180c621d8d4692b8c3e1b755edee73eb0c7bb5d65aa8e1dc1dc884",
-      "poiTriangles": 1032,
+      "poiSha256": "ccf97bf15ae4b855ff3a3a50e56b23fb95502471b23a6d37b97b2f88a2f79f6f",
+      "poiTriangles": 2780,
       "backgroundFile": "optimized-tiles/7/76/11_3.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
         "SLA_BLDG2_7bc35123-6dbc-4ca0-9c70-4fe158894ad3"
       ],
-      "backgroundSha256": "d55ceb0ee39eda4db8a175a0b889aa7cb0d08b0083471b0ccd8e0d1daf1b272e",
-      "backgroundTriangles": 1960
+      "backgroundSha256": "ea4496355259ae46d24cbefc3e16b3a49c65ac7cbbba908439552a19c1f2456b",
+      "backgroundTriangles": 212
     },
     {
       "sourceTile": "tiles/7/76/11_4.b3dm",
       "sourceSha256": "fb90b72101ca455f214f9fc6d39b20e9701e0c23743dfd18035471993f976648",
       "originalBatchIds": [
+        4,
         3
       ],
       "gmlIds": [
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257"
       ],
       "gmlNames": [
+        "ARTS HOUSE AT THE OLD PARLIAMENT",
         "ARTS HOUSE AT THE OLD PARLIAMENT"
       ],
       "poiFile": "11_4-2b9cd1e8720f.b3dm",
-      "poiSha256": "e8a098228079f94f3e88396e21122833a419be6c3aa1ef5fb462fbc557958110",
-      "poiTriangles": 1032,
+      "poiSha256": "07c0261faadd88beca17d891ad55a0d5aefc5cb85a2f1438a00922f373f22f75",
+      "poiTriangles": 2780,
       "backgroundFile": "optimized-tiles/7/76/11_4.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532",
         "SLA_BLDG2_7bc35123-6dbc-4ca0-9c70-4fe158894ad3"
       ],
-      "backgroundSha256": "e9b25437eb1c7f20247d62d162525034687280e7f443353250d5eba4769d3786",
-      "backgroundTriangles": 1960
+      "backgroundSha256": "499563cc0d7dd7b5339917e8e69e0d0f44e69d3906ea63a28735022862df5a97",
+      "backgroundTriangles": 212
     }
   ]
 }

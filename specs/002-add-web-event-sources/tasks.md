@@ -405,3 +405,21 @@ behavior without network access.
 - [x] T208 Run only the focused adapter, venue-recovery, and adapter-verification checks; do not recollect sources or run the complete event pipeline
 - [x] T209 [US2] Constrain the existing single recovery query to a configured authoritative promoter partner when a direct source links to a persistently blocked ticket host, with focused query coverage in `scripts/lib/event-sources/tinyfish-venue-recovery.mjs`, `data/event-pipeline-config.json`, and `tests/event-venue-recovery.test.mjs`
 - [x] T210 Replay only the saved Visit Singapore captures, live-recover its eligible missing venues, normalize the focused result, and report exact updated counts without mutating the published snapshot or recollecting other sources
+
+## Phase 24: Shared Event-Field Extraction Contract
+
+- [x] T211 [US1] Add failing shared extraction fixtures for JSON-LD, microdata, documented HTML, evidence priority/conflict, and all ten field-completeness outcomes in `tests/event-field-extraction.test.mjs` and source contract fixtures
+- [x] T212 [US5] Implement bounded direct official-page HTML retrieval with public-network, domain, redirect, robots, content-type, response-size, timeout, cache, trace-redaction, and rendered-fallback behavior in `scripts/lib/event-sources/direct-html-fetch.mjs`, `scripts/lib/event-sources/layered-detail-fetch.mjs`, and `scripts/event-source-collector.mjs`
+- [x] T213 [US1] Implement the versioned ten-field JSON-LD, microdata, source-HTML, and rendered-text extraction contract with field evidence/completeness in `scripts/lib/event-sources/event-field-extraction.mjs` and `scripts/lib/event-sources/rendered-adapter-utils.mjs`
+- [x] T214 [US1] Preserve enriched claims and field completeness through direct/editorial adapters, normalization, evidence assessment, reconciliation, snapshots, and reporting without weakening authority or sibling identity in `scripts/lib/event-sources/`, `scripts/event-normalizer.mjs`, `scripts/reconcile-event-content.mjs`, and `scripts/lib/event-pipeline/reporting.mjs`
+- [x] T215 [US5] Cache unchanged `not_published_by_source` outcomes by page evidence hash and extraction-contract version while retaining bounded retry for `extraction_failed`, with resume and invalidation tests in `scripts/event-source-collector.mjs` and `tests/event-pipeline.test.mjs`
+- [x] T216 Validate one or two current pages from every enabled source, recording blocked-source outcomes explicitly, and run focused extraction, adapter, normalizer, reconciliation, publication, logging, adapter-verification, and production-build checks
+- [x] T217 Run one new complete clean event pipeline through every continuation and publication gate; compare per-source field completeness, exclusions, placements, mapping/review, and deduplication with the active pre-enrichment snapshot
+- [x] T218 Run Spec Kit convergence against the amended artifacts, correct any remaining divergence, commit all scoped changes on `develop`, and record final verification evidence
+
+## Phase 25: Convergence
+
+- [x] T219 Count field completeness for every rendered detail record and retain correct outcomes after post-parse venue repair, with Fever and collector regressions, per FR-048, FR-051, and SC-014
+- [x] T220 Compare final published mapped/off-map placements and nested per-source exclusions instead of pre-venue normalized placeholders, with regression coverage, per FR-052 and SC-016
+- [x] T221 Add unchanged-evidence reuse, changed-contract invalidation, and retryable extraction-failure regressions for field completeness metadata per FR-050, SC-015, and T215
+- [x] T222 Re-run focused and release verification, regenerate the clean-run comparison, and record corrected convergence evidence per FR-052, SC-016, and T218

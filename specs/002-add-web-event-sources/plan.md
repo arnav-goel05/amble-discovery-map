@@ -1,6 +1,6 @@
 # Implementation Plan: Expand Singapore Event Discovery
 
-**Branch**: `develop` | **Feature Directory**: `specs/002-add-web-event-sources` | **Date**: 2026-07-18 | **Spec**: [spec.md](spec.md)
+**Branch**: `develop` | **Feature Directory**: `specs/002-add-web-event-sources` | **Date**: 2026-07-21 | **Spec**: [spec.md](spec.md)
 
 ## Summary
 
@@ -15,12 +15,18 @@ venue-occurrence, and published identities; and reconcile failures per affected 
 before applying release-wide gates. Extend the existing search experience with mapped,
 secret/location-TBA, and multiple-location views.
 
+This amendment adds one shared ten-field extraction contract for every enabled source. Detail
+pages use bounded direct official HTML and embedded structured metadata first, retain the existing
+free rendered transport as fallback, record field-level completeness and evidence hashes, reuse
+terminal source omissions, and feed richer evidence through the existing normalization,
+deduplication, venue, reporting, and atomic-publication paths.
+
 ## Technical Context
 
 **Language/Version**: Node.js 24+ JavaScript, primarily ECMAScript modules
 
-**Primary Dependencies**: Node.js standard library and built-in `fetch`; approved free
-TinyFish Search and Fetch REST capabilities; existing Vite 8, Playwright 1.61, MapLibre,
+**Primary Dependencies**: Node.js standard library and built-in `fetch`; official HTML,
+JSON-LD and microdata; approved free TinyFish Search and Fetch REST fallbacks; existing Vite 8, Playwright 1.61, MapLibre,
 deck.gl, and Three.js stack; no new runtime package
 
 **Storage**: Versioned JSON source/policy/venue configuration; immutable
@@ -40,6 +46,10 @@ and atomic catalogue publication
 **Performance Goals**: Stay within checked-in pagination/retry/timeout/request-size bounds;
 fetch each canonical page at most once per run; avoid material regression in current event
 search and map interaction benchmarks; produce byte-equivalent results for identical evidence
+
+**Enrichment Goal**: Assign `present`, `not_published_by_source`, or `extraction_failed` to title,
+schedule, venue, address, description, category, price, organizer, availability, and URL for every
+retrieved event page; reuse unchanged terminal omissions by evidence hash and contract version
 
 **Constraints**: Free/open retrieval only; configured bounded source surfaces; validated
 public-network destinations and redirects; no access-control circumvention; all active/future

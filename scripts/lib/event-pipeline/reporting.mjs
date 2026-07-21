@@ -54,6 +54,25 @@ export function summarizeEvidenceLevels(events = []) {
   return { uniqueActivities: events.length, levels, upgrades };
 }
 
+export function summarizeFieldCompleteness(events = []) {
+  const summary = {};
+  for (const event of events)
+    for (const completeness of [
+      event.fieldCompleteness,
+      ...Object.values(event.fieldCompletenessByOccurrence ?? {}),
+    ].filter(Boolean))
+      for (const [field, assessment] of Object.entries(completeness)) {
+        summary[field] ??= {
+          present: 0,
+          not_published_by_source: 0,
+          extraction_failed: 0,
+        };
+        if (assessment?.status in summary[field])
+          summary[field][assessment.status] += 1;
+      }
+  return summary;
+}
+
 export function progressResponse(state) {
   const complete = Boolean(state.finalizedAt);
   const continueCommand = complete

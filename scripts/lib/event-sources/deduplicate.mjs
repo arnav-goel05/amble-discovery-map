@@ -367,8 +367,30 @@ export function finalizeDeduplication({
         members.flatMap(({ sourceContributions = [] }) => sourceContributions),
         (item) => item.sourceRecordId ?? JSON.stringify(item),
       );
+      const firstValue = (field) =>
+        members.map((member) => member[field]).find((value) => {
+          if (value === null || value === undefined || value === "")
+            return false;
+          if (field === "availability" && value === "unknown") return false;
+          return !Array.isArray(value) || value.length > 0;
+        }) ?? primary[field] ?? null;
       return {
         ...primary,
+        description: firstValue("description"),
+        category: firstValue("category"),
+        price: firstValue("price"),
+        organizer: firstValue("organizer"),
+        availability: firstValue("availability") ?? "unknown",
+        venue: firstValue("venue"),
+        venueName: firstValue("venueName"),
+        address: firstValue("address"),
+        officialUrl: firstValue("officialUrl"),
+        fieldCompletenessByOccurrence: Object.fromEntries(
+          members.map((member) => [
+            member.occurrenceId,
+            member.fieldCompleteness ?? null,
+          ]),
+        ),
         id: identityAnchor,
         occurrenceId: identityAnchor,
         identityAnchor,

@@ -278,6 +278,8 @@ export async function confirmDiscoveryRecord({
     compatibility,
     evidenceLevel: "direct_corroborated",
     primaryEvidenceId: authority.authorityRecordId,
+    authorityClaims: authority.claims ?? null,
+    authorityFieldCompleteness: authority.fieldCompleteness ?? null,
     decision: authority.alreadyCollected
       ? "already_collected_authority"
       : "authority_confirmed",

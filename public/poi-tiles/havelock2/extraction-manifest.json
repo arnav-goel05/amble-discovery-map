@@ -115,9 +115,18 @@
     "national-archives-of-singapore",
     "our-tampines-hub",
     "national-stadium",
-    "raffles-city-tower"
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building"
   ],
-  "generatedAt": "2026-07-20T14:59:59.437Z",
+  "generatedAt": "2026-07-21T11:52:49.020Z",
   "tiles": [
     {
       "sourceTile": "tiles/6/35/5_0.b3dm",
@@ -136,10 +145,11 @@
       "poiTriangles": 2852,
       "backgroundFile": "optimized-tiles/6/35/5_0.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772"
+        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772",
+        "SLA_BLDG2_94a4791e-0222-48a4-9757-95e91d13c7e6"
       ],
-      "backgroundSha256": "2b7d5f599533b4ca8e77232bb685e612e2a94d967de9e744e62a3fecfa5b4975",
-      "backgroundTriangles": 30186
+      "backgroundSha256": "8c9e267d76ab348f7fb194e09122295a71a3487810760afcfa2245fdbfdf9c9f",
+      "backgroundTriangles": 17530
     },
     {
       "sourceTile": "tiles/6/35/5_1.b3dm",
@@ -158,10 +168,11 @@
       "poiTriangles": 2852,
       "backgroundFile": "optimized-tiles/6/35/5_1.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772"
+        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772",
+        "SLA_BLDG2_94a4791e-0222-48a4-9757-95e91d13c7e6"
       ],
-      "backgroundSha256": "806d780ecf90c8672475617caf9ba395531e504de38f6208e42b5adf655c5468",
-      "backgroundTriangles": 30186
+      "backgroundSha256": "77a04e0fe36d522c3a60f010b7f88283b1d9d07379c5f45f8f7e633cc133dded",
+      "backgroundTriangles": 17530
     },
     {
       "sourceTile": "tiles/6/35/5_2.b3dm",
@@ -180,10 +191,11 @@
       "poiTriangles": 2852,
       "backgroundFile": "optimized-tiles/6/35/5_2.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772"
+        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772",
+        "SLA_BLDG2_94a4791e-0222-48a4-9757-95e91d13c7e6"
       ],
-      "backgroundSha256": "96c726087f3538a1ebe61db1546746d68c3d4bb74a4d1843ac49b1fdcf51e2d8",
-      "backgroundTriangles": 30186
+      "backgroundSha256": "31afbc135085188ac6a5771c8f734f79f7dba692356fb2be6bdb9565490bf7bf",
+      "backgroundTriangles": 17530
     },
     {
       "sourceTile": "tiles/6/35/5_3.b3dm",
@@ -202,10 +214,11 @@
       "poiTriangles": 2852,
       "backgroundFile": "optimized-tiles/6/35/5_3.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772"
+        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772",
+        "SLA_BLDG2_94a4791e-0222-48a4-9757-95e91d13c7e6"
       ],
-      "backgroundSha256": "0256862658ddd995f632ca8d8df4f4c403a372436bf1069c9a9ceb04dc9f248f",
-      "backgroundTriangles": 30186
+      "backgroundSha256": "3ce6fd751382b8a69db75f474f43f012809535e31d113f1c71aac971800d4cb6",
+      "backgroundTriangles": 17530
     },
     {
       "sourceTile": "tiles/6/35/5_4.b3dm",
@@ -224,10 +237,11 @@
       "poiTriangles": 2852,
       "backgroundFile": "optimized-tiles/6/35/5_4.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772"
+        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772",
+        "SLA_BLDG2_94a4791e-0222-48a4-9757-95e91d13c7e6"
       ],
-      "backgroundSha256": "c848e77f88d07235eac7e316de180fd5c522290b3282a97cdbb56c6f0755cb0c",
-      "backgroundTriangles": 30186
+      "backgroundSha256": "4e92bbf4a53231c58593f58d2a9474adea694dd1c4c553c497b2b6ac35edc4e2",
+      "backgroundTriangles": 17530
     },
     {
       "sourceTile": "tiles/6/35/5_5.b3dm",
@@ -246,10 +260,11 @@
       "poiTriangles": 2852,
       "backgroundFile": "optimized-tiles/6/35/5_5.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772"
+        "SLA_BLDG2_a57c382a-b906-45ef-ae83-13c67a68f772",
+        "SLA_BLDG2_94a4791e-0222-48a4-9757-95e91d13c7e6"
       ],
-      "backgroundSha256": "fbccad311eb6382ed1b6ce8fbcc75d5f80f71ce120ce3abf2be51d24d6a72570",
-      "backgroundTriangles": 30186
+      "backgroundSha256": "8eb1c08c490a95388f21784a9bdb9207950023446cf138c9d76d26bfdb56bf47",
+      "backgroundTriangles": 17530
     }
   ]
 }

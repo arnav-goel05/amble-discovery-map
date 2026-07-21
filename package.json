@@ -33,6 +33,8 @@
     "test:plans": "node --test tests/plan-game.test.mjs && playwright test -c playwright.config.mjs tests/plan-builder.spec.mjs && npm run build && node scripts/smoke-plan-production.mjs",
     "test:restaurants": "node --test tests/restaurant-pipeline.test.mjs && playwright test -c playwright.config.mjs tests/restaurant-ui.spec.mjs",
     "event-pipeline": "node --env-file-if-exists=.env.local scripts/event-pipeline.mjs",
+    "event-field-validate": "node --env-file-if-exists=.env.local scripts/validate-event-field-extraction.mjs",
+    "event-pipeline:compare": "node scripts/compare-event-pipeline-runs.mjs",
     "event-pipeline:clear": "node scripts/clear-event-pipeline-data.mjs",
     "web-evidence": "node scripts/extract-web-evidence.mjs",
     "onemap-geocode": "node scripts/query-onemap-location.mjs",

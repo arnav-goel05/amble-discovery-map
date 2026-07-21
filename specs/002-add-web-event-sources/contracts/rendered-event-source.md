@@ -82,7 +82,14 @@ semantic parameters. Redirects must remain within approved public-network destin
     "venue": null,
     "address": null,
     "coordinates": null,
-    "scope": "Singapore"
+    "scope": "Singapore",
+    "category": null,
+    "price": null,
+    "url": "https://..."
+  },
+  "fieldCompleteness": {
+    "title": { "status": "present", "evidenceHash": "sha256:...", "contractVersion": "1.0", "method": "json_ld" },
+    "organizer": { "status": "not_published_by_source", "evidenceHash": "sha256:...", "contractVersion": "1.0", "method": null }
   },
   "evidenceRefs": ["raw/...#..."],
   "terminalOutcome": null,
@@ -130,6 +137,28 @@ promotion, and contains no material contradiction. Optional missing fields remai
 
 Search snippets, directories, generic homepages, user-generated map records, and social posts
 cannot be the sole activity evidence.
+
+## 4A. Event-page extraction contract
+
+Every successfully retrieved event page is assessed for title, schedule, venue, address,
+description, category, price, organizer, availability, and canonical event URL. Evidence priority
+is event-specific JSON-LD, supported event microdata, documented source HTML, explicit rendered
+fields, then compatible listing fallback. A less-specific value fills only a missing field and
+never silently overwrites conflicting more-specific evidence.
+
+Each field has exactly one status:
+
+- `present`: a supported source value and evidence pointer exist;
+- `not_published_by_source`: retrieval and parsing succeeded, but the official page contains no
+  supported value; or
+- `extraction_failed`: retrieval/parsing prevented a reliable assessment.
+
+Completeness entries include evidence hash, contract version, extraction method, evidence pointer,
+and a redacted reason where applicable. Unchanged `not_published_by_source` entries are reusable;
+`extraction_failed` entries are not terminal cache hits. Retrieval is limited to approved source
+domains and public network destinations, validates every redirect, observes access rules, and
+enforces time, size, and attempt bounds. The approved free rendered provider is fallback transport,
+not an authority upgrade.
 
 ## 5. Eligibility and schedule contract
 
