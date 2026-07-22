@@ -56,6 +56,9 @@ import {
 import { computeVenueEvidenceHash } from "./lib/event-pipeline/evidence-hash.mjs";
 import { isStructuralVenueLabel } from "./lib/event-pipeline/venue-values.mjs";
 import {
+  validateDateReviewArtifact,
+} from "./lib/event-pipeline/date-quality-audit.mjs";
+import {
   finalizeDeduplication,
   generateDedupCandidates,
 } from "./lib/event-sources/deduplicate.mjs";
@@ -2431,6 +2434,11 @@ function recordNormalization(options) {
       "normalized/invalid.json",
       "normalized/dedup-decisions.json",
     ];
+    const dateReviewsRef = "normalized/date-reviews.json";
+    const hasDateReviewsArtifact =
+      result.artifactRefs?.includes(dateReviewsRef) ||
+      existsSync(join(runDir, dateReviewsRef));
+    if (hasDateReviewsArtifact) requiredArtifacts.push(dateReviewsRef);
     for (const path of requiredArtifacts)
       if (!existsSync(join(runDir, path)))
         fail(`Missing normalization artifact: ${path}`);
@@ -2439,10 +2447,14 @@ function recordNormalization(options) {
       join(runDir, "normalized/excluded.json"),
     );
     const normalizedInvalid = readJson(join(runDir, "normalized/invalid.json"));
+    const normalizedDateReviews = hasDateReviewsArtifact
+      ? readJson(join(runDir, dateReviewsRef))
+      : { counts: { records: 0 }, records: [] };
     for (const [name, envelope] of [
       ["events", normalizedEvents],
       ["excluded", normalizedExcluded],
       ["invalid", normalizedInvalid],
+      ["date-reviews", normalizedDateReviews],
     ]) {
       if (
         !Array.isArray(envelope.records) ||
@@ -2520,6 +2532,9 @@ function recordNormalization(options) {
           : [],
       ),
       ...normalizedExcluded.records.map((record) => record.sourceRecordRef),
+      ...normalizedDateReviews.records.map(
+        (record) => record.sourceRecordRef,
+      ),
     ]);
     const expectedProcessedRefs = new Set(
       normalizableSources.flatMap((source) => source.processedSourceRecordRefs),
@@ -2531,8 +2546,23 @@ function recordNormalization(options) {
       [...processedEvidenceRefs].some((ref) => !expectedProcessedRefs.has(ref))
     ) {
       fail(
-        "Normalized events and exclusions do not account for processed source record refs",
+        "Normalized events, exclusions, and date reviews do not account for processed source record refs",
       );
+    }
+    try {
+      validateDateReviewArtifact(
+        {
+          ...normalizedDateReviews,
+          schemaVersion: normalizedDateReviews.schemaVersion ?? "3.0",
+        },
+        {
+          acceptedEventIds: normalizedEvents.records.map(
+            (event) => event.id ?? event.occurrenceId,
+          ),
+        },
+      );
+    } catch (error) {
+      fail(error instanceof Error ? error.message : String(error));
     }
     for (const [sourceName, accounting] of Object.entries(
       result.sourceAccounting ?? {},
@@ -2542,13 +2572,18 @@ function recordNormalization(options) {
       for (const key of [
         "occurrencesEmitted",
         "excludedOccurrences",
+        "dateReviewOccurrences",
         "eligiblePreDedup",
       ]) {
-        if (!Number.isInteger(accounting[key]) || accounting[key] < 0)
+        const value = accounting[key] ?? 0;
+        if (!Number.isInteger(value) || value < 0)
           fail(`Invalid normalization source accounting: ${sourceName}/${key}`);
+        accounting[key] = value;
       }
       if (
-        accounting.excludedOccurrences + accounting.eligiblePreDedup !==
+        accounting.excludedOccurrences +
+          accounting.dateReviewOccurrences +
+          accounting.eligiblePreDedup !==
         accounting.occurrencesEmitted
       )
         fail(
@@ -2558,6 +2593,10 @@ function recordNormalization(options) {
     }
     const eligiblePreDedup = normalizableSources.reduce(
       (total, source) => total + source.counts.eligiblePreDedup,
+      0,
+    );
+    const dateReviewOccurrences = normalizableSources.reduce(
+      (total, source) => total + (source.counts.dateReviewOccurrences ?? 0),
       0,
     );
     for (const key of [
@@ -2573,6 +2612,11 @@ function recordNormalization(options) {
       fail(
         "Normalization eligiblePreDedup does not match successful source totals",
       );
+    if (
+      (result.counts.dateReviewOccurrences ?? 0) !== dateReviewOccurrences ||
+      dateReviewOccurrences !== normalizedDateReviews.records.length
+    )
+      fail("Normalization date-review accounting does not reconcile");
     if (
       result.counts.acceptedPostDedup !==
       eligiblePreDedup - result.counts.duplicateCollapsed
@@ -2615,6 +2659,7 @@ function recordNormalization(options) {
     venueBranches: result.venueBranches ?? [],
     sourceAccounting: result.sourceAccounting ?? {},
     diagnostics: result.diagnostics ?? [],
+    dateQuality: result.dateQuality ?? null,
     evidence: result.evidence ?? null,
     sourceReconciliation: result.sourceReconciliation ?? null,
     error: result.error ?? null,
@@ -2653,6 +2698,7 @@ function recordNormalization(options) {
     entityType: "run",
     entityId: options.run,
     counts: result.counts,
+    dateQuality: result.dateQuality ?? null,
     blocker: result.error ?? null,
     nextAction: `npm run event-pipeline -- advance --run ${options.run}`,
   });

@@ -66,6 +66,7 @@ export function buildEventDashboardPayload({
   status,
   events,
   excluded,
+  dateReviews = [],
   highlightedPois = 0,
 }) {
   const resolutionsByEvent = new Map();
@@ -106,6 +107,22 @@ export function buildEventDashboardPayload({
     reasons[sourceName] ??= {};
     reasons[sourceName][record.reasonCode] =
       (reasons[sourceName][record.reasonCode] ?? 0) + 1;
+  }
+  for (const review of dateReviews) {
+    const sourceName = review.sourceName ?? review.event?.sourceName;
+    if (!sourceName) continue;
+    placement[sourceName] ??= {
+      mapped: 0,
+      notMappable: 0,
+      review: 0,
+      offMap: 0,
+      dedup: 0,
+    };
+    placement[sourceName].review += 1;
+    reasons[sourceName] ??= {};
+    for (const reasonCode of new Set(review.reasonCodes ?? []))
+      reasons[sourceName][reasonCode] =
+        (reasons[sourceName][reasonCode] ?? 0) + 1;
   }
 
   const sources = Object.entries(status.sources ?? {}).map(
@@ -165,6 +182,7 @@ export function buildEventDashboardPayloadFromRun(
     status,
     events: readRecords(runDir, "normalized/events.json"),
     excluded: readRecords(runDir, "normalized/excluded.json"),
+    dateReviews: readRecords(runDir, "normalized/date-reviews.json"),
     highlightedPois,
   });
 }

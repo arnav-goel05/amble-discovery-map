@@ -14,6 +14,12 @@ import {
   normalizeSchedule,
 } from "./lib/event-sources/activity-policy.mjs";
 import { isStructuralVenueLabel } from "./lib/event-pipeline/venue-values.mjs";
+import {
+  assessEventDateQuality,
+  createDateReviewItem,
+  failedDateAssessment,
+  summarizeDateReviews,
+} from "./lib/event-pipeline/date-quality-audit.mjs";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 const normalizeText = (value = "") =>
@@ -515,8 +521,14 @@ function mergedId(sources) {
   return `merged:${sha(JSON.stringify(identity))}`;
 }
 
-export function normalizeRun({ runDir, state, run }) {
+export function normalizeRun({
+  runDir,
+  state,
+  run,
+  assessDateQuality = assessEventDateQuality,
+}) {
   const eligible = [],
+    dateReviews = [],
     excluded = [],
     invalid = [],
     decisions = [],
@@ -565,6 +577,7 @@ export function normalizeRun({ runDir, state, run }) {
       {
         occurrencesEmitted: 0,
         excludedOccurrences: 0,
+        dateReviewOccurrences: 0,
         eligiblePreDedup: 0,
         duplicateCollapsed: 0,
         acceptedPrimary: 0,
@@ -705,6 +718,35 @@ export function normalizeRun({ runDir, state, run }) {
             event,
           });
         } else {
+          let dateAssessment;
+          try {
+            dateAssessment = assessDateQuality(event, {
+              asOf: run.window.start,
+            });
+          } catch {
+            dateAssessment = failedDateAssessment(event, {
+              asOf: run.window.start,
+            });
+            diagnostics.push({
+              stage: "normalization",
+              sourceName,
+              sourceRecordRef: recordRef,
+              occurrenceIndex: performanceIndex,
+              reasonCode: "date_assessment_failed",
+              action: "held_for_review",
+            });
+          }
+          if (dateAssessment.status === "questionable") {
+            sourceAccounting[sourceName].dateReviewOccurrences += 1;
+            dateReviews.push(
+              createDateReviewItem(event, dateAssessment, {
+                asOf: run.window.start,
+                sourceRecordRef: recordRef,
+                occurrenceIndex: performanceIndex,
+              }),
+            );
+            return;
+          }
           sourceAccounting[sourceName].eligiblePreDedup += 1;
           eligible.push(event);
         }
@@ -837,18 +879,26 @@ export function normalizeRun({ runDir, state, run }) {
   }
   const artifactRefs = [
     "normalized/events.json",
+    "normalized/date-reviews.json",
     "normalized/excluded.json",
     "normalized/invalid.json",
     "normalized/dedup-decisions.json",
   ];
-  atomicJson(join(runDir, artifactRefs[0]), envelope(run.runId, null, events));
+  atomicJson(join(runDir, "normalized/events.json"), envelope(run.runId, null, events));
   atomicJson(
-    join(runDir, artifactRefs[1]),
+    join(runDir, "normalized/date-reviews.json"),
+    envelope(run.runId, null, dateReviews),
+  );
+  atomicJson(
+    join(runDir, "normalized/excluded.json"),
     envelope(run.runId, null, excluded),
   );
-  atomicJson(join(runDir, artifactRefs[2]), envelope(run.runId, null, invalid));
   atomicJson(
-    join(runDir, artifactRefs[3]),
+    join(runDir, "normalized/invalid.json"),
+    envelope(run.runId, null, invalid),
+  );
+  atomicJson(
+    join(runDir, "normalized/dedup-decisions.json"),
     envelope(run.runId, null, decisions),
   );
   return {
@@ -856,6 +906,7 @@ export function normalizeRun({ runDir, state, run }) {
     artifactRefs,
     counts: {
       eligiblePreDedup: eligible.length,
+      dateReviewOccurrences: dateReviews.length,
       duplicateCollapsed: eligible.length - events.length,
       acceptedPostDedup: events.length,
       acceptedPrimary: events.length,
@@ -863,6 +914,11 @@ export function normalizeRun({ runDir, state, run }) {
     venueBranches: [...venues.values()],
     sourceAccounting,
     diagnostics,
+    dateQuality: {
+      assessed: eligible.length + dateReviews.length,
+      plausible: eligible.length,
+      ...summarizeDateReviews(dateReviews),
+    },
     sourceReclassifications,
     evidence: {
       uniqueActivities: events.length,

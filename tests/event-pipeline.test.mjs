@@ -262,6 +262,14 @@ test("v3 trace vocabulary covers schedule, evidence, off-map, carry-forward, hol
   for (const code of [
     "anytime",
     "schedule_unverified",
+    "missing_date",
+    "unparseable_date",
+    "conflicting_start_fields",
+    "implausibly_long_interval",
+    "far_future",
+    "known_placeholder_year",
+    "waitlist_placeholder_date",
+    "date_assessment_failed",
     "editorial_sufficient",
     "secret_tba",
     "carry_forward_stale",
@@ -1681,6 +1689,7 @@ test("code normalizer filters, preserves cross-source candidates, provenance, an
     });
     assert.deepEqual(result.counts, {
       eligiblePreDedup: 2,
+      dateReviewOccurrences: 0,
       duplicateCollapsed: 0,
       acceptedPostDedup: 2,
       acceptedPrimary: 2,
@@ -1702,6 +1711,7 @@ test("code normalizer filters, preserves cross-source candidates, provenance, an
       Catch: {
         occurrencesEmitted: 3,
         excludedOccurrences: 2,
+        dateReviewOccurrences: 0,
         eligiblePreDedup: 1,
         duplicateCollapsed: 0,
         acceptedPrimary: 1,
@@ -1709,6 +1719,7 @@ test("code normalizer filters, preserves cross-source candidates, provenance, an
       SISTIC: {
         occurrencesEmitted: 1,
         excludedOccurrences: 0,
+        dateReviewOccurrences: 0,
         eligiblePreDedup: 1,
         duplicateCollapsed: 0,
         acceptedPrimary: 1,
@@ -1725,6 +1736,166 @@ test("code normalizer filters, preserves cross-source candidates, provenance, an
       "membership_offer",
       "online",
     ]);
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("date quality review partitions questionable schedules before deduplication and venues", () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-normalizer-date-review-${process.pid}-${Date.now()}`,
+  );
+  const fixtureRef = "raw/example/details/events.json";
+  mkdirSync(dirname(join(runDir, fixtureRef)), { recursive: true });
+  writeFileSync(
+    join(runDir, fixtureRef),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      counts: { records: 3 },
+      records: [
+        {
+          sourceId: "plausible",
+          title: "Plausible event",
+          mode: "physical",
+          dateText: "25 Jul 2026",
+          venue: "Venue A",
+          detailUrl: "https://example.com/plausible",
+          performances: [],
+        },
+        {
+          sourceId: "undated",
+          title: "Undated event",
+          mode: "physical",
+          dateText: null,
+          venue: "Venue B",
+          detailUrl: "https://example.com/undated",
+          fieldCompleteness: {
+            schedule: { evidenceHash: "undated-evidence" },
+          },
+          performances: [],
+        },
+        {
+          sourceId: "placeholder",
+          title: "Future waitlist",
+          mode: "physical",
+          dateText: "2050-01-01",
+          availability: "waitlist",
+          venue: "Venue C",
+          detailUrl: "https://example.com/placeholder",
+          performances: [],
+        },
+      ],
+    }),
+  );
+  const refs = [0, 1, 2].map((index) => `${fixtureRef}#/records/${index}`);
+  try {
+    const result = normalizeRun({
+      runDir,
+      state: {
+        sources: {
+          Example: {
+            status: "success",
+            invalidSourceRecordRefs: [],
+            processedSourceRecordRefs: refs,
+          },
+        },
+      },
+      run: { runId: "run-date-review", window: singaporeWindow("2026-07-22") },
+    });
+    const events = JSON.parse(
+      readFileSync(join(runDir, "normalized/events.json"), "utf8"),
+    ).records;
+    const reviews = JSON.parse(
+      readFileSync(join(runDir, "normalized/date-reviews.json"), "utf8"),
+    ).records;
+    assert.equal(events.length, 1);
+    assert.equal(reviews.length, 2);
+    assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(result.counts.dateReviewOccurrences, 2);
+    assert.equal(result.venueBranches.length, 1);
+    assert.deepEqual(
+      result.venueBranches.flatMap(({ eventIds }) => eventIds),
+      [events[0].id],
+    );
+    assert.equal(result.sourceAccounting.Example.dateReviewOccurrences, 2);
+    assert.equal(result.dateQuality.assessed, 3);
+    assert.equal(result.dateQuality.plausible, 1);
+    assert.equal(result.dateQuality.needsReview, 2);
+    assert.deepEqual(
+      reviews.map(({ status }) => status),
+      ["needs_review", "needs_review"],
+    );
+    assert.ok(
+      reviews.every(
+        ({ event }) =>
+          event.lifecycleState === "held" &&
+          event.reviewStatus === "needs_review" &&
+          event.venueId === null,
+      ),
+    );
+    assert.ok(
+      reviews.some(({ reasonCodes }) => reasonCodes.includes("missing_date")),
+    );
+    assert.ok(
+      reviews.some(({ reasonCodes }) =>
+        reasonCodes.includes("known_placeholder_year"),
+      ),
+    );
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("date quality assessment failures hold only the affected event", () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-normalizer-date-failure-${process.pid}-${Date.now()}`,
+  );
+  const fixtureRef = "raw/example/details/event.json";
+  mkdirSync(dirname(join(runDir, fixtureRef)), { recursive: true });
+  writeFileSync(
+    join(runDir, fixtureRef),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      counts: { records: 1 },
+      records: [
+        {
+          sourceId: "event",
+          title: "Event",
+          mode: "physical",
+          dateText: "25 Jul 2026",
+          venue: "Venue A",
+          detailUrl: "https://example.com/event",
+          performances: [],
+        },
+      ],
+    }),
+  );
+  try {
+    const result = normalizeRun({
+      runDir,
+      state: {
+        sources: {
+          Example: {
+            status: "success",
+            invalidSourceRecordRefs: [],
+            processedSourceRecordRefs: [`${fixtureRef}#/records/0`],
+          },
+        },
+      },
+      run: { runId: "run-date-failure", window: singaporeWindow("2026-07-22") },
+      assessDateQuality: () => {
+        throw new Error("unexpected parser failure");
+      },
+    });
+    assert.equal(result.counts.dateReviewOccurrences, 1);
+    assert.equal(result.counts.acceptedPostDedup, 0);
+    assert.equal(result.diagnostics[0].reasonCode, "date_assessment_failed");
+    const [review] = JSON.parse(
+      readFileSync(join(runDir, "normalized/date-reviews.json"), "utf8"),
+    ).records;
+    assert.deepEqual(review.reasonCodes, ["date_assessment_failed"]);
   } finally {
     rmSync(runDir, { recursive: true, force: true });
   }
@@ -2056,6 +2227,7 @@ test("normalizer collapses an all-day duplicate into the more precise timed occu
     });
     assert.deepEqual(result.counts, {
       eligiblePreDedup: 2,
+      dateReviewOccurrences: 0,
       duplicateCollapsed: 1,
       acceptedPostDedup: 1,
       acceptedPrimary: 1,
@@ -2072,7 +2244,7 @@ test("normalizer collapses an all-day duplicate into the more precise timed occu
   }
 });
 
-test("normalizer retains undated venue events and audits partial records without a venue", () => {
+test("normalizer routes undated venue events to date review and audits partial records without a venue", () => {
   const runDir = resolve(
     tmpdir(),
     `event-normalizer-partial-${process.pid}-${Date.now()}`,
@@ -2123,13 +2295,15 @@ test("normalizer retains undated venue events and audits partial records without
       state,
       run: { runId: "run-a", window: singaporeWindow("2026-07-11") },
     });
-    assert.equal(result.counts.acceptedPostDedup, 1);
+    assert.equal(result.counts.acceptedPostDedup, 0);
+    assert.equal(result.counts.dateReviewOccurrences, 1);
     assert.equal(result.venueBranches.length, 0);
-    const events = JSON.parse(
-      readFileSync(join(runDir, "normalized/events.json"), "utf8"),
+    const reviews = JSON.parse(
+      readFileSync(join(runDir, "normalized/date-reviews.json"), "utf8"),
     ).records;
-    assert.equal(events[0].dateText, null);
-    assert.equal(events[0].lifecycleState, "held");
+    assert.equal(reviews[0].event.dateText, null);
+    assert.equal(reviews[0].event.lifecycleState, "held");
+    assert.deepEqual(reviews[0].reasonCodes, ["missing_date"]);
     const excluded = JSON.parse(
       readFileSync(join(runDir, "normalized/excluded.json"), "utf8"),
     ).records;
@@ -2204,6 +2378,7 @@ test("normalizer discards structural venue labels, logs them, and only recovers 
       ],
     );
     assert.equal(result.counts.acceptedPostDedup, 1);
+    assert.equal(result.counts.dateReviewOccurrences, 0);
     assert.equal(
       result.venueBranches[0].venue,
       "3 Lor Salleh, Singapore 416747",
@@ -2358,7 +2533,8 @@ test("normalizer upgrades legacy optional-field invalid records without refetchi
       run: { runId: "run-a", window: singaporeWindow("2026-07-11") },
     });
     assert.deepEqual(result.sourceReclassifications, { Catch: [recordRef] });
-    assert.equal(result.counts.acceptedPostDedup, 1);
+    assert.equal(result.counts.acceptedPostDedup, 0);
+    assert.equal(result.counts.dateReviewOccurrences, 1);
     assert.equal(
       JSON.parse(readFileSync(join(runDir, "normalized/invalid.json"), "utf8"))
         .counts.records,
@@ -3797,8 +3973,16 @@ test("status report includes contract accounting, reconciliation, errors, and ne
     normalization: {
       counts: {
         eligiblePreDedup: 1,
+        dateReviewOccurrences: 2,
         duplicateCollapsed: 0,
         acceptedPrimary: 1,
+      },
+      dateQuality: {
+        needsReview: 2,
+        byReason: { missing_date: 2 },
+        bySource: {
+          Catch: { needsReview: 2, reasons: { missing_date: 2 } },
+        },
       },
     },
     venues: {},
@@ -3828,6 +4012,8 @@ test("status report includes contract accounting, reconciliation, errors, and ne
   ])
     assert.match(report, new RegExp(heading));
   assert.match(report, /Listing appearances/);
+  assert.match(report, /Date schedule reviews: 2/);
+  assert.match(report, /missing_date/);
   assert.match(report, /\| 3 \| 2 \| 1 \| 1 \|/);
 });
 

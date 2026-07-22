@@ -52,11 +52,22 @@ test("dashboard payload derives source placement, dedup and exclusions", () => {
     excluded: [
       { reasonCode: "expired", event: { sourceName: "Catch.sg" } },
     ],
+    dateReviews: [
+      {
+        sourceName: "Catch.sg",
+        reasonCodes: ["far_future", "known_placeholder_year"],
+      },
+    ],
   });
 
   assert.equal(payload.sources[0].mapped, 1);
   assert.equal(payload.sources[0].dedup, 1);
-  assert.deepEqual(payload.sources[0].reasons, { expired: 1 });
+  assert.equal(payload.sources[0].review, 1);
+  assert.deepEqual(payload.sources[0].reasons, {
+    expired: 1,
+    far_future: 1,
+    known_placeholder_year: 1,
+  });
   assert.deepEqual(payload.sources[0].fields.title, [2, 0, 0]);
 });
 

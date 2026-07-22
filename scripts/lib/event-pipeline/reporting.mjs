@@ -197,9 +197,10 @@ export function renderStatus(state, run, frontendPlan = null) {
         ]
       : []),
   ];
-  const reconciliation = frontendPlan
+  let reconciliation = frontendPlan
     ? `- Expired events: ${frontendPlan.expiry.expiredEventIds.join(", ") || "none"}\n- Undated review events: ${(frontendPlan.expiry.undatedReviewEventIds ?? []).join(", ") || "none"}\n- Removed landmarks: ${frontendPlan.expiry.removedLandmarkIds.join(", ") || "none"}\n- Geometry changed: ${frontendPlan.geometryChanged}`
     : "- No frontend reconciliation plan was required.";
+  reconciliation += `\n- Date schedule reviews: ${state.normalization?.dateQuality?.needsReview ?? state.normalization?.counts?.dateReviewOccurrences ?? 0}\n- Date review reasons: ${JSON.stringify(state.normalization?.dateQuality?.byReason ?? {})}\n- Date reviews by source: ${JSON.stringify(state.normalization?.dateQuality?.bySource ?? {})}`;
   const publication = state.publication ?? {
     decision: eligibility.eligible ? "publish" : "preserve_previous",
     reasonCodes: eligibility.reasons,
