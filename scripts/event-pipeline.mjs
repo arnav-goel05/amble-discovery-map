@@ -78,6 +78,10 @@ import {
   parseManifest,
   singaporeWindowForDays,
 } from "./lib/event-pipeline/cli-contract.mjs";
+import {
+  buildEventDashboardPayloadFromRun,
+  syncEventDashboard,
+} from "./lib/event-pipeline/dashboard-sync.mjs";
 
 const require = createRequire(import.meta.url);
 const Database = require("better-sqlite3");
@@ -4741,7 +4745,7 @@ function renderStatus(state, run, frontendPlan = null) {
   return renderPipelineStatus(state, run, frontendPlan);
 }
 
-function finalize(options) {
+async function finalize(options) {
   const runDir = runDirectory(options.run);
   const state = loadState(options.run);
   const problems = terminalProblems(state);
@@ -4801,9 +4805,35 @@ function finalize(options) {
     blocker: null,
     nextAction: null,
   });
+  const baseSummary = statusSummary(state, run, frontendPlan);
+  const activeSnapshotId = baseSummary.publication?.activeSnapshotId;
+  const activeLandmarksPath = activeSnapshotId
+    ? join(ROOT, "data/snapshots", activeSnapshotId, "landmarks.json")
+    : null;
+  const highlightedPois =
+    activeLandmarksPath && existsSync(activeLandmarksPath)
+      ? readJson(activeLandmarksPath).length
+      : 0;
+  const dashboardSync = await syncEventDashboard(
+    buildEventDashboardPayloadFromRun(runDir, baseSummary, { highlightedPois }),
+  );
+  pipelineTrace(runDir, {
+    stage: "reporting",
+    action: "dashboard_sync",
+    outcome: dashboardSync.status,
+    entityType: "run",
+    entityId: options.run,
+    reasonCode: dashboardSync.reasonCode ?? null,
+    blocker: dashboardSync.error ?? null,
+    counts: dashboardSync.httpStatus
+      ? { httpStatus: dashboardSync.httpStatus }
+      : {},
+    nextAction: null,
+  });
   const tracePath = join(runDir, "logs/trace.jsonl");
   const summary = {
-    ...statusSummary(state, run, frontendPlan),
+    ...baseSummary,
+    dashboardSync,
     trace: {
       path: "logs/trace.jsonl",
       sha256: existsSync(tracePath) ? sha(readFileSync(tracePath)) : null,
@@ -4818,7 +4848,7 @@ function finalize(options) {
     renderStatus(state, run, frontendPlan),
   );
   process.stdout.write(
-    `${JSON.stringify({ ...progressResponse(state), statusPath: join(runDir, "status.md"), statusJsonPath: join(runDir, "status.json"), tracePath }, null, 2)}\n`,
+    `${JSON.stringify({ ...progressResponse(state), dashboardSync, statusPath: join(runDir, "status.md"), statusJsonPath: join(runDir, "status.json"), tracePath }, null, 2)}\n`,
   );
 }
 
