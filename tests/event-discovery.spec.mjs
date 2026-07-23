@@ -145,6 +145,50 @@ test("the map starts directly without a startup surface", async ({ page }) => {
   await page.evaluate(() => window._map?.remove()).catch(() => {});
 });
 
+test("the pixel minimap is passive and follows event filters", async ({
+  page,
+}) => {
+  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  const minimap = page.locator("#event-density-minimap");
+  await expect(minimap).toBeVisible();
+  await expect(
+    page.locator(".event-density-minimap__status"),
+  ).toHaveCount(0);
+  await expect(minimap).toHaveCSS("pointer-events", "none");
+  await expect(minimap).toHaveAttribute("data-activity-count", "4");
+  await expect(minimap).toHaveAttribute("data-viewport-visible", "true");
+  const closeViewportWidth = Number(
+    await minimap.getAttribute("data-viewport-width"),
+  );
+  const placement = await page.evaluate(() => {
+    const toolbar = document
+      .getElementById("landmark-event-search")
+      .getBoundingClientRect();
+    const minimapBounds = document
+      .getElementById("event-density-minimap")
+      .getBoundingClientRect();
+    return {
+      belowToolbar: minimapBounds.top >= toolbar.bottom,
+      rightAligned: Math.abs(minimapBounds.right - toolbar.right) <= 1,
+    };
+  });
+  expect(placement).toEqual({ belowToolbar: true, rightAligned: true });
+  await page.evaluate(() => window._map?.jumpTo({ zoom: 10 }));
+  await expect
+    .poll(async () =>
+      Number(await minimap.getAttribute("data-viewport-width")),
+    )
+    .toBeGreaterThan(closeViewportWidth);
+
+  await page
+    .locator("#landmark-event-search-input")
+    .fill("Second Upcoming Event");
+  await expect(minimap).toHaveAttribute("data-activity-count", "1");
+  await page.locator("#landmark-event-search-input").fill("");
+  await expect(minimap).toHaveAttribute("data-activity-count", "4");
+  await page.evaluate(() => window._map?.remove()).catch(() => {});
+});
+
 test("anonymous startup renders one compact full-title pill and tracks its map anchor", async ({
   page,
 }) => {

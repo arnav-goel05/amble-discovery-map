@@ -5,6 +5,7 @@ import { APPROVED_LANDMARKS } from "../data/approved-landmarks.js";
 import { focusMapLocation } from "./map-location-focus.js";
 import { createEventDiscoveryModel } from "./events/event-discovery-model.js";
 import { eventCategory } from "./landmark-event-pill.js";
+import { createEventDensityMinimap } from "./event-density-minimap.js";
 
 const NAVBAR_CATEGORIES = [
   "Exhibitions",
@@ -31,6 +32,7 @@ export function addEsplanadePerformanceScene(
   map,
   {
     areaIdOf,
+    discoveryAreaAsset,
     landmarks: approvedLandmarks = APPROVED_LANDMARKS,
     offMapEvents: approvedOffMapEvents = [],
     onDiscoveryCandidatesChanged,
@@ -75,6 +77,11 @@ export function addEsplanadePerformanceScene(
       sourceSnapshotId,
     });
   let discoveryModel = createDiscoveryModel();
+  const densityMinimap = createEventDensityMinimap({
+    discoveryAreaAsset,
+    discoveryModel,
+    map,
+  });
   const availableCategories = new Set(discoveryModel.categories());
   const selectEventResult = (result, trigger = document.activeElement) => {
     const landmark = landmarks.find((item) => item.id === result?.landmarkId);
@@ -113,7 +120,10 @@ export function addEsplanadePerformanceScene(
       availableCategories.has(category),
     ),
     discoveryModel,
-    onFilterResult: (result) => pillLayer.applyDiscoveryResult(result),
+    onFilterResult: (result) => {
+      densityMinimap.setDiscoveryResult(result);
+      return pillLayer.applyDiscoveryResult(result);
+    },
     onResultSelect: selectEventResult,
   });
   const publishDiscoveryCandidates = () => {
@@ -224,6 +234,7 @@ export function addEsplanadePerformanceScene(
           })),
         });
         discoveryModel = createDiscoveryModel();
+        densityMinimap.setDiscoveryModel(discoveryModel);
         eventSearch.setDiscoveryModel?.(discoveryModel);
         publishDiscoveryCandidates();
         document.body.dataset.landmarkEventPillCount = String(landmarks.length);
@@ -234,6 +245,7 @@ export function addEsplanadePerformanceScene(
         pillLayer.destroy();
         eventPanel.destroy();
         eventSearch.destroy();
+        densityMinimap.destroy();
       },
     },
   ];

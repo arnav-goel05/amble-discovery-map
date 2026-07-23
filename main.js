@@ -480,9 +480,16 @@ async function bootstrapApplication() {
         });
         discoveryAreaLayers.start();
         window._discoveryAreaLayers = discoveryAreaLayers;
+        const locationController = createLocationController({
+          model: createLocationModel({
+            resolveCoarseArea: (coordinates) =>
+              resolveCoarseAreaFromFeatures(coordinates, discoveryAreaAsset),
+          }),
+        });
         activityScenes = addEsplanadePerformanceScene(map, {
           landmarks: approvedLandmarks,
           offMapEvents: approvedOffMapEvents,
+          discoveryAreaAsset,
           areaIdOf: ({ event, landmark }) => {
             const explicit =
               event?.areaId || landmark?.areaId || landmark?.subzoneId || null;
@@ -509,12 +516,6 @@ async function bootstrapApplication() {
         eventSceneController =
           activityScenes.find(({ id }) => id === "landmark-event-pills") ||
           null;
-        const locationController = createLocationController({
-          model: createLocationModel({
-            resolveCoarseArea: (coordinates) =>
-              resolveCoarseAreaFromFeatures(coordinates, discoveryAreaAsset),
-          }),
-        });
         const locationLayers = createLocationContextLayerManager({
           map,
           beforeLayerId: "buildings-3d",
