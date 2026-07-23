@@ -86,6 +86,10 @@ export function createTransitContextLayerManager({
           type: "line",
           source: TRANSIT_CONTEXT_SOURCE_ID,
           filter: ["==", ["get", "featureClass"], "rail_line"],
+          layout: {
+            "line-cap": "round",
+            "line-join": "round",
+          },
           paint: {
             "line-color": railLineColourExpression,
             "line-opacity": 0.82,

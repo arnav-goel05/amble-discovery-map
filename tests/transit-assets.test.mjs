@@ -53,11 +53,10 @@ const sources = () => ({
       geometry: {
         type: "LineString",
         coordinates: [
-          [103.84, 1.29],
-          [103.845, 1.295],
-          [103.85, 1.3],
-          [103.855, 1.305],
-          [103.86, 1.31],
+          [103.8515, 1.2935],
+          [103.856, 1.302],
+          [103.863, 1.306],
+          [103.871, 1.311],
         ],
       },
     },
@@ -171,11 +170,26 @@ test("rail lines retain identity while runtime geometry is simplified and valida
   assert.equal(line.properties.railLineCode, "EW");
   assert.equal(line.properties.simplificationTolerance, 0.0001);
   assert.deepEqual(line.geometry.coordinates[0], [103.871, 1.311]);
+  assert.deepEqual(line.geometry.coordinates.at(-1), [103.8515, 1.2935]);
+  assert.ok(line.geometry.coordinates.length > 2);
   assert.ok(
-    Math.abs(line.geometry.coordinates[1][0] - 103.8515) < 1e-12 &&
-      Math.abs(line.geometry.coordinates[1][1] - 1.2935) < 1e-12,
+    line.geometry.coordinates.some(
+      ([longitude, latitude]) =>
+        Math.abs(longitude - 103.863) < 1e-12 &&
+        Math.abs(latitude - 1.306) < 1e-12,
+    ),
+    "the runtime route should retain curved authoritative centreline vertices",
   );
+  assert.equal(
+    line.properties.geometrySource,
+    "authoritative_rail_centreline",
+  );
+  assert.equal(line.properties.authoritativeSegments, 1);
+  assert.equal(line.properties.curvedFallbackSegments, 0);
   assert.equal(manifest.validationReport.geometry, true);
+  assert.equal(manifest.validationReport.authoritativeRailGeometry, true);
+  assert.equal(manifest.validationReport.authoritativeSegments, 1);
+  assert.equal(manifest.validationReport.curvedFallbackSegments, 0);
   assert.equal(manifest.validationReport.simplificationTolerance, 0.0001);
 
   const invalid = sources();
@@ -190,6 +204,36 @@ test("rail lines retain identity while runtime geometry is simplified and valida
       error instanceof TransitContextAssetError &&
       error.code === "transit_geometry_invalid",
   );
+});
+
+test("rail routes use a smooth station curve when authoritative geometry cannot be matched", () => {
+  const source = sources();
+  source.lines.features[0].geometry.coordinates = [
+    [103.6, 1.2],
+    [103.61, 1.21],
+  ];
+  const { asset, manifest } = build({
+    railLinesGeoJson: source.lines,
+    sourceBytes: {
+      [sourceConfigs.exits.datasetId]: JSON.stringify(source.exits),
+      [sourceConfigs.railLines.datasetId]: JSON.stringify(source.lines),
+      [sourceConfigs.stationNames.datasetId]: JSON.stringify(source.names),
+      [sourceConfigs.stationCodes.datasetId]: JSON.stringify(source.codes),
+    },
+  });
+  const line = asset.features.find(
+    ({ properties }) => properties.featureClass === "rail_line",
+  );
+  assert.equal(line.properties.geometrySource, "curved_station_fallback");
+  assert.equal(line.properties.authoritativeSegments, 0);
+  assert.equal(line.properties.curvedFallbackSegments, 1);
+  assert.ok(line.geometry.coordinates.length > 2);
+  assert.deepEqual(line.geometry.coordinates[0], [103.871, 1.311]);
+  assert.ok(
+    Math.abs(line.geometry.coordinates.at(-1)[0] - 103.8515) < 1e-12 &&
+      Math.abs(line.geometry.coordinates.at(-1)[1] - 1.2935) < 1e-12,
+  );
+  assert.equal(manifest.validationReport.authoritativeRailGeometry, false);
 });
 
 function buildArguments(source) {
