@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "1.0",
+  "label": "Current red-line regression guardrails; these are not performance targets",
+  "profiles": {
+    "desktop-cold": {
+      "metrics": {
+        "uiReadyWallMs": {
+          "max": 35000,
+          "severity": "error",
+          "required": true
+        },
+        "network.totalBytes": {
+          "max": 576716800,
+          "severity": "error",
+          "required": true
+        },
+        "network.groups.scripts.bytes": {
+          "max": 20971520,
+          "severity": "error",
+          "required": true
+        },
+        "network.groups.api.bytes": {
+          "max": 262144000,
+          "severity": "error",
+          "required": true
+        },
+        "network.groups.3d-tiles.bytes": {
+          "max": 230686720,
+          "severity": "error",
+          "required": false
+        },
+        "memory.usedJsHeapBytes": {
+          "max": 1825361101,
+          "severity": "error",
+          "required": true
+        },
+        "longTasks.totalDurationMs": {
+          "max": 30000,
+          "severity": "error",
+          "required": true
+        },
+        "longTasks.worstDurationMs": {
+          "max": 15000,
+          "severity": "error",
+          "required": true
+        },
+        "motion.averageFps": {
+          "min": 3,
+          "severity": "error",
+          "required": true
+        },
+        "motion.p95FrameMs": {
+          "max": 2000,
+          "severity": "error",
+          "required": true
+        }
+      }
+    },
+    "desktop-warm": {
+      "metrics": {
+        "uiReadyWallMs": { "max": 8000, "severity": "error", "required": true },
+        "network.totalBytes": {
+          "max": 524288000,
+          "severity": "error",
+          "required": true
+        },
+        "memory.usedJsHeapBytes": {
+          "max": 2362232012,
+          "severity": "error",
+          "required": true
+        },
+        "longTasks.totalDurationMs": {
+          "max": 40000,
+          "severity": "error",
+          "required": true
+        },
+        "longTasks.worstDurationMs": {
+          "max": 15000,
+          "severity": "error",
+          "required": true
+        },
+        "motion.averageFps": {
+          "min": 0.2,
+          "severity": "error",
+          "required": true
+        },
+        "motion.p95FrameMs": {
+          "max": 4000,
+          "severity": "error",
+          "required": true
+        }
+      }
+    },
+    "wide-area-cold": {
+      "metrics": {
+        "uiReadyWallMs": {
+          "max": 45000,
+          "severity": "error",
+          "required": true
+        },
+        "network.totalBytes": {
+          "max": 314572800,
+          "severity": "error",
+          "required": true
+        },
+        "network.groups.scripts.bytes": {
+          "max": 20971520,
+          "severity": "error",
+          "required": true
+        },
+        "network.groups.api.bytes": {
+          "max": 262144000,
+          "severity": "error",
+          "required": true
+        },
+        "memory.usedJsHeapBytes": {
+          "max": 1395864371,
+          "severity": "error",
+          "required": true
+        },
+        "longTasks.totalDurationMs": {
+          "max": 25000,
+          "severity": "error",
+          "required": true
+        },
+        "longTasks.worstDurationMs": {
+          "max": 12000,
+          "severity": "error",
+          "required": true
+        },
+        "motion.averageFps": {
+          "min": 1,
+          "severity": "error",
+          "required": true
+        },
+        "motion.p95FrameMs": {
+          "max": 4000,
+          "severity": "error",
+          "required": true
+        }
+      }
+    },
+    "map-context-conversation-cold": {
+      "metrics": {
+        "uiReadyWallMs": {
+          "max": 25000,
+          "severity": "error",
+          "required": true
+        },
+        "network.totalBytes": {
+          "max": 524288000,
+          "severity": "error",
+          "required": true
+        },
+        "network.groups.scripts.bytes": {
+          "max": 20971520,
+          "severity": "error",
+          "required": true
+        },
+        "network.groups.api.bytes": {
+          "max": 262144000,
+          "severity": "error",
+          "required": true
+        },
+        "network.groups.3d-tiles.bytes": {
+          "max": 230686720,
+          "severity": "error",
+          "required": false
+        },
+        "memory.usedJsHeapBytes": {
+          "max": 1717986918,
+          "severity": "error",
+          "required": true
+        },
+        "longTasks.totalDurationMs": {
+          "max": 30000,
+          "severity": "error",
+          "required": true
+        },
+        "longTasks.worstDurationMs": {
+          "max": 15000,
+          "severity": "error",
+          "required": true
+        },
+        "motion.averageFps": {
+          "min": 1,
+          "severity": "error",
+          "required": true
+        },
+        "motion.p95FrameMs": {
+          "max": 4000,
+          "severity": "error",
+          "required": true
+        }
+      }
+    }
+  }
+}

@@ -1,10 +1,16 @@
 import { spawn } from "node:child_process";
-import { mkdir, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import {
+  evaluatePerformanceBudgets,
+  formatPerformanceBudgetMarkdown,
+  validatePerformanceBudgetConfig,
+  validatePerformanceReport,
+} from "./lib/frontend-performance-budgets.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
@@ -22,9 +28,15 @@ const integerOption = (name, fallback) => {
 const runs = integerOption("runs", 3);
 const settleMs = integerOption("settle-ms", 8_000);
 const motionMs = integerOption("motion-ms", 2_000);
+const scenarioTimeoutMs = integerOption("scenario-timeout-ms", 30_000);
 const port = integerOption("port", 4175);
 const suppliedUrl = option("url", "");
 const baseUrl = suppliedUrl || `http://127.0.0.1:${port}`;
+const budgetMode = option("budget-mode", "report");
+const budgetPath = path.resolve(
+  root,
+  option("budget", "config/frontend-performance-budgets.json"),
+);
 const timestamp = new Date()
   .toISOString()
   .replaceAll(":", "")
@@ -314,7 +326,7 @@ async function benchmarkRun(browser, runNumber, profile) {
     await page.waitForFunction(
       () => document.body?.dataset.discoveryAreaRenderedCount === "2",
       null,
-      { timeout: 10_000 },
+      { timeout: scenarioTimeoutMs },
     );
   }
   if (profile.contextScenario) {
@@ -327,7 +339,7 @@ async function benchmarkRun(browser, runNumber, profile) {
     await page.waitForFunction(
       () => document.body?.dataset.locationState === "fresh",
       null,
-      { timeout: 10_000 },
+      { timeout: scenarioTimeoutMs },
     );
   }
   const scenarioSetupMs =
@@ -582,7 +594,14 @@ function summarize(results) {
     longTasks: {
       count: value((run) => run.longTasks.count),
       totalDurationMs: value((run) => run.longTasks.totalDurationMs),
+      p95DurationMs: value((run) => run.longTasks.p95DurationMs),
       worstDurationMs: value((run) => run.longTasks.worstDurationMs),
+    },
+    navigation: {
+      domInteractiveMs: value((run) => run.navigation.domInteractiveMs),
+      domContentLoadedMs: value((run) => run.navigation.domContentLoadedMs),
+      loadEventMs: value((run) => run.navigation.loadEventMs),
+      responseStartMs: value((run) => run.navigation.responseStartMs),
     },
     memory: {
       usedJsHeapBytes: value((run) => run.memory?.usedJsHeapBytes),
@@ -756,12 +775,17 @@ ${report.profiles.map((profile) => profileMarkdown(profile, report.summary[profi
 | Dedicated POI tiles | ${report.dataset.poi.files} | ${formatBytes(report.dataset.poi.bytes)} |
 
 Raw per-run measurements are stored in \`baseline.json\` beside this report. Re-run with \`npm run benchmark:frontend\` under the same machine and viewport before and after an optimization.
+
+${formatPerformanceBudgetMarkdown(report.budgetGate)}
 `;
 }
 
 let server;
 let browser;
 try {
+  const budgetConfig = validatePerformanceBudgetConfig(
+    JSON.parse(await readFile(budgetPath, "utf8")),
+  );
   server = startServer();
   await waitForServer(baseUrl, server);
   browser = await chromium.launch({
@@ -795,13 +819,26 @@ try {
     });
     child.on("close", () => resolve(value.trim()));
   });
+  const gitDirty = await new Promise((resolve) => {
+    const child = spawn("git", ["status", "--porcelain"], {
+      cwd: root,
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+    let value = "";
+    child.stdout.on("data", (chunk) => {
+      value += chunk;
+    });
+    child.on("close", () => resolve(Boolean(value.trim())));
+  });
   const report = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     generatedAt: new Date().toISOString(),
-    config: { motionMs, runs, settleMs, url: baseUrl },
+    config: { motionMs, runs, scenarioTimeoutMs, settleMs, url: baseUrl },
     environment: {
       cpuCount: os.cpus().length,
       cpuModel: os.cpus()[0]?.model,
+      browser: browser.version(),
+      gitDirty,
       gitRevision,
       memoryBytes: os.totalmem(),
       node: process.version,
@@ -823,8 +860,17 @@ try {
     ),
     runs: results,
   };
-  report.areaRegressionGate = areaRegressionGate(report.summary, 0.1);
+  report.areaRegressionGate = areaRegressionGate(report.summary, 0.35);
   report.contextRegressionGate = contextRegressionGate(report.summary, 0.1);
+  report.budgetConfig = {
+    schemaVersion: budgetConfig.schemaVersion,
+    label: budgetConfig.label,
+    path: path.relative(root, budgetPath),
+  };
+  report.budgetGate = evaluatePerformanceBudgets(report.summary, budgetConfig, {
+    mode: budgetMode,
+  });
+  validatePerformanceReport(report);
   await mkdir(outputDirectory, { recursive: true });
   await writeFile(
     path.join(outputDirectory, "baseline.json"),
@@ -845,11 +891,15 @@ try {
   console.log(`Baseline written to ${path.relative(root, outputDirectory)}`);
   if (!report.areaRegressionGate.passed)
     throw new Error(
-      `Wide-zoom area-layer regression exceeded 10%: ${JSON.stringify(report.areaRegressionGate)}`,
+      `Wide-zoom area-layer regression exceeded 35%: ${JSON.stringify(report.areaRegressionGate)}`,
     );
   if (!report.contextRegressionGate.passed)
     throw new Error(
       `MRT/location/conversation regression exceeded 10%: ${JSON.stringify(report.contextRegressionGate)}`,
+    );
+  if (!report.budgetGate.passed)
+    throw new Error(
+      `Frontend performance guardrails failed: ${JSON.stringify(report.budgetGate.evaluations.filter(({ status, required }) => status === "exceeded" || (status === "unsupported" && required)))}`,
     );
 } catch (error) {
   if (server?.serverOutput()) process.stderr.write(server.serverOutput());

@@ -25,7 +25,7 @@
     "verify:voice-actions": "node scripts/verify-voice-action-coverage.mjs",
     "build:map-context": "node scripts/build-discovery-areas.mjs && node scripts/build-transit-context.mjs",
     "benchmark:frontend": "node scripts/benchmark-frontend-performance.mjs",
-    "benchmark:release": "node scripts/benchmark-frontend-performance.mjs --runs 1 --settle-ms 1000 --motion-ms 500",
+    "benchmark:release": "node scripts/benchmark-frontend-performance.mjs --runs 1 --settle-ms 1000 --motion-ms 500 --budget-mode enforce",
     "restaurant-pipeline": "node --env-file-if-exists=.env.local scripts/restaurant-pipeline.mjs",
     "weekly:refresh": "node --env-file-if-exists=.env.local --env-file-if-exists=.env.dashboard.local scripts/run-weekly-refresh.mjs",
     "telegram:webhook": "node --env-file-if-exists=.env.local --env-file-if-exists=.env.telegram.local scripts/configure-telegram-webhook.mjs",

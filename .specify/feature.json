@@ -1,1 +1,3 @@
-{ "feature_directory": "specs/007-retire-editorial-sources" }
+{
+  "feature_directory": "specs/008-add-performance-observability"
+}

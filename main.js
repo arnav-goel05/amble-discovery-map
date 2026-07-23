@@ -216,6 +216,7 @@ async function bootstrapApplication() {
     hash: true,
     ...INITIAL_CAMERA,
   });
+  globalThis.__performanceDiagnostics?.attachMap?.(map);
   document.body.dataset.mapInitialized = "true";
 
   const mapCanvas = map.getCanvas();
@@ -322,6 +323,8 @@ async function bootstrapApplication() {
   );
 
   const cleanupAppLayers = () => {
+    globalThis.__performanceDiagnostics?.destroy?.();
+    delete globalThis.__performanceDiagnostics;
     experienceIntro.destroy();
     featureTour.destroy();
     mapCanvas.removeEventListener("click", dismissPanelsFromMap);
