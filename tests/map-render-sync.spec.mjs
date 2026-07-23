@@ -73,8 +73,8 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({ pa
   expect(result.maximumPitch).toBeCloseTo(45, 5);
   expect(result.refinementStates).toContain("moving-coarse");
   expect(result.refinementStates).toContain("full-detail");
-  expect(result.backgroundScreenSpaceErrors).toContain("12");
+  expect(result.backgroundScreenSpaceErrors).toContain("24");
   expect(result.backgroundScreenSpaceErrors).toContain("4");
-  expect(result.poiScreenSpaceErrors).toContain("12");
+  expect(result.poiScreenSpaceErrors).toContain("24");
   expect(result.poiScreenSpaceErrors).toContain("4");
 });

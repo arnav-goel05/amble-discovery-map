@@ -41,6 +41,135 @@ const EXPLORE_CAMERA = {
   bearing: -30,
 };
 
+function normalizeInjectedActivityFixture(snapshot) {
+  const canonical = snapshot.activities?.records ?? snapshot.activities;
+  if (Array.isArray(canonical))
+    return { landmarks: snapshot.landmarks ?? [], activities: canonical };
+  const activities = new Map();
+  const landmarks = (snapshot.landmarks ?? []).map((landmark) => {
+    const activityRefs = [];
+    for (const event of landmark.events ?? []) {
+      const activityId =
+        event.activityId ??
+        event.parentActivityId ??
+        event.parentListingId ??
+        `activity:${event.id}`;
+      const sessionId = `session:${activityId}`;
+      const venueGroupId = `venue-group:${activityId}:${landmark.id}`;
+      const activity = activities.get(activityId) ?? {
+        schemaVersion: "1.0",
+        activityId,
+        title: event.title,
+        description: event.description ?? null,
+        category: event.category ?? null,
+        organizer: event.organizer ?? null,
+        price: event.price ?? null,
+        lifecycleState: event.lifecycleState ?? "active",
+        freshness: event.freshness ?? "current",
+        sources: [],
+        sessions: [
+          {
+            sessionId,
+            schedule: event.schedule ?? {
+              kind: "exact",
+              start: event.startsAt ?? null,
+              end: event.endsAt ?? null,
+              displayText: event.dateText ?? null,
+            },
+            availability: event.availability ?? "unknown",
+            venueGroupIds: [],
+          },
+        ],
+        venueGroups: [],
+        sourceOffers: [],
+        scheduleSummary: {
+          kind: event.schedule?.kind ?? "exact",
+          label: event.schedule?.displayText ?? event.dateText ?? "Schedule unavailable",
+          sessionCount: 1,
+        },
+      };
+      const session = activity.sessions[0];
+      if (!session.venueGroupIds.includes(venueGroupId))
+        session.venueGroupIds.push(venueGroupId);
+      if (
+        !activity.venueGroups.some(
+          (group) => group.venueGroupId === venueGroupId,
+        )
+      )
+        activity.venueGroups.push({
+          venueGroupId,
+          activityId,
+          label: event.venue ?? landmark.label,
+          address: event.address ?? null,
+          publicPlacement: "mapped",
+          mappingStatus: "approved",
+          approvedLocationId: landmark.id,
+          coordinates: landmark.anchor,
+          sessionIds: [sessionId],
+        });
+      activities.set(activityId, activity);
+      activityRefs.push({ activityId, venueGroupIds: [venueGroupId] });
+    }
+    const { events: _events, ...publicLandmark } = landmark;
+    return { ...publicLandmark, activityRefs };
+  });
+  for (const event of snapshot.offMapEvents ?? snapshot.events?.offMap ?? []) {
+    const activityId =
+      event.activityId ??
+      event.parentActivityId ??
+      event.parentListingId ??
+      `activity:${event.id}`;
+    const sessionId = `session:${activityId}`;
+    const venueGroupId = `venue-group:${activityId}:off-map`;
+    activities.set(activityId, {
+      schemaVersion: "1.0",
+      activityId,
+      title: event.title,
+      description: event.description ?? null,
+      category: event.category ?? null,
+      organizer: event.organizer ?? null,
+      price: event.price ?? null,
+      lifecycleState: event.lifecycleState ?? "active",
+      freshness: event.freshness ?? "current",
+      sources: [],
+      sessions: [
+        {
+          sessionId,
+          schedule: event.schedule ?? {
+            kind: "unverified",
+            start: null,
+            end: null,
+            displayText: event.dateText ?? null,
+          },
+          availability: event.availability ?? "unknown",
+          venueGroupIds: [venueGroupId],
+        },
+      ],
+      venueGroups: [
+        {
+          venueGroupId,
+          activityId,
+          label: event.venue ?? "Location TBA",
+          address: event.address ?? null,
+          publicPlacement: "off_map",
+          mappingStatus: event.mappingStatus ?? "not_required",
+          approvedLocationId: null,
+          coordinates: null,
+          sessionIds: [sessionId],
+          offMapSubtype: event.offMapSubtype ?? "geometry_unavailable",
+        },
+      ],
+      sourceOffers: [],
+      scheduleSummary: {
+        kind: event.schedule?.kind ?? "unverified",
+        label: event.schedule?.displayText ?? event.dateText ?? "Schedule unavailable",
+        sessionCount: 1,
+      },
+    });
+  }
+  return { landmarks, activities: [...activities.values()] };
+}
+
 async function bootstrapApplication() {
   const queryParams = new URLSearchParams(window.location.search);
   resetSavedMapView({ preserve: queryParams.has("autoStart") });
@@ -80,7 +209,7 @@ async function bootstrapApplication() {
   let activeSnapshot = null;
   let approvedPois = [];
   let approvedLandmarks = [];
-  let approvedOffMapEvents = [];
+  let approvedActivities = [];
   let discoveryAreaAsset = { type: "FeatureCollection", features: [] };
   let transitContextAsset = { type: "FeatureCollection", features: [] };
   const loadContextAsset = async (url) => {
@@ -102,10 +231,11 @@ async function bootstrapApplication() {
   if (queryParams.has("emptyApprovedSnapshot")) {
     document.body.dataset.snapshotState = "empty-test-fixture";
   } else if (injectedSnapshot) {
+    const injectedActivities =
+      normalizeInjectedActivityFixture(injectedSnapshot);
     approvedPois = injectedSnapshot.pois ?? [];
-    approvedLandmarks = injectedSnapshot.landmarks ?? [];
-    approvedOffMapEvents =
-      injectedSnapshot.events?.offMap ?? injectedSnapshot.offMapEvents ?? [];
+    approvedLandmarks = injectedActivities.landmarks;
+    approvedActivities = injectedActivities.activities;
     document.body.dataset.snapshotState = injectedSnapshot.stale
       ? "potentially-outdated"
       : "injected-test-fixture";
@@ -120,7 +250,7 @@ async function bootstrapApplication() {
       activeSnapshot = await loadPublicSnapshot();
       approvedPois = activeSnapshot.pois;
       approvedLandmarks = activeSnapshot.landmarks;
-      approvedOffMapEvents = activeSnapshot.events?.offMap ?? [];
+      approvedActivities = activeSnapshot.activities?.records ?? [];
       document.body.dataset.snapshotState = activeSnapshot.stale
         ? "potentially-outdated"
         : "fresh";
@@ -289,11 +419,12 @@ async function bootstrapApplication() {
       });
       const events = eventSceneController?.reconcile?.({
         landmarks: next.landmarks,
-        offMapEvents: next.events?.offMap ?? [],
+        activities: next.activities?.records ?? [],
+        sourceSnapshotId: next.metadata.snapshotId,
       }) || { changed: false };
       approvedLandmarks = next.landmarks;
       approvedPois = next.pois;
-      approvedOffMapEvents = next.events?.offMap ?? [];
+      approvedActivities = next.activities?.records ?? [];
       poiTilesets = nextPois;
       activeSnapshot = next;
       document.body.dataset.snapshotReconciled =
@@ -491,7 +622,7 @@ async function bootstrapApplication() {
         });
         activityScenes = addEsplanadePerformanceScene(map, {
           landmarks: approvedLandmarks,
-          offMapEvents: approvedOffMapEvents,
+          activities: approvedActivities,
           discoveryAreaAsset,
           areaIdOf: ({ event, landmark }) => {
             const explicit =

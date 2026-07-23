@@ -21,9 +21,17 @@ const root = resolve(new URL("..", import.meta.url).pathname);
 const pointer = JSON.parse(
   readFileSync(join(root, "data/approved-snapshot.json"), "utf8"),
 );
+const activeManifest = JSON.parse(
+  readFileSync(
+    join(root, "data/snapshots", pointer.snapshotId, "manifest.json"),
+    "utf8",
+  ),
+);
+const internalEventsRef =
+  activeManifest.internalEventsRef ?? activeManifest.eventsRef;
 const activeEvents = JSON.parse(
   readFileSync(
-    join(root, "data/snapshots", pointer.snapshotId, "events.json"),
+    join(root, "data/snapshots", pointer.snapshotId, internalEventsRef),
     "utf8",
   ),
 );

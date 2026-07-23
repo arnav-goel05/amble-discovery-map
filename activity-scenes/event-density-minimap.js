@@ -76,8 +76,15 @@ export function densityPointsFromDiscoveryResult(result) {
   const points = [];
   const seen = new Set();
   for (const activity of result?.events ?? []) {
-    const occurrences =
-      activity.matchingOccurrences?.length > 0
+    const mappedVenueGroups = (activity.venueGroups ?? []).filter(
+      (group) => group.publicPlacement === "mapped" && group.coordinates,
+    );
+    const occurrences = mappedVenueGroups.length
+      ? mappedVenueGroups.map((group) => ({
+          activityId: activity.activityId,
+          anchor: group.coordinates,
+        }))
+      : activity.matchingOccurrences?.length > 0
         ? activity.matchingOccurrences
         : [activity];
     for (const occurrence of occurrences) {

@@ -38,6 +38,7 @@
     "event-sources:retire": "node scripts/retire-event-sources.mjs",
     "event-date-audit": "node scripts/audit-event-dates.mjs",
     "event-activity-project": "node scripts/project-event-activities.mjs",
+    "event-snapshot:migrate-activities": "node scripts/migrate-approved-snapshot-to-activities.mjs",
     "event-pipeline:clear": "node scripts/clear-event-pipeline-data.mjs",
     "web-evidence": "node scripts/extract-web-evidence.mjs",
     "onemap-geocode": "node scripts/query-onemap-location.mjs",

@@ -8,14 +8,13 @@ const {
   successEnvelope,
 } = require("./lib/http-contract.cjs");
 const {
-  projectPublicEventCatalogue,
-  projectPublicLandmarks,
+  validatePublicActivityCatalogue,
 } = require("./lib/public-event-catalogue.cjs");
 
 const snapshotModule = import("./lib/approved-snapshot.mjs");
-const PUBLIC_EVENT_PROJECTION = "event-ui-v2";
+const PUBLIC_ACTIVITY_PROJECTION = "activity-ui-v1";
 const projectedRef = (reference) =>
-  `${reference}?projection=${PUBLIC_EVENT_PROJECTION}`;
+  `${reference}?projection=${PUBLIC_ACTIVITY_PROJECTION}`;
 
 function publicTileset(tileset) {
   const copy = structuredClone(tileset);
@@ -73,8 +72,8 @@ function publicMetadata(snapshot) {
     landmarksRef: projectedRef(snapshot.publicRefs.landmarks),
     poisRef: snapshot.publicRefs.pois,
     tilesetRef: `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(snapshot.snapshotId)}&assetPaths=site-root-v1`,
-    ...(snapshot.publicRefs.events
-      ? { eventsRef: projectedRef(snapshot.publicRefs.events) }
+    ...(snapshot.publicRefs.activities
+      ? { activitiesRef: projectedRef(snapshot.publicRefs.activities) }
       : {}),
     previousSnapshotId: snapshot.previousSnapshotId,
     contentHash: snapshot.contentHash,
@@ -150,11 +149,9 @@ function approvedSnapshotApiPlugin({
       }
       const records = JSON.parse(fs.readFileSync(file, "utf8"));
       const publicRecords =
-        reference === active.eventsRef
-          ? projectPublicEventCatalogue(records)
-          : reference === active.landmarksRef
-            ? projectPublicLandmarks(records)
-            : records;
+        reference === active.activitiesRef
+          ? validatePublicActivityCatalogue(records)
+          : records;
       const envelope = successEnvelope(publicRecords, {
         fetchedAt: active.publishedAt,
         stale: active.stale,
@@ -184,6 +181,5 @@ module.exports = {
   approvedSnapshotApiPlugin,
   publicMetadata,
   publicTileset,
-  projectPublicEventCatalogue,
-  projectPublicLandmarks,
+  validatePublicActivityCatalogue,
 };

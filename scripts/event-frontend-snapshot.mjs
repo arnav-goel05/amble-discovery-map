@@ -9,6 +9,7 @@ import {
   statSync,
   writeFileSync,
 } from "node:fs";
+import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { APPROVED_POIS } from "../data/approved-pois.js";
 import { APPROVED_LANDMARKS } from "../data/approved-landmarks.js";
@@ -28,6 +29,12 @@ import {
 } from "./lib/approved-snapshot.mjs";
 import { projectEventActivities } from "./lib/event-pipeline/activity-projection.mjs";
 
+const require = createRequire(import.meta.url);
+const {
+  projectPublicActivityCatalogue,
+  projectPublicLandmarks,
+} = require("./lib/public-event-catalogue.cjs");
+
 const atomicWrite = (path, value) => {
   mkdirSync(dirname(path), { recursive: true });
   const temporary = `${path}.tmp-${process.pid}`;
@@ -39,22 +46,99 @@ const writeJson = (path, value) =>
 const moduleText = (name, records) =>
   `export const ${name} = ${JSON.stringify(records, null, 2)};\n`;
 
+function catalogueEvents(catalogue) {
+  if (Array.isArray(catalogue)) return catalogue;
+  return [...(catalogue?.mapped ?? []), ...(catalogue?.offMap ?? [])];
+}
+
+export function hydrateInternalLandmarks(landmarks, catalogue) {
+  if (landmarks.some(({ events }) => Array.isArray(events))) return landmarks;
+  const events = catalogueEvents(catalogue);
+  if (!events.length) return landmarks;
+  const activityRecords = catalogue?.activities?.records ?? [];
+  const activityByOccurrence = new Map(
+    activityRecords.flatMap((activity) =>
+      (activity.occurrenceIds ?? []).map((occurrenceId) => [
+        occurrenceId,
+        activity.activityId,
+      ]),
+    ),
+  );
+  const activityById = new Map(
+    activityRecords.map((activity) => [activity.activityId, activity]),
+  );
+  const eventsByActivity = new Map();
+  for (const event of events) {
+    const occurrenceId = event.occurrenceId ?? event.id;
+    const activityId =
+      event.activityId ??
+      event.parentActivityId ??
+      activityByOccurrence.get(occurrenceId);
+    if (!activityId) continue;
+    const rows = eventsByActivity.get(activityId) ?? [];
+    rows.push(event);
+    eventsByActivity.set(activityId, rows);
+  }
+  return landmarks.map((landmark) => {
+    const landmarkEvents = new Map();
+    for (const reference of landmark.activityRefs ?? []) {
+      const activity = activityById.get(reference.activityId);
+      const venueGroupIds = new Set(reference.venueGroupIds ?? []);
+      const sessionIds = new Set(
+        (activity?.venueGroups ?? [])
+          .filter(({ venueGroupId }) => venueGroupIds.has(venueGroupId))
+          .flatMap(({ sessionIds = [] }) => sessionIds),
+      );
+      const occurrenceIds = new Set(
+        (activity?.sessions ?? [])
+          .filter(({ sessionId }) => sessionIds.has(sessionId))
+          .flatMap(({ occurrenceIds = [] }) => occurrenceIds),
+      );
+      for (const event of eventsByActivity.get(reference.activityId) ?? []) {
+        const occurrenceId = event.occurrenceId ?? event.id;
+        if (occurrenceIds.size && !occurrenceIds.has(occurrenceId)) continue;
+        landmarkEvents.set(event.id, {
+          ...event,
+          approvedLocationId: landmark.id,
+          coordinates: landmark.anchor,
+          publicPlacement: "mapped",
+          mappingStatus: "approved",
+          lifecycleState: "active",
+        });
+      }
+    }
+    return { ...landmark, events: [...landmarkEvents.values()] };
+  });
+}
+
 export function loadCurrentApprovedData(root) {
   try {
     const active = loadApprovedSnapshot({ root });
+    const landmarks = JSON.parse(
+      readFileSync(join(active.directory, active.landmarksRef), "utf8"),
+    );
+    const events = active.internalEventsRef
+      ? JSON.parse(
+          readFileSync(join(active.directory, active.internalEventsRef), "utf8"),
+        )
+      : active.eventsRef
+        ? JSON.parse(
+            readFileSync(join(active.directory, active.eventsRef), "utf8"),
+          )
+        : [];
     return {
       snapshot: active,
       pois: JSON.parse(
         readFileSync(join(active.directory, active.poisRef), "utf8"),
       ),
-      landmarks: JSON.parse(
-        readFileSync(join(active.directory, active.landmarksRef), "utf8"),
-      ),
-      events: active.eventsRef
+      landmarks: hydrateInternalLandmarks(landmarks, events),
+      publicLandmarks: landmarks,
+      events,
+      activities: active.activitiesRef
         ? JSON.parse(
-            readFileSync(join(active.directory, active.eventsRef), "utf8"),
+            readFileSync(join(active.directory, active.activitiesRef), "utf8"),
           )
-        : [],
+        : null,
     };
   } catch (error) {
     if (error?.code === "snapshot_pointer_missing")
@@ -63,6 +147,7 @@ export function loadCurrentApprovedData(root) {
         pois: APPROVED_POIS,
         landmarks: APPROVED_LANDMARKS,
         events: [],
+        activities: null,
       };
     throw error;
   }
@@ -73,17 +158,39 @@ export function projectEventCatalogue(
   state,
   mappedEventIds = new Set(),
   previousActivities = [],
+  mappedLocations = new Map(),
 ) {
   const byId = new Map(
     events.map((event) => [event.id, structuredClone(event)]),
   );
   for (const eventId of mappedEventIds) {
     const event = byId.get(eventId);
+    const location = mappedLocations.get(eventId);
     if (event)
       Object.assign(event, {
         publicPlacement: "mapped",
         mappingStatus: "approved",
         lifecycleState: "active",
+        ...(location
+          ? {
+              approvedLocationId: location.approvedLocationId,
+              coordinates: location.coordinates,
+              venue: location.label ?? event.venue,
+              venueOccurrences: [
+                {
+                  ...(event.venueOccurrences?.[0] ?? {}),
+                  approvedLocationId: location.approvedLocationId,
+                  publishedVenueName: location.label ?? event.venue,
+                  address:
+                    event.venueOccurrences?.[0]?.address ??
+                    event.address ??
+                    null,
+                  publicPlacement: "mapped",
+                  mappingStatus: "approved",
+                },
+              ],
+            }
+          : {}),
       });
   }
   for (const venue of Object.values(state.venues ?? {})) {
@@ -173,7 +280,9 @@ export async function prepareFrontendSnapshot({
     ]),
   );
   const sourceReconciliation = reconcileSourceAvailability({
-    previousEvents: currentLandmarks.flatMap(({ events = [] }) => events),
+    previousEvents: catalogueEvents(currentEventsCatalogue).length
+      ? catalogueEvents(currentEventsCatalogue)
+      : currentLandmarks.flatMap(({ events = [] }) => events),
     currentEvents,
     sourceStatuses,
     asOf: run.window.start,
@@ -278,11 +387,26 @@ export async function prepareFrontendSnapshot({
   mkdirSync(assetsDir, { recursive: true });
   const nextPois = [...pois.values()],
     nextLandmarks = [...landmarks.values()];
+  const mappedLocations = new Map();
+  for (const landmark of nextLandmarks)
+    for (const event of landmark.events ?? [])
+      if (event?.id)
+        mappedLocations.set(event.id, {
+          approvedLocationId: landmark.id,
+          coordinates: landmark.anchor,
+          label: landmark.label,
+        });
   const projectedEvents = projectEventCatalogue(
     events,
     state,
     mappedEventIds,
-    currentEventsCatalogue?.activities?.records ?? [],
+    currentEventsCatalogue?.activities?.records ??
+      [],
+    mappedLocations,
+  );
+  const projectedActivities = projectPublicActivityCatalogue(
+    projectedEvents.activities,
+    { snapshotId: run.runId },
   );
   writeJson(join(frontendDir, "approved-pois.json"), {
     schemaVersion: "1.0",
@@ -293,6 +417,7 @@ export async function prepareFrontendSnapshot({
     records: nextLandmarks,
   });
   writeJson(join(frontendDir, "approved-events.json"), projectedEvents);
+  writeJson(join(frontendDir, "approved-activities.json"), projectedActivities);
   atomicWrite(
     join(frontendDir, "approved-pois.js"),
     moduleText("APPROVED_POIS", nextPois),
@@ -334,6 +459,7 @@ export async function prepareFrontendSnapshot({
       pois: contentHash(nextPois),
       landmarks: contentHash(nextLandmarks),
       events: contentHash(projectedEvents),
+      activities: contentHash(projectedActivities),
     },
     eventCounts: projectedEvents.counts,
   };
@@ -521,6 +647,37 @@ export function commitFrontendSnapshot({
     makeDurable(tileset.root);
     const records = (name) =>
       JSON.parse(readFileSync(join(frontendDir, name), "utf8")).records;
+    const activities = JSON.parse(
+      readFileSync(join(frontendDir, "approved-activities.json"), "utf8"),
+    );
+    const internalCatalogue = JSON.parse(
+      readFileSync(join(frontendDir, "approved-events.json"), "utf8"),
+    );
+    const activityByOccurrence = new Map(
+      (internalCatalogue.activities?.records ?? []).flatMap((activity) =>
+        (activity.occurrenceIds ?? []).map((occurrenceId) => [
+          occurrenceId,
+          activity.activityId,
+        ]),
+      ),
+    );
+    const referencedLandmarks = records("approved-landmarks.json").map(
+      (landmark) => ({
+        ...landmark,
+        events: (landmark.events ?? [])
+          .map((event) => ({
+            ...event,
+            activityId:
+              event.activityId ??
+              activityByOccurrence.get(event.occurrenceId ?? event.id),
+          }))
+          .filter((event) => event.activityId),
+      }),
+    );
+    const publicLandmarks = projectPublicLandmarks(
+      referencedLandmarks,
+      activities,
+    );
     const sourceHealth = Object.fromEntries(
       Object.entries(state?.sources ?? {}).map(([name, source]) => [
         name,
@@ -554,7 +711,8 @@ export function commitFrontendSnapshot({
       landmarksRef: "landmarks.json",
       poisRef: "pois.json",
       tilesetRef: "tileset.json",
-      eventsRef: "events.json",
+      activitiesRef: "activities.json",
+      internalEventsRef: "internal-events.json",
       eventPipelineProvenance: {
         normalizationArtifacts: state?.normalization?.artifactRefs ?? [],
         deduplicationArtifacts: state?.deduplication?.artifactRefs ?? [],
@@ -571,9 +729,10 @@ export function commitFrontendSnapshot({
       snapshot,
       commitEligibility,
       artifacts: {
-        "landmarks.json": `${JSON.stringify(records("approved-landmarks.json"), null, 2)}\n`,
+        "landmarks.json": `${JSON.stringify(publicLandmarks, null, 2)}\n`,
         "pois.json": `${JSON.stringify(records("approved-pois.json"), null, 2)}\n`,
-        "events.json": `${JSON.stringify(JSON.parse(readFileSync(join(frontendDir, "approved-events.json"), "utf8")), null, 2)}\n`,
+        "activities.json": `${JSON.stringify(activities, null, 2)}\n`,
+        "internal-events.json": `${JSON.stringify(internalCatalogue, null, 2)}\n`,
         "tileset.json": `${JSON.stringify(tileset, null, 2)}\n`,
       },
     });

@@ -31,6 +31,11 @@ test("run comparison reads final placements and nested excluded source identitie
         ? [{ sourceName: "Source A", title: "Review", mappingStatus: "pending_review" }]
         : [],
     });
+    writeJson(join(snapshotRoot, runId, "manifest.json"), {
+      schemaVersion: "1.0",
+      snapshotId: runId,
+      eventsRef: "events.json",
+    });
   }
   const output = join(root, "comparison.json");
   const result = spawnSync(

@@ -83,24 +83,29 @@ export async function requestJson(
 
 export async function loadPublicSnapshot(options = {}) {
   const snapshot = await requestJson("/api/snapshot", options);
-  const [landmarks, pois, events] = await Promise.all([
+  if (!snapshot.data.activitiesRef || snapshot.data.eventsRef)
+    throw new ApiClientError(
+      "activity_snapshot_contract_unsupported",
+      "The service returned an unsupported event-data contract.",
+    );
+  const [landmarks, pois, activities] = await Promise.all([
     requestJson(snapshot.data.landmarksRef, options),
     requestJson(snapshot.data.poisRef, options),
-    snapshot.data.eventsRef
-      ? requestJson(snapshot.data.eventsRef, options)
-      : Promise.resolve({
-          data: {
-            schemaVersion: "3.0",
-            offMap: [],
-            counts: { active: 0, mapped: 0, offMap: 0 },
-          },
-        }),
+    requestJson(snapshot.data.activitiesRef, options),
   ]);
+  if (
+    activities.data?.schemaVersion !== "1.0" ||
+    !Array.isArray(activities.data?.records)
+  )
+    throw new ApiClientError(
+      "activity_catalogue_contract_invalid",
+      "The service returned an invalid activity catalogue.",
+    );
   return {
     metadata: snapshot.data,
     landmarks: landmarks.data,
     pois: pois.data,
-    events: events.data,
+    activities: activities.data,
     stale: snapshot.stale,
     warning: snapshot.warning,
   };

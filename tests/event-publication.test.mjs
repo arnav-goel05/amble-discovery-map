@@ -24,6 +24,7 @@ const artifacts = {
   "landmarks.json": "[]\n",
   "pois.json": "[]\n",
   "tileset.json": "{}\n",
+  "events.json": '{"schemaVersion":"3.1","mapped":[],"offMap":[]}\n',
 };
 
 test("v2 activity state migrates deterministically into independent v3 dimensions", () => {
@@ -244,6 +245,7 @@ test("the initial snapshot can be the previous version without changing landmark
       "landmarks.json": `${JSON.stringify([{ id: "stable-hall", events: [] }])}\n`,
       "pois.json": `${JSON.stringify([{ id: "stable-hall", data: "poi-tiles/stable-hall/tileset.json" }])}\n`,
       "tileset.json": "{}\n",
+      "events.json": '{"schemaVersion":"3.1","mapped":[],"offMap":[]}\n',
     };
     const initial = stageImmutableSnapshot({
       root: state.root,
@@ -391,6 +393,7 @@ test("source reconciliation carries stale contributions per identity, accepts co
     current: 1,
     carriedForwardStale: 1,
     archived: 1,
+    retired: 0,
   });
   assert.equal(
     reconcileSourceAvailability({

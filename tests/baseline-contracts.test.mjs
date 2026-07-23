@@ -55,8 +55,23 @@ test("venue evidence and review contracts enforce partition and evidence-bound d
 });
 
 test("snapshot and result envelopes reject incomplete or misleading states", () => {
-  assert.equal(validateApprovedSnapshot(approvedSnapshot()).snapshotId, "snapshot-fixture");
-  rejectsWith(() => validateApprovedSnapshot(approvedSnapshot({ freshness: "fresh", staleAfter: "2026-07-13T00:00:00.000Z" })), "snapshot_freshness_invalid");
+  assert.equal(
+    validateApprovedSnapshot(
+      approvedSnapshot({ activitiesRef: "activities.json" }),
+    ).snapshotId,
+    "snapshot-fixture",
+  );
+  rejectsWith(
+    () =>
+      validateApprovedSnapshot(
+        approvedSnapshot({
+          activitiesRef: "activities.json",
+          freshness: "fresh",
+          staleAfter: "2026-07-13T00:00:00.000Z",
+        }),
+      ),
+    "snapshot_freshness_invalid",
+  );
 
   const result = { schemaVersion: "1.0", status: "success", data: { id: 1 }, fetchedAt: "2026-07-14T00:00:00.000Z", stale: false, warning: null, source: { id: "fixture", costClass: "free" } };
   assert.equal(validateResultEnvelope(result).status, "success");

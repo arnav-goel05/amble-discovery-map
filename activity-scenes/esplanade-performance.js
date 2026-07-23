@@ -14,19 +14,56 @@ const NAVBAR_CATEGORIES = [
   "Tours & Experiences",
 ];
 
-const toLandmarkScene = (landmarks) =>
-  landmarks.map((landmark) => ({
+const activityEvent = (activity, venueGroup, landmark) => ({
+  ...activity,
+  id: activity.activityId,
+  activityId: activity.activityId,
+  venue: venueGroup?.label ?? landmark?.label ?? "Location TBA",
+  address: venueGroup?.address ?? null,
+  coordinates: venueGroup?.coordinates ?? landmark?.anchor ?? null,
+  approvedLocationId: venueGroup?.approvedLocationId ?? null,
+  publicPlacement: venueGroup?.publicPlacement ?? "off_map",
+  mappingStatus: venueGroup?.mappingStatus ?? "not_required",
+  offMapSubtype: venueGroup?.offMapSubtype ?? null,
+  schedule: activity.sessions?.[0]?.schedule ?? null,
+  dateText:
+    activity.scheduleSummary?.label ??
+    activity.sessions?.[0]?.schedule?.displayText ??
+    null,
+  venueOccurrences: (activity.venueGroups ?? []).map((group) => ({
+    venueOccurrenceId: group.venueGroupId,
+    approvedLocationId: group.approvedLocationId,
+    publishedVenueName: group.label,
+    offMapSubtype: group.offMapSubtype ?? null,
+  })),
+});
+
+const toLandmarkScene = (landmarks, activities) => {
+  const byId = new Map(
+    (activities ?? []).map((activity) => [activity.activityId, activity]),
+  );
+  return landmarks.map((landmark) => ({
     id: landmark.id,
     label: landmark.label,
     anchor: landmark.anchor,
     areaId: landmark.areaId,
     subzoneId: landmark.subzoneId,
-    events: landmark.events.map((event, index) => ({
-      ...event,
-      id: event.id || `${landmark.id}-approved-${index + 1}`,
-      venueVerified: true,
-    })),
+    events: (landmark.activityRefs ?? []).map((reference) => {
+      const activity = byId.get(reference.activityId);
+      if (!activity)
+        throw new Error(
+          `landmark_activity_reference_missing:${landmark.id}:${reference.activityId}`,
+        );
+      const venueGroup = activity.venueGroups.find((group) =>
+        reference.venueGroupIds?.includes(group.venueGroupId),
+      );
+      return {
+        ...activityEvent(activity, venueGroup, landmark),
+        venueVerified: true,
+      };
+    }),
   }));
+};
 
 export function addEsplanadePerformanceScene(
   map,
@@ -34,7 +71,7 @@ export function addEsplanadePerformanceScene(
     areaIdOf,
     discoveryAreaAsset,
     landmarks: approvedLandmarks = APPROVED_LANDMARKS,
-    offMapEvents: approvedOffMapEvents = [],
+    activities: approvedActivities = [],
     onDiscoveryCandidatesChanged,
     onLandmarkSelected,
     sourceSnapshotId: initialSourceSnapshotId,
@@ -45,8 +82,24 @@ export function addEsplanadePerformanceScene(
   const eventPanel = createLandmarkEventPanel({
     onClose: () => onLandmarkSelected?.(null),
   });
-  let landmarks = toLandmarkScene(approvedLandmarks);
-  let offMapEvents = approvedOffMapEvents;
+  let activities = approvedActivities;
+  let landmarks = toLandmarkScene(approvedLandmarks, activities);
+  let offMapEvents = activities
+    .filter(
+      (activity) =>
+        !activity.venueGroups.some(
+          (group) => group.publicPlacement === "mapped",
+        ),
+    )
+    .map((activity) =>
+      activityEvent(
+        activity,
+        activity.venueGroups.find(
+          (group) => group.publicPlacement === "off_map",
+        ),
+        null,
+      ),
+    );
   let pillLayer;
   pillLayer = createLandmarkEventPillLayer({
     map,
@@ -204,13 +257,32 @@ export function addEsplanadePerformanceScene(
       },
       reconcile: ({
         landmarks: nextApprovedLandmarks,
-        offMapEvents: nextOffMapEvents,
+        activities: nextActivities,
         sourceSnapshotId: nextSourceSnapshotId,
       }) => {
-        const nextLandmarks = toLandmarkScene(nextApprovedLandmarks || []);
+        const canonicalActivities = nextActivities ?? [];
+        const nextLandmarks = toLandmarkScene(
+          nextApprovedLandmarks || [],
+          canonicalActivities,
+        );
         const previousHash = JSON.stringify(landmarks);
         const nextHash = JSON.stringify(nextLandmarks);
-        const nextOffMap = nextOffMapEvents ?? [];
+        const nextOffMap = canonicalActivities
+          .filter(
+            (activity) =>
+              !activity.venueGroups.some(
+                (group) => group.publicPlacement === "mapped",
+              ),
+          )
+          .map((activity) =>
+            activityEvent(
+              activity,
+              activity.venueGroups.find(
+                (group) => group.publicPlacement === "off_map",
+              ),
+              null,
+            ),
+          );
         const offMapChanged =
           JSON.stringify(offMapEvents) !== JSON.stringify(nextOffMap);
         const nextSnapshotId =
@@ -224,6 +296,7 @@ export function addEsplanadePerformanceScene(
         )
           return { changed: false };
         landmarks = nextLandmarks;
+        activities = canonicalActivities;
         offMapEvents = nextOffMap;
         sourceSnapshotId = nextSnapshotId;
         pillLayer.reconcile({

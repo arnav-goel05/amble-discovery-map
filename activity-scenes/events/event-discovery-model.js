@@ -87,6 +87,102 @@ function safeSourceOffers(occurrences) {
 
 function activityResult(matchingOccurrences, allOccurrences) {
   const representative = matchingOccurrences[0] ?? allOccurrences[0];
+  const canonicalActivity = representative.sourceEvent;
+  if (
+    canonicalActivity?.activityId === representative.activityId &&
+    Array.isArray(canonicalActivity.sessions) &&
+    Array.isArray(canonicalActivity.venueGroups)
+  ) {
+    const groupsById = new Map(
+      canonicalActivity.venueGroups.map((group) => [
+        group.venueGroupId,
+        group,
+      ]),
+    );
+    const sessions = canonicalActivity.sessions.map((session) => {
+      const group = groupsById.get(session.venueGroupIds?.[0]);
+      const start = session.schedule?.start ?? null;
+      const end = session.schedule?.end ?? null;
+      return {
+        id: session.sessionId,
+        occurrenceId: session.sessionId,
+        sessionId: session.sessionId,
+        activityId: canonicalActivity.activityId,
+        title: canonicalActivity.title,
+        description: canonicalActivity.description,
+        category: canonicalActivity.category,
+        price: canonicalActivity.price,
+        organizer: canonicalActivity.organizer,
+        availability: session.availability,
+        schedule: session.schedule,
+        startsAt: start,
+        endsAt: end,
+        date: session.schedule?.displayText ?? start,
+        time: start
+          ? new Date(start).toLocaleTimeString([], {
+              hour: "numeric",
+              minute: "2-digit",
+            })
+          : null,
+        venue: group?.label ?? "Location TBA",
+        address: group?.address ?? null,
+        landmarkId: group?.approvedLocationId ?? null,
+        anchor: group?.coordinates ?? null,
+        publicPlacement: group?.publicPlacement ?? "off_map",
+        mappingStatus: group?.mappingStatus ?? "not_required",
+        offMapSubtype: group?.offMapSubtype ?? null,
+        eventUrl: canonicalActivity.sourceOffers?.[0]?.url ?? null,
+        sourceEvent: {
+          ...canonicalActivity,
+          id: session.sessionId,
+          occurrenceId: session.sessionId,
+          schedule: session.schedule,
+          venue: group?.label ?? "Location TBA",
+          address: group?.address ?? null,
+          coordinates: group?.coordinates ?? null,
+          eventUrl: canonicalActivity.sourceOffers?.[0]?.url ?? null,
+        },
+      };
+    });
+    const venueGroups = canonicalActivity.venueGroups.map((group) => ({
+      ...group,
+      landmarkId: group.approvedLocationId ?? null,
+      anchor: group.coordinates ?? null,
+      occurrences: sessions.filter((session) =>
+        group.sessionIds?.includes(session.sessionId),
+      ),
+    }));
+    return {
+      ...representative,
+      ...canonicalActivity,
+      identity: canonicalActivity.activityId,
+      eventId: canonicalActivity.activityId,
+      occurrences: sessions,
+      sessions,
+      matchingOccurrences: sessions,
+      matchingSessions: sessions,
+      venueGroups,
+      sourceOffers: (canonicalActivity.sourceOffers ?? []).map((offer) => ({
+        ...offer,
+        label: offer.source,
+        occurrenceIds: offer.sessionIds,
+      })),
+      sessionCount: sessions.length,
+      scheduleSummary:
+        canonicalActivity.scheduleSummary?.label ??
+        `${sessions.length} sessions`,
+      searchable: normalize(
+        [
+          canonicalActivity.title,
+          canonicalActivity.description,
+          canonicalActivity.category,
+          canonicalActivity.organizer,
+          ...venueGroups.map((group) => group.label),
+        ].join(" "),
+      ),
+      sourceEvent: canonicalActivity,
+    };
+  }
   const chronological = [...allOccurrences].sort(
     (a, b) =>
       a.scheduleValue - b.scheduleValue || a.identity.localeCompare(b.identity),
@@ -228,6 +324,62 @@ function matchesPrice(event, range) {
   return true;
 }
 
+function sessionWindow(session) {
+  const start = Date.parse(session?.schedule?.start ?? "");
+  const end = Date.parse(session?.schedule?.end ?? "");
+  return {
+    kind: session?.schedule?.kind ?? "unverified",
+    start: Number.isFinite(start) ? start : Number.POSITIVE_INFINITY,
+    end: Number.isFinite(end)
+      ? end
+      : Number.isFinite(start)
+        ? start
+        : Number.POSITIVE_INFINITY,
+  };
+}
+
+function matchesSessionDate(event, range, window) {
+  const sessions = event.sessions ?? event.sourceEvent?.sessions ?? [];
+  if (!sessions.length)
+    return range === "anytime"
+      ? event.scheduleKind === "anytime"
+      : (
+      !window ||
+      (Number.isFinite(event.scheduleValue) &&
+        event.scheduleValue <= window.end &&
+        event.scheduleEndValue >= window.start)
+        );
+  if (range === "anytime")
+    return sessions.some(
+      (session) => sessionWindow(session).kind === "anytime",
+    );
+  if (!window) return true;
+  return sessions.some((session) => {
+    const value = sessionWindow(session);
+    return (
+      Number.isFinite(value.start) &&
+      value.start <= window.end &&
+      value.end >= window.start
+    );
+  });
+}
+
+function matchesPlacement(event, placementView) {
+  if (placementView === "all") return true;
+  const groups =
+    event.sourceEvent?.venueGroups ?? event.venueGroups ?? [];
+  if (!groups.length)
+    return (
+      (placementView === "mapped" && event.publicPlacement === "mapped") ||
+      event.offMapSubtype === placementView
+    );
+  return groups.some(
+    (group) =>
+      (placementView === "mapped" && group.publicPlacement === "mapped") ||
+      group.offMapSubtype === placementView,
+  );
+}
+
 export function createEventDiscoveryModel(
   landmarks = [],
   {
@@ -304,7 +456,20 @@ export function createEventDiscoveryModel(
         venueOccurrences: event.venueOccurrences ?? [],
         sourceEvent: event,
         searchable: normalize(
-          [title, venue, landmark.label, date, time, category].join(" "),
+          [
+            title,
+            venue,
+            landmark.label,
+            date,
+            time,
+            category,
+            event.description,
+            event.organizer,
+            ...(event.venueGroups ?? []).map((group) => group.label),
+            ...(event.sessions ?? []).map(
+              (session) => session.schedule?.displayText,
+            ),
+          ].join(" "),
         ),
       });
     }
@@ -403,15 +568,8 @@ export function createEventDiscoveryModel(
         (!normalizedQuery || event.searchable.includes(normalizedQuery)) &&
         (selectedCategories.size === 0 ||
           selectedCategories.has(event.category)) &&
-        (placementView === "all" ||
-          (placementView === "mapped" && event.publicPlacement === "mapped") ||
-          event.offMapSubtype === placementView) &&
-        (dateRange === "anytime"
-          ? event.scheduleKind === "anytime"
-          : !window ||
-            (Number.isFinite(event.scheduleValue) &&
-              event.scheduleValue <= window.end &&
-              event.scheduleEndValue >= window.start)) &&
+        matchesPlacement(event, placementView) &&
+        matchesSessionDate(event, dateRange, window) &&
         matchesPrice(event, priceRange),
     );
     const matched = groupActivities(matchedOccurrences, events);

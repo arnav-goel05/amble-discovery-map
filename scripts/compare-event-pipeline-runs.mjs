@@ -26,7 +26,12 @@ const readRun = (runDir) => {
   let published = { mapped: [], offMap: [] };
   if (snapshotId) {
     try {
-      published = readJson(`${snapshotRoot}/${snapshotId}/events.json`);
+      const manifest = readJson(`${snapshotRoot}/${snapshotId}/manifest.json`);
+      const internalEventsRef = manifest.internalEventsRef ?? manifest.eventsRef;
+      if (internalEventsRef)
+        published = readJson(
+          `${snapshotRoot}/${snapshotId}/${internalEventsRef}`,
+        );
     } catch {
       // A preserved-previous or pre-publication run can still be compared at normalization.
     }

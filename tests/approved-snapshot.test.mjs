@@ -13,15 +13,16 @@ import {
   computeSnapshotContentHash,
   hashFile,
   loadApprovedSnapshot,
+  resolveActiveSnapshotAsset,
+  stageImmutableSnapshot,
   writeActiveSnapshotPointer,
 } from "../scripts/lib/approved-snapshot.mjs";
 
 const require = createRequire(import.meta.url);
 const {
-  projectPublicEventCatalogue,
-  projectPublicLandmarks,
   publicMetadata,
   publicTileset,
+  validatePublicActivityCatalogue,
 } = require("../scripts/approved-snapshot-api-plugin.cjs");
 
 function createSnapshot(root, overrides = {}) {
@@ -30,16 +31,49 @@ function createSnapshot(root, overrides = {}) {
   fs.writeFileSync(path.join(snapshotDir, "landmarks.json"), "[]\n");
   fs.writeFileSync(path.join(snapshotDir, "pois.json"), "[]\n");
   fs.writeFileSync(path.join(snapshotDir, "tileset.json"), "{}\n");
+  fs.writeFileSync(
+    path.join(snapshotDir, "activities.json"),
+    `${JSON.stringify({
+      schemaVersion: "1.0",
+      snapshotId: "snapshot-fixture",
+      generatedAt: "2026-07-14T00:00:00.000Z",
+      counts: {
+        activities: 0,
+        sessions: 0,
+        venueGroups: 0,
+        sourceOffers: 0,
+        mappedActivities: 0,
+        offMapActivities: 0,
+      },
+      records: [],
+    })}\n`,
+  );
+  if (overrides.internalEventsRef)
+    fs.writeFileSync(
+      path.join(snapshotDir, overrides.internalEventsRef),
+      '{"schemaVersion":"3.1","mapped":[],"offMap":[]}\n',
+    );
+  const artifactHashes = {
+    "landmarks.json": hashFile(path.join(snapshotDir, "landmarks.json")),
+    "pois.json": hashFile(path.join(snapshotDir, "pois.json")),
+    "tileset.json": hashFile(path.join(snapshotDir, "tileset.json")),
+    "activities.json": hashFile(path.join(snapshotDir, "activities.json")),
+    ...(overrides.internalEventsRef
+      ? {
+          [overrides.internalEventsRef]: hashFile(
+            path.join(snapshotDir, overrides.internalEventsRef),
+          ),
+        }
+      : {}),
+    ...(overrides.artifactHashes ?? {}),
+  };
   const base = approvedSnapshot({
     landmarksRef: "landmarks.json",
     poisRef: "pois.json",
     tilesetRef: "tileset.json",
-    artifactHashes: {
-      "landmarks.json": hashFile(path.join(snapshotDir, "landmarks.json")),
-      "pois.json": hashFile(path.join(snapshotDir, "pois.json")),
-      "tileset.json": hashFile(path.join(snapshotDir, "tileset.json")),
-    },
+    activitiesRef: "activities.json",
     ...overrides,
+    artifactHashes,
   });
   const manifest = { ...base, contentHash: computeSnapshotContentHash(base) };
   fs.writeFileSync(
@@ -150,57 +184,31 @@ test("public snapshot tilesets resolve POI dependencies from the site root", () 
   assert.equal(source.root.content.uri, "/poi-tiles/hall/tileset.json");
 });
 
-test("public event catalogue omits mapped records already embedded in landmarks", () => {
-  const mapped = [{ id: "mapped-event" }];
-  const offMap = [
-    {
-      id: "off-map-event",
-      fieldCompleteness: { title: { status: "present" } },
-      fieldCompletenessByOccurrence: {
-        occurrence: { title: { status: "present" } },
-      },
-    },
-  ];
-  const source = {
-    schemaVersion: "3.0",
-    mapped,
-    offMap,
-    counts: { active: 2, mapped: 1, offMap: 1 },
-  };
-  const result = projectPublicEventCatalogue(source);
-
-  assert.equal("mapped" in result, false);
-  assert.deepEqual(result.offMap, [{ id: "off-map-event" }]);
-  assert.deepEqual(result.counts, source.counts);
-  assert.deepEqual(source.mapped, mapped);
-  assert.equal("fieldCompleteness" in source.offMap[0], true);
-});
-
-test("public landmarks omit extraction audit metadata from embedded events", () => {
-  const source = [
-    {
-      id: "landmark",
-      events: [
-        {
-          id: "mapped-event",
-          title: "Public title",
-          fieldCompleteness: { title: { status: "present" } },
-          fieldCompletenessByOccurrence: {
-            occurrence: { title: { status: "present" } },
-          },
+test("public activity validation rejects internal occurrence evidence", () => {
+  assert.throws(
+    () =>
+      validatePublicActivityCatalogue({
+        schemaVersion: "1.0",
+        counts: {
+          activities: 1,
+          sessions: 0,
+          venueGroups: 0,
+          sourceOffers: 0,
+          mappedActivities: 0,
+          offMapActivities: 1,
         },
-      ],
-    },
-  ];
-  const result = projectPublicLandmarks(source);
-
-  assert.deepEqual(result, [
-    {
-      id: "landmark",
-      events: [{ id: "mapped-event", title: "Public title" }],
-    },
-  ]);
-  assert.equal("fieldCompleteness" in source[0].events[0], true);
+        records: [
+          {
+            activityId: "activity:one",
+            occurrenceIds: ["private:one"],
+            sessions: [],
+            venueGroups: [],
+            sourceOffers: [],
+          },
+        ],
+      }),
+    /public_activity_internal_audit_present/,
+  );
 });
 
 test("public snapshot metadata versions the corrected tileset representation", () => {
@@ -219,13 +227,104 @@ test("public snapshot metadata versions the corrected tileset representation", (
       landmarks: "/landmarks",
       pois: "/pois",
       tileset: "/tileset",
-      events: "/events",
+      activities: "/activities",
     },
   });
-  assert.equal(metadata.landmarksRef, "/landmarks?projection=event-ui-v2");
-  assert.equal(metadata.eventsRef, "/events?projection=event-ui-v2");
+  assert.equal(metadata.landmarksRef, "/landmarks?projection=activity-ui-v1");
+  assert.equal(
+    metadata.activitiesRef,
+    "/activities?projection=activity-ui-v1",
+  );
+  assert.equal("eventsRef" in metadata, false);
   assert.equal(
     metadata.tilesetRef,
     "/poi-tiles/event-venues/tileset.json?snapshot=snapshot-fixture&assetPaths=site-root-v1",
   );
+});
+
+test("private occurrence reconciliation assets are never publicly addressable", () => {
+  const state = temporaryState();
+  try {
+    createSnapshot(state.root, { internalEventsRef: "internal-events.json" });
+    assert.throws(
+      () =>
+        resolveActiveSnapshotAsset({
+          root: state.root,
+          snapshotId: "snapshot-fixture",
+          reference: "internal-events.json",
+        }),
+      (error) =>
+        error instanceof ApprovedSnapshotError &&
+        error.code === "snapshot_asset_unapproved",
+    );
+  } finally {
+    state.cleanup();
+  }
+});
+
+test("dangling activity landmark references reject staging and preserve the active pointer", () => {
+  const state = temporaryState();
+  try {
+    createSnapshot(state.root);
+    const activities = {
+      schemaVersion: "1.0",
+      snapshotId: "invalid-candidate",
+      generatedAt: "2026-07-23T00:00:00.000Z",
+      counts: {
+        activities: 1,
+        sessions: 0,
+        venueGroups: 1,
+        sourceOffers: 0,
+        mappedActivities: 1,
+        offMapActivities: 0,
+      },
+      records: [
+        {
+          schemaVersion: "1.0",
+          activityId: "activity:one",
+          sessions: [],
+          venueGroups: [
+            {
+              venueGroupId: "venue-group:one",
+              activityId: "activity:one",
+              publicPlacement: "mapped",
+              mappingStatus: "approved",
+              approvedLocationId: "venue-one",
+              coordinates: { lat: 1.3, lng: 103.8 },
+              sessionIds: [],
+            },
+          ],
+          sourceOffers: [],
+        },
+      ],
+    };
+    assert.throws(
+      () =>
+        stageImmutableSnapshot({
+          root: state.root,
+          snapshot: approvedSnapshot({
+            snapshotId: "invalid-candidate",
+            landmarksRef: "landmarks.json",
+            poisRef: "pois.json",
+            tilesetRef: "tileset.json",
+            activitiesRef: "activities.json",
+            previousSnapshotId: "snapshot-fixture",
+          }),
+          artifacts: {
+            "landmarks.json": "[]\n",
+            "pois.json": "[]\n",
+            "tileset.json": "{}\n",
+            "activities.json": `${JSON.stringify(activities)}\n`,
+          },
+          commitEligibility: { eligible: true },
+        }),
+      /public_landmark_mapped_group_unreferenced/,
+    );
+    assert.equal(
+      loadApprovedSnapshot({ root: state.root }).snapshotId,
+      "snapshot-fixture",
+    );
+  } finally {
+    state.cleanup();
+  }
 });

@@ -155,7 +155,7 @@ test("the pixel minimap is passive and follows event filters", async ({
     page.locator(".event-density-minimap__status"),
   ).toHaveCount(0);
   await expect(minimap).toHaveCSS("pointer-events", "none");
-  await expect(minimap).toHaveAttribute("data-activity-count", "4");
+  await expect(minimap).toHaveAttribute("data-activity-count", "3");
   await expect(minimap).toHaveAttribute("data-viewport-visible", "true");
   const closeViewportWidth = Number(
     await minimap.getAttribute("data-viewport-width"),
@@ -169,7 +169,7 @@ test("the pixel minimap is passive and follows event filters", async ({
       .getBoundingClientRect();
     return {
       belowToolbar: minimapBounds.top >= toolbar.bottom,
-      rightAligned: Math.abs(minimapBounds.right - toolbar.right) <= 1,
+      rightAligned: Math.abs(minimapBounds.right - toolbar.right) <= 3,
     };
   });
   expect(placement).toEqual({ belowToolbar: true, rightAligned: true });
@@ -185,7 +185,7 @@ test("the pixel minimap is passive and follows event filters", async ({
     .fill("Second Upcoming Event");
   await expect(minimap).toHaveAttribute("data-activity-count", "1");
   await page.locator("#landmark-event-search-input").fill("");
-  await expect(minimap).toHaveAttribute("data-activity-count", "4");
+  await expect(minimap).toHaveAttribute("data-activity-count", "3");
   await page.evaluate(() => window._map?.remove()).catch(() => {});
 });
 

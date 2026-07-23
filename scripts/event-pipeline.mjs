@@ -2852,23 +2852,30 @@ function finalizeDedupCommand(options) {
         ? readJson(join(runDir, resolveStage.outputRef)).result
         : { resolutionStatus: resolveStage.resolutionStatus ?? "needs_review" };
   }
-  const currentLandmarks =
-    environmentRecords("EVENT_PIPELINE_CURRENT_LANDMARKS") ??
-    loadCurrentApprovedData(
-      process.env.EVENT_PIPELINE_FRONTEND_ROOT
-        ? resolve(process.env.EVENT_PIPELINE_FRONTEND_ROOT)
-        : ROOT,
-    ).landmarks;
-  const priorClusters = currentLandmarks.flatMap((landmark) =>
-    (landmark.events ?? []).map((event) => ({
+  const overriddenLandmarks = environmentRecords(
+    "EVENT_PIPELINE_CURRENT_LANDMARKS",
+  );
+  const approved = overriddenLandmarks
+    ? null
+    : loadCurrentApprovedData(
+        process.env.EVENT_PIPELINE_FRONTEND_ROOT
+          ? resolve(process.env.EVENT_PIPELINE_FRONTEND_ROOT)
+          : ROOT,
+      );
+  const priorEvents = overriddenLandmarks
+    ? overriddenLandmarks.flatMap((landmark) => landmark.events ?? [])
+    : [
+        ...(approved?.events?.mapped ?? []),
+        ...(approved?.events?.offMap ?? []),
+      ];
+  const priorClusters = priorEvents.map((event) => ({
       identityAnchor: event.identityAnchor ?? stableEventKey(event),
       memberIds:
         event.sourceOccurrenceIds ??
         (event.sources ?? []).map(
           ({ source, sourceId }) => `${source}:${sourceId}`,
         ),
-    })),
-  );
+    }));
   const sourcePrecedence = Object.fromEntries(
     readPipelineConfig()
       .sources.filter(({ sourceRole }) => sourceRole === "authoritative")

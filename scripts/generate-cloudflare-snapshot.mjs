@@ -8,8 +8,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
 const {
-  projectPublicEventCatalogue,
-  projectPublicLandmarks,
+  validatePublicActivityCatalogue,
 } = require("./lib/public-event-catalogue.cjs");
 const pointer = JSON.parse(
   fs.readFileSync(path.join(root, "data/approved-snapshot.json"), "utf8"),
@@ -28,15 +27,13 @@ const payload = {
   pointer,
   manifest,
   assets: {
-    [manifest.landmarksRef]: projectPublicLandmarks(
-      readAsset(manifest.landmarksRef),
-    ),
+    [manifest.landmarksRef]: readAsset(manifest.landmarksRef),
     [manifest.poisRef]: readAsset(manifest.poisRef),
     [manifest.tilesetRef]: readAsset(manifest.tilesetRef),
-    ...(manifest.eventsRef
+    ...(manifest.activitiesRef
       ? {
-          [manifest.eventsRef]: projectPublicEventCatalogue(
-            readAsset(manifest.eventsRef),
+          [manifest.activitiesRef]: validatePublicActivityCatalogue(
+            readAsset(manifest.activitiesRef),
           ),
         }
       : {}),

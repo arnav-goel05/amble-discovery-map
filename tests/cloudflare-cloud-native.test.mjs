@@ -44,23 +44,24 @@ test("cloud runtime serves approved snapshot metadata without a local origin", a
   assert.equal(payload.data.snapshotId, APPROVED_SNAPSHOT.manifest.snapshotId);
   assert.equal(
     payload.data.landmarksRef,
-    `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.landmarksRef}?projection=event-ui-v2`,
+    `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.landmarksRef}?projection=activity-ui-v1`,
   );
   assert.equal(
-    payload.data.eventsRef,
-    `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.eventsRef}?projection=event-ui-v2`,
+    payload.data.activitiesRef,
+    `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.activitiesRef}?projection=activity-ui-v1`,
   );
+  assert.equal("eventsRef" in payload.data, false);
   assert.equal(
     payload.data.tilesetRef,
     `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}&assetPaths=site-root-v1`,
   );
 });
 
-test("cloud runtime publishes mapped-event counts without duplicate mapped records", async () => {
+test("cloud runtime publishes distinct activities and landmark references", async () => {
   const { manifest } = APPROVED_SNAPSHOT;
   const response = await worker.fetch(
     new Request(
-      `https://amble.example/api/snapshot/assets/${encodeURIComponent(manifest.snapshotId)}/${manifest.eventsRef}`,
+      `https://amble.example/api/snapshot/assets/${encodeURIComponent(manifest.snapshotId)}/${manifest.activitiesRef}`,
     ),
     {},
     {},
@@ -68,14 +69,13 @@ test("cloud runtime publishes mapped-event counts without duplicate mapped recor
   const payload = await response.json();
 
   assert.equal(response.status, 200);
-  assert.equal("mapped" in payload.data, false);
-  assert.equal(payload.data.offMap.length, payload.data.counts.offMap);
-  assert.ok(payload.data.counts.mapped > 0);
-  assert.equal("fieldCompleteness" in payload.data.offMap[0], false);
+  assert.equal(payload.data.records.length, payload.data.counts.activities);
   assert.equal(
-    "fieldCompletenessByOccurrence" in payload.data.offMap[0],
-    false,
+    new Set(payload.data.records.map((activity) => activity.activityId)).size,
+    payload.data.records.length,
   );
+  assert.equal(JSON.stringify(payload.data).includes("evidenceRefs"), false);
+  assert.equal(JSON.stringify(payload.data).includes("occurrenceIds"), false);
 
   const landmarksResponse = await worker.fetch(
     new Request(
@@ -85,10 +85,11 @@ test("cloud runtime publishes mapped-event counts without duplicate mapped recor
     {},
   );
   const landmarks = await landmarksResponse.json();
-  const mappedEvent = landmarks.data.find((landmark) => landmark.events.length)
-    .events[0];
-  assert.equal("fieldCompleteness" in mappedEvent, false);
-  assert.equal("fieldCompletenessByOccurrence" in mappedEvent, false);
+  const mappedLandmark = landmarks.data.find(
+    (landmark) => landmark.activityRefs.length,
+  );
+  assert.ok(mappedLandmark);
+  assert.equal("events" in mappedLandmark, false);
 });
 
 test("cloud snapshot tilesets resolve relative POI children from the site root", async () => {

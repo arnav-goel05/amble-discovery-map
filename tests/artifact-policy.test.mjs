@@ -23,6 +23,8 @@ test("approved map assets and manifests are release-required artifacts", () => {
       pattern.includes("map-context"),
     ),
   );
+  assert.ok(report.approvedSnapshotArtifacts.includes("activities.json"));
+  assert.ok(report.approvedSnapshotArtifacts.includes("internal-events.json"));
 });
 
 test("download and staging caches remain runtime artifacts", () => {

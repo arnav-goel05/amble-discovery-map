@@ -77,7 +77,9 @@ export function verifyArtifactPolicy({
   const unclassifiedSnapshots = statusPaths.filter(
     (file) =>
       file.startsWith("data/snapshots/") &&
-      !/\/(?:manifest|landmarks|pois|tileset|events)\.json$/.test(file),
+      !/\/(?:manifest|landmarks|pois|tileset|events|activities|internal-events)\.json$/.test(
+        file,
+      ),
   );
   const unclassifiedMapArtifacts = statusPaths.filter(
     (file) =>
@@ -123,6 +125,8 @@ export function verifyArtifactPolicy({
       "pois.json",
       "tileset.json",
       "events.json",
+      "activities.json",
+      "internal-events.json",
     ],
     ignoredEventRuntimeArtifacts: [
       "raw rendered captures",

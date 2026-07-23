@@ -131,6 +131,28 @@ export function validateApprovedSnapshot(value, { now = null } = {}) {
   for (const field of ["landmarksRef", "poisRef", "tilesetRef"]) {
     if (typeof snapshot[field] !== "string" || !snapshot[field] || pathIsUnsafe(snapshot[field])) fail("snapshot_reference_invalid", `Invalid ${field}`);
   }
+  const catalogueRefs = ["activitiesRef", "eventsRef"].filter(
+    (field) => snapshot[field] !== undefined,
+  );
+  if (catalogueRefs.length !== 1)
+    fail(
+      "snapshot_catalogue_reference_invalid",
+      "Snapshot must expose exactly one activity or legacy event catalogue",
+    );
+  const catalogueRef = snapshot[catalogueRefs[0]];
+  if (
+    typeof catalogueRef !== "string" ||
+    !catalogueRef ||
+    pathIsUnsafe(catalogueRef)
+  )
+    fail("snapshot_reference_invalid", `Invalid ${catalogueRefs[0]}`);
+  if (
+    snapshot.internalEventsRef !== undefined &&
+    (typeof snapshot.internalEventsRef !== "string" ||
+      !snapshot.internalEventsRef ||
+      pathIsUnsafe(snapshot.internalEventsRef))
+  )
+    fail("snapshot_reference_invalid", "Invalid internalEventsRef");
   hash(snapshot.contentHash, "snapshot_content_hash_invalid");
   if (snapshot.previousSnapshotId !== null && typeof snapshot.previousSnapshotId !== "string") fail("snapshot_previous_id_invalid", "Previous snapshot identity is invalid");
   if (now && new Date(now) > staleAfter && snapshot.freshness === "fresh") return { ...snapshot, freshness: "potentially_outdated" };

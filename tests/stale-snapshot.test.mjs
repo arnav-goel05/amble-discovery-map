@@ -20,7 +20,12 @@ function publish(root, snapshotId, overrides = {}) {
       freshness: "fresh", staleAfter: overrides.staleAfter || "2026-07-21T00:00:00.000Z",
       sourceHealth: overrides.sourceHealth || {}, previousSnapshotId: overrides.previousSnapshotId || null,
     },
-    artifacts: { "landmarks.json": "[]\n", "pois.json": "[]\n", "tileset.json": "{}\n" },
+    artifacts: {
+      "landmarks.json": "[]\n",
+      "pois.json": "[]\n",
+      "tileset.json": "{}\n",
+      "events.json": '{"schemaVersion":"3.1","mapped":[],"offMap":[]}\n',
+    },
     commitEligibility: { eligible: true },
   });
   return activateStagedSnapshot({ root, staged }).active;

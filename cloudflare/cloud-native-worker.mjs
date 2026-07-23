@@ -13,23 +13,36 @@ const OVERPASS_ENDPOINTS = [
   "https://overpass.kumi.systems/api/interpreter",
 ];
 const VOICE_RELAYS = new WeakMap();
+const APPROVED_ACTIVITIES =
+  APPROVED_SNAPSHOT.assets[
+    APPROVED_SNAPSHOT.manifest.activitiesRef
+  ]?.records || [];
+const APPROVED_ACTIVITY_BY_ID = new Map(
+  APPROVED_ACTIVITIES.map((activity) => [activity.activityId, activity]),
+);
 const APPROVED_VOICE_CANDIDATE_IDS = APPROVED_SNAPSHOT.assets[
   "landmarks.json"
 ].flatMap((landmark) =>
-  (landmark.events || []).flatMap((event) => [event.id, `event:${event.id}`]),
+  (landmark.activityRefs || []).flatMap(({ activityId }) => [
+    activityId,
+    `event:${activityId}`,
+  ]),
 );
 const APPROVED_VOICE_CANDIDATES = APPROVED_SNAPSHOT.assets[
   "landmarks.json"
 ].flatMap((landmark) =>
-  (landmark.events || []).map((event) => ({
-    candidateId: `event:${event.id}`,
+  (landmark.activityRefs || []).map(({ activityId }) => {
+    const activity = APPROVED_ACTIVITY_BY_ID.get(activityId) || {};
+    return {
+    candidateId: `event:${activityId}`,
     candidateType: "event",
-    name: event.title,
+    name: activity.title,
     areaId: landmark.areaId || landmark.subzoneId || null,
     venue: landmark.label,
-    category: event.category || null,
-    price: event.price || null,
-  })),
+    category: activity.category || null,
+    price: activity.price || null,
+  };
+  }),
 );
 const SECURITY_HEADERS = {
   "content-security-policy":
@@ -317,12 +330,12 @@ function snapshotMetadata(now = new Date()) {
       freshness: manifest.freshness,
       staleAfter: manifest.staleAfter,
       sourceHealth,
-      landmarksRef: `${prefix}/${manifest.landmarksRef}?projection=event-ui-v2`,
+      landmarksRef: `${prefix}/${manifest.landmarksRef}?projection=activity-ui-v1`,
       poisRef: `${prefix}/${manifest.poisRef}`,
       tilesetRef: `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(manifest.snapshotId)}&assetPaths=site-root-v1`,
-      ...(manifest.eventsRef
+      ...(manifest.activitiesRef
         ? {
-            eventsRef: `${prefix}/${manifest.eventsRef}?projection=event-ui-v2`,
+            activitiesRef: `${prefix}/${manifest.activitiesRef}?projection=activity-ui-v1`,
           }
         : {}),
       previousSnapshotId: manifest.previousSnapshotId,
