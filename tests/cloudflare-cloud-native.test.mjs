@@ -52,6 +52,23 @@ test("cloud runtime serves approved snapshot metadata without a local origin", a
   );
 });
 
+test("cloud runtime publishes mapped-event counts without duplicate mapped records", async () => {
+  const { manifest } = APPROVED_SNAPSHOT;
+  const response = await worker.fetch(
+    new Request(
+      `https://amble.example/api/snapshot/assets/${encodeURIComponent(manifest.snapshotId)}/${manifest.eventsRef}`,
+    ),
+    {},
+    {},
+  );
+  const payload = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal("mapped" in payload.data, false);
+  assert.equal(payload.data.offMap.length, payload.data.counts.offMap);
+  assert.ok(payload.data.counts.mapped > 0);
+});
+
 test("cloud snapshot tilesets resolve relative POI children from the site root", async () => {
   const { manifest } = APPROVED_SNAPSHOT;
   const response = await worker.fetch(

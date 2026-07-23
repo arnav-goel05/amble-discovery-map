@@ -91,7 +91,6 @@ export async function loadPublicSnapshot(options = {}) {
       : Promise.resolve({
           data: {
             schemaVersion: "3.0",
-            mapped: [],
             offMap: [],
             counts: { active: 0, mapped: 0, offMap: 0 },
           },

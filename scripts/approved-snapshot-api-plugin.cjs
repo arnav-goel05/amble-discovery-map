@@ -7,6 +7,9 @@ const {
   sendPublicError,
   successEnvelope,
 } = require("./lib/http-contract.cjs");
+const {
+  projectPublicEventCatalogue,
+} = require("./lib/public-event-catalogue.cjs");
 
 const snapshotModule = import("./lib/approved-snapshot.mjs");
 
@@ -142,7 +145,11 @@ function approvedSnapshotApiPlugin({
         return response.end(`${JSON.stringify(tileset)}\n`);
       }
       const records = JSON.parse(fs.readFileSync(file, "utf8"));
-      const envelope = successEnvelope(records, {
+      const publicRecords =
+        reference === active.eventsRef
+          ? projectPublicEventCatalogue(records)
+          : records;
+      const envelope = successEnvelope(publicRecords, {
         fetchedAt: active.publishedAt,
         stale: active.stale,
         warning: active.warning,
@@ -167,4 +174,9 @@ function approvedSnapshotApiPlugin({
   };
 }
 
-module.exports = { approvedSnapshotApiPlugin, publicMetadata, publicTileset };
+module.exports = {
+  approvedSnapshotApiPlugin,
+  publicMetadata,
+  publicTileset,
+  projectPublicEventCatalogue,
+};

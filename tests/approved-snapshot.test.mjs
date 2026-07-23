@@ -18,6 +18,7 @@ import {
 
 const require = createRequire(import.meta.url);
 const {
+  projectPublicEventCatalogue,
   publicMetadata,
   publicTileset,
 } = require("../scripts/approved-snapshot-api-plugin.cjs");
@@ -146,6 +147,23 @@ test("public snapshot tilesets resolve POI dependencies from the site root", () 
     "../../../../poi-tiles/theatre/tileset.json",
   );
   assert.equal(source.root.content.uri, "/poi-tiles/hall/tileset.json");
+});
+
+test("public event catalogue omits mapped records already embedded in landmarks", () => {
+  const mapped = [{ id: "mapped-event" }];
+  const offMap = [{ id: "off-map-event" }];
+  const source = {
+    schemaVersion: "3.0",
+    mapped,
+    offMap,
+    counts: { active: 2, mapped: 1, offMap: 1 },
+  };
+  const result = projectPublicEventCatalogue(source);
+
+  assert.equal("mapped" in result, false);
+  assert.deepEqual(result.offMap, offMap);
+  assert.deepEqual(result.counts, source.counts);
+  assert.deepEqual(source.mapped, mapped);
 });
 
 test("public snapshot metadata versions the corrected tileset representation", () => {
