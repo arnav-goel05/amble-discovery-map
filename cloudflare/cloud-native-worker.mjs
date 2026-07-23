@@ -317,11 +317,13 @@ function snapshotMetadata(now = new Date()) {
       freshness: manifest.freshness,
       staleAfter: manifest.staleAfter,
       sourceHealth,
-      landmarksRef: `${prefix}/${manifest.landmarksRef}`,
+      landmarksRef: `${prefix}/${manifest.landmarksRef}?projection=event-ui-v2`,
       poisRef: `${prefix}/${manifest.poisRef}`,
       tilesetRef: `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(manifest.snapshotId)}&assetPaths=site-root-v1`,
       ...(manifest.eventsRef
-        ? { eventsRef: `${prefix}/${manifest.eventsRef}` }
+        ? {
+            eventsRef: `${prefix}/${manifest.eventsRef}?projection=event-ui-v2`,
+          }
         : {}),
       previousSnapshotId: manifest.previousSnapshotId,
       contentHash: manifest.contentHash,

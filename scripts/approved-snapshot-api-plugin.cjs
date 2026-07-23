@@ -9,9 +9,13 @@ const {
 } = require("./lib/http-contract.cjs");
 const {
   projectPublicEventCatalogue,
+  projectPublicLandmarks,
 } = require("./lib/public-event-catalogue.cjs");
 
 const snapshotModule = import("./lib/approved-snapshot.mjs");
+const PUBLIC_EVENT_PROJECTION = "event-ui-v2";
+const projectedRef = (reference) =>
+  `${reference}?projection=${PUBLIC_EVENT_PROJECTION}`;
 
 function publicTileset(tileset) {
   const copy = structuredClone(tileset);
@@ -66,11 +70,11 @@ function publicMetadata(snapshot) {
     freshness: snapshot.freshness,
     staleAfter: snapshot.staleAfter,
     sourceHealth,
-    landmarksRef: snapshot.publicRefs.landmarks,
+    landmarksRef: projectedRef(snapshot.publicRefs.landmarks),
     poisRef: snapshot.publicRefs.pois,
     tilesetRef: `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(snapshot.snapshotId)}&assetPaths=site-root-v1`,
     ...(snapshot.publicRefs.events
-      ? { eventsRef: snapshot.publicRefs.events }
+      ? { eventsRef: projectedRef(snapshot.publicRefs.events) }
       : {}),
     previousSnapshotId: snapshot.previousSnapshotId,
     contentHash: snapshot.contentHash,
@@ -148,7 +152,9 @@ function approvedSnapshotApiPlugin({
       const publicRecords =
         reference === active.eventsRef
           ? projectPublicEventCatalogue(records)
-          : records;
+          : reference === active.landmarksRef
+            ? projectPublicLandmarks(records)
+            : records;
       const envelope = successEnvelope(publicRecords, {
         fetchedAt: active.publishedAt,
         stale: active.stale,
@@ -179,4 +185,5 @@ module.exports = {
   publicMetadata,
   publicTileset,
   projectPublicEventCatalogue,
+  projectPublicLandmarks,
 };

@@ -19,6 +19,7 @@ import {
 const require = createRequire(import.meta.url);
 const {
   projectPublicEventCatalogue,
+  projectPublicLandmarks,
   publicMetadata,
   publicTileset,
 } = require("../scripts/approved-snapshot-api-plugin.cjs");
@@ -151,7 +152,15 @@ test("public snapshot tilesets resolve POI dependencies from the site root", () 
 
 test("public event catalogue omits mapped records already embedded in landmarks", () => {
   const mapped = [{ id: "mapped-event" }];
-  const offMap = [{ id: "off-map-event" }];
+  const offMap = [
+    {
+      id: "off-map-event",
+      fieldCompleteness: { title: { status: "present" } },
+      fieldCompletenessByOccurrence: {
+        occurrence: { title: { status: "present" } },
+      },
+    },
+  ];
   const source = {
     schemaVersion: "3.0",
     mapped,
@@ -161,9 +170,37 @@ test("public event catalogue omits mapped records already embedded in landmarks"
   const result = projectPublicEventCatalogue(source);
 
   assert.equal("mapped" in result, false);
-  assert.deepEqual(result.offMap, offMap);
+  assert.deepEqual(result.offMap, [{ id: "off-map-event" }]);
   assert.deepEqual(result.counts, source.counts);
   assert.deepEqual(source.mapped, mapped);
+  assert.equal("fieldCompleteness" in source.offMap[0], true);
+});
+
+test("public landmarks omit extraction audit metadata from embedded events", () => {
+  const source = [
+    {
+      id: "landmark",
+      events: [
+        {
+          id: "mapped-event",
+          title: "Public title",
+          fieldCompleteness: { title: { status: "present" } },
+          fieldCompletenessByOccurrence: {
+            occurrence: { title: { status: "present" } },
+          },
+        },
+      ],
+    },
+  ];
+  const result = projectPublicLandmarks(source);
+
+  assert.deepEqual(result, [
+    {
+      id: "landmark",
+      events: [{ id: "mapped-event", title: "Public title" }],
+    },
+  ]);
+  assert.equal("fieldCompleteness" in source[0].events[0], true);
 });
 
 test("public snapshot metadata versions the corrected tileset representation", () => {
@@ -178,8 +215,15 @@ test("public snapshot metadata versions the corrected tileset representation", (
     },
     freshness: "fresh",
     staleAfter: "2026-07-21T00:00:00.000Z",
-    publicRefs: { landmarks: "/landmarks", pois: "/pois", tileset: "/tileset" },
+    publicRefs: {
+      landmarks: "/landmarks",
+      pois: "/pois",
+      tileset: "/tileset",
+      events: "/events",
+    },
   });
+  assert.equal(metadata.landmarksRef, "/landmarks?projection=event-ui-v2");
+  assert.equal(metadata.eventsRef, "/events?projection=event-ui-v2");
   assert.equal(
     metadata.tilesetRef,
     "/poi-tiles/event-venues/tileset.json?snapshot=snapshot-fixture&assetPaths=site-root-v1",

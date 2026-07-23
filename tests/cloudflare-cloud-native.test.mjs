@@ -44,7 +44,11 @@ test("cloud runtime serves approved snapshot metadata without a local origin", a
   assert.equal(payload.data.snapshotId, APPROVED_SNAPSHOT.manifest.snapshotId);
   assert.equal(
     payload.data.landmarksRef,
-    `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.landmarksRef}`,
+    `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.landmarksRef}?projection=event-ui-v2`,
+  );
+  assert.equal(
+    payload.data.eventsRef,
+    `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.eventsRef}?projection=event-ui-v2`,
   );
   assert.equal(
     payload.data.tilesetRef,
@@ -67,6 +71,24 @@ test("cloud runtime publishes mapped-event counts without duplicate mapped recor
   assert.equal("mapped" in payload.data, false);
   assert.equal(payload.data.offMap.length, payload.data.counts.offMap);
   assert.ok(payload.data.counts.mapped > 0);
+  assert.equal("fieldCompleteness" in payload.data.offMap[0], false);
+  assert.equal(
+    "fieldCompletenessByOccurrence" in payload.data.offMap[0],
+    false,
+  );
+
+  const landmarksResponse = await worker.fetch(
+    new Request(
+      `https://amble.example/api/snapshot/assets/${encodeURIComponent(manifest.snapshotId)}/${manifest.landmarksRef}`,
+    ),
+    {},
+    {},
+  );
+  const landmarks = await landmarksResponse.json();
+  const mappedEvent = landmarks.data.find((landmark) => landmark.events.length)
+    .events[0];
+  assert.equal("fieldCompleteness" in mappedEvent, false);
+  assert.equal("fieldCompletenessByOccurrence" in mappedEvent, false);
 });
 
 test("cloud snapshot tilesets resolve relative POI children from the site root", async () => {
