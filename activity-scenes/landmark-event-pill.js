@@ -497,6 +497,7 @@ export function createLandmarkEventPillLayer({
       const state = findState(event.landmarkId);
       if (!state || !state.events[event.eventIndex]) continue;
       results.push({
+        ...event,
         category: state.events[event.eventIndex].category,
         date: state.events[event.eventIndex].temporalText,
         distanceFromCenter: distanceFromMapCenter(map, state.landmark),

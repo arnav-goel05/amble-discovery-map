@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   reconcileActivityIdentity,
+  reconcilePublishedLandmarks,
+  reconcileSourceAvailability,
   stableEventKey,
 } from "../scripts/reconcile-event-content.mjs";
 import { buildActivityHierarchy } from "../scripts/event-normalizer.mjs";
@@ -26,7 +28,7 @@ test("prior anchors survive evidence, source membership, schedule, and location-
     evidenceLevel: "editorial_authoritative",
     schedule: { kind: "anytime" },
     publicPlacement: "off_map",
-    sources: [{ source: "Honeycombers", sourceId: "guide" }],
+    sources: [{ source: "Time Out Singapore", sourceId: "guide" }],
   };
   const incoming = {
     id: "catch:new",
@@ -39,7 +41,7 @@ test("prior anchors survive evidence, source membership, schedule, and location-
     mappingStatus: "approved",
     sources: [
       { source: "Catch.sg", sourceId: "new" },
-      { source: "Honeycombers", sourceId: "guide" },
+      { source: "Time Out Singapore", sourceId: "guide" },
     ],
   };
   const result = reconcileActivityIdentity(current, incoming);
@@ -56,6 +58,116 @@ test("prior anchors survive evidence, source membership, schedule, and location-
   assert.equal(result.schedule.kind, "exact");
   assert.equal(result.publicPlacement, "mapped");
   assert.equal(result.sources.length, 2);
+});
+
+test("retired-only events are archived with traceable source evidence", () => {
+  const result = reconcileSourceAvailability({
+    previousEvents: [
+      {
+        id: "retired:event",
+        sources: [{ source: "Retired Guide", sourceId: "guide" }],
+        sourceContributions: [
+          {
+            sourceName: "Retired Guide",
+            sourceRecordId: "retired:guide",
+          },
+        ],
+      },
+    ],
+    currentEvents: [],
+    sourceStatuses: { "Catch.sg": "success" },
+    asOf: "2026-07-23T00:00:00+08:00",
+  });
+
+  assert.deepEqual(result.events, []);
+  assert.equal(result.counts.retired, 1);
+  assert.deepEqual(result.traces, [
+    {
+      eventId: "retired:event",
+      outcome: "archived",
+      reasonCode: "source_retired",
+      sourceNames: ["Retired Guide"],
+      sourceRecordIds: ["retired:guide"],
+    },
+  ]);
+});
+
+test("mixed events preserve supported identity and remove retired contributions", () => {
+  const previous = {
+    id: "published:shared",
+    identityAnchor: "published:shared",
+    parentActivityId: "activity:shared",
+    sources: [
+      { source: "Catch.sg", sourceId: "official" },
+      { source: "Retired Guide", sourceId: "guide" },
+    ],
+    sourceContributions: [
+      { sourceName: "Catch.sg", sourceRecordId: "Catch.sg:official" },
+      { sourceName: "Retired Guide", sourceRecordId: "retired:guide" },
+    ],
+  };
+  const incoming = {
+    id: "Catch.sg:official:new",
+    parentActivityId: "activity:shared",
+    sources: [{ source: "Catch.sg", sourceId: "official" }],
+    sourceContributions: [
+      { sourceName: "Catch.sg", sourceRecordId: "Catch.sg:official" },
+    ],
+  };
+  const result = reconcileSourceAvailability({
+    previousEvents: [previous],
+    currentEvents: [incoming],
+    sourceStatuses: { "Catch.sg": "success" },
+  });
+
+  assert.equal(result.events[0].id, "published:shared");
+  assert.deepEqual(result.events[0].sources, [
+    { source: "Catch.sg", sourceId: "official" },
+  ]);
+  assert.deepEqual(result.events[0].sourceContributions, [
+    { sourceName: "Catch.sg", sourceRecordId: "Catch.sg:official" },
+  ]);
+  assert.equal(result.counts.retired, 0);
+});
+
+test("landmark reconciliation removes retired copies and preserves supported placement", () => {
+  const supported = {
+    id: "supported",
+    title: "Updated title",
+    sources: [{ source: "Catch.sg", sourceId: "one" }],
+  };
+  const result = reconcilePublishedLandmarks({
+    landmarks: [
+      {
+        id: "place",
+        events: [
+          {
+            id: "retired",
+            sources: [{ source: "Retired Guide", sourceId: "old" }],
+          },
+          {
+            id: "supported",
+            title: "Old title",
+            coordinates: { lat: 1.3, lng: 103.8 },
+            publicPlacement: "mapped",
+            mappingStatus: "approved",
+            lifecycleState: "active",
+            sources: [{ source: "Catch.sg", sourceId: "one" }],
+          },
+        ],
+      },
+    ],
+    events: [supported],
+  });
+
+  assert.deepEqual(result.removedEventIds, ["Retired Guide:old"]);
+  assert.equal(result.records[0].events.length, 1);
+  assert.equal(result.records[0].events[0].title, "Updated title");
+  assert.equal(result.records[0].events[0].publicPlacement, "mapped");
+  assert.deepEqual(result.records[0].events[0].coordinates, {
+    lat: 1.3,
+    lng: 103.8,
+  });
 });
 
 test("one stable parent preserves sibling sessions and splits only reliable venue-session pairs", () => {

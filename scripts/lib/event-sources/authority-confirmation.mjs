@@ -10,8 +10,7 @@ import {
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 const REJECTED_HOSTS =
   /(?:^|\.)(?:facebook|instagram|tiktok|x|twitter|linkedin)\.com$/i;
-const EDITORIAL_HOSTS =
-  /(?:^|\.)(?:timeout|thehoneycombers|artsequator)\.com$/i;
+const EDITORIAL_HOSTS = /(?:^|\.)timeout\.com$/i;
 
 export function classifyAuthorityLink(value, registry) {
   let url;

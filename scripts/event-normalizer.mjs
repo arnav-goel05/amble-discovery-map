@@ -20,6 +20,7 @@ import {
   failedDateAssessment,
   summarizeDateReviews,
 } from "./lib/event-pipeline/date-quality-audit.mjs";
+import { projectEventActivities } from "./lib/event-pipeline/activity-projection.mjs";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 const normalizeText = (value = "") =>
@@ -342,6 +343,13 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
     publishedEventId: occurrenceId,
     parentActivityId: hierarchy.parentActivityId,
     parentListingId,
+    sourceParentActivities: [
+      {
+        source: sourceName,
+        parentActivityId: hierarchy.parentActivityId,
+        parentListingId,
+      },
+    ],
     mergedEventId: null,
     sourceName,
     sourceEventId: sourceId,
@@ -783,6 +791,10 @@ export function normalizeRun({
       ...existing.provenanceRefs,
       ...candidate.provenanceRefs,
     ];
+    const combinedParentActivities = [
+      ...(existing.sourceParentActivities ?? []),
+      ...(candidate.sourceParentActivities ?? []),
+    ];
     const previousMergedEventId = existing.mergedEventId;
     const retained =
       schedulePrecision(candidate) > schedulePrecision(existing)
@@ -791,6 +803,7 @@ export function normalizeRun({
     retained.sources = combinedSources;
     retained.sourceOccurrenceIds = combinedOccurrenceIds;
     retained.provenanceRefs = combinedProvenanceRefs;
+    retained.sourceParentActivities = combinedParentActivities;
     retained.mergedEventId = mergedId(combinedSources);
     decisions.push({
       inputIds: [previousMergedEventId, ...candidate.sourceOccurrenceIds],
@@ -829,6 +842,18 @@ export function normalizeRun({
     event.sourceName = event.sources[0].source;
     event.sourceEventId = event.sources[0].sourceId;
     event.parentListingId = `${event.sourceName}:${event.parentEventId}`;
+    event.sourceParentActivities = [
+      ...new Map(
+        (event.sourceParentActivities ?? []).map((parent) => [
+          `${parent.source}\0${parent.parentActivityId ?? ""}\0${parent.parentListingId ?? ""}`,
+          parent,
+        ]),
+      ).values(),
+    ].sort(
+      (a, b) =>
+        sourceOrder.get(a.source) - sourceOrder.get(b.source) ||
+        codePointCompare(a.parentActivityId ?? "", b.parentActivityId ?? ""),
+    );
     event.mergedEventId = mergedId(event.sources);
     event.eventUrl =
       event.sources.find((source) => {
@@ -877,14 +902,34 @@ export function normalizeRun({
     event.venueId = venues.get(key).id;
     event.contentHash = visibleContentHash(event);
   }
+  const activityProjection = projectEventActivities({
+    events,
+    runId: run.runId,
+    generatedAt: run.startedAt ?? run.window?.start ?? new Date().toISOString(),
+  });
   const artifactRefs = [
     "normalized/events.json",
+    "normalized/activities.json",
+    "normalized/activity-grouping-reviews.json",
+    "normalized/activity-grouping-decisions.json",
     "normalized/date-reviews.json",
     "normalized/excluded.json",
     "normalized/invalid.json",
     "normalized/dedup-decisions.json",
   ];
   atomicJson(join(runDir, "normalized/events.json"), envelope(run.runId, null, events));
+  atomicJson(
+    join(runDir, "normalized/activities.json"),
+    activityProjection.activities,
+  );
+  atomicJson(
+    join(runDir, "normalized/activity-grouping-reviews.json"),
+    activityProjection.reviews,
+  );
+  atomicJson(
+    join(runDir, "normalized/activity-grouping-decisions.json"),
+    activityProjection.decisions,
+  );
   atomicJson(
     join(runDir, "normalized/date-reviews.json"),
     envelope(run.runId, null, dateReviews),
@@ -910,6 +955,11 @@ export function normalizeRun({
       duplicateCollapsed: eligible.length - events.length,
       acceptedPostDedup: events.length,
       acceptedPrimary: events.length,
+      activities: activityProjection.activities.counts.activities,
+      activitySessions: activityProjection.activities.counts.sessions,
+      activityVenueGroups: activityProjection.activities.counts.venueGroups,
+      sourceOffers: activityProjection.activities.counts.sourceOffers,
+      activityGroupingReviews: activityProjection.reviews.counts.records,
     },
     venueBranches: [...venues.values()],
     sourceAccounting,
@@ -921,7 +971,7 @@ export function normalizeRun({
     },
     sourceReclassifications,
     evidence: {
-      uniqueActivities: events.length,
+      uniqueActivities: activityProjection.activities.counts.activities,
       levels: Object.fromEntries(
         [...new Set(events.map((event) => event.evidenceLevel ?? "direct"))]
           .sort()

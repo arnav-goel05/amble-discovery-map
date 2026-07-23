@@ -118,7 +118,7 @@ test("missing venue recovery rejects conflicting authoritative candidates and no
     "https://www.facebook.com/lanterns",
   ];
   const result = await recoverMissingVenueOccurrence({
-    sourceName: "Honeycombers",
+    sourceName: "Time Out Singapore",
     recordRef: "raw/honey/details/event.json#/records/0",
     record,
     occurrence: record,
@@ -153,21 +153,21 @@ test("missing venue recovery rejects conflicting authoritative candidates and no
 
 test("an editorial source domain cannot establish building authority by itself", async () => {
   const result = await recoverMissingVenueOccurrence({
-    sourceName: "Honeycombers",
+    sourceName: "Time Out Singapore",
     recordRef: "raw/honey/details/event.json#/records/0",
     record,
     occurrence: record,
     occurrenceIndex: 0,
     config,
     sourceDefinition: {
-      name: "Honeycombers",
+      name: "Time Out Singapore",
       evidenceRole: "editorial",
-      officialDomains: ["thehoneycombers.com"],
+      officialDomains: ["timeout.com"],
     },
     searchClient: async () => ({
       results: [
         {
-          url: "https://thehoneycombers.com/singapore/lanterns-after-dark",
+          url: "https://www.timeout.com/singapore/things-to-do/lanterns-after-dark",
           title: record.title,
         },
       ],
@@ -428,7 +428,7 @@ test("a verified exact organizer page can recover a venue when the sibling ticke
 
 test("Singapore-looking social subdomains cannot become recovery authority", async () => {
   const result = await recoverMissingVenueOccurrence({
-    sourceName: "Honeycombers",
+    sourceName: "Time Out Singapore",
     recordRef: "raw/honey/details/social.json#/records/0",
     record,
     occurrence: record,

@@ -12,10 +12,15 @@ import {
   extractEventPageEvidence,
 } from "./lib/event-sources/event-field-extraction.mjs";
 import { renderedAdapterFor } from "./lib/event-sources/index.mjs";
-import { renderedDocument, sha } from "./lib/event-sources/rendered-adapter-utils.mjs";
+import {
+  renderedDocument,
+  sha,
+} from "./lib/event-sources/rendered-adapter-utils.mjs";
 
 const root = resolve(new URL("..", import.meta.url).pathname);
-const pointer = JSON.parse(readFileSync(join(root, "data/approved-snapshot.json"), "utf8"));
+const pointer = JSON.parse(
+  readFileSync(join(root, "data/approved-snapshot.json"), "utf8"),
+);
 const activeEvents = JSON.parse(
   readFileSync(
     join(root, "data/snapshots", pointer.snapshotId, "events.json"),
@@ -27,15 +32,18 @@ const overrides = {
   "Catch.sg": "https://www.catch.sg/Event/Chinatown-Art-Trail-20260626043212",
   "Visit Singapore All Happenings":
     "https://www.visitsingapore.com/whats-happening/all-happenings/",
-  Honeycombers:
-    "https://thehoneycombers.com/singapore/event/singapore-sabercon-2026",
 };
 
 function sampleUrl(source) {
   if (overrides[source.name]) return overrides[source.name];
-  return allEvents.find(({ sourceName, officialUrl }) =>
-    sourceName === source.name && officialUrl
-  )?.officialUrl ?? source.listing?.url ?? null;
+  return (
+    allEvents.find(
+      ({ sourceName, officialUrl }) =>
+        sourceName === source.name && officialUrl,
+    )?.officialUrl ??
+    source.listing?.url ??
+    null
+  );
 }
 
 function recordFromResult(source, url, result) {
@@ -43,7 +51,8 @@ function recordFromResult(source, url, result) {
   if (source.name === "Visit Singapore All Happenings" && adapter?.listing) {
     try {
       const listing = adapter.listing(result, source, url);
-      const listingRecord = listing.records?.[0] ?? listing.detailItems?.[0]?.record;
+      const listingRecord =
+        listing.records?.[0] ?? listing.detailItems?.[0]?.record;
       if (listingRecord)
         return applyEventFieldCompleteness(
           {
@@ -98,7 +107,8 @@ function recordFromResult(source, url, result) {
     detailUrl: evidence.fields.url ?? result.final_url ?? url,
   };
   return applyEventFieldCompleteness(record, {
-    evidenceHash: result.contentHash ?? sha(result.text ?? JSON.stringify(result)),
+    evidenceHash:
+      result.contentHash ?? sha(result.text ?? JSON.stringify(result)),
     methods: evidence.methods,
   });
 }
@@ -108,7 +118,11 @@ const records = [];
 for (const source of config.sources.filter(({ enabled }) => enabled)) {
   const url = sampleUrl(source);
   if (!url) {
-    records.push({ source: source.name, status: "blocked", reasonCode: "sample_url_unavailable" });
+    records.push({
+      source: source.name,
+      status: "blocked",
+      reasonCode: "sample_url_unavailable",
+    });
     continue;
   }
   try {
@@ -124,7 +138,10 @@ for (const source of config.sources.filter(({ enabled }) => enabled)) {
         format: "html",
         ttl: 0,
       });
-      client = createLayeredDetailFetchClient({ directClient: direct, fallbackClient: fallback });
+      client = createLayeredDetailFetchClient({
+        directClient: direct,
+        fallbackClient: fallback,
+      });
     }
     const batch = await client.fetchBatch([url], {
       sourceName: source.name,

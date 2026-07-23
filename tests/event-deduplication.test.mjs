@@ -161,7 +161,7 @@ test("discovery provenance never changes authoritative membership or anchor", ()
   const base = event("Catch.sg", "one");
   const withDiscovery = {
     ...base,
-    supportingDiscoveryIds: ["Honeycombers:item"],
+    supportingDiscoveryIds: ["Time Out Singapore:item"],
   };
   const a = finalizeDeduplication({ events: [base] }).events[0];
   const b = finalizeDeduplication({ events: [withDiscovery] }).events[0];
@@ -250,7 +250,7 @@ test("direct and editorial records merge across all sources while retaining ever
     evidenceLevel: "direct",
     sourceContributions: [{ sourceRecordId: "catch:one" }],
   });
-  const editorial = event("Honeycombers", "guide", {
+  const editorial = event("Time Out Singapore", "guide", {
     evidenceLevel: "editorial_authoritative",
     supportingDiscoveryIds: ["honey:guide"],
     sourceContributions: [{ sourceRecordId: "honey:guide" }],
@@ -259,9 +259,9 @@ test("direct and editorial records merge across all sources while retaining ever
     events: [direct, editorial],
     resolutions: {
       "Catch.sg-venue": approved("poi-a"),
-      "Honeycombers-venue": approved("poi-a"),
+      "Time Out Singapore-venue": approved("poi-a"),
     },
-    sourcePrecedence: { "Catch.sg": 10, Honeycombers: 999 },
+    sourcePrecedence: { "Catch.sg": 10, "Time Out Singapore": 999 },
   });
   assert.equal(result.events.length, 1);
   assert.equal(result.events[0].evidenceLevel, "direct_corroborated");
@@ -307,7 +307,7 @@ test("anytime and off-map matches merge only with the same strong location state
     ],
   });
   assert.equal(secret.events.length, 1);
-  const multiple = event("Honeycombers", "multi", {
+  const multiple = event("Time Out Singapore", "multi", {
     ...anytime,
     offMapSubtype: "multiple_locations",
     venue: "Various venues",

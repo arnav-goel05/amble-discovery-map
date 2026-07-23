@@ -12,7 +12,7 @@
 
 `data/event-pipeline-config.json` is the executable source of truth for timezone, window length, enabled sources, endpoints, pagination, and response pointers. `pull_data.md` is the human-readable source schedule and last-success ledger. Missing executable adapter details block only that source.
 
-Each schema-v2 source declares `evidenceRole` (`direct`, `editorial`, or `unavailable`), `operatingState` (`enabled` or `disabled`), deterministic `collectionOrder`, and precedence only for direct sources. Five direct and three editorial sources are enabled. Legacy role/mode aliases are migrated at the runtime boundary only.
+Each schema-v2 source declares `evidenceRole` (`direct`, `editorial`, or `unavailable`), `operatingState` (`enabled` or `disabled`), deterministic `collectionOrder`, and precedence only for direct sources. Five direct and one editorial source are enabled. Legacy role/mode aliases are migrated at the runtime boundary only.
 
 Use `Asia/Singapore` and `windowDaysAfterStart` for expiry/reconciliation and bounded recurrence materialization, not as an ingestion cutoff. Create run ID `<UTC YYYYMMDDTHHMMSSZ>-<window-start>-<window-end>`.
 

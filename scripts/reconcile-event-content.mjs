@@ -32,6 +32,25 @@ const sourceIdentities = (event) =>
       .filter((value) => !value.endsWith(":")),
   );
 
+const eventSourceNames = (event) =>
+  new Set(
+    [
+      ...(event.sources ?? []).map(({ source }) => source),
+      ...(event.sourceContributions ?? []).map(contributionSource),
+    ].filter(Boolean),
+  );
+
+const filterSupportedSources = (event, supportedSources) => ({
+  ...event,
+  sources: (event.sources ?? []).filter(
+    ({ source }) => !source || supportedSources.has(source),
+  ),
+  sourceContributions: (event.sourceContributions ?? []).filter((item) => {
+    const source = contributionSource(item);
+    return !source || supportedSources.has(source);
+  }),
+});
+
 export function reconcileActivityIdentity(current, incoming) {
   if (!current) return incoming;
   const currentSources = sourceIdentities(current),
@@ -121,23 +140,39 @@ export function reconcileSourceAvailability({
   sourceStatuses = {},
   asOf = new Date().toISOString(),
 }) {
+  const supportedSources = new Set(Object.keys(sourceStatuses));
+  const preparedPrevious = previousEvents.map((original) => {
+    const sourceNames = eventSourceNames(original);
+    const retiredSourceNames = [...sourceNames].filter(
+      (source) => !supportedSources.has(source),
+    );
+    return {
+      original,
+      event: filterSupportedSources(original, supportedSources),
+      retiredSourceNames,
+      retiredOnly:
+        sourceNames.size > 0 && retiredSourceNames.length === sourceNames.size,
+    };
+  });
   const previousByAnchor = new Map(
-    previousEvents.map((event) => [stableEventKey(event), event]),
+    preparedPrevious.map(({ event }) => [stableEventKey(event), event]),
   );
   const currentAnchors = new Set();
   const traces = [];
   const events = currentEvents.map((incoming) => {
     const prior =
       previousByAnchor.get(stableEventKey(incoming)) ??
-      previousEvents.find((event) => {
-        const oldIds = sourceIdentities(event),
-          newIds = sourceIdentities(incoming);
-        return (
-          [...oldIds].some((id) => newIds.has(id)) ||
-          (event.parentActivityId &&
-            event.parentActivityId === incoming.parentActivityId)
-        );
-      });
+      preparedPrevious
+        .map(({ event }) => event)
+        .find((event) => {
+          const oldIds = sourceIdentities(event),
+            newIds = sourceIdentities(incoming);
+          return (
+            [...oldIds].some((id) => newIds.has(id)) ||
+            (event.parentActivityId &&
+              event.parentActivityId === incoming.parentActivityId)
+          );
+        });
     const event = reconcileActivityIdentity(prior, incoming);
     currentAnchors.add(stableEventKey(event));
     if (!prior) return event;
@@ -198,10 +233,27 @@ export function reconcileSourceAvailability({
       fieldFreshness,
     };
   });
-  for (const previous of previousEvents) {
+  for (const {
+    original,
+    event: previous,
+    retiredOnly,
+    retiredSourceNames,
+  } of preparedPrevious) {
     if (currentAnchors.has(stableEventKey(previous))) continue;
-    const contributionStatuses = (previous.sourceContributions ?? [])
-      .map((item) => sourceStatuses[contributionSource(item)])
+    if (retiredOnly) {
+      traces.push({
+        eventId: stableEventKey(previous),
+        outcome: "archived",
+        reasonCode: "source_retired",
+        sourceNames: retiredSourceNames,
+        sourceRecordIds: (original.sourceContributions ?? [])
+          .map(({ sourceRecordId }) => sourceRecordId)
+          .filter(Boolean),
+      });
+      continue;
+    }
+    const contributionStatuses = [...eventSourceNames(previous)]
+      .map((source) => sourceStatuses[source])
       .filter(Boolean);
     const expired = isExpiredEvent(previous, asOf);
     if (
@@ -253,8 +305,52 @@ export function reconcileSourceAvailability({
         ({ outcome }) => outcome === "carry_forward_stale",
       ).length,
       archived: traces.filter(({ outcome }) => outcome === "archived").length,
+      retired: traces.filter(
+        ({ reasonCode }) => reasonCode === "source_retired",
+      ).length,
     },
   };
+}
+
+const samePublishedEvent = (published, current) => {
+  if (stableEventKey(published) === stableEventKey(current)) return true;
+  if (
+    published.parentActivityId &&
+    published.parentActivityId === current.parentActivityId
+  )
+    return true;
+  const publishedSources = sourceIdentities(published);
+  return [...sourceIdentities(current)].some((identity) =>
+    publishedSources.has(identity),
+  );
+};
+
+export function reconcilePublishedLandmarks({ landmarks = [], events = [] }) {
+  const removedEventIds = [];
+  const records = landmarks.map((landmark) => ({
+    ...landmark,
+    events: (landmark.events ?? []).flatMap((published) => {
+      const current = events.find((event) =>
+        samePublishedEvent(published, event),
+      );
+      if (!current) {
+        removedEventIds.push(stableEventKey(published));
+        return [];
+      }
+      return [
+        {
+          ...published,
+          ...current,
+          coordinates: published.coordinates,
+          venueVerified: published.venueVerified,
+          publicPlacement: published.publicPlacement,
+          mappingStatus: published.mappingStatus,
+          lifecycleState: published.lifecycleState,
+        },
+      ];
+    }),
+  }));
+  return { records, removedEventIds };
 }
 
 const parseEnd = (event) => {

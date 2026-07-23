@@ -404,6 +404,11 @@ export function finalizeDeduplication({
         members.flatMap(({ sourceContributions = [] }) => sourceContributions),
         (item) => item.sourceRecordId ?? JSON.stringify(item),
       );
+      const sourceParentActivities = uniqueBy(
+        members.flatMap(({ sourceParentActivities = [] }) => sourceParentActivities),
+        (item) =>
+          `${item.source ?? ""}\0${item.parentActivityId ?? ""}\0${item.parentListingId ?? ""}`,
+      );
       const firstValue = (field) =>
         members.map((member) => member[field]).find((value) => {
           if (value === null || value === undefined || value === "")
@@ -457,6 +462,7 @@ export function finalizeDeduplication({
         sessions,
         venueOccurrences,
         sourceContributions,
+        sourceParentActivities,
         publishedEventId: identityAnchor,
         evidenceLevel:
           members.some(

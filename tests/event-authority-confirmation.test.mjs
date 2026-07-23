@@ -11,7 +11,7 @@ const registry = loadEventAuthorityRegistry(
   path.join(root, "data/event-authority-registry.json"),
 );
 const discovery = (url, claims = {}) => ({
-  discoveryRecordId: "honeycombers:item-1",
+  discoveryRecordId: "time-out-singapore:item-1",
   evidenceRefs: ["raw/discovery.json"],
   claims: {
     title: "Night at the Museum",

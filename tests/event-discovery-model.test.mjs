@@ -232,6 +232,58 @@ test("approved event candidates expose grounded attributes and stable selection 
   );
 });
 
+test("repeated occurrences become one activity result while filters remain occurrence-aware", () => {
+  const model = createEventDiscoveryModel([
+    {
+      id: "theatre",
+      label: "Victoria Theatre",
+      anchor: { lng: 103.851, lat: 1.288 },
+      events: [
+        {
+          id: "show-1",
+          parentActivityId: "activity:show",
+          title: "Example Show",
+          venue: "Victoria Theatre",
+          startDateTime: "2026-08-01T20:00:00+08:00",
+          dateText: "1 Aug 2026",
+          sources: [{ source: "SISTIC", sourceUrl: "https://www.sistic.com.sg/show" }],
+        },
+        {
+          id: "show-2",
+          parentActivityId: "activity:show",
+          title: "Example Show",
+          venue: "Victoria Theatre",
+          startDateTime: "2026-08-02T20:00:00+08:00",
+          dateText: "2 Aug 2026",
+          sources: [{ source: "SISTIC", sourceUrl: "https://www.sistic.com.sg/show" }],
+        },
+      ],
+    },
+  ]);
+  const all = model.filter();
+  assert.equal(all.events.length, 1);
+  assert.equal(all.matchedActivities, 1);
+  assert.equal(all.matchedOccurrences, 2);
+  assert.equal(all.events[0].activityId, "activity:show");
+  assert.equal(all.events[0].occurrences.length, 2);
+  assert.equal(all.events[0].sessionCount, 2);
+  assert.match(all.events[0].scheduleSummary, /2 upcoming sessions/i);
+  const oneDay = model.filter({ dateStart: "2026-08-02", dateEnd: "2026-08-02" });
+  assert.equal(oneDay.events.length, 1);
+  assert.equal(oneDay.events[0].matchingOccurrences.length, 1);
+});
+
+test("one activity can retain distinct venue groups and deduplicated source offers", () => {
+  const model = createEventDiscoveryModel([
+    { id: "a", label: "Venue A", events: [{ id: "a1", parentActivityId: "activity:tour", title: "Tour", venue: "Venue A", dateText: "1 Aug", sources: [{ source: "Official", sourceUrl: "https://example.com/tour" }] }] },
+    { id: "b", label: "Venue B", events: [{ id: "b1", parentActivityId: "activity:tour", title: "Tour", venue: "Venue B", dateText: "2 Aug", sources: [{ source: "Official", sourceUrl: "https://example.com/tour" }] }] },
+  ]);
+  const [activity] = model.filter().events;
+  assert.equal(activity.venueGroups.length, 2);
+  assert.equal(activity.sourceOffers.length, 1);
+  assert.deepEqual(new Set(activity.occurrences.map((item) => item.landmarkId)), new Set(["a", "b"]));
+});
+
 test("mapped and off-map activities project once without inventing coordinates", () => {
   const landmarks = [
     {

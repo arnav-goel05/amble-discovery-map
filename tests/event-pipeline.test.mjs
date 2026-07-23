@@ -582,6 +582,62 @@ test("expired events and empty locations are removed at the run boundary", () =>
   );
 });
 
+test("frontend snapshot removes retired-source landmark events before lifecycle pruning", async () => {
+  const root = resolve(
+    tmpdir(),
+    `event-retired-landmark-${process.pid}-${Date.now()}`,
+  );
+  const runDir = join(root, "run");
+  mkdirSync(join(runDir, "normalized"), { recursive: true });
+  writeFileSync(
+    join(runDir, "normalized/events.json"),
+    JSON.stringify({ records: [] }),
+  );
+  try {
+    const plan = await prepareFrontendSnapshot({
+      runDir,
+      state: {
+        runId: "retire-source",
+        sources: { "Catch.sg": { status: "success" } },
+        venues: {},
+      },
+      run: {
+        runId: "retire-source",
+        window: singaporeWindow("2026-07-23"),
+      },
+      currentPois: [],
+      currentLandmarks: [
+        {
+          id: "retired-place",
+          events: [
+            {
+              id: "retired-event",
+              lifecycleState: "active",
+              sources: [{ source: "Retired Guide", sourceId: "one" }],
+              sourceContributions: [
+                {
+                  sourceName: "Retired Guide",
+                  sourceRecordId: "retired:one",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    assert.equal(plan.sourceReconciliation.counts.retired, 1);
+    assert.deepEqual(plan.expiry.removedLandmarkIds, ["retired-place"]);
+    assert.deepEqual(
+      JSON.parse(
+        readFileSync(join(runDir, "frontend/approved-landmarks.json"), "utf8"),
+      ).records,
+      [],
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("pipeline data clear removes only currently managed POIs and resets published event modules", async () => {
   const root = resolve(tmpdir(), `event-clear-${process.pid}-${Date.now()}`);
   mkdirSync(join(root, "public/poi-tiles/managed"), { recursive: true });
@@ -845,6 +901,11 @@ test("frontend snapshot resolves a newly dated occurrence through its preserved 
     );
     assert.equal(catalogue.mapped.length, 1);
     assert.equal(catalogue.mapped[0].id, oldId);
+    assert.equal(catalogue.schemaVersion, "3.1");
+    assert.equal(catalogue.activities.records.length, 1);
+    assert.equal(catalogue.activities.records[0].occurrenceIds[0], oldId);
+    assert.equal(catalogue.counts.activities, 1);
+    assert.equal(catalogue.activityGroupingDecisions.counts.create, 3);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -967,8 +1028,6 @@ test("structured pipeline configuration is authoritative for sources and window"
       "fever-singapore-rendered-v1",
       "visit-singapore-rendered-v1",
       "singapore-film-society-rendered-v1",
-      "honeycombers-discovery-v1",
-      "arts-equator-discovery-v1",
       "time-out-singapore-discovery-v1",
     ],
   );
@@ -1693,6 +1752,11 @@ test("code normalizer filters, preserves cross-source candidates, provenance, an
       duplicateCollapsed: 0,
       acceptedPostDedup: 2,
       acceptedPrimary: 2,
+      activities: 2,
+      activitySessions: 2,
+      activityVenueGroups: 2,
+      sourceOffers: 2,
+      activityGroupingReviews: 0,
     });
     assert.equal(result.venueBranches.length, 1);
     const events = JSON.parse(
@@ -2074,32 +2138,34 @@ test("sufficient editorial records normalize with provenance, optional fields, o
     tmpdir(),
     `event-normalizer-editorial-${process.pid}-${Date.now()}`,
   );
-  mkdirSync(join(runDir, "raw/honeycombers/discoveries"), { recursive: true });
-  const recordRef = "raw/honeycombers/discoveries/art.json#/records/0";
+  mkdirSync(join(runDir, "raw/time-out-singapore/discoveries"), {
+    recursive: true,
+  });
+  const recordRef = "raw/time-out-singapore/discoveries/art.json#/records/0";
   writeFileSync(
-    join(runDir, "raw/honeycombers/discoveries/art.json"),
+    join(runDir, "raw/time-out-singapore/discoveries/art.json"),
     JSON.stringify({
       schemaVersion: "1.0",
       records: [
         {
           recordType: "discovery",
-          discoveryRecordId: "honeycombers:art-night",
-          sourceId: "honeycombers:art-night",
+          discoveryRecordId: "time-out-singapore:art-night",
+          sourceId: "time-out-singapore:art-night",
           title: "Future Art Night",
           dateText: "20 December 2027",
           timeText: null,
           venue: "National Gallery Singapore",
           scope: "Singapore",
-          detailUrl: "https://thehoneycombers.com/singapore/event/art-night",
+          detailUrl: "https://www.timeout.com/singapore/things-to-do/art-night",
           schedule: { kind: "exact", displayText: "20 December 2027" },
           publicPlacement: "off_map",
           mappingStatus: "pending_review",
           lifecycleState: "active",
           evidenceLevel: "editorial_authoritative",
-          primaryEvidenceId: "honeycombers:art-night",
+          primaryEvidenceId: "time-out-singapore:art-night",
           sourceContributions: [
             {
-              sourceRecordId: "honeycombers:art-night",
+              sourceRecordId: "time-out-singapore:art-night",
               freshness: "current",
               fields: ["title", "schedule", "location"],
             },
@@ -2110,7 +2176,7 @@ test("sufficient editorial records normalize with provenance, optional fields, o
   );
   const state = {
     sources: {
-      Honeycombers: {
+      "Time Out Singapore": {
         status: "success",
         sourceRole: "discovery",
         operatingMode: "required",
@@ -2127,9 +2193,15 @@ test("sufficient editorial records normalize with provenance, optional fields, o
     });
     assert.deepEqual(result.counts, {
       eligiblePreDedup: 1,
+      dateReviewOccurrences: 0,
       duplicateCollapsed: 0,
       acceptedPostDedup: 1,
       acceptedPrimary: 1,
+      activities: 1,
+      activitySessions: 1,
+      activityVenueGroups: 1,
+      sourceOffers: 1,
+      activityGroupingReviews: 0,
     });
     assert.equal(
       result.venueBranches.length,
@@ -2148,7 +2220,9 @@ test("sufficient editorial records normalize with provenance, optional fields, o
       ],
       ["off_map", "pending_review", "editorial_authoritative", null],
     );
-    assert.deepEqual(event.supportingDiscoveryIds, ["honeycombers:art-night"]);
+    assert.deepEqual(event.supportingDiscoveryIds, [
+      "time-out-singapore:art-night",
+    ]);
     assert.equal(event.provenanceRefs[0], recordRef);
     assert.deepEqual(summarizeEvidenceLevels([event]), {
       uniqueActivities: 1,
@@ -2231,6 +2305,11 @@ test("normalizer collapses an all-day duplicate into the more precise timed occu
       duplicateCollapsed: 1,
       acceptedPostDedup: 1,
       acceptedPrimary: 1,
+      activities: 1,
+      activitySessions: 1,
+      activityVenueGroups: 1,
+      sourceOffers: 2,
+      activityGroupingReviews: 0,
     });
     const [event] = JSON.parse(
       readFileSync(join(runDir, "normalized/events.json"), "utf8"),

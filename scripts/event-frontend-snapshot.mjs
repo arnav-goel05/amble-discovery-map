@@ -16,6 +16,7 @@ import {
   contentHash,
   pruneExpiredContent,
   reconcileLandmark,
+  reconcilePublishedLandmarks,
   reconcilePoi,
   reconcileSourceAvailability,
 } from "./reconcile-event-content.mjs";
@@ -25,6 +26,7 @@ import {
   loadApprovedSnapshot,
   stageImmutableSnapshot,
 } from "./lib/approved-snapshot.mjs";
+import { projectEventActivities } from "./lib/event-pipeline/activity-projection.mjs";
 
 const atomicWrite = (path, value) => {
   mkdirSync(dirname(path), { recursive: true });
@@ -70,6 +72,7 @@ export function projectEventCatalogue(
   events,
   state,
   mappedEventIds = new Set(),
+  previousActivities = [],
 ) {
   const byId = new Map(
     events.map((event) => [event.id, structuredClone(event)]),
@@ -106,14 +109,28 @@ export function projectEventCatalogue(
   const offMap = active
     .filter((event) => event.publicPlacement === "off_map")
     .map((event) => ({ ...event, coordinates: null, venueVerified: false }));
+  const activityProjection = projectEventActivities({
+    events: active,
+    previousActivities,
+    runId: state.runId ?? null,
+    generatedAt: state.completedAt ?? state.updatedAt ?? null,
+  });
   return {
-    schemaVersion: "3.0",
+    schemaVersion: "3.1",
     mapped,
     offMap,
+    activities: activityProjection.activities,
+    activityGroupingReviews: activityProjection.reviews,
+    activityGroupingDecisions: activityProjection.decisions,
     counts: {
       active: active.length,
       mapped: mapped.length,
       offMap: offMap.length,
+      activities: activityProjection.activities.counts.activities,
+      sessions: activityProjection.activities.counts.sessions,
+      venueGroups: activityProjection.activities.counts.venueGroups,
+      sourceOffers: activityProjection.activities.counts.sourceOffers,
+      groupingReviews: activityProjection.reviews.counts.records,
     },
   };
 }
@@ -144,6 +161,7 @@ export async function prepareFrontendSnapshot({
   run,
   currentPois = APPROVED_POIS,
   currentLandmarks = APPROVED_LANDMARKS,
+  currentEventsCatalogue = null,
 }) {
   const currentEvents = JSON.parse(
     readFileSync(join(runDir, "normalized/events.json"), "utf8"),
@@ -161,6 +179,10 @@ export async function prepareFrontendSnapshot({
     asOf: run.window.start,
   });
   const events = sourceReconciliation.events;
+  const landmarkReconciliation = reconcilePublishedLandmarks({
+    landmarks: currentLandmarks,
+    events,
+  });
   // Reconciliation may intentionally preserve a previously published identity
   // when a source occurrence gains a date (and therefore a more specific raw
   // occurrence ID). Index both the stable identity and the source occurrence
@@ -179,7 +201,7 @@ export async function prepareFrontendSnapshot({
       if (alias && !eventMap.has(alias)) eventMap.set(alias, event);
   }
   const pruned = pruneExpiredContent({
-    landmarks: currentLandmarks,
+    landmarks: landmarkReconciliation.records,
     pois: currentPois,
     asOf: run.window.start,
   });
@@ -256,7 +278,12 @@ export async function prepareFrontendSnapshot({
   mkdirSync(assetsDir, { recursive: true });
   const nextPois = [...pois.values()],
     nextLandmarks = [...landmarks.values()];
-  const projectedEvents = projectEventCatalogue(events, state, mappedEventIds);
+  const projectedEvents = projectEventCatalogue(
+    events,
+    state,
+    mappedEventIds,
+    currentEventsCatalogue?.activities?.records ?? [],
+  );
   writeJson(join(frontendDir, "approved-pois.json"), {
     schemaVersion: "1.0",
     records: nextPois,
@@ -298,6 +325,7 @@ export async function prepareFrontendSnapshot({
     sourceReconciliation: {
       counts: sourceReconciliation.counts,
       traces: sourceReconciliation.traces,
+      removedLandmarkEventIds: landmarkReconciliation.removedEventIds,
     },
     geometryChanged: classifications.some(
       (item) => item.highlightAction !== "noop",

@@ -88,6 +88,7 @@ export function addEsplanadePerformanceScene(
           anchor: null,
         },
         sourceEvents: [event],
+        activity: result,
         selectedEventIndex: 0,
         trigger,
       });
@@ -96,7 +97,13 @@ export function addEsplanadePerformanceScene(
     }
     if (!pillLayer.selectResult(result, { notify: false })) return false;
     onLandmarkSelected?.(landmark.id);
-    eventPanel.close({ restoreFocus: false });
+    eventPanel.open({
+      landmark,
+      sourceEvents: landmark.events,
+      selectedEventIndex: result.eventIndex,
+      activity: result,
+      trigger,
+    });
     pillLayer.setNavigationTarget(landmark.id);
     focusMapLocation(map, landmark.anchor);
     return true;

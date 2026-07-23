@@ -298,22 +298,18 @@ test("duplicate captured detail URLs remain one immutable artifact", async () =>
   }
 });
 
-test("all eight definitions have deterministic evidence role, operating state, collection order, and direct precedence", () => {
+test("all six definitions have deterministic evidence role, operating state, collection order, and direct precedence", () => {
   const report = validateEventSourceDefinitions();
-  assert.equal(report.sources.length, 8);
+  assert.equal(report.sources.length, 6);
   assert.deepEqual(
     report.sources
       .filter(({ evidenceRole }) => evidenceRole === "editorial")
       .map(({ operatingState, precedence }) => [operatingState, precedence]),
-    [
-      ["enabled", null],
-      ["enabled", null],
-      ["enabled", null],
-    ],
+    [["enabled", null]],
   );
   assert.deepEqual(
     report.sources.map(({ collectionOrder }) => collectionOrder),
-    [10, 20, 30, 40, 50, 70, 80, 90],
+    [10, 20, 30, 40, 50, 90],
   );
 });
 
@@ -357,29 +353,11 @@ test("v3 source definitions retain unavailable migration support while current s
   assert.equal(report.schemaVersion, "2.0");
   assert.deepEqual(
     report.sources.map(({ evidenceRole }) => evidenceRole),
-    [
-      "direct",
-      "direct",
-      "direct",
-      "direct",
-      "direct",
-      "editorial",
-      "editorial",
-      "editorial",
-    ],
+    ["direct", "direct", "direct", "direct", "direct", "editorial"],
   );
   assert.deepEqual(
     report.sources.map(({ operatingState }) => operatingState),
-    [
-      "enabled",
-      "enabled",
-      "enabled",
-      "enabled",
-      "enabled",
-      "enabled",
-      "enabled",
-      "enabled",
-    ],
+    ["enabled", "enabled", "enabled", "enabled", "enabled", "enabled"],
   );
 });
 
@@ -1012,7 +990,7 @@ test("unreliable schedule phrases stay held instead of becoming exact dates", ()
     ({ adapterId }) => adapterId === "fever-singapore-rendered-v1",
   );
   const editorial = readPipelineConfig().sources.find(
-    ({ adapterId }) => adapterId === "honeycombers-discovery-v1",
+    ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
   );
   for (const phrase of ["TBA", "To be confirmed", "Coming soon"]) {
     const directRecord = renderedAdapterFor(direct.adapterId).detail(
@@ -1028,15 +1006,15 @@ test("unreliable schedule phrases stay held instead of becoming exact dates", ()
     assert.equal(directRecord.schedule.kind, "unverified", phrase);
     const editorialRecord = renderedAdapterFor(editorial.adapterId).detail(
       {
-        url: "https://thehoneycombers.com/singapore/event/future",
+        url: "https://www.timeout.com/singapore/things-to-do/future",
         title: "Future Programme",
         text: `Date: ${phrase}\nVenue: The Arts House`,
         links: [],
       },
       editorial,
-      "https://thehoneycombers.com/singapore/event/future",
+      "https://www.timeout.com/singapore/things-to-do/future",
     );
-    assert.equal(editorialRecord.claims.dateText, phrase);
+    assert.equal(editorialRecord.claims.dateText, null);
   }
 });
 
@@ -1723,67 +1701,6 @@ test("rendered collection isolates one failed detail and retains healthy direct 
   }
 });
 
-test("editorial collection reuses compatible records already collected in the run", async () => {
-  const state = temporaryState();
-  try {
-    const source = readPipelineConfig().sources.find(
-      ({ adapterId }) => adapterId === "honeycombers-discovery-v1",
-    );
-    const detailUrl =
-      "https://thehoneycombers.com/singapore/event/night-museum";
-    const calls = [];
-    const renderedClient = {
-      fetchBatch: async ([url]) => {
-        calls.push(url);
-        const result =
-          url === source.listing.url
-            ? {
-                url,
-                document: {
-                  links: [{ url: detailUrl, text: "Night at the Museum" }],
-                },
-              }
-            : {
-                url,
-                document: {
-                  title: "Night at the Museum",
-                  fields: {
-                    Date: "17 July 2026",
-                    Venue: "National Gallery Singapore",
-                  },
-                  links: [
-                    {
-                      url: "https://peatix.com/event/night-museum",
-                      text: "Visit website",
-                    },
-                  ],
-                },
-              };
-        return { results: [result], errors: [], payloadHash: "hash" };
-      },
-    };
-    const result = await collectRenderedSource({
-      runDir: state.root,
-      run: { runId: "run-reuse", window: singaporeWindow("2026-07-14") },
-      source,
-      renderedClient,
-      corroborationRecords: [
-        {
-          sourceRecordId: "catch:night-museum",
-          sourceRole: "authoritative",
-          title: "Night at the Museum",
-          dateText: "17 July 2026",
-          venue: "National Gallery Singapore",
-        },
-      ],
-    });
-    assert.equal(result.counts.confirmationOutcomeCounts.direct_reused, 1);
-    assert.deepEqual(calls, [source.listing.url, detailUrl]);
-  } finally {
-    state.cleanup();
-  }
-});
-
 test("Singapore Film Society expands film seeds into screening occurrences and audits stale siblings", async () => {
   const state = temporaryState();
   try {
@@ -1854,89 +1771,6 @@ test("Singapore Film Society expands film seeds into screening occurrences and a
   }
 });
 
-test("three editorial adapters produce accounted discovery records under the enabled source contract", async () => {
-  const state = temporaryState();
-  try {
-    const source = readPipelineConfig().sources.find(
-      ({ adapterId }) => adapterId === "honeycombers-discovery-v1",
-    );
-    const renderedClient = {
-      fetchBatch: async ([url]) => {
-        let result;
-        if (url === source.listing.url)
-          result = {
-            url,
-            document: {
-              links: [
-                {
-                  url: "/singapore/event/night-museum",
-                  text: "Night at the Museum",
-                },
-              ],
-            },
-          };
-        else if (url.includes("night-museum"))
-          result = {
-            url,
-            document: {
-              title: "Night at the Museum",
-              fields: {
-                Date: "17 July 2026",
-                Time: "19:00",
-                Venue: "National Gallery Singapore",
-              },
-              links: [
-                {
-                  url: "https://peatix.com/event/night-museum",
-                  text: "Visit Website",
-                },
-              ],
-            },
-          };
-        else
-          result = {
-            url,
-            document: {
-              title: "Night at the Museum",
-              fields: {
-                Date: "17 July 2026",
-                Time: "19:00",
-                Venue: "National Gallery Singapore",
-              },
-              links: [],
-            },
-          };
-        return {
-          results: [result],
-          errors: [],
-          payloadHash: `hash-${url}`,
-          payload: { results: [result] },
-        };
-      },
-    };
-    const result = await collectRenderedSource({
-      runDir: state.root,
-      run: { runId: "run-a", window: singaporeWindow("2026-07-14") },
-      source,
-      renderedClient,
-      now: () => "2026-07-14T00:00:00.000Z",
-    });
-    assert.equal(result.status, "success");
-    assert.equal(result.operatingMode, "required");
-    assert.equal(result.sourceRole, "discovery");
-    assert.equal(
-      result.counts.confirmationOutcomeCounts.authority_confirmed,
-      1,
-    );
-    assert.equal(result.counts.occurrencesEmitted, 1);
-    assert.equal(result.counts.eligiblePreDedup, 1);
-    assert.equal(result.processedSourceRecordRefs.length, 1);
-    assert.doesNotThrow(() => validateSourceSemantics(state.root, {}, result));
-  } finally {
-    state.cleanup();
-  }
-});
-
 test("editorial detail and roundup containers retain attendable activities while rejecting pure promotions", () => {
   const sources = readPipelineConfig().sources.filter(
     ({ evidenceRole }) => evidenceRole === "editorial",
@@ -1944,9 +1778,7 @@ test("editorial detail and roundup containers retain attendable activities while
   for (const source of sources) {
     const adapter = renderedAdapterFor(source.adapterId);
     const detailUrl = new URL(
-      source.name === "ArtsEquator"
-        ? "/event/art-night"
-        : "/singapore/things-to-do/art-night",
+      "/singapore/things-to-do/art-night",
       source.listing.url,
     ).href;
     const retained = adapter.detail(
@@ -2607,110 +2439,6 @@ test("editorial collection isolates one failed detail and retains healthy discov
     assert.equal(
       result.invalidReasonCodes[result.invalidSourceRecordRefs[0]],
       "source_unavailable",
-    );
-  } finally {
-    state.cleanup();
-  }
-});
-
-test("ArtsEquator retains attendable programmes mentioned beside opportunities", () => {
-  const source = readPipelineConfig().sources.find(
-    ({ name }) => name === "ArtsEquator",
-  );
-  const adapter = renderedAdapterFor(source.adapterId);
-  const detailUrl = "https://artsequator.com/event/residency-showcase";
-  const record = adapter.detail(
-    {
-      url: detailUrl,
-      document: {
-        title: "Residency Showcase",
-        text: "Open call followed by a public performance and workshop",
-        fields: {
-          Date: "18 August 2026",
-          Venue: "The Arts House",
-          City: "Singapore",
-        },
-        links: [],
-      },
-    },
-    source,
-    detailUrl,
-  );
-  assert.equal(record.reasonCode, null);
-});
-
-test("ArtsEquator parses The Events Calendar headings and venue blocks as sufficient editorial evidence", async () => {
-  const state = temporaryState();
-  try {
-    const source = readPipelineConfig().sources.find(
-      ({ name }) => name === "ArtsEquator",
-    );
-    const detailUrl = "https://artsequator.com/event/benchmarks";
-    const logs = [];
-    const renderedClient = {
-      fetchBatch: async ([url]) => ({
-        results: [
-          url === source.listing.url
-            ? { url, text: "### Benchmarks", links: [detailUrl] }
-            : {
-                url,
-                final_url: `${detailUrl}/`,
-                title: "Benchmarks",
-                text: "# Benchmarks\n\n## August 2, 2023 - July 31, 2026\n\nA public art trail.\n\nWebsite: https://artshouselimited.sg/civic-district\n\n## Details\n\n**Start:** : August 2, 2023\n **End:** : July 31\n\n## Venue\n\n: The Arts House\n: 1 Old Parliament Lane\nSingapore,\nSingapore\n+ Google Map",
-                links: [],
-              },
-        ],
-        errors: [],
-        payloadHash: `hash-${url}`,
-      }),
-    };
-    const result = await collectRenderedSource({
-      runDir: state.root,
-      run: { runId: "run-a", window: singaporeWindow("2026-07-20") },
-      source,
-      renderedClient,
-      logger: (entry) => logs.push(entry),
-      now: () => "2026-07-20T00:00:00.000Z",
-    });
-    assert.equal(result.status, "success");
-    assert.equal(result.counts.eligiblePreDedup, 1);
-    assert.equal(
-      result.counts.confirmationOutcomeCounts.editorial_sufficient,
-      1,
-    );
-    const discovery = JSON.parse(
-      fs.readFileSync(
-        path.join(
-          state.root,
-          result.processedSourceRecordRefs[0].split("#")[0],
-        ),
-        "utf8",
-      ),
-    ).records[0];
-    assert.equal(discovery.dateText, "August 2, 2023 - July 31, 2026");
-    assert.equal(
-      discovery.venue,
-      "The Arts House, 1 Old Parliament Lane, Singapore, Singapore",
-    );
-    assert.ok(
-      discovery.outboundLinks.some(
-        ({ url, text }) =>
-          url === "https://artshouselimited.sg/civic-district" &&
-          text === "Event Website",
-      ),
-    );
-    assert.ok(
-      logs.some(
-        ({ action, hasSchedule, hasVenue }) =>
-          action === "discovery_detail_parsed" && hasSchedule && hasVenue,
-      ),
-    );
-    assert.ok(
-      logs.some(
-        ({ action, decision }) =>
-          action === "discovery_confirmation_decided" &&
-          decision === "editorial_sufficient",
-      ),
     );
   } finally {
     state.cleanup();

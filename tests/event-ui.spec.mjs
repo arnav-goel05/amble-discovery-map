@@ -1515,7 +1515,7 @@ test("panel sorts canonically, isolates gestures, and rejects invalid details", 
       "ph-bold ph-navigation-arrow",
       "ph-bold ph-x",
     ],
-    position: "2 of 2 events",
+    position: "2 of 2 activities",
     selected: "Late",
     unavailableLink: false,
     venue: "Verified Landmark",
@@ -1644,7 +1644,7 @@ test("event panel renders the complete display contract and only exposes validat
         ? { left: "18px", top: "18px" }
         : { left: "28px", top: "28px" },
     fieldsWithLink: {
-      Reference: "Catch.sg",
+      "Sources & tickets": "Catch.sg",
       Date: "14 Jul 2026",
       Time: "Not available",
       "Location type": "Single location",
@@ -1662,6 +1662,125 @@ test("event panel renders the complete display contract and only exposes validat
     invalidLinkHidden: true,
     officialLink: { hidden: false, href: "https://example.com/official" },
     singletonCount: 1,
+  });
+});
+
+test("event panel combines sibling occurrences and keeps exact session planning identity", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const result = await page.evaluate(async () => {
+    const { createLandmarkEventPanel } =
+      await import("/activity-scenes/landmark-event-panel.js");
+    const trigger = document.getElementById("map-focus");
+    const panel = createLandmarkEventPanel();
+    let planned = null;
+    window.addEventListener(
+      "whats-here:add-to-plan",
+      (event) => (planned = event.detail),
+      { once: true },
+    );
+    panel.open({
+      landmark: {
+        id: "victoria",
+        label: "Victoria Theatre",
+        anchor: { lat: 1.288, lng: 103.851 },
+      },
+      sourceEvents: [
+        {
+          id: "show-1",
+          occurrenceId: "show-1",
+          parentActivityId: "activity:show",
+          title: "Example Show",
+          venue: "Victoria Theatre",
+          dateText: "1 Aug 2026",
+          startDateTime: "2026-08-01T20:00:00+08:00",
+          eventUrl: "https://example.com/show/1",
+        },
+        {
+          id: "show-2",
+          occurrenceId: "show-2",
+          parentActivityId: "activity:show",
+          title: "Example Show",
+          venue: "Victoria Theatre",
+          dateText: "2 Aug 2026",
+          startDateTime: "2026-08-02T20:00:00+08:00",
+          eventUrl: "https://example.com/show/2",
+        },
+      ],
+      trigger,
+    });
+    const sessions = [
+      ...document.querySelectorAll(".landmark-event-panel__session"),
+    ];
+    sessions[1].click();
+    panel.addToPlan();
+    const state = {
+      activityNavigationHidden: document.querySelector(
+        ".landmark-event-panel__events",
+      ).hidden,
+      sessionCount: sessions.length,
+      selected: [
+        ...document.querySelectorAll(".landmark-event-panel__session"),
+      ].map((item) => item.getAttribute("aria-pressed")),
+      plannedId: planned?.id,
+      reference: document.querySelector(".landmark-event-panel__link").href,
+    };
+    panel.destroy();
+    return state;
+  });
+  expect(result).toEqual({
+    activityNavigationHidden: true,
+    sessionCount: 2,
+    selected: ["false", "true"],
+    plannedId: "show-2",
+    reference: "https://example.com/show/2",
+  });
+});
+
+test("event panel reveals large session lists without hiding exact identities", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const result = await page.evaluate(async () => {
+    const { createLandmarkEventPanel } =
+      await import("/activity-scenes/landmark-event-panel.js");
+    const panel = createLandmarkEventPanel();
+    panel.open({
+      landmark: { id: "hall", label: "Hall", anchor: { lat: 1.3, lng: 103.8 } },
+      sourceEvents: Array.from({ length: 9 }, (_, index) => ({
+        id: `show-${index + 1}`,
+        occurrenceId: `show-${index + 1}`,
+        parentActivityId: "activity:long-show",
+        title: "Long-running Show",
+        venue: "Hall",
+        dateText: `${index + 1} Aug 2026`,
+        startDateTime: `2026-08-${String(index + 1).padStart(2, "0")}T20:00:00+08:00`,
+      })),
+      trigger: document.getElementById("map-focus"),
+    });
+    const before = document.querySelectorAll(
+      ".landmark-event-panel__session",
+    ).length;
+    const reveal = document.querySelector(
+      ".landmark-event-panel__session-reveal",
+    );
+    const collapsedLabel = reveal.textContent;
+    reveal.click();
+    const expanded = document.querySelectorAll(
+      ".landmark-event-panel__session",
+    ).length;
+    const expandedState = document
+      .querySelector(".landmark-event-panel__session-reveal")
+      .getAttribute("aria-expanded");
+    panel.destroy();
+    return { before, collapsedLabel, expanded, expandedState };
+  });
+  expect(result).toEqual({
+    before: 6,
+    collapsedLabel: "Show 3 more sessions",
+    expanded: 9,
+    expandedState: "true",
   });
 });
 

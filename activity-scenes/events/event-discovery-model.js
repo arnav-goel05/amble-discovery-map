@@ -62,6 +62,99 @@ function candidateEvidence(event) {
   return references;
 }
 
+function safeSourceOffers(occurrences) {
+  const offers = new Map();
+  for (const occurrence of occurrences)
+    for (const source of occurrence.sourceEvent?.sources ?? []) {
+      try {
+        const url = new URL(source.sourceUrl ?? source.url);
+        if (!['http:', 'https:'].includes(url.protocol)) continue;
+        url.hash = "";
+        for (const key of [...url.searchParams.keys()])
+          if (/^(?:utm_|fbclid$|gclid$)/i.test(key)) url.searchParams.delete(key);
+        url.searchParams.sort();
+        const href = url.href.replace(/\?$/, "");
+        const label = displayText(source.source) || url.hostname.replace(/^www\./, "");
+        offers.set(`${label}\0${href}`, { label, url: href });
+      } catch {
+        // Invalid source links are intentionally unavailable in the public UI.
+      }
+    }
+  return [...offers.values()].sort(
+    (a, b) => a.label.localeCompare(b.label) || a.url.localeCompare(b.url),
+  );
+}
+
+function activityResult(matchingOccurrences, allOccurrences) {
+  const representative = matchingOccurrences[0] ?? allOccurrences[0];
+  const chronological = [...allOccurrences].sort(
+    (a, b) =>
+      a.scheduleValue - b.scheduleValue || a.identity.localeCompare(b.identity),
+  );
+  const finite = chronological.filter((item) => Number.isFinite(item.scheduleValue));
+  const venueGroups = [
+    ...new Map(
+      chronological.map((item) => {
+        const key = item.landmarkId ?? `off-map:${normalize(item.venue) || item.offMapSubtype || "tba"}`;
+        return [key, {
+          venueGroupId: `${representative.activityId}::${key}`,
+          label: item.venue || "Location TBA",
+          landmarkId: item.landmarkId,
+          anchor: item.anchor,
+          occurrences: chronological.filter((candidate) =>
+            (candidate.landmarkId ?? `off-map:${normalize(candidate.venue) || candidate.offMapSubtype || "tba"}`) === key,
+          ),
+        }];
+      }),
+    ).values(),
+  ];
+  const scheduleSummary = finite.length > 1
+    ? `${chronological.length} upcoming sessions · ${finite[0].date || finite[0].sourceEvent?.schedule?.start} – ${finite.at(-1).date || finite.at(-1).sourceEvent?.schedule?.end || finite.at(-1).sourceEvent?.schedule?.start}`
+    : finite.length === 1
+      ? (finite[0].date || finite[0].sourceEvent?.schedule?.displayText || "1 upcoming session")
+      : representative.sourceEvent?.schedule?.displayText ||
+        (representative.scheduleKind === "anytime" ? "Anytime" : `${chronological.length} sessions`);
+  return {
+    ...representative,
+    identity: representative.activityId,
+    eventId: representative.eventId,
+    activityId: representative.activityId,
+    occurrences: chronological,
+    matchingOccurrences: [...matchingOccurrences],
+    venueGroups,
+    sourceOffers: safeSourceOffers(chronological),
+    sessionCount: chronological.length,
+    scheduleSummary,
+    searchable: normalize(
+      chronological.map((item) => item.searchable).join(" "),
+    ),
+  };
+}
+
+function groupActivities(occurrences, allOccurrences = occurrences) {
+  const allByActivity = new Map();
+  for (const occurrence of allOccurrences) {
+    const rows = allByActivity.get(occurrence.activityId) ?? [];
+    rows.push(occurrence);
+    allByActivity.set(occurrence.activityId, rows);
+  }
+  const matching = new Map();
+  for (const occurrence of occurrences) {
+    const rows = matching.get(occurrence.activityId) ?? [];
+    rows.push(occurrence);
+    matching.set(occurrence.activityId, rows);
+  }
+  return [...matching.entries()]
+    .map(([activityId, rows]) => activityResult(rows, allByActivity.get(activityId) ?? rows))
+    .sort(
+      (a, b) =>
+        a.scheduleValue - b.scheduleValue ||
+        (a.landmarkId ?? "").localeCompare(b.landmarkId ?? "") ||
+        a.eventIndex - b.eventIndex ||
+        a.activityId.localeCompare(b.activityId),
+    );
+}
+
 function scheduleValue(event) {
   const value = Date.parse(
     event.schedule?.start || event.startDateTime || event.startsAt || "",
@@ -178,6 +271,11 @@ export function createEventDiscoveryModel(
         identity: eventIdentity(landmark.id, eventId),
         landmarkId: landmark.id,
         eventId,
+        activityId:
+          event.activityId ||
+          event.parentActivityId ||
+          event.parentListingId ||
+          `activity:${eventIdentity(landmark.id, eventId)}`,
         eventIndex,
         title,
         venue,
@@ -243,6 +341,11 @@ export function createEventDiscoveryModel(
       identity: `off-map::${eventId}`,
       landmarkId: null,
       eventId,
+      activityId:
+        event.activityId ||
+        event.parentActivityId ||
+        event.parentListingId ||
+        `activity:off-map:${eventId}`,
       eventIndex,
       title,
       venue,
@@ -281,6 +384,7 @@ export function createEventDiscoveryModel(
       (left.landmarkId ?? "").localeCompare(right.landmarkId ?? "") ||
       left.eventIndex - right.eventIndex,
   );
+  const activities = groupActivities(events);
 
   const filter = ({
     query = "",
@@ -294,7 +398,7 @@ export function createEventDiscoveryModel(
     const normalizedQuery = normalize(query);
     const selectedCategories = new Set(categories);
     const window = dateWindow(dateRange, now(), dateStart, dateEnd);
-    const matched = events.filter(
+    const matchedOccurrences = events.filter(
       (event) =>
         (!normalizedQuery || event.searchable.includes(normalizedQuery)) &&
         (selectedCategories.size === 0 ||
@@ -310,6 +414,7 @@ export function createEventDiscoveryModel(
               event.scheduleEndValue >= window.start)) &&
         matchesPrice(event, priceRange),
     );
+    const matched = groupActivities(matchedOccurrences, events);
     return {
       query: displayText(query),
       categories: [...selectedCategories],
@@ -318,10 +423,14 @@ export function createEventDiscoveryModel(
       dateEnd,
       priceRange,
       placementView,
-      identities: new Set(matched.map(({ identity }) => identity)),
+      identities: new Set(
+        matchedOccurrences.map(({ identity }) => identity),
+      ),
       events: matched,
       matchedEvents: matched.length,
-      matchedLandmarks: new Set(matched.map(({ landmarkId }) => landmarkId))
+      matchedActivities: matched.length,
+      matchedOccurrences: matchedOccurrences.length,
+      matchedLandmarks: new Set(matchedOccurrences.map(({ landmarkId }) => landmarkId))
         .size,
     };
   };
@@ -378,7 +487,7 @@ export function createEventDiscoveryModel(
     approvedCandidates,
     categories: () =>
       [...new Set(events.map(({ category }) => category))].sort(),
-    events: () => [...events],
+    events: () => [...activities],
     filter,
     selectionForCandidate,
   };

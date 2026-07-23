@@ -59,6 +59,11 @@ import {
   validateDateReviewArtifact,
 } from "./lib/event-pipeline/date-quality-audit.mjs";
 import {
+  projectEventActivities,
+  validateActivityProjection,
+} from "./lib/event-pipeline/activity-projection.mjs";
+import { validateActivityReconciliation } from "./lib/event-pipeline/activity-reconciliation.mjs";
+import {
   finalizeDeduplication,
   generateDedupCandidates,
 } from "./lib/event-sources/deduplicate.mjs";
@@ -2435,6 +2440,21 @@ function recordNormalization(options) {
       "normalized/dedup-decisions.json",
     ];
     const dateReviewsRef = "normalized/date-reviews.json";
+    const activitiesRef = "normalized/activities.json";
+    const activityReviewsRef = "normalized/activity-grouping-reviews.json";
+    const activityDecisionsRef = "normalized/activity-grouping-decisions.json";
+    const hasActivityProjection =
+      result.artifactRefs?.includes(activitiesRef) ||
+      result.artifactRefs?.includes(activityReviewsRef) ||
+      existsSync(join(runDir, activitiesRef)) ||
+      existsSync(join(runDir, activityReviewsRef));
+    if (hasActivityProjection)
+      requiredArtifacts.push(activitiesRef, activityReviewsRef);
+    if (
+      result.artifactRefs?.includes(activityDecisionsRef) ||
+      existsSync(join(runDir, activityDecisionsRef))
+    )
+      requiredArtifacts.push(activityDecisionsRef);
     const hasDateReviewsArtifact =
       result.artifactRefs?.includes(dateReviewsRef) ||
       existsSync(join(runDir, dateReviewsRef));
@@ -2447,6 +2467,15 @@ function recordNormalization(options) {
       join(runDir, "normalized/excluded.json"),
     );
     const normalizedInvalid = readJson(join(runDir, "normalized/invalid.json"));
+    if (hasActivityProjection)
+      validateActivityProjection(
+        readJson(join(runDir, activitiesRef)),
+        readJson(join(runDir, activityReviewsRef)),
+      );
+    if (requiredArtifacts.includes(activityDecisionsRef))
+      validateActivityReconciliation(
+        readJson(join(runDir, activityDecisionsRef)),
+      );
     const normalizedDateReviews = hasDateReviewsArtifact
       ? readJson(join(runDir, dateReviewsRef))
       : { counts: { records: 0 }, records: [] };
@@ -2887,6 +2916,23 @@ function finalizeDedupCommand(options) {
     counts: { records: result.events.length },
     records: result.events,
   });
+  const activityProjection = projectEventActivities({
+    events: result.events,
+    runId: options.run,
+    generatedAt: new Date().toISOString(),
+  });
+  writeJson(
+    join(runDir, "normalized/activities.json"),
+    activityProjection.activities,
+  );
+  writeJson(
+    join(runDir, "normalized/activity-grouping-reviews.json"),
+    activityProjection.reviews,
+  );
+  writeJson(
+    join(runDir, "normalized/activity-grouping-decisions.json"),
+    activityProjection.decisions,
+  );
   for (const venue of Object.values(state.venues))
     venue.eventIds = [
       ...new Set(
@@ -2900,9 +2946,23 @@ function finalizeDedupCommand(options) {
     ];
   state.deduplication = {
     status: "success",
-    counts: result.counts,
+    counts: {
+      ...result.counts,
+      activities: activityProjection.activities.counts.activities,
+      activitySessions: activityProjection.activities.counts.sessions,
+      activityVenueGroups: activityProjection.activities.counts.venueGroups,
+      sourceOffers: activityProjection.activities.counts.sourceOffers,
+      activityGroupingReviews: activityProjection.reviews.counts.records,
+    },
     evidence: summarizeEvidenceLevels(result.events),
-    artifactRefs: [candidatesRef, decisionsRef, "normalized/events.json"],
+    artifactRefs: [
+      candidatesRef,
+      decisionsRef,
+      "normalized/events.json",
+      "normalized/activities.json",
+      "normalized/activity-grouping-reviews.json",
+      "normalized/activity-grouping-decisions.json",
+    ],
     blockingReviews: result.blockingReviews,
     isolatedReviewEventIds: [...isolatedReviewIds],
     error: null,
@@ -2912,6 +2972,9 @@ function finalizeDedupCommand(options) {
     candidatesRef,
     decisionsRef,
     "normalized/events.json",
+    "normalized/activities.json",
+    "normalized/activity-grouping-reviews.json",
+    "normalized/activity-grouping-decisions.json",
   ]);
   saveState(runDir, state);
   pipelineTrace(runDir, {
@@ -4767,6 +4830,7 @@ async function prepareFrontendPlan(runId) {
     run: readJson(join(runDir, "run.json")),
     currentPois: currentPois ?? approved?.pois ?? [],
     currentLandmarks: currentLandmarks ?? approved?.landmarks ?? [],
+    currentEventsCatalogue: approved?.events ?? null,
   });
 }
 

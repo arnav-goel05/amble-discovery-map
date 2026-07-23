@@ -1203,6 +1203,85 @@ button {
   letter-spacing: -0.02em;
 }
 
+.landmark-event-panel__schedule {
+  margin-bottom: 22px;
+  padding: 18px;
+  border: 1px solid rgba(21, 35, 55, 0.09);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.landmark-event-panel__schedule-summary {
+  margin: -4px 0 14px;
+  color: #172033;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.landmark-event-panel__venue-groups {
+  display: grid;
+  gap: 16px;
+}
+
+.landmark-event-panel__venue-group + .landmark-event-panel__venue-group {
+  padding-top: 14px;
+  border-top: 1px solid rgba(21, 35, 55, 0.08);
+}
+
+.landmark-event-panel__venue-title {
+  margin: 0 0 9px;
+  color: #4c5669;
+  font-size: 13px;
+}
+
+.landmark-event-panel__sessions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.landmark-event-panel__session {
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 1px solid rgba(21, 35, 55, 0.14);
+  border-radius: 10px;
+  background: #fff;
+  color: #172033;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.landmark-event-panel__session[aria-pressed="true"] {
+  border-color: #087f84;
+  background: rgba(8, 127, 132, 0.1);
+  color: #076b70;
+}
+
+.landmark-event-panel__session:focus-visible {
+  outline: 2px solid rgba(31, 127, 163, 0.55);
+  outline-offset: 2px;
+}
+
+.landmark-event-panel__session-reveal {
+  min-height: 44px;
+  margin-top: 0.55rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(29, 78, 216, 0.32);
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.landmark-event-panel__session-reveal:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.32);
+  outline-offset: 2px;
+}
+
 .landmark-event-panel__heading {
   max-width: none;
   margin-top: 0;

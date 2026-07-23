@@ -588,7 +588,7 @@ test("pilot failures are visible but non-blocking while required discovery and d
         sourceRole: "authoritative",
         operatingMode: "required",
       },
-      Honeycombers: {
+      "Time Out Singapore": {
         status: "pilot_failed",
         sourceRole: "discovery",
         operatingMode: "pilot",
@@ -606,7 +606,7 @@ test("pilot failures are visible but non-blocking while required discovery and d
   });
   assert.equal(deriveTerminalStatus(base), "success");
   const promoted = structuredClone(base);
-  promoted.sources.Honeycombers.operatingMode = "required";
+  promoted.sources["Time Out Singapore"].operatingMode = "required";
   assert.ok(
     evaluateCommitEligibility(promoted).reasons.includes(
       "required_source_incomplete",

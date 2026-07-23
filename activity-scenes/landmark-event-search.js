@@ -287,7 +287,14 @@ export function createLandmarkEventSearch({
         textContent: item.title,
       }),
       Object.assign(document.createElement("span"), {
-        textContent: [item.venue, item.date].filter(Boolean).join(" · "),
+        textContent: [
+          item.venueGroups?.length > 1
+            ? `${item.venueGroups.length} venues`
+            : item.venue,
+          item.scheduleSummary || item.date,
+        ]
+          .filter(Boolean)
+          .join(" · "),
       }),
     );
     const locationLabel = eventLocationLabel(item);
