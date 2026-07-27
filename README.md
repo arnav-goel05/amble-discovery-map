@@ -4,7 +4,7 @@ Amble is a three-dimensional Singapore discovery map for finding events, nearby 
 
 ![Amble map and onboarding](docs/design/qa/qa-feature-tour-implementation.png)
 
-**Live demo:** https://amble.amble-sg.workers.dev
+**Live demo:** https://amblefinds.com/
 
 ## What it does
 
@@ -41,7 +41,8 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open http://127.0.0.1:5173. To load production 3D geometry while developing, set `TILE_FALLBACK_ORIGIN=https://amble.amble-sg.workers.dev` in `.env.local`.
+Open http://127.0.0.1:5173. To load production 3D geometry while developing, set
+`TILE_FALLBACK_ORIGIN=https://amblefinds.com` in `.env.local`.
 
 ## Validation
 
