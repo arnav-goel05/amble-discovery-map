@@ -4,13 +4,30 @@ import {
   validateBrowserMessage,
   validateSessionAdmission,
 } from "../scripts/lib/realtime-relay-protocol.mjs";
+import {
+  compileSchema,
+  createCapabilityResultValidator,
+} from "../activity-scenes/assistant/capability-result.js";
+import { projectRealtimeFunctionTool } from "../activity-scenes/assistant/protocol-adapters/realtime-function-adapter.js";
+import { selectCapabilityTurnScope } from "../activity-scenes/assistant/capability-turn-scope.js";
+import { EVENT_APPLY_QUERY_CAPABILITY_CONTRACT } from "../activity-scenes/assistant/connectors/event-connector.js";
 import { createPublicActionContracts } from "../activity-scenes/assistant/actions/index.js";
+import appInspectResultSchema from "../specs/004-conversational-voice-map/contracts/app-inspect-result.schema.json" with { type: "json" };
+import catalogGetResultSchema from "../specs/004-conversational-voice-map/contracts/catalog-get-result.schema.json" with { type: "json" };
+import catalogSearchResultSchema from "../specs/004-conversational-voice-map/contracts/catalog-search-result.schema.json" with { type: "json" };
 
 const OPENAI_REALTIME_URL = "https://api.openai.com/v1/realtime";
 const OUT_OF_SCOPE_RESPONSE =
   "I can only help you explore Singapore and use Amble's current features.";
 export const AMBLE_WELCOME_MESSAGE =
   "Hi, I'm Amble, your Singapore discovery guide. Tell me what you're in the mood for, and I can suggest areas and places, search events or restaurants, and control the map—including your location and MRT context.";
+
+const boundedAppInspectResultSchema = structuredClone(appInspectResultSchema);
+boundedAppInspectResultSchema.properties.availableCapabilityIds.items.maxLength = 128;
+const boundedCatalogSearchResultSchema = structuredClone(
+  catalogSearchResultSchema,
+);
+boundedCatalogSearchResultSchema.properties.types.maxItems = 6;
 
 export function describeAvailableCapabilities(tools = []) {
   return tools.map(({ name, description }) => `${name}: ${description}`);
@@ -82,23 +99,167 @@ export const DISCOVERY_RELAY_TOOLS = Object.freeze([
   }),
 ]);
 
-export const PUBLIC_ACTION_RELAY_TOOLS = Object.freeze(
+export const FOUNDATIONAL_CAPABILITY_CONTRACTS = Object.freeze([
+  Object.freeze({
+    capabilityId: "app.inspect",
+    version: "2.0",
+    kind: "query",
+    description:
+      "Inspect Amble's current bounded authoritative application state and eligible capabilities.",
+    connectorId: "application-state",
+    argumentSchema: {
+      $schema: "https://json-schema.org/draft/2020-12/schema",
+      type: "object",
+      additionalProperties: false,
+      properties: {},
+    },
+    eligibleStates: ["application_initialized"],
+    confirmationClass: "none",
+    contextProvider: "application-state",
+    resultSchema: boundedAppInspectResultSchema,
+  }),
+  Object.freeze({
+    capabilityId: "catalog.search",
+    version: "2.0",
+    kind: "query",
+    description:
+      "Search bounded approved Amble catalogue records and return stable application identities.",
+    connectorId: "approved-catalog",
+    argumentSchema: {
+      $schema: "https://json-schema.org/draft/2020-12/schema",
+      type: "object",
+      additionalProperties: false,
+      required: ["query"],
+      properties: {
+        query: { type: "string", maxLength: 500 },
+        types: {
+          type: "array",
+          maxItems: 6,
+          uniqueItems: true,
+          items: {
+            enum: [
+              "area",
+              "event",
+              "restaurant",
+              "plan_stop",
+              "saved_item",
+              "game",
+            ],
+          },
+        },
+        limit: { type: "integer", minimum: 1, maximum: 20 },
+        cursor: { type: ["string", "null"], maxLength: 512 },
+      },
+    },
+    eligibleStates: ["approved_catalog_available"],
+    confirmationClass: "none",
+    contextProvider: "approved-catalog",
+    resultSchema: boundedCatalogSearchResultSchema,
+  }),
+  Object.freeze({
+    capabilityId: "catalog.get",
+    version: "2.0",
+    kind: "query",
+    description:
+      "Retrieve allowlisted details for up to ten known stable Amble target identities.",
+    connectorId: "approved-catalog",
+    argumentSchema: {
+      $schema: "https://json-schema.org/draft/2020-12/schema",
+      type: "object",
+      additionalProperties: false,
+      required: ["targetIds"],
+      properties: {
+        targetIds: {
+          type: "array",
+          minItems: 1,
+          maxItems: 10,
+          uniqueItems: true,
+          items: { type: "string", minLength: 1, maxLength: 256 },
+        },
+      },
+    },
+    eligibleStates: ["approved_catalog_available"],
+    confirmationClass: "none",
+    contextProvider: "approved-catalog",
+    resultSchema: catalogGetResultSchema,
+  }),
+]);
+
+const CONNECTOR_BY_ACTION_FAMILY = Object.freeze({
+  event: "events",
+  game: "conditional-content",
+  map: "map",
+  navigation: "overlay-navigation",
+  plan: "plan",
+  restaurant: "restaurants",
+  saved: "conditional-content",
+  tour: "tour",
+});
+
+const PUBLIC_ACTION_CAPABILITY_CONTRACTS = Object.freeze(
   createPublicActionContracts({
     dispatch: () => ({ changed: false }),
-  }).map(({ actionId, description, argumentSchema }) =>
-    Object.freeze({
-      type: "function",
-      name: actionId,
-      description,
-      parameters: structuredClone(argumentSchema),
-    }),
-  ),
+  })
+    .filter(
+      ({ actionId }) =>
+        !actionId.startsWith("saved.") && !actionId.startsWith("game."),
+    )
+    .map(
+      ({
+        actionId,
+        description,
+        argumentSchema,
+        eligibleStates,
+        confirmationClass,
+        contextProvider,
+        resultSchema,
+      }) =>
+        Object.freeze({
+          capabilityId: actionId,
+          version: "2.0",
+          kind: "command",
+          description,
+          connectorId:
+            CONNECTOR_BY_ACTION_FAMILY[actionId.split(".", 1)[0]] ??
+            actionId.split(".", 1)[0],
+          argumentSchema,
+          eligibleStates,
+          confirmationClass,
+          contextProvider,
+          resultSchema,
+        }),
+    ),
 );
 
-export const DEFAULT_RELAY_TOOLS = Object.freeze([
-  ...DISCOVERY_RELAY_TOOLS,
-  ...PUBLIC_ACTION_RELAY_TOOLS,
+export const DEFAULT_CAPABILITY_CONTRACTS = Object.freeze([
+  ...FOUNDATIONAL_CAPABILITY_CONTRACTS,
+  EVENT_APPLY_QUERY_CAPABILITY_CONTRACT,
+  ...PUBLIC_ACTION_CAPABILITY_CONTRACTS,
 ]);
+
+const toRelayTool = projectRealtimeFunctionTool;
+
+export const FOUNDATIONAL_RELAY_TOOLS = Object.freeze(
+  FOUNDATIONAL_CAPABILITY_CONTRACTS.map(toRelayTool),
+);
+export const PUBLIC_ACTION_RELAY_TOOLS = Object.freeze(
+  PUBLIC_ACTION_CAPABILITY_CONTRACTS.map(toRelayTool),
+);
+export const DEFAULT_RELAY_TOOLS = Object.freeze(
+  DEFAULT_CAPABILITY_CONTRACTS.map(toRelayTool),
+);
+const FOUNDATIONAL_CAPABILITY_IDS = new Set(
+  FOUNDATIONAL_CAPABILITY_CONTRACTS.map(({ capabilityId }) => capabilityId),
+);
+const canonical = (value) => {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+  if (value && typeof value === "object")
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonical(value[key])}`)
+      .join(",")}}`;
+  return JSON.stringify(value);
+};
 
 export function validateDiscoveryToolArguments(
   actionId,
@@ -128,7 +289,7 @@ function validateCloudRelayPolicy(policy) {
   if (
     policy?.schemaVersion !== "1.0" ||
     policy.owner !== "Arnav" ||
-    policy.modelId !== "gpt-realtime-2.1" ||
+    policy.modelId !== "gpt-realtime-2.1-mini" ||
     policy.transcriptionModelId !== "gpt-realtime-whisper" ||
     policy.capMicroUsd !== 10_000_000 ||
     policy.resetPolicy !== "none" ||
@@ -231,7 +392,8 @@ export function createRealtimeRelay({
   now = () => new Date(),
   randomId = defaultId,
   hash = defaultHash,
-  tools = DEFAULT_RELAY_TOOLS,
+  capabilityContracts = DEFAULT_CAPABILITY_CONTRACTS,
+  tools = capabilityContracts.map(toRelayTool),
   approvedCandidateIds = [],
   approvedCandidates = [],
 } = {}) {
@@ -244,6 +406,22 @@ export function createRealtimeRelay({
     responseMicroUsd: policy.worstCaseReservation.response.reservedMicroUsd,
   };
   const sessions = new Map();
+  const contracts = new Map(
+    capabilityContracts.map((contract) => [
+      contract.capabilityId,
+      {
+        contract,
+        validateArguments: compileSchema(contract.argumentSchema),
+        validateResult: createCapabilityResultValidator(contract),
+      },
+    ]),
+  );
+
+  if (
+    contracts.size !== capabilityContracts.length ||
+    tools.some(({ name }) => !contracts.has(name))
+  )
+    throw new TypeError("Realtime capability contracts are incomplete");
 
   const scheduleIdle = (session) => {
     clearTimeout(session.idleTimer);
@@ -264,6 +442,52 @@ export function createRealtimeRelay({
         type: "session.state",
         state: "listening",
       });
+  };
+
+  const scopeToolsForTurn = (session, utterance) => {
+    const capabilityFamilies = Object.fromEntries(
+      [...contracts.entries()].map(([capabilityId, registered]) => [
+        capabilityId,
+        registered.contract.connectorId,
+      ]),
+    );
+    const scope = selectCapabilityTurnScope({
+      utterance,
+      availableCapabilityIds: session.availableCapabilityIds,
+      capabilityFamilies,
+      activeOverlayId: session.interfaceContext?.activeOverlayId ?? null,
+      baseContextRevision: session.interfaceContext?.revision ?? 0,
+    });
+    const available = new Set([
+      ...FOUNDATIONAL_CAPABILITY_IDS,
+      ...scope.capabilityIds,
+    ]);
+    session.tools = tools.filter(({ name }) => available.has(name));
+    send(session.providerSocket, providerSessionUpdate(policy, session.tools));
+    return scope;
+  };
+
+  const createReservedResponse = (session, utterance) => {
+    if (!session.responseReservationId || session.responseCreated) return false;
+    const scope = scopeToolsForTurn(session, utterance);
+    if (scope.deterministicCapabilityId) {
+      const registered = contracts.get(scope.deterministicCapabilityId);
+      if (!registered) return stop(session.sessionId, "protocol");
+      session.pendingDeterministic = {
+        capabilityId: registered.contract.capabilityId,
+        kind: registered.contract.kind,
+        confirmationClass: registered.contract.confirmationClass,
+        proposalRevision: session.interfaceContext?.revision ?? 0,
+        validateResult: registered.validateResult,
+      };
+      return true;
+    }
+    session.responseCreated = true;
+    send(session.providerSocket, {
+      type: "response.create",
+      response: { max_output_tokens: policy.maxOutputTokens },
+    });
+    return true;
   };
 
   const stop = (sessionId, reason) => {
@@ -355,6 +579,49 @@ export function createRealtimeRelay({
     }
   };
 
+  const completeCapabilityCall = async (session, pendingCall) => {
+    if (!session.responseReservationId) {
+      if (session.responseCount >= policy.maxResponses)
+        return stop(session.sessionId, "usage_limit");
+      try {
+        session.responseReservationId = await reserve(
+          session,
+          "response",
+          reservations.responseMicroUsd,
+        );
+      } catch {
+        return stop(session.sessionId, "usage_limit");
+      }
+      session.responseCount += 1;
+      session.responseCreated = true;
+    }
+    session.pendingCalls.delete(pendingCall.callId);
+    session.pendingCallIds.delete(pendingCall.callId);
+    session.terminalCalls.set(pendingCall.callId, {
+      ...pendingCall,
+      result: structuredClone(pendingCall.result),
+    });
+    send(session.providerSocket, {
+      type: "conversation.item.create",
+      item: {
+        type: "function_call_output",
+        call_id: pendingCall.callId,
+        output: JSON.stringify(pendingCall.result),
+      },
+    });
+    send(session.browserSocket, {
+      type: "capability.completed",
+      callId: pendingCall.callId,
+      capabilityId: pendingCall.capabilityId,
+      kind: pendingCall.kind,
+      result: pendingCall.result,
+    });
+    send(session.providerSocket, {
+      type: "response.create",
+      response: { max_output_tokens: policy.maxOutputTokens },
+    });
+  };
+
   const onProviderEvent = async (session, rawEvent) => {
     let event;
     try {
@@ -374,11 +641,13 @@ export function createRealtimeRelay({
       const tool = session.tools.find(
         (candidate) => candidate.name === event.name,
       );
+      const registered = contracts.get(event.name);
       if (
         !tool ||
+        !registered ||
         typeof event.call_id !== "string" ||
-        event.call_id.length > 128 ||
-        session.pendingCallIds.size >= 1
+        !event.call_id ||
+        event.call_id.length > 128
       )
         return stop(session.sessionId, "protocol");
       let argumentsValue;
@@ -393,6 +662,8 @@ export function createRealtimeRelay({
         Array.isArray(argumentsValue)
       )
         return stop(session.sessionId, "protocol");
+      if (!registered.validateArguments(argumentsValue).valid)
+        return stop(session.sessionId, "protocol");
       try {
         validateDiscoveryToolArguments(
           event.name,
@@ -402,12 +673,48 @@ export function createRealtimeRelay({
       } catch {
         return stop(session.sessionId, "protocol");
       }
+      const argumentsKey = canonical(argumentsValue);
+      const terminalCall = session.terminalCalls.get(event.call_id);
+      if (terminalCall) {
+        if (
+          terminalCall.capabilityId !== registered.contract.capabilityId ||
+          terminalCall.argumentsKey !== argumentsKey ||
+          !session.responseReservationId
+        )
+          return stop(session.sessionId, "protocol");
+        send(session.providerSocket, {
+          type: "conversation.item.create",
+          item: {
+            type: "function_call_output",
+            call_id: terminalCall.callId,
+            output: JSON.stringify(terminalCall.result),
+          },
+        });
+        return send(session.providerSocket, {
+          type: "response.create",
+          response: { max_output_tokens: policy.maxOutputTokens },
+        });
+      }
+      if (session.pendingCalls.size >= 1)
+        return stop(session.sessionId, "protocol");
       session.pendingCallIds.add(event.call_id);
-      send(session.browserSocket, {
-        type: "action.proposed",
+      session.pendingCalls.set(event.call_id, {
         callId: event.call_id,
-        actionId: event.name,
+        capabilityId: registered.contract.capabilityId,
+        kind: registered.contract.kind,
+        confirmationClass: registered.contract.confirmationClass,
+        argumentsKey,
+        proposalRevision: session.interfaceContext?.revision ?? 0,
+        validateResult: registered.validateResult,
+        result: null,
+      });
+      send(session.browserSocket, {
+        type: "capability.proposed",
+        callId: event.call_id,
+        capabilityId: event.name,
+        kind: registered.contract.kind,
         arguments: argumentsValue,
+        contextRevision: session.interfaceContext?.revision ?? 0,
       });
       return;
     }
@@ -415,6 +722,7 @@ export function createRealtimeRelay({
       event.type === "conversation.item.input_audio_transcription.completed" &&
       session.inputReservationId
     ) {
+      const sanitized = sanitizeProviderEvent(event);
       const settled = await settleInputReservation(
         session,
         event.usage && typeof event.usage === "object"
@@ -422,7 +730,13 @@ export function createRealtimeRelay({
           : "sha256:fixed-transcription-reservation",
       );
       if (!settled) return;
-      resumeListeningWhenSettled(session);
+      createReservedResponse(
+        session,
+        typeof event.transcript === "string" ? event.transcript : "",
+      );
+      if (sanitized?.browserEvent)
+        send(session.browserSocket, sanitized.browserEvent);
+      return;
     }
     const sanitized = sanitizeProviderEvent(event);
     if (!sanitized) return;
@@ -518,7 +832,9 @@ export function createRealtimeRelay({
       stop(sessionId, "network"),
     );
     browserSocket.addEventListener?.("message", (event) => {
-      void handleBrowserMessage(sessionId, event.data);
+      session.browserEventQueue = session.browserEventQueue
+        .then(() => handleBrowserMessage(sessionId, event.data))
+        .catch(() => stop(sessionId, "protocol"));
     });
     browserSocket.addEventListener?.("close", () => stop(sessionId, "network"));
     scheduleIdle(session);
@@ -549,10 +865,16 @@ export function createRealtimeRelay({
       message = validateBrowserMessage(parsed, {
         activeReservedTurnId: session.activeReservedTurnId,
         pendingCallIds: session.pendingCallIds,
+        pendingCalls: session.pendingCalls,
         pendingConfirmation: session.pendingConfirmation,
+        pendingDeterministic: session.pendingDeterministic,
         maxMessageBytes: 16 * 1024,
         maxAudioChunkBytes: 12 * 1024,
         maxTextChars: 2_000,
+        validateCapabilityResult: (candidate, pendingCall) =>
+          pendingCall.validateResult(candidate.result, {
+            proposalRevision: pendingCall.proposalRevision,
+          }),
       });
     } catch {
       return stop(sessionId, "protocol");
@@ -604,11 +926,7 @@ export function createRealtimeRelay({
         return stop(sessionId, "usage_limit");
       }
       session.responseCount += 1;
-      session.responseCreated = true;
-      send(session.providerSocket, {
-        type: "response.create",
-        response: { max_output_tokens: policy.maxOutputTokens },
-      });
+      session.responseCreated = false;
       return;
     }
     if (message.type === "text.submit") {
@@ -630,7 +948,7 @@ export function createRealtimeRelay({
         return stop(sessionId, "usage_limit");
       }
       session.responseCount += 1;
-      session.responseCreated = true;
+      session.responseCreated = false;
       send(session.providerSocket, {
         type: "conversation.item.create",
         item: {
@@ -639,40 +957,84 @@ export function createRealtimeRelay({
           content: [{ type: "input_text", text: message.text }],
         },
       });
+      return createReservedResponse(session, message.text);
+    }
+    if (message.type === "capability.result") {
+      const pendingCall = session.pendingCalls.get(message.callId);
+      pendingCall.result = structuredClone(message.result);
+      const requiresRefresh =
+        message.kind === "command" &&
+        message.result.status === "completed" &&
+        message.result.changed === true;
+      if (
+        requiresRefresh &&
+        (session.interfaceContext?.revision ?? -1) <
+          message.result.contextRevision
+      )
+        return;
+      return completeCapabilityCall(session, pendingCall);
+    }
+    if (message.type === "confirmation.pending") {
+      session.pendingConfirmation = {
+        callId: message.callId,
+        confirmationId: message.confirmationId,
+        fingerprint: message.fingerprint,
+      };
+      return send(session.browserSocket, {
+        type: "confirmation.required",
+        callId: message.callId,
+        confirmationId: message.confirmationId,
+        fingerprint: message.fingerprint,
+        targetId: message.targetId ?? null,
+        effectSummary: message.effectSummary,
+        expiresAt: message.expiresAt,
+      });
+    }
+    if (message.type === "confirmation.result")
+      session.pendingConfirmation = null;
+    if (message.type === "deterministic.result") {
+      session.pendingDeterministic = null;
+      session.responseCreated = true;
+      send(session.providerSocket, {
+        type: "conversation.item.create",
+        item: {
+          type: "message",
+          role: "system",
+          content: [
+            {
+              type: "input_text",
+              text: `The deterministic application capability ${message.capabilityId} completed with this authoritative result: ${JSON.stringify(message.result)}. Briefly describe that verified outcome without calling the capability again.`,
+            },
+          ],
+        },
+      });
       return send(session.providerSocket, {
         type: "response.create",
         response: { max_output_tokens: policy.maxOutputTokens },
       });
     }
-    if (message.type === "action.result") {
-      session.pendingCallIds.delete(message.callId);
-      return send(session.providerSocket, {
-        type: "conversation.item.create",
-        item: {
-          type: "function_call_output",
-          call_id: message.callId,
-          output: JSON.stringify({
-            ok: message.ok,
-            result: message.result ?? null,
-          }),
-        },
-      });
-    }
-    if (message.type === "confirmation.result")
-      session.pendingConfirmation = null;
     if (message.type === "response.cancel")
       return send(session.providerSocket, { type: "response.cancel" });
     if (message.type === "context.update") {
+      if (
+        session.interfaceContext &&
+        message.context.revision < session.interfaceContext.revision
+      )
+        return stop(sessionId, "protocol");
       session.interfaceContext = structuredClone(message.context);
-      const available = new Set(message.context.availableActionIds || []);
-      session.tools = tools.filter(
-        ({ name }) => name.startsWith("discovery.") || available.has(name),
-      );
-      send(
-        session.providerSocket,
-        providerSessionUpdate(policy, session.tools),
-      );
-      return send(session.providerSocket, {
+      session.availableCapabilityIds = [
+        ...(message.context.availableCapabilityIds || []),
+      ];
+      if (!session.responseCreated) {
+        session.tools = tools.filter(({ name }) =>
+          FOUNDATIONAL_CAPABILITY_IDS.has(name),
+        );
+        send(
+          session.providerSocket,
+          providerSessionUpdate(policy, session.tools),
+        );
+      }
+      send(session.providerSocket, {
         type: "conversation.item.create",
         item: {
           type: "message",
@@ -685,6 +1047,13 @@ export function createRealtimeRelay({
           ],
         },
       });
+      const pendingCall = [...session.pendingCalls.values()].find(
+        (candidate) =>
+          candidate.result?.changed === true &&
+          message.context.revision >= candidate.result.contextRevision,
+      );
+      if (pendingCall) await completeCapabilityCall(session, pendingCall);
+      return;
     }
   };
 
@@ -713,10 +1082,14 @@ export function createRealtimeRelay({
       responseCreated: false,
       openReservations: [],
       pendingCallIds: new Set(),
+      pendingCalls: new Map(),
+      terminalCalls: new Map(),
       approvedCandidateIds: new Set(approvedCandidateIds),
       approvedCandidates: structuredClone(approvedCandidates),
-      tools: tools.filter(({ name }) => name.startsWith("discovery.")),
+      availableCapabilityIds: [],
+      tools: tools.filter(({ name }) => FOUNDATIONAL_CAPABILITY_IDS.has(name)),
       pendingConfirmation: null,
+      pendingDeterministic: null,
       transcriptItems: [],
       intent: null,
       exactLocation: null,
@@ -727,6 +1100,7 @@ export function createRealtimeRelay({
       idleTimer: null,
       durationTimer: null,
       providerEventQueue: Promise.resolve(),
+      browserEventQueue: Promise.resolve(),
     };
     session.durationTimer = setTimeout(
       () => stop(sessionId, "duration"),
@@ -761,20 +1135,24 @@ export function createRealtimeRelay({
     session.approvedCandidateIds = new Set(candidateIds);
   };
 
-  const setAvailableActionIds = (sessionId, actionIds) => {
+  const setAvailableCapabilityIds = (sessionId, capabilityIds) => {
     const session = sessions.get(sessionId);
     if (
       !session ||
-      !Array.isArray(actionIds) ||
-      actionIds.some((id) => typeof id !== "string" || !id)
+      !Array.isArray(capabilityIds) ||
+      capabilityIds.some((id) => typeof id !== "string" || !id)
     )
-      throw new TypeError("Available action identities are invalid");
+      throw new TypeError("Available capability identities are invalid");
     const available = new Set([
-      "discovery.presentareas",
-      "discovery.refine",
-      ...actionIds,
+      ...FOUNDATIONAL_CAPABILITY_IDS,
+      ...capabilityIds,
     ]);
-    session.tools = tools.filter(({ name }) => available.has(name));
+    session.availableCapabilityIds = [...available].filter(
+      (name) => !FOUNDATIONAL_CAPABILITY_IDS.has(name),
+    );
+    session.tools = tools.filter(({ name }) =>
+      FOUNDATIONAL_CAPABILITY_IDS.has(name),
+    );
     if (session.providerSocket)
       send(
         session.providerSocket,
@@ -788,7 +1166,8 @@ export function createRealtimeRelay({
     attach,
     handleBrowserMessage,
     setApprovedCandidateIds,
-    setAvailableActionIds,
+    setAvailableActionIds: setAvailableCapabilityIds,
+    setAvailableCapabilityIds,
     stop,
     sessions,
   });

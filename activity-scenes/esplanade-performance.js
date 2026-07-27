@@ -25,6 +25,8 @@ const activityEvent = (activity, venueGroup, landmark) => ({
   publicPlacement: venueGroup?.publicPlacement ?? "off_map",
   mappingStatus: venueGroup?.mappingStatus ?? "not_required",
   offMapSubtype: venueGroup?.offMapSubtype ?? null,
+  projectedVenueGroupId: venueGroup?.venueGroupId ?? null,
+  projectedSessionIds: [...(venueGroup?.sessionIds ?? [])],
   schedule: activity.sessions?.[0]?.schedule ?? null,
   dateText:
     activity.scheduleSummary?.label ??
@@ -72,9 +74,11 @@ export function addEsplanadePerformanceScene(
     discoveryAreaAsset,
     landmarks: approvedLandmarks = APPROVED_LANDMARKS,
     activities: approvedActivities = [],
+    locationController = null,
     onDiscoveryCandidatesChanged,
     onLandmarkSelected,
     sourceSnapshotId: initialSourceSnapshotId,
+    diagnosticWorkloads = null,
   } = {},
 ) {
   if (document.getElementById("esplanade-event-pill")) return [];
@@ -128,13 +132,24 @@ export function addEsplanadePerformanceScene(
       categoryOf: eventCategory,
       offMapEvents,
       sourceSnapshotId,
+      performanceDiagnostics: Boolean(diagnosticWorkloads),
     });
   let discoveryModel = createDiscoveryModel();
-  const densityMinimap = createEventDensityMinimap({
-    discoveryAreaAsset,
-    discoveryModel,
-    map,
-  });
+  const densityMinimap =
+    diagnosticWorkloads?.densityMinimap === false
+      ? {
+          destroy() {},
+          setDiscoveryModel() {},
+          setDiscoveryResult() {},
+        }
+      : createEventDensityMinimap({
+          discoveryAreaAsset,
+          discoveryModel,
+          map,
+          trackViewport: diagnosticWorkloads?.minimapViewportTracking !== false,
+          performanceDiagnostics: Boolean(diagnosticWorkloads),
+          renderMode: diagnosticWorkloads?.minimapRenderMode,
+        });
   const availableCategories = new Set(discoveryModel.categories());
   const selectEventResult = (result, trigger = document.activeElement) => {
     const landmark = landmarks.find((item) => item.id === result?.landmarkId);
@@ -173,6 +188,18 @@ export function addEsplanadePerformanceScene(
       availableCategories.has(category),
     ),
     discoveryModel,
+    getMapBounds: () => map.getBounds?.() ?? null,
+    requestLocation: async () => {
+      const current = locationController?.snapshot?.({ includeExact: true });
+      if (Array.isArray(current?.coordinates)) return current.coordinates;
+      const located = await locationController?.requestLocation?.();
+      if (Array.isArray(located?.coordinates)) return located.coordinates;
+      throw new Error(
+        located?.permission === "denied"
+          ? "Location access was not granted."
+          : "Location is unavailable on this device.",
+      );
+    },
     onFilterResult: (result) => {
       densityMinimap.setDiscoveryResult(result);
       return pillLayer.applyDiscoveryResult(result);
@@ -185,75 +212,154 @@ export function addEsplanadePerformanceScene(
     return candidates;
   };
   publishDiscoveryCandidates();
-  const refreshEventSearch = () => eventSearch.refresh?.();
-  map.on?.("moveend", refreshEventSearch);
+  let moveEndRefreshMode =
+    diagnosticWorkloads?.moveEndSearchRefreshMode === "full"
+      ? "full"
+      : "viewport";
+  const refreshEventSearch = () => {
+    const startedAt = diagnosticWorkloads ? performance.now() : 0;
+    const result =
+      moveEndRefreshMode === "full"
+        ? eventSearch.refresh?.()
+        : eventSearch.refreshViewport?.();
+    const duration = diagnosticWorkloads ? performance.now() - startedAt : 0;
+    if (diagnosticWorkloads) {
+      document.body.dataset.eventSearchMoveEndRefreshDurationMs =
+        duration.toFixed(2);
+      document.body.dataset.eventSearchMoveEndRefreshMode = moveEndRefreshMode;
+      document.body.dataset.eventSearchMoveEndRefreshCount = String(
+        Number(document.body.dataset.eventSearchMoveEndRefreshCount ?? 0) + 1,
+      );
+    }
+    return result;
+  };
+  let refreshOnMoveEnd = diagnosticWorkloads?.moveEndSearchRefresh !== false;
+  if (refreshOnMoveEnd) map.on?.("moveend", refreshEventSearch);
+  if (diagnosticWorkloads) {
+    document.body.dataset.eventSearchMoveEndRefreshEnabled =
+      String(refreshOnMoveEnd);
+    document.body.dataset.eventSearchMoveEndRefreshMode = moveEndRefreshMode;
+  }
 
   document.body.dataset.esplanadeActivityScene = "event-pill";
   document.body.dataset.landmarkEventPills = "mounted";
   document.body.dataset.landmarkEventPillCount = String(landmarks.length);
 
+  const eventSubscribers = new Set();
+  let eventRevision = 0;
+  const eventSnapshot = () => {
+    const search = eventSearch.snapshot();
+    const panel = eventPanel.snapshot();
+    const selectedEventId = panel.detailOpen
+      ? panel.selectedEventId
+      : search.selectedEventId;
+    return {
+      ...search,
+      revision: eventRevision,
+      detailOpen: panel.detailOpen,
+      events: search.events.map((event) =>
+        event.eventId === panel.selectedEventId
+          ? {
+              ...event,
+              occurrenceIds: panel.occurrenceIds,
+              sourceOffers: panel.referenceIds.map((referenceId) => ({
+                referenceId,
+              })),
+              routable: panel.routable,
+            }
+          : event,
+      ),
+      selectedEventId,
+      selectedOccurrenceId: panel.selectedOccurrenceId,
+      sessionsExpanded: panel.sessionsExpanded,
+      hasPrevious: panel.hasPrevious,
+      hasNext: panel.hasNext,
+      planCanAdd: true,
+    };
+  };
+  const publishEventSnapshot = () => {
+    eventRevision += 1;
+    const snapshot = eventSnapshot();
+    for (const subscriber of eventSubscribers) subscriber(snapshot);
+  };
+  const unsubscribeEventSearch = eventSearch.subscribe(publishEventSnapshot);
+  const unsubscribeEventPanel = eventPanel.subscribe(publishEventSnapshot);
+  const searchActionIds = new Set([
+    "event.applyquery",
+    "event.search",
+    "event.setfilter",
+    "event.removefilter",
+    "event.setcategory",
+    "event.setdaterange",
+    "event.setpricerange",
+    "event.clearfilters",
+    "event.selectresult",
+    "event.opendetail",
+  ]);
+  const panelActionIds = new Set([
+    "event.selectoccurrence",
+    "event.setsessionsexpanded",
+    "event.previousevent",
+    "event.nextevent",
+    "event.closedetail",
+    "event.addtoplan",
+    "event.openreference",
+    "event.opendirections",
+  ]);
+  const dispatchEventAction = (actionId, args = {}) => {
+    if (searchActionIds.has(actionId))
+      return eventSearch.dispatch(actionId, args);
+    if (!panelActionIds.has(actionId)) return false;
+    if (
+      args.eventId &&
+      eventPanel.snapshot().selectedEventId !== args.eventId &&
+      !eventSearch.dispatch("event.selectresult", {
+        eventId: args.eventId,
+      })
+    )
+      return false;
+    return eventPanel.dispatch(actionId, args);
+  };
+
   return [
     {
       id: "landmark-event-pills",
+      setDiagnosticMinimapViewportTracking: (enabled) =>
+        densityMinimap.setViewportTracking?.(enabled) ?? false,
+      setDiagnosticMoveEndSearchRefresh: (enabled) => {
+        const next = Boolean(enabled);
+        if (next === refreshOnMoveEnd) return false;
+        if (next) map.on?.("moveend", refreshEventSearch);
+        else map.off?.("moveend", refreshEventSearch);
+        refreshOnMoveEnd = next;
+        document.body.dataset.eventSearchMoveEndRefreshEnabled =
+          String(refreshOnMoveEnd);
+        return true;
+      },
+      setDiagnosticMoveEndSearchRefreshMode: (mode) => {
+        if (!["full", "viewport"].includes(mode)) return false;
+        if (mode === moveEndRefreshMode) return false;
+        moveEndRefreshMode = mode;
+        document.body.dataset.eventSearchMoveEndRefreshMode =
+          moveEndRefreshMode;
+        return true;
+      },
       getApprovedCandidates: () => discoveryModel.approvedCandidates(),
       selectCandidate: (candidateId) => {
         const selection = discoveryModel.selectionForCandidate(candidateId);
         return selection ? selectEventResult(selection) : false;
       },
       search: (query) => {
-        eventSearch.input.value = String(query ?? "");
-        eventSearch.input.dispatchEvent(new Event("input", { bubbles: true }));
-        return true;
+        return dispatchEventAction("event.search", { query });
       },
-      dispatch: (actionId, args = {}) => {
-        if (
-          [
-            "event.search",
-            "event.setcategory",
-            "event.setdaterange",
-            "event.setpricerange",
-            "event.clearfilters",
-          ].includes(actionId)
-        )
-          return eventSearch.dispatch(actionId, args);
-        if (
-          actionId === "event.selectresult" ||
-          actionId === "event.opendetail"
-        )
-          return Boolean(
-            discoveryModel.selectionForCandidate(args.eventId) &&
-            selectEventResult(
-              discoveryModel.selectionForCandidate(args.eventId),
-            ),
-          );
-        if (actionId === "event.previousevent")
-          return eventPanel.previous() !== false;
-        if (actionId === "event.nextevent") return eventPanel.next() !== false;
-        if (actionId === "event.closedetail") {
-          eventPanel.close();
-          return true;
-        }
-        if (actionId === "event.addtoplan") {
-          const selection = discoveryModel.selectionForCandidate(args.eventId);
-          if (!selection || !selectEventResult(selection)) return false;
-          eventPanel.addToPlan();
-          return true;
-        }
-        if (
-          actionId === "event.openreference" ||
-          actionId === "event.opendirections"
-        ) {
-          if (args.eventId) {
-            const selection = discoveryModel.selectionForCandidate(
-              args.eventId,
-            );
-            if (!selection || !selectEventResult(selection)) return false;
-          }
-          if (actionId === "event.openreference") eventPanel.openReference();
-          else eventPanel.openDirections();
-          return true;
-        }
-        return false;
+      dispatch: dispatchEventAction,
+      snapshot: eventSnapshot,
+      subscribe(listener, { emitCurrent = false } = {}) {
+        if (typeof listener !== "function")
+          throw new TypeError("Event-scene subscriber must be callable");
+        eventSubscribers.add(listener);
+        if (emitCurrent) listener(eventSnapshot());
+        return () => eventSubscribers.delete(listener);
       },
       reconcile: ({
         landmarks: nextApprovedLandmarks,
@@ -314,7 +420,10 @@ export function addEsplanadePerformanceScene(
         return { changed: true };
       },
       finalize: () => {
-        map.off?.("moveend", refreshEventSearch);
+        if (refreshOnMoveEnd) map.off?.("moveend", refreshEventSearch);
+        unsubscribeEventSearch();
+        unsubscribeEventPanel();
+        eventSubscribers.clear();
         pillLayer.destroy();
         eventPanel.destroy();
         eventSearch.destroy();

@@ -2,11 +2,29 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  coordinateFromMinimapPoint,
   densityPointsFromDiscoveryResult,
   eventDensityCells,
   minimapViewportRectangle,
   singaporeGeometryBounds,
 } from "../activity-scenes/event-density-minimap.js";
+
+test("minimap points convert to Singapore coordinates and clamp to its bounds", () => {
+  const bounds = {
+    minLongitude: 103.6,
+    maxLongitude: 104,
+    minLatitude: 1.2,
+    maxLatitude: 1.5,
+  };
+  assert.deepEqual(
+    coordinateFromMinimapPoint(50, 30, bounds, 100, 60),
+    [103.8, 1.35],
+  );
+  assert.deepEqual(
+    coordinateFromMinimapPoint(-20, 80, bounds, 100, 60),
+    [103.6, 1.2],
+  );
+});
 
 test("filtered activities produce one density point per activity and venue", () => {
   const result = {

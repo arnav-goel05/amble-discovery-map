@@ -14,9 +14,8 @@ const OVERPASS_ENDPOINTS = [
 ];
 const VOICE_RELAYS = new WeakMap();
 const APPROVED_ACTIVITIES =
-  APPROVED_SNAPSHOT.assets[
-    APPROVED_SNAPSHOT.manifest.activitiesRef
-  ]?.records || [];
+  APPROVED_SNAPSHOT.assets[APPROVED_SNAPSHOT.manifest.activitiesRef]?.records ||
+  [];
 const APPROVED_ACTIVITY_BY_ID = new Map(
   APPROVED_ACTIVITIES.map((activity) => [activity.activityId, activity]),
 );
@@ -34,14 +33,14 @@ const APPROVED_VOICE_CANDIDATES = APPROVED_SNAPSHOT.assets[
   (landmark.activityRefs || []).map(({ activityId }) => {
     const activity = APPROVED_ACTIVITY_BY_ID.get(activityId) || {};
     return {
-    candidateId: `event:${activityId}`,
-    candidateType: "event",
-    name: activity.title,
-    areaId: landmark.areaId || landmark.subzoneId || null,
-    venue: landmark.label,
-    category: activity.category || null,
-    price: activity.price || null,
-  };
+      candidateId: `event:${activityId}`,
+      candidateType: "event",
+      name: activity.title,
+      areaId: landmark.areaId || landmark.subzoneId || null,
+      venue: landmark.label,
+      category: activity.category || null,
+      price: activity.price || null,
+    };
   }),
 );
 const SECURITY_HEADERS = {
@@ -149,7 +148,7 @@ async function voiceSessionAdmissionResponse(request, env) {
     !body ||
     typeof body !== "object" ||
     Array.isArray(body) ||
-    body.protocolVersion !== "1.0" ||
+    body.protocolVersion !== "1.1" ||
     body.disclosureAccepted !== true
   ) {
     return json(
@@ -164,7 +163,7 @@ async function voiceSessionAdmissionResponse(request, env) {
     return json(
       errorEnvelope(
         "voice_disabled",
-        "Voice is currently unavailable. Please try again.",
+        "Voice service is currently unavailable. Please try again later.",
       ),
       { status: 503 },
     );
@@ -173,7 +172,7 @@ async function voiceSessionAdmissionResponse(request, env) {
     return json(
       errorEnvelope(
         "voice_disabled",
-        "Voice is currently unavailable. Please try again.",
+        "Voice service is currently unavailable. Please try again later.",
       ),
       { status: 503 },
     );
@@ -226,9 +225,7 @@ async function voiceSessionAdmissionResponse(request, env) {
     return json(
       errorEnvelope(
         code,
-        code === "usage_limit"
-          ? "Voice usage is unavailable. Please try again later."
-          : "Voice is currently unavailable. Please try again.",
+        "Voice service is currently unavailable. Please try again later.",
       ),
       { status: statuses[code] ?? 503 },
     );

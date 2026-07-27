@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   reconcileActivityIdentity,
+  reconcileLandmark,
   reconcilePublishedLandmarks,
   reconcileSourceAvailability,
   stableEventKey,
@@ -168,6 +169,116 @@ test("landmark reconciliation removes retired copies and preserves supported pla
     lat: 1.3,
     lng: 103.8,
   });
+});
+
+test("landmark reconciliation does not move sibling sessions between venues", () => {
+  const parentActivityId = "activity:festival";
+  const result = reconcilePublishedLandmarks({
+    landmarks: [
+      {
+        id: "venue-a",
+        events: [
+          {
+            id: "session-a-old",
+            parentActivityId,
+            venue: "Venue A",
+            schedule: { start: "2026-07-24T19:30:00+08:00" },
+            coordinates: { lat: 1.3, lng: 103.8 },
+            publicPlacement: "mapped",
+            mappingStatus: "approved",
+            lifecycleState: "active",
+            sources: [{ source: "SISTIC", sourceId: "festival" }],
+          },
+        ],
+      },
+    ],
+    events: [
+      {
+        id: "session-b",
+        parentActivityId,
+        venue: "Venue B",
+        schedule: { start: "2026-07-26T17:00:00+08:00" },
+        sources: [{ source: "SISTIC", sourceId: "festival" }],
+      },
+    ],
+  });
+
+  assert.deepEqual(result.records[0].events, []);
+  assert.deepEqual(result.removedEventIds, ["SISTIC:festival"]);
+});
+
+test("held current occurrences are removed from previously published landmarks", () => {
+  const result = reconcilePublishedLandmarks({
+    landmarks: [
+      {
+        id: "venue",
+        events: [
+          {
+            id: "published:event",
+            identityAnchor: "published:event",
+            venue: "Venue",
+            lifecycleState: "active",
+          },
+        ],
+      },
+    ],
+    events: [
+      {
+        id: "incoming:event",
+        identityAnchor: "published:event",
+        venue: "Venue",
+        lifecycleState: "held",
+      },
+    ],
+  });
+
+  assert.deepEqual(result.records[0].events, []);
+  assert.deepEqual(result.removedEventIds, ["published:event"]);
+});
+
+test("landmark updates do not reuse one prior identity for sibling sessions", () => {
+  const parentActivityId = "activity:show";
+  const source = [{ source: "SISTIC", sourceId: "show" }];
+  const result = reconcileLandmark(
+    {
+      id: "theatre",
+      events: [
+        {
+          id: "published:first",
+          identityAnchor: "published:first",
+          parentActivityId,
+          venue: "Theatre",
+          schedule: { start: "2026-08-01T14:00:00+08:00" },
+          sources: source,
+        },
+      ],
+    },
+    {
+      id: "theatre",
+      events: [
+        {
+          id: "incoming:first",
+          parentActivityId,
+          venue: "Theatre",
+          schedule: { start: "2026-08-01T14:00:00+08:00" },
+          sources: source,
+        },
+        {
+          id: "incoming:second",
+          parentActivityId,
+          venue: "Theatre",
+          schedule: { start: "2026-08-01T19:00:00+08:00" },
+          sources: source,
+        },
+      ],
+    },
+    ["Theatre"],
+  );
+
+  assert.deepEqual(
+    result.landmark.events.map(({ id }) => id).sort(),
+    ["incoming:second", "published:first"],
+  );
 });
 
 test("one stable parent preserves sibling sessions and splits only reliable venue-session pairs", () => {

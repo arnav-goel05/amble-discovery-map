@@ -1,0 +1,233 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "arena-country-club",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:27.741Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/4/1/6_0.b3dm",
+      "sourceSha256": "128e3ee929335cf9a9d1325285eb8baaec16ec23ed706b49a6fc5cb814a6c8ca",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_f354ec58-38fb-42ef-9fad-716024a3bbea"
+      ],
+      "gmlNames": [
+        "ARENA COUNTRY CLUB"
+      ],
+      "poiFile": "6_0-e5b7fa3c96d8.b3dm",
+      "poiSha256": "afcd91de4276e90cc13d4c0eabcfbc98c03cfcbe5402382ac8a8ec31b537e2a5",
+      "poiTriangles": 3328,
+      "backgroundFile": "optimized-tiles/4/1/6_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f354ec58-38fb-42ef-9fad-716024a3bbea"
+      ],
+      "backgroundSha256": "56f7892c35df590728698bc920d06e3f42c5e599ed01f7cd4fe7b3a1085c3641",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/4/1/6_1.b3dm",
+      "sourceSha256": "a2b909fbc37fdc50685adcf5b6c196c2ab78bb3a63ecb4ff59cf6d8229f637de",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_f354ec58-38fb-42ef-9fad-716024a3bbea"
+      ],
+      "gmlNames": [
+        "ARENA COUNTRY CLUB"
+      ],
+      "poiFile": "6_1-4bac54b646b4.b3dm",
+      "poiSha256": "6c2dfb4a871112c31ae21f917717982accfa2c34c0a02c3da5df502b4810bae1",
+      "poiTriangles": 3328,
+      "backgroundFile": "optimized-tiles/4/1/6_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f354ec58-38fb-42ef-9fad-716024a3bbea"
+      ],
+      "backgroundSha256": "56f7892c35df590728698bc920d06e3f42c5e599ed01f7cd4fe7b3a1085c3641",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/4/1/6_2.b3dm",
+      "sourceSha256": "591da135b75a2ddab9e70a8573135ab1ceca3055d0aca18ccf9adf878e98fbeb",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_f354ec58-38fb-42ef-9fad-716024a3bbea"
+      ],
+      "gmlNames": [
+        "ARENA COUNTRY CLUB"
+      ],
+      "poiFile": "6_2-5cab7aaf31f5.b3dm",
+      "poiSha256": "9f2a7c8f76ec255bcce04f4d3301b0fc9859ba0ce3c20547459db719564eb890",
+      "poiTriangles": 3328,
+      "backgroundFile": "optimized-tiles/4/1/6_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f354ec58-38fb-42ef-9fad-716024a3bbea"
+      ],
+      "backgroundSha256": "56f7892c35df590728698bc920d06e3f42c5e599ed01f7cd4fe7b3a1085c3641",
+      "backgroundTriangles": 0
+    },
+    {
+      "sourceTile": "tiles/4/1/6_3.b3dm",
+      "sourceSha256": "97a4cf7889ac0e56f53e5772db1d4aa5354331441fa4d82a02dc0e753b4b14e3",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_f354ec58-38fb-42ef-9fad-716024a3bbea"
+      ],
+      "gmlNames": [
+        "ARENA COUNTRY CLUB"
+      ],
+      "poiFile": "6_3-ab258f529f1c.b3dm",
+      "poiSha256": "3458bda0f8242e958133e045efa8525a909b3a8e04e53ec5d071b7b94a2ee51b",
+      "poiTriangles": 3328,
+      "backgroundFile": "optimized-tiles/4/1/6_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_f354ec58-38fb-42ef-9fad-716024a3bbea"
+      ],
+      "backgroundSha256": "56f7892c35df590728698bc920d06e3f42c5e599ed01f7cd4fe7b3a1085c3641",
+      "backgroundTriangles": 0
+    }
+  ]
+}

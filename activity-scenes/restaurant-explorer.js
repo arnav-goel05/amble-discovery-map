@@ -1,5 +1,6 @@
 import "@phosphor-icons/web/bold";
 import {
+  activeOverlayId,
   announceOverlayClosed,
   announceOverlayOpen,
   closeWhenAnotherOverlayOpens,
@@ -165,7 +166,7 @@ function buildResultsPanel() {
 
 export function addRestaurantExplorer(
   map,
-  { fetchImpl = globalThis.fetch.bind(globalThis) } = {},
+  { fetchImpl = globalThis.fetch.bind(globalThis), dispatchAction = null } = {},
 ) {
   if (document.getElementById("restaurant-search-button"))
     return { finalize() {} };
@@ -182,7 +183,14 @@ export function addRestaurantExplorer(
   document.body.appendChild(button);
 
   const ui = buildResultsPanel();
-  const detail = createRestaurantDetail();
+  let sharedDispatcher = dispatchAction;
+  const dispatchDirect = (actionId, args = {}) =>
+    typeof sharedDispatcher === "function"
+      ? sharedDispatcher(actionId, args)
+      : executeAction(actionId, args);
+  const detail = createRestaurantDetail({
+    dispatchAction: dispatchDirect,
+  });
   const restaurantMap = createRestaurantMap(map);
   let restaurants = [];
   let visible = [];
@@ -194,10 +202,47 @@ export function addRestaurantExplorer(
   let candidateSourceBbox = null;
   let pollTimer = null;
   let abortController = null;
+  const stateListeners = new Set();
+
+  function snapshotState() {
+    const detailState = detail.snapshot();
+    return {
+      resultsOpen: !ui.root.hidden,
+      detailOpen: detailState.detailOpen,
+      query: ui.search.value,
+      categoryId: activeCategory === "all" ? null : activeCategory,
+      cuisineId: activeCuisine === "all" ? null : activeCuisine,
+      categories: [...ui.category.options]
+        .map(({ value }) => value)
+        .filter((value) => value && value !== "all"),
+      cuisines: [...ui.cuisine.options]
+        .map(({ value }) => value)
+        .filter((value) => value && value !== "all"),
+      results: visible.map(({ id }) => ({ restaurantId: `restaurant:${id}` })),
+      clusters: [],
+      deals: detailState.selectedRestaurantId
+        ? {
+            [detailState.selectedRestaurantId]: [...detailState.dealIds],
+          }
+        : {},
+      selectedRestaurantId:
+        detailState.selectedRestaurantId ??
+        (selectedId ? `restaurant:${selectedId}` : null),
+      referenceAvailable: detailState.referenceAvailable,
+      directionsAvailable: detailState.directionsAvailable,
+    };
+  }
+
+  function publishState() {
+    const snapshot = snapshotState();
+    for (const listener of stateListeners) listener(structuredClone(snapshot));
+  }
+  const unsubscribeDetailState = detail.subscribe(publishState);
 
   const setSelected = (id) => {
     selectedId = id;
     restaurantMap.select(id);
+    publishState();
   };
   const getCandidateSource = () => {
     const sourceSnapshotId = restaurantSourceIdentity(
@@ -283,12 +328,7 @@ export function addRestaurantExplorer(
       activeCategory === "all" &&
       activeCuisine === "all" &&
       !ui.search.value.trim();
-    all.onclick = () => {
-      activeCategory = "all";
-      activeCuisine = "all";
-      ui.search.value = "";
-      render();
-    };
+    all.onclick = () => void dispatchDirect("restaurant.clearfilters");
     ui.breadcrumbs.appendChild(all);
     for (const value of [activeCategory, activeCuisine].filter(
       (item) => item !== "all",
@@ -387,10 +427,17 @@ export function addRestaurantExplorer(
             .join(" · "),
         ),
       );
-      item.addEventListener("click", () => selectRestaurant(restaurant, item));
+      item.addEventListener(
+        "click",
+        () =>
+          void dispatchDirect("restaurant.selectresult", {
+            restaurantId: `restaurant:${restaurant.id}`,
+          }),
+      );
       ui.list.appendChild(item);
     }
     restaurantMap.setRestaurants(visible);
+    publishState();
   };
 
   const close = ({ restoreFocus = true } = {}) => {
@@ -418,9 +465,10 @@ export function addRestaurantExplorer(
     document.body.dataset.restaurantCount = "0";
     if (wasOpen) announceOverlayClosed("restaurants");
     if (restoreFocus) button.focus();
+    publishState();
   };
 
-  const search = async () => {
+  const searchViewport = async () => {
     announceOverlayOpen("restaurants");
     abortController?.abort();
     const requestController = new AbortController();
@@ -452,6 +500,7 @@ export function addRestaurantExplorer(
       ui.root.hidden = false;
       button.setAttribute("aria-expanded", "true");
       document.body.dataset.restaurantCount = String(restaurants.length);
+      publishState();
     } catch (error) {
       if (error.name === "AbortError") return;
       restaurants = [];
@@ -461,6 +510,7 @@ export function addRestaurantExplorer(
       ui.status.hidden = false;
       ui.root.hidden = false;
       button.setAttribute("aria-expanded", "true");
+      publishState();
     } finally {
       if (abortController === requestController) {
         button.disabled = false;
@@ -470,103 +520,152 @@ export function addRestaurantExplorer(
     }
   };
 
-  ui.search.addEventListener("input", render);
+  const selectCandidateInternal = (candidateId) => {
+    const id = String(candidateId || "").replace(/^restaurant:/, "");
+    const restaurant = restaurants.find((item) => item.id === id);
+    if (!restaurant) return false;
+    selectRestaurant(
+      restaurant,
+      ui.list.querySelector(`[data-restaurant-id="${CSS.escape(id)}"]`),
+    );
+    return true;
+  };
+
+  function executeAction(actionId, args = {}) {
+    if (actionId === "restaurant.searchviewport")
+      return searchViewport().then(() => true);
+    if (actionId === "restaurant.search") {
+      ui.search.value = String(args.query ?? "");
+      render();
+      return true;
+    }
+    if (actionId === "restaurant.setcategory") {
+      const category = args.categoryId || "all";
+      if (
+        category !== "all" &&
+        ![...ui.category.options].some(({ value }) => value === category)
+      )
+        return false;
+      activeCategory = category;
+      activeCuisine = "all";
+      render();
+      return true;
+    }
+    if (actionId === "restaurant.setcuisine") {
+      const cuisine = args.cuisineId || "all";
+      if (
+        cuisine !== "all" &&
+        ![...ui.cuisine.options].some(({ value }) => value === cuisine)
+      )
+        return false;
+      activeCuisine = cuisine;
+      render();
+      return true;
+    }
+    if (actionId === "restaurant.clearfilters") {
+      activeCategory = activeCuisine = "all";
+      ui.search.value = "";
+      render();
+      return true;
+    }
+    if (actionId === "restaurant.selectcluster") {
+      map.zoomIn({ duration: 350 });
+      publishState();
+      return true;
+    }
+    if (actionId === "restaurant.selectresult")
+      return selectCandidateInternal(args.restaurantId);
+    if (actionId === "restaurant.closeresults") {
+      close({ restoreFocus: activeOverlayId() === "restaurants" });
+      return true;
+    }
+    if (actionId === "restaurant.closedetail")
+      return detail.dispatch(actionId, args);
+    if (
+      [
+        "restaurant.addtoplan",
+        "restaurant.openreference",
+        "restaurant.opendealreference",
+        "restaurant.opendirections",
+      ].includes(actionId)
+    ) {
+      const requestedId = args.restaurantId;
+      const currentId = detail.snapshot().selectedRestaurantId;
+      if (
+        requestedId &&
+        requestedId !== currentId &&
+        !selectCandidateInternal(requestedId)
+      )
+        return false;
+      return detail.dispatch(actionId, args);
+    }
+    return false;
+  }
+
+  ui.search.addEventListener(
+    "input",
+    () =>
+      void dispatchDirect("restaurant.search", {
+        query: ui.search.value,
+      }),
+  );
   ui.category.addEventListener("change", () => {
-    activeCategory = ui.category.value;
-    activeCuisine = "all";
-    render();
+    void dispatchDirect("restaurant.setcategory", {
+      categoryId: ui.category.value === "all" ? undefined : ui.category.value,
+    });
   });
   ui.cuisine.addEventListener("change", () => {
-    activeCuisine = ui.cuisine.value;
-    render();
+    void dispatchDirect("restaurant.setcuisine", {
+      cuisineId: ui.cuisine.value === "all" ? undefined : ui.cuisine.value,
+    });
   });
-  button.addEventListener("click", search);
-  ui.close.addEventListener("click", () => close());
-  const stopWatchingOverlays = closeWhenAnotherOverlayOpens("restaurants", () =>
-    close({ restoreFocus: false }),
+  button.addEventListener(
+    "click",
+    () => void dispatchDirect("restaurant.searchviewport"),
+  );
+  ui.close.addEventListener(
+    "click",
+    () => void dispatchDirect("restaurant.closeresults"),
+  );
+  const stopWatchingOverlays = closeWhenAnotherOverlayOpens(
+    "restaurants",
+    () => close({ restoreFocus: false }),
   );
   document.body.dataset.restaurantExplorer = "mounted";
   return {
     id: "restaurant-explorer",
     getCandidateSource,
     getCandidates: () => getCandidateSource().candidates,
-    search,
-    close,
-    selectCandidate(candidateId) {
-      const id = String(candidateId || "").replace(/^restaurant:/, "");
-      const restaurant = restaurants.find((item) => item.id === id);
-      if (!restaurant) return false;
-      selectRestaurant(
-        restaurant,
-        ui.list.querySelector(`[data-restaurant-id="${CSS.escape(id)}"]`),
-      );
-      return true;
+    snapshot: snapshotState,
+    subscribe(listener, { emitCurrent = false } = {}) {
+      if (typeof listener !== "function")
+        throw new TypeError("Restaurant subscriber must be a function");
+      stateListeners.add(listener);
+      if (emitCurrent) listener(snapshotState());
+      return () => stateListeners.delete(listener);
     },
-    dispatch(actionId, args = {}) {
-      if (actionId === "restaurant.searchviewport") {
-        void search();
-        return true;
-      }
-      if (actionId === "restaurant.search") {
-        ui.search.value = String(args.query ?? "");
-        render();
-        return true;
-      }
-      if (actionId === "restaurant.setcategory") {
-        activeCategory = args.categoryId || "all";
-        activeCuisine = "all";
-        render();
-        return true;
-      }
-      if (actionId === "restaurant.setcuisine") {
-        activeCuisine = args.cuisineId || "all";
-        render();
-        return true;
-      }
-      if (actionId === "restaurant.clearfilters") {
-        activeCategory = activeCuisine = "all";
-        ui.search.value = "";
-        render();
-        return true;
-      }
-      if (actionId === "restaurant.selectcluster") {
-        map.zoomIn({ duration: 350 });
-        return true;
-      }
-      if (actionId === "restaurant.selectresult")
-        return this.selectCandidate(args.restaurantId);
-      if (actionId === "restaurant.closeresults") {
-        close();
-        return true;
-      }
-      if (actionId === "restaurant.closedetail") {
-        detail.close();
-        return true;
-      }
-      if (
-        [
-          "restaurant.addtoplan",
-          "restaurant.openreference",
-          "restaurant.opendealreference",
-          "restaurant.opendirections",
-        ].includes(actionId)
-      ) {
-        if (!this.selectCandidate(args.restaurantId)) return false;
-        if (actionId === "restaurant.addtoplan") detail.addToPlan();
-        else if (actionId === "restaurant.openreference")
-          detail.openReference();
-        else if (actionId === "restaurant.opendirections")
-          detail.openDirections();
-        else return detail.openDealReference(args.dealId);
-        return true;
-      }
-      return false;
+    search: () => executeAction("restaurant.searchviewport"),
+    close,
+    selectCandidate: selectCandidateInternal,
+    dispatch: executeAction,
+    dispatchDirect,
+    setDirectActionDispatcher(nextDispatcher) {
+      if (nextDispatcher !== null && typeof nextDispatcher !== "function")
+        throw new TypeError(
+          "Restaurant direct dispatcher must be callable or null",
+        );
+      sharedDispatcher = nextDispatcher;
+      return () => {
+        if (sharedDispatcher === nextDispatcher) sharedDispatcher = null;
+      };
     },
     finalize() {
       stopWatchingOverlays();
       abortController?.abort();
       clearTimeout(pollTimer);
+      unsubscribeDetailState();
       detail.destroy();
+      stateListeners.clear();
       restaurantMap.destroy();
       button.remove();
       ui.root.remove();

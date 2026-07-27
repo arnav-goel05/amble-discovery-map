@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amble.local/contracts/domain-interpretation.schema.json",
+  "title": "DomainInterpretation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "domain",
+    "normalizedUtterance",
+    "outcome",
+    "clarificationChoices",
+    "proposedCalls",
+    "baseContextRevision",
+    "catalogRevision"
+  ],
+  "properties": {
+    "domain": {
+      "enum": ["event", "restaurant", "plan", "map"]
+    },
+    "normalizedUtterance": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "outcome": {
+      "enum": ["applicable", "clarification_required", "unsupported"]
+    },
+    "clarificationChoices": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["choiceId", "label"],
+        "properties": {
+          "choiceId": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 160
+          }
+        }
+      }
+    },
+    "proposedCalls": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["capabilityId", "arguments"],
+        "properties": {
+          "capabilityId": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "arguments": {
+            "type": "object",
+            "maxProperties": 12,
+            "propertyNames": {
+              "maxLength": 80
+            },
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "maxItems": 24,
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 160
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "baseContextRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "catalogRevision": {
+      "type": ["string", "null"],
+      "maxLength": 160
+    }
+  }
+}

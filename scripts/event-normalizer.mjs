@@ -277,7 +277,7 @@ function occurrenceSchedule(record, performance) {
     performance.dateText != null;
   return normalizeSchedule(
     hasOccurrenceSchedule ? (performance.schedule ?? {}) : record.schedule,
-    { ...record, ...performance },
+    { ...record, ...performance, _concretePerformance: hasOccurrenceSchedule },
   );
 }
 
@@ -285,8 +285,9 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
   const sourceId = sourceOccurrenceId(record, performance, index);
   const occurrenceId = qualifiedOccurrenceId(sourceName, sourceId);
   const parentListingId = `${sourceName}:${record.sourceId}`;
-  const startsAt = performance.startDateTime ?? null;
-  const endsAt = performance.endDateTime ?? null;
+  const schedule = occurrenceSchedule(record, performance);
+  const startsAt = schedule.start;
+  const endsAt = schedule.end;
   const rawVenue = (performance.venue ?? record.venue)?.trim() || null;
   const address = (performance.address ?? record.address)?.trim() || null;
   const locationRecovery =
@@ -307,6 +308,7 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
         schedule: normalizeSchedule(performance.schedule, {
           ...record,
           ...performance,
+          _concretePerformance: true,
         }),
         availability: performance.availability ?? record.availability,
         accessRestriction:
@@ -334,7 +336,6 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
       },
     ],
   });
-  const schedule = occurrenceSchedule(record, performance);
   return {
     schemaVersion: "3.0",
     id: occurrenceId,
@@ -343,6 +344,14 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
     publishedEventId: occurrenceId,
     parentActivityId: hierarchy.parentActivityId,
     parentListingId,
+    authorityRefs: [
+      ...new Set(
+        [
+          ...(record.authorityRefs ?? []),
+          ...(performance.authorityRefs ?? []),
+        ].filter(Boolean),
+      ),
+    ].sort(),
     sourceParentActivities: [
       {
         source: sourceName,
@@ -459,6 +468,7 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
         sourceId,
         sourceUrl: record.detailUrl ?? null,
         recordRef,
+        authorityRefs: record.authorityRefs ?? [],
       },
     ],
   };
@@ -504,18 +514,39 @@ function normalizationReason(record, event) {
 function sameEvent(a, b) {
   const ai = interval(a),
     bi = interval(b);
+  const sameSingaporeDay =
+    String(a.startsAt ?? a.dateText ?? "").slice(0, 10) ===
+    String(b.startsAt ?? b.dateText ?? "").slice(0, 10);
+  const coarseDayEvidence =
+    a.allDay ||
+    b.allDay ||
+    [a, b].some(
+      (event) =>
+        !event.timeText &&
+        /^\d{4}-\d{2}-\d{2}(?:T00:00:00\+08:00)?$/.test(
+          String(event.startsAt ?? event.dateText ?? ""),
+        ),
+    );
   return (
     normalizeText(a.title) === normalizeText(b.title) &&
     normalizeText(a.venue) === normalizeText(b.venue) &&
     ai &&
     bi &&
-    ai.start <= bi.end &&
-    bi.start <= ai.end
+    ((ai.start <= bi.end && bi.start <= ai.end) ||
+      (coarseDayEvidence && sameSingaporeDay))
   );
 }
 
 function schedulePrecision(event) {
-  return Number(Boolean(event.startsAt)) * 2 + Number(Boolean(event.endsAt));
+  const explicitClock =
+    !event.allDay &&
+    (/\b\d{1,2}(?::\d{2})\b/.test(event.timeText ?? "") ||
+      /T(?!00:00:00)\d{2}:\d{2}/.test(event.startsAt ?? ""));
+  return (
+    Number(explicitClock) * 4 +
+    Number(Boolean(event.startsAt)) * 2 +
+    Number(Boolean(event.endsAt))
+  );
 }
 
 function mergedId(sources) {
@@ -912,6 +943,7 @@ export function normalizeRun({
     "normalized/activities.json",
     "normalized/activity-grouping-reviews.json",
     "normalized/activity-grouping-decisions.json",
+    "normalized/parent-activity-grouping.json",
     "normalized/date-reviews.json",
     "normalized/excluded.json",
     "normalized/invalid.json",
@@ -929,6 +961,10 @@ export function normalizeRun({
   atomicJson(
     join(runDir, "normalized/activity-grouping-decisions.json"),
     activityProjection.decisions,
+  );
+  atomicJson(
+    join(runDir, "normalized/parent-activity-grouping.json"),
+    activityProjection.parentGrouping,
   );
   atomicJson(
     join(runDir, "normalized/date-reviews.json"),
@@ -960,6 +996,12 @@ export function normalizeRun({
       activityVenueGroups: activityProjection.activities.counts.venueGroups,
       sourceOffers: activityProjection.activities.counts.sourceOffers,
       activityGroupingReviews: activityProjection.reviews.counts.records,
+      parentGroupingCandidates:
+        activityProjection.parentGrouping.counts.candidates,
+      parentGroupingMerges:
+        activityProjection.parentGrouping.counts.mergedParents,
+      parentGroupingReviews:
+        activityProjection.parentGrouping.counts.reviews,
     },
     venueBranches: [...venues.values()],
     sourceAccounting,

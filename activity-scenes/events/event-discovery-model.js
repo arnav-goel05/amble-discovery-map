@@ -1,3 +1,10 @@
+import {
+  createFilterOptionCatalog,
+  matchesWhere,
+  projectFilterTokens,
+  reconcileFilterTokens,
+} from "./event-filter-options.js";
+
 const normalize = (value) =>
   String(value ?? "")
     .replace(/<[^>]*>/g, " ")
@@ -68,13 +75,15 @@ function safeSourceOffers(occurrences) {
     for (const source of occurrence.sourceEvent?.sources ?? []) {
       try {
         const url = new URL(source.sourceUrl ?? source.url);
-        if (!['http:', 'https:'].includes(url.protocol)) continue;
+        if (!["http:", "https:"].includes(url.protocol)) continue;
         url.hash = "";
         for (const key of [...url.searchParams.keys()])
-          if (/^(?:utm_|fbclid$|gclid$)/i.test(key)) url.searchParams.delete(key);
+          if (/^(?:utm_|fbclid$|gclid$)/i.test(key))
+            url.searchParams.delete(key);
         url.searchParams.sort();
         const href = url.href.replace(/\?$/, "");
-        const label = displayText(source.source) || url.hostname.replace(/^www\./, "");
+        const label =
+          displayText(source.source) || url.hostname.replace(/^www\./, "");
         offers.set(`${label}\0${href}`, { label, url: href });
       } catch {
         // Invalid source links are intentionally unavailable in the public UI.
@@ -85,7 +94,11 @@ function safeSourceOffers(occurrences) {
   );
 }
 
-function activityResult(matchingOccurrences, allOccurrences) {
+function activityResult(
+  matchingOccurrences,
+  allOccurrences,
+  diagnostics = null,
+) {
   const representative = matchingOccurrences[0] ?? allOccurrences[0];
   const canonicalActivity = representative.sourceEvent;
   if (
@@ -93,11 +106,20 @@ function activityResult(matchingOccurrences, allOccurrences) {
     Array.isArray(canonicalActivity.sessions) &&
     Array.isArray(canonicalActivity.venueGroups)
   ) {
+    if (diagnostics) {
+      diagnostics.activitiesExpanded += 1;
+      diagnostics.sessionsExpanded += canonicalActivity.sessions.length;
+      diagnostics.venueMembershipChecks +=
+        canonicalActivity.sessions.length *
+        canonicalActivity.venueGroups.length;
+    }
     const groupsById = new Map(
-      canonicalActivity.venueGroups.map((group) => [
-        group.venueGroupId,
-        group,
-      ]),
+      canonicalActivity.venueGroups.map((group) => [group.venueGroupId, group]),
+    );
+    const matchingSessionIds = new Set(
+      matchingOccurrences.flatMap(
+        (occurrence) => occurrence.matchingSessionIds ?? [],
+      ),
     );
     const sessions = canonicalActivity.sessions.map((session) => {
       const group = groupsById.get(session.venueGroupIds?.[0]);
@@ -152,6 +174,12 @@ function activityResult(matchingOccurrences, allOccurrences) {
         group.sessionIds?.includes(session.sessionId),
       ),
     }));
+    const matchingSessions =
+      matchingSessionIds.size > 0
+        ? sessions.filter((session) =>
+            matchingSessionIds.has(session.sessionId),
+          )
+        : sessions;
     return {
       ...representative,
       ...canonicalActivity,
@@ -159,8 +187,8 @@ function activityResult(matchingOccurrences, allOccurrences) {
       eventId: canonicalActivity.activityId,
       occurrences: sessions,
       sessions,
-      matchingOccurrences: sessions,
-      matchingSessions: sessions,
+      matchingOccurrences: matchingSessions,
+      matchingSessions,
       venueGroups,
       sourceOffers: (canonicalActivity.sourceOffers ?? []).map((offer) => ({
         ...offer,
@@ -187,29 +215,44 @@ function activityResult(matchingOccurrences, allOccurrences) {
     (a, b) =>
       a.scheduleValue - b.scheduleValue || a.identity.localeCompare(b.identity),
   );
-  const finite = chronological.filter((item) => Number.isFinite(item.scheduleValue));
+  const finite = chronological.filter((item) =>
+    Number.isFinite(item.scheduleValue),
+  );
   const venueGroups = [
     ...new Map(
       chronological.map((item) => {
-        const key = item.landmarkId ?? `off-map:${normalize(item.venue) || item.offMapSubtype || "tba"}`;
-        return [key, {
-          venueGroupId: `${representative.activityId}::${key}`,
-          label: item.venue || "Location TBA",
-          landmarkId: item.landmarkId,
-          anchor: item.anchor,
-          occurrences: chronological.filter((candidate) =>
-            (candidate.landmarkId ?? `off-map:${normalize(candidate.venue) || candidate.offMapSubtype || "tba"}`) === key,
-          ),
-        }];
+        const key =
+          item.landmarkId ??
+          `off-map:${normalize(item.venue) || item.offMapSubtype || "tba"}`;
+        return [
+          key,
+          {
+            venueGroupId: `${representative.activityId}::${key}`,
+            label: item.venue || "Location TBA",
+            landmarkId: item.landmarkId,
+            anchor: item.anchor,
+            occurrences: chronological.filter(
+              (candidate) =>
+                (candidate.landmarkId ??
+                  `off-map:${normalize(candidate.venue) || candidate.offMapSubtype || "tba"}`) ===
+                key,
+            ),
+          },
+        ];
       }),
     ).values(),
   ];
-  const scheduleSummary = finite.length > 1
-    ? `${chronological.length} upcoming sessions · ${finite[0].date || finite[0].sourceEvent?.schedule?.start} – ${finite.at(-1).date || finite.at(-1).sourceEvent?.schedule?.end || finite.at(-1).sourceEvent?.schedule?.start}`
-    : finite.length === 1
-      ? (finite[0].date || finite[0].sourceEvent?.schedule?.displayText || "1 upcoming session")
-      : representative.sourceEvent?.schedule?.displayText ||
-        (representative.scheduleKind === "anytime" ? "Anytime" : `${chronological.length} sessions`);
+  const scheduleSummary =
+    finite.length > 1
+      ? `${chronological.length} upcoming sessions · ${finite[0].date || finite[0].sourceEvent?.schedule?.start} – ${finite.at(-1).date || finite.at(-1).sourceEvent?.schedule?.end || finite.at(-1).sourceEvent?.schedule?.start}`
+      : finite.length === 1
+        ? finite[0].date ||
+          finite[0].sourceEvent?.schedule?.displayText ||
+          "1 upcoming session"
+        : representative.sourceEvent?.schedule?.displayText ||
+          (representative.scheduleKind === "anytime"
+            ? "Anytime"
+            : `${chronological.length} sessions`);
   return {
     ...representative,
     identity: representative.activityId,
@@ -227,7 +270,11 @@ function activityResult(matchingOccurrences, allOccurrences) {
   };
 }
 
-function groupActivities(occurrences, allOccurrences = occurrences) {
+function groupActivities(
+  occurrences,
+  allOccurrences = occurrences,
+  diagnostics = null,
+) {
   const allByActivity = new Map();
   for (const occurrence of allOccurrences) {
     const rows = allByActivity.get(occurrence.activityId) ?? [];
@@ -241,7 +288,9 @@ function groupActivities(occurrences, allOccurrences = occurrences) {
     matching.set(occurrence.activityId, rows);
   }
   return [...matching.entries()]
-    .map(([activityId, rows]) => activityResult(rows, allByActivity.get(activityId) ?? rows))
+    .map(([activityId, rows]) =>
+      activityResult(rows, allByActivity.get(activityId) ?? rows, diagnostics),
+    )
     .sort(
       (a, b) =>
         a.scheduleValue - b.scheduleValue ||
@@ -278,9 +327,31 @@ function priceValue(event) {
 }
 
 function localDay(value, endOfDay = false) {
-  if (!value) return null;
-  const date = new Date(`${value}T${endOfDay ? "23:59:59.999" : "00:00:00"}`);
-  return Number.isFinite(date.getTime()) ? date.getTime() : null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value ?? "")) return null;
+  const parsed = Date.parse(
+    `${value}T${endOfDay ? "23:59:59.999" : "00:00:00"}+08:00`,
+  );
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function singaporeDate(value) {
+  const fields = Object.fromEntries(
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Singapore",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+      .formatToParts(value)
+      .map((item) => [item.type, item.value]),
+  );
+  return `${fields.year}-${fields.month}-${fields.day}`;
+}
+
+function shiftCalendarDate(value, days = 0, months = 0) {
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1 + months, day + days));
+  return date.toISOString().slice(0, 10);
 }
 
 function dateWindow(range, now, dateStart, dateEnd) {
@@ -292,22 +363,37 @@ function dateWindow(range, now, dateStart, dateEnd) {
       end: customEnd ?? Number.POSITIVE_INFINITY,
     };
   if (range === "any") return null;
-  const start = new Date(now);
-  start.setHours(0, 0, 0, 0);
-  if (range === "later") {
-    const later = new Date(start.getFullYear(), start.getMonth() + 1, 1);
-    return { start: later.getTime(), end: Number.POSITIVE_INFINITY };
-  }
-  const end = new Date(start);
-  if (range === "this-month") end.setMonth(end.getMonth() + 1, 1);
-  else
-    end.setDate(
-      end.getDate() +
-        ({ today: 1, "7-days": 7, "30-days": 30, "this-week": 7 }[range] || 0),
+  const startDate = singaporeDate(now);
+  const start = localDay(startDate);
+  if (range === "this-weekend") {
+    const [year, month, dayOfMonth] = startDate.split("-").map(Number);
+    const day = new Date(Date.UTC(year, month - 1, dayOfMonth)).getUTCDay();
+    const weekendStartDate =
+      day === 0 || day === 6
+        ? startDate
+        : shiftCalendarDate(startDate, 6 - day);
+    const weekendEndDate = shiftCalendarDate(
+      weekendStartDate,
+      day === 0 ? 0 : 1,
     );
-  return end > start
-    ? { start: start.getTime(), end: end.getTime() - 1 }
-    : null;
+    return {
+      start: localDay(weekendStartDate),
+      end: localDay(weekendEndDate, true),
+    };
+  }
+  if (range === "later") {
+    const nextMonth = shiftCalendarDate(`${startDate.slice(0, 8)}01`, 0, 1);
+    return { start: localDay(nextMonth), end: Number.POSITIVE_INFINITY };
+  }
+  const endDate =
+    range === "this-month"
+      ? shiftCalendarDate(`${startDate.slice(0, 8)}01`, 0, 1)
+      : shiftCalendarDate(
+          startDate,
+          { today: 1, "7-days": 7, "30-days": 30, "this-week": 7 }[range] || 0,
+        );
+  const end = localDay(endDate);
+  return end > start ? { start, end: end - 1 } : null;
 }
 
 function matchesPrice(event, range) {
@@ -325,8 +411,12 @@ function matchesPrice(event, range) {
 }
 
 function sessionWindow(session) {
-  const start = Date.parse(session?.schedule?.start ?? "");
-  const end = Date.parse(session?.schedule?.end ?? "");
+  const strict =
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:\d{2})$/;
+  const startText = session?.schedule?.start ?? "";
+  const endText = session?.schedule?.end ?? "";
+  const start = strict.test(startText) ? Date.parse(startText) : Number.NaN;
+  const end = strict.test(endText) ? Date.parse(endText) : Number.NaN;
   return {
     kind: session?.schedule?.kind ?? "unverified",
     start: Number.isFinite(start) ? start : Number.POSITIVE_INFINITY,
@@ -338,36 +428,52 @@ function sessionWindow(session) {
   };
 }
 
-function matchesSessionDate(event, range, window) {
+function applicableSessions(event) {
   const sessions = event.sessions ?? event.sourceEvent?.sessions ?? [];
+  const projectedIds =
+    event.projectedSessionIds ?? event.sourceEvent?.projectedSessionIds ?? [];
+  if (!projectedIds.length) return sessions;
+  const allowed = new Set(projectedIds);
+  return sessions.filter((session) => allowed.has(session.sessionId));
+}
+
+function matchingSessionIds(event, range, window) {
+  const sessions = applicableSessions(event);
   if (!sessions.length)
-    return range === "anytime"
-      ? event.scheduleKind === "anytime"
-      : (
-      !window ||
-      (Number.isFinite(event.scheduleValue) &&
-        event.scheduleValue <= window.end &&
-        event.scheduleEndValue >= window.start)
-        );
-  if (range === "anytime")
-    return sessions.some(
-      (session) => sessionWindow(session).kind === "anytime",
-    );
-  if (!window) return true;
-  return sessions.some((session) => {
-    const value = sessionWindow(session);
     return (
-      Number.isFinite(value.start) &&
-      value.start <= window.end &&
-      value.end >= window.start
-    );
-  });
+      range === "anytime"
+        ? event.scheduleKind === "anytime"
+        : !window ||
+          (Number.isFinite(event.scheduleValue) &&
+            event.scheduleValue <= window.end &&
+            event.scheduleEndValue >= window.start)
+    )
+      ? []
+      : null;
+  if (range === "anytime") {
+    const ids = sessions
+      .filter((session) => sessionWindow(session).kind === "anytime")
+      .map((session) => session.sessionId);
+    return ids.length ? ids : null;
+  }
+  if (!window) return sessions.map((session) => session.sessionId);
+  const ids = sessions
+    .filter((session) => {
+      const value = sessionWindow(session);
+      return (
+        ["exact", "range"].includes(value.kind) &&
+        Number.isFinite(value.start) &&
+        value.start <= window.end &&
+        value.end >= window.start
+      );
+    })
+    .map((session) => session.sessionId);
+  return ids.length ? ids : null;
 }
 
 function matchesPlacement(event, placementView) {
   if (placementView === "all") return true;
-  const groups =
-    event.sourceEvent?.venueGroups ?? event.venueGroups ?? [];
+  const groups = event.sourceEvent?.venueGroups ?? event.venueGroups ?? [];
   if (!groups.length)
     return (
       (placementView === "mapped" && event.publicPlacement === "mapped") ||
@@ -389,6 +495,7 @@ export function createEventDiscoveryModel(
     now = () => new Date(),
     sourceSnapshotId = null,
     offMapEvents = [],
+    performanceDiagnostics = false,
   } = {},
 ) {
   if (!Array.isArray(landmarks))
@@ -431,6 +538,8 @@ export function createEventDiscoveryModel(
         eventIndex,
         title,
         venue,
+        venueKey: normalize(venue),
+        landmarkLabel: displayText(landmark.label),
         date,
         time,
         category,
@@ -559,20 +668,92 @@ export function createEventDiscoveryModel(
     dateEnd = "",
     priceRange = "any",
     placementView = "all",
+    where = null,
   } = {}) => {
+    const filterStartedAt = performanceDiagnostics
+      ? (globalThis.performance?.now?.() ?? 0)
+      : 0;
     const normalizedQuery = normalize(query);
     const selectedCategories = new Set(categories);
     const window = dateWindow(dateRange, now(), dateStart, dateEnd);
-    const matchedOccurrences = events.filter(
-      (event) =>
-        (!normalizedQuery || event.searchable.includes(normalizedQuery)) &&
-        (selectedCategories.size === 0 ||
-          selectedCategories.has(event.category)) &&
-        matchesPlacement(event, placementView) &&
-        matchesSessionDate(event, dateRange, window) &&
-        matchesPrice(event, priceRange),
+    const scheduleDiagnostics = {
+      non_iso_boundary_rejected: 0,
+      projected_session_not_applicable: 0,
+    };
+    const matchedOccurrences = events.flatMap((event) => {
+      if (
+        (normalizedQuery && !event.searchable.includes(normalizedQuery)) ||
+        (selectedCategories.size > 0 &&
+          !selectedCategories.has(event.category)) ||
+        !matchesPlacement(event, placementView) ||
+        !matchesWhere(event, where) ||
+        !matchesPrice(event, priceRange)
+      )
+        return [];
+      const allSessions = event.sessions ?? event.sourceEvent?.sessions ?? [];
+      const projectedSessions = applicableSessions(event);
+      scheduleDiagnostics.projected_session_not_applicable += Math.max(
+        0,
+        allSessions.length - projectedSessions.length,
+      );
+      for (const session of projectedSessions) {
+        const schedule = session.schedule ?? {};
+        const value = sessionWindow(session);
+        if (
+          ["exact", "range"].includes(schedule.kind) &&
+          !Number.isFinite(value.start)
+        )
+          scheduleDiagnostics.non_iso_boundary_rejected += 1;
+      }
+      const ids = matchingSessionIds(event, dateRange, window);
+      return ids === null ? [] : [{ ...event, matchingSessionIds: ids }];
+    });
+    const groupingStartedAt = performanceDiagnostics
+      ? (globalThis.performance?.now?.() ?? filterStartedAt)
+      : 0;
+    const groupingDiagnostics = performanceDiagnostics
+      ? {
+          activitiesExpanded: 0,
+          sessionsExpanded: 0,
+          venueMembershipChecks: 0,
+        }
+      : null;
+    const matched = groupActivities(
+      matchedOccurrences,
+      events,
+      groupingDiagnostics,
     );
-    const matched = groupActivities(matchedOccurrences, events);
+    const completedAt = performanceDiagnostics
+      ? (globalThis.performance?.now?.() ?? groupingStartedAt)
+      : 0;
+    const body = globalThis.document?.body;
+    if (body && performanceDiagnostics) {
+      const filterDuration = completedAt - filterStartedAt;
+      const groupingDuration = completedAt - groupingStartedAt;
+      body.dataset.eventDiscoveryFilterDurationMs = filterDuration.toFixed(2);
+      body.dataset.eventDiscoveryGroupingDurationMs =
+        groupingDuration.toFixed(2);
+      body.dataset.eventDiscoveryInputOccurrenceCount = String(events.length);
+      body.dataset.eventDiscoveryMatchedOccurrenceCount = String(
+        matchedOccurrences.length,
+      );
+      body.dataset.eventDiscoveryMatchedActivityCount = String(matched.length);
+      body.dataset.eventDiscoveryExpandedSessionCount = String(
+        groupingDiagnostics?.sessionsExpanded ?? 0,
+      );
+      body.dataset.eventDiscoveryVenueMembershipCheckCount = String(
+        groupingDiagnostics?.venueMembershipChecks ?? 0,
+      );
+      body.dataset.eventDiscoveryFilterCount = String(
+        Number(body.dataset.eventDiscoveryFilterCount ?? 0) + 1,
+      );
+      body.dataset.eventDiscoveryNonIsoBoundaryRejected = String(
+        scheduleDiagnostics.non_iso_boundary_rejected,
+      );
+      body.dataset.eventDiscoveryProjectedSessionNotApplicable = String(
+        scheduleDiagnostics.projected_session_not_applicable,
+      );
+    }
     return {
       query: displayText(query),
       categories: [...selectedCategories],
@@ -580,16 +761,16 @@ export function createEventDiscoveryModel(
       dateStart,
       dateEnd,
       priceRange,
+      scheduleDiagnostics,
       placementView,
-      identities: new Set(
-        matchedOccurrences.map(({ identity }) => identity),
-      ),
+      identities: new Set(matchedOccurrences.map(({ identity }) => identity)),
       events: matched,
       matchedEvents: matched.length,
       matchedActivities: matched.length,
       matchedOccurrences: matchedOccurrences.length,
-      matchedLandmarks: new Set(matchedOccurrences.map(({ landmarkId }) => landmarkId))
-        .size,
+      matchedLandmarks: new Set(
+        matchedOccurrences.map(({ landmarkId }) => landmarkId),
+      ).size,
     };
   };
 
@@ -641,12 +822,93 @@ export function createEventDiscoveryModel(
       : null;
   };
 
+  const filterOptions = () => {
+    const locations = new Map();
+    const addLocation = ({ id, kind, value, label, activityId }) => {
+      if (!id || !value || !label) return;
+      const current = locations.get(id) ?? {
+        id,
+        kind,
+        value,
+        label,
+        activityIds: new Set(),
+      };
+      current.activityIds.add(activityId);
+      locations.set(id, current);
+    };
+    for (const event of events) {
+      if (event.landmarkId)
+        addLocation({
+          id: `landmark:${event.landmarkId}`,
+          kind: "landmark",
+          value: event.landmarkId,
+          label: event.landmarkLabel,
+          activityId: event.activityId,
+        });
+      if (event.venueKey)
+        addLocation({
+          id: `venue:${event.venueKey.replaceAll(" ", "-")}`,
+          kind: "venue",
+          value: event.venueKey,
+          label: event.venue,
+          activityId: event.activityId,
+        });
+      if (event.candidateAreaId) {
+        const areaName = event.candidateAreaId
+          .replace(/^ura-subzone:/, "")
+          .replaceAll("-", " ")
+          .replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
+        addLocation({
+          id: `area:${event.candidateAreaId.replace(/^ura-subzone:/, "")}`,
+          kind: "area",
+          value: event.candidateAreaId,
+          label: areaName,
+          activityId: event.activityId,
+        });
+      }
+    }
+    return {
+      categories: [...new Set(events.map(({ category }) => category))].sort(),
+      locations: [...locations.values()]
+        .map(({ activityIds, ...location }) => ({
+          ...location,
+          availableCount: activityIds.size,
+        }))
+        .sort(
+          (left, right) =>
+            right.availableCount - left.availableCount ||
+            left.label.localeCompare(right.label),
+        ),
+    };
+  };
+
+  const queryState = ({ query = "", filterTokens = [] } = {}) => {
+    const catalog = createFilterOptionCatalog(filterOptions());
+    const { tokens, removed } = reconcileFilterTokens(filterTokens, catalog);
+    const result = filter({
+      ...projectFilterTokens(tokens),
+      query,
+    });
+    return {
+      query: result.query,
+      filterTokens: tokens,
+      removedFilterTokens: removed,
+      filterOptions: catalog.all,
+      events: result.events,
+      matchedEvents: result.matchedEvents,
+      matchedOccurrences: result.matchedOccurrences,
+      scheduleDiagnostics: result.scheduleDiagnostics,
+    };
+  };
+
   return {
     approvedCandidates,
     categories: () =>
       [...new Set(events.map(({ category }) => category))].sort(),
     events: () => [...activities],
     filter,
+    filterOptions,
+    queryState,
     selectionForCandidate,
   };
 }

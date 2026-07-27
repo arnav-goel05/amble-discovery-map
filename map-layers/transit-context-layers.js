@@ -46,8 +46,9 @@ export function createTransitContextLayerManager({
       .map((feature) => [feature.properties.stationId, feature]),
   );
   let selectedStationId = null;
-  let visible = true;
+  let visibility = { mrtStations: true, mrtLines: true };
   let started = false;
+  const subscribers = new Set();
 
   const rendered = () => ({
     type: "FeatureCollection",
@@ -63,12 +64,34 @@ export function createTransitContextLayerManager({
   });
   const write = () =>
     map.getSource(TRANSIT_CONTEXT_SOURCE_ID)?.setData(rendered());
-  const setLayerVisibility = () => {
-    for (const id of TRANSIT_CONTEXT_LAYER_IDS) {
-      map.setLayoutProperty?.(id, "visibility", visible ? "visible" : "none");
-    }
+  const snapshot = () => ({
+    assetStatus: "approved",
+    stationCount: stations.size,
+    lineCount: baseAsset.features.filter(
+      ({ properties }) => properties?.featureClass === "rail_line",
+    ).length,
+    visibility: { ...visibility },
+  });
+  const emit = () => {
+    const current = snapshot();
+    for (const subscriber of subscribers) subscriber(structuredClone(current));
+  };
+  const reflectLayerVisibility = () => {
+    map.setLayoutProperty?.(
+      TRANSIT_CONTEXT_LAYER_IDS[0],
+      "visibility",
+      visibility.mrtLines ? "visible" : "none",
+    );
+    for (const id of TRANSIT_CONTEXT_LAYER_IDS.slice(1))
+      map.setLayoutProperty?.(
+        id,
+        "visibility",
+        visibility.mrtStations ? "visible" : "none",
+      );
     if (globalThis.document?.body)
-      document.body.dataset.transitVisible = String(visible);
+      document.body.dataset.transitVisible = String(
+        visibility.mrtStations || visibility.mrtLines,
+      );
   };
 
   return Object.freeze({
@@ -162,13 +185,35 @@ export function createTransitContextLayerManager({
       map.setLayerZoomRange?.(TRANSIT_CONTEXT_LAYER_IDS[1], 7, 24);
       map.setLayerZoomRange?.(TRANSIT_CONTEXT_LAYER_IDS[2], 12, 24);
       started = true;
-      setLayerVisibility();
+      reflectLayerVisibility();
       return true;
     },
     setVisible(nextVisible) {
-      visible = nextVisible === true;
-      setLayerVisibility();
-      return visible;
+      const requested = nextVisible === true;
+      const changed =
+        visibility.mrtStations !== requested ||
+        visibility.mrtLines !== requested;
+      visibility = { mrtStations: requested, mrtLines: requested };
+      reflectLayerVisibility();
+      if (changed) emit();
+      return changed;
+    },
+    setLayerVisibility(layer, nextVisible) {
+      if (!["mrtStations", "mrtLines"].includes(layer)) return false;
+      const requested = nextVisible === true;
+      const changed = visibility[layer] !== requested;
+      visibility = { ...visibility, [layer]: requested };
+      reflectLayerVisibility();
+      if (changed) emit();
+      return changed;
+    },
+    snapshot,
+    subscribe(subscriber, { emitCurrent = false } = {}) {
+      if (typeof subscriber !== "function")
+        throw new TypeError("Transit subscriber must be a function");
+      subscribers.add(subscriber);
+      if (emitCurrent) subscriber(snapshot());
+      return () => subscribers.delete(subscriber);
     },
     selectStation(stationId) {
       if (!stations.has(stationId)) return false;
@@ -184,7 +229,7 @@ export function createTransitContextLayerManager({
     },
     focusStation(stationId) {
       const station = stations.get(stationId);
-      if (!station || !visible) return false;
+      if (!station || !visibility.mrtStations) return false;
       selectedStationId = stationId;
       write();
       map.easeTo({
@@ -208,6 +253,7 @@ export function createTransitContextLayerManager({
         // Map removal may have already discarded its style-owned resources.
       }
       selectedStationId = null;
+      subscribers.clear();
       started = false;
     },
   });

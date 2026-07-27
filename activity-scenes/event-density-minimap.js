@@ -129,6 +129,15 @@ export function eventDensityCells(
   return [...cells.values()].sort((left, right) => right.count - left.count);
 }
 
+const densityPointsSignature = (points) =>
+  points
+    .map(
+      ({ activityId, coordinate }) =>
+        `${activityId}:${coordinate[0].toFixed(6)},${coordinate[1].toFixed(6)}`,
+    )
+    .sort()
+    .join("|");
+
 const projectCoordinate = ([longitude, latitude], bounds) => [
   ((longitude - bounds.minLongitude) /
     (bounds.maxLongitude - bounds.minLongitude)) *
@@ -137,6 +146,23 @@ const projectCoordinate = ([longitude, latitude], bounds) => [
     (bounds.maxLatitude - bounds.minLatitude)) *
     CANVAS_HEIGHT,
 ];
+
+export function coordinateFromMinimapPoint(
+  x,
+  y,
+  bounds,
+  width = CANVAS_WIDTH,
+  height = CANVAS_HEIGHT,
+) {
+  const clampedX = Math.max(0, Math.min(width, Number(x)));
+  const clampedY = Math.max(0, Math.min(height, Number(y)));
+  return [
+    bounds.minLongitude +
+      (clampedX / width) * (bounds.maxLongitude - bounds.minLongitude),
+    bounds.maxLatitude -
+      (clampedY / height) * (bounds.maxLatitude - bounds.minLatitude),
+  ];
+}
 
 const drawPolygon = (context, polygon, bounds) => {
   context.beginPath();
@@ -269,12 +295,7 @@ export function minimapViewportRectangle(
   const rawRight = Math.max(left, right);
   const rawTop = Math.min(top, bottom);
   const rawBottom = Math.max(top, bottom);
-  if (
-    rawRight < 0 ||
-    rawLeft > width ||
-    rawBottom < 0 ||
-    rawTop > height
-  )
+  if (rawRight < 0 || rawLeft > width || rawBottom < 0 || rawTop > height)
     return null;
   const clippedLeft = Math.max(0, Math.min(width, rawLeft));
   const clippedTop = Math.max(0, Math.min(height, rawTop));
@@ -316,6 +337,9 @@ export function createEventDensityMinimap({
   discoveryAreaAsset,
   discoveryModel,
   map,
+  trackViewport = true,
+  performanceDiagnostics = false,
+  renderMode = "cached",
 } = {}) {
   const existing = document.getElementById("event-density-minimap");
   if (existing) return { destroy: () => existing.remove(), root: existing };
@@ -323,8 +347,13 @@ export function createEventDensityMinimap({
   const root = document.createElement("aside");
   root.id = "event-density-minimap";
   root.className = "event-density-minimap";
-  root.setAttribute("role", "img");
-  root.setAttribute("aria-label", "Event density across Singapore");
+  root.setAttribute("role", "button");
+  root.tabIndex = 0;
+  root.title = "Click the Singapore overview to move the map";
+  root.setAttribute(
+    "aria-label",
+    "Singapore event overview. Click or tap a location to move the map there.",
+  );
 
   const canvas = document.createElement("canvas");
   canvas.className = "event-density-minimap__canvas";
@@ -336,19 +365,144 @@ export function createEventDensityMinimap({
   document.body.appendChild(root);
 
   const context = canvas.getContext("2d");
+  const staticCanvas = document.createElement("canvas");
+  staticCanvas.width = CANVAS_WIDTH;
+  staticCanvas.height = CANVAS_HEIGHT;
+  const staticContext = staticCanvas.getContext("2d");
+  const compassCanvas = document.createElement("canvas");
+  compassCanvas.width = CANVAS_WIDTH;
+  compassCanvas.height = CANVAS_HEIGHT;
+  const compassContext = compassCanvas.getContext("2d");
+  drawCompass(compassContext);
   const bounds = singaporeGeometryBounds(discoveryAreaAsset);
   let points = densityPointsFromDiscoveryResult(discoveryModel?.filter());
+  let pointsSignature = densityPointsSignature(points);
+  let cells = [];
   let viewportRectangle = minimapViewportRectangle(map?.getBounds?.(), bounds);
   let scheduledRender = null;
+  let viewportTracking = Boolean(trackViewport);
+  const activeRenderMode =
+    performanceDiagnostics && renderMode === "legacy" ? "legacy" : "cached";
+  let staticRasterDirty = true;
+  let staticRenderCount = 0;
+  let totalStaticRenderDuration = 0;
+  let renderCount = 0;
+  let totalRenderDuration = 0;
+
+  const moveMapToMinimapPoint = (clientX, clientY) => {
+    const canvasBounds = canvas.getBoundingClientRect();
+    if (canvasBounds.width <= 0 || canvasBounds.height <= 0) return false;
+    const coordinate = coordinateFromMinimapPoint(
+      ((clientX - canvasBounds.left) / canvasBounds.width) * CANVAS_WIDTH,
+      ((clientY - canvasBounds.top) / canvasBounds.height) * CANVAS_HEIGHT,
+      bounds,
+    );
+    map?.easeTo?.({
+      center: coordinate,
+      duration: 500,
+      essential: true,
+    });
+    return true;
+  };
+  const handleClick = (event) => {
+    moveMapToMinimapPoint(event.clientX, event.clientY);
+  };
+  const handleKeydown = (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    const canvasBounds = canvas.getBoundingClientRect();
+    moveMapToMinimapPoint(
+      canvasBounds.left + canvasBounds.width / 2,
+      canvasBounds.top + canvasBounds.height / 2,
+    );
+  };
+  root.addEventListener("click", handleClick);
+  root.addEventListener("keydown", handleKeydown);
+
+  const replacePoints = (nextPoints) => {
+    const nextSignature = densityPointsSignature(nextPoints);
+    if (nextSignature === pointsSignature) return false;
+    points = nextPoints;
+    pointsSignature = nextSignature;
+    staticRasterDirty = true;
+    return true;
+  };
+
+  const renderStaticRaster = (targetContext) => {
+    const startedAt = performanceDiagnostics ? performance.now() : 0;
+    targetContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    drawTerrain(targetContext, discoveryAreaAsset, bounds);
+    cells = eventDensityCells(points, bounds);
+    drawDensity(targetContext, cells);
+    staticRasterDirty = false;
+    if (performanceDiagnostics) {
+      const duration = performance.now() - startedAt;
+      staticRenderCount += 1;
+      totalStaticRenderDuration += duration;
+      root.dataset.staticRenderCount = String(staticRenderCount);
+      root.dataset.lastStaticRenderDurationMs = duration.toFixed(2);
+      root.dataset.totalStaticRenderDurationMs =
+        totalStaticRenderDuration.toFixed(2);
+      document.body.dataset.eventDensityMinimapStaticRenderCount =
+        String(staticRenderCount);
+      document.body.dataset.eventDensityMinimapTotalStaticRenderDurationMs =
+        totalStaticRenderDuration.toFixed(2);
+    }
+  };
 
   const render = () => {
+    const startedAt = performanceDiagnostics ? performance.now() : 0;
     scheduledRender = null;
     context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    drawTerrain(context, discoveryAreaAsset, bounds);
-    const cells = eventDensityCells(points, bounds);
-    drawDensity(context, cells);
+    const terrainStartedAt = performanceDiagnostics ? performance.now() : 0;
+    if (activeRenderMode === "legacy") {
+      renderStaticRaster(context);
+    } else {
+      if (staticRasterDirty) renderStaticRaster(staticContext);
+      context.drawImage(staticCanvas, 0, 0);
+    }
+    const terrainCompletedAt = performanceDiagnostics ? performance.now() : 0;
+    const densityCompletedAt = performanceDiagnostics ? performance.now() : 0;
     drawViewport(context, viewportRectangle);
-    drawCompass(context);
+    if (activeRenderMode === "legacy") drawCompass(context);
+    else context.drawImage(compassCanvas, 0, 0);
+    const completedAt = performanceDiagnostics ? performance.now() : 0;
+    const duration = completedAt - startedAt;
+    if (performanceDiagnostics) {
+      renderCount += 1;
+      totalRenderDuration += duration;
+      root.dataset.renderCount = String(renderCount);
+      root.dataset.lastRenderDurationMs = duration.toFixed(2);
+      root.dataset.maximumRenderDurationMs = Math.max(
+        Number(root.dataset.maximumRenderDurationMs ?? 0),
+        duration,
+      ).toFixed(2);
+      root.dataset.averageRenderDurationMs = (
+        totalRenderDuration / renderCount
+      ).toFixed(2);
+      root.dataset.totalRenderDurationMs = totalRenderDuration.toFixed(2);
+      root.dataset.renderMode = activeRenderMode;
+      root.dataset.terrainDurationMs = (
+        terrainCompletedAt - terrainStartedAt
+      ).toFixed(2);
+      root.dataset.densityDurationMs = (
+        densityCompletedAt - terrainCompletedAt
+      ).toFixed(2);
+      root.dataset.viewportDurationMs = (
+        completedAt - densityCompletedAt
+      ).toFixed(2);
+      document.body.dataset.eventDensityMinimapRenderCount =
+        String(renderCount);
+      document.body.dataset.eventDensityMinimapLastRenderDurationMs =
+        duration.toFixed(2);
+      document.body.dataset.eventDensityMinimapMaximumRenderDurationMs =
+        root.dataset.maximumRenderDurationMs;
+      document.body.dataset.eventDensityMinimapTotalRenderDurationMs =
+        totalRenderDuration.toFixed(2);
+      document.body.dataset.eventDensityMinimapTerrainDurationMs =
+        root.dataset.terrainDurationMs;
+      document.body.dataset.eventDensityMinimapRenderMode = activeRenderMode;
+    }
     const activityCount = new Set(points.map(({ activityId }) => activityId))
       .size;
     root.dataset.activityCount = String(activityCount);
@@ -372,7 +526,7 @@ export function createEventDensityMinimap({
       "aria-label",
       `Event density across Singapore. ${activityCount} filtered mapped ${
         activityCount === 1 ? "activity" : "activities"
-      }. The outlined box shows the current map viewport.`,
+      }. The outlined box shows the current map viewport. Click or tap a location to move the map there.`,
     );
   };
 
@@ -381,25 +535,47 @@ export function createEventDensityMinimap({
     if (scheduledRender !== null) return;
     scheduledRender = requestAnimationFrame(render);
   };
-  map?.on?.("move", updateViewport);
-  map?.on?.("resize", updateViewport);
+  if (viewportTracking) {
+    map?.on?.("move", updateViewport);
+    map?.on?.("resize", updateViewport);
+  }
+  root.dataset.viewportTracking = String(viewportTracking);
   render();
 
   return Object.freeze({
     destroy() {
-      map?.off?.("move", updateViewport);
-      map?.off?.("resize", updateViewport);
+      if (viewportTracking) {
+        map?.off?.("move", updateViewport);
+        map?.off?.("resize", updateViewport);
+      }
       if (scheduledRender !== null) cancelAnimationFrame(scheduledRender);
+      root.removeEventListener("click", handleClick);
+      root.removeEventListener("keydown", handleKeydown);
       root.remove();
     },
     root,
+    setViewportTracking(enabled) {
+      const next = Boolean(enabled);
+      if (next === viewportTracking) return false;
+      if (next) {
+        map?.on?.("move", updateViewport);
+        map?.on?.("resize", updateViewport);
+      } else {
+        map?.off?.("move", updateViewport);
+        map?.off?.("resize", updateViewport);
+        if (scheduledRender !== null) cancelAnimationFrame(scheduledRender);
+        scheduledRender = null;
+      }
+      viewportTracking = next;
+      root.dataset.viewportTracking = String(viewportTracking);
+      return true;
+    },
     setDiscoveryModel(nextModel) {
-      points = densityPointsFromDiscoveryResult(nextModel?.filter());
-      render();
+      if (replacePoints(densityPointsFromDiscoveryResult(nextModel?.filter())))
+        render();
     },
     setDiscoveryResult(result) {
-      points = densityPointsFromDiscoveryResult(result);
-      render();
+      if (replacePoints(densityPointsFromDiscoveryResult(result))) render();
     },
   });
 }

@@ -20,22 +20,45 @@ sideband monitor sees usage too late to be the sole admission control.
 
 ## Model and conversation bounds
 
-**Decision**: Pin `gpt-realtime-2.1` in the paid-exception policy. Start with five-minute sessions,
+**Decision**: Pin `gpt-realtime-2.1-mini` as the sole model in the paid-exception policy, with no
+fallback model. Start with five-minute sessions,
 sixty-second idle expiry, six assistant responses, 4,000 post-instruction context tokens, 512 output
 tokens per response, low reasoning effort, no automatic provider response creation, and no image
 input in the default flow. Pin the supported input-transcription model and its rate formula in the
 same policy before release.
 
-**Rationale**: The 2.1 model is documented for improved noise, interruption, and alphanumeric
-handling while retaining function calling. Small, stable prompts/tools improve cache behavior and
-bound the next-turn reservation. Images are unnecessary when stable structured UI IDs are present.
-See [GPT-Realtime-2.1](https://developers.openai.com/api/docs/models/gpt-realtime-2.1),
+**Rationale**: OpenAI positions the mini model as the faster, lower-cost Realtime voice option.
+Small, request-scoped prompts and tools reduce input cost and bound the next-turn reservation.
+Images are unnecessary when stable structured UI IDs are present. See the
+[OpenAI API changelog](https://developers.openai.com/api/docs/changelog),
+[GPT-Realtime-2.1 Mini](https://developers.openai.com/api/docs/models/gpt-realtime-2.1-mini),
 [Realtime costs](https://developers.openai.com/api/docs/guides/realtime-costs), and
 [Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription).
 
-**Alternatives considered**: `gpt-realtime-2` remains compatible with the original idea but is not
-the preferred pinned model after the documented 2.1 improvements. Continuous screenshot context
-adds cost, staleness, and location exposure. Unbounded sessions conflict with the USD 10 ceiling.
+**Alternatives considered**: Full-size Realtime models and silent model fallback are rejected for
+this feature because they increase cost and make the reviewed policy nondeterministic. Continuous
+screenshot context adds cost, staleness, and location exposure. Unbounded sessions conflict with
+the USD 10 ceiling.
+
+## Deterministic command routing and per-turn tools
+
+**Decision**: Recognize a deliberately narrow set of obvious application commands in a bounded,
+side-effect-free browser interpreter. Execute recognized commands through the same capability
+gateway as direct controls, then let the model provide the conversational acknowledgement. Before
+each response, select only eligible capabilities from connector families indicated by the request
+and current overlay; exclude a deterministically routed capability from that turn's provider tools.
+For audio, wait for the final transcript before creating the response so this scope is available.
+
+**Rationale**: Map camera and layer commands and deterministic event-filter phrases do not benefit
+from probabilistic tool selection. Shared gateway execution preserves schema, eligibility,
+confirmation, context-revision, and observable-result rules. Per-turn family selection avoids
+re-sending the previously observed 63-tool eligible set and reduces both prompt cost and tool-choice
+ambiguity.
+
+**Alternatives considered**: Sending the full eligible registry on every context refresh leaves
+tool selection entirely to the model and repeats irrelevant schemas. Building a second executor in
+the interpreter would bypass the registry and is rejected. Broad natural-language parsing is also
+rejected; unmatched requests remain with the scoped model path.
 
 ## Turn taking, interruption, and transcripts
 
@@ -54,21 +77,122 @@ code-switching, place names, MRT announcements, and barge-in. See
 but more likely to cut off hesitant turns. Push-to-talk alone is less conversational and remains a
 fallback rather than the default.
 
-## Typed application actions
+## Shared capability registry
 
-**Decision**: Build one versioned action registry used by pointer, keyboard, text, and voice. The
-model may propose allowlisted action IDs and JSON arguments; an application gateway validates the
-schema, eligible state, stable target, context revision, and confirmation class before invoking the
-same command used by direct UI.
+**Decision**: Evolve the action registry into one versioned capability registry used by pointer,
+keyboard, text, and voice. Every entry is explicitly a `query` or `command`. Queries read
+authoritative domain state and return bounded validated results with stable identities. Commands
+invoke the same executor used by direct UI and return an observable result containing status,
+changed state, affected identities, and resulting context revision. The model may propose only
+allowlisted capability IDs and closed JSON arguments; the gateway validates schema, eligible state,
+stable targets, context revision, and confirmation class.
 
 **Rationale**: Current behavior is distributed across DOM listeners and scene closures. Simulated
 clicks would be incomplete and fragile. A shared command boundary makes 100% coverage measurable
-and prevents model-generated selectors, URLs, or function names from becoming executable. Stable
-session-level tools cover common actions; context-specific actions are exposed only when eligible.
-See [Realtime function calling](https://developers.openai.com/api/docs/guides/realtime-conversations#function-calling).
+and prevents model-generated selectors, URLs, or function names from becoming executable. Adding
+queries fixes the existing gap where `event.search` and `restaurant.search` can change the UI but
+return only success, leaving the assistant unable to inspect or discuss the results. Stable
+session-level read tools cover common inspection; state-specific commands are exposed only when
+eligible. See
+[Realtime function calling](https://developers.openai.com/api/docs/guides/realtime-conversations#function-calling).
 
 **Alternatives considered**: DOM automation cannot prove semantic equivalence. A single generic
-`execute` tool is too permissive. Separate voice-only business logic would drift from direct UI.
+`execute` tool is too permissive. Success-only command results cannot ground dependent turns.
+Separate voice-only business logic would drift from direct UI.
+
+During migration, any version-1 voice action definition is generated one-way from a compatible
+version-2 command contract. It cannot register an executor or own runtime semantics, and it is
+removed after protocol-1.1 coverage and deployment verification pass.
+
+## Connector topology
+
+**Decision**: Use twelve application-owned connector families:
+
+1. approved catalogue;
+2. aggregate application state;
+3. events;
+4. restaurants;
+5. map camera and layers;
+6. discovery areas;
+7. plan;
+8. location;
+9. transit;
+10. overlays, assistant navigation, and confirmed external routing;
+11. feature tour;
+12. conditional saved content and games.
+
+The first eleven connector families are active. `conditional-content` is an unregistered extension
+point until real saved/game data and matching direct controls exist. Keep four infrastructure
+adapters outside the application capability layer: Realtime provider transport, browser audio I/O,
+budget repository, and deterministic non-voice application access. The latter means the ordinary
+composer, search, and direct controls remain usable without Realtime; it is not a local voice
+assistant. Each application connector wraps one existing authoritative controller and implements
+the common capability contract. Confirmed external routing resolves application-owned targets to
+approved URLs; it never accepts a model-provided URL.
+
+**Rationale**: These connectors cover every existing public application domain without importing
+unrelated account or collaboration systems. A connector boundary gives the registry a consistent
+way to inspect state, derive eligibility, execute, and produce a context patch, while preserving the
+existing controller as the business owner.
+
+**Alternatives considered**: A connector per DOM component would reproduce UI coupling. One large
+application connector would hide ownership and make eligibility hard to test. Outlook, Gmail,
+Calendar, Slack, Teams, SharePoint, Box, and similar connectors have no matching Amble public
+feature or anonymous authorization lifecycle and are therefore excluded.
+
+The confirmation gateway and context coordinator remain cross-cutting application services, not
+additional connectors. Protected consent, push-to-talk, and confirmation controls remain
+browser-owned. Stop, mute, unmute, and interrupt may use a deterministic local lifecycle router so
+they do not depend on another provider turn.
+
+## Realtime function tools and the MCP foundation
+
+**Decision**: Expose Amble's in-app registry to Realtime as application-owned function tools. Do not
+add a remote MCP server or built-in account connector for the first-release integration. Add a
+disabled, non-networked MCP projection foundation that deterministically derives closed tool and
+eligible-read descriptors from the same version-2 registry, preserves capability IDs, versions,
+argument/result schemas and structured results, and routes fixture invocations back through the
+same gateway. It contains no transport, listener, route, client, credential, authorization policy,
+confirmation policy, session management, or business executor.
+
+**Rationale**: OpenAI's Realtime guidance says function tools are the default when the application
+owns business logic, approval checks, or private system access, while MCP is useful when Realtime
+should call an already remote tool server. Amble already owns the controllers and confirmation
+gateway, so an active MCP transport would add tool-import latency, failure modes, and a second
+security boundary without improving in-app coverage. Establishing only the projection seam now
+prevents Realtime-specific descriptor code from becoming the registry or business owner and makes a
+future separately approved server an adapter rather than a rewrite. See
+[Realtime with tools](https://developers.openai.com/api/docs/guides/realtime-mcp).
+
+**Alternatives considered**: Building a new Amble MCP server now would require external identity,
+authorization, rate limiting, session isolation, remote confirmation, exposure/logging policy, and
+operations that are not approved. Deferring even the descriptor projection would let the Realtime
+adapter hard-code transport concerns. Built-in calendar, email, file, or collaboration connectors
+expand product and privacy scope without serving the existing anonymous map experience.
+
+## Deterministic domain intent interpretation
+
+**Decision**: Insert a side-effect-free domain intent boundary between connected conversation text
+and the capability gateway. A bounded router selects the event interpreter or a registered future
+restaurant, plan, or map interpreter. Every interpreter returns exactly one of `applicable`,
+`clarification_required`, or `unsupported`, along with the normalized utterance, base context
+revision, bounded clarification choices, and closed proposed capability calls. Interpreters never
+execute. For events, reuse Feature 015's deterministic sentence classifier and option catalogue;
+commit the complete sentence through one revision-bound `event.applyquery` command. The direct
+composer invokes the same interpreter and executor.
+
+**Rationale**: Event sentences can contain What, When, Where, Price, and residual keyword meaning in
+one turn. Sequential `event.setfilter` calls can partially mutate before a later phrase proves
+ambiguous or stale. A pure shared interpreter plus one atomic owner command guarantees direct/voice
+parity, makes ambiguity testable, preserves unmatched wording through the existing query field, and
+lets the UI render one authoritative canonical composer state. Domain-specific interpreters avoid
+an unbounded global parser while leaving a consistent seam for later restaurant, plan, and map
+language.
+
+**Alternatives considered**: A voice-only parser would drift from the composer. Letting the model
+emit multiple facet commands would not guarantee atomicity. A universal free-text interpreter for
+all domains would expand scope and weaken deterministic eligibility. Interpreters that execute
+would bypass the capability gateway and duplicate domain ownership.
 
 ## Context references and consequential actions
 
@@ -87,22 +211,51 @@ See OpenAI's [human-in-the-loop guidance](https://developers.openai.com/api/docs
 identify actionable entities safely without IDs. Confirming every action would make voice tedious;
 confirming none would make recognition mistakes consequential.
 
-## Grounded conversational discovery
+## Grounded catalogue queries and conversational discovery
 
-**Decision**: Construct a candidate envelope from the active approved snapshot, current restaurant
-results, current plan state, and other registered public-domain controllers. The model returns only
-known candidate IDs, official area IDs, fit reasons tied to supplied attributes, trade-offs, and
-confidence. A deterministic validator rejects unknown IDs or unsupported claims. When paid voice is
-unavailable, a local keyword/constraint matcher over the same envelope supplies a reduced text and
-direct-control fallback without calling another model.
+**Decision**: Provide three foundational read capabilities: `app.inspect`, `catalog.search`, and
+`catalog.get`. `catalog.search` searches the active approved snapshot plus current registered
+restaurant, plan, saved, and game state; it returns a bounded page of projected records, accurate
+total/truncation metadata, and stable IDs. `catalog.get` retrieves allowlisted details for known
+IDs. `app.inspect` returns the compact revisioned UI snapshot, including map, filters, overlays,
+selection, plan summary, coarse location, transit, and currently eligible capability IDs.
+Catalogue results carry a `catalogRevision` derived from an ordered provenance vector containing
+the approved snapshot and each participating dynamic connector revision; they never imply that
+mutable restaurant or plan state belongs to the immutable event snapshot.
+Conversational discovery consumes these results and returns only known candidate IDs, official area
+IDs, fit reasons tied to supplied attributes, trade-offs, and confidence. A deterministic validator
+rejects unknown IDs or unsupported claims. The local keyword/constraint matcher remains available
+only through the ordinary typed composer/search/direct experience. It never consumes captured
+speech or presents itself as an offline conversational assistant when paid voice is unavailable.
 
 **Rationale**: This creates exploratory conversation without turning the product into open-web
-research or bypassing evidence rules. The existing event discovery model and restaurant viewport
-model remain deterministic candidate providers.
+research or bypassing evidence rules. It also prevents the provider from receiving an unbounded
+full-catalogue dump at session start. Existing event discovery and restaurant viewport models
+remain deterministic data owners behind connectors.
 
 **Alternatives considered**: Open-web agent research would violate provenance and make latency and
-cost unpredictable. Letting the model invent free-form places cannot be reconciled with approved map
-identity. Replacing existing search would weaken the required no-paid-service fallback.
+cost unpredictable. Sending the complete catalogue every session is unbounded and creates local/
+production divergence. Letting the model invent free-form places cannot be reconciled with approved
+map identity. Removing ordinary deterministic search would make the application unnecessarily
+dependent on the paid service.
+
+## Authoritative context coordination and environment parity
+
+**Decision**: Add one context coordinator that subscribes to every connector's state changes,
+including changes initiated by direct controls. It serializes one canonical context snapshot,
+increments the revision only when assistant-relevant state changes, and updates Realtime tools
+before a dependent turn can execute. Every command result carries that revision. Local, test,
+preview, and production use the same capability definitions, validators, projections, and contract
+fixtures; environment adapters may change data sources and policy but not semantics.
+
+**Rationale**: Updating context only from assistant-owned flows leaves direct filter changes,
+overlay changes, plan edits, and search results invisible to the model. Shared projections also fix
+the current local relay gap where production receives approved event candidates but local
+development does not.
+
+**Alternatives considered**: Polling the DOM is fragile and expensive. Allowing each connector to
+invent its own context format causes drift. Treating production-only data injection as acceptable
+makes local validation unable to prove production behavior.
 
 ## Area-first recommendation geometry
 
@@ -181,6 +334,12 @@ only non-personal budget accounting. At cap, disable, error, expiry, permission 
 or explicit stop, close both sockets, stop media tracks, detach audio, abort pending work, and clear
 transcript, intent, exact location, context, and confirmation memory.
 
+For any online voice transport, admission, budget, or provider failure, present exactly “Voice
+service is currently unavailable. Please try again later.” before completing terminal cleanup.
+Captured speech and transcript fragments are discarded with the session and are never forwarded to
+the deterministic application matcher as an offline voice turn. A new voice attempt requires an
+explicit retry; ordinary composer, search, and direct controls remain independently usable.
+
 **Rationale**: The current provider policy correctly fails paid services closed and should remain so
 for every other adapter. OpenAI documents that API content is not used for training by default, but
 Realtime may retain abuse-monitoring data under the account's applicable controls; the application
@@ -196,7 +355,8 @@ would create a new personal-data lifecycle without user need.
 **Decision**: Replace the current blanket phone/tablet rejection with capability-based support for
 the map and voice shell. Narrow `Permissions-Policy` from `microphone=()` to `microphone=(self)` and
 extend `connect-src` only for the same-origin relay; the browser never connects directly to OpenAI.
-Retain text/direct mode where capture, playback, or WebSocket capability is unavailable.
+Retain the ordinary non-voice composer, search, and direct controls where capture, playback, or
+WebSocket capability is unavailable; do not retain or emulate the failed conversational session.
 
 **Rationale**: The feature's primary use case includes mobile users, while current entry code blocks
 them. Same-origin relay architecture avoids adding the provider domain to browser CSP.

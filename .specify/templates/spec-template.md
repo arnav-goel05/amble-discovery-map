@@ -103,6 +103,9 @@
 - **FR-006**: System MUST define stable identity and create/update/no-op/expire/review behavior for changing data
 - **FR-007**: System MUST isolate unresolved identities, carry forward their last safe state where applicable, and preserve the entire last approved state when the assembled refresh cannot be safely published
 - **FR-008**: System MUST define testable loading, empty, missing-data, stale, and error states
+- **FR-009**: System MUST define a versioned typed command or query contract for every affected user-facing capability and use the same business executor for direct and conversational entry points
+- **FR-010**: Queries MUST return bounded validated domain results with stable identities; state-changing commands MUST return validated observable outcomes and publish refreshed authoritative interface context
+- **FR-011**: System MUST derive capability eligibility from current application state and verify semantically equivalent capability contracts across local, test, preview, and production environments
 
 _Example of marking unclear requirements:_
 
@@ -113,6 +116,7 @@ _Example of marking unclear requirements:_
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
+- **Capability Contract**: [Typed command/query identity, authoritative state owner, arguments, bounded result, eligibility, observable outcome, and direct/conversational parity]
 
 ## Success Criteria _(mandatory)_
 

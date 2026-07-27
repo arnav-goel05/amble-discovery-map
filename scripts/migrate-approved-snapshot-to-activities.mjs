@@ -12,6 +12,26 @@ import {
   stageImmutableSnapshot,
 } from "./lib/approved-snapshot.mjs";
 import { projectEventActivities } from "./lib/event-pipeline/activity-projection.mjs";
+import { repairParentDedupSnapshot } from "./lib/event-pipeline/parent-dedup-repair.mjs";
+import { repairScheduleSemanticsSnapshot } from "./lib/event-pipeline/schedule-semantics-repair.mjs";
+
+if (process.argv.includes("--repair-schedule-semantics")) {
+  const result = repairScheduleSemanticsSnapshot({
+    root: path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."),
+    activate: process.argv.includes("--activate"),
+  });
+  process.stdout.write(`${JSON.stringify(result)}\n`);
+  process.exit(0);
+}
+
+if (process.argv.includes("--repair-parent-dedup")) {
+  const result = repairParentDedupSnapshot({
+    root: path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."),
+    activate: process.argv.includes("--activate"),
+  });
+  process.stdout.write(`${JSON.stringify(result)}\n`);
+  process.exit(0);
+}
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);

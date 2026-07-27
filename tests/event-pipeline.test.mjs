@@ -74,6 +74,10 @@ import {
   normalizeSchedule,
 } from "../scripts/lib/event-sources/activity-policy.mjs";
 import {
+  parseEnumeratedSchedule,
+  strictIsoOffsetTimestamp,
+} from "../scripts/lib/event-sources/schedule-semantics.mjs";
+import {
   commitFrontendSnapshot,
   prepareFrontendSnapshot,
   writeVerifiedStageHandoffs,
@@ -439,12 +443,12 @@ test("active and future activity policy preserves exact, range, recurring, selec
     ),
     {
       kind: "range",
-      start: "July 10, 2026",
-      end: "July 19, 2026",
+      start: "2026-07-10T00:00:00+08:00",
+      end: "2026-07-19T23:59:59+08:00",
       recurrence: null,
       sessionRefs: [],
       displayText: "July 10, 2026 to July 19, 2026",
-      finalKnownOccurrence: "July 19, 2026",
+      finalKnownOccurrence: "2026-07-19T23:59:59+08:00",
     },
   );
 });
@@ -695,6 +699,7 @@ test("frontend snapshot stages reconciliation and commits only after executable 
           venue: "Hall",
           dateText: "12 Jul 2026",
           sources: [],
+          lifecycleState: "active",
         },
       ],
     }),
@@ -904,6 +909,14 @@ test("frontend snapshot resolves a newly dated occurrence through its preserved 
     assert.equal(catalogue.schemaVersion, "3.1");
     assert.equal(catalogue.activities.records.length, 1);
     assert.equal(catalogue.activities.records[0].occurrenceIds[0], oldId);
+    assert.deepEqual(
+      catalogue.activities.records[0].venueGroups[0].coordinates,
+      { lng: 103.84947, lat: 1.28213 },
+    );
+    assert.equal(
+      catalogue.activities.records[0].venueGroups[0].approvedLocationId,
+      "tpi-building",
+    );
     assert.equal(catalogue.counts.activities, 1);
     assert.equal(catalogue.activityGroupingDecisions.counts.create, 3);
   } finally {
@@ -1276,6 +1289,85 @@ test("source detail mappers produce the universal fixture contract", () => {
   assert.equal(catchFixture.venue, "Room");
 });
 
+test("enumerated schedules become exact Singapore sessions instead of date envelopes", () => {
+  const parsed = parseEnumeratedSchedule(
+    "26 Jul & 2 Aug 2026, Sun, 9am",
+  );
+  assert.equal(parsed.reasonCode, "enumerated_dates_parsed");
+  assert.deepEqual(
+    parsed.performances.map((item) => item.startDateTime),
+    [
+      "2026-07-26T09:00:00+08:00",
+      "2026-08-02T09:00:00+08:00",
+    ],
+  );
+  assert.ok(parsed.performances.every((item) => item.schedule.kind === "exact"));
+  assert.equal(strictIsoOffsetTimestamp("26 Jul 2026"), null);
+
+  const mapped = mapSisticDetail(
+    {
+      alias: "palacews0826",
+      title: "Memory Palace",
+      event_date: "26 Jul & 2 Aug 2026, Sun, 9am",
+      start_date: "Sun, 26 Jul 2026",
+      end_date: "Sun, 02 Aug 2026",
+      venue_name: { name: "National Museum of Singapore" },
+    },
+    {},
+    "https://www.sistic.com.sg/event-details/palacews0826",
+    1,
+  );
+  assert.equal(mapped.performances.length, 2);
+  assert.deepEqual(mapped.authorityRefs, ["sistic:palacews0826"]);
+  assert.ok(mapped.performances.every((item) => item.schedule.kind === "exact"));
+
+  const catchMapped = mapCatchDetail(
+    {
+      DisplayEventTitle: "Memory Palace",
+      Location: "Offsite",
+      EventFormat: "Physical",
+      BookingUrl:
+        "https://ticketing.sistic.com.sg/catch/booking/palacews0826",
+      LstDateTime: [
+        {
+          SetDate: "26/Jul/2026",
+          StartHour: "09:00",
+        },
+      ],
+    },
+    {},
+    "https://www.catch.sg/Event/memory-palace",
+    1,
+  );
+  assert.deepEqual(catchMapped.authorityRefs, ["sistic:palacews0826"]);
+});
+
+test("concrete sibling performances stay exact while ambiguous envelopes stay non-claiming", () => {
+  assert.equal(
+    normalizeSchedule(
+      {},
+      {
+        startDateTime: "2026-07-26T09:00:00+08:00",
+        performances: [{}, {}],
+        _concretePerformance: true,
+      },
+    ).kind,
+    "exact",
+  );
+  const ambiguous = normalizeSchedule(
+    {
+      kind: "selectable",
+      displayText: "Selected dates from 26 Jul to 2 Aug 2026",
+    },
+    {
+      startDateTime: "2026-07-26T00:00:00+08:00",
+      endDateTime: "2026-08-02T00:00:00+08:00",
+    },
+  );
+  assert.equal(ambiguous.start, null);
+  assert.equal(ambiguous.end, null);
+});
+
 test("executable source collector captures full SISTIC evidence and accounts invalid rows", async () => {
   const runDir = resolve(
     tmpdir(),
@@ -1342,6 +1434,9 @@ test("executable source collector captures full SISTIC evidence and accounts inv
       occurrencesEmitted: 1,
       excludedOccurrences: 0,
       eligiblePreDedup: 1,
+      scheduleReasonCounts: {
+        structured_performance_exact: 1,
+      },
       listingAppearances: 2,
       uniqueSourcePointers: 1,
       listingDuplicatesCollapsed: 0,
@@ -1440,6 +1535,9 @@ test("executable source collector deduplicates repeated detail URLs before captu
       occurrencesEmitted: 1,
       excludedOccurrences: 0,
       eligiblePreDedup: 1,
+      scheduleReasonCounts: {
+        structured_performance_exact: 1,
+      },
       listingAppearances: 2,
       uniqueSourcePointers: 1,
       listingDuplicatesCollapsed: 1,
@@ -1525,6 +1623,9 @@ test("executable Catch collector performs bootstrap and detail API capture", asy
     assert.equal(result.status, "success");
     assert.equal(result.counts.processedSourceRecords, 1);
     assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.deepEqual(result.counts.scheduleReasonCounts, {
+      schedule_reason_unclassified: 1,
+    });
     assert.equal(requests[1].method, "GET");
     assert.match(requests[2].body, /eventPageID=42/);
   } finally {
@@ -1752,11 +1853,14 @@ test("code normalizer filters, preserves cross-source candidates, provenance, an
       duplicateCollapsed: 0,
       acceptedPostDedup: 2,
       acceptedPrimary: 2,
-      activities: 2,
-      activitySessions: 2,
-      activityVenueGroups: 2,
+      activities: 1,
+      activitySessions: 1,
+      activityVenueGroups: 1,
       sourceOffers: 2,
       activityGroupingReviews: 0,
+      parentGroupingCandidates: 1,
+      parentGroupingMerges: 1,
+      parentGroupingReviews: 0,
     });
     assert.equal(result.venueBranches.length, 1);
     const events = JSON.parse(
@@ -2202,6 +2306,9 @@ test("sufficient editorial records normalize with provenance, optional fields, o
       activityVenueGroups: 1,
       sourceOffers: 1,
       activityGroupingReviews: 0,
+      parentGroupingCandidates: 0,
+      parentGroupingMerges: 0,
+      parentGroupingReviews: 0,
     });
     assert.equal(
       result.venueBranches.length,
@@ -2310,6 +2417,9 @@ test("normalizer collapses an all-day duplicate into the more precise timed occu
       activityVenueGroups: 1,
       sourceOffers: 2,
       activityGroupingReviews: 0,
+      parentGroupingCandidates: 0,
+      parentGroupingMerges: 0,
+      parentGroupingReviews: 0,
     });
     const [event] = JSON.parse(
       readFileSync(join(runDir, "normalized/events.json"), "utf8"),

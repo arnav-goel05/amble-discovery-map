@@ -23,6 +23,53 @@ const fixture = (name) =>
 const clone = (value) => structuredClone(value);
 const candidates = fixture("approved-candidates.json");
 const expectedResult = fixture("vague-discovery.json").expectedResult;
+const catalogue = {
+  query: "calm evening",
+  types: ["event"],
+  catalogRevision: "catalog:sha256:abc",
+  sources: [
+    { connectorId: "approved-catalog", revision: "snapshot:2026-07-26" },
+  ],
+  total: 1,
+  truncated: false,
+  nextCursor: null,
+  items: [
+    {
+      targetId: "event:gardens",
+      type: "event",
+      label: "Gardens by the Bay",
+      summary: "An evening garden event",
+      attributes: {
+        areaId: "ura-subzone:marina-south",
+        category: "garden",
+        price: "free",
+        distanceMeters: 450,
+      },
+    },
+  ],
+};
+const catalogueRecommendation = {
+  intentRevision: 2,
+  mode: "recommendations",
+  areas: [
+    {
+      areaId: "ura-subzone:marina-south",
+      rank: 1,
+      confidence: 0.85,
+      reasons: [
+        {
+          text: "The approved event is a free garden option.",
+          candidateIds: ["event:gardens"],
+          attributeKeys: ["category", "price"],
+        },
+      ],
+      tradeoffs: ["Only one approved matching event is currently available."],
+      candidateIds: ["event:gardens"],
+    },
+  ],
+  clarification: null,
+  message: null,
+};
 
 const rejectsWith = (callback, code) =>
   assert.throws(
@@ -52,6 +99,95 @@ test("approved area-first result satisfies the closed discovery schema", () => {
       ),
     "discovery_schema_invalid",
   );
+});
+
+test("v2 recommendations validate against the supplied catalogue projection and revision", () => {
+  const result = validateDiscoveryResult(catalogueRecommendation, catalogue, {
+    catalogRevision: catalogue.catalogRevision,
+  });
+
+  assert.deepEqual(result, catalogueRecommendation);
+  assert.notEqual(result, catalogueRecommendation);
+
+  rejectsWith(
+    () =>
+      validateDiscoveryResult(catalogueRecommendation, catalogue, {
+        catalogRevision: "catalog:stale",
+      }),
+    "discovery_catalog_revision_mismatch",
+  );
+});
+
+test("v2 discovery modes are exclusive and recommendations require supported tradeoffs", () => {
+  const clarification = {
+    intentRevision: 3,
+    mode: "clarification",
+    areas: [],
+    clarification: {
+      question: "Would you prefer a garden or an indoor event?",
+      answerType: "choice",
+      choices: ["Garden", "Indoor"],
+    },
+    message: null,
+  };
+  const noMatch = {
+    intentRevision: 3,
+    mode: "no_match",
+    areas: [],
+    clarification: null,
+    message: "No approved match was found. Try a broader time or category.",
+  };
+  assert.deepEqual(
+    validateDiscoveryResult(clarification, catalogue),
+    clarification,
+  );
+  assert.deepEqual(validateDiscoveryResult(noMatch, catalogue), noMatch);
+
+  const missingTradeoff = clone(catalogueRecommendation);
+  missingTradeoff.areas[0].tradeoffs = [];
+  rejectsWith(
+    () => validateDiscoveryResult(missingTradeoff, catalogue),
+    "discovery_schema_invalid",
+  );
+
+  const mixedMode = clone(clarification);
+  mixedMode.areas = clone(catalogueRecommendation.areas);
+  rejectsWith(
+    () => validateDiscoveryResult(mixedMode, catalogue),
+    "discovery_schema_invalid",
+  );
+});
+
+test("v2 claims can cite only attributes supplied by the catalogue page", () => {
+  const unsupported = clone(catalogueRecommendation);
+  unsupported.areas[0].reasons[0].attributeKeys = ["currentCrowdLevel"];
+  rejectsWith(
+    () => validateDiscoveryResult(unsupported, catalogue),
+    "discovery_claim_unsupported",
+  );
+});
+
+test("local fallback consumes catalogue pages and emits explicit v2 modes", () => {
+  const intent = createDiscoveryIntent({
+    freeTextSummary: "a free garden",
+    interests: ["garden"],
+    priceRange: "free",
+    specificity: "area",
+  });
+  const recommendation = matchLocalDiscovery(intent, catalogue);
+
+  assert.equal(recommendation.mode, "recommendations");
+  assert.equal(recommendation.areas[0].candidateIds[0], "event:gardens");
+  assert.ok(recommendation.areas[0].tradeoffs[0]);
+
+  const noMatch = matchLocalDiscovery(intent, {
+    ...catalogue,
+    total: 0,
+    items: [],
+  });
+  assert.equal(noMatch.mode, "no_match");
+  assert.deepEqual(noMatch.areas, []);
+  assert.match(noMatch.message, /No approved match/i);
 });
 
 test("unknown area and candidate identities fail closed", () => {

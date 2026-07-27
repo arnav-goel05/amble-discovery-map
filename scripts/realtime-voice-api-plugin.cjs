@@ -30,11 +30,37 @@ function nodeProviderConnector({ apiKey, modelId }) {
   });
 }
 
+function createLocalRelayOptions({
+  policy,
+  repository,
+  environment,
+  providerConnector,
+  capabilityContracts,
+  tools,
+  approvedCandidateIds,
+  approvedCandidates,
+}) {
+  return {
+    policy,
+    budgetRepository: repository,
+    apiKey: environment.OPENAI_API_KEY,
+    providerConnector,
+    ...(capabilityContracts ? { capabilityContracts } : {}),
+    ...(tools ? { tools } : {}),
+    ...(approvedCandidateIds ? { approvedCandidateIds } : {}),
+    ...(approvedCandidates ? { approvedCandidates } : {}),
+  };
+}
+
 function realtimeVoiceApiPlugin({
   root = path.resolve(__dirname, ".."),
   environment = process.env,
   databasePath,
   providerConnector = nodeProviderConnector,
+  capabilityContracts,
+  tools,
+  approvedCandidateIds,
+  approvedCandidates,
 } = {}) {
   const policy = JSON.parse(
     fs.readFileSync(path.join(root, "data/realtime-voice-policy.json"), "utf8"),
@@ -50,12 +76,18 @@ function realtimeVoiceApiPlugin({
   const relay = () =>
     (relayPromise ??= import("../cloudflare/realtime-relay.mjs").then(
       ({ createRealtimeRelay }) =>
-        createRealtimeRelay({
-          policy,
-          budgetRepository: repository,
-          apiKey: environment.OPENAI_API_KEY,
-          providerConnector,
-        }),
+        createRealtimeRelay(
+          createLocalRelayOptions({
+            policy,
+            repository,
+            environment,
+            providerConnector,
+            capabilityContracts,
+            tools,
+            approvedCandidateIds,
+            approvedCandidates,
+          }),
+        ),
     ));
 
   const requestOrigin = (request) => {
@@ -133,9 +165,7 @@ function realtimeVoiceApiPlugin({
         mapping[code] ?? 503,
         errorEnvelope(
           code,
-          code === "usage_limit"
-            ? "Voice usage is unavailable. Please try again later."
-            : "Voice is currently unavailable. Please try again.",
+          "Voice service is currently unavailable. Please try again later.",
         ),
       );
     }
@@ -198,4 +228,8 @@ function realtimeVoiceApiPlugin({
   };
 }
 
-module.exports = { nodeProviderConnector, realtimeVoiceApiPlugin };
+module.exports = {
+  createLocalRelayOptions,
+  nodeProviderConnector,
+  realtimeVoiceApiPlugin,
+};

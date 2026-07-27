@@ -52,6 +52,11 @@ function normalize(input, revision) {
   const selectedTargetIds = [...new Set(input.selectedTargetIds || [])];
   if (selectedTargetIds.some((id) => !identities.has(id)))
     fail("context_target_unknown", "Selected target is not visible");
+  const assistantPresentations = new Set([
+    "recommendations",
+    "clarification",
+    "no_match",
+  ]);
   return freeze({
     revision,
     viewport: structuredClone(input.viewport || {}),
@@ -59,6 +64,11 @@ function normalize(input, revision) {
     focusedTargetId: input.focusedTargetId ?? null,
     selectedTargetIds,
     activeOverlayId: input.activeOverlayId ?? null,
+    assistantPresentation: assistantPresentations.has(
+      input.assistantPresentation,
+    )
+      ? input.assistantPresentation
+      : null,
     activeFilters: structuredClone(input.activeFilters || {}),
     locationState: structuredClone(
       input.locationState || {

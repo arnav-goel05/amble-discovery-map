@@ -60,6 +60,7 @@ export function createLocationContextLayerManager({
   let snapshot = null;
   let visible = true;
   let started = false;
+  const subscribers = new Set();
 
   const write = () =>
     map
@@ -129,10 +130,26 @@ export function createLocationContextLayerManager({
       };
     },
     setVisible(nextVisible) {
-      visible = nextVisible === true;
+      const requested = nextVisible === true;
+      const changed = visible !== requested;
+      visible = requested;
       write();
       reflectState();
-      return visible;
+      if (changed)
+        for (const subscriber of subscribers)
+          subscriber({ visible, status: snapshot?.status || "idle" });
+      return changed;
+    },
+    snapshot() {
+      return { visible, status: snapshot?.status || "idle" };
+    },
+    subscribe(subscriber, { emitCurrent = false } = {}) {
+      if (typeof subscriber !== "function")
+        throw new TypeError("Location-layer subscriber must be a function");
+      subscribers.add(subscriber);
+      if (emitCurrent)
+        subscriber({ visible, status: snapshot?.status || "idle" });
+      return () => subscribers.delete(subscriber);
     },
     focusLocation() {
       if (
@@ -160,6 +177,7 @@ export function createLocationContextLayerManager({
         // Map removal may have already discarded its style-owned resources.
       }
       snapshot = null;
+      subscribers.clear();
       started = false;
       reflectState();
     },

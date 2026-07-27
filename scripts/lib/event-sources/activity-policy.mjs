@@ -1,4 +1,8 @@
 import { createHash } from "node:crypto";
+import {
+  explicitContinuousSchedule,
+  normalizeSingaporeTimestamp,
+} from "./schedule-semantics.mjs";
 
 export const SCHEDULE_KINDS = new Set([
   "exact",
@@ -49,13 +53,35 @@ const normalized = (value) =>
     .trim();
 const stableId = (prefix, parts) =>
   `${prefix}:${sha(JSON.stringify(parts)).slice(0, 24)}`;
-const validDate = (value) =>
-  clean(value) && Number.isFinite(Date.parse(value)) ? clean(value) : null;
+const validDate = (value, options) =>
+  normalizeSingaporeTimestamp(clean(value), options);
 
 function displayRange(value) {
-  const parts = clean(value)?.split(/\s+to\s+/i) ?? [];
+  const source = clean(value)?.replace(/^\*+\s*/, "") ?? "";
+  const parts = source.split(/\s+(?:to|[-–—])\s+/i);
   if (parts.length !== 2) return { start: null, end: null };
-  return { start: validDate(parts[0]), end: validDate(parts[1]) };
+  const yearToken = source.match(/\b(20\d{2})\b|[’'](\d{2})\b/);
+  const year = yearToken
+    ? yearToken[1] ?? `20${yearToken[2]}`
+    : null;
+  const monthPattern =
+    /\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\b/i;
+  const endMonth = parts[1].match(monthPattern)?.[1] ?? null;
+  const complete = (part, fallbackMonth = null) => {
+    let text = part
+      .replace(/^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,?\s+/i, "")
+      .replace(/\s*·.*$/, "")
+      .trim();
+    if (!monthPattern.test(text) && fallbackMonth)
+      text = `${text} ${fallbackMonth}`;
+    if (!/\b20\d{2}\b|[’']\d{2}\b/.test(text) && year)
+      text = `${text} ${year}`;
+    return text;
+  };
+  return {
+    start: validDate(complete(parts[0], endMonth)),
+    end: validDate(complete(parts[1]), { endOfDay: true }),
+  };
 }
 
 export function normalizeSchedule(schedule = {}, record = {}) {
@@ -68,10 +94,22 @@ export function normalizeSchedule(schedule = {}, record = {}) {
     );
   if (unreliableText) kind = "unverified";
   const range = displayRange(displayText);
-  const start =
-    validDate(schedule.start ?? record.startDateTime) ?? range.start ?? validDate(record.dateText);
-  const end =
-    validDate(schedule.end ?? record.endDateTime) ??
+  let start =
+    validDate(schedule.start ?? record.startDateTime, {
+      fallbackTime: displayText ?? record.timeText,
+    }) ??
+    range.start ??
+    validDate(record.dateText, {
+      fallbackTime: displayText ?? record.timeText,
+    });
+  let end =
+    validDate(schedule.end ?? record.endDateTime, {
+      fallbackTime:
+        schedule.kind === "exact"
+          ? displayText ?? record.timeText
+          : null,
+      endOfDay: schedule.kind === "range",
+    }) ??
     range.end ??
     validDate(
       start &&
@@ -83,7 +121,7 @@ export function normalizeSchedule(schedule = {}, record = {}) {
     kind === "exact" &&
     range.start &&
     range.end &&
-    Date.parse(range.start) !== Date.parse(range.end)
+    range.start !== range.end
   )
     kind = "range";
   const sessionRefs = [
@@ -91,9 +129,17 @@ export function normalizeSchedule(schedule = {}, record = {}) {
   ].sort();
   if (!kind) {
     if (schedule.recurrence) kind = "recurring";
+    else if (record._concretePerformance === true && start)
+      kind = "exact";
     else if (sessionRefs.length || (record.performances?.length ?? 0) > 1)
       kind = "selectable";
-    else if (start && end && start !== end) kind = "range";
+    else if (
+      start &&
+      end &&
+      start !== end &&
+      explicitContinuousSchedule(displayText)
+    )
+      kind = "range";
     else if (start) kind = "exact";
     else if (
       record.anytime === true ||
@@ -110,16 +156,30 @@ export function normalizeSchedule(schedule = {}, record = {}) {
         : "exact";
     else kind = "unverified";
   }
+  if (["selectable", "unverified", "recurring", "anytime"].includes(kind)) {
+    start = null;
+    end = null;
+  }
+  if (
+    kind === "exact" &&
+    start &&
+    (!end || Date.parse(end) < Date.parse(start))
+  )
+    end = start;
   return {
     kind,
-    start: ["exact", "range"].includes(kind) ? start : start,
-    end: ["exact", "range"].includes(kind) ? (end ?? start) : end,
+    start,
+    end: ["exact", "range"].includes(kind) ? (end ?? start) : null,
     recurrence: kind === "recurring" ? (schedule.recurrence ?? null) : null,
     sessionRefs,
     displayText,
     finalKnownOccurrence: validDate(
       schedule.finalKnownOccurrence ?? end ?? record.endDateTime,
+      { endOfDay: true },
     ),
+    ...(clean(schedule.evidenceReasonCode)
+      ? { evidenceReasonCode: clean(schedule.evidenceReasonCode) }
+      : {}),
   };
 }
 

@@ -16,7 +16,7 @@ const migrationPath = path.join(
   "cloudflare/migrations/0003_voice_budget.sql",
 );
 const NOW = "2026-07-18T00:00:00.000Z";
-const RATE_CARD_VERSION = "openai-2026-07-18-gpt-realtime-2.1";
+const RATE_CARD_VERSION = "openai-2026-07-27-gpt-realtime-2.1-mini";
 
 class SqliteD1Statement {
   constructor(database, sql) {

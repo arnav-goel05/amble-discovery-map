@@ -15,13 +15,21 @@ export function createRuntimeActionDispatcher({
   transitLayers,
   discoveryAreaLayers,
   applicationControls: getApplicationControls,
+  invokeConnector = null,
 } = {}) {
+  const observable = (result) =>
+    result && typeof result === "object" && "changed" in result
+      ? result
+      : changed(result);
   const domainDispatch = (owner, actionId, args) =>
     typeof owner?.dispatch === "function"
-      ? changed(owner.dispatch(actionId, args))
+      ? observable(owner.dispatch(actionId, args))
       : changed(false);
 
   return (actionId, args = {}) => {
+    const connectorResult = invokeConnector?.(actionId, args);
+    if (connectorResult !== undefined && connectorResult !== null)
+      return connectorResult;
     if (actionId === "map.zoomin") map.zoomIn({ duration: 300 });
     else if (actionId === "map.zoomout") map.zoomOut({ duration: 300 });
     else if (actionId === "map.pan") {
@@ -42,14 +50,16 @@ export function createRuntimeActionDispatcher({
       map.easeTo({ ...initialCamera, duration: 450 });
     else if (actionId === "map.setlayervisibility") {
       if (args.layer === "location") {
-        locationLayers.setVisible(true);
-        return changed(args.visible === true);
+        return observable(locationLayers.setVisible(args.visible));
       }
       if (args.layer === "mrtStations" || args.layer === "mrtLines") {
-        transitLayers.setVisible(true);
-        return changed(args.visible === true);
+        const result =
+          typeof transitLayers.setLayerVisibility === "function"
+            ? transitLayers.setLayerVisibility(args.layer, args.visible)
+            : transitLayers.setVisible(args.visible);
+        return observable(result);
       }
-      discoveryAreaLayers.setVisible?.(args.visible);
+      return observable(discoveryAreaLayers.setVisible?.(args.visible));
     } else if (actionId === "map.focustarget") {
       const selected =
         eventController?.selectCandidate?.(args.targetId) ||
@@ -103,7 +113,7 @@ export function createRuntimeActionDispatcher({
       return changed(locationLayers.focusLocation());
     else {
       const result = getApplicationControls()?.dispatch(actionId, args);
-      return changed(result?.changed === true);
+      return observable(result);
     }
     return changed(true);
   };

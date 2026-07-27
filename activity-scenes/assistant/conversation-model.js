@@ -91,7 +91,7 @@ export const CONVERSATION_LIMITS = Object.freeze({
 
 export function createConversationSession({
   sessionId = null,
-  protocolVersion = "1.0",
+  protocolVersion = "1.1",
   now = Date.now(),
   limits = {},
 } = {}) {

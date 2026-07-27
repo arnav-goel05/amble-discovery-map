@@ -25,20 +25,32 @@ const MESSAGE_FIELDS = Object.freeze({
   "audio.append": new Set(["type", "turnId", "audio"]),
   "audio.commit": new Set(["type", "turnId"]),
   "text.submit": new Set(["type", "turnId", "text"]),
-  "action.result": new Set([
+  "capability.result": new Set([
     "type",
     "callId",
-    "actionId",
-    "ok",
+    "capabilityId",
+    "kind",
     "result",
-    "error",
+  ]),
+  "confirmation.pending": new Set([
+    "type",
+    "callId",
+    "capabilityId",
+    "confirmationId",
+    "fingerprint",
+    "targetId",
+    "effectSummary",
+    "expiresAt",
   ]),
   "confirmation.result": new Set([
     "type",
+    "callId",
     "confirmationId",
     "fingerprint",
+    "finalUserInput",
     "decision",
   ]),
+  "deterministic.result": new Set(["type", "capabilityId", "kind", "result"]),
   "response.cancel": new Set(["type"]),
   "context.update": new Set(["type", "context"]),
   "session.stop": new Set(["type"]),
@@ -89,7 +101,7 @@ export function validateSessionAdmission(input) {
   const body = input.body;
   const capabilities = body?.capabilities;
   if (
-    body?.protocolVersion !== "1.0" ||
+    body?.protocolVersion !== "1.1" ||
     body.disclosureAccepted !== true ||
     !capabilities ||
     Object.keys(capabilities).some(
@@ -102,7 +114,7 @@ export function validateSessionAdmission(input) {
     fail("invalid_request", "Voice disclosure and capabilities are required");
   }
   return {
-    protocolVersion: "1.0",
+    protocolVersion: "1.1",
     capabilities: {
       audioInput: capabilities.audioInput,
       audioOutput: capabilities.audioOutput,
@@ -160,24 +172,86 @@ export function validateBrowserMessage(message, options = {}) {
       message.text.length > options.maxTextChars)
   )
     fail("text_too_large", "Text exceeds its bound");
-  if (message.type === "action.result") {
+  if (message.type === "capability.result") {
+    const pendingCall =
+      options.pendingCalls?.get?.(message.callId) ??
+      (options.pendingCallIds?.has(message.callId) ? {} : null);
+    if (!identifier(message.callId) || !pendingCall)
+      fail("capability_call_unmatched", "Capability call is not pending");
     if (
-      !identifier(message.callId) ||
-      !options.pendingCallIds?.has(message.callId)
+      !identifier(message.capabilityId) ||
+      !["query", "command"].includes(message.kind) ||
+      !message.result ||
+      typeof message.result !== "object" ||
+      Array.isArray(message.result) ||
+      message.result.capabilityId !== message.capabilityId ||
+      message.result.kind !== message.kind ||
+      (pendingCall.capabilityId !== undefined &&
+        pendingCall.capabilityId !== message.capabilityId) ||
+      (pendingCall.kind !== undefined && pendingCall.kind !== message.kind)
     )
-      fail("action_call_unmatched", "Action call is not pending");
-    if (!identifier(message.actionId) || typeof message.ok !== "boolean")
-      fail("browser_message_unapproved", "Action result is invalid");
+      fail("browser_message_unapproved", "Capability result is invalid");
+    try {
+      options.validateCapabilityResult?.(message, pendingCall);
+    } catch {
+      fail("capability_result_invalid", "Capability result is invalid");
+    }
+  }
+  if (message.type === "confirmation.pending") {
+    const pendingCall = options.pendingCalls?.get?.(message.callId);
+    if (
+      !pendingCall ||
+      pendingCall.capabilityId !== message.capabilityId ||
+      pendingCall.kind !== "command" ||
+      pendingCall.confirmationClass !== "consequential" ||
+      options.pendingConfirmation ||
+      !identifier(message.callId) ||
+      !identifier(message.capabilityId) ||
+      !identifier(message.confirmationId) ||
+      typeof message.fingerprint !== "string" ||
+      !message.fingerprint ||
+      message.fingerprint.length > 256 ||
+      (message.targetId !== null &&
+        message.targetId !== undefined &&
+        !identifier(message.targetId)) ||
+      typeof message.effectSummary !== "string" ||
+      !message.effectSummary ||
+      message.effectSummary.length > 240 ||
+      typeof message.expiresAt !== "string" ||
+      !Number.isFinite(Date.parse(message.expiresAt))
+    )
+      fail("browser_message_unapproved", "Pending confirmation is invalid");
   }
   if (message.type === "confirmation.result") {
     const pending = options.pendingConfirmation;
     if (
       !pending ||
+      message.callId !== pending.callId ||
       message.confirmationId !== pending.confirmationId ||
       message.fingerprint !== pending.fingerprint ||
+      message.finalUserInput !== true ||
       !["accepted", "rejected"].includes(message.decision)
     )
       fail("browser_message_unapproved", "Confirmation result is invalid");
+  }
+  if (message.type === "deterministic.result") {
+    const pending = options.pendingDeterministic;
+    if (
+      !pending ||
+      message.capabilityId !== pending.capabilityId ||
+      message.kind !== pending.kind ||
+      !message.result ||
+      typeof message.result !== "object" ||
+      Array.isArray(message.result) ||
+      message.result.capabilityId !== message.capabilityId ||
+      message.result.kind !== message.kind
+    )
+      fail("browser_message_unapproved", "Deterministic result is invalid");
+    try {
+      options.validateCapabilityResult?.(message, pending);
+    } catch {
+      fail("capability_result_invalid", "Deterministic result is invalid");
+    }
   }
   if (message.type === "context.update") {
     const context = message.context;
@@ -187,8 +261,8 @@ export function validateBrowserMessage(message, options = {}) {
       !Number.isSafeInteger(context.revision) ||
       !Array.isArray(context.visibleTargets) ||
       context.visibleTargets.length > 100 ||
-      !Array.isArray(context.availableActionIds) ||
-      context.availableActionIds.length > 100
+      !Array.isArray(context.availableCapabilityIds) ||
+      context.availableCapabilityIds.length > 128
     )
       fail("browser_message_unapproved", "Interface context is invalid");
   }
@@ -216,6 +290,9 @@ export function sanitizeProviderEvent(event) {
       browserEvent: {
         type: transcriptTypes[event.type],
         itemId,
+        role: event.type.startsWith("conversation.item.")
+          ? "user"
+          : "assistant",
         text: text.slice(0, 4_096),
       },
       trustedUsage: null,
@@ -268,7 +345,11 @@ export function cleanupRelaySession(session, reason = "protocol") {
     session.exactLocation = null;
     session.interfaceContext = null;
     session.pendingConfirmation = null;
+    session.pendingDeterministic = null;
     session.pendingCallIds?.clear?.();
+    session.pendingCalls?.clear?.();
+    session.terminalCalls?.clear?.();
+    session.browserEventQueue = null;
     session.openReservations = [];
     session.responseReservationId = null;
     session.inputReservationId = null;

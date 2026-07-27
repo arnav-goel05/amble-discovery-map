@@ -3,8 +3,10 @@ const OUTBOUND_TYPES = new Set([
   "audio.append",
   "audio.commit",
   "text.submit",
-  "action.result",
+  "capability.result",
+  "confirmation.pending",
   "confirmation.result",
+  "deterministic.result",
   "response.cancel",
   "context.update",
   "session.stop",
@@ -18,12 +20,15 @@ const INBOUND_TYPES = new Set([
   "assistant.audio.done",
   "assistant.text.delta",
   "assistant.text.done",
-  "action.proposed",
+  "capability.proposed",
   "confirmation.required",
-  "action.completed",
+  "capability.completed",
   "error",
   "session.stopped",
 ]);
+
+export const VOICE_SERVICE_UNAVAILABLE_MESSAGE =
+  "Voice service is currently unavailable. Please try again later.";
 
 export class RealtimeRelayClientError extends Error {
   constructor(code, message) {
@@ -41,6 +46,27 @@ const audioBytes = (value) =>
   typeof value === "string"
     ? Math.floor((value.replace(/=+$/, "").length * 3) / 4)
     : -1;
+const identifier = (value) =>
+  typeof value === "string" &&
+  /^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$/.test(value);
+const CAPABILITY_ID = /^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9]*)+$/;
+const RESULT_STATUSES = new Set([
+  "completed",
+  "empty",
+  "unavailable",
+  "failed",
+  "confirmation_required",
+]);
+const RESULT_ERRORS = new Set([
+  null,
+  "invalid_arguments",
+  "stale_context",
+  "unknown_target",
+  "unavailable",
+  "confirmation_required",
+  "execution_failed",
+  "result_invalid",
+]);
 
 export const DEFAULT_RELAY_CLIENT_LIMITS = Object.freeze({
   maxMessageBytes: 64 * 1_024,
@@ -70,6 +96,10 @@ export function createRealtimeRelayClient({
   let pendingListeningEvent = null;
   let lifecycleTarget = null;
   let pagehideHandler = null;
+  let pendingCapability = null;
+  let pendingConfirmation = null;
+  let pendingConfirmationRequest = null;
+  let publishedContextRevision = -1;
 
   const snapshot = () =>
     Object.freeze({
@@ -78,6 +108,9 @@ export function createRealtimeRelayClient({
       protocolVersion: admission?.protocolVersion || null,
       queuedAudioChunks: playbackQueue.length,
       terminalReason,
+      pendingCapabilityCallId: pendingCapability?.callId ?? null,
+      pendingConfirmationId: pendingConfirmation?.confirmationId ?? null,
+      publishedRevision: publishedContextRevision,
     });
   const setState = (next) => {
     state = next;
@@ -139,17 +172,79 @@ export function createRealtimeRelayClient({
     if (state === "stopped") return snapshot();
     pendingListeningEvent = null;
     cancelPlayback();
+    lifecycleTarget?.removeEventListener?.("pagehide", pagehideHandler);
+    lifecycleTarget = null;
+    pagehideHandler = null;
+    pendingCapability = null;
+    pendingConfirmation = null;
+    pendingConfirmationRequest = null;
+    publishedContextRevision = -1;
     terminalReason = reason;
     admission = null;
     socket = null;
     setState("stopped");
     return snapshot();
   };
+  const unavailableReason = (code) => {
+    if (code === "voice_disabled") return "disabled";
+    if (code === "usage_limit") return "usage_limit";
+    if (code === "protocol_mismatch" || code === "invalid_request")
+      return "protocol";
+    if (code === "network") return "network";
+    return "provider";
+  };
+  const terminateUnavailable = (reason) => {
+    const activeSocket = socket;
+    terminal(reason);
+    activeSocket?.close?.(1011, reason);
+    const event = Object.freeze({
+      type: "error",
+      code: "voice_service_unavailable",
+      message: VOICE_SERVICE_UNAVAILABLE_MESSAGE,
+      reason,
+      terminal: true,
+    });
+    emit(event);
+    return event;
+  };
 
   const protocolStop = () => {
     const activeSocket = socket;
     terminal("protocol");
-    activeSocket?.close?.(1002, "protocol");
+    activeSocket?.close?.(4002, "protocol");
+  };
+  const protocolFail = (message) => {
+    protocolStop();
+    fail("protocol", message);
+  };
+
+  const validateResultEnvelope = (result, expected) => {
+    if (
+      !result ||
+      typeof result !== "object" ||
+      Array.isArray(result) ||
+      result.capabilityId !== expected.capabilityId ||
+      result.kind !== expected.kind ||
+      !RESULT_STATUSES.has(result.status) ||
+      !Array.isArray(result.affectedTargetIds) ||
+      result.affectedTargetIds.length > 20 ||
+      new Set(result.affectedTargetIds).size !==
+        result.affectedTargetIds.length ||
+      !Number.isSafeInteger(result.contextRevision) ||
+      result.contextRevision < 0 ||
+      !RESULT_ERRORS.has(result.errorCode) ||
+      (result.data !== null &&
+        (typeof result.data !== "object" || Array.isArray(result.data))) ||
+      (expected.kind === "query"
+        ? result.changed !== null
+        : typeof result.changed !== "boolean") ||
+      (result.changed === true &&
+        result.contextRevision <= expected.contextRevision) ||
+      (result.changed !== true &&
+        result.contextRevision < expected.contextRevision)
+    )
+      protocolFail("Capability result violates its proposal");
+    return result;
   };
 
   const receive = (raw) => {
@@ -172,8 +267,87 @@ export function createRealtimeRelayClient({
       protocolStop();
       fail("protocol", "Relay event type is not allowed");
     }
-    if (event.type === "assistant.audio.delta") queueAudio(event.audio);
     let deferred = false;
+    if (event.type === "capability.proposed") {
+      if (
+        pendingCapability ||
+        !identifier(event.callId) ||
+        !CAPABILITY_ID.test(event.capabilityId || "") ||
+        !["query", "command"].includes(event.kind) ||
+        !event.arguments ||
+        typeof event.arguments !== "object" ||
+        Array.isArray(event.arguments) ||
+        !Number.isSafeInteger(event.contextRevision) ||
+        event.contextRevision < 0
+      )
+        protocolFail("Capability proposal is invalid or overlaps a call");
+      pendingCapability = {
+        callId: event.callId,
+        capabilityId: event.capabilityId,
+        kind: event.kind,
+        contextRevision: event.contextRevision,
+        returnedResult: null,
+      };
+    }
+    if (event.type === "confirmation.required") {
+      if (
+        !pendingCapability ||
+        pendingConfirmation ||
+        !pendingConfirmationRequest ||
+        event.callId !== pendingCapability.callId ||
+        event.callId !== pendingConfirmationRequest.callId ||
+        event.confirmationId !== pendingConfirmationRequest.confirmationId ||
+        event.fingerprint !== pendingConfirmationRequest.fingerprint ||
+        (event.targetId ?? null) !== pendingConfirmationRequest.targetId ||
+        event.effectSummary !== pendingConfirmationRequest.effectSummary ||
+        event.expiresAt !== pendingConfirmationRequest.expiresAt ||
+        !identifier(event.confirmationId) ||
+        typeof event.fingerprint !== "string" ||
+        !event.fingerprint ||
+        event.fingerprint.length > 256 ||
+        typeof event.effectSummary !== "string" ||
+        !event.effectSummary ||
+        event.effectSummary.length > 240 ||
+        typeof event.expiresAt !== "string"
+      )
+        protocolFail("Confirmation identity is invalid");
+      pendingConfirmation = {
+        callId: event.callId,
+        confirmationId: event.confirmationId,
+        fingerprint: event.fingerprint,
+      };
+      pendingConfirmationRequest = null;
+    }
+    if (event.type === "capability.completed") {
+      if (
+        !pendingCapability ||
+        !pendingCapability.returnedResult ||
+        event.callId !== pendingCapability.callId ||
+        event.capabilityId !== pendingCapability.capabilityId ||
+        event.kind !== pendingCapability.kind
+      )
+        protocolFail("Capability completion is out of order");
+      validateResultEnvelope(event.result, pendingCapability);
+      if (
+        JSON.stringify(event.result) !==
+        JSON.stringify(pendingCapability.returnedResult)
+      )
+        protocolFail("Capability completion result does not match");
+      if (
+        event.result.changed === true &&
+        publishedContextRevision < event.result.contextRevision
+      ) {
+        pendingCapability.deferredCompletion = structuredClone(event);
+        deferred = true;
+      } else {
+        pendingCapability = null;
+        pendingConfirmation = null;
+        pendingConfirmationRequest = null;
+      }
+    }
+    if (event.type === "error")
+      return terminateUnavailable(unavailableReason(event.code));
+    if (event.type === "assistant.audio.delta") queueAudio(event.audio);
     if (event.type === "session.state" && typeof event.state === "string") {
       if (
         event.state === "listening" &&
@@ -228,34 +402,43 @@ export function createRealtimeRelayClient({
         credentials: "same-origin",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          protocolVersion: "1.0",
+          protocolVersion: "1.1",
           disclosureAccepted: true,
           capabilities,
         }),
       });
     } catch {
       terminal("network");
-      fail("network", "Voice relay could not connect");
+      fail("network", VOICE_SERVICE_UNAVAILABLE_MESSAGE);
     }
     const payload = await response.json().catch(() => null);
+    const protocolMismatch =
+      response.ok &&
+      payload?.data?.sessionId &&
+      payload.data.protocolVersion !== "1.1";
     if (
       !response.ok ||
       !payload?.data?.sessionId ||
-      payload.data.protocolVersion !== "1.0"
+      payload.data.protocolVersion !== "1.1"
     ) {
       terminal(
-        response.ok
-          ? "protocol"
-          : payload?.error?.code === "usage_limit"
-            ? "usage_limit"
-            : "provider",
+        response.ok ? "protocol" : unavailableReason(payload?.error?.code),
       );
       fail(
-        payload?.error?.code || "provider_unavailable",
-        payload?.error?.message || "Voice relay admission failed",
+        protocolMismatch
+          ? "protocol_mismatch"
+          : (payload?.error?.code ?? "provider_unavailable"),
+        protocolMismatch
+          ? "Voice relay protocol version does not match"
+          : VOICE_SERVICE_UNAVAILABLE_MESSAGE,
       );
     }
-    sameOriginUrl(payload.data.streamPath);
+    try {
+      sameOriginUrl(payload.data.streamPath);
+    } catch (error) {
+      terminal("protocol");
+      throw error;
+    }
     admission = structuredClone(payload.data);
     return snapshot();
   };
@@ -268,16 +451,21 @@ export function createRealtimeRelayClient({
         "reconnect_prohibited",
         "Relay reconnect is prohibited; start a new session",
       );
-    if (typeof WebSocketImpl !== "function")
-      fail("network", "WebSocket is unavailable");
+    if (typeof WebSocketImpl !== "function") {
+      terminal("network");
+      fail("network", VOICE_SERVICE_UNAVAILABLE_MESSAGE);
+    }
     connectAttempted = true;
     const url = sameOriginUrl(admission.streamPath, { websocket: true });
     socket = new WebSocketImpl(url.href);
     socket.addEventListener?.("open", () => setState("listening"));
     socket.addEventListener?.("message", receive);
-    socket.addEventListener?.("error", () => terminal("network"));
+    socket.addEventListener?.("error", () => {
+      if (state !== "stopped") terminateUnavailable("network");
+    });
     socket.addEventListener?.("close", () => {
-      if (state !== "stopped" && state !== "stopping") terminal("network");
+      if (state !== "stopped" && state !== "stopping")
+        terminateUnavailable("network");
     });
     return socket;
   };
@@ -297,6 +485,97 @@ export function createRealtimeRelayClient({
     }
     socket?.close?.(1000, reason);
     return terminal(reason);
+  };
+
+  const returnCapabilityResult = (value) => {
+    if (
+      !pendingCapability ||
+      value?.callId !== pendingCapability.callId ||
+      value.capabilityId !== pendingCapability.capabilityId ||
+      value.kind !== pendingCapability.kind ||
+      pendingCapability.returnedResult
+    )
+      protocolFail("Capability result does not match the pending call");
+    validateResultEnvelope(value.result, pendingCapability);
+    pendingCapability.returnedResult = structuredClone(value.result);
+    return send({ type: "capability.result", ...value });
+  };
+
+  const returnConfirmation = (value) => {
+    const expected = pendingConfirmation ?? pendingConfirmationRequest;
+    if (
+      !expected ||
+      value?.callId !== expected.callId ||
+      value.confirmationId !== expected.confirmationId ||
+      value.fingerprint !== expected.fingerprint ||
+      value.finalUserInput !== true ||
+      !["accepted", "rejected"].includes(value.decision) ||
+      (!pendingConfirmation && value.decision !== "rejected")
+    )
+      protocolFail("Confirmation result does not match the pending call");
+    pendingConfirmation = null;
+    pendingConfirmationRequest = null;
+    return send({ type: "confirmation.result", ...value });
+  };
+
+  const returnDeterministicResult = (value) => {
+    if (
+      !CAPABILITY_ID.test(value?.capabilityId || "") ||
+      !["query", "command"].includes(value?.kind)
+    )
+      protocolFail("Deterministic result identity is invalid");
+    validateResultEnvelope(value.result, value);
+    return send({ type: "deterministic.result", ...value });
+  };
+
+  const requestConfirmation = (value) => {
+    if (
+      !pendingCapability ||
+      pendingConfirmation ||
+      pendingConfirmationRequest ||
+      value?.callId !== pendingCapability.callId ||
+      value.capabilityId !== pendingCapability.capabilityId ||
+      !identifier(value.confirmationId) ||
+      typeof value.fingerprint !== "string" ||
+      !value.fingerprint ||
+      typeof value.effectSummary !== "string" ||
+      !value.effectSummary ||
+      typeof value.expiresAt !== "string" ||
+      !Number.isFinite(Date.parse(value.expiresAt))
+    )
+      protocolFail("Pending confirmation does not match the pending call");
+    pendingConfirmationRequest = {
+      callId: value.callId,
+      confirmationId: value.confirmationId,
+      fingerprint: value.fingerprint,
+      targetId: value.targetId ?? null,
+      effectSummary: value.effectSummary,
+      expiresAt: value.expiresAt,
+    };
+    return send({ type: "confirmation.pending", ...value });
+  };
+
+  const updateContext = (context) => {
+    if (
+      !context ||
+      typeof context !== "object" ||
+      !Number.isSafeInteger(context.revision) ||
+      context.revision < 0 ||
+      context.revision < publishedContextRevision
+    )
+      protocolFail("Interface context revision is invalid");
+    publishedContextRevision = context.revision;
+    const message = send({ type: "context.update", context });
+    const completion = pendingCapability?.deferredCompletion;
+    if (
+      completion &&
+      publishedContextRevision >= completion.result.contextRevision
+    ) {
+      pendingCapability = null;
+      pendingConfirmation = null;
+      emit(completion);
+    }
+    return message;
   };
 
   return Object.freeze({
@@ -319,11 +598,12 @@ export function createRealtimeRelayClient({
         fail("text_too_large", "Text input exceeds its bound");
       return send({ type: "text.submit", turnId, text });
     },
-    returnActionResult: (value) => send({ type: "action.result", ...value }),
-    returnConfirmation: (value) =>
-      send({ type: "confirmation.result", ...value }),
+    returnCapabilityResult,
+    requestConfirmation,
+    returnConfirmation,
+    returnDeterministicResult,
     cancelResponse: () => send({ type: "response.cancel" }),
-    updateContext: (context) => send({ type: "context.update", context }),
+    updateContext,
     bindPageLifecycle(target = globalThis.window) {
       if (!target?.addEventListener || lifecycleTarget) return () => {};
       lifecycleTarget = target;

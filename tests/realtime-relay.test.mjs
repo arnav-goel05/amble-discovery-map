@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 import {
@@ -18,8 +19,13 @@ import {
   describeAvailableCapabilities,
   validateDiscoveryToolArguments,
 } from "../cloudflare/realtime-relay.mjs";
+import { VOICE_SERVICE_UNAVAILABLE_MESSAGE } from "../activity-scenes/assistant/realtime-relay-client.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const require = createRequire(import.meta.url);
+const {
+  createLocalRelayOptions,
+} = require("../scripts/realtime-voice-api-plugin.cjs");
 const fixture = (name) =>
   JSON.parse(
     fs.readFileSync(path.join(root, "tests/fixtures/voice", name), "utf8"),
@@ -31,7 +37,7 @@ const admission = (overrides = {}) => ({
   contentType: "application/json",
   bodyBytes: 128,
   body: {
-    protocolVersion: "1.0",
+    protocolVersion: "1.1",
     disclosureAccepted: true,
     capabilities: { audioInput: true, audioOutput: true, text: true },
   },
@@ -50,11 +56,101 @@ const throwsCode = (callback, code) =>
     (error) => error instanceof RelayProtocolError && error.code === code,
   );
 
+const flushRelay = () =>
+  new Promise((resolve) => {
+    setImmediate(resolve);
+  });
+
+function createSocket(messages, listeners = {}) {
+  return {
+    readyState: 1,
+    accept() {},
+    close() {},
+    send(value) {
+      messages.push(JSON.parse(value));
+    },
+    addEventListener(type, listener) {
+      listeners[type] = listener;
+    },
+  };
+}
+
+async function createRelayHarness() {
+  const policy = JSON.parse(
+    fs.readFileSync(path.join(root, "data/realtime-voice-policy.json"), "utf8"),
+  );
+  const providerMessages = [];
+  const browserMessages = [];
+  const providerListeners = {};
+  const providerSocket = createSocket(providerMessages, providerListeners);
+  let identity = 0;
+  const relay = createRealtimeRelay({
+    policy,
+    apiKey: "server-only-fixture",
+    budgetRepository: {
+      async getLedger() {
+        return { enabled: true };
+      },
+      async reserve() {},
+      async settle() {},
+      async hold() {},
+    },
+    providerConnector: async () => providerSocket,
+    randomId: () => `relay-fixture-${++identity}`,
+    hash: async () => "sha256:relay-fixture",
+    now: () => new Date("2026-07-26T10:00:00.000Z"),
+  });
+  const admitted = await relay.admit(admission());
+  await relay.attach(admitted.data.sessionId, createSocket(browserMessages));
+  return {
+    admitted,
+    browserMessages,
+    providerListeners,
+    providerMessages,
+    relay,
+  };
+}
+
+const inspectCapabilityResult = (revision = 7) => ({
+  capabilityId: "app.inspect",
+  kind: "query",
+  status: "completed",
+  changed: null,
+  affectedTargetIds: [],
+  contextRevision: revision,
+  data: {
+    revision,
+    stateDigest: `sha256:context-${revision}`,
+    viewport: { zoom: 12, bearing: 0 },
+    visibleLayers: {
+      recommendations: false,
+      location: false,
+      mrtStations: false,
+      mrtLines: false,
+    },
+    visibleTargets: [],
+    focusedTargetId: null,
+    selectedTargetIds: [],
+    activeOverlayId: null,
+    assistantPresentation: null,
+    activeFilters: {},
+    plan: { stopIds: [], travelMode: "walking", routeAvailable: false },
+    location: {
+      permission: "prompt",
+      status: "idle",
+      coarseAreaId: null,
+    },
+    transit: { visible: false, constraintActive: false },
+    availableCapabilityIds: ["app.inspect", "catalog.get", "catalog.search"],
+  },
+  errorCode: null,
+});
+
 test("session admission returns only bounded public configuration", () => {
   const result = validateSessionAdmission(admission());
 
   assert.deepEqual(result, {
-    protocolVersion: "1.0",
+    protocolVersion: "1.1",
     capabilities: { audioInput: true, audioOutput: true, text: true },
   });
   assert.doesNotMatch(
@@ -78,7 +174,7 @@ test("session admission fails closed for every trust and capacity gate", () => {
       "invalid_request",
       {
         body: {
-          protocolVersion: "1.0",
+          protocolVersion: "1.1",
           disclosureAccepted: false,
           capabilities: { audioInput: true, audioOutput: true, text: true },
         },
@@ -88,6 +184,22 @@ test("session admission fails closed for every trust and capacity gate", () => {
 
   for (const [code, override] of cases)
     throwsCode(() => validateSessionAdmission(admission(override)), code);
+});
+
+test("session admission requires the exact protocol 1.1 version", () => {
+  for (const protocolVersion of ["1.0", "1.2", "2.0", null])
+    throwsCode(
+      () =>
+        validateSessionAdmission(
+          admission({
+            body: {
+              ...admission().body,
+              protocolVersion,
+            },
+          }),
+        ),
+      "invalid_request",
+    );
 });
 
 test("Amble's session contract rejects general chat and describes only eligible app capabilities", () => {
@@ -164,17 +276,53 @@ test("browser message validation accepts only the declared protocol allowlist", 
     { type: "audio.commit", turnId: "turn-001" },
     { type: "text.submit", turnId: "turn-002", text: "Somewhere calm" },
     {
-      type: "action.result",
+      type: "capability.result",
       callId: "call-001",
-      actionId: "map.openarea",
-      ok: true,
-      result: { focusedAreaId: "ura-subzone:marina-south" },
+      capabilityId: "map.openarea",
+      kind: "command",
+      result: {
+        capabilityId: "map.openarea",
+        kind: "command",
+        status: "completed",
+        changed: true,
+        affectedTargetIds: ["ura-subzone:marina-south"],
+        contextRevision: 2,
+        data: { focusedAreaId: "ura-subzone:marina-south" },
+        errorCode: null,
+      },
+    },
+    {
+      type: "confirmation.pending",
+      callId: "call-confirm-001",
+      capabilityId: "navigation.openexternal",
+      confirmationId: "confirmation-001",
+      fingerprint: "fixture-fingerprint-001",
+      targetId: "event:1",
+      effectSummary: "Open the approved official event page.",
+      expiresAt: "2026-07-26T10:00:25.000Z",
     },
     {
       type: "confirmation.result",
+      callId: "call-001",
       confirmationId: "confirmation-001",
       fingerprint: "fixture-fingerprint-001",
+      finalUserInput: true,
       decision: "rejected",
+    },
+    {
+      type: "deterministic.result",
+      capabilityId: "map.zoomin",
+      kind: "command",
+      result: {
+        capabilityId: "map.zoomin",
+        kind: "command",
+        status: "completed",
+        changed: true,
+        affectedTargetIds: [],
+        contextRevision: 2,
+        data: { actionId: "map.zoomin", changed: true },
+        errorCode: null,
+      },
     },
     { type: "session.stop" },
   ];
@@ -182,8 +330,32 @@ test("browser message validation accepts only the declared protocol allowlist", 
     activeReservedTurnId: "turn-001",
     pendingCallIds: new Set(["call-001"]),
     pendingConfirmation: {
+      callId: "call-001",
       confirmationId: "confirmation-001",
       fingerprint: "fixture-fingerprint-001",
+    },
+    pendingCalls: new Map([
+      [
+        "call-001",
+        {
+          capabilityId: "map.openarea",
+          kind: "command",
+        },
+      ],
+      [
+        "call-confirm-001",
+        {
+          capabilityId: "navigation.openexternal",
+          kind: "command",
+          confirmationClass: "consequential",
+        },
+      ],
+    ]),
+    pendingDeterministic: {
+      capabilityId: "map.zoomin",
+      kind: "command",
+      proposalRevision: 1,
+      validateResult() {},
     },
     maxMessageBytes: 4096,
     maxAudioChunkBytes: 1024,
@@ -191,7 +363,15 @@ test("browser message validation accepts only the declared protocol allowlist", 
   };
 
   for (const message of allowed)
-    assert.equal(validateBrowserMessage(message, options).type, message.type);
+    assert.equal(
+      validateBrowserMessage(
+        message,
+        message.type === "confirmation.pending"
+          ? { ...options, pendingConfirmation: null }
+          : options,
+      ).type,
+      message.type,
+    );
 
   for (const type of [
     "response.create",
@@ -204,6 +384,186 @@ test("browser message validation accepts only the declared protocol allowlist", 
       () => validateBrowserMessage({ type }, options),
       "browser_message_unapproved",
     );
+});
+
+test("consequential provider calls use browser-owned confirmation and always complete", async () => {
+  const harness = await createRelayHarness();
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "context.update",
+      context: {
+        revision: 7,
+        visibleTargets: [
+          { targetId: "event:fixture", type: "event", label: "Fixture" },
+        ],
+        availableCapabilityIds: ["navigation.openexternal"],
+      },
+    }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "text.submit",
+      turnId: "turn-navigation",
+      text: "open the official reference",
+    }),
+  );
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "response.function_call_arguments.done",
+      call_id: "call-navigation-001",
+      name: "navigation.openexternal",
+      arguments: JSON.stringify({
+        targetId: "event:fixture",
+        linkKind: "reference",
+      }),
+    }),
+  });
+  await flushRelay();
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "confirmation.pending",
+      callId: "call-navigation-001",
+      capabilityId: "navigation.openexternal",
+      confirmationId: "confirmation-navigation-001",
+      fingerprint: "sha256:confirmation-navigation-001",
+      targetId: "event:fixture",
+      effectSummary: "Open the approved official event page.",
+      expiresAt: "2026-07-26T10:00:25.000Z",
+    }),
+  );
+  assert.equal(harness.browserMessages.at(-1).type, "confirmation.required");
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "confirmation.result",
+      callId: "call-navigation-001",
+      confirmationId: "confirmation-navigation-001",
+      fingerprint: "sha256:confirmation-navigation-001",
+      finalUserInput: true,
+      decision: "rejected",
+    }),
+  );
+  const rejected = {
+    capabilityId: "navigation.openexternal",
+    kind: "command",
+    status: "failed",
+    changed: false,
+    affectedTargetIds: [],
+    contextRevision: 7,
+    data: null,
+    errorCode: "confirmation_required",
+  };
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "capability.result",
+      callId: "call-navigation-001",
+      capabilityId: "navigation.openexternal",
+      kind: "command",
+      result: rejected,
+    }),
+  );
+
+  assert.equal(harness.relay.sessions.get(sessionId).pendingCalls.size, 0);
+  assert.equal(harness.relay.sessions.get(sessionId).pendingConfirmation, null);
+  assert.deepEqual(harness.browserMessages.at(-1), {
+    type: "capability.completed",
+    callId: "call-navigation-001",
+    capabilityId: "navigation.openexternal",
+    kind: "command",
+    result: rejected,
+  });
+  const proposalCount = harness.browserMessages.filter(
+    ({ type }) => type === "capability.proposed",
+  ).length;
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "response.function_call_arguments.done",
+      call_id: "call-navigation-001",
+      name: "navigation.openexternal",
+      arguments: JSON.stringify({
+        linkKind: "reference",
+        targetId: "event:fixture",
+      }),
+    }),
+  });
+  await flushRelay();
+  assert.equal(
+    harness.browserMessages.filter(({ type }) => type === "capability.proposed")
+      .length,
+    proposalCount,
+  );
+  assert.equal(harness.relay.sessions.get(sessionId).pendingCalls.size, 0);
+});
+
+test("deterministic commands delay the model reply until the browser returns an outcome", async () => {
+  const harness = await createRelayHarness();
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "context.update",
+      context: {
+        revision: 7,
+        visibleTargets: [],
+        availableCapabilityIds: ["map.zoomin"],
+      },
+    }),
+  );
+  const providerStart = harness.providerMessages.length;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "text.submit",
+      turnId: "turn-deterministic",
+      text: "zoom in",
+    }),
+  );
+  assert.equal(
+    harness.providerMessages
+      .slice(providerStart)
+      .some(({ type }) => type === "response.create"),
+    false,
+  );
+
+  const result = {
+    capabilityId: "map.zoomin",
+    kind: "command",
+    status: "completed",
+    changed: true,
+    affectedTargetIds: [],
+    contextRevision: 8,
+    data: { actionId: "map.zoomin", changed: true },
+    errorCode: null,
+  };
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "deterministic.result",
+      capabilityId: "map.zoomin",
+      kind: "command",
+      result,
+    }),
+  );
+
+  assert.equal(
+    harness.relay.sessions.get(sessionId).pendingDeterministic,
+    null,
+  );
+  assert.deepEqual(
+    harness.providerMessages.slice(-2).map(({ type }) => type),
+    ["conversation.item.create", "response.create"],
+  );
+  assert.match(
+    harness.providerMessages.at(-2).item.content[0].text,
+    /completed/i,
+  );
 });
 
 test("audio and text remain bounded and require an admitted turn", () => {
@@ -288,6 +648,7 @@ test("provider events are mapped to a small sanitized browser vocabulary", () =>
     browserEvent: {
       type: "transcript.delta",
       itemId: "user-item-001",
+      role: "user",
       text: "Somewhere calm",
     },
     trustedUsage: null,
@@ -322,7 +683,7 @@ test("provider events are mapped to a small sanitized browser vocabulary", () =>
   );
 });
 
-test("action results cannot smuggle arbitrary provider events or calls", () => {
+test("capability results cannot smuggle arbitrary provider events or calls", () => {
   const options = {
     pendingCallIds: new Set(["call-001"]),
     maxMessageBytes: 4096,
@@ -331,31 +692,305 @@ test("action results cannot smuggle arbitrary provider events or calls", () => {
     () =>
       validateBrowserMessage(
         {
-          type: "action.result",
+          type: "capability.result",
           callId: "unknown-call",
-          actionId: "map.openarea",
-          ok: true,
-          result: {},
+          capabilityId: "map.openarea",
+          kind: "command",
+          result: {
+            capabilityId: "map.openarea",
+            kind: "command",
+            status: "completed",
+            changed: true,
+            affectedTargetIds: [],
+            contextRevision: 2,
+            data: {},
+            errorCode: null,
+          },
         },
         options,
       ),
-    "action_call_unmatched",
+    "capability_call_unmatched",
   );
   throwsCode(
     () =>
       validateBrowserMessage(
         {
-          type: "action.result",
+          type: "capability.result",
           callId: "call-001",
-          actionId: "map.openarea",
-          ok: true,
-          result: {},
+          capabilityId: "map.openarea",
+          kind: "command",
+          result: {
+            capabilityId: "map.openarea",
+            kind: "command",
+            status: "completed",
+            changed: true,
+            affectedTargetIds: [],
+            contextRevision: 2,
+            data: {},
+            errorCode: null,
+          },
           providerEventType: "response.create",
         },
         options,
       ),
     "browser_field_unapproved",
   );
+});
+
+test("relay completes a validated query before allowing provider continuation", async () => {
+  const harness = await createRelayHarness();
+  const sessionId = harness.admitted.data.sessionId;
+
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "response.function_call_arguments.done",
+      call_id: "call-inspect-001",
+      name: "app.inspect",
+      arguments: "{}",
+    }),
+  });
+  await flushRelay();
+
+  assert.deepEqual(harness.browserMessages.at(-1), {
+    type: "capability.proposed",
+    callId: "call-inspect-001",
+    capabilityId: "app.inspect",
+    kind: "query",
+    arguments: {},
+    contextRevision: 0,
+  });
+
+  const providerStart = harness.providerMessages.length;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "capability.result",
+      callId: "call-inspect-001",
+      capabilityId: "app.inspect",
+      kind: "query",
+      result: inspectCapabilityResult(0),
+    }),
+  );
+
+  assert.deepEqual(
+    harness.providerMessages.slice(providerStart).map(({ type }) => type),
+    ["conversation.item.create", "response.create"],
+  );
+  assert.deepEqual(
+    JSON.parse(harness.providerMessages[providerStart].item.output),
+    inspectCapabilityResult(0),
+  );
+  assert.deepEqual(harness.browserMessages.at(-1), {
+    type: "capability.completed",
+    callId: "call-inspect-001",
+    capabilityId: "app.inspect",
+    kind: "query",
+    result: inspectCapabilityResult(0),
+  });
+});
+
+test("changed command completion waits for refreshed context and tools", async () => {
+  const harness = await createRelayHarness();
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "context.update",
+      context: {
+        revision: 7,
+        visibleTargets: [],
+        availableCapabilityIds: ["map.zoomin"],
+      },
+    }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "text.submit",
+      turnId: "turn-map-command",
+      text: "adjust the map",
+    }),
+  );
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "response.function_call_arguments.done",
+      call_id: "call-zoom-001",
+      name: "map.zoomin",
+      arguments: "{}",
+    }),
+  });
+  await flushRelay();
+
+  const result = {
+    capabilityId: "map.zoomin",
+    kind: "command",
+    status: "completed",
+    changed: true,
+    affectedTargetIds: [],
+    contextRevision: 8,
+    data: { actionId: "map.zoomin", changed: true },
+    errorCode: null,
+  };
+  const providerStart = harness.providerMessages.length;
+  const browserStart = harness.browserMessages.length;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "capability.result",
+      callId: "call-zoom-001",
+      capabilityId: "map.zoomin",
+      kind: "command",
+      result,
+    }),
+  );
+  assert.equal(harness.providerMessages.length, providerStart);
+  assert.equal(harness.browserMessages.length, browserStart);
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "context.update",
+      context: {
+        revision: 8,
+        visibleTargets: [],
+        availableCapabilityIds: ["map.zoomout"],
+      },
+    }),
+  );
+
+  assert.deepEqual(
+    harness.providerMessages.slice(providerStart).map(({ type }) => type),
+    ["conversation.item.create", "conversation.item.create", "response.create"],
+  );
+  assert.deepEqual(
+    harness.relay.sessions.get(sessionId).tools.map(({ name }) => name),
+    ["app.inspect", "catalog.search", "catalog.get", "map.zoomin"],
+  );
+  assert.equal(
+    harness.providerMessages[providerStart + 1].item.type,
+    "function_call_output",
+  );
+  assert.deepEqual(harness.browserMessages.at(-1), {
+    type: "capability.completed",
+    callId: "call-zoom-001",
+    capabilityId: "map.zoomin",
+    kind: "command",
+    result,
+  });
+});
+
+test("invalid, stale, or overlapping capability calls fail closed and clean up", async () => {
+  for (const failure of [
+    "common_envelope",
+    "proposal_schema",
+    "specific_result",
+    "stale_revision",
+    "overlap",
+  ]) {
+    const harness = await createRelayHarness();
+    const sessionId = harness.admitted.data.sessionId;
+    await harness.relay.handleBrowserMessage(
+      sessionId,
+      JSON.stringify({
+        type: "context.update",
+        context: {
+          revision: 7,
+          visibleTargets: [],
+          availableCapabilityIds: ["map.zoomin"],
+        },
+      }),
+    );
+    await harness.relay.handleBrowserMessage(
+      sessionId,
+      JSON.stringify({
+        type: "text.submit",
+        turnId: `turn-map-${failure}`,
+        text: "adjust the map",
+      }),
+    );
+    harness.providerListeners.message({
+      data: JSON.stringify({
+        type: "response.function_call_arguments.done",
+        call_id: "call-first",
+        name: "map.zoomin",
+        arguments:
+          failure === "proposal_schema"
+            ? JSON.stringify({ selector: "#unapproved" })
+            : "{}",
+      }),
+    });
+    await flushRelay();
+
+    if (failure === "proposal_schema") {
+      assert.equal(harness.relay.sessions.has(sessionId), false, failure);
+      continue;
+    } else if (failure === "overlap") {
+      harness.providerListeners.message({
+        data: JSON.stringify({
+          type: "response.function_call_arguments.done",
+          call_id: "call-second",
+          name: "app.inspect",
+          arguments: "{}",
+        }),
+      });
+      await flushRelay();
+    } else {
+      await harness.relay.handleBrowserMessage(
+        sessionId,
+        JSON.stringify({
+          type: "capability.result",
+          callId: "call-first",
+          capabilityId: "map.zoomin",
+          kind: "command",
+          result: {
+            capabilityId: "map.zoomin",
+            kind: "command",
+            status: "completed",
+            changed: true,
+            affectedTargetIds: [],
+            contextRevision: failure === "stale_revision" ? 7 : 8,
+            data: {
+              actionId: "map.zoomin",
+              changed: failure === "specific_result" ? "yes" : true,
+            },
+            errorCode: null,
+            ...(failure === "common_envelope"
+              ? { providerDebug: "must-not-pass" }
+              : {}),
+          },
+        }),
+      );
+    }
+
+    assert.equal(harness.relay.sessions.has(sessionId), false, failure);
+  }
+});
+
+test("local relay passes the same capability contracts and fixtures to the shared relay", () => {
+  const capabilityContracts = [{ capabilityId: "fixture.query" }];
+  const tools = [{ type: "function", name: "fixture.query" }];
+  const approvedCandidateIds = ["event:fixture"];
+  const approvedCandidates = [{ candidateId: "event:fixture" }];
+  const repository = { kind: "fixture-repository" };
+  const providerConnector = () => {};
+  const options = createLocalRelayOptions({
+    policy: { schemaVersion: "fixture" },
+    repository,
+    environment: { OPENAI_API_KEY: "server-only-fixture" },
+    providerConnector,
+    capabilityContracts,
+    tools,
+    approvedCandidateIds,
+    approvedCandidates,
+  });
+
+  assert.equal(options.budgetRepository, repository);
+  assert.equal(options.providerConnector, providerConnector);
+  assert.equal(options.capabilityContracts, capabilityContracts);
+  assert.equal(options.tools, tools);
+  assert.equal(options.approvedCandidateIds, approvedCandidateIds);
+  assert.equal(options.approvedCandidates, approvedCandidates);
+  assert.equal(options.apiKey, "server-only-fixture");
 });
 
 test("every terminal reason performs complete idempotent cleanup", () => {
@@ -388,6 +1023,21 @@ test("every terminal reason performs complete idempotent cleanup", () => {
     assert.deepEqual(calls, ["abort", "provider-close", "browser-close"]);
     assert.equal(second, first);
   }
+});
+
+test("the browser terminal contract uses one provider-independent unavailable message", () => {
+  assert.equal(
+    VOICE_SERVICE_UNAVAILABLE_MESSAGE,
+    "Voice service is currently unavailable. Please try again later.",
+  );
+  for (const code of [
+    "voice_disabled",
+    "usage_limit",
+    "provider_unavailable",
+    "network",
+    "admission_failed",
+  ])
+    assert.doesNotMatch(VOICE_SERVICE_UNAVAILABLE_MESSAGE, new RegExp(code));
 });
 
 test("server relay owns provider configuration and reserves before billable events", async () => {
@@ -437,12 +1087,12 @@ test("server relay owns provider configuration and reserves before billable even
   await relay.attach(admitted.data.sessionId, socket(browserMessages));
 
   assert.equal(providerMessages[0].type, "session.update");
-  assert.equal(providerMessages[0].session.model, "gpt-realtime-2.1");
+  assert.equal(providerMessages[0].session.model, "gpt-realtime-2.1-mini");
+  assert.equal("fallback_model" in providerMessages[0].session, false);
   assert.equal(providerMessages[0].session.audio.input.turn_detection, null);
-  assert.ok(
-    providerMessages[0].session.tools.every(({ name }) =>
-      name.startsWith("discovery."),
-    ),
+  assert.deepEqual(
+    providerMessages[0].session.tools.map(({ name }) => name),
+    ["app.inspect", "catalog.search", "catalog.get"],
   );
   assert.match(
     providerMessages[0].session.instructions,
@@ -456,7 +1106,7 @@ test("server relay owns provider configuration and reserves before billable even
       context: {
         revision: 1,
         visibleTargets: [],
-        availableActionIds: ["map.zoomin"],
+        availableCapabilityIds: ["map.zoomin"],
       },
     }),
   );
@@ -465,9 +1115,9 @@ test("server relay owns provider configuration and reserves before billable even
     .at(-1).session;
   assert.deepEqual(
     contextualSession.tools.map(({ name }) => name),
-    ["discovery.presentareas", "discovery.refine", "map.zoomin"],
+    ["app.inspect", "catalog.search", "catalog.get"],
   );
-  assert.match(contextualSession.instructions, /map\.zoomin/);
+  assert.doesNotMatch(contextualSession.instructions, /map\.zoomin/);
   assert.doesNotMatch(contextualSession.instructions, /event\.search/);
 
   await relay.handleBrowserMessage(
@@ -483,11 +1133,53 @@ test("server relay owns provider configuration and reserves before billable even
     reservations.map(({ kind }) => kind),
     ["input_transcription", "response"],
   );
-  assert.equal(providerMessages.at(-1).type, "response.create");
+  assert.equal(providerMessages.at(-1).type, "input_audio_buffer.commit");
   assert.equal(browserMessages.at(-1).type, "turn.ready");
   assert.doesNotMatch(
     JSON.stringify(browserMessages),
     /api.?key|server-only-fixture|rateCard/i,
+  );
+
+  providerListeners.message({
+    data: JSON.stringify({
+      type: "conversation.item.input_audio_transcription.completed",
+      item_id: "input-item-001",
+      transcript: "zoom in",
+    }),
+  });
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(providerMessages.at(-1).type, "session.update");
+  await relay.handleBrowserMessage(
+    admitted.data.sessionId,
+    JSON.stringify({
+      type: "deterministic.result",
+      capabilityId: "map.zoomin",
+      kind: "command",
+      result: {
+        capabilityId: "map.zoomin",
+        kind: "command",
+        status: "completed",
+        changed: true,
+        affectedTargetIds: [],
+        contextRevision: 2,
+        data: { actionId: "map.zoomin", changed: true },
+        errorCode: null,
+      },
+    }),
+  );
+  assert.deepEqual(
+    providerMessages.slice(-3).map(({ type }) => type),
+    ["session.update", "conversation.item.create", "response.create"],
+  );
+  assert.equal(
+    providerMessages
+      .at(-3)
+      .session.tools.some(({ name }) => name === "map.zoomin"),
+    false,
+  );
+  assert.match(
+    providerMessages.at(-2).item.content[0].text,
+    /authoritative result/i,
   );
 
   const providerCompletion = fixture(
@@ -502,9 +1194,10 @@ test("server relay owns provider configuration and reserves before billable even
   await new Promise((resolve) => setImmediate(resolve));
   assert.equal(relay.sessions.has(admitted.data.sessionId), true);
   assert.equal(
-    settlements[1].usageShapeHash,
-    "sha256:fixed-transcription-on-response-complete",
+    settlements[0].usageShapeHash,
+    "sha256:fixed-transcription-reservation",
   );
+  assert.equal(settlements[1].usageShapeHash, "sha256:fixture");
   assert.equal(
     browserMessages.filter(
       (message) =>
@@ -513,8 +1206,11 @@ test("server relay owns provider configuration and reserves before billable even
     2,
   );
 
-  // A late provider transcription completion must be harmless and must not
-  // reopen or settle the already completed turn a second time.
+  // A duplicate provider transcription completion must be harmless and must
+  // not reopen, respond to, or settle the completed turn a second time.
+  const responseCreates = providerMessages.filter(
+    ({ type }) => type === "response.create",
+  ).length;
   providerListeners.message({
     data: JSON.stringify({
       type: "conversation.item.input_audio_transcription.completed",
@@ -525,6 +1221,10 @@ test("server relay owns provider configuration and reserves before billable even
   await new Promise((resolve) => setImmediate(resolve));
   assert.equal(relay.sessions.has(admitted.data.sessionId), true);
   assert.equal(settlements.length, 2);
+  assert.equal(
+    providerMessages.filter(({ type }) => type === "response.create").length,
+    responseCreates,
+  );
   assert.equal(
     browserMessages.filter(
       (message) =>

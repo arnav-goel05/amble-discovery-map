@@ -118,9 +118,11 @@ test("button searches the visible map area, clusters locations, lists restaurant
 }) => {
   test.setTimeout(120_000);
   const consoleErrors = [];
+  const pageErrors = [];
   page.on("console", (message) => {
     if (message.type() === "error") consoleErrors.push(message.text());
   });
+  page.on("pageerror", (error) => pageErrors.push(error.message));
   let releaseRestaurantSearch;
   const restaurantGate = new Promise((resolve) => {
     releaseRestaurantSearch = resolve;
@@ -386,6 +388,7 @@ test("button searches the visible map area, clusters locations, lists restaurant
   await expect(page.locator("#plan-builder")).toBeVisible();
   await expect(page.locator("#restaurant-detail")).toBeHidden();
   await expect(page.locator("#restaurant-results")).toBeHidden();
+  await expect(page.locator("#restaurant-search-button")).not.toBeFocused();
   await page
     .locator(".plan-builder__close")
     .evaluate((button) => button.click());
@@ -400,6 +403,11 @@ test("button searches the visible map area, clusters locations, lists restaurant
   expect(
     consoleErrors.filter((message) =>
       /viewport-restaurant-cluster-count|text-field.*glyphs/i.test(message),
+    ),
+  ).toEqual([]);
+  expect(
+    [...consoleErrors, ...pageErrors].filter((message) =>
+      /restaurant\.closeresults|invalid_capability_arguments/i.test(message),
     ),
   ).toEqual([]);
 });

@@ -89,6 +89,7 @@ function sha256(text) {
 }
 
 const fingerprintFor = ({
+  callId,
   actionId,
   canonicalArguments,
   targetId,
@@ -96,6 +97,7 @@ const fingerprintFor = ({
 }) =>
   sha256(
     canonical({
+      callId: callId ?? null,
       actionId,
       canonicalArguments,
       targetId: targetId ?? null,
@@ -108,6 +110,11 @@ const frozen = (record) =>
     canonicalArguments: Object.freeze(
       structuredClone(record.canonicalArguments),
     ),
+    ...(record.terminalResult === undefined
+      ? {}
+      : {
+          terminalResult: Object.freeze(structuredClone(record.terminalResult)),
+        }),
   });
 
 export function createConfirmationController({
@@ -117,20 +124,34 @@ export function createConfirmationController({
 } = {}) {
   let pending = null;
   const records = new Map();
+  const calls = new Map();
 
   const request = (input) => {
+    const fingerprint = fingerprintFor(input);
+    const priorCall = input.callId ? calls.get(input.callId) : null;
+    if (priorCall) {
+      if (priorCall.fingerprint !== fingerprint)
+        fail(
+          "confirmation_conflicting_replay",
+          "Confirmation call replay conflicts with the original request",
+        );
+      return priorCall;
+    }
     if (pending) {
-      records.set(pending.confirmationId, {
+      const invalidated = frozen({
         ...pending,
         status: "invalidated",
         invalidationReason: "replacement",
       });
+      records.set(pending.confirmationId, invalidated);
+      if (invalidated.callId) calls.set(invalidated.callId, invalidated);
       pending = null;
     }
     const createdAt = now();
     const record = frozen({
       confirmationId: createId(),
-      fingerprint: fingerprintFor(input),
+      fingerprint,
+      callId: input.callId ?? null,
       actionId: input.actionId,
       canonicalArguments: input.canonicalArguments,
       targetId: input.targetId ?? null,
@@ -142,6 +163,13 @@ export function createConfirmationController({
     });
     pending = record;
     records.set(record.confirmationId, record);
+    if (record.callId) calls.set(record.callId, record);
+    return record;
+  };
+
+  const store = (record) => {
+    records.set(record.confirmationId, record);
+    if (record.callId) calls.set(record.callId, record);
     return record;
   };
 
@@ -155,8 +183,23 @@ export function createConfirmationController({
     const record = records.get(confirmationId);
     if (!record || record.fingerprint !== fingerprint)
       fail("confirmation_mismatch", "Confirmation does not match");
+    if (
+      ["accepted", "executing", "executed", "rejected"].includes(record.status)
+    ) {
+      const repeatedStatus = decision === "accepted" ? "accepted" : "rejected";
+      if (
+        record.status === repeatedStatus ||
+        (decision === "accepted" &&
+          ["executing", "executed"].includes(record.status))
+      )
+        return record;
+      fail(
+        "confirmation_conflicting_replay",
+        "Confirmation decision conflicts with its terminal result",
+      );
+    }
     if (Date.parse(record.expiresAt) <= now().getTime()) {
-      records.set(confirmationId, { ...record, status: "expired" });
+      store(frozen({ ...record, status: "expired" }));
       pending = null;
       fail("confirmation_expired", "Confirmation expired");
     }
@@ -175,7 +218,7 @@ export function createConfirmationController({
       fail("confirmation_invalidated", "Confirmation is no longer pending");
     const status = decision === "accepted" ? "accepted" : "rejected";
     const next = frozen({ ...record, status });
-    records.set(confirmationId, next);
+    store(next);
     pending = status === "accepted" ? next : null;
     return next;
   };
@@ -183,8 +226,6 @@ export function createConfirmationController({
   const consume = (input) => {
     const record = records.get(input.confirmationId);
     if (!record) fail("confirmation_mismatch", "Confirmation does not exist");
-    if (record.status === "executed")
-      fail("confirmation_replayed", "Confirmation has already been used");
     if (record.status === "invalidated")
       fail("confirmation_invalidated", "Confirmation was invalidated");
     if (record.status === "expired")
@@ -195,23 +236,68 @@ export function createConfirmationController({
       expected !== record.fingerprint
     )
       fail("confirmation_mismatch", "Confirmation target or arguments changed");
+    if (record.status === "executed") return record;
+    if (record.status === "executing")
+      fail(
+        "confirmation_execution_pending",
+        "Confirmation execution is already pending",
+      );
     if (
       record.status !== "accepted" ||
       !pending ||
       pending.confirmationId !== record.confirmationId
     )
       fail("confirmation_not_accepted", "Confirmation has not been accepted");
-    const executed = frozen({ ...record, status: "executed" });
-    records.set(record.confirmationId, executed);
+    const executing = frozen({ ...record, status: "executing" });
+    store(executing);
     pending = null;
-    return executed;
+    return executing;
+  };
+
+  const completeExecution = ({
+    confirmationId,
+    fingerprint,
+    terminalResult,
+  }) => {
+    const record = records.get(confirmationId);
+    if (!record || record.fingerprint !== fingerprint)
+      fail("confirmation_mismatch", "Confirmation does not match");
+    if (record.status === "executed") {
+      if (canonical(record.terminalResult) !== canonical(terminalResult))
+        fail(
+          "confirmation_conflicting_replay",
+          "Terminal confirmation result conflicts with the stored result",
+        );
+      return record;
+    }
+    if (record.status !== "executing")
+      fail(
+        "confirmation_not_executing",
+        "Confirmation is not awaiting an execution result",
+      );
+    return store(
+      frozen({
+        ...record,
+        status: "executed",
+        terminalResult,
+      }),
+    );
   };
 
   return Object.freeze({
     request,
     resolve,
     consume,
+    completeExecution,
     getPending: () => pending,
+    expirePending() {
+      if (!pending || Date.parse(pending.expiresAt) > now().getTime())
+        return null;
+      const expired = frozen({ ...pending, status: "expired" });
+      store(expired);
+      pending = null;
+      return expired;
+    },
     invalidate(reason = "invalidated") {
       if (!pending) return null;
       const invalidated = frozen({
@@ -219,7 +305,7 @@ export function createConfirmationController({
         status: "invalidated",
         invalidationReason: reason,
       });
-      records.set(pending.confirmationId, invalidated);
+      store(invalidated);
       pending = null;
       return invalidated;
     },

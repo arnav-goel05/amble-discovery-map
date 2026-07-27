@@ -805,6 +805,120 @@ test("Fever detail parsing recognizes Date and time and uses listing evidence on
   assert.equal(explicitLocationWins.address, null);
 });
 
+test("Fever detail parsing expands official ticket-selector transfer state into distinct showtimes", () => {
+  const source = readPipelineConfig().sources.find(
+    ({ adapterId }) => adapterId === "fever-singapore-rendered-v1",
+  );
+  const adapter = renderedAdapterFor(source.adapterId);
+  const url = "https://feverup.com/m/629724";
+  const session = (id, start, end, label) => ({
+    default_label: label,
+    value: {
+      id,
+      label,
+      starts_at_iso: start,
+      ends_at_iso: end,
+      has_available_tickets: true,
+    },
+    level: null,
+  });
+  const selector = {
+    "page-config": {
+      planDetail: {
+        id: 629724,
+        defaultSession: {
+          id: 101,
+          startsAtIso: "2026-08-09T20:00:00+08:00",
+          endsAtIso: "2026-08-09T21:00:00+08:00",
+        },
+      },
+    },
+    "ticket-selector-config": {
+      transferState: {
+        "LevelTicketSelectorLoader.getPlanSessionsForPlace:629724": {
+          level: {
+            type: "date",
+            items: [
+              {
+                value: { from: "2026-08-09T12:00:00+08:00" },
+                level: {
+                  type: "time",
+                  items: [
+                    {
+                      value: { from: "2026-08-09T20:00:00+08:00" },
+                      level: {
+                        type: "session",
+                        items: [
+                          session(
+                            101,
+                            "2026-08-09T20:00:00+08:00",
+                            "2026-08-09T21:00:00+08:00",
+                            "Zone A",
+                          ),
+                          session(
+                            102,
+                            "2026-08-09T20:00:00+08:00",
+                            "2026-08-09T21:00:00+08:00",
+                            "Zone B",
+                          ),
+                        ],
+                      },
+                    },
+                    {
+                      value: { from: "2026-08-09T21:30:00+08:00" },
+                      level: {
+                        type: "session",
+                        items: [
+                          session(
+                            103,
+                            "2026-08-09T21:30:00+08:00",
+                            "2026-08-09T22:30:00+08:00",
+                            "Zone A",
+                          ),
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  };
+  const parsed = adapter.detail(
+    {
+      url,
+      title: "Candlelight: Ed Sheeran Meets Coldplay",
+      text: `<main><p>Venue: The Arts House</p></main><script id="astro-tools-transfer-state" type="application/json">${JSON.stringify(selector)}</script>`,
+      links: [],
+    },
+    source,
+    url,
+    {
+      listingRecord: {
+        sourceId: "629724",
+        title: "Candlelight: Ed Sheeran Meets Coldplay",
+        dateText: "9 Aug 2026",
+        venue: "The Arts House",
+      },
+    },
+  );
+  assert.deepEqual(
+    parsed.performances.map(({ startDateTime, endDateTime }) => [
+      startDateTime,
+      endDateTime,
+    ]),
+    [
+      ["2026-08-09T20:00:00+08:00", "2026-08-09T21:00:00+08:00"],
+      ["2026-08-09T21:30:00+08:00", "2026-08-09T22:30:00+08:00"],
+    ],
+  );
+  assert.equal(parsed.schedule.kind, "selectable");
+  assert.equal(parsed.schedule.sessionRefs.length, 2);
+});
+
 test("rendered Fever collection carries card evidence into detail parsing and logs fallback accounting", async () => {
   const state = temporaryState();
   try {
@@ -1217,6 +1331,16 @@ test("Visit Singapore extracts guarded event-summary and labelled-table venues f
   );
   assert.equal(ticket.title, "Des Bishop Live in Singapore");
   assert.equal(ticket.venue, "Victoria Theatre");
+  assert.equal(ticket.timeText, "8:00 pm");
+  assert.deepEqual(ticket.performances, [
+    {
+      startDateTime: "2026-10-26T20:00:00+08:00",
+      endDateTime: null,
+      dateText: "26 Oct 2026",
+      timeText: "8:00 pm",
+    },
+  ]);
+  assert.equal(ticket.schedule.start, "2026-10-26T20:00:00+08:00");
   assert.ok(ticket.listingFallbackFields.includes("title"));
 
   const mismatched = adapter.detail(
@@ -1518,6 +1642,71 @@ test("Catch.sg and SISTIC mappers retain future-horizon records outside the mini
     sisticEvent.performances[0].startDateTime,
     "2027-03-01T20:00:00+08:00",
   );
+});
+
+test("SISTIC maps official event_date_notes into exact performance times", () => {
+  const simple = mapSisticDetail(
+    {
+      alias: "hayato1026",
+      title: "Hayato Sumino",
+      event_date: "26 Oct 2026",
+      event_date_notes: "<p>7pm</p>",
+      venue_name: { name: "Esplanade Concert Hall" },
+    },
+    {},
+    "https://www.sistic.com.sg/event-details/hayato1026",
+    1,
+  );
+  assert.equal(simple.timeText, "7pm");
+  assert.deepEqual(
+    simple.performances.map(
+      ({ startDateTime, endDateTime, schedule }) => [
+        startDateTime,
+        endDateTime,
+        schedule.evidenceReasonCode,
+      ],
+    ),
+    [
+      [
+        "2026-10-26T19:00:00+08:00",
+        null,
+        "sistic_event_date_notes_parsed",
+      ],
+    ],
+  );
+
+  const multiple = mapSisticDetail(
+    {
+      alias: "relation0826",
+      title: "Relation",
+      event_date: "16 Aug 2026",
+      event_date_notes: "<p>2.30pm & 7.30pm</p>",
+      venue_name: { name: "Drama Centre Theatre" },
+    },
+    {},
+    "https://www.sistic.com.sg/event-details/relation0826",
+    1,
+  );
+  assert.equal(multiple.timeText, "2.30pm & 7.30pm");
+  assert.deepEqual(
+    multiple.performances.map(({ startDateTime }) => startDateTime),
+    ["2026-08-16T14:30:00+08:00", "2026-08-16T19:30:00+08:00"],
+  );
+
+  const range = mapSisticDetail(
+    {
+      alias: "comicart1",
+      title: "Comic Art Workshop",
+      event_date: "16 Aug 2026",
+      event_date_notes: "<p>Sun, 16 Aug 2026 2PM - 4PM</p>",
+      venue_name: { name: "Workshop Studio" },
+    },
+    {},
+    "https://www.sistic.com.sg/event-details/comicart1",
+    1,
+  );
+  assert.equal(range.performances[0].startDateTime, "2026-08-16T14:00:00+08:00");
+  assert.equal(range.performances[0].endDateTime, "2026-08-16T16:00:00+08:00");
 });
 
 test("rendered collection proves terminal listing completion and captures each canonical detail once", async () => {
@@ -1944,6 +2133,11 @@ test("Time Out parses real schedules and venues without confusing publication da
     "https://www.timeout.com/singapore/things-to-do/show",
   );
   assert.equal(scheduled.claims.dateText, "17 Jul 2026 to 18 Jul 2026");
+  assert.equal(scheduled.claims.timeText, "10:00");
+  assert.deepEqual(
+    scheduled.performances.map(({ startDateTime }) => startDateTime),
+    ["2026-07-17T10:00:00+08:00", "2026-07-18T10:00:00+08:00"],
+  );
   assert.notEqual(scheduled.claims.dateText, "and times");
   assert.equal(
     scheduled.claims.venue,

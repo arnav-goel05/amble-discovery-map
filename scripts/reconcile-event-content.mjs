@@ -102,19 +102,36 @@ export const contentHash = (value) =>
 
 export function reconcileLandmark(current, next, sourceVenues) {
   if (!current) return { action: "create", landmark: next };
+  const landmarkEventKey = (event) =>
+    String(
+      event.identityAnchor ??
+        event.occurrenceId ??
+        event.id ??
+        stableEventKey(event),
+    );
   const ownedVenues = new Set(sourceVenues.map(normalizeVenue));
   const retained = (current.events || []).filter(
     (event) => !ownedVenues.has(normalizeVenue(event.venue)),
   );
   const events = new Map(
-    retained.map((event) => [stableEventKey(event), event]),
+    retained.map((event) => [landmarkEventKey(event), event]),
   );
+  const claimedPriorIndexes = new Set();
   for (const event of next.events || []) {
-    const prior = (current.events ?? []).find(
-      (candidate) => reconcileActivityIdentity(candidate, event) !== event,
-    );
+    let priorIndex = -1;
+    let priorScore = -1;
+    for (const [index, candidate] of (current.events ?? []).entries()) {
+      if (claimedPriorIndexes.has(index)) continue;
+      const score = publishedEventMatchScore(candidate, event);
+      if (score > priorScore) {
+        priorIndex = index;
+        priorScore = score;
+      }
+    }
+    const prior = priorIndex >= 0 ? current.events[priorIndex] : null;
+    if (prior) claimedPriorIndexes.add(priorIndex);
     const reconciled = reconcileActivityIdentity(prior, event);
-    events.set(stableEventKey(reconciled), reconciled);
+    events.set(landmarkEventKey(reconciled), reconciled);
   }
   const landmark = { ...current, ...next, events: [...events.values()] };
   return contentHash(current) === contentHash(landmark)
@@ -312,44 +329,102 @@ export function reconcileSourceAvailability({
   };
 }
 
-const samePublishedEvent = (published, current) => {
-  if (stableEventKey(published) === stableEventKey(current)) return true;
-  if (
-    published.parentActivityId &&
-    published.parentActivityId === current.parentActivityId
-  )
-    return true;
-  const publishedSources = sourceIdentities(published);
-  return [...sourceIdentities(current)].some((identity) =>
-    publishedSources.has(identity),
+const occurrenceAliases = (event) =>
+  new Set(
+    [
+      event.id,
+      event.occurrenceId,
+      event.identityAnchor,
+      event.publishedEventId,
+      ...(event.sourceOccurrenceIds ?? []),
+    ].filter(Boolean),
   );
+
+const scheduleAliases = (event) =>
+  new Set(
+    [
+      event.schedule?.start,
+      event.schedule?.end,
+      event.startsAt,
+      event.endsAt,
+      event.startDateTime,
+      event.endDateTime,
+      event.dateText,
+    ].filter(Boolean),
+  );
+
+const publishedEventMatchScore = (published, current) => {
+  const publishedAliases = occurrenceAliases(published);
+  if (
+    [...occurrenceAliases(current)].some((alias) =>
+      publishedAliases.has(alias),
+    )
+  )
+    return 100;
+  const publishedSources = sourceIdentities(published);
+  const related =
+    (published.parentActivityId &&
+      published.parentActivityId === current.parentActivityId) ||
+    [...sourceIdentities(current)].some((identity) =>
+      publishedSources.has(identity),
+    );
+  if (!related) return -1;
+  const publishedSchedule = scheduleAliases(published);
+  const currentSchedule = scheduleAliases(current);
+  const scheduleMatch = [...currentSchedule].some((value) =>
+    publishedSchedule.has(value),
+  );
+  if (publishedSchedule.size && currentSchedule.size && !scheduleMatch)
+    return -1;
+  const venueMatch =
+    normalizeVenue(published.venue) &&
+    normalizeVenue(published.venue) === normalizeVenue(current.venue);
+  if (!scheduleMatch && !venueMatch) return -1;
+  return 1 + (scheduleMatch ? 20 : 0) + (venueMatch ? 5 : 0);
 };
 
 export function reconcilePublishedLandmarks({ landmarks = [], events = [] }) {
   const removedEventIds = [];
-  const records = landmarks.map((landmark) => ({
-    ...landmark,
-    events: (landmark.events ?? []).flatMap((published) => {
-      const current = events.find((event) =>
-        samePublishedEvent(published, event),
-      );
-      if (!current) {
-        removedEventIds.push(stableEventKey(published));
-        return [];
-      }
-      return [
-        {
+  const records = landmarks.map((landmark) => {
+    const claimedCurrentIndexes = new Set();
+    return {
+      ...landmark,
+      events: (landmark.events ?? []).flatMap((published) => {
+        let currentIndex = -1;
+        let currentScore = -1;
+        for (const [index, event] of events.entries()) {
+          if (claimedCurrentIndexes.has(index)) continue;
+          const score = publishedEventMatchScore(published, event);
+          if (score > currentScore) {
+            currentIndex = index;
+            currentScore = score;
+          }
+        }
+        const current = currentIndex >= 0 ? events[currentIndex] : null;
+        if (!current) {
+          removedEventIds.push(stableEventKey(published));
+          return [];
+        }
+        claimedCurrentIndexes.add(currentIndex);
+        if (current.lifecycleState && current.lifecycleState !== "active") {
+          removedEventIds.push(stableEventKey(published));
+          return [];
+        }
+        return [
+          {
           ...published,
           ...current,
           coordinates: published.coordinates,
           venueVerified: published.venueVerified,
           publicPlacement: published.publicPlacement,
           mappingStatus: published.mappingStatus,
-          lifecycleState: published.lifecycleState,
+          lifecycleState:
+            current.lifecycleState ?? published.lifecycleState ?? "active",
         },
       ];
-    }),
-  }));
+      }),
+    };
+  });
   return { records, removedEventIds };
 }
 

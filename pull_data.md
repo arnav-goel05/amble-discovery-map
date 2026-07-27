@@ -11,12 +11,12 @@ This file is the human-readable source schedule. Executable adapter and window c
 
 | Source                         | Enabled | Adapter                              | Date filter   | Last successful use        |
 | ------------------------------ | ------- | ------------------------------------ | ------------- | -------------------------- |
-| Catch.sg                       | yes     | `catch-official-listing-v1`          | shared window | `2026-07-22T17:39:43.367Z` |
-| SISTIC                         | yes     | `sistic-official-listing-v1`         | shared window | `2026-07-22T17:42:06.450Z` |
-| Fever Singapore                | yes     | `fever-singapore-rendered-v1`        | shared window | `2026-07-21T16:53:45.756Z` |
-| Visit Singapore All Happenings | yes     | `visit-singapore-rendered-v1`        | shared window | `2026-07-21T16:55:35.909Z` |
-| Singapore Film Society         | yes     | `singapore-film-society-rendered-v1` | shared window | `2026-07-21T16:56:37.478Z` |
-| Time Out Singapore             | pilot   | `time-out-singapore-discovery-v1`    | shared window | `2026-07-21T16:58:59.238Z` |
+| Catch.sg                       | yes     | `catch-official-listing-v1`          | shared window | `2026-07-26T11:47:47.558Z` |
+| SISTIC                         | yes     | `sistic-official-listing-v1`         | shared window | `2026-07-26T11:51:38.603Z` |
+| Fever Singapore                | yes     | `fever-singapore-rendered-v1`        | shared window | `2026-07-26T11:53:12.124Z` |
+| Visit Singapore All Happenings | yes     | `visit-singapore-rendered-v1`        | shared window | `2026-07-26T11:54:51.170Z` |
+| Singapore Film Society         | yes     | `singapore-film-society-rendered-v1` | shared window | `2026-07-26T11:55:13.151Z` |
+| Time Out Singapore             | pilot   | `time-out-singapore-discovery-v1`    | shared window | `2026-07-26T11:57:07.094Z` |
 
 Adapter definitions are in `data/event-pipeline-config.json`. Update `Last successful use` only after executable source collection completes every configured page and validation step successfully.
 

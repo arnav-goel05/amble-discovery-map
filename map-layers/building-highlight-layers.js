@@ -18,7 +18,6 @@ const MOVEMENT_SETTLE_MS = 350;
 const MAX_REFINEMENT_WAIT_MS = 8_000;
 const BACKGROUND_FADE_MS = 400;
 const PRELOAD_OPACITY = 0.001;
-const BACKGROUND_MOVING_OPACITY = 0.2;
 const POI_MOVING_OPACITY = 0.8;
 
 function canonical(value) {
@@ -244,12 +243,15 @@ export function createBuildingHighlightLayerManager({
   map,
   pois,
   poiTilesetUrl,
+  diagnosticWorkloads = null,
   onBackgroundReady,
   onBackgroundError,
   onPoiReady,
   onPoiError,
 }) {
   validatePoiGeometrySet(pois);
+  const background3dEnabled = diagnosticWorkloads?.background3d !== false;
+  const highlighted3dEnabled = diagnosticWorkloads?.highlighted3d !== false;
   let configuredPois = [...pois];
   let combinedPoiTilesetUrl = poiTilesetUrl;
   let backgroundTileset = null;
@@ -274,6 +276,26 @@ export function createBuildingHighlightLayerManager({
 
   const applyRefinementState = (tileset, screenSpaceError) => {
     tileset?.setProps({ maximumScreenSpaceError: screenSpaceError });
+  };
+
+  const setTileTraversal = (loadTiles) => {
+    backgroundTileset?.setProps({ loadTiles });
+    poiTileset?.setProps({ loadTiles });
+    document.body.dataset.tileTraversalState = loadTiles ? "active" : "paused";
+  };
+
+  const setBackgroundVisibility = (visible) => {
+    backgroundLayer?.setProps({ visible });
+    if (map.getLayer?.(BACKGROUND_LAYER_ID))
+      map.setLayoutProperty?.(
+        BACKGROUND_LAYER_ID,
+        "visibility",
+        visible ? "visible" : "none",
+      );
+    document.body.dataset.backgroundInteractionVisibility = visible
+      ? "visible"
+      : "hidden";
+    map.triggerRepaint?.();
   };
 
   const updateRefinementMetadata = (
@@ -315,7 +337,7 @@ export function createBuildingHighlightLayerManager({
         initialBackgroundOpacity +
         (backgroundTarget - initialBackgroundOpacity) * eased;
       poiOpacity = initialPoiOpacity + (poiTarget - initialPoiOpacity) * eased;
-      backgroundLayer.setProps({ opacity: backgroundOpacity });
+      backgroundLayer?.setProps({ opacity: backgroundOpacity });
       poiLayer?.setProps({ opacity: poiOpacity });
       map.triggerRepaint?.();
       if (progress < 1) opacityAnimationFrame = requestAnimationFrame(update);
@@ -378,18 +400,30 @@ export function createBuildingHighlightLayerManager({
     if (waitingForSettledDetail) scheduleSettledDetail();
   };
 
-  const backgroundLayer = createBackgroundLayer({
-    ...background,
-    onTilesetReady: (tileset) => {
-      backgroundTileset = tileset;
-      applyRefinementState(backgroundTileset, BACKGROUND_SCREEN_SPACE_ERROR);
-    },
-    onContentReady: onBackgroundReady,
-    onTileActivity: () => noteTileActivity({ background: true }),
-    onTilesetError: onBackgroundError,
-  });
+  const backgroundLayer = background3dEnabled
+    ? createBackgroundLayer({
+        ...background,
+        onTilesetReady: (tileset) => {
+          backgroundTileset = tileset;
+          applyRefinementState(
+            backgroundTileset,
+            BACKGROUND_SCREEN_SPACE_ERROR,
+          );
+        },
+        onContentReady: onBackgroundReady,
+        onTileActivity: () => noteTileActivity({ background: true }),
+        onTilesetError: onBackgroundError,
+      })
+    : null;
+  const backgroundPlaceholderLayer = {
+    id: BACKGROUND_LAYER_ID,
+    type: "custom",
+    renderingMode: "3d",
+    onAdd() {},
+    render() {},
+  };
   const makePoiLayer = () =>
-    configuredPois.length
+    highlighted3dEnabled && configuredPois.length
       ? createPoiLayer({
           data: combinedPoiTilesetUrl,
           opacity: backgroundRevealed ? 1 : POI_MOVING_OPACITY,
@@ -419,7 +453,9 @@ export function createBuildingHighlightLayerManager({
     // The intro can fully cover the canvas, which lets the browser deprioritize
     // WebGL frames. Keep driving tile selection until the visible view is ready.
     map.triggerRepaint?.();
-    const readiness = backgroundViewReadiness(backgroundTileset, started);
+    const readiness = background3dEnabled
+      ? backgroundViewReadiness(backgroundTileset, started)
+      : { loaded: true, readyCount: 0, selectedCount: 0 };
     const poiReadiness = poiLayer
       ? backgroundViewReadiness(poiTileset, started)
       : { loaded: true, readyCount: 0, selectedCount: 0 };
@@ -445,7 +481,7 @@ export function createBuildingHighlightLayerManager({
       ? optionalTilesetViewReadiness(poiReadiness, poiTileset)
       : { loaded: true, renderable: true };
     const selectedViewsRenderable =
-      readiness.selectedCount > 0 &&
+      (!background3dEnabled || readiness.selectedCount > 0) &&
       readiness.readyCount === readiness.selectedCount &&
       poiViewReadiness.renderable;
     const normallyLoaded =
@@ -455,8 +491,10 @@ export function createBuildingHighlightLayerManager({
     const loaded =
       !map.isMoving?.() &&
       (normallyLoaded || (readinessTimedOut && selectedViewsRenderable));
-    if (loaded && !backgroundRevealed)
-      animateBuildingOpacity(BACKGROUND_OPACITY, 1);
+    if (loaded && !backgroundRevealed) {
+      if (background3dEnabled) animateBuildingOpacity(BACKGROUND_OPACITY, 1);
+      else backgroundRevealed = true;
+    }
     document.body.dataset.backgroundViewLoaded = String(loaded);
     document.body.dataset.backgroundViewReadyTileCount = String(
       readiness.readyCount,
@@ -489,16 +527,16 @@ export function createBuildingHighlightLayerManager({
     if (refinementMaximumTimer !== null) clearTimeout(refinementMaximumTimer);
     waitingForSettledDetail = false;
     setRefinementState("moving-coarse", MOVING_SCREEN_SPACE_ERROR);
+    setTileTraversal(false);
+    setBackgroundVisibility(false);
     if (backgroundRevealed)
-      animateBuildingOpacity(
-        BACKGROUND_MOVING_OPACITY,
-        POI_MOVING_OPACITY,
-        160,
-      );
+      animateBuildingOpacity(backgroundOpacity, POI_MOVING_OPACITY, 160);
   };
 
   const handleMoveEnd = () => {
     if (!started) return;
+    setTileTraversal(true);
+    map.triggerRepaint?.();
     updateRefinementMetadata(
       "settling",
       MOVING_SCREEN_SPACE_ERROR,
@@ -510,6 +548,7 @@ export function createBuildingHighlightLayerManager({
       lastTileActivity = Date.now();
       refinementStartedAt = lastTileActivity;
       waitingForSettledDetail = true;
+      setBackgroundVisibility(true);
       setRefinementState("refining", BACKGROUND_SCREEN_SPACE_ERROR);
       refinementMaximumTimer = window.setTimeout(
         finishSettledDetail,
@@ -530,9 +569,9 @@ export function createBuildingHighlightLayerManager({
 
   const start = () => {
     if (started || map.getLayer(BACKGROUND_LAYER_ID)) return false;
-    map.addLayer(backgroundLayer);
+    map.addLayer(backgroundLayer ?? backgroundPlaceholderLayer);
     map.setLayerZoomRange(BACKGROUND_LAYER_ID, ...BACKGROUND_ZOOM_RANGE);
-    backgroundLayer.deck.setProps({ effects: [lightingEffect] });
+    backgroundLayer?.deck.setProps({ effects: [lightingEffect] });
     if (poiLayer) {
       map.addLayer(poiLayer);
       map.setLayerZoomRange(POI_LAYER_ID, ...POI_ZOOM_RANGE);
@@ -542,6 +581,9 @@ export function createBuildingHighlightLayerManager({
     initialReadinessStartedAt = Date.now();
     document.body.dataset.buildingsLayerStarted = "true";
     document.body.dataset.backgroundBuildings = "muted-grey";
+    document.body.dataset.background3dEnabled = String(background3dEnabled);
+    document.body.dataset.highlighted3dEnabled =
+      String(highlighted3dEnabled);
     document.body.dataset.backgroundTilesetUrl = background.data;
     document.body.dataset.backgroundPoiExcluded = configuredPois
       .map((poi) => poi.label)
@@ -571,6 +613,8 @@ export function createBuildingHighlightLayerManager({
     document.body.dataset.tileRefinementMaximumWaitMs = String(
       MAX_REFINEMENT_WAIT_MS,
     );
+    document.body.dataset.tileTraversalState = "active";
+    document.body.dataset.backgroundInteractionVisibility = "visible";
     updateRefinementMetadata(
       "full-detail",
       BACKGROUND_SCREEN_SPACE_ERROR,
@@ -649,5 +693,57 @@ export function createBuildingHighlightLayerManager({
     return { ...result, changed: true };
   };
 
-  return { destroy, isBackgroundViewLoaded, reconcile, setSelectedPoi, start };
+  const diagnosticTilesetSnapshot = (tileset) => {
+    const selected = Array.isArray(tileset?.selectedTiles)
+      ? tileset.selectedTiles
+      : [];
+    return {
+      present: Boolean(tileset),
+      loaded: Boolean(tileset?.isLoaded?.()),
+      loadTiles: tileset?.options?.loadTiles ?? null,
+      maximumScreenSpaceError:
+        tileset?.options?.maximumScreenSpaceError ?? null,
+      selectedCount: selected.length,
+      renderableCount: selected.filter(
+        (tile) => tile?.contentAvailable === false || Boolean(tile?.content),
+      ).length,
+      selected: selected.slice(0, 100).map((tile) => ({
+        id: String(tile?.id ?? ""),
+        contentUrl:
+          tile?.contentUrl ??
+          tile?.content?.url ??
+          tile?.header?.content?.uri ??
+          tile?.header?.content?.url ??
+          null,
+        geometricError: tile?.geometricError ?? null,
+      })),
+    };
+  };
+
+  const diagnosticSnapshot = () => ({
+    started,
+    background3dEnabled,
+    highlighted3dEnabled,
+    backgroundLayerPresent: Boolean(map.getLayer(BACKGROUND_LAYER_ID)),
+    poiLayerPresent: Boolean(map.getLayer(POI_LAYER_ID)),
+    refinementState: document.body.dataset.tileRefinementState ?? null,
+    traversalState: document.body.dataset.tileTraversalState ?? null,
+    background: diagnosticTilesetSnapshot(backgroundTileset),
+    highlighted: diagnosticTilesetSnapshot(poiTileset),
+  });
+
+  const setDiagnosticTileTraversal = (loadTiles) => {
+    setTileTraversal(loadTiles === true);
+    return diagnosticSnapshot();
+  };
+
+  return {
+    destroy,
+    diagnosticSnapshot,
+    isBackgroundViewLoaded,
+    reconcile,
+    setDiagnosticTileTraversal,
+    setSelectedPoi,
+    start,
+  };
 }

@@ -174,6 +174,12 @@ export function matchesSchema(value, schema) {
 }
 
 export function createActionRegistry(initialContracts = []) {
+  if (!Array.isArray(initialContracts))
+    fail(
+      "invalid_action_contract",
+      "Initial action contracts must be an array",
+    );
+
   const contracts = new Map();
 
   const register = (contract) => {

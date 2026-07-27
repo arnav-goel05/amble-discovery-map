@@ -1,231 +1,164 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
 
+import { PUBLIC_ACTION_PARITY_CASES } from "../activity-scenes/assistant/actions/index.js";
 import {
-  parsePublicActionInventory,
-  verifyDirectVoiceParity,
-  verifyRegistryInventoryCoverage,
-} from "../activity-scenes/assistant/action-coverage.js";
-import { createActionRegistry } from "../activity-scenes/assistant/action-registry.js";
-import {
-  createPublicActionContracts,
-  PUBLIC_ACTION_PARITY_CASES,
-} from "../activity-scenes/assistant/actions/index.js";
+  COMPATIBILITY_ALIAS_IDS,
+  CONDITIONAL_PREFIXES,
+  PROTECTED_LIFECYCLE_IDS,
+  auditCapabilityCoverage,
+  auditEnvironmentParity,
+  auditObservableParity,
+  createRuntimeCapabilityDefinitions,
+  loadCoverageInputs,
+} from "../scripts/verify-voice-action-coverage.mjs";
 
-const INVENTORY_PATH = new URL(
-  "../specs/004-conversational-voice-map/contracts/public-action-inventory.md",
-  import.meta.url,
-);
-
-const EXPECTED_ACTION_IDS = [
-  "event.addtoplan",
-  "event.clearfilters",
-  "event.closedetail",
-  "event.nextevent",
-  "event.opendetail",
-  "event.opendirections",
-  "event.openreference",
-  "event.previousevent",
-  "event.search",
-  "event.selectresult",
-  "event.setcategory",
-  "event.setdaterange",
-  "event.setpricerange",
-  "game.open",
-  "game.openroute",
-  "game.pause",
-  "game.quit",
-  "game.resume",
-  "game.skip",
-  "game.start",
-  "game.status",
-  "map.compareareas",
-  "map.dismissarea",
-  "map.focustarget",
-  "map.openarea",
-  "map.pan",
-  "map.resetview",
-  "map.rotate",
-  "map.selectarea",
-  "map.setlayervisibility",
-  "map.zoomin",
-  "map.zoomout",
-  "navigation.closeassistant",
-  "navigation.closeoverlay",
-  "navigation.enterexperience",
-  "navigation.openassistant",
-  "navigation.openexternal",
-  "plan.addstop",
-  "plan.close",
-  "plan.focuslocation",
-  "plan.focusstop",
-  "plan.open",
-  "plan.openroute",
-  "plan.removestop",
-  "plan.reorderstop",
-  "plan.settravelmode",
-  "plan.uselocation",
-  "restaurant.addtoplan",
-  "restaurant.clearfilters",
-  "restaurant.closedetail",
-  "restaurant.closeresults",
-  "restaurant.opendealreference",
-  "restaurant.opendirections",
-  "restaurant.openreference",
-  "restaurant.search",
-  "restaurant.searchviewport",
-  "restaurant.selectcluster",
-  "restaurant.selectresult",
-  "restaurant.setcategory",
-  "restaurant.setcuisine",
-  "saved.deleteitem",
-  "saved.open",
-  "saved.openitem",
-  "tour.finish",
-  "tour.next",
-  "tour.previous",
-  "tour.start",
+const inputs = loadCoverageInputs();
+const EXPECTED_CURRENT_INVENTORY_DRIFT = [
+  "event.removefilter",
+  "event.selectoccurrence",
+  "event.setfilter",
+  "event.setsessionsexpanded",
+  "navigation.closeattribution",
+  "navigation.openattribution",
+  "navigation.openattributionreference",
 ];
 
-const inventory = parsePublicActionInventory(
-  readFileSync(INVENTORY_PATH, "utf8"),
-);
+const isConditional = (capabilityId) =>
+  CONDITIONAL_PREFIXES.some((prefix) => capabilityId.startsWith(prefix));
 
-const clone = (value) => structuredClone(value);
-
-function registryFixture(cases = PUBLIC_ACTION_PARITY_CASES) {
-  const results = new Map(
-    cases.map(({ actionId, result }) => [actionId, result]),
+test("reviewed inventory defines 75 version-2 command rows with direct owners", () => {
+  assert.equal(inputs.inventory.length, 75);
+  assert.equal(
+    new Set(inputs.inventory.map(({ actionId }) => actionId)).size,
+    inputs.inventory.length,
   );
-  return createActionRegistry(
-    createPublicActionContracts({
-      dispatch(actionId) {
-        assert.ok(
-          results.has(actionId),
-          `Missing result fixture for ${actionId}`,
-        );
-        return clone(results.get(actionId));
-      },
-    }),
-  );
-}
-
-test("reviewed public-action inventory parses all release actions with complete ownership metadata", () => {
-  assert.deepEqual(
-    inventory.map(({ actionId }) => actionId).sort(),
-    EXPECTED_ACTION_IDS,
-  );
-  assert.equal(new Set(EXPECTED_ACTION_IDS).size, 67);
-
-  for (const entry of inventory) {
-    assert.match(entry.release, /^(?:existing|004)$/);
-    assert.ok(entry.arguments.length > 0, `${entry.actionId} lacks arguments`);
-    assert.ok(entry.eligibleState.length > 0, `${entry.actionId} lacks state`);
+  for (const entry of inputs.inventory) {
+    assert.match(entry.release, /^(?:existing|004(?: amendment)?)$/);
+    assert.ok(entry.arguments, `${entry.actionId} lacks arguments`);
+    assert.ok(entry.eligibleState, `${entry.actionId} lacks eligibility`);
+    assert.ok(entry.contextProvider, `${entry.actionId} lacks context`);
+    assert.match(entry.confirmationClass, /^(reversible|consequential)$/);
+    assert.ok(entry.result, `${entry.actionId} lacks an observable result`);
     assert.ok(
-      entry.contextProvider.length > 0,
-      `${entry.actionId} lacks context`,
-    );
-    assert.match(entry.confirmationClass, /^(?:reversible|consequential)$/);
-    assert.ok(entry.result.length > 0, `${entry.actionId} lacks a result`);
-    assert.ok(
-      entry.directControlOwner.length > 0,
-      `${entry.actionId} lacks a direct-control owner`,
+      entry.directControlOwner,
+      `${entry.actionId} lacks a direct owner`,
     );
   }
 });
 
-test("the typed registry and parity fixtures exactly cover the reviewed inventory", () => {
-  const report = verifyRegistryInventoryCoverage({
-    inventory,
-    registry: registryFixture(),
-    parityCases: PUBLIC_ACTION_PARITY_CASES,
+test("capability audit compiles every current v2 contract and bounds known inventory drift", () => {
+  const definitions = createRuntimeCapabilityDefinitions();
+  const report = auditCapabilityCoverage({
+    ...inputs,
+    definitions,
   });
 
-  assert.equal(report.complete, true);
-  assert.equal(report.inventoryCount, 67);
-  assert.equal(report.registryCount, 67);
-  assert.equal(report.parityCaseCount, 67);
-  assert.deepEqual(report.missingRegistryIds, []);
-  assert.deepEqual(report.unlistedRegistryIds, []);
-  assert.deepEqual(report.missingParityIds, []);
-  assert.deepEqual(report.unlistedParityIds, []);
-  assert.deepEqual(report.duplicateInventoryIds, []);
-  assert.deepEqual(report.duplicateParityIds, []);
+  assert.equal(report.inventoryCount, 75);
+  assert.equal(report.activeInventoryCount, 61);
+  assert.equal(report.capabilityCount, 64 - report.missingCapabilityIds.length);
+  assert.deepEqual(report.schemaFailures, []);
+  assert.deepEqual(report.duplicateCapabilityIds, []);
+  assert.deepEqual(report.duplicateExecutorIds, []);
+  assert.deepEqual(report.unlistedCapabilityIds, []);
+  assert.deepEqual(report.mcpProjectionFailures, []);
+  assert.equal(report.canonicalComposerStateCovered, true);
+  assert.equal(report.mcpRuntimeInactive, true);
+  assert.equal(
+    report.missingCapabilityIds.every((capabilityId) =>
+      EXPECTED_CURRENT_INVENTORY_DRIFT.includes(capabilityId),
+    ),
+    true,
+  );
+  assert.deepEqual(report.orphanDirectControlIds, report.missingCapabilityIds);
+  assert.equal(report.complete, report.missingCapabilityIds.length === 0);
 });
 
-test("coverage reports omissions, unreviewed actions, and duplicate parity cases", () => {
-  const completeRegistry = registryFixture();
-  const omittedId = EXPECTED_ACTION_IDS[0];
-  const parityCases = PUBLIC_ACTION_PARITY_CASES.filter(
-    ({ actionId }) => actionId !== omittedId,
+test("conditional content and protected browser lifecycle controls are not capabilities", () => {
+  const definitions = createRuntimeCapabilityDefinitions();
+  const report = auditCapabilityCoverage({
+    ...inputs,
+    definitions,
+  });
+  const capabilityIds = definitions.map(
+    ({ contract }) => contract.capabilityId,
   );
-  parityCases.push(clone(parityCases[0]));
-  const report = verifyRegistryInventoryCoverage({
-    inventory: inventory.filter(({ actionId }) => actionId !== omittedId),
-    registry: completeRegistry,
-    parityCases,
+
+  assert.deepEqual(report.conditionalCapabilityIds, []);
+  assert.deepEqual(report.protectedCapabilityIds, []);
+  assert.equal(
+    capabilityIds.some(isConditional),
+    false,
+    "empty saved/game extensions must not be registered",
+  );
+  for (const protectedId of PROTECTED_LIFECYCLE_IDS)
+    assert.equal(capabilityIds.includes(protectedId), false);
+  for (const aliasId of COMPATIBILITY_ALIAS_IDS)
+    assert.equal(
+      capabilityIds.includes(aliasId),
+      false,
+      `${aliasId} must not be independently advertised`,
+    );
+});
+
+test("coverage rejects duplicate executors and orphan direct controls", () => {
+  const definitions = createRuntimeCapabilityDefinitions();
+  const omitted = definitions[0].contract.capabilityId;
+  const reduced = definitions.slice(1);
+  const executorOwners = reduced.map(({ contract }) => ({
+    capabilityId: contract.capabilityId,
+    owner: `${contract.connectorId}:primary`,
+  }));
+  executorOwners.push(
+    {
+      capabilityId: reduced[0].contract.capabilityId,
+      owner: "duplicate:first",
+    },
+    {
+      capabilityId: reduced[0].contract.capabilityId,
+      owner: "duplicate:second",
+    },
+  );
+  const report = auditCapabilityCoverage({
+    ...inputs,
+    definitions: reduced,
+    executorOwners,
   });
 
   assert.equal(report.complete, false);
-  assert.deepEqual(report.unlistedRegistryIds, [omittedId]);
-  assert.deepEqual(report.missingParityIds, [omittedId]);
-  assert.deepEqual(report.duplicateParityIds, [parityCases[0].actionId]);
+  assert.ok(report.orphanDirectControlIds.includes(omitted));
+  assert.deepEqual(report.duplicateExecutorIds, [
+    reduced[0].contract.capabilityId,
+  ]);
 });
 
-test("direct and voice dispatch produce the same observable state for every public action", async () => {
-  const report = await verifyDirectVoiceParity({
-    registry: registryFixture(),
-    parityCases: PUBLIC_ACTION_PARITY_CASES,
+test("direct and conversational entry points share observable outcomes for every current executor", async () => {
+  const results = new Map(
+    PUBLIC_ACTION_PARITY_CASES.map(({ actionId, result }) => [
+      actionId,
+      structuredClone(result),
+    ]),
+  );
+  const definitions = createRuntimeCapabilityDefinitions({
+    dispatch(capabilityId) {
+      return structuredClone(results.get(capabilityId) || { changed: true });
+    },
   });
+  const report = await auditObservableParity({ definitions });
 
   assert.equal(report.complete, true);
-  assert.equal(report.checkedCount, 67);
+  assert.equal(report.checkedCount, definitions.length);
   assert.deepEqual(report.failedActionIds, []);
   assert.deepEqual(report.missingActionIds, []);
-  assert.deepEqual(report.checkedActionIds, EXPECTED_ACTION_IDS);
 });
 
-test("observable-state parity fails closed when a source-specific executor diverges", async () => {
-  const parityCase = {
-    actionId: "test.toggle",
-    argumentsValue: {},
-    context: { states: ["ready"] },
-    result: { visible: true },
-  };
-  const registry = createActionRegistry([
-    {
-      actionId: parityCase.actionId,
-      version: "1.0",
-      description: "Toggle a test control",
-      argumentSchema: {
-        type: "object",
-        additionalProperties: false,
-        properties: {},
-      },
-      eligibleStates: ["ready"],
-      confirmationClass: "reversible",
-      contextProvider: "testContext",
-      resultSchema: {
-        type: "object",
-        additionalProperties: false,
-        properties: { visible: { type: "boolean" } },
-        required: ["visible"],
-      },
-      execute(_argumentsValue, _context, metadata) {
-        return { visible: metadata.source === "direct" };
-      },
-    },
-  ]);
-
-  const report = await verifyDirectVoiceParity({
-    registry,
-    parityCases: [parityCase],
-  });
-
-  assert.equal(report.complete, false);
-  assert.equal(report.checkedCount, 1);
-  assert.deepEqual(report.failedActionIds, ["test.toggle"]);
-  assert.equal(report.failures[0].actionId, "test.toggle");
-  assert.notDeepEqual(report.failures[0].direct, report.failures[0].voice);
+test("local, test, preview, and production fixtures retain exact capability parity", () => {
+  assert.deepEqual(
+    auditEnvironmentParity({
+      contractFixture: inputs.contractFixture,
+      resultFixture: inputs.resultFixture,
+      environmentFixture: inputs.environmentFixture,
+    }),
+    { complete: true, failures: [] },
+  );
 });

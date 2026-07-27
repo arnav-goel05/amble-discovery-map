@@ -2,7 +2,7 @@ import fs from "node:fs";
 
 const EXACT = Object.freeze({
   owner: "Arnav",
-  modelId: "gpt-realtime-2.1",
+  modelId: "gpt-realtime-2.1-mini",
   transcriptionModelId: "gpt-realtime-whisper",
   capMicroUsd: 10_000_000,
   maxSessionSeconds: 300,

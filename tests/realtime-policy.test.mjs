@@ -26,7 +26,7 @@ test("checked-in realtime policy pins the approved model, budget, and bounded se
 
   assert.equal(policy.schemaVersion, "1.0");
   assert.equal(policy.owner, "Arnav");
-  assert.equal(policy.modelId, "gpt-realtime-2.1");
+  assert.equal(policy.modelId, "gpt-realtime-2.1-mini");
   assert.equal(policy.transcriptionModelId, "gpt-realtime-whisper");
   assert.equal(policy.capMicroUsd, 10_000_000);
   assert.equal(policy.resetPolicy, "none");
@@ -37,6 +37,7 @@ test("checked-in realtime policy pins the approved model, budget, and bounded se
   assert.equal(policy.maxContextTokens, 4_000);
   assert.equal(policy.automaticResponseCreation, false);
   assert.equal(policy.imageInputEnabled, false);
+  assert.equal("fallbackModelId" in policy, false);
 });
 
 test("schema and rate-card identity fail closed", () => {
@@ -171,10 +172,10 @@ test("worst-case reservations use uncached highest enabled rates and match polic
 
   assert.deepEqual(reservation, {
     inputTranscriptionMicroUsd: 17_000,
-    responseInputMicroUsd: 128_000,
-    responseOutputMicroUsd: 32_768,
-    responseMicroUsd: 160_768,
-    turnMicroUsd: 177_768,
+    responseInputMicroUsd: 40_000,
+    responseOutputMicroUsd: 10_240,
+    responseMicroUsd: 50_240,
+    turnMicroUsd: 67_240,
   });
   assert.equal(
     reservation.inputTranscriptionMicroUsd,

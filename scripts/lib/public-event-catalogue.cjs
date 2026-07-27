@@ -155,7 +155,15 @@ function validatePublicActivityCatalogue(catalogue) {
           !Number.isFinite(longitude) ||
           !Number.isFinite(latitude)
         )
-          throw new Error("public_activity_mapped_geometry_invalid");
+          throw new Error(
+            `public_activity_mapped_geometry_invalid:${JSON.stringify({
+              activityId: activity.activityId,
+              venueGroupId: group.venueGroupId,
+              mappingStatus: group.mappingStatus ?? null,
+              approvedLocationId: group.approvedLocationId ?? null,
+              coordinates: group.coordinates ?? null,
+            })}`,
+          );
       } else offMap = true;
     }
     for (const session of activity.sessions ?? [])
@@ -215,7 +223,7 @@ function projectPublicActivityCatalogue(activities, { snapshotId = null } = {}) 
         !item.venueGroups.some(
           (group) => group.publicPlacement === "mapped",
         ) ||
-        item.venueGroups.some((group) => group.publicPlacement === "off_map"),
+        item.venueGroups.some((group) => group.publicPlacement !== "mapped"),
     ).length,
   };
   return validatePublicActivityCatalogue({
@@ -310,7 +318,19 @@ function validatePublicLandmarks(landmarks, activities) {
         group.publicPlacement === "mapped" &&
         !mappedGroupRefs.has(`${activity.activityId}\0${group.venueGroupId}`)
       )
-        throw new Error("public_landmark_mapped_group_unreferenced");
+        throw new Error(
+          `public_landmark_mapped_group_unreferenced:${JSON.stringify({
+            activityId: activity.activityId,
+            venueGroupId: group.venueGroupId,
+            approvedLocationId: group.approvedLocationId,
+            coordinates: group.coordinates,
+            occurrenceIds: group.occurrenceIds,
+            landmarkActivityRefs:
+              landmarks.find(
+                (landmark) => landmark.id === group.approvedLocationId,
+              )?.activityRefs ?? null,
+          })}`,
+        );
   return landmarks;
 }
 

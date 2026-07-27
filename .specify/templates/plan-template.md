@@ -51,6 +51,12 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
   release-wide rollback.
 - **Boundaries**: Name domain owners, validated contracts, evolving schema versions, and
   thin external adapters.
+- **Shared capabilities**: Inventory every affected user-facing capability; define its
+  versioned command or query contract, authoritative state owner, bounded validated result,
+  stable identities, contextual eligibility, post-command context refresh, and direct/
+  conversational observable-state parity. Keep MCP or other protocols as thin adapters
+  over the same registry, and verify semantic parity across local, test, preview, and
+  production environments.
 - **Quality and security**: Identify required tests, build gates, recovery coverage,
   secret handling, administrative authorization, and external-content protections.
 - **UX and performance**: Cover the required automated desktop/mobile Chromium, WebKit,

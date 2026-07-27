@@ -16,7 +16,15 @@ const pois = runDir
 const landmarks = runDir
   ? JSON.parse(
       fs.readFileSync(
-        path.join(runDir, "frontend/approved-landmarks.json"),
+        path.join(runDir, "frontend/approved-public-landmarks.json"),
+        "utf8",
+      ),
+    ).records
+  : [];
+const activities = runDir
+  ? JSON.parse(
+      fs.readFileSync(
+        path.join(runDir, "frontend/approved-activities.json"),
         "utf8",
       ),
     ).records
@@ -75,6 +83,7 @@ test.beforeEach(async ({ page }) => {
       snapshotId: path.basename(runDir),
       pois: stagedPois,
       landmarks,
+      activities,
       backgroundTilesetUrl: stagedBackground,
       poiTilesetUrl: stagedCombinedPois,
     },

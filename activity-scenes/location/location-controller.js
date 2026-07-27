@@ -10,6 +10,12 @@ const browserPosition = (position) => ({
 
 const permissionForError = (error) =>
   error?.code === 1 ? "denied" : "unavailable";
+const assistantProjection = (snapshot) =>
+  Object.freeze({
+    permission: snapshot.permission,
+    status: snapshot.status,
+    coarseAreaId: snapshot.coarseAreaId ?? null,
+  });
 
 export function createLocationController({
   geolocation = globalThis.navigator?.geolocation,
@@ -66,8 +72,19 @@ export function createLocationController({
     snapshot(options) {
       return model.snapshot(options);
     },
+    assistantSnapshot() {
+      return assistantProjection(model.snapshot());
+    },
     subscribe(subscriber, options) {
       return model.subscribe(subscriber, options);
+    },
+    subscribeAssistantContext(subscriber, options) {
+      if (typeof subscriber !== "function")
+        throw new TypeError("Location subscriber must be a function");
+      return model.subscribe(
+        (snapshot) => subscriber(assistantProjection(snapshot)),
+        options,
+      );
     },
     requestLocation() {
       if (!ensureAvailable())

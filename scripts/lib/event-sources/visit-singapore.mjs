@@ -8,6 +8,7 @@ import {
   sha,
   splitBoundedEntries,
 } from "./rendered-adapter-utils.mjs";
+import { applyEventFieldCompleteness } from "./event-field-extraction.mjs";
 
 const STRUCTURAL_LOCATION =
   /^(?:venue|location|status|event name|event date(?:\s*&\s*time)?|find tickets|venue description|venue\s*&\s*accessibility)$/i;
@@ -31,6 +32,55 @@ function dateLike(value) {
   return /\b(?:\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2})\b[^\n]*\b20\d{2}\b/i.test(
     value ?? "",
   );
+}
+
+const VISIT_MONTHS = new Map(
+  [
+    ["jan", "01"],
+    ["feb", "02"],
+    ["mar", "03"],
+    ["apr", "04"],
+    ["may", "05"],
+    ["jun", "06"],
+    ["jul", "07"],
+    ["aug", "08"],
+    ["sep", "09"],
+    ["oct", "10"],
+    ["nov", "11"],
+    ["dec", "12"],
+  ],
+);
+
+function structuredVisitPerformance(value) {
+  const match = clean(value)?.match(
+    /\b(\d{1,2})\s+(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+(20\d{2})(?:\s*\([^)]*\))?\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i,
+  );
+  if (!match) return null;
+  const month = VISIT_MONTHS.get(match[2].slice(0, 3).toLowerCase());
+  const day = match[1].padStart(2, "0");
+  let hour = Number(match[4]);
+  const minute = Number(match[5] ?? 0);
+  const meridiem = match[6].toLowerCase();
+  if (!month || hour < 1 || hour > 12 || minute > 59) return null;
+  if (hour === 12) hour = 0;
+  if (meridiem === "pm") hour += 12;
+  const date = `${match[3]}-${month}-${day}`;
+  const parsed = new Date(`${date}T00:00:00Z`);
+  if (
+    parsed.getUTCFullYear() !== Number(match[3]) ||
+    parsed.getUTCMonth() + 1 !== Number(month) ||
+    parsed.getUTCDate() !== Number(day)
+  )
+    return null;
+  const timeText = `${Number(match[4])}:${String(minute).padStart(2, "0")} ${meridiem}`;
+  return {
+    startDateTime: `${date}T${String(hour).padStart(2, "0")}:${String(
+      minute,
+    ).padStart(2, "0")}:00+08:00`,
+    endDateTime: null,
+    dateText: `${Number(match[1])} ${match[2]} ${match[3]}`,
+    timeText,
+  };
 }
 
 function usableLayoutVenue(value) {
@@ -69,7 +119,13 @@ function structuredVisitLocation(result, detailUrl, listingRecord) {
       if (!expected || comparable(lines[row + 1]) !== expected) continue;
       const venue = usableLayoutVenue(lines[row + 2]);
       if (venue)
-        return { venue, address: null, dateText: lines[row], layout: "table" };
+        return {
+          venue,
+          address: null,
+          dateText: lines[row],
+          performance: structuredVisitPerformance(lines[row]),
+          layout: "table",
+        };
     }
   }
 
@@ -274,18 +330,41 @@ function parseVisitDetail(
   if (useListingTitle) listingFallbackFields.add("title");
   const venue = parsed.venue ?? structured?.venue ?? null;
   const address = parsed.address ?? structured?.address ?? null;
-  return {
+  const performance = structured?.performance ?? null;
+  const repaired = {
     ...parsed,
     ...(listingRecord?.sourceId ? { sourceId: listingRecord.sourceId } : {}),
     title: useListingTitle ? listingRecord.title : parsed.title,
+    dateText: performance?.dateText ?? parsed.dateText,
+    timeText: performance?.timeText ?? parsed.timeText,
     venue,
     address,
+    performances: performance ? [performance] : parsed.performances,
+    schedule: performance
+      ? normalizeSchedule({
+          kind: "exact",
+          start: performance.startDateTime,
+          end: performance.endDateTime,
+          sessionRefs: [`${detailUrl}#session-1`],
+          displayText: `${performance.dateText} · ${performance.timeText}`,
+        })
+      : parsed.schedule,
     mode:
       parsed.mode === "unknown" && (venue || address)
         ? "physical"
         : parsed.mode,
     listingFallbackFields: [...listingFallbackFields].sort(),
   };
+  if (!performance) return repaired;
+  return applyEventFieldCompleteness(repaired, {
+    evidenceHash: parsed.rawDocumentHash,
+    methods: Object.fromEntries(
+      Object.entries(parsed.fieldCompleteness ?? {}).flatMap(
+        ([field, assessment]) =>
+          assessment?.method ? [[field, assessment.method]] : [],
+      ),
+    ),
+  });
 }
 
 export const visitSingaporeAdapter = {

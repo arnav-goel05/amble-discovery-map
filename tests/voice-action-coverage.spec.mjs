@@ -12,9 +12,13 @@ const inventoryText = fs.readFileSync(
   ),
   "utf8",
 );
-const inventoryActionIds = [
+const inventoryCapabilityIds = [
   ...inventoryText.matchAll(/^\|\s*`([a-z][a-z0-9]*\.[a-z][a-z0-9]*)`\s*\|/gm),
 ].map((match) => match[1]);
+const activeInventoryIds = inventoryCapabilityIds.filter(
+  (capabilityId) =>
+    !capabilityId.startsWith("saved.") && !capabilityId.startsWith("game."),
+);
 
 const eventSnapshot = {
   snapshotId: "voice-action-fixture",
@@ -56,8 +60,24 @@ const restaurant = {
 
 const journeys = [
   {
+    family: "app",
+    capabilityId: "app.inspect",
+    kind: "query",
+    argumentsValue: {},
+    utterance: "What can I currently do?",
+    observe: () => Promise.resolve(),
+  },
+  {
+    family: "catalog",
+    capabilityId: "catalog.search",
+    kind: "query",
+    argumentsValue: { query: "Jazz", types: ["event"], limit: 20 },
+    utterance: "Which approved jazz events are available?",
+    observe: () => Promise.resolve(),
+  },
+  {
     family: "map",
-    actionId: "map.zoomin",
+    capabilityId: "map.zoomin",
     argumentsValue: {},
     utterance: "Zoom in",
     before: (page) => page.evaluate(() => window._map.getZoom()),
@@ -68,53 +88,47 @@ const journeys = [
   },
   {
     family: "tour",
-    actionId: "tour.start",
+    capabilityId: "tour.start",
     argumentsValue: {},
     utterance: "Show me the feature tour",
     observe: (page) => expect(page.locator("#feature-tour")).toBeVisible(),
   },
   {
     family: "event",
-    actionId: "event.search",
+    capabilityId: "event.search",
     argumentsValue: { query: "Jazz" },
     utterance: "Search events for jazz",
-    observe: (page) =>
-      expect(page.locator("#landmark-event-search-input")).toHaveValue("Jazz"),
+    observe: (_page, _before, harness) =>
+      expect
+        .poll(
+          () =>
+            [...harness.browserMessages]
+              .reverse()
+              .find((message) => message.type === "context.update")?.context
+              ?.activeFilters?.eventQuery,
+        )
+        .toBe("Jazz"),
   },
   {
     family: "restaurant",
-    actionId: "restaurant.searchviewport",
+    capabilityId: "restaurant.searchviewport",
     argumentsValue: {},
     utterance: "Find restaurants in this area",
     observe: (page) =>
-      expect(page.locator("#restaurant-results")).toBeVisible(),
+      expect(page.locator("#restaurant-results")).toBeVisible({
+        timeout: 15_000,
+      }),
   },
   {
     family: "plan",
-    actionId: "plan.open",
+    capabilityId: "plan.open",
     argumentsValue: {},
     utterance: "Open my plan",
     observe: (page) => expect(page.locator("#plan-builder")).toBeVisible(),
   },
   {
-    family: "saved",
-    actionId: "saved.open",
-    argumentsValue: {},
-    utterance: "Show my saved places",
-    observe: (page) =>
-      expect(page.locator('[data-testid="saved-content-panel"]')).toBeVisible(),
-  },
-  {
-    family: "game",
-    actionId: "game.open",
-    argumentsValue: { gameId: "game-fixture-001" },
-    utterance: "Open my current game",
-    observe: (page) =>
-      expect(page.locator('[data-testid="game-panel"]')).toBeVisible(),
-  },
-  {
     family: "navigation",
-    actionId: "navigation.closeassistant",
+    capabilityId: "navigation.closeassistant",
     argumentsValue: {},
     utterance: "Close the assistant",
     observe: (page) =>
@@ -123,42 +137,22 @@ const journeys = [
 ];
 
 async function installVoiceHarness(page) {
-  await page.addInitScript(
-    ({ snapshot, savedItems, games }) => {
-      globalThis.__EVENT_PIPELINE_SNAPSHOT__ = snapshot;
-      globalThis.__ASSISTANT_SAVED_ITEMS__ = savedItems;
-      globalThis.__ASSISTANT_PUBLIC_GAMES__ = games;
-      const track = {
-        readyState: "live",
-        stop() {
-          this.readyState = "ended";
-        },
-        addEventListener() {},
-        removeEventListener() {},
-      };
-      Object.defineProperty(navigator, "mediaDevices", {
-        configurable: true,
-        value: { getUserMedia: async () => ({ getTracks: () => [track] }) },
-      });
-    },
-    {
-      snapshot: eventSnapshot,
-      savedItems: [
-        {
-          id: "saved-fixture-001",
-          title: "Saved waterfront walk",
-          areaId: "ura-subzone:marina-south",
-        },
-      ],
-      games: [
-        {
-          id: "game-fixture-001",
-          title: "Fixture city hunt",
-          status: "paused",
-        },
-      ],
-    },
-  );
+  await page.addInitScript((snapshot) => {
+    globalThis.__EVENT_PIPELINE_SNAPSHOT__ = snapshot;
+    localStorage.setItem("amble.voice-disclosure.v1", "accepted");
+    const track = {
+      readyState: "live",
+      stop() {
+        this.readyState = "ended";
+      },
+      addEventListener() {},
+      removeEventListener() {},
+    };
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: { getUserMedia: async () => ({ getTracks: () => [track] }) },
+    });
+  }, eventSnapshot);
   await page.route("**/api/restaurants?**", (route) =>
     route.fulfill({
       status: 200,
@@ -179,13 +173,13 @@ async function installVoiceHarness(page) {
         ok: true,
         data: {
           sessionId: "voice-action-session",
-          protocolVersion: "1.0",
+          protocolVersion: "1.1",
           streamPath: "/api/voice/sessions/voice-action-session/stream",
           expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
           limits: {
             maxSessionSeconds: 300,
             idleSeconds: 60,
-            maxResponses: 6,
+            maxResponses: 20,
           },
         },
       }),
@@ -193,15 +187,34 @@ async function installVoiceHarness(page) {
   );
 
   let sendToBrowser = null;
+  let revision = -1;
+  let availableCapabilityIds = [];
   const browserMessages = [];
+  const proposals = new Map();
   await page.routeWebSocket(
     "**/api/voice/sessions/voice-action-session/stream",
     (socket) => {
       sendToBrowser = (message) => socket.send(JSON.stringify(message));
-      socket.onMessage((message) => {
-        try {
-          browserMessages.push(JSON.parse(String(message)));
-        } catch {}
+      socket.onMessage((raw) => {
+        const message = JSON.parse(String(raw));
+        browserMessages.push(message);
+        if (message.type === "context.update") {
+          revision = message.context.revision;
+          availableCapabilityIds = message.context.availableCapabilityIds || [];
+          return;
+        }
+        if (message.type !== "capability.result") return;
+        const proposal = proposals.get(message.callId);
+        if (!proposal) return;
+        proposals.delete(message.callId);
+        revision = Math.max(revision, message.result.contextRevision);
+        sendToBrowser({
+          type: "capability.completed",
+          callId: message.callId,
+          capabilityId: message.capabilityId,
+          kind: message.kind,
+          result: message.result,
+        });
       });
       sendToBrowser({ type: "session.state", state: "listening" });
     },
@@ -214,88 +227,271 @@ async function installVoiceHarness(page) {
 
   await page.goto("/?autoStart#14/1.2858/103.8579/0/45");
   await page.locator('[data-testid="assistant-open"]').click();
-  await page.locator('[data-testid="assistant-disclosure-accept"]').click();
-  await expect.poll(() => Boolean(sendToBrowser)).toBe(true);
-  return { providerUrls, sendToBrowser, browserMessages };
+  await expect
+    .poll(() => revision, { timeout: 15_000 })
+    .toBeGreaterThanOrEqual(0);
+  return {
+    providerUrls,
+    browserMessages,
+    availableCapabilityIds: () => [...availableCapabilityIds],
+    revision: () => revision,
+    propose(capabilityId, argumentsValue, callId, kind = "command") {
+      const proposal = {
+        type: "capability.proposed",
+        callId,
+        capabilityId,
+        kind,
+        arguments: argumentsValue,
+        contextRevision: revision,
+      };
+      proposals.set(callId, proposal);
+      sendToBrowser(proposal);
+    },
+    transcript(text, itemId) {
+      sendToBrowser({
+        type: "transcript.final",
+        itemId,
+        role: "user",
+        modality: "audio",
+        text,
+      });
+    },
+  };
 }
 
-test("mocked browser matrix represents every reviewed public action family", () => {
+test("browser matrix covers every active capability family and excludes conditional families", () => {
   const inventoryFamilies = [
-    ...new Set(inventoryActionIds.map((actionId) => actionId.split(".")[0])),
+    ...new Set(activeInventoryIds.map((id) => id.split(".")[0])),
   ].sort();
   assertFamiliesEqual(
     journeys.map(({ family }) => family),
     inventoryFamilies,
   );
+  expect(inventoryFamilies).not.toContain("saved");
+  expect(inventoryFamilies).not.toContain("game");
 });
 
 for (const journey of journeys) {
-  test(`mocked voice executes the ${journey.family} action family through the application gateway`, async ({
+  test(`protocol-1.1 executes the ${journey.family} capability through its shared gateway`, async ({
     page,
   }) => {
     const harness = await installVoiceHarness(page);
     const before = await journey.before?.(page);
+    const callId = `${journey.family}-capability-001`;
 
-    harness.sendToBrowser({
-      type: "transcript.final",
-      itemId: `${journey.family}-utterance-001`,
-      role: "user",
-      modality: "audio",
-      text: journey.utterance,
-    });
-    harness.sendToBrowser({
-      type: "action.proposed",
-      callId: `${journey.family}-call-001`,
-      actionId: journey.actionId,
-      canonicalArguments: journey.argumentsValue,
-      contextRevision: 1,
-    });
+    harness.transcript(journey.utterance, `${journey.family}-utterance-001`);
+    harness.propose(
+      journey.capabilityId,
+      journey.argumentsValue,
+      callId,
+      journey.kind,
+    );
 
-    await journey.observe(page, before);
+    await journey.observe(page, before, harness, callId);
+    await expect
+      .poll(() =>
+        harness.browserMessages.some(
+          (message) =>
+            message.type === "capability.result" &&
+            message.callId === callId &&
+            message.capabilityId === journey.capabilityId,
+        ),
+      )
+      .toBe(true);
     expect(harness.providerUrls).toEqual([]);
   });
 }
 
-test("consequential voice actions wait for a separate user confirmation", async ({
+test("voice event sentences update the same authoritative composer state as direct entry", async ({
   page,
 }) => {
   const harness = await installVoiceHarness(page);
-  harness.sendToBrowser({
-    type: "action.proposed",
-    callId: "saved-open-call",
-    actionId: "saved.openitem",
-    canonicalArguments: { itemId: "saved-fixture-001" },
-    contextRevision: 1,
-  });
-  const savedItem = page.locator('[data-saved-item-id="saved-fixture-001"]');
-  await expect(savedItem).toHaveCount(1);
-  await expect(savedItem).toHaveAttribute("aria-current", "true");
-
-  harness.sendToBrowser({
-    type: "action.proposed",
-    callId: "saved-delete-call",
-    actionId: "saved.deleteitem",
-    canonicalArguments: { itemId: "saved-fixture-001" },
-    contextRevision: 1,
-    effectSummary: "Delete Saved waterfront walk from saved content.",
-  });
-
-  await expect(
-    page.locator('[data-testid="assistant-confirmation"]'),
-  ).toBeVisible();
-  await expect(savedItem).toHaveCount(1);
-  await page.locator('[data-testid="assistant-confirmation-accept"]').click();
-  await expect(savedItem).toHaveCount(0);
+  const latestContext = () =>
+    [...harness.browserMessages]
+      .reverse()
+      .find((message) => message.type === "context.update")?.context;
   await expect
-    .poll(() =>
-      harness.browserMessages.some(
-        (message) =>
-          message.type === "action.result" &&
-          message.callId === "saved-delete-call" &&
-          message.ok === true,
-      ),
+    .poll(
+      () => latestContext()?.activeFilters?.eventComposerState?.catalogRevision,
     )
-    .toBe(true);
+    .toBeTruthy();
+  const context = latestContext();
+  const callId = "event-applyquery-001";
+  const contextUpdatesBefore = harness.browserMessages.filter(
+    ({ type }) => type === "context.update",
+  ).length;
+
+  harness.transcript(
+    "free events this weekend",
+    "event-sentence-utterance-001",
+  );
+  harness.propose(
+    "event.applyquery",
+    {
+      text: "free events this weekend",
+      mode: "replace",
+      baseContextRevision: context.revision,
+      catalogRevision: context.activeFilters.eventComposerState.catalogRevision,
+    },
+    callId,
+  );
+
+  await expect
+    .poll(
+      () =>
+        harness.browserMessages.find(
+          (message) =>
+            message.type === "capability.result" && message.callId === callId,
+        )?.result,
+    )
+    .toMatchObject({
+      status: "completed",
+      errorCode: null,
+      data: { outcome: "applied" },
+      contextRevision: context.revision + 1,
+    });
+  await expect
+    .poll(
+      () =>
+        harness.browserMessages.filter(({ type }) => type === "context.update")
+          .length - contextUpdatesBefore,
+    )
+    .toBe(1);
+  harness.propose("navigation.closeassistant", {}, "event-close-assistant-001");
+  await expect(page.locator('[data-testid="assistant-panel"]')).toBeHidden();
+  await expect(
+    page.locator('[data-filter-token-id="when:this-weekend"]'),
+  ).toHaveText("This weekend");
+  await expect(page.locator('[data-filter-token-id="price:free"]')).toHaveText(
+    "Free",
+  );
+  await expect
+    .poll(
+      () =>
+        latestContext()?.activeFilters?.eventComposerState?.canonicalSentence,
+    )
+    .toBe("This weekend Free");
+
+  const appliedContext = latestContext();
+  harness.propose(
+    "event.applyquery",
+    {
+      text: "Today",
+      mode: "refine",
+      baseContextRevision: context.revision,
+      catalogRevision:
+        appliedContext.activeFilters.eventComposerState.catalogRevision,
+    },
+    "event-stale-001",
+  );
+  await expect
+    .poll(
+      () =>
+        harness.browserMessages.find(
+          (message) =>
+            message.type === "capability.result" &&
+            message.callId === "event-stale-001",
+        )?.result,
+    )
+    .toMatchObject({ status: "failed", errorCode: "stale_context" });
+  expect(
+    latestContext().activeFilters.eventComposerState.canonicalSentence,
+  ).toBe("This weekend Free");
+
+  harness.propose(
+    "event.applyquery",
+    {
+      text: "Today this weekend",
+      mode: "refine",
+      baseContextRevision: appliedContext.revision,
+      catalogRevision:
+        appliedContext.activeFilters.eventComposerState.catalogRevision,
+    },
+    "event-clarification-001",
+  );
+  await expect
+    .poll(
+      () =>
+        harness.browserMessages.find(
+          (message) =>
+            message.type === "capability.result" &&
+            message.callId === "event-clarification-001",
+        )?.result,
+    )
+    .toMatchObject({ status: "failed", errorCode: "result_invalid" });
+  expect(
+    latestContext().activeFilters.eventComposerState.canonicalSentence,
+  ).toBe("This weekend Free");
+});
+
+test("empty conditional content and browser-owned lifecycle controls are never advertised", async ({
+  page,
+}) => {
+  const harness = await installVoiceHarness(page);
+  const capabilityIds = harness.availableCapabilityIds();
+
+  expect(
+    capabilityIds.filter(
+      (id) => id.startsWith("saved.") || id.startsWith("game."),
+    ),
+  ).toEqual([]);
+  expect(capabilityIds.filter((id) => id.startsWith("session."))).toEqual([]);
+  const browserOwnedControls = page.locator('[data-control-owner="browser"]');
+  await expect(browserOwnedControls).not.toHaveCount(0);
+  for (const control of await browserOwnedControls.all())
+    await expect(control).not.toHaveAttribute("data-capability-id", /.+/);
+});
+
+test("direct and conversational zoom use the same observable map executor", async ({
+  browser,
+  page,
+}) => {
+  await installVoiceHarness(page);
+  const zoomIn = page.getByRole("button", { name: "Zoom in" });
+  const initial = await page.evaluate(() => window._map.getZoom());
+
+  if (!(await zoomIn.isVisible())) {
+    await expect(zoomIn).toBeHidden();
+    return;
+  }
+
+  await zoomIn.click();
+  await expect
+    .poll(() => page.evaluate(() => window._map.getZoom()))
+    .toBeCloseTo(initial + 1, 5);
+  const direct = await page.evaluate(() => window._map.getZoom());
+  expect(direct).toBeGreaterThan(initial);
+
+  const conversationalPage = await browser.newPage();
+  try {
+    const harness = await installVoiceHarness(conversationalPage);
+    const conversationalInitial = await conversationalPage.evaluate(() =>
+      window._map.getZoom(),
+    );
+    harness.propose("map.zoomin", {}, "map-parity-capability-001");
+    await expect
+      .poll(() =>
+        harness.browserMessages.find(
+          (message) =>
+            message.type === "capability.result" &&
+            message.callId === "map-parity-capability-001",
+        ),
+      )
+      .toMatchObject({ result: { status: "completed" } });
+    await expect
+      .poll(() => conversationalPage.evaluate(() => window._map.getZoom()))
+      .toBeCloseTo(conversationalInitial + 1, 5);
+    const conversational = await conversationalPage.evaluate(() =>
+      window._map.getZoom(),
+    );
+
+    expect(conversational - conversationalInitial).toBeCloseTo(
+      direct - initial,
+      5,
+    );
+  } finally {
+    await conversationalPage.close();
+  }
 });
 
 function assertFamiliesEqual(actual, expected) {

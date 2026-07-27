@@ -80,6 +80,26 @@ test("event date audit reports unparseable and conflicting fields", () => {
   assert.equal(parseEventDate("not a date"), null);
 });
 
+test("human schedule display evidence cannot conflict with normalized boundaries", () => {
+  const result = assessEventDateQuality(
+    {
+      id: "sistic:memory-palace:2026-07-26",
+      schedule: {
+        kind: "exact",
+        start: "2026-07-26T09:00:00+08:00",
+        end: "2026-07-26T09:00:00+08:00",
+        displayText: "26 Jul",
+      },
+      startsAt: "2026-07-26T09:00:00+08:00",
+      startDateTime: "2026-07-26T09:00:00+08:00",
+      dateText: "2026-07-26",
+    },
+    options,
+  );
+  assert.equal(result.status, "plausible");
+  assert.deepEqual(result.reasons, []);
+});
+
 test("a date-only end covers the full Singapore calendar day", () => {
   const result = assessEventDateQuality(
     {

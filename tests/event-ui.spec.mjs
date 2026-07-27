@@ -308,7 +308,7 @@ test("search selection centers the event pill without a redundant direction poin
   expect(center[1]).toBeCloseTo(1.2841, 2);
 });
 
-test("event search matches titles, venues, and dates and reports empty results", async ({
+test("event filter typing offers local free-text commit without outlined text", async ({
   page,
 }) => {
   await page.goto("/test-harness.html");
@@ -339,39 +339,205 @@ test("event search matches titles, venues, and dates and reports empty results",
       ],
     });
     const search = createLandmarkEventSearch({
-      onSearch: (query) => layer.setSearchQuery(query),
+      categories: ["Performances"],
+      onFilter: (filters) => layer.setFilters(filters),
     });
     const input = search.input;
-    const searchFor = (query) => {
-      input.value = query;
-      input.dispatchEvent(new Event("input"));
-      return {
-        hidden: document
-          .querySelector(".landmark-event-pill")
-          .getAttribute("aria-hidden"),
-        status: document.querySelector(".landmark-event-search__status")
-          .textContent,
-      };
-    };
+    input.focus();
+    const before = document
+      .querySelector(".landmark-event-pill")
+      .getAttribute("aria-hidden");
+    input.value = "opera";
+    input.dispatchEvent(new Event("input"));
+    const noOptions = document.querySelector(
+      ".landmark-event-search__no-options",
+    );
+    const noOptionsStyle = getComputedStyle(noOptions);
     const state = {
-      title: searchFor("journey"),
-      venue: searchFor("drama"),
-      date: searchFor("14 jul"),
-      none: searchFor("opera"),
+      after: document
+        .querySelector(".landmark-event-pill")
+        .getAttribute("aria-hidden"),
+      before,
+      noOptions: noOptions?.textContent,
+      noOptionsTypography: {
+        backgroundImage: noOptionsStyle.backgroundImage,
+        textFillColor: noOptionsStyle.webkitTextFillColor,
+        textShadow: noOptionsStyle.textShadow,
+        textStrokeWidth: noOptionsStyle.webkitTextStrokeWidth,
+      },
+      status: document.querySelector(".landmark-event-search__status")
+        .textContent,
+      submitButtonCount: document.querySelectorAll(
+        ".landmark-event-search__submit",
+      ).length,
     };
     search.destroy();
     layer.destroy();
     return state;
   });
   expect(result).toEqual({
-    title: { hidden: "false", status: "" },
-    venue: { hidden: "false", status: "" },
-    date: { hidden: "false", status: "" },
-    none: { hidden: "true", status: "No matching events" },
+    after: "false",
+    before: "false",
+    noOptions: "Press Enter to search for “opera”.",
+    noOptionsTypography: {
+      backgroundImage: "none",
+      textFillColor: "rgb(82, 96, 111)",
+      textShadow: "none",
+      textStrokeWidth: "0px",
+    },
+    status: "",
+    submitButtonCount: 0,
   });
 });
 
-test("event search shows selectable results and category filters", async ({
+test("event filter typing detects a suitable dimension and supports deviations", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  await page.evaluate(async () => {
+    const { createLandmarkEventSearch } =
+      await import("/activity-scenes/landmark-event-search.js");
+    globalThis.__guidedSearch = createLandmarkEventSearch({
+      categories: ["Performances"],
+      onFilter: (filters) => ({
+        matchedEvents: 0,
+        query: filters.query,
+        results: [],
+      }),
+    });
+  });
+  const input = page.locator("#landmark-event-search-input");
+  await input.focus();
+  await expect(
+    page.locator('[data-filter-option-id="what:performances"]'),
+  ).toBeVisible();
+  await page.locator('[data-filter-dimension="where"]').click();
+  await expect(input).toHaveAttribute("placeholder", "Search Where");
+  await input.fill("today");
+  await expect(
+    page.locator('[data-filter-option-id="when:today"]'),
+  ).toBeVisible();
+  await expect(
+    page.locator(".landmark-event-search__option-group-heading"),
+  ).toHaveText("When");
+
+  await input.fill("");
+  await page.locator('[data-filter-dimension="what"]').click();
+  await expect(page.locator('[data-filter-dimension="what"]')).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
+  await page.evaluate(() => globalThis.__guidedSearch.destroy());
+});
+
+test("selected dimensions stay hidden until removed from their phrase editor", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  await page.evaluate(async () => {
+    const { createLandmarkEventSearch } =
+      await import("/activity-scenes/landmark-event-search.js");
+    globalThis.__guidedSearch = createLandmarkEventSearch({
+      categories: ["Exhibitions"],
+      onFilter: (filters) => ({
+        matchedEvents: 0,
+        query: filters.query,
+        results: [],
+      }),
+    });
+  });
+  const input = page.locator("#landmark-event-search-input");
+  await input.focus();
+  await page.locator('[data-filter-dimension="when"]').click();
+  await page.locator('[data-filter-option-id="when:today"]').click();
+  await expect(page.locator('[data-filter-dimension="when"]')).toHaveCount(0);
+  const phrase = page.locator('[data-filter-token-id="when:today"]');
+  await expect(phrase).not.toHaveCSS("border-top-style", "solid");
+  await phrase.click();
+  await expect(page.locator('[data-filter-dimension="when"]')).toBeVisible();
+  await page.getByRole("button", { name: "Remove selection" }).click();
+  await expect(phrase).toHaveCount(0);
+  await expect(page.locator('[data-filter-dimension="when"]')).toBeVisible();
+  await page.evaluate(() => globalThis.__guidedSearch.destroy());
+});
+
+test("sentence composer classifies a full request locally and renders bold phrases", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  await page.evaluate(async () => {
+    const { createLandmarkEventSearch } =
+      await import("/activity-scenes/landmark-event-search.js");
+    const discoveryModel = {
+      filterOptions: () => ({
+        categories: ["Workshops & Classes"],
+        locations: [
+          {
+            id: "venue:esplanade",
+            kind: "venue",
+            value: "Esplanade",
+            label: "Esplanade",
+            availableCount: 4,
+          },
+        ],
+      }),
+      filter: (filters) => {
+        globalThis.__sentenceFilterCalls ??= [];
+        globalThis.__sentenceFilterCalls.push(filters);
+        return { matchedEvents: 0, query: filters.query, results: [] };
+      },
+    };
+    globalThis.__sentenceSearch = createLandmarkEventSearch({
+      discoveryModel,
+    });
+  });
+  const input = page.locator("#landmark-event-search-input");
+  await input.fill(
+    "Find workshops this weekend near Esplanade under $25 romantic",
+  );
+  await input.press("Enter");
+  await expect(page.locator(".landmark-event-search__token")).toHaveCount(5);
+  await expect(page.locator(".landmark-event-search__token strong")).toHaveText(
+    [
+      "Workshops & Classes",
+      "This weekend",
+      "Esplanade",
+      "Under $25",
+      "romantic",
+    ],
+  );
+  await expect(page.locator(".landmark-event-search__token i")).toHaveCount(0);
+  const state = await page.evaluate(() => {
+    const tokenStyle = getComputedStyle(
+      document.querySelector(".landmark-event-search__token"),
+    );
+    return {
+      filters: globalThis.__sentenceFilterCalls.find(
+        ({ priceRange }) => priceRange === "under-25",
+      ),
+      requests: performance
+        .getEntriesByType("resource")
+        .filter(({ name }) => /openai|chatgpt/i.test(name)).length,
+      tokenStyle: {
+        backgroundColor: tokenStyle.backgroundColor,
+        borderTopStyle: tokenStyle.borderTopStyle,
+      },
+    };
+  });
+  expect(state.filters).toMatchObject({
+    categories: ["Workshops & Classes"],
+    dateRange: "this-weekend",
+    priceRange: "under-25",
+    query: "romantic",
+    where: { kind: "venue", venueKey: "esplanade" },
+  });
+  expect(state.requests).toBe(0);
+  expect(state.tokenStyle.backgroundColor).toBe("rgba(0, 0, 0, 0)");
+  expect(state.tokenStyle.borderTopStyle).toBe("none");
+  await page.evaluate(() => globalThis.__sentenceSearch.destroy());
+});
+
+test("event filter shows selectable results and inclusive What options", async ({
   page,
 }) => {
   await page.goto("/test-harness.html");
@@ -419,27 +585,43 @@ test("event search shows selectable results and category filters", async ({
       onFilter: (filters) => layer.setFilters(filters),
       onResultSelect: (item) => layer.selectResult(item),
     });
-    search.input.value = "concert";
-    search.input.dispatchEvent(new Event("input"));
+    search.input.focus();
     const resultTitle = document.querySelector(
       ".landmark-event-search__result strong",
     )?.textContent;
     document.querySelector(".landmark-event-search__result")?.click();
+    search.input.focus();
+    document.querySelector('[data-filter-dimension="what"]')?.click();
     const categoryButtons = [
-      ...document.querySelectorAll(".landmark-event-search__category"),
+      ...document.querySelectorAll('[data-filter-option-id^="what:"]'),
     ];
+    const categories = categoryButtons.map(
+      (node) => node.querySelector("strong")?.textContent,
+    );
+    const thumbnails = categoryButtons.map((node) =>
+      node
+        .querySelector(".landmark-event-search__thumbnail img")
+        ?.getAttribute("src"),
+    );
     categoryButtons[0]?.click();
-    categoryButtons[1]?.click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    search.input.value = "workshops";
+    search.input.dispatchEvent(new Event("input"));
+    document
+      .querySelector('[data-filter-option-id="what:workshops-classes"]')
+      ?.click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     const output = {
-      categories: [
-        ...document.querySelectorAll(".landmark-event-search__category"),
-      ].map((node) => node.getAttribute("aria-label")),
-      icons: [
-        ...document.querySelectorAll(".landmark-event-search__category i"),
-      ].map((node) => node.className),
-      pressed: categoryButtons.map((node) => node.getAttribute("aria-pressed")),
+      categories,
+      thumbnails,
+      selected: [
+        ...document.querySelectorAll('[data-filter-token-id^="what:"]'),
+      ].map((node) => node.textContent),
       resultTitle,
-      selected: selection?.sourceEvents[selection.selectedEventIndex]?.id,
+      selectedEvent: selection?.sourceEvents[selection.selectedEventIndex]?.id,
+      whatDimensionCount: document.querySelectorAll(
+        '[data-filter-dimension="what"]',
+      ).length,
     };
     search.destroy();
     layer.destroy();
@@ -447,14 +629,18 @@ test("event search shows selectable results and category filters", async ({
   });
   expect(result).toEqual({
     categories: ["Performances", "Workshops & Classes"],
-    icons: ["ph-bold ph-microphone-stage", "ph-bold ph-paint-brush"],
-    pressed: ["false", "true"],
+    thumbnails: [
+      "/event-filter-thumbnails/performances.png",
+      "/event-filter-thumbnails/workshops-classes.png",
+    ],
+    selected: ["Performances", "Workshops & Classes"],
     resultTitle: "Evening Jazz Concert",
-    selected: "concert",
+    selectedEvent: "concert",
+    whatDimensionCount: 0,
   });
 });
 
-test("event search exposes a working date filter without a price filter", async ({
+test("event filter exposes a working custom date option and recognized prices", async ({
   page,
 }) => {
   await page.goto("/test-harness.html");
@@ -469,7 +655,6 @@ test("event search exposes a working date filter without a price filter", async 
       },
     });
     const endBlankByDefault = search.filters.dateEnd.value;
-    search.filters.dateEnd.value = "2026-07-14";
     search.filters.dateButton.click();
     const endBlankWhenAnyDateOpens = search.filters.dateEnd.value;
     search.filters.dateStart.value = "2026-07-14";
@@ -482,6 +667,7 @@ test("event search exposes a working date filter without a price filter", async 
     search.filters.dateEnd.dispatchEvent(new Event("input"));
     const dateLabelBeforeApply = search.filters.dateButton.textContent;
     search.filters.dateApply.click();
+    document.querySelector('[data-filter-dimension="price"]')?.click();
     const output = {
       dateLabel: search.filters.dateButton.textContent,
       dateLabelBeforeApply,
@@ -490,7 +676,11 @@ test("event search exposes a working date filter without a price filter", async 
       hasQuickScheduleFilters: Boolean(
         document.querySelector(".landmark-event-search__quick-dates"),
       ),
-      hasPriceFilter: Boolean(document.querySelector('[name="priceRange"]')),
+      priceOptions: [
+        ...document.querySelectorAll(
+          '[data-filter-option-id^="price:"] strong',
+        ),
+      ].map((node) => node.textContent),
       sameDayLabel,
       startOnlyLabel,
       filters,
@@ -504,7 +694,7 @@ test("event search exposes a working date filter without a price filter", async 
     endBlankByDefault: "",
     endBlankWhenAnyDateOpens: "",
     hasQuickScheduleFilters: false,
-    hasPriceFilter: false,
+    priceOptions: ["Free", "Under $25", "$25–$50", "$50–$100", "Over $100"],
     sameDayLabel: "14 Jul",
     startOnlyLabel: "From 14 Jul",
     filters: {
@@ -515,6 +705,7 @@ test("event search exposes a working date filter without a price filter", async 
       dateEnd: "2026-07-21",
       placementView: "all",
       priceRange: "any",
+      where: null,
     },
   });
 });
@@ -542,20 +733,24 @@ test("event location views support keyboard, touch-sized controls, empty, and er
         return { matchedEvents: results.length, query: "", results };
       },
     });
+    search.input.focus();
+    document.querySelector('[data-filter-dimension="where"]').click();
     const secretTab = search.filters.placementViews.get("secret_tba");
-    secretTab.click();
-    const result = document.querySelector(".landmark-event-search__result");
     search.input.dispatchEvent(
       new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }),
     );
-    const keyboardFocused = document.activeElement === result;
-    const touchTargets = [
-      ...document.querySelectorAll(".landmark-event-search__view"),
-    ].every((node) => node.getBoundingClientRect().height >= 44);
-    secretTab.dispatchEvent(
-      new PointerEvent("pointerup", { pointerType: "touch", bubbles: true }),
+    const keyboardFocused = document.activeElement?.classList.contains(
+      "landmark-event-search__option",
     );
+    const touchTargets = [
+      ...document.querySelectorAll(".landmark-event-search__option"),
+    ].every((node) => node.getBoundingClientRect().height >= 44);
     secretTab.click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    document
+      .querySelector('[data-filter-token-id="where:mystery-location"]')
+      .click();
+    document.querySelector(".landmark-event-search__remove-phrase").click();
     const empty = {
       state: search.root.dataset.state,
       status: document.querySelector(".landmark-event-search__status")
@@ -696,15 +891,16 @@ test("event search supports exploration before the user knows what to type", asy
       results: [
         ...document.querySelectorAll(".landmark-event-search__result strong"),
       ].map((node) => node.textContent),
-      sameWidthAsInput:
-        Math.abs(
-          search.input.getBoundingClientRect().width -
-            document
-              .querySelector(".landmark-event-search__results")
-              .getBoundingClientRect().width,
-        ) < 0.5,
+      popoverIsCompact:
+        document
+          .querySelector(".landmark-event-search__popover")
+          .getBoundingClientRect().width <= 680,
     };
-    document.querySelector('[aria-label="Workshops & Classes"]').click();
+    document.querySelector('[data-filter-dimension="what"]').click();
+    document
+      .querySelector('[data-filter-option-id="what:workshops-classes"]')
+      .click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     const filtered = {
       heading: document.querySelector(".landmark-event-search__results-title")
         ?.textContent,
@@ -722,10 +918,10 @@ test("event search supports exploration before the user knows what to type", asy
       heading: "Closest to this view",
       count: "2 found",
       results: ["Evening Jazz Concert", "Family Art Workshop"],
-      sameWidthAsInput: result.viewportWidth > 720,
+      popoverIsCompact: true,
     },
     filtered: {
-      heading: "Workshops & Classes nearest first",
+      heading: "Workshops & Classes",
       results: ["Family Art Workshop"],
     },
     viewportWidth: result.viewportWidth,
@@ -771,6 +967,53 @@ test("dismissed event search stays closed during refresh and reopens on user inp
     afterInput: "true",
     afterOtherOverlay: "false",
     afterRefresh: "false",
+  });
+});
+
+test("event filter removes and explains stale options after a dataset replacement", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const state = await page.evaluate(async () => {
+    const { createEventDiscoveryModel } =
+      await import("/activity-scenes/events/event-discovery-model.js");
+    const { createLandmarkEventSearch } =
+      await import("/activity-scenes/landmark-event-search.js");
+    const firstModel = createEventDiscoveryModel([
+      {
+        id: "hall",
+        label: "Hall",
+        anchor: { lng: 103.85, lat: 1.29 },
+        events: [
+          {
+            id: "show",
+            title: "Evening Show",
+            category: "Performances",
+          },
+        ],
+      },
+    ]);
+    const search = createLandmarkEventSearch({ discoveryModel: firstModel });
+    search.input.focus();
+    document.querySelector('[data-filter-dimension="what"]').click();
+    document
+      .querySelector('[data-filter-option-id="what:performances"]')
+      .click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    search.setDiscoveryModel(createEventDiscoveryModel([]));
+    const result = {
+      status: document.querySelector(".landmark-event-search__status")
+        .textContent,
+      tokenCount: document.querySelectorAll(
+        '[data-filter-token-id="what:performances"]',
+      ).length,
+    };
+    search.destroy();
+    return result;
+  });
+  expect(state).toEqual({
+    status: "Performances is no longer available.",
+    tokenCount: 0,
   });
 });
 

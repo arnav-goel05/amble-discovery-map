@@ -10,19 +10,19 @@ export const FEATURE_TOUR_STEPS = [
     copy: "Select an event label to see what’s happening at that place.",
   },
   {
+    selector: ".landmark-event-search__builder",
+    title: "Filter events your way",
+    copy: "Start with what, when, where, or price. Every option updates the map immediately.",
+  },
+  {
     selector: "#landmark-event-search-input",
-    title: "Search what’s nearby",
-    copy: "Search by event, venue, or activity to move quickly around Singapore.",
+    title: "Find an available option",
+    copy: "Type to narrow the choices, then select a recognized filter.",
   },
   {
-    selector: ".landmark-event-search__categories > button",
-    title: "Explore by category",
-    copy: "Narrow the map to exhibitions, performances, workshops, or experiences.",
-  },
-  {
-    selector: ".landmark-event-search__filter--dateRange button",
-    title: "Choose when to go",
-    copy: "Set a date range to find events that fit your schedule.",
+    selector: ".landmark-event-search__builder",
+    title: "Stop whenever you’re ready",
+    copy: "Keep combining removable filters in any order, or explore after just one.",
   },
   {
     selector: "#restaurant-search-button",
@@ -105,8 +105,11 @@ export function createFeatureTour({
   steps = FEATURE_TOUR_STEPS,
   storage = globalThis.localStorage,
   viewport = globalThis.window,
+  executeCapability = null,
   dispatch = null,
 } = {}) {
+  const registeredExecutor = executeCapability ?? dispatch;
+  const subscribers = new Set();
   let index = 0;
   let active = false;
   let lastFocused = null;
@@ -138,8 +141,11 @@ export function createFeatureTour({
   skip.querySelector("span")?.remove();
   skip.setAttribute("aria-label", "Skip tour");
   skip.title = "Skip tour";
+  skip.dataset.capabilityId = "tour.finish";
   const back = makeButton("feature-tour__back", "Back", "arrow-left");
+  back.dataset.capabilityId = "tour.previous";
   const next = makeButton("feature-tour__next", "Next", "arrow-right");
+  next.dataset.capabilityId = "tour.next";
   actions.append(back, next);
   card.append(skip, progress, title, copy, actions);
   root.append(spotlight, card);
@@ -195,6 +201,8 @@ export function createFeatureTour({
     back.hidden = index === 0;
     next.querySelector("span").textContent =
       index === steps.length - 1 ? "Start exploring" : "Next";
+    next.dataset.capabilityId =
+      index === steps.length - 1 ? "tour.finish" : "tour.next";
     requestAnimationFrame(position);
   };
 
@@ -209,6 +217,8 @@ export function createFeatureTour({
     viewport.removeEventListener("scroll", position, true);
     viewport.removeEventListener("keydown", handleKeydown);
     lastFocused?.focus?.({ preventScroll: true });
+    for (const subscriber of subscribers)
+      subscriber({ active, stepIndex: index, available: true });
   };
 
   function finish() {
@@ -228,6 +238,8 @@ export function createFeatureTour({
     viewport.addEventListener("resize", position);
     viewport.addEventListener("scroll", position, true);
     viewport.addEventListener("keydown", handleKeydown);
+    for (const subscriber of subscribers)
+      subscriber({ active, stepIndex: index, available: true });
     requestAnimationFrame(() => {
       root.classList.add("is-visible");
       render();
@@ -239,9 +251,12 @@ export function createFeatureTour({
   const move = (change) => {
     index = Math.min(steps.length - 1, Math.max(0, index + change));
     render();
+    for (const subscriber of subscribers)
+      subscriber({ active, stepIndex: index, available: true });
   };
   const dispatchOr = (actionId, fallback) => {
-    if (typeof dispatch === "function") return dispatch(actionId, {});
+    if (typeof registeredExecutor === "function")
+      return registeredExecutor(actionId, {});
     return fallback();
   };
   skip.addEventListener("click", () => dispatchOr("tour.finish", finish));
@@ -256,16 +271,16 @@ export function createFeatureTour({
   function handleKeydown(event) {
     if (event.key === "Escape") {
       event.preventDefault();
-      finish();
+      void dispatchOr("tour.finish", finish);
       return;
     }
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      move(1);
+      if (index < steps.length - 1) void dispatchOr("tour.next", () => move(1));
     }
     if (event.key === "ArrowLeft") {
       event.preventDefault();
-      move(-1);
+      if (index > 0) void dispatchOr("tour.previous", () => move(-1));
     }
     if (event.key === "Tab") {
       const focusable = [...card.querySelectorAll("button:not([hidden])")];
@@ -284,6 +299,7 @@ export function createFeatureTour({
   return {
     destroy() {
       close({ remember: false });
+      subscribers.clear();
       root.remove();
     },
     finish,
@@ -297,6 +313,15 @@ export function createFeatureTour({
       if (!active) return false;
       move(-1);
       return true;
+    },
+    snapshot: () => ({ active, stepIndex: index, available: true }),
+    subscribe(subscriber, { emitCurrent = false } = {}) {
+      if (typeof subscriber !== "function")
+        throw new TypeError("Tour subscriber must be a function");
+      subscribers.add(subscriber);
+      if (emitCurrent)
+        subscriber({ active, stepIndex: index, available: true });
+      return () => subscribers.delete(subscriber);
     },
     start,
   };

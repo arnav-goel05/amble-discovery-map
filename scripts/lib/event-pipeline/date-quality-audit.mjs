@@ -40,6 +40,14 @@ function dateFields(record) {
   };
 }
 
+function normalizedBoundaryFields(record) {
+  return {
+    scheduleStart: record.schedule?.start,
+    startsAt: record.startsAt,
+    startDateTime: record.startDateTime,
+  };
+}
+
 function finalFields(record) {
   return {
     finalKnownOccurrence: record.schedule?.finalKnownOccurrence,
@@ -90,7 +98,7 @@ export function assessEventDateQuality(
   const publishedStartValues = Object.entries(startFields).filter(([, value]) =>
     clean(value),
   );
-  const parsedStarts = publishedStartValues
+  const parsedStarts = Object.entries(normalizedBoundaryFields(record))
     .map(([field, value]) => ({ field, value, timestamp: parseEventDate(value) }))
     .filter(({ timestamp }) => timestamp !== null);
   const start = firstParsed(startFields);

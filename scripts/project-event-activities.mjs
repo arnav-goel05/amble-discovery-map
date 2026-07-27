@@ -40,6 +40,10 @@ const durationMs = Math.round((performance.now() - before) * 100) / 100;
 atomicJson(join(runDir, "normalized/activities.json"), projected.activities);
 atomicJson(join(runDir, "normalized/activity-grouping-reviews.json"), projected.reviews);
 atomicJson(join(runDir, "normalized/activity-grouping-decisions.json"), projected.decisions);
+atomicJson(
+  join(runDir, "normalized/parent-activity-grouping.json"),
+  projected.parentGrouping,
+);
 process.stdout.write(`${JSON.stringify({
   status: "success",
   runId: projected.activities.runId,
@@ -51,5 +55,6 @@ process.stdout.write(`${JSON.stringify({
     "normalized/activities.json",
     "normalized/activity-grouping-reviews.json",
     "normalized/activity-grouping-decisions.json",
+    "normalized/parent-activity-grouping.json",
   ],
 }, null, 2)}\n`);

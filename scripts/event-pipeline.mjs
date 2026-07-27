@@ -2409,7 +2409,7 @@ async function collectSourceCommand(options) {
     adapterVersion: source.version,
     entityType: "source",
     entityId: options.source,
-    counts: result.counts,
+    counts: state.deduplication.counts,
     reasonCode: result.blockerReasonCode ?? null,
     httpStatus: result.httpStatus ?? null,
     blocker: result.error ?? null,
@@ -2940,6 +2940,10 @@ function finalizeDedupCommand(options) {
     join(runDir, "normalized/activity-grouping-decisions.json"),
     activityProjection.decisions,
   );
+  writeJson(
+    join(runDir, "normalized/parent-activity-grouping.json"),
+    activityProjection.parentGrouping,
+  );
   for (const venue of Object.values(state.venues))
     venue.eventIds = [
       ...new Set(
@@ -2960,6 +2964,12 @@ function finalizeDedupCommand(options) {
       activityVenueGroups: activityProjection.activities.counts.venueGroups,
       sourceOffers: activityProjection.activities.counts.sourceOffers,
       activityGroupingReviews: activityProjection.reviews.counts.records,
+      parentGroupingCandidates:
+        activityProjection.parentGrouping.counts.candidates,
+      parentGroupingMerges:
+        activityProjection.parentGrouping.counts.mergedParents,
+      parentGroupingReviews:
+        activityProjection.parentGrouping.counts.reviews,
     },
     evidence: summarizeEvidenceLevels(result.events),
     artifactRefs: [
@@ -2969,6 +2979,7 @@ function finalizeDedupCommand(options) {
       "normalized/activities.json",
       "normalized/activity-grouping-reviews.json",
       "normalized/activity-grouping-decisions.json",
+      "normalized/parent-activity-grouping.json",
     ],
     blockingReviews: result.blockingReviews,
     isolatedReviewEventIds: [...isolatedReviewIds],
@@ -2982,6 +2993,7 @@ function finalizeDedupCommand(options) {
     "normalized/activities.json",
     "normalized/activity-grouping-reviews.json",
     "normalized/activity-grouping-decisions.json",
+    "normalized/parent-activity-grouping.json",
   ]);
   saveState(runDir, state);
   pipelineTrace(runDir, {
@@ -4468,6 +4480,7 @@ async function advance(options) {
     const child = spawnSync(process.execPath, args, {
       cwd: ROOT,
       encoding: "utf8",
+      maxBuffer: 16 * 1024 * 1024,
     });
     executed.push({ action: next.action, exitCode: child.status });
     if (![0, CONTINUE_EXIT_CODE].includes(child.status))
@@ -4736,6 +4749,7 @@ async function stageFrontend(options) {
       "frontend/plan.json",
       "frontend/approved-pois.json",
       "frontend/approved-landmarks.json",
+      "frontend/approved-public-landmarks.json",
       "frontend/approved-events.json",
       ...stageRefs,
     ]);

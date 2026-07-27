@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { createActionGateway } from "../activity-scenes/assistant/action-gateway.js";
+import { createCapabilityRegistry } from "../activity-scenes/assistant/capability-registry.js";
+import { createContextCoordinator } from "../activity-scenes/assistant/context-coordinator.js";
 import {
   InterfaceContextError,
   createInterfaceContext,
@@ -35,6 +38,89 @@ function initialContext(overrides = {}) {
     availableActionIds: ["map.focus_area", "restaurant.open"],
     ...overrides,
   };
+}
+
+function mutableContextConnector(initial = {}) {
+  let state = {
+    visibleTargets: [],
+    selectedTargetIds: [],
+    focusedTargetId: null,
+    availableCapabilityIds: ["map.focustarget"],
+    ...structuredClone(initial),
+  };
+  const listeners = new Set();
+  return {
+    connectorId: "fixture-context",
+    snapshot: () => structuredClone(state),
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    publish(patch) {
+      state = { ...state, ...structuredClone(patch) };
+      for (const listener of listeners) listener(structuredClone(state));
+    },
+    publishQueryResults(items) {
+      this.publish({
+        visibleTargets: items.map(({ targetId, type, label }) => ({
+          targetId,
+          type,
+          label,
+        })),
+      });
+    },
+  };
+}
+
+const closedObject = (properties, required = Object.keys(properties)) => ({
+  type: "object",
+  additionalProperties: false,
+  properties,
+  required,
+});
+
+function focusRegistry(onExecute) {
+  return createCapabilityRegistry({
+    connectors: [
+      {
+        connectorId: "map",
+        execute: async (_capabilityId, { targetId }) => {
+          onExecute(targetId);
+          return {
+            changed: true,
+            affectedTargetIds: [targetId],
+            data: { focusedTargetId: targetId },
+          };
+        },
+      },
+    ],
+    capabilities: [
+      {
+        capabilityId: "map.focustarget",
+        version: "2.0",
+        kind: "command",
+        description: "Focus a currently visible target",
+        connectorId: "map",
+        argumentSchema: closedObject({
+          targetId: {
+            type: "string",
+            minLength: 1,
+            maxLength: 256,
+          },
+        }),
+        eligibleStates: ["map_ready"],
+        confirmationClass: "reversible",
+        contextProvider: "selectionContext",
+        resultSchema: closedObject({
+          focusedTargetId: {
+            type: "string",
+            minLength: 1,
+            maxLength: 256,
+          },
+        }),
+      },
+    ],
+  });
 }
 
 test("snapshot preserves visible order and assigns current one-based ordinals", () => {
@@ -212,4 +298,151 @@ test("an active overlay is exposed without becoming an invented target", () => {
     candidateTargetIds: [],
     contextRevision: closed.revision,
   });
+});
+
+test("v2 coordinator preserves bounded query-result order for ordinal references", async () => {
+  const source = mutableContextConnector();
+  const coordinator = createContextCoordinator({ connectors: [source] });
+  await coordinator.start();
+  const queryItems = [targets[2], targets[0], targets[1]];
+
+  source.publishQueryResults(queryItems);
+  const snapshot = await coordinator.waitForPublication(1);
+
+  assert.deepEqual(
+    snapshot.visibleTargets.map(({ targetId, ordinal }) => [targetId, ordinal]),
+    [
+      ["restaurant:osm-node-42", 1],
+      ["area:marina-south", 2],
+      ["area:city-hall", 3],
+    ],
+  );
+  assert.deepEqual(
+    resolveInterfaceReference(snapshot, { kind: "ordinal", ordinal: 2 }),
+    {
+      status: "resolved",
+      targetId: "area:marina-south",
+      contextRevision: snapshot.revision,
+    },
+  );
+  coordinator.destroy();
+});
+
+test("direct-control publications advance canonical revision before dependent resolution", async () => {
+  const source = mutableContextConnector({ visibleTargets: targets });
+  const coordinator = createContextCoordinator({ connectors: [source] });
+  const initial = await coordinator.start();
+  const published = [];
+  coordinator.subscribe((snapshot) => published.push(snapshot.revision));
+
+  source.publish({
+    focusedTargetId: "area:city-hall",
+    selectedTargetIds: ["area:city-hall"],
+  });
+  const afterDirectControl = await coordinator.waitForPublication(
+    initial.revision + 1,
+  );
+
+  assert.equal(afterDirectControl.revision, initial.revision + 1);
+  assert.deepEqual(published, [afterDirectControl.revision]);
+  assert.deepEqual(
+    resolveInterfaceReference(afterDirectControl, { kind: "deictic" }),
+    {
+      status: "resolved",
+      targetId: "area:city-hall",
+      contextRevision: afterDirectControl.revision,
+    },
+  );
+  coordinator.destroy();
+});
+
+test("v2 context keeps multi-selection ambiguous instead of guessing from order", async () => {
+  const source = mutableContextConnector({ visibleTargets: targets });
+  const coordinator = createContextCoordinator({ connectors: [source] });
+  await coordinator.start();
+
+  source.publish({
+    focusedTargetId: null,
+    selectedTargetIds: ["restaurant:osm-node-42", "area:marina-south"],
+  });
+  const ambiguous = await coordinator.waitForPublication(1);
+
+  assert.deepEqual(resolveInterfaceReference(ambiguous, { kind: "deictic" }), {
+    status: "clarification_required",
+    reason: "ambiguous_reference",
+    candidateTargetIds: ["area:marina-south", "restaurant:osm-node-42"],
+    contextRevision: ambiguous.revision,
+  });
+  coordinator.destroy();
+});
+
+test("changed visible order invalidates the prior ordinal revision", async () => {
+  const source = mutableContextConnector({ visibleTargets: targets });
+  const coordinator = createContextCoordinator({ connectors: [source] });
+  const first = await coordinator.start();
+  assert.equal(
+    resolveInterfaceReference(first, {
+      kind: "ordinal",
+      ordinal: 2,
+    }).targetId,
+    "area:city-hall",
+  );
+
+  source.publishQueryResults([targets[2], targets[0], targets[1]]);
+  const reordered = await coordinator.waitForPublication(first.revision + 1);
+
+  assert.deepEqual(
+    resolveInterfaceReference(
+      reordered,
+      { kind: "ordinal", ordinal: 2 },
+      { expectedRevision: first.revision },
+    ),
+    {
+      status: "clarification_required",
+      reason: "context_revision_stale",
+      candidateTargetIds: [],
+      contextRevision: reordered.revision,
+    },
+  );
+  assert.equal(
+    resolveInterfaceReference(reordered, {
+      kind: "ordinal",
+      ordinal: 2,
+    }).targetId,
+    "area:marina-south",
+  );
+  coordinator.destroy();
+});
+
+test("v2 gateway rejects a stale proposal after visible results change", async () => {
+  const source = mutableContextConnector({ visibleTargets: targets });
+  const coordinator = createContextCoordinator({ connectors: [source] });
+  const proposedAgainst = await coordinator.start();
+  const executions = [];
+  const gateway = createActionGateway({
+    registry: focusRegistry((targetId) => executions.push(targetId)),
+  });
+
+  source.publishQueryResults([targets[2], targets[0], targets[1]]);
+  const current = await coordinator.waitForPublication(
+    proposedAgainst.revision + 1,
+  );
+
+  await assert.rejects(
+    gateway.execute(
+      "map.focustarget",
+      { targetId: "area:city-hall" },
+      { ...current, states: ["map_ready"] },
+      {
+        proposalRevision: proposedAgainst.revision,
+        targetId: "area:city-hall",
+      },
+    ),
+    (error) =>
+      error.code === "stale_context" &&
+      error.details.proposalRevision === proposedAgainst.revision &&
+      error.details.contextRevision === current.revision,
+  );
+  assert.deepEqual(executions, []);
+  coordinator.destroy();
 });

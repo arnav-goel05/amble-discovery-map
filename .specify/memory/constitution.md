@@ -1,13 +1,16 @@
 <!--
 Sync Impact Report
-- Version change: 2.2.0 -> 2.3.0
+- Version change: 2.3.0 -> 2.4.0
 - Modified principles:
-  - III. Stable Identity and Atomic Reconciliation: isolated source/event uncertainty now
-    carries forward or holds only affected identities; release-wide failures still roll back.
-  - Product, Data, and Privacy Constraints: weekly runs may retain all active and future
-    events while continuing to cover the mandatory current seven-day period.
-  - Development and Release Workflow: publication gates now distinguish branch-level
-    isolation from failures that make the assembled snapshot unsafe.
+  - IV. Domain Boundaries and Explicit Contracts -> Domain Boundaries, Shared
+    Capabilities, and Explicit Contracts: every user-facing capability now requires one
+    shared typed command/query contract, rich validated query results, observable command
+    results, authoritative post-command context synchronization, contextual eligibility,
+    environment parity, and protocol adapters without duplicated business logic.
+  - Product, Data, and Privacy Constraints: conversational search is limited to approved
+    application data unless a separate constitutional exception authorizes runtime research.
+  - Development and Release Workflow: specifications, tasks, review, and release gates now
+    require direct-interface/assistant capability parity and contract coverage.
 - Added sections: none.
 - Removed sections: none.
 - Templates:
@@ -16,13 +19,14 @@ Sync Impact Report
   - ✅ .specify/templates/tasks-template.md
   - ✅ .specify/templates/commands/ (directory absent; no command templates to update)
 - Dependent artifacts:
-  - ✅ AGENTS.md
-  - ✅ docs/weekly-operations.md
-  - ✅ specs/002-add-web-event-sources/policy-review.md
-  - ✅ specs/002-add-web-event-sources/{spec,plan,research,data-model,quickstart,tasks}.md
-  - ✅ specs/002-add-web-event-sources/contracts/rendered-event-source.md
-- Deferred items: runtime runner references remain aligned to current implementation until
-  implementation tasks T141-T142 update them with the approved v3 behavior.
+  - ✅ AGENTS.md (reviewed; no runtime-command change required)
+  - ✅ README.md (reviewed; no architecture overview change required before implementation)
+  - ✅ docs/production-configuration.md (reviewed; provider boundary remains aligned)
+  - ✅ specs/004-conversational-voice-map/{spec,plan,research,data-model,quickstart}.md
+  - ✅ specs/004-conversational-voice-map/contracts/
+  - ✅ specs/004-conversational-voice-map/tasks.md regenerated from the amended design with
+    capability-contract 2.0 and relay-protocol-1.1 migration tasks.
+- Deferred items: none.
 -->
 
 # What's Here Constitution
@@ -72,7 +76,7 @@ unverifiable MUST preserve the last approved production dataset.
 Rationale: stable reconciliation prevents duplicate highlights, stale events, visual
 layering defects, and partially published production state.
 
-### IV. Domain Boundaries and Explicit Contracts
+### IV. Domain Boundaries, Shared Capabilities, and Explicit Contracts
 
 Event discovery, venue resolution, map presentation, planning and games, restaurant
 discovery, persistence, and external adapters MUST have explicit ownership boundaries.
@@ -83,8 +87,27 @@ when they can evolve. UI components MUST own their structure and interaction beh
 pipelines supply validated data and MUST NOT generate component-specific markup. Venue-
 specific behavior MAY exist only in reviewed evidence registries or test fixtures.
 
-Rationale: clear contracts reduce accidental coupling in a product with multiple data and
-interaction pipelines.
+Every user-facing application capability MUST be represented by a versioned, typed command
+or query contract in one capability registry shared by direct UI controls, conversational
+interfaces, and any external protocol adapter. Queries MUST read authoritative application
+or approved-catalogue state and return bounded, validated domain results with stable
+identities. Commands MUST execute through the same business executor used by direct
+controls and return a validated observable outcome rather than a success assertion alone.
+After every state-changing command, the application MUST publish refreshed authoritative
+interface context, and assistant tool eligibility MUST be derived from that current state.
+Local, preview, test, and production environments MUST expose semantically equivalent
+catalogue and capability contracts; approved data and environment policy MAY differ.
+
+MCP and other external protocols MAY expose the shared capability registry, but they MUST
+remain thin adapters. They MUST NOT duplicate application business rules or bypass
+validation, provenance, authorization, confirmation, privacy, or lifecycle controls. A new
+or changed user-facing capability is incomplete until the capability inventory and
+automated parity coverage prove that direct and conversational entry points reach the same
+observable result, including failure and unavailable-state behavior.
+
+Rationale: one authoritative capability architecture prevents UI/assistant drift, gives
+conversational interfaces enough grounded state to complete tasks, and keeps optional
+integration protocols from becoming a second application backend.
 
 ### V. Testable, Secure Changes
 
@@ -150,6 +173,10 @@ future iteration.
 - Event and restaurant/deal collection MUST run weekly. Each event run MUST cover at least
   the run date through the following seven days and MAY retain all active and future events
   exposed by configured bounded source surfaces.
+- Conversational search and discovery MUST query approved application catalogue data and
+  MUST NOT perform open-web research at runtime unless a separately specified and
+  owner-approved constitutional exception defines its provenance, cost, security, privacy,
+  latency, failure, and fallback boundaries.
 - When an external source is unavailable, the last approved data MAY remain visible but
   MUST be clearly marked as potentially outdated.
 - Telegram photos and related personal verification data MUST be deleted when the associated
@@ -170,14 +197,18 @@ future iteration.
    NOT create or switch to another branch unless the user explicitly requests a different
    branch or explicitly authorizes creating one.
 2. A change starts with a testable specification containing bounded scope, acceptance
-   scenarios, failure behavior, data lifecycle, and measurable outcomes.
+   scenarios, failure behavior, data lifecycle, measurable outcomes, and the typed
+   command/query contracts for every affected user-facing capability.
 3. The implementation plan MUST pass every Constitution Check before research or coding.
    Any exception MUST be documented in Complexity Tracking with a rejected simpler option.
 4. Tasks MUST include relevant automated tests, data/provenance handling, privacy cleanup,
-   security controls, lifecycle reconciliation, documentation, and performance validation.
+   security controls, lifecycle reconciliation, documentation, performance validation,
+   capability-inventory updates, direct/conversational parity coverage, rich query-result
+   validation, post-command context synchronization, and local/production contract parity.
 5. Generated data MUST be staged separately from the approved production snapshot.
 6. Publication requires source validation, identity and geometry checks where applicable,
-   the production build, all relevant automated tests, and successful finalization.
+   the production build, all relevant automated tests, complete affected capability
+   coverage, environment-parity verification, and successful finalization.
 7. Every run MUST report unresolved work. Isolated source, event, deduplication, or venue
    uncertainty MUST preserve or hold only its affected identities while safe identities MAY
    publish in the same atomically verified snapshot. A failure that makes the assembled
@@ -185,8 +216,9 @@ future iteration.
    last approved production state. A run MUST NOT be labeled fully successful merely
    because finalization executed.
 8. Code review MUST reject fabricated evidence, venue-specific hardcoding outside approved
-   registries or fixtures, unbounded recovery loops, silent data loss, and unverified
-   generated-data changes.
+   registries or fixtures, unbounded recovery loops, silent data loss, unverified
+   generated-data changes, duplicated UI/assistant business logic, success-only tool
+   results, stale post-command assistant context, and untested capability drift.
 
 ## Governance
 
@@ -199,4 +231,4 @@ for non-semantic clarification. Every specification, plan, implementation review
 release MUST verify compliance. Unjustified violations block completion. Runtime-specific
 instructions remain in `AGENTS.md` and domain documentation but MUST conform to this file.
 
-**Version**: 2.3.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-18
+**Version**: 2.4.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-26

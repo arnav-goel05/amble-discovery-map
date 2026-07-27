@@ -23,7 +23,9 @@ on every terminal session path. Map assets are versioned checked-in artifacts, n
 **Transitions**: `idle → disclosure → connecting → listening`; listening and processing/speaking may
 cycle while limits permit. Any state may enter `degraded` or `stopping`; `stopping → stopped` is
 terminal. `awaiting_confirmation` returns to listening after accept, reject, expiry, interruption, or
-context invalidation. A stopped session cannot resume.
+context invalidation. Provider, transport, admission, kill-switch, and budget failures transition
+through `stopping → stopped` after publishing the required unavailable presentation; they never
+transition into a local conversational session. A stopped session cannot resume.
 
 ## TranscriptItem (memory only)
 
@@ -47,6 +49,34 @@ Partial events update an existing item by `itemId`; they never append duplicate 
 | `timeWindow`, `priceRange`, `crowdPreference` | nullable constraints | Explicit or inferred with confidence                        |
 | `transitConstraint`                           | nullable object      | Absent by default; present only after explicit user request |
 | `specificity`                                 | enum                 | `area`, `place`, `item`                                     |
+
+## DomainInterpretation (memory only)
+
+| Field                  | Type                 | Rules                                                                          |
+| ---------------------- | -------------------- | ------------------------------------------------------------------------------ |
+| `domain`               | enum                 | `event`, `restaurant`, `plan`, or `map`; event is required in this amendment   |
+| `normalizedUtterance`  | bounded string       | Plain text; never a selector, URL, or executable identifier                    |
+| `outcome`              | enum                 | `applicable`, `clarification_required`, or `unsupported`                       |
+| `clarificationChoices` | bounded object array | Current stable option IDs and labels only; empty unless clarification required |
+| `proposedCalls`        | bounded object array | Closed capability ID/argument pairs; empty unless applicable                   |
+| `baseContextRevision`  | integer              | Must still equal current authoritative revision at execution                   |
+| `catalogRevision`      | nullable string      | Required when interpretation depends on an option catalogue                    |
+
+Interpretation is pure and has no domain side effect. An ambiguous, unsupported, or stale
+interpretation commits nothing. Proposed calls must still pass the ordinary capability gateway.
+
+## EventComposerState (memory only)
+
+| Field               | Type                 | Rules                                                                       |
+| ------------------- | -------------------- | --------------------------------------------------------------------------- |
+| `canonicalSentence` | bounded string       | Deterministically rendered from ordered phrases plus residual query         |
+| `residualQuery`     | bounded string       | Meaningful unmatched wording projected through the existing query field     |
+| `phrases`           | bounded object array | Ordered stable What/When/Where/Price IDs, facet, label, and recognized span |
+| `catalogRevision`   | string               | Fingerprint of the exact recognized option catalogue used                   |
+| `contextRevision`   | integer              | Authoritative application revision containing this complete composer state  |
+
+`event.applyquery` replaces or refines this object atomically. The direct composer, connected
+assistant, results projection, and `InterfaceContextSnapshot` render this same post-command object.
 
 ## RecommendationCandidate (memory or approved source data)
 
@@ -73,18 +103,97 @@ Partial events update an existing item by `itemId`; they never append duplicate 
 | `candidateIds`                 | string array | Non-empty, known candidates in the area                |
 | `status`                       | enum         | `create`, `update`, `noop`, `review`, `expire`         |
 
-## VoiceActionContract (checked-in code/contract)
+## CapabilityContract (checked-in code/contract)
 
-| Field                 | Type            | Rules                                          |
-| --------------------- | --------------- | ---------------------------------------------- |
-| `actionId`, `version` | string          | Stable and unique                              |
-| `description`         | string          | User-visible semantic action                   |
-| `argumentSchema`      | JSON Schema     | Closed object; no arbitrary selectors or URLs  |
-| `eligibleStates`      | string array    | Required current application states            |
-| `confirmationClass`   | enum            | `reversible` or `consequential`                |
-| `contextProvider`     | string          | Registered provider of eligible stable targets |
-| `resultSchema`        | JSON Schema     | Observable success/failure result              |
-| `undoActionId`        | nullable string | Required when the direct UI offers undo        |
+| Field                     | Type            | Rules                                                               |
+| ------------------------- | --------------- | ------------------------------------------------------------------- |
+| `capabilityId`, `version` | string          | Stable and unique                                                   |
+| `kind`                    | enum            | `query` or `command`                                                |
+| `description`             | string          | User-visible semantic capability                                    |
+| `connectorId`             | string          | Registered authoritative domain connector                           |
+| `argumentSchema`          | JSON Schema     | Closed object; no arbitrary selectors or URLs                       |
+| `eligibleStates`          | string array    | Required current registered application states                      |
+| `confirmationClass`       | enum            | `none`, `reversible`, or `consequential`; queries always use `none` |
+| `contextProvider`         | string          | Registered provider of eligible stable targets                      |
+| `resultSchema`            | JSON Schema     | Bounded query result or observable command outcome                  |
+| `undoCapabilityId`        | nullable string | Required when the direct UI offers undo                             |
+
+## DomainConnector (code-owned adapter)
+
+| Field                 | Type          | Rules                                                                    |
+| --------------------- | ------------- | ------------------------------------------------------------------------ |
+| `connectorId`         | string        | Stable identity; one authoritative domain owner                          |
+| `capabilityIds`       | string array  | Non-empty subset registered by this connector                            |
+| `snapshot()`          | function      | Returns bounded authoritative domain state                               |
+| `subscribe(listener)` | function      | Emits after direct or assistant-originated relevant state changes        |
+| `execute()`           | function      | Commands only; invokes the domain's shared executor                      |
+| `query()`             | function      | Queries only; returns approved bounded projections                       |
+| `availability`        | enum/function | `available`, `empty`, `disabled`, `unsupported`, or policy-derived state |
+
+Connectors contain no duplicated business rules. `saved` and `game` capabilities are unavailable
+when their registered data or direct controls are empty.
+
+## CapabilityResult (memory only)
+
+| Field               | Type          | Rules                                                                  |
+| ------------------- | ------------- | ---------------------------------------------------------------------- |
+| `capabilityId`      | string        | Must match the invoked contract                                        |
+| `kind`              | enum          | `query` or `command`                                                   |
+| `status`            | enum          | `completed`, `empty`, `unavailable`, `failed`, `confirmation_required` |
+| `changed`           | boolean/null  | Required boolean for commands; `null` for queries                      |
+| `affectedTargetIds` | string array  | Known stable identities only                                           |
+| `contextRevision`   | integer       | Authoritative revision after completion                                |
+| `data`              | object/null   | Must match the capability's bounded result schema                      |
+| `errorCode`         | nullable enum | Public allowlisted failure identity; never a raw exception             |
+
+Every result validates against both the common capability-result envelope and its registered
+capability-specific result schema. For a changed command, `contextRevision` is greater than the
+proposal revision; equality is allowed only for no-op or non-completed results.
+
+## CapabilityProjection (checked-in descriptor fixture)
+
+| Field                     | Type        | Rules                                               |
+| ------------------------- | ----------- | --------------------------------------------------- |
+| `protocol`                | enum        | `realtime_function` or `mcp_foundation`             |
+| `capabilityId`, `version` | string      | Copied from one registered version-2 contract       |
+| `kind`                    | enum        | `query` or `command`; never changes semantics       |
+| `name`, `description`     | string      | Deterministically derived and bounded               |
+| `inputSchema`             | JSON Schema | Exact closed registered argument schema             |
+| `resultSchema`            | JSON Schema | Exact registered capability-specific result schema  |
+| `enabled`                 | boolean     | Always `false` for `mcp_foundation` in this release |
+
+The projection has no executor. A fixture invocation resolves the capability ID through the shared
+gateway; it cannot call a connector directly or introduce transport/authentication behavior.
+
+## InvocationContext (memory only)
+
+| Field              | Type    | Rules                                                      |
+| ------------------ | ------- | ---------------------------------------------------------- |
+| `callerOrigin`     | enum    | `direct`, `voice`, `same_session_text`, or `mcp_fixture`   |
+| `proposalRevision` | integer | Validated by the same gateway for every origin             |
+| `sessionId`        | string? | Opaque and memory-only when an active voice session exists |
+
+Caller origin is diagnostic metadata, not authority. It cannot alter eligibility, confirmation,
+privacy, validation, execution, or result semantics.
+
+## CatalogSearchResult (memory only)
+
+| Field             | Type                      | Rules                                                          |
+| ----------------- | ------------------------- | -------------------------------------------------------------- |
+| `query`           | normalized bounded string | Plain text; never interpreted as a URL or selector             |
+| `types`           | enum array                | Approved public catalogue types only                           |
+| `catalogRevision` | string                    | Hash of the ordered connector provenance vector                |
+| `sources`         | connector/revision array  | Approved snapshot plus participating dynamic-state revisions   |
+| `total`           | integer                   | Count before the response limit                                |
+| `truncated`       | boolean                   | True when `total` exceeds returned items                       |
+| `items`           | `CatalogResultItem[]`     | Maximum 20, deterministic order                                |
+| `nextCursor`      | nullable opaque string    | Optional bounded continuation; no caller-controlled offset SQL |
+
+Each `CatalogResultItem` contains `targetId`, `type`, `label`, optional area/venue/date/price/status
+summary, and an allowlisted attribute projection. It never includes raw HTML, arbitrary source
+payloads, exact user location, or an unapproved URL. Semantic validation requires
+`truncated === (total > items.length)`; `nextCursor` is non-null exactly when another bounded page
+exists.
 
 ## InterfaceContextSnapshot (memory only)
 
@@ -92,28 +201,45 @@ Partial events update an existing item by `itemId`; they never append duplicate 
 | ------------------------------------------- | ---------------------- | ------------------------------------------------------------ |
 | `revision`                                  | integer                | Monotonic; action proposals bind to it                       |
 | `viewport`                                  | object                 | Bounds, zoom, bearing; coordinates coarsened unless needed   |
+| `visibleLayers`                             | closed boolean object  | Recommendation, location, MRT-station, and MRT-line state    |
 | `visibleTargets`                            | ordered array          | Stable ID, type, ordinal, and short approved label           |
 | `focusedTargetId`, `selectedTargetIds`      | nullable/string arrays | Must reference visible/registered targets                    |
 | `activeOverlayId`                           | nullable string        | From overlay coordinator                                     |
-| `activeFilters`                             | object                 | Allowlisted current filter state                             |
+| `assistantPresentation`                     | nullable enum          | Recommendations, clarification, or honest no-match state     |
+| `activeFilters`                             | object                 | Allowlisted state including canonical `EventComposerState`   |
 | `locationState`                             | enum/object            | Permission/freshness plus coarse relative context by default |
 | `transitVisible`, `transitConstraintActive` | boolean                | Visibility never implies ranking constraint                  |
-| `availableActionIds`                        | string array           | Eligible registry subset                                     |
+| `availableCapabilityIds`                    | string array           | Eligible registry subset                                     |
+| `stateDigest`                               | string                 | Hash of assistant-relevant canonical state                   |
+
+## CapabilityTurnScope (memory only)
+
+| Field                       | Type         | Rules                                                                |
+| --------------------------- | ------------ | -------------------------------------------------------------------- |
+| `families`                  | string array | Connector families inferred from bounded request and interface state |
+| `capabilityIds`             | string array | Eligible capabilities in those families only                         |
+| `deterministicCapabilityId` | nullable ID  | Obvious command executed locally; excluded from provider tools       |
+
+The relay rebuilds provider tools before each response from this scope plus the three bounded
+foundational queries. A new authoritative context changes eligibility but does not itself expose
+every eligible command to the model.
 
 ## PendingConfirmation (memory only)
 
-| Field                                        | Type          | Rules                                                                   |
-| -------------------------------------------- | ------------- | ----------------------------------------------------------------------- |
-| `confirmationId`                             | random string | Single use                                                              |
-| `actionId`, `canonicalArguments`, `targetId` | value         | Immutable after preview                                                 |
-| `fingerprint`                                | string        | Hash of action, args, target, and context revision                      |
-| `effectSummary`                              | string        | Exact user-visible consequence                                          |
-| `createdAt`, `expiresAt`                     | timestamp     | Default expiry 25 seconds                                               |
-| `status`                                     | enum          | `pending`, `accepted`, `rejected`, `expired`, `invalidated`, `executed` |
+| Field                                            | Type          | Rules                                                                   |
+| ------------------------------------------------ | ------------- | ----------------------------------------------------------------------- |
+| `confirmationId`                                 | random string | Single use                                                              |
+| `callId`                                         | opaque string | Binds proposal, confirmation, execution, and terminal result            |
+| `capabilityId`, `canonicalArguments`, `targetId` | value         | Immutable after preview                                                 |
+| `fingerprint`                                    | string        | Hash of action, args, target, and context revision                      |
+| `effectSummary`                                  | string        | Exact user-visible consequence                                          |
+| `createdAt`, `expiresAt`                         | timestamp     | Default expiry 25 seconds                                               |
+| `status`                                         | enum          | `pending`, `accepted`, `rejected`, `expired`, `invalidated`, `executed` |
 
 Only a later final user input or direct button may move `pending → accepted`. Execution revalidates
 the fingerprint and state, then atomically moves `accepted → executed`. Every other terminal status
-has zero side effect.
+has zero side effect. Duplicate matching terminal events return the stored in-memory result;
+conflicting replays are protocol violations.
 
 ## UserLocationState (memory only)
 
@@ -138,16 +264,16 @@ has zero side effect.
 
 ## VoiceBudgetPolicy (checked-in policy plus D1 singleton)
 
-| Field                                                                 | Type      | Rules                                              |
-| --------------------------------------------------------------------- | --------- | -------------------------------------------------- |
-| `policyVersion`                                                       | string    | Pins model, transcription model, rates, and limits |
-| `owner`                                                               | string    | `Arnav (project owner)`                            |
-| `capMicroUsd`                                                         | integer   | Exactly `10_000_000`                               |
-| `spentMicroUsd`, `reservedMicroUsd`                                   | integer   | Non-negative; sum never exceeds cap                |
-| `enabled`                                                             | boolean   | D1 kill switch, default false until configured     |
-| `modelId`, `rateCardVersion`                                          | string    | Exact allowlisted values                           |
-| `maxSessionSeconds`, `idleSeconds`, `maxResponses`, `maxOutputTokens` | integer   | Server-enforced bounds                             |
-| `updatedAt`                                                           | timestamp | Operational state only                             |
+| Field                                                                 | Type      | Rules                                                                 |
+| --------------------------------------------------------------------- | --------- | --------------------------------------------------------------------- |
+| `policyVersion`                                                       | string    | Pins model, transcription model, rates, and limits                    |
+| `owner`                                                               | string    | `Arnav (project owner)`                                               |
+| `capMicroUsd`                                                         | integer   | Exactly `10_000_000`                                                  |
+| `spentMicroUsd`, `reservedMicroUsd`                                   | integer   | Non-negative; sum never exceeds cap                                   |
+| `enabled`                                                             | boolean   | D1 kill switch, default false until configured                        |
+| `modelId`, `rateCardVersion`                                          | string    | `gpt-realtime-2.1-mini` and its exact reviewed rate card; no fallback |
+| `maxSessionSeconds`, `idleSeconds`, `maxResponses`, `maxOutputTokens` | integer   | Server-enforced bounds                                                |
+| `updatedAt`                                                           | timestamp | Operational state only                                                |
 
 ## VoiceBudgetReservation (persisted, no conversation content)
 

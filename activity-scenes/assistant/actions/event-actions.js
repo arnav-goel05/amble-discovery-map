@@ -16,6 +16,29 @@ export const EVENT_ACTION_DEFINITIONS = Object.freeze([
     sampleArguments: { query: "music" },
   },
   {
+    actionId: "event.setfilter",
+    description: "Replace one event filter facet with recognized values",
+    contextProvider: "eventContext",
+    argumentSchema: objectSchema({
+      facet: { enum: ["what", "when", "where", "price"] },
+      values: {
+        type: "array",
+        items: types.id,
+        minItems: 1,
+        maxItems: 12,
+        uniqueItems: true,
+      },
+    }),
+    sampleArguments: { facet: "what", values: ["performance"] },
+  },
+  {
+    actionId: "event.removefilter",
+    description: "Remove one active event filter token",
+    contextProvider: "eventContext",
+    argumentSchema: objectSchema({ filterId: types.id }),
+    sampleArguments: { filterId: "what:performance" },
+  },
+  {
     actionId: "event.setcategory",
     description: "Set or clear the event category",
     contextProvider: "eventContext",
@@ -54,6 +77,29 @@ export const EVENT_ACTION_DEFINITIONS = Object.freeze([
     contextProvider: "eventContext",
     argumentSchema: objectSchema({ eventId: types.id }),
     sampleArguments: { eventId: "event:fixture" },
+  },
+  {
+    actionId: "event.selectoccurrence",
+    description: "Select an approved occurrence in the open event detail",
+    contextProvider: "eventContext",
+    argumentSchema: objectSchema({
+      eventId: types.id,
+      occurrenceId: types.id,
+    }),
+    sampleArguments: {
+      eventId: "event:fixture",
+      occurrenceId: "occurrence:fixture",
+    },
+  },
+  {
+    actionId: "event.setsessionsexpanded",
+    description: "Expand or collapse the open event session list",
+    contextProvider: "overlayContext",
+    argumentSchema: objectSchema({
+      eventId: types.id,
+      expanded: types.boolean,
+    }),
+    sampleArguments: { eventId: "event:fixture", expanded: true },
   },
   {
     actionId: "event.previousevent",

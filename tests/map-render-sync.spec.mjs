@@ -15,6 +15,9 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({ pa
       const map = window._map;
       const deckView = map.__deck?.props?.viewState;
       if (!deckView) return;
+      const backgroundLayer = map.__deck.layerManager
+        ?.getLayers()
+        .find(({ id }) => id === "buildings-3d");
       const center = map.getCenter();
       const anchor = [103.85927402663303, 1.2862040338634544];
       const mapPoint = map.project(anchor);
@@ -24,6 +27,14 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({ pa
         deck: [deckView.longitude, deckView.latitude, deckView.zoom, deckView.pitch, deckView.bearing],
         projectionDelta: Math.hypot(mapPoint.x - deckPoint[0], mapPoint.y - deckPoint[1]),
         refinement: document.body.dataset.tileRefinementState,
+        traversal: document.body.dataset.tileTraversalState,
+        backgroundLoadTiles:
+          backgroundLayer?.state?.tileset3d?.options?.loadTiles,
+        backgroundVisible: backgroundLayer?.props?.visible,
+        backgroundMapVisibility: map.getLayoutProperty(
+          "buildings-3d",
+          "visibility",
+        ),
         backgroundScreenSpaceError: document.body.dataset.backgroundCurrentMaximumScreenSpaceError,
         poiScreenSpaceError: document.body.dataset.poiCurrentMaximumScreenSpaceError,
       });
@@ -61,6 +72,18 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({ pa
       minimumPitch: Math.min(...samples.map(({ map }) => map[3])),
       maximumPitch: Math.max(...samples.map(({ map }) => map[3])),
       refinementStates: [...new Set(samples.map(({ refinement }) => refinement))],
+      traversalStates: [...new Set(samples.map(({ traversal }) => traversal))],
+      backgroundLoadTiles: [
+        ...new Set(samples.map(({ backgroundLoadTiles }) => backgroundLoadTiles)),
+      ],
+      backgroundVisibility: [
+        ...new Set(samples.map(({ backgroundVisible }) => backgroundVisible)),
+      ],
+      backgroundMapVisibility: [
+        ...new Set(
+          samples.map(({ backgroundMapVisibility }) => backgroundMapVisibility),
+        ),
+      ],
       backgroundScreenSpaceErrors: [...new Set(samples.map(({ backgroundScreenSpaceError }) => backgroundScreenSpaceError))],
       poiScreenSpaceErrors: [...new Set(samples.map(({ poiScreenSpaceError }) => poiScreenSpaceError))],
     };
@@ -73,6 +96,14 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({ pa
   expect(result.maximumPitch).toBeCloseTo(45, 5);
   expect(result.refinementStates).toContain("moving-coarse");
   expect(result.refinementStates).toContain("full-detail");
+  expect(result.traversalStates).toContain("paused");
+  expect(result.traversalStates).toContain("active");
+  expect(result.backgroundLoadTiles).toContain(false);
+  expect(result.backgroundLoadTiles).toContain(true);
+  expect(result.backgroundVisibility).toContain(false);
+  expect(result.backgroundVisibility).toContain(true);
+  expect(result.backgroundMapVisibility).toContain("none");
+  expect(result.backgroundMapVisibility).toContain("visible");
   expect(result.backgroundScreenSpaceErrors).toContain("24");
   expect(result.backgroundScreenSpaceErrors).toContain("4");
   expect(result.poiScreenSpaceErrors).toContain("24");

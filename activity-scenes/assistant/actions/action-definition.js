@@ -17,6 +17,30 @@ const resultSchema = objectSchema({
   changed: types.boolean,
 });
 
+function commandExecutor(definition, { dispatch = null, commands = {} } = {}) {
+  return async (argumentsValue, context, metadata) => {
+    const command = commands[definition.actionId];
+    const executor =
+      typeof command === "function"
+        ? command
+        : (command?.execute ?? command?.direct);
+    if (typeof dispatch !== "function" && typeof executor !== "function")
+      throw new Error(`Direct command ${definition.actionId} is unavailable`);
+    const value = await (dispatch
+      ? dispatch(
+          definition.actionId,
+          structuredClone(argumentsValue),
+          context,
+          metadata,
+        )
+      : executor(structuredClone(argumentsValue), context, metadata));
+    return {
+      actionId: definition.actionId,
+      changed: value?.changed !== false,
+    };
+  };
+}
+
 export function actionContracts(
   definitions,
   { dispatch = null, commands = {} } = {},
@@ -30,32 +54,44 @@ export function actionContracts(
     confirmationClass: definition.confirmationClass || "reversible",
     contextProvider: definition.contextProvider,
     resultSchema,
-    execute: async (argumentsValue, context, metadata) => {
-      const command = commands[definition.actionId];
-      const executor =
-        typeof command === "function"
-          ? command
-          : (command?.execute ?? command?.direct);
-      if (typeof dispatch !== "function" && typeof executor !== "function")
-        throw new Error(`Direct command ${definition.actionId} is unavailable`);
-      const value = await (dispatch
-        ? dispatch(
-            definition.actionId,
-            structuredClone(argumentsValue),
-            context,
-            metadata,
-          )
-        : executor(structuredClone(argumentsValue), context, metadata));
-      return {
-        actionId: definition.actionId,
-        changed: value?.changed !== false,
-      };
+    execute: commandExecutor(definition, { dispatch, commands }),
+  }));
+}
+
+export function capabilityContracts(
+  definitions,
+  { connectorId, dispatch = null, commands = {} } = {},
+) {
+  if (typeof connectorId !== "string" || !connectorId)
+    throw new TypeError("connectorId is required for capability contracts");
+  return definitions.map((definition) => ({
+    contract: {
+      capabilityId: definition.actionId,
+      version: "2.0",
+      kind: "command",
+      description: definition.description,
+      connectorId,
+      argumentSchema: definition.argumentSchema || objectSchema(),
+      eligibleStates: definition.eligibleStates || ["application_ready"],
+      confirmationClass: definition.confirmationClass || "reversible",
+      contextProvider: definition.contextProvider,
+      resultSchema,
+      ...(definition.undoActionId
+        ? { undoCapabilityId: definition.undoActionId }
+        : {}),
+    },
+    runtime: {
+      execute: commandExecutor(definition, { dispatch, commands }),
     },
   }));
 }
 
 export function registerContracts(registry, contracts) {
-  for (const contract of contracts) registry.register(contract);
+  for (const definition of contracts)
+    registry.register(
+      definition.contract || definition,
+      definition.runtime || undefined,
+    );
   return contracts;
 }
 

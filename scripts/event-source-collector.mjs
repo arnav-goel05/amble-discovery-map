@@ -25,6 +25,11 @@ import {
   assessActivityInclusion,
   normalizeSchedule,
 } from "./lib/event-sources/activity-policy.mjs";
+import {
+  explicitContinuousSchedule,
+  officialProductAuthorityRefs,
+  parseEnumeratedSchedule,
+} from "./lib/event-sources/schedule-semantics.mjs";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 
@@ -367,6 +372,13 @@ function performancesFrom(detail, fallback = {}) {
       ) ??
       fallback.timeText ??
       null,
+    schedule:
+      item?.schedule && typeof item.schedule === "object"
+        ? structuredClone(item.schedule)
+        : {
+            kind: "exact",
+            evidenceReasonCode: "structured_performance_exact",
+          },
   }));
 }
 
@@ -597,6 +609,126 @@ function detailUrlForListing(source, listing) {
   }
 }
 
+function sisticNotesText(value) {
+  return String(value ?? "")
+    .replace(/<br\s*\/?\s*>|<\/p>|<\/li>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .split("\n")
+    .map((line) => line.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+}
+
+function sisticDate(value) {
+  const match = String(value ?? "").match(
+    /\b(\d{1,2})\s+(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+(20\d{2})\b/i,
+  );
+  const month = MONTHS.get(match?.[2]?.slice(0, 3).toLowerCase());
+  if (!match || !month) return null;
+  const date = `${match[3]}-${String(month).padStart(2, "0")}-${String(
+    Number(match[1]),
+  ).padStart(2, "0")}`;
+  const parsed = new Date(`${date}T00:00:00Z`);
+  return parsed.getUTCFullYear() === Number(match[3]) &&
+    parsed.getUTCMonth() + 1 === month &&
+    parsed.getUTCDate() === Number(match[1])
+    ? date
+    : null;
+}
+
+function sisticClockMatches(value) {
+  return [
+    ...String(value ?? "").matchAll(
+      /\b(\d{1,2})(?:([:.])(\d{2}))?\s*(am|pm)\b/gi,
+    ),
+  ].flatMap((match) => {
+    let hour = Number(match[1]);
+    const minute = Number(match[3] ?? 0);
+    const meridiem = match[4].toLowerCase();
+    if (hour < 1 || hour > 12 || minute > 59) return [];
+    if (hour === 12) hour = 0;
+    if (meridiem === "pm") hour += 12;
+    return [
+      {
+        index: match.index,
+        endIndex: match.index + match[0].length,
+        iso: `${String(hour).padStart(2, "0")}:${String(minute).padStart(
+          2,
+          "0",
+        )}`,
+        display: match[0].replace(/\s+/g, " ").trim(),
+      },
+    ];
+  });
+}
+
+function parseSisticEventDateNotes(notes, dateText) {
+  const lines = sisticNotesText(notes);
+  const fallbackDates = [
+    ...String(dateText ?? "").matchAll(
+      /\b\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+20\d{2}\b/gi,
+    ),
+  ];
+  const fallbackDate =
+    fallbackDates.length === 1 && !/\b(?:to|until|through)\b|\s[-–—]\s/i.test(dateText ?? "")
+      ? sisticDate(fallbackDates[0][0])
+      : null;
+  const performances = [];
+  const timeLabels = [];
+  for (const line of lines) {
+    const clocks = sisticClockMatches(line);
+    if (!clocks.length) continue;
+    const date = sisticDate(line) ?? fallbackDate;
+    const separator =
+      clocks.length >= 2
+        ? line.slice(clocks[0].endIndex, clocks[1].index)
+        : "";
+    const isRange = clocks.length === 2 && /^\s*(?:[-–—]|to)\s*$/i.test(separator);
+    timeLabels.push(
+      isRange
+        ? `${clocks[0].display} - ${clocks[1].display}`
+        : clocks.map(({ display }) => display).join(" & "),
+    );
+    if (!date) continue;
+    if (isRange) {
+      performances.push({
+        startDateTime: `${date}T${clocks[0].iso}:00+08:00`,
+        endDateTime: `${date}T${clocks[1].iso}:00+08:00`,
+        dateText: date,
+        timeText: `${clocks[0].display} - ${clocks[1].display}`,
+        schedule: {
+          kind: "exact",
+          evidenceReasonCode: "sistic_event_date_notes_parsed",
+        },
+      });
+      continue;
+    }
+    for (const clock of clocks)
+      performances.push({
+        startDateTime: `${date}T${clock.iso}:00+08:00`,
+        endDateTime: null,
+        dateText: date,
+        timeText: clock.display,
+        schedule: {
+          kind: "exact",
+          evidenceReasonCode: "sistic_event_date_notes_parsed",
+        },
+      });
+  }
+  return {
+    timeText: [...new Set(timeLabels)].join("; ") || null,
+    performances: [
+      ...new Map(
+        performances.map((performance) => [
+          `${performance.startDateTime}\0${performance.endDateTime ?? ""}`,
+          performance,
+        ]),
+      ).values(),
+    ],
+  };
+}
+
 export function mapSisticDetail(detail, listing, detailUrl, listingPage) {
   const venueValue =
     first(detail, ["/venue_name/name", "/venue_name", "/venue/name"]) ??
@@ -617,15 +749,21 @@ export function mapSisticDetail(detail, listing, detailUrl, listingPage) {
   const dateText =
     text(first(detail, ["/event_date", "/date_text"])) ??
     text(first(listing, ["/event_date"]));
+  const notesSchedule = parseSisticEventDateNotes(
+    first(detail, ["/event_date_notes", "/date_notes"]),
+    dateText,
+  );
   const fixture = {
-    adapterVersion: "1.0",
+    adapterVersion: "1.1",
     listingPage,
     detailUrl,
     sourceId: text(detail.alias) ?? text(listing.alias),
     title: text(detail.title) ?? text(listing.title),
     mode: modeFrom(first(detail, ["/event_format", "/format", "/mode"]), venue),
     dateText,
-    timeText: text(first(detail, ["/event_time", "/time_text"])),
+    timeText:
+      notesSchedule.timeText ??
+      text(first(detail, ["/event_time", "/time_text"])),
     venue,
     address: text(
       first(detail, ["/venue_name/address", "/venue_address", "/address"]),
@@ -635,9 +773,16 @@ export function mapSisticDetail(detail, listing, detailUrl, listingPage) {
     price: text(first(detail, ["/price", "/price_range", "/ticket_price"])),
     description: text(first(detail, ["/description", "/synopsis"])),
     organizer: text(first(detail, ["/organizer", "/promoter", "/presenter"])),
+    authorityRefs: officialProductAuthorityRefs({
+      source: "SISTIC",
+      sourceId: text(detail.alias) ?? text(listing.alias),
+      detailUrl,
+    }),
     performances: [],
   };
   fixture.performances = performancesFrom(detail, fixture);
+  if (!fixture.performances.length && notesSchedule.performances.length)
+    fixture.performances = notesSchedule.performances;
   if (/^various venues$/i.test(fixture.venue ?? "")) {
     const description = String(fixture.description ?? "")
       .replace(/<br\s*\/?\s*>/gi, "\n")
@@ -681,15 +826,55 @@ export function mapSisticDetail(detail, listing, detailUrl, listingPage) {
       .filter(Boolean);
     if (occurrences.length >= 2) fixture.performances = occurrences;
   }
-  if (!fixture.performances.length)
-    fixture.performances = [
-      {
-        startDateTime: text(detail.start_date) ?? text(listing.start_date),
-        endDateTime: text(detail.end_date) ?? text(listing.end_date),
-        dateText: fixture.dateText,
-        timeText: fixture.timeText,
-      },
-    ];
+  if (!fixture.performances.length) {
+    const structuredStart =
+      text(detail.start_date) ?? text(listing.start_date);
+    const structuredEnd = text(detail.end_date) ?? text(listing.end_date);
+    const enumerated = parseEnumeratedSchedule(fixture.dateText);
+    if (enumerated.performances.length)
+      fixture.performances = enumerated.performances;
+    else if (structuredStart)
+      fixture.performances = [
+        {
+          startDateTime: structuredStart,
+          endDateTime: structuredEnd,
+          dateText: fixture.dateText,
+          timeText: fixture.timeText,
+          schedule: {
+            kind: "exact",
+            evidenceReasonCode: "structured_performance_exact",
+          },
+        },
+      ];
+    else if (explicitContinuousSchedule(fixture.dateText))
+      fixture.performances = [
+        {
+          startDateTime: text(detail.start_date) ?? text(listing.start_date),
+          endDateTime: text(detail.end_date) ?? text(listing.end_date),
+          dateText: fixture.dateText,
+          timeText: fixture.timeText,
+          schedule: {
+            kind: "range",
+            evidenceReasonCode: "continuous_range_confirmed",
+          },
+        },
+      ];
+    else
+      fixture.performances = [
+        {
+          startDateTime: null,
+          endDateTime: null,
+          dateText: fixture.dateText,
+          timeText: fixture.timeText,
+          schedule: {
+            kind: "selectable",
+            finalKnownOccurrence:
+              text(detail.end_date) ?? text(listing.end_date),
+            evidenceReasonCode: "schedule_dates_not_expanded",
+          },
+        },
+      ];
+  }
   return fixture;
 }
 
@@ -720,7 +905,7 @@ export function mapCatchDetail(
       : null) ??
     text(first(listing, ["/Info/EventDate", "/EventDate"]));
   const fixture = {
-    adapterVersion: "1.0",
+    adapterVersion: "1.1",
     listingPage,
     detailUrl,
     sourceId: new URL(detailUrl).pathname,
@@ -761,6 +946,13 @@ export function mapCatchDetail(
     organizer: text(
       first(detail, ["/Organizer", "/Presenter", "/PresentedBy"]),
     ),
+    authorityRefs: officialProductAuthorityRefs({
+      source: "Catch.sg",
+      bookingUrl: text(
+        first(detail, ["/BookingUrl", "/BookingURL", "/TicketUrl"]),
+      ),
+      detailUrl,
+    }),
     performances: [],
   };
   fixture.performances = catchPerformances(detail, window);
@@ -1239,6 +1431,9 @@ async function collectDiscoveryDetails({
       eligible: eligibleDecision,
     });
     const discoveryClaims = discovery.claims ?? {};
+    const discoveryPerformances = Array.isArray(discovery.performances)
+      ? discovery.performances
+      : [];
     const claims = { ...discoveryClaims };
     for (const [fieldName, value] of Object.entries(
       decision.authorityClaims ?? {},
@@ -1279,14 +1474,30 @@ async function collectDiscoveryDetails({
       availability: claims.availability ?? "unknown",
       officialUrl: claims.url ?? discovery.detailUrl,
       scope: claims.scope ?? "Singapore",
-      schedule: normalizeSchedule({
-        kind: claims.dateText
-          ? /anytime|choose|select/i.test(claims.dateText)
-            ? "anytime"
-            : "exact"
-          : "unverified",
-        displayText: claims.dateText ?? null,
-      }),
+      performances: discoveryPerformances,
+      schedule: discoveryPerformances.length
+        ? normalizeSchedule({
+            kind:
+              discoveryPerformances.length > 1 ? "recurring" : "exact",
+            start: discoveryPerformances[0]?.startDateTime ?? null,
+            end:
+              discoveryPerformances.at(-1)?.endDateTime ??
+              discoveryPerformances.at(-1)?.startDateTime ??
+              null,
+            displayText:
+              claims.timeText && claims.dateText
+                ? `${claims.dateText} · ${claims.timeText}`
+                : claims.dateText ?? claims.timeText ?? null,
+            evidenceReasonCode: "editorial_detail_schedule_parsed",
+          })
+        : normalizeSchedule({
+            kind: claims.dateText
+              ? /anytime|choose|select/i.test(claims.dateText)
+                ? "anytime"
+                : "exact"
+              : "unverified",
+            displayText: claims.dateText ?? null,
+          }),
       publicPlacement: venue ? "off_map" : "none",
       mappingStatus:
         venue && offMapSubtype === "geometry_unavailable"
@@ -2248,6 +2459,7 @@ export async function collectRenderedSource({
   let occurrencesEmitted = 0,
     excludedOccurrences = 0,
     eligiblePreDedup = 0;
+  const scheduleReasonCounts = {};
   for (const ref of processedSourceRecordRefs) {
     const document = JSON.parse(
       readFileSync(join(runDir, ref.split("#")[0]), "utf8"),
@@ -2258,6 +2470,12 @@ export async function collectRenderedSource({
       ? fixture.performances
       : [fixture]) {
       occurrencesEmitted += 1;
+      const scheduleReason =
+        occurrence.schedule?.evidenceReasonCode ??
+        fixture.schedule?.evidenceReasonCode ??
+        "schedule_reason_unclassified";
+      scheduleReasonCounts[scheduleReason] =
+        (scheduleReasonCounts[scheduleReason] ?? 0) + 1;
       const policy = assessActivityInclusion(
         { ...fixture, ...occurrence },
         { asOf: run.window.start },
@@ -2283,6 +2501,11 @@ export async function collectRenderedSource({
       occurrencesEmitted,
       excludedOccurrences,
       eligiblePreDedup,
+      scheduleReasonCounts: Object.fromEntries(
+        Object.entries(scheduleReasonCounts).sort(([a], [b]) =>
+          a.localeCompare(b),
+        ),
+      ),
       fieldCompleteness: fieldCompletenessCounts,
     },
     completion: {
@@ -2552,6 +2775,7 @@ export async function collectSource({
   let occurrencesEmitted = 0,
     excludedOccurrences = 0,
     eligiblePreDedup = 0;
+  const scheduleReasonCounts = {};
   for (const recordRef of processedSourceRecordRefs) {
     const fixtureRef = recordRef.split("#")[0];
     const fixture = JSON.parse(
@@ -2563,6 +2787,12 @@ export async function collectSource({
       ? fixture.performances
       : [fixture]) {
       occurrencesEmitted += 1;
+      const scheduleReason =
+        occurrence.schedule?.evidenceReasonCode ??
+        fixture.schedule?.evidenceReasonCode ??
+        "schedule_reason_unclassified";
+      scheduleReasonCounts[scheduleReason] =
+        (scheduleReasonCounts[scheduleReason] ?? 0) + 1;
       const policy = assessActivityInclusion(
         { ...fixture, ...occurrence },
         { asOf: run.window.start },
@@ -2586,6 +2816,11 @@ export async function collectSource({
       occurrencesEmitted,
       excludedOccurrences,
       eligiblePreDedup,
+      scheduleReasonCounts: Object.fromEntries(
+        Object.entries(scheduleReasonCounts).sort(([a], [b]) =>
+          a.localeCompare(b),
+        ),
+      ),
       listingAppearances: listings.length,
       uniqueSourcePointers: seenDetailUrls.size,
       listingDuplicatesCollapsed: Object.values(invalidReasonCodes).filter(

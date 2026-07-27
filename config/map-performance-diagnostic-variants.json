@@ -1,0 +1,345 @@
+{
+  "schemaVersion": 1,
+  "route": {
+    "start": [103.857897, 1.285844],
+    "end": [103.864, 1.292],
+    "zoom": 15.3,
+    "pitch": 45,
+    "bearingStart": -30,
+    "bearingDelta": 25,
+    "durationMs": 1500
+  },
+  "variants": [
+    {
+      "id": "full",
+      "label": "Complete application",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": null,
+      "intendedDifference": "control",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": true,
+        "restaurantMap": true,
+        "discoveryContext": true,
+        "densityMinimap": true,
+        "minimapViewportTracking": true,
+        "moveEndSearchRefresh": true
+      }
+    },
+    {
+      "id": "static-density-minimap",
+      "label": "Complete map without per-frame minimap viewport redraw",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "minimapViewportTracking",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": true,
+        "restaurantMap": true,
+        "discoveryContext": true,
+        "densityMinimap": true,
+        "minimapViewportTracking": false,
+        "moveEndSearchRefresh": true
+      }
+    },
+    {
+      "id": "legacy-minimap-render",
+      "label": "Complete application with legacy full minimap redraw",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "minimapRenderMode",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": true,
+        "restaurantMap": true,
+        "discoveryContext": true,
+        "densityMinimap": true,
+        "minimapViewportTracking": true,
+        "moveEndSearchRefresh": true,
+        "minimapRenderMode": "legacy"
+      }
+    },
+    {
+      "id": "primed-viewport-moveend-refresh",
+      "label": "Complete application with primed viewport-only refresh",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": null,
+      "intendedDifference": "primed move-end refresh control",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": true,
+        "restaurantMap": true,
+        "discoveryContext": true,
+        "densityMinimap": true,
+        "minimapViewportTracking": true,
+        "moveEndSearchRefresh": true,
+        "moveEndSearchRefreshMode": "viewport",
+        "primeEventSearch": true
+      }
+    },
+    {
+      "id": "legacy-full-moveend-refresh",
+      "label": "Complete application with primed legacy full discovery after motion",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "primed-viewport-moveend-refresh",
+      "intendedDifference": "moveEndSearchRefreshMode",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": true,
+        "restaurantMap": true,
+        "discoveryContext": true,
+        "densityMinimap": true,
+        "minimapViewportTracking": true,
+        "moveEndSearchRefresh": true,
+        "moveEndSearchRefreshMode": "full",
+        "primeEventSearch": true
+      }
+    },
+    {
+      "id": "no-density-minimap",
+      "label": "Complete map without the density minimap",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "densityMinimap",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": true,
+        "restaurantMap": true,
+        "discoveryContext": true,
+        "densityMinimap": false,
+        "minimapViewportTracking": true,
+        "moveEndSearchRefresh": true
+      }
+    },
+    {
+      "id": "no-moveend-search-refresh",
+      "label": "Complete map without search recomputation after motion",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "moveEndSearchRefresh",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": true,
+        "restaurantMap": true,
+        "discoveryContext": true,
+        "densityMinimap": true,
+        "minimapViewportTracking": true,
+        "moveEndSearchRefresh": false
+      }
+    },
+    {
+      "id": "no-refresh-static-minimap",
+      "label": "No search refresh and no per-frame minimap viewport redraw",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "no-moveend-search-refresh",
+      "intendedDifference": "minimapViewportTracking after search isolation",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": true,
+        "restaurantMap": true,
+        "discoveryContext": true,
+        "densityMinimap": true,
+        "minimapViewportTracking": false,
+        "moveEndSearchRefresh": false
+      }
+    },
+    {
+      "id": "no-refresh-no-minimap",
+      "label": "No search refresh and no density minimap",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "no-moveend-search-refresh",
+      "intendedDifference": "densityMinimap after search isolation",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": true,
+        "restaurantMap": true,
+        "discoveryContext": true,
+        "densityMinimap": false,
+        "minimapViewportTracking": true,
+        "moveEndSearchRefresh": false
+      }
+    },
+    {
+      "id": "no-transit",
+      "label": "Complete map without MRT layers",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "transit",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": false,
+        "waterParks": true,
+        "restaurantMap": true,
+        "discoveryContext": true
+      }
+    },
+    {
+      "id": "no-water-parks",
+      "label": "Complete map without water and park overlays",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "waterParks",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": false,
+        "restaurantMap": true,
+        "discoveryContext": true
+      }
+    },
+    {
+      "id": "no-restaurant-map",
+      "label": "Complete map without restaurant map layers",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "restaurantMap",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": true,
+        "restaurantMap": false,
+        "discoveryContext": true
+      }
+    },
+    {
+      "id": "no-discovery-context",
+      "label": "Complete map without discovery and location layers",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "discoveryContext",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true,
+        "transit": true,
+        "waterParks": true,
+        "restaurantMap": true,
+        "discoveryContext": false
+      }
+    },
+    {
+      "id": "no-interface",
+      "label": "Complete map without event interface",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "interface",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": false
+      }
+    },
+    {
+      "id": "no-overlays",
+      "label": "Complete map without transit and context overlays",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "overlays",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": true,
+        "overlays": false,
+        "interface": true
+      }
+    },
+    {
+      "id": "no-highlighted-3d",
+      "label": "Complete map without highlighted 3D venues",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "highlighted3d",
+      "workloads": {
+        "background3d": true,
+        "highlighted3d": false,
+        "overlays": true,
+        "interface": true
+      }
+    },
+    {
+      "id": "no-background-3d",
+      "label": "Complete map without background 3D buildings",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "background3d",
+      "workloads": {
+        "background3d": false,
+        "highlighted3d": true,
+        "overlays": true,
+        "interface": true
+      }
+    },
+    {
+      "id": "no-3d",
+      "label": "Complete map without either 3D layer",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "background3d+highlighted3d interaction",
+      "workloads": {
+        "background3d": false,
+        "highlighted3d": false,
+        "overlays": true,
+        "interface": true
+      }
+    },
+    {
+      "id": "basemap-only",
+      "label": "Raster basemap only",
+      "comparisonGroup": "network-idle-scene",
+      "controlId": "full",
+      "intendedDifference": "all custom workloads",
+      "workloads": {
+        "background3d": false,
+        "highlighted3d": false,
+        "overlays": false,
+        "interface": false
+      }
+    }
+  ]
+}

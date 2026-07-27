@@ -360,7 +360,7 @@ const voiceSessionRequest = ({
   origin = "https://amble.example",
   contentType = "application/json",
   body = JSON.stringify({
-    protocolVersion: "1.0",
+    protocolVersion: "1.1",
     disclosureAccepted: true,
     capabilities: { audioInput: true, audioOutput: true, text: true },
   }),

@@ -27,10 +27,21 @@ export function addPlanBuilder({
   geolocation = globalThis.navigator?.geolocation,
   locationController = null,
   gameCandidates = [],
+  executeCapability = null,
+  dispatch = null,
 } = {}) {
   const existingButton = document.getElementById("plan-builder-button");
-  if (existingButton)
-    return existingButton.__planBuilderController || { finalize() {} };
+  if (existingButton) {
+    const existingController = existingButton.__planBuilderController;
+    const nextDispatcher = executeCapability ?? dispatch;
+    if (
+      existingController &&
+      typeof nextDispatcher === "function" &&
+      typeof existingController.setDirectActionDispatcher === "function"
+    )
+      existingController.setDirectActionDispatcher(nextDispatcher);
+    return existingController || { finalize() {} };
+  }
   const button = element("button", "plan-builder-button");
   button.id = "plan-builder-button";
   button.type = "button";
@@ -38,6 +49,7 @@ export function addPlanBuilder({
   button.title = "Plan, 0 stops";
   button.setAttribute("aria-controls", "plan-builder");
   button.setAttribute("aria-expanded", "false");
+  button.dataset.capabilityId = "plan.open";
   const buttonIcon = element("i", "ph-bold ph-list-checks");
   buttonIcon.setAttribute("aria-hidden", "true");
   button.appendChild(buttonIcon);
@@ -55,6 +67,7 @@ export function addPlanBuilder({
   heading.id = "plan-builder-title";
   headingGroup.append(kicker, heading);
   const close = iconButton("plan-builder__close", "Close plan", "x");
+  close.dataset.capabilityId = "plan.close";
   header.append(headingGroup, close);
   const modeLabel = element("label", "plan-builder__label");
   const modeLabelText = element(
@@ -63,6 +76,7 @@ export function addPlanBuilder({
     "Travel mode",
   );
   const mode = element("select", "plan-builder__mode");
+  mode.dataset.capabilityId = "plan.settravelmode";
   for (const value of ["walking", "driving", "bicycling", "transit"]) {
     const option = element(
       "option",
@@ -91,6 +105,7 @@ export function addPlanBuilder({
 
   let planState = createPlanState();
   let stops = planState.stops;
+  let travelMode = mode.value;
   let dragState = null;
   let currentLocation = null;
   let locationState = "idle";
@@ -103,6 +118,31 @@ export function addPlanBuilder({
     ...createPlanningCandidateState(planState, { games: currentGames }),
   });
   const candidateListeners = new Set();
+  const stateListeners = new Set();
+  let sharedDispatcher = executeCapability ?? dispatch;
+  let invokingRoute = false;
+  const dispatchDirect = (actionId, args = {}) =>
+    typeof sharedDispatcher === "function"
+      ? sharedDispatcher(actionId, args)
+      : executeAction(actionId, args, { direct: true });
+
+  const snapshotState = () => ({
+    open: !panel.hidden,
+    planId: "plan:current",
+    stops: stops.map((stop) => ({
+      stopId: planStopKey(stop),
+      targetId: stop.candidateId || planStopKey(stop),
+      label: stop.title || stop.name || planStopKey(stop),
+    })),
+    travelMode,
+    routeAvailable: maps.querySelectorAll("a").length > 0,
+    locationAvailable: Boolean(currentLocation),
+    addableTargetIds: [],
+  });
+  const publishState = () => {
+    const snapshot = snapshotState();
+    for (const listener of stateListeners) listener(structuredClone(snapshot));
+  };
 
   const publishCandidateState = () => {
     candidateRevision += 1;
@@ -123,7 +163,7 @@ export function addPlanBuilder({
       container: preview,
       stops,
       currentLocation,
-      travelMode: mode.value,
+      travelMode,
     });
   };
 
@@ -147,11 +187,10 @@ export function addPlanBuilder({
     clearDragVisuals();
     dragState = null;
     if (!commit || !moved || startIndex === targetIndex) return;
-    planState = movePlanStop(planState, startIndex, targetIndex);
-    stops = planState.stops;
-    publishCandidateState();
-    render();
-    status.textContent = `${stop.title} moved to stop ${targetIndex + 1}.`;
+    void dispatchDirect("plan.reorderstop", {
+      stopId: planStopKey(stop),
+      toIndex: targetIndex,
+    });
   };
 
   function moveDrag(event) {
@@ -233,15 +272,19 @@ export function addPlanBuilder({
 
   const setOpen = (open) => {
     const wasOpen = !panel.hidden;
+    if (wasOpen === open) return false;
     if (open) announceOverlayOpen("plan-builder");
     else finishDrag(false);
     panel.hidden = !open;
+    button.dataset.capabilityId = open ? "plan.close" : "plan.open";
     button.setAttribute("aria-expanded", String(open));
     document.body.dataset.planBuilderOpen = String(open);
     if (open) close.focus();
     if (open && locationState === "idle" && !locationController)
       requestCurrentLocation();
     if (!open && wasOpen) announceOverlayClosed("plan-builder");
+    publishState();
+    return true;
   };
 
   const renderRoutes = () => {
@@ -249,7 +292,12 @@ export function addPlanBuilder({
       container: maps,
       stops,
       currentLocation,
-      travelMode: mode.value,
+      travelMode,
+      onOpenRoute(event, segmentIndex) {
+        if (invokingRoute) return;
+        if (typeof sharedDispatcher === "function") event.preventDefault();
+        void dispatchDirect("plan.openroute", { segmentIndex });
+      },
     });
   };
 
@@ -338,6 +386,9 @@ export function addPlanBuilder({
       "plan-builder__stop-focus plan-builder__stop-copy",
     );
     copyNode.type = "button";
+    copyNode.dataset.capabilityId = currentLocation
+      ? "plan.focuslocation"
+      : "plan.uselocation";
     copyNode.ariaLabel = currentLocation
       ? "Show my location on map"
       : "Use my current location";
@@ -355,15 +406,16 @@ export function addPlanBuilder({
     );
     const icon = element("i", "ph-bold ph-crosshair plan-builder__origin-icon");
     icon.setAttribute("aria-hidden", "true");
-    copyNode.onclick = () => {
-      if (currentLocation) showStopOnMap(currentLocation);
-      else requestCurrentLocation();
-    };
+    copyNode.onclick = () =>
+      void dispatchDirect(
+        currentLocation ? "plan.focuslocation" : "plan.uselocation",
+      );
     item.append(copyNode, icon);
     list.appendChild(item);
   };
 
   const render = () => {
+    mode.value = travelMode;
     const stopLabel = `${stops.length} stop${stops.length === 1 ? "" : "s"}`;
     button.ariaLabel = `Plan, ${stopLabel}`;
     button.title = `Plan, ${stopLabel}`;
@@ -377,6 +429,7 @@ export function addPlanBuilder({
         "plan-builder__stop-focus plan-builder__stop-copy",
       );
       copyNode.type = "button";
+      copyNode.dataset.capabilityId = "plan.focusstop";
       copyNode.ariaLabel = `Show ${stop.title} on map`;
       copyNode.append(
         element("strong", "plan-builder__stop-title", stop.title),
@@ -392,23 +445,25 @@ export function addPlanBuilder({
         `Drag ${stop.title} to reorder`,
         "dots-six-vertical",
       );
+      drag.dataset.capabilityId = "plan.reorderstop";
       const remove = iconButton(
         "plan-builder__stop-button plan-builder__stop-button--remove",
         `Remove ${stop.title}`,
         "x",
       );
-      remove.onclick = () => {
-        planState = removePlanStop(planState, planStopKey(stop));
-        stops = planState.stops;
-        publishCandidateState();
-        render();
-      };
+      remove.dataset.capabilityId = "plan.removestop";
+      remove.onclick = () =>
+        void dispatchDirect("plan.removestop", {
+          stopId: planStopKey(stop),
+        });
       drag.addEventListener("pointerdown", (event) =>
         beginDrag(event, item, index, stop),
       );
       item.onclick = (event) => {
         if (event.target.closest(".plan-builder__stop-controls")) return;
-        showStopOnMap(stop);
+        void dispatchDirect("plan.focusstop", {
+          stopId: planStopKey(stop),
+        });
       };
       controls.append(drag, remove);
       item.append(copyNode, controls);
@@ -419,6 +474,7 @@ export function addPlanBuilder({
       : "Add an event or restaurant to begin.";
     renderRoutes();
     renderPreview();
+    publishState();
   };
 
   const add = (event) => {
@@ -468,14 +524,89 @@ export function addPlanBuilder({
     return () => candidateListeners.delete(listener);
   };
 
-  button.onclick = () => setOpen(panel.hidden);
-  close.onclick = () => setOpen(false);
+  function executeAction(actionId, args = {}, { direct = false } = {}) {
+    if (actionId === "plan.open") return setOpen(true);
+    if (actionId === "plan.close") return setOpen(false);
+    if (actionId === "plan.uselocation") {
+      requestCurrentLocation();
+      return true;
+    }
+    if (actionId === "plan.focuslocation") {
+      if (!currentLocation) return false;
+      showStopOnMap(currentLocation);
+      return true;
+    }
+    if (actionId === "plan.settravelmode") {
+      if (![...mode.options].some(({ value }) => value === args.mode))
+        return false;
+      if (travelMode === args.mode) return false;
+      travelMode = args.mode;
+      render();
+      status.textContent = `${travelMode[0].toUpperCase() + travelMode.slice(1)} route ready in Google Maps.`;
+      return true;
+    }
+    if (actionId === "plan.removestop") {
+      const previousLength = stops.length;
+      planState = removePlanStop(planState, args.stopId);
+      stops = planState.stops;
+      if (stops.length === previousLength) return false;
+      publishCandidateState();
+      render();
+      return true;
+    }
+    if (actionId === "plan.reorderstop") {
+      const fromIndex = stops.findIndex(
+        (stop) => planStopKey(stop) === args.stopId,
+      );
+      if (
+        fromIndex < 0 ||
+        !Number.isInteger(args.toIndex) ||
+        args.toIndex < 0 ||
+        args.toIndex >= stops.length ||
+        args.toIndex === fromIndex
+      )
+        return false;
+      const movedStop = stops[fromIndex];
+      planState = movePlanStop(planState, fromIndex, args.toIndex);
+      stops = planState.stops;
+      publishCandidateState();
+      render();
+      status.textContent = `${movedStop.title} moved to stop ${args.toIndex + 1}.`;
+      return true;
+    }
+    if (actionId === "plan.focusstop") {
+      const stop = stops.find((item) => planStopKey(item) === args.stopId);
+      if (!stop) return false;
+      showStopOnMap(stop);
+      return true;
+    }
+    if (actionId === "plan.openroute") {
+      const links = [...maps.querySelectorAll("a")];
+      const link = links[args.segmentIndex ?? 0] || links[0];
+      if (!link) return false;
+      if (!direct) {
+        invokingRoute = true;
+        try {
+          link.click();
+        } finally {
+          invokingRoute = false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
+  button.onclick = () =>
+    void dispatchDirect(panel.hidden ? "plan.open" : "plan.close");
+  close.onclick = () => void dispatchDirect("plan.close");
   const stopWatchingOverlays = closeWhenAnotherOverlayOpens(
     "plan-builder",
-    () => setOpen(false),
+    () => void dispatchDirect("plan.close"),
   );
   const onKey = (event) => {
-    if (event.key === "Escape" && !panel.hidden) setOpen(false);
+    if (event.key === "Escape" && !panel.hidden)
+      void dispatchDirect("plan.close");
   };
   document.addEventListener("keydown", onKey);
   window.addEventListener("whats-here:add-to-plan", add);
@@ -488,9 +619,9 @@ export function addPlanBuilder({
   ])
     panel.addEventListener(type, (event) => event.stopPropagation());
   mode.addEventListener("change", () => {
-    renderRoutes();
-    renderPreview();
-    status.textContent = `${mode.value[0].toUpperCase() + mode.value.slice(1)} route ready in Google Maps.`;
+    const nextMode = mode.value;
+    mode.value = travelMode;
+    void dispatchDirect("plan.settravelmode", { mode: nextMode });
   });
   render();
   if (locationController)
@@ -528,74 +659,38 @@ export function addPlanBuilder({
       ].find((item) => item.candidateId === candidateId);
       if (!candidate) return false;
       if (candidate.candidateType === "plan_stop")
-        return this.dispatch("plan.focusstop", { stopId: candidate.stopKey });
-      setOpen(true);
+        return executeAction("plan.focusstop", {
+          stopId: candidate.stopKey,
+        });
+      executeAction("plan.open");
       return true;
     },
-    open: () => setOpen(true),
-    close: () => setOpen(false),
+    open: () => executeAction("plan.open"),
+    close: () => executeAction("plan.close"),
     setGameCandidates,
     subscribeCandidateState,
-    dispatch(actionId, args = {}) {
-      if (actionId === "plan.open") {
-        setOpen(true);
-        return true;
-      }
-      if (actionId === "plan.close") {
-        setOpen(false);
-        return true;
-      }
-      if (actionId === "plan.uselocation") {
-        requestCurrentLocation();
-        return true;
-      }
-      if (actionId === "plan.focuslocation") {
-        if (!currentLocation) return false;
-        showStopOnMap(currentLocation);
-        return true;
-      }
-      if (actionId === "plan.settravelmode") {
-        mode.value = args.mode;
-        mode.dispatchEvent(new Event("change", { bubbles: true }));
-        return true;
-      }
-      if (actionId === "plan.removestop") {
-        const previousLength = stops.length;
-        planState = removePlanStop(planState, args.stopId);
-        stops = planState.stops;
-        if (stops.length === previousLength) return false;
-        publishCandidateState();
-        render();
-        return true;
-      }
-      if (actionId === "plan.reorderstop") {
-        const fromIndex = stops.findIndex(
-          (stop) => planStopKey(stop) === args.stopId,
-        );
-        if (fromIndex < 0 || args.toIndex >= stops.length) return false;
-        planState = movePlanStop(planState, fromIndex, args.toIndex);
-        stops = planState.stops;
-        publishCandidateState();
-        render();
-        return true;
-      }
-      if (actionId === "plan.focusstop") {
-        const stop = stops.find((item) => planStopKey(item) === args.stopId);
-        if (!stop) return false;
-        showStopOnMap(stop);
-        return true;
-      }
-      if (actionId === "plan.openroute") {
-        const links = [...maps.querySelectorAll("a")];
-        const link = links[args.segmentIndex || 0] || links[0];
-        link?.click();
-        return Boolean(link);
-      }
-      return false;
+    snapshot: snapshotState,
+    subscribe(listener, { emitCurrent = false } = {}) {
+      if (typeof listener !== "function")
+        throw new TypeError("Plan subscriber must be a function");
+      stateListeners.add(listener);
+      if (emitCurrent) listener(snapshotState());
+      return () => stateListeners.delete(listener);
+    },
+    dispatch: executeAction,
+    dispatchDirect,
+    setDirectActionDispatcher(nextDispatcher) {
+      if (nextDispatcher !== null && typeof nextDispatcher !== "function")
+        throw new TypeError("Plan direct dispatcher must be callable or null");
+      sharedDispatcher = nextDispatcher;
+      return () => {
+        if (sharedDispatcher === nextDispatcher) sharedDispatcher = null;
+      };
     },
     finalize() {
       finishDrag(false);
       candidateListeners.clear();
+      stateListeners.clear();
       unsubscribeLocation();
       stopWatchingOverlays();
       document.removeEventListener("keydown", onKey);

@@ -3,17 +3,14 @@
   "poiId": "south-beach",
   "extractionPoiIds": [
     "tower-3-marina-bay-sands-singapore",
-    "the-shoppes-at-marina-bay-sands",
     "national-museum-of-singapore",
     "national-gallery-singapore",
     "lion-building-c",
     "claymore-plaza",
-    "cideco-industrial-complex",
     "rumah-bebe",
     "perfect-one",
     "textile-centre",
     "song-lin-building",
-    "millenia-walk",
     "inter-continental-singapore",
     "roxy-square",
     "blk-e-e2i",
@@ -24,7 +21,6 @@
     "singapore-chinese-cultural-centre",
     "wisma-geylang-serai",
     "marina-bay-sands-artscience-museum",
-    "temasek-shophouse",
     "the-commerze-irving",
     "raffles-marina",
     "gateway-theatre",
@@ -49,7 +45,6 @@
     "siloso-beach-resort",
     "bishan-green",
     "sembawang-park",
-    "gv-building",
     "lee-kong-chian-natural-history-museum",
     "singapore-conference-hall",
     "action-theatre",
@@ -58,7 +53,6 @@
     "cathay-cineleisure-orchard",
     "yong-siew-toh-conservatory-of-music",
     "national-university-of-singapore-university-cultural-centre",
-    "rv-point",
     "tannery-house",
     "funan",
     "kampong-glam-conservation-area",
@@ -70,7 +64,6 @@
     "tanjong-pagar-distripark",
     "arts-house-at-the-old-parliament",
     "the-cannery",
-    "singapore-repertory-theatre",
     "suntec-singapore-international-convention-and-exhibition-centre",
     "school-of-the-arts-sota",
     "singapore-polo-club",
@@ -86,27 +79,20 @@
     "hall-7-singapore-expo",
     "hpl-house",
     "chijmes",
-    "marina-south-pier",
     "kampong-ubi-industrial-estate",
     "chinatown-complex",
-    "esplanade-mall",
-    "lotus-at-joo-chiat",
     "havelock2",
     "kembangan-estate",
     "uob-plaza",
     "old-hill-street-police-station",
     "empress-place-building",
     "international-plaza",
-    "the-central",
     "tpi-building",
     "gardens-by-the-bay",
     "peranakan-museum",
     "maritime-xperiential-museum",
-    "marina-square",
     "jewel-changi-airport",
-    "boat-quay-conservation-area",
     "shangri-la-hotel",
-    "phoon-huat-industrial-building",
     "singapore-tyler-print-institute",
     "telok-ayer-conservation-area",
     "golden-mile-tower",
@@ -115,12 +101,9 @@
     "national-archives-of-singapore",
     "our-tampines-hub",
     "national-stadium",
-    "raffles-city-tower",
     "wave-house",
     "crawford-court",
     "paya-lebar-mrt-station",
-    "hdb-hub",
-    "everitt-edge",
     "little-india-mrt-station",
     "chinatown-point",
     "masjid-sultan",
@@ -133,23 +116,30 @@
     "parkway-parade",
     "fort-canning-centre",
     "313-somerset",
-    "geylang-east-public-library",
-    "tan-tock-seng-hospital",
     "b-central",
-    "tong-fong-building",
     "waterloo-centre",
     "buddhist-tzu-chi-foundation",
     "zhonghua-primary-school",
     "the-foundry",
     "singapore-general-hospital",
     "parc-point",
-    "stamford-arts-centre",
     "swissotel-merchant-court-singapore",
     "aliwal-arts-centre",
     "heartbeat-bedok",
-    "anchorpoint-shopping-centre"
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
   ],
-  "generatedAt": "2026-07-21T18:56:52.256Z",
+  "generatedAt": "2026-07-26T13:46:05.252Z",
   "tiles": [
     {
       "sourceTile": "tiles/6/38/6_0.b3dm",
@@ -169,10 +159,10 @@
       "backgroundFile": "optimized-tiles/6/38/6_0.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "6057e72ec7771959ebd433de087324f618106fa3af5dc183e787c0d0e98faebb",
-      "backgroundTriangles": 14412
+      "backgroundSha256": "87a0de712d6c8b88593de72bb5a5cbb1b939174a3461ab7eb1c58d1069c3fc4b",
+      "backgroundTriangles": 18620
     },
     {
       "sourceTile": "tiles/6/38/6_1.b3dm",
@@ -192,10 +182,10 @@
       "backgroundFile": "optimized-tiles/6/38/6_1.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "f0520a461240248fd3e5017401b5128bcac46d0cefc4bfbd1e8936cdcbe17403",
-      "backgroundTriangles": 14412
+      "backgroundSha256": "5cd15293a49728bdc5d3a05f3c22ba89cc28b694d60a8c1d4cf2888d788576d8",
+      "backgroundTriangles": 18620
     },
     {
       "sourceTile": "tiles/6/38/6_2.b3dm",
@@ -215,10 +205,10 @@
       "backgroundFile": "optimized-tiles/6/38/6_2.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "1edaa6711ecca6bb91461a3833eac0a9999c3f123f280e1c7d1dec0051fd6a5b",
-      "backgroundTriangles": 14412
+      "backgroundSha256": "1fbebf23abc56f20ba3fc9ff25dbda8e5403d2736b8abc0bff3365f817368019",
+      "backgroundTriangles": 18620
     },
     {
       "sourceTile": "tiles/6/38/6_3.b3dm",
@@ -238,10 +228,10 @@
       "backgroundFile": "optimized-tiles/6/38/6_3.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "5f33204633716921776e9a851a753bbfd955a2c3133e2eb49461d81176455ac7",
-      "backgroundTriangles": 14412
+      "backgroundSha256": "aa57c807c8858f508f4d1ce841d3c9a4bc8806b734dfd632bda75fe471e39281",
+      "backgroundTriangles": 18620
     },
     {
       "sourceTile": "tiles/6/38/6_4.b3dm",
@@ -261,10 +251,10 @@
       "backgroundFile": "optimized-tiles/6/38/6_4.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "6b473e14278a58fbe5b582e5ee4ea5686d32fcec0cac5df53af6a28f5ec84692",
-      "backgroundTriangles": 14412
+      "backgroundSha256": "636c71d7871256f585ae42fb8454007c604f5c6d21f7d555d3a64f5d80db70ab",
+      "backgroundTriangles": 18620
     },
     {
       "sourceTile": "tiles/6/38/6_5.b3dm",
@@ -284,10 +274,10 @@
       "backgroundFile": "optimized-tiles/6/38/6_5.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "736a81daa4fbd1da52ac0dca10c9b12bace487541dc0591af38a6f59ab19fbca",
-      "backgroundTriangles": 14412
+      "backgroundSha256": "d52fba4ba80f896159e5ec6d015f5b07cff56536471bb6e62c8a3963d4634655",
+      "backgroundTriangles": 18620
     }
   ]
 }

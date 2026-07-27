@@ -38,11 +38,60 @@ test("a recovered active snapshot reconciles events in place and later outages p
     landmarksRef: "/api/snapshot/assets/recovered/landmarks.json",
     poisRef: "/api/snapshot/assets/recovered/pois.json",
     tilesetRef: "/api/snapshot/assets/recovered/tileset.json",
+    activitiesRef: "/api/snapshot/assets/recovered/activities.json",
   };
   const landmarks = [{
     id: "recovered-hall", label: "Recovered Hall", anchor: { lat: 1.285, lng: 103.855 },
-    events: [{ id: "recovered-event", title: "Recovered event", dateText: "14 Jul 2026", timeText: "19:00" }],
+    activityRefs: [{
+      activityId: "activity:recovered",
+      venueGroupIds: ["venue-group:recovered"],
+    }],
   }];
+  const activities = {
+    schemaVersion: "1.0",
+    records: [{
+      schemaVersion: "1.0",
+      activityId: "activity:recovered",
+      title: "Recovered event",
+      description: null,
+      category: null,
+      organizer: null,
+      price: null,
+      lifecycleState: "active",
+      freshness: "current",
+      sources: ["Recovered source"],
+      sessions: [{
+        sessionId: "session:recovered",
+        schedule: {
+          kind: "exact",
+          start: "2026-07-14T19:00:00+08:00",
+          end: "2026-07-14T20:00:00+08:00",
+          recurrence: null,
+          displayText: "14 Jul 2026",
+          finalKnownOccurrence: "2026-07-14T20:00:00+08:00",
+        },
+        availability: "unknown",
+        venueGroupIds: ["venue-group:recovered"],
+      }],
+      venueGroups: [{
+        venueGroupId: "venue-group:recovered",
+        activityId: "activity:recovered",
+        label: "Recovered Hall",
+        address: null,
+        publicPlacement: "mapped",
+        mappingStatus: "approved",
+        approvedLocationId: "recovered-hall",
+        coordinates: { lat: 1.285, lng: 103.855 },
+        sessionIds: ["session:recovered"],
+      }],
+      sourceOffers: [],
+      scheduleSummary: {
+        kind: "exact",
+        label: "14 Jul 2026, 7pm",
+        sessionCount: 1,
+      },
+    }],
+  };
   const unavailable = (route) => route.fulfill({ status: 503, json: { schemaVersion: "1.0", error: { code: "source_unavailable", message: "Unavailable" } } });
   await page.route("**/api/snapshot", (route) => available
     ? route.fulfill({ json: { schemaVersion: "1.0", data: metadata, fetchedAt: metadata.publishedAt, stale: false, warning: null, source: { id: "approved-snapshot", costClass: "free" } } })
@@ -52,6 +101,9 @@ test("a recovered active snapshot reconciles events in place and later outages p
     : unavailable(route));
   await page.route("**/api/snapshot/assets/recovered/pois.json", (route) => available
     ? route.fulfill({ json: { schemaVersion: "1.0", data: [], fetchedAt: metadata.publishedAt, stale: false, warning: null, source: { id: "approved-snapshot", costClass: "free" } } })
+    : unavailable(route));
+  await page.route("**/api/snapshot/assets/recovered/activities.json", (route) => available
+    ? route.fulfill({ json: { schemaVersion: "1.0", data: activities, fetchedAt: metadata.publishedAt, stale: false, warning: null, source: { id: "approved-snapshot", costClass: "free" } } })
     : unavailable(route));
   await page.route("**/api/snapshot/assets/recovered/tileset.json", (route) => route.fulfill({
     json: { asset: { version: "1.0" }, geometricError: 0, root: { boundingVolume: { region: [1.8, 0.02, 1.82, 0.03, 0, 1] }, geometricError: 0 } },

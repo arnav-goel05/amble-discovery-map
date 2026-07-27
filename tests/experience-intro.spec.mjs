@@ -1,5 +1,21 @@
 import { expect, test } from "playwright/test";
 
+test("the initial intro is styled before the application bundle loads", async ({
+  page,
+}) => {
+  await page.route("**/main.js", (route) => route.abort());
+  await page.goto("/");
+
+  const intro = page.locator("#experience-intro");
+  const wordmark = page.locator(".experience-intro__wordmark");
+  await expect(intro).toHaveCSS("position", "fixed");
+  await expect(intro).toHaveCSS("font-family", /Arial|sans-serif/);
+  await expect(wordmark).toBeVisible();
+  expect(
+    await wordmark.evaluate((element) => element.getBoundingClientRect().width),
+  ).toBeLessThanOrEqual(300);
+});
+
 test("the intro waits for initial 3D content and fades away on entry", async ({
   page,
 }) => {

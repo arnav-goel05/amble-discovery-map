@@ -1,0 +1,258 @@
+{
+  "schemaVersion": "2.0",
+  "protocolVersion": "1.1",
+  "results": [
+    {
+      "fixtureId": "inspect-ready",
+      "proposalRevision": 7,
+      "result": {
+        "capabilityId": "app.inspect",
+        "kind": "query",
+        "status": "completed",
+        "changed": null,
+        "affectedTargetIds": [
+          "area:marina-centre",
+          "event:light-to-night-2026"
+        ],
+        "contextRevision": 7,
+        "data": {
+          "revision": 7,
+          "stateDigest": "sha256:fixture-state-7",
+          "visibleTargets": [
+            {
+              "targetId": "area:marina-centre",
+              "type": "area",
+              "label": "Marina Centre",
+              "ordinal": 1
+            },
+            {
+              "targetId": "event:light-to-night-2026",
+              "type": "event",
+              "label": "Light to Night Singapore",
+              "ordinal": 2
+            }
+          ],
+          "focusedTargetId": "area:marina-centre",
+          "selectedTargetIds": ["area:marina-centre"],
+          "availableCapabilityIds": [
+            "app.inspect",
+            "catalog.get",
+            "catalog.search",
+            "map.setlayervisibility"
+          ]
+        },
+        "errorCode": null
+      },
+      "observableState": {
+        "revision": 7,
+        "stateDigest": "sha256:fixture-state-7",
+        "focusedTargetId": "area:marina-centre",
+        "transitVisible": false
+      }
+    },
+    {
+      "fixtureId": "catalog-search-page",
+      "proposalRevision": 7,
+      "arguments": {
+        "query": "art",
+        "types": ["event"],
+        "limit": 2,
+        "cursor": null
+      },
+      "result": {
+        "capabilityId": "catalog.search",
+        "kind": "query",
+        "status": "completed",
+        "changed": null,
+        "affectedTargetIds": [
+          "event:light-to-night-2026",
+          "event:gallery-childrens-biennale-2026"
+        ],
+        "contextRevision": 7,
+        "data": {
+          "catalogRevision": "sha256:approved-snapshot-42+events-7",
+          "sources": [
+            {
+              "connectorId": "approved-catalog",
+              "revision": "snapshot:approved-42"
+            },
+            {
+              "connectorId": "events",
+              "revision": "context:7"
+            }
+          ],
+          "total": 3,
+          "truncated": true,
+          "items": [
+            {
+              "targetId": "event:light-to-night-2026",
+              "type": "event",
+              "label": "Light to Night Singapore"
+            },
+            {
+              "targetId": "event:gallery-childrens-biennale-2026",
+              "type": "event",
+              "label": "Gallery Children's Biennale"
+            }
+          ],
+          "nextCursor": "cursor:event:2"
+        },
+        "errorCode": null
+      },
+      "observableState": {
+        "catalogRevision": "sha256:approved-snapshot-42+events-7",
+        "returnedTargetIds": [
+          "event:light-to-night-2026",
+          "event:gallery-childrens-biennale-2026"
+        ]
+      }
+    },
+    {
+      "fixtureId": "catalog-get-with-missing-target",
+      "proposalRevision": 7,
+      "arguments": {
+        "targetIds": ["event:light-to-night-2026", "event:unknown"]
+      },
+      "result": {
+        "capabilityId": "catalog.get",
+        "kind": "query",
+        "status": "completed",
+        "changed": null,
+        "affectedTargetIds": ["event:light-to-night-2026"],
+        "contextRevision": 7,
+        "data": {
+          "catalogRevision": "sha256:approved-snapshot-42+events-7",
+          "sources": [
+            {
+              "connectorId": "approved-catalog",
+              "revision": "snapshot:approved-42"
+            },
+            {
+              "connectorId": "events",
+              "revision": "context:7"
+            }
+          ],
+          "items": [
+            {
+              "targetId": "event:light-to-night-2026",
+              "type": "event",
+              "label": "Light to Night Singapore"
+            }
+          ],
+          "missingTargetIds": ["event:unknown"]
+        },
+        "errorCode": null
+      },
+      "observableState": {
+        "returnedTargetIds": ["event:light-to-night-2026"],
+        "missingTargetIds": ["event:unknown"]
+      }
+    },
+    {
+      "fixtureId": "show-transit-layer",
+      "proposalRevision": 7,
+      "arguments": {
+        "layerId": "transit",
+        "visible": true
+      },
+      "result": {
+        "capabilityId": "map.setlayervisibility",
+        "kind": "command",
+        "status": "completed",
+        "changed": true,
+        "affectedTargetIds": ["layer:transit"],
+        "contextRevision": 8,
+        "data": {
+          "layerId": "transit",
+          "visible": true
+        },
+        "errorCode": null
+      },
+      "observableState": {
+        "revision": 8,
+        "transitVisible": true
+      }
+    },
+    {
+      "fixtureId": "hide-transit-layer-noop",
+      "proposalRevision": 8,
+      "arguments": {
+        "layerId": "transit",
+        "visible": false
+      },
+      "result": {
+        "capabilityId": "map.setlayervisibility",
+        "kind": "command",
+        "status": "completed",
+        "changed": false,
+        "affectedTargetIds": ["layer:transit"],
+        "contextRevision": 8,
+        "data": {
+          "layerId": "transit",
+          "visible": false
+        },
+        "errorCode": null
+      },
+      "observableState": {
+        "revision": 8,
+        "transitVisible": false
+      }
+    },
+    {
+      "fixtureId": "map-unavailable",
+      "proposalRevision": 3,
+      "arguments": {
+        "layerId": "transit",
+        "visible": true
+      },
+      "result": {
+        "capabilityId": "map.setlayervisibility",
+        "kind": "command",
+        "status": "unavailable",
+        "changed": false,
+        "affectedTargetIds": [],
+        "contextRevision": 3,
+        "data": null,
+        "errorCode": "unavailable"
+      },
+      "observableState": {
+        "revision": 3,
+        "transitVisible": false
+      }
+    }
+  ],
+  "confirmationCases": [
+    {
+      "fixtureId": "approved-external-route",
+      "proposalRevision": 12,
+      "pendingConfirmation": {
+        "confirmationId": "confirmation:fixture-001",
+        "callId": "call:fixture-001",
+        "capabilityId": "navigation.openexternal",
+        "canonicalArguments": {
+          "targetId": "event:light-to-night-2026",
+          "linkKind": "official"
+        },
+        "targetId": "event:light-to-night-2026",
+        "fingerprint": "sha256:fixture-call-001",
+        "effectSummary": "Open the approved official event page in a new tab.",
+        "createdAt": "2026-07-26T10:00:00.000Z",
+        "expiresAt": "2026-07-26T10:00:25.000Z",
+        "status": "pending"
+      },
+      "acceptedTransition": {
+        "callId": "call:fixture-001",
+        "fingerprint": "sha256:fixture-call-001",
+        "from": "pending",
+        "to": "accepted",
+        "executionCount": 1
+      },
+      "conflictingReplay": {
+        "callId": "call:fixture-001",
+        "fingerprint": "sha256:different-call",
+        "expectedErrorCode": "stale_context",
+        "executionCount": 0
+      }
+    }
+  ]
+}
