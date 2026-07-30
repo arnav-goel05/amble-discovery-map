@@ -34,17 +34,38 @@ function createLocalRelayOptions({
   policy,
   repository,
   environment,
+  runtimeMode = "unconfigured",
   providerConnector,
   capabilityContracts,
   tools,
   approvedCandidateIds,
   approvedCandidates,
+  operationalLogger,
+  contentDebugLogger,
 }) {
+  const contentDebugEnabled =
+    runtimeMode === "development" &&
+    environment.NODE_ENV === "development" &&
+    environment.REALTIME_CONTENT_DEBUG === "true";
   return {
     policy,
     budgetRepository: repository,
     apiKey: environment.OPENAI_API_KEY,
     providerConnector,
+    operationalLogger:
+      operationalLogger ??
+      ((record) => {
+        console.info(JSON.stringify(record));
+      }),
+    ...(contentDebugEnabled
+      ? {
+          contentDebugLogger:
+            contentDebugLogger ??
+            ((record) => {
+              console.debug(JSON.stringify(record));
+            }),
+        }
+      : {}),
     ...(capabilityContracts ? { capabilityContracts } : {}),
     ...(tools ? { tools } : {}),
     ...(approvedCandidateIds ? { approvedCandidateIds } : {}),
@@ -61,6 +82,8 @@ function realtimeVoiceApiPlugin({
   tools,
   approvedCandidateIds,
   approvedCandidates,
+  operationalLogger,
+  contentDebugLogger,
 } = {}) {
   const policy = JSON.parse(
     fs.readFileSync(path.join(root, "data/realtime-voice-policy.json"), "utf8"),
@@ -73,6 +96,7 @@ function realtimeVoiceApiPlugin({
     maxPayload: 16 * 1024,
   });
   let relayPromise;
+  let runtimeMode = "unconfigured";
   const relay = () =>
     (relayPromise ??= import("../cloudflare/realtime-relay.mjs").then(
       ({ createRealtimeRelay }) =>
@@ -81,11 +105,14 @@ function realtimeVoiceApiPlugin({
             policy,
             repository,
             environment,
+            runtimeMode,
             providerConnector,
             capabilityContracts,
             tools,
             approvedCandidateIds,
             approvedCandidates,
+            operationalLogger,
+            contentDebugLogger,
           }),
         ),
     ));
@@ -204,6 +231,12 @@ function realtimeVoiceApiPlugin({
 
   let detachUpgrade = null;
   const configure = (server) => {
+    runtimeMode = "development";
+    server.middlewares.use(middleware);
+    if (server.httpServer) detachUpgrade = attachUpgrade(server.httpServer);
+  };
+  const configurePreview = (server) => {
+    runtimeMode = "preview";
     server.middlewares.use(middleware);
     if (server.httpServer) detachUpgrade = attachUpgrade(server.httpServer);
   };
@@ -224,7 +257,7 @@ function realtimeVoiceApiPlugin({
     attachUpgrade,
     close,
     configureServer: configure,
-    configurePreviewServer: configure,
+    configurePreviewServer: configurePreview,
   };
 }
 

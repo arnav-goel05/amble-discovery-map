@@ -132,6 +132,27 @@ export function reconcilePoiGeometry(previousPois = [], nextPois = []) {
   return { actions, pois, restorePoiIds };
 }
 
+export function createMovementRenderingGuard() {
+  let preserveNext = false;
+  let preserveCurrent = false;
+  return {
+    preserveNext() {
+      preserveNext = true;
+    },
+    begin() {
+      preserveCurrent = preserveNext;
+      preserveNext = false;
+      return {
+        hideBackground: !preserveCurrent,
+        pauseTraversal: !preserveCurrent,
+      };
+    },
+    end() {
+      preserveCurrent = false;
+    },
+  };
+}
+
 function incrementBodyCounter(name) {
   document.body.dataset[name] = String(
     Number(document.body.dataset[name] || 0) + 1,
@@ -267,6 +288,7 @@ export function createBuildingHighlightLayerManager({
   let refinementMaximumTimer = null;
   let initialReadinessTimer = null;
   let waitingForSettledDetail = false;
+  const movementRendering = createMovementRenderingGuard();
   let refinementStartedAt = 0;
   let lastBackgroundTileActivity = Date.now();
   let lastTileActivity = Date.now();
@@ -526,9 +548,10 @@ export function createBuildingHighlightLayerManager({
     if (refinementSettleTimer !== null) clearTimeout(refinementSettleTimer);
     if (refinementMaximumTimer !== null) clearTimeout(refinementMaximumTimer);
     waitingForSettledDetail = false;
+    const rendering = movementRendering.begin();
     setRefinementState("moving-coarse", MOVING_SCREEN_SPACE_ERROR);
-    setTileTraversal(false);
-    setBackgroundVisibility(false);
+    if (rendering.pauseTraversal) setTileTraversal(false);
+    if (rendering.hideBackground) setBackgroundVisibility(false);
     if (backgroundRevealed)
       animateBuildingOpacity(backgroundOpacity, POI_MOVING_OPACITY, 160);
   };
@@ -536,6 +559,7 @@ export function createBuildingHighlightLayerManager({
   const handleMoveEnd = () => {
     if (!started) return;
     setTileTraversal(true);
+    movementRendering.end();
     map.triggerRepaint?.();
     updateRefinementMetadata(
       "settling",
@@ -567,6 +591,10 @@ export function createBuildingHighlightLayerManager({
     return Boolean(selectedPoiId);
   };
 
+  const preserveNextMovement = () => {
+    movementRendering.preserveNext();
+  };
+
   const start = () => {
     if (started || map.getLayer(BACKGROUND_LAYER_ID)) return false;
     map.addLayer(backgroundLayer ?? backgroundPlaceholderLayer);
@@ -582,8 +610,7 @@ export function createBuildingHighlightLayerManager({
     document.body.dataset.buildingsLayerStarted = "true";
     document.body.dataset.backgroundBuildings = "muted-grey";
     document.body.dataset.background3dEnabled = String(background3dEnabled);
-    document.body.dataset.highlighted3dEnabled =
-      String(highlighted3dEnabled);
+    document.body.dataset.highlighted3dEnabled = String(highlighted3dEnabled);
     document.body.dataset.backgroundTilesetUrl = background.data;
     document.body.dataset.backgroundPoiExcluded = configuredPois
       .map((poi) => poi.label)
@@ -741,6 +768,7 @@ export function createBuildingHighlightLayerManager({
     destroy,
     diagnosticSnapshot,
     isBackgroundViewLoaded,
+    preserveNextMovementRendering: preserveNextMovement,
     reconcile,
     setDiagnosticTileTraversal,
     setSelectedPoi,

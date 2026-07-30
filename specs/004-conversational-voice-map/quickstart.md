@@ -1,5 +1,36 @@
 # Quickstart Validation: Conversational Voice Map Assistant
 
+## 2026-07-27 — Phase 13 convergence
+
+- Consequential provider calls now use the complete browser-owned protocol:
+  `capability.proposed` → `confirmation.pending` → relay-validated
+  `confirmation.required` → matching decision → terminal capability result/completion. Rejection,
+  expiry, interruption, context drift, and matching replay release or reuse only the identity-bound
+  call; the model cannot create or approve a confirmation.
+- Obvious typed and spoken commands now delay provider response creation until the browser returns a
+  schema-valid `deterministic.result`. Provider acknowledgement therefore follows the actual shared
+  gateway outcome and cannot pre-announce success.
+- Turn scoping uses registered connector ownership, including overlay navigation, location,
+  transit, and discovery-area families. The deterministic capability remains excluded and
+  unrelated families are not re-expanded.
+- Browser messages are serialized per session, eliminating a text/reservation ordering race.
+  Identical terminal provider call replays return the stored result without another application
+  execution; conflicting replay identity fails closed.
+- `npm run test:voice` passed 211/211 tests. Focused relay, confirmation, lifecycle, scoping, and
+  browser-client suites passed.
+- The no-retry affected browser matrix passed 90/90 voice-assistant journeys across Chromium,
+  WebKit, and Firefox desktop/mobile. The broader Chromium voice/discovery pass completed 38 tests;
+  one initial tileset-load timeout passed on retry and then passed independently without retry.
+- `npm run verify:voice-actions` verified 64 version-2 capabilities and 61 direct/conversational
+  parity cases. `npm run verify:voice-capabilities` passed 17/17 contract/result/environment suites.
+- Repository ESLint, scoped Prettier and diff checks, and the production build passed. Build output
+  retained only the pre-existing dependency `eval` and large-chunk warnings.
+- No additional paid smoke was needed for this convergence. The completed owner-controlled T079
+  evidence below already used `gpt-realtime-2.1-mini`, verified deterministic zoom, rejected
+  consequential navigation with zero effect, dependent follow-up health, server-only credentials,
+  terminal cleanup, and a disabled/settled isolated ledger. Phase 13 protocol ordering is covered
+  deterministically at the relay/browser boundary.
+
 ## 2026-07-27 — Phase 12 mini model and deterministic routing
 
 - The reviewed policy and relay now use only `gpt-realtime-2.1-mini`; no fallback model field or
@@ -114,8 +145,37 @@ Expected outcomes:
 - consequential actions have zero effect before a matching later confirmation;
 - concurrent reservations never make `spent + reserved` exceed `10_000_000` micro-USD;
 - missing usage, unknown rates/models, disable, and cap exhaustion hold reservations and stop work;
-- no audio, transcript, exact location, or context appears in ledger rows or logs;
+- no audio, transcript, exact location, or context appears in ledger rows or routine/production
+  logs; explicitly activated local content diagnostics retain only permitted sanitized content;
+- successful turns emit ordered allowlisted phase timing, stalled responses terminate at the
+  configured deadline, and no response watchdog survives completion or cleanup;
 - map-asset identities, geometry, provenance, and reconciliation validate.
+
+## Voice reliability tracing and watchdog validation — 2026-07-29
+
+Run with mocked provider transport and an injected deterministic scheduler:
+
+```bash
+node --test tests/realtime-policy.test.mjs tests/realtime-relay.test.mjs
+npm run test:voice
+```
+
+Validate:
+
+1. An audio turn emits `audio_committed`, `transcription_completed`, `response_requested`,
+   `response_created`, `first_audio`, and `response_done` in order.
+2. Opening and text turns begin at `response_requested` and omit inapplicable audio/transcription
+   phases.
+3. Every emitted record has only the contract allowlist and a one-way session identifier; fixtures
+   containing transcript text, prompts, tool arguments, provider payloads, coordinates, and secret
+   sentinels never appear in serialized logs.
+4. A response that never completes expires at 30 seconds, sends `response.cancel`, records
+   `response_timeout`, terminates through the standard unavailable lifecycle, and leaves no active
+   watchdog or reusable pending reservation.
+5. `response.done`, browser interruption, provider failure, explicit stop, idle expiry, and duration
+   expiry clear the watchdog exactly once.
+6. No provider request contains `max_output_tokens`; the watchdog does not alter response content or
+   the intrinsic provider/model response maximum.
 
 ## Build and browser matrix
 
@@ -430,7 +490,7 @@ All provider/audio behavior remained mocked and incurred USD 0. No MCP transport
   browser profiles. Snapshot, POI geometry, pipeline outputs, and the active snapshot pointer were
   not repaired, restored, or regenerated for Feature 004.
 
-## Owner-controlled live-smoke attempt — 2026-07-27
+## Historical owner-controlled live-smoke attempt — 2026-07-27 (superseded)
 
 Arnav explicitly approved using the existing server-side OpenAI key and the pinned USD 10
 no-reset budget. The attempt ran against an isolated local HTTPS Worker and isolated local D1
@@ -460,6 +520,83 @@ recorded.
   64-capability/61-parity action verifier, production build, lint, scoped Prettier, and
   `git diff --check`.
 
-T079 remains incomplete. The live provider-to-capability proposal path must be corrected and the
-safe-action plus rejected-consequential-action journeys rerun before this smoke can be marked
-passed.
+This initial attempt was incomplete at the time. It is superseded by the successful
+“Owner-controlled Phase 12 live smoke” record near the top of this document; T079 is complete.
+
+## Constitution-v2.5 uncapped-response validation — 2026-07-29
+
+No live provider call or paid spend was used.
+
+- The checked-in policy schema is `1.1` and contains no application `maxOutputTokens` setting.
+- Realtime `session.update` and every `response.create` omit `max_output_tokens`, allowing the
+  provider/model intrinsic response maximum.
+- Admission reserves against the documented 4,096-token provider maximum only for accounting:
+  `81,920` micro-USD output, `121,920` micro-USD total response, and `138,920` micro-USD for a
+  worst-case transcription-plus-response turn.
+- `node --test tests/realtime-policy.test.mjs tests/realtime-relay.test.mjs` passed 31/31 tests.
+- `npm run test:voice` passed the complete 211/211 voice and shared-capability tests.
+- Scoped Prettier validation passed, and `npx vite build` completed successfully with only the
+  repository's existing dependency `eval` and large-chunk warnings.
+
+## Voice reliability tracing and watchdog implementation — 2026-07-29
+
+No live provider call or paid spend was used.
+
+- The checked-in policy now independently pins a 30-second response deadline while continuing to
+  omit `max_output_tokens` from provider requests.
+- The Worker and local relay emit only the closed privacy-safe phase record. Tests prove transcript,
+  audio, prompt/provider identifiers, exact-coordinate sentinels, secrets, and raw turn/session IDs
+  cannot enter serialized records.
+- Audio turns trace commit and transcription before response creation; text and opening turns begin
+  at response request. Successful response completion and browser cancellation clear the watchdog.
+- A deterministically stalled response sends `response.cancel`, records `response_timeout`, holds
+  the pending reservation conservatively, emits the exact standard voice-unavailable error before
+  the terminal browser reason, and leaves no active session or watchdog.
+- `node --test tests/realtime-policy.test.mjs tests/realtime-relay.test.mjs` passed 35/35 tests.
+- `npm run test:voice` passed the complete 211/211 voice and shared-capability tests.
+- Scoped Prettier validation passed, and `npm run build` completed successfully with only the
+  repository's existing dependency `eval`, large-chunk, and Vite output-preparation timing warnings.
+
+## Explicit local content-diagnostic validation — 2026-07-29
+
+No live provider call or paid spend is required. Start the local development server explicitly:
+
+```bash
+NODE_ENV=development REALTIME_CONTENT_DEBUG=true npm run dev
+```
+
+The active terminal may then show sanitized `voice.content_debug` records for all four relay
+directions. Stop the process after debugging and do not redirect or tee this output to a file.
+Without both exact startup values, routine local operation emits only privacy-safe phase records.
+Vite preview and the Cloudflare Worker cannot construct the content logger even if an environment
+flag is present.
+
+Validate deterministically:
+
+```bash
+node --test tests/realtime-content-debug.test.mjs tests/realtime-policy.test.mjs tests/realtime-relay.test.mjs tests/no-telemetry.test.mjs
+npm run test:voice
+npm run build
+```
+
+Expected proof:
+
+1. Transcripts, server prompts, valid tool arguments/results, and non-sensitive provider/browser
+   fields appear in the explicit local diagnostic fixture.
+2. Nested credentials, authorization/cookies/tokens/passwords/secrets/signing material, raw session
+   IDs, JSON-encoded secret fields, and raw/encoded audio never reach the injected logger.
+3. Default, production, preview, browser-requested, and malformed activation attempts cannot enable
+   content diagnostics.
+4. The implementation contains no file, database, cache, browser-storage, analytics, or remote
+   transport sink, and late provider events after terminal cleanup emit no diagnostic record.
+5. Existing privacy-safe phase records and response-watchdog behavior remain unchanged.
+
+Validation completed with zero provider calls and USD 0 spend:
+
+- Focused content-debug, policy, relay, and no-telemetry validation passed 51/51 tests.
+- The complete voice/shared-capability suite passed 212/212 tests.
+- Scoped Prettier and `git diff --check` passed.
+- `npm run build` completed successfully. It retained only the repository's existing dependency
+  `eval`, large-chunk, and Vite output-preparation timing warnings.
+- Spec Kit convergence checked FR-054–FR-058, SC-028–SC-029, the Phase 16 plan decisions, and
+  constitution v2.6.0 and found no remaining implementation gap.

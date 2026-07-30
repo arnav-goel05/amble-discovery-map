@@ -1,6 +1,6 @@
 {
-  "schemaVersion": "1.0",
-  "policyVersion": "openai-realtime-voice-1.0",
+  "schemaVersion": "1.1",
+  "policyVersion": "openai-realtime-voice-1.1",
   "owner": "Arnav",
   "ownerRole": "project owner",
   "capMicroUsd": 10000000,
@@ -12,7 +12,7 @@
   "maxSessionSeconds": 300,
   "idleSeconds": 60,
   "maxResponses": 6,
-  "maxOutputTokens": 512,
+  "responseTimeoutSeconds": 30,
   "maxContextTokens": 4000,
   "reasoningEffort": "low",
   "automaticResponseCreation": false,
@@ -68,12 +68,12 @@
       "maxInputTokens": 4000,
       "inputRateMicroUsdPerMillionTokens": 10000000,
       "inputReservedMicroUsd": 40000,
-      "maxOutputTokens": 512,
+      "providerMaxOutputTokens": 4096,
       "outputRateMicroUsdPerMillionTokens": 20000000,
-      "outputReservedMicroUsd": 10240,
-      "reservedMicroUsd": 50240
+      "outputReservedMicroUsd": 81920,
+      "reservedMicroUsd": 121920
     },
-    "maxTurnReservedMicroUsd": 67240,
+    "maxTurnReservedMicroUsd": 138920,
     "admissionInvariant": "spentMicroUsd + reservedMicroUsd + requestedMicroUsd <= capMicroUsd",
     "missingOrUntrustedUsage": "hold-full-reservation-and-disable-new-work"
   }

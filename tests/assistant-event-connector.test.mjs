@@ -356,6 +356,53 @@ test("version-1 aliases delegate one-way to canonical filter commands", async ()
   );
 });
 
+test("occurrence selection is available only when the open event has a schedule choice", async () => {
+  const singletonEvent = {
+    candidateId: "event:venue-single:only-session",
+    title: "Only Session",
+    landmarkId: "venue-single",
+    publicPlacement: "mapped",
+    occurrences: [{ occurrenceId: "session:only" }],
+    sourceOffers: [],
+  };
+  const singletonConnector = createEventConnector({
+    eventController: ownerFixture({ events: [singletonEvent] }),
+  });
+  await singletonConnector.execute("event.opendetail", {
+    eventId: singletonEvent.candidateId,
+  });
+  assert.equal(
+    singletonConnector.isEligible("event.selectoccurrence", {
+      eventId: singletonEvent.candidateId,
+      occurrenceId: "session:only",
+    }),
+    false,
+  );
+  await assert.rejects(
+    singletonConnector.execute("event.selectoccurrence", {
+      eventId: singletonEvent.candidateId,
+      occurrenceId: "session:only",
+    }),
+    (error) =>
+      error instanceof EventConnectorError &&
+      error.code === "event_capability_unavailable",
+  );
+
+  const multipleConnector = createEventConnector({
+    eventController: ownerFixture({ events: [primaryEvent] }),
+  });
+  await multipleConnector.execute("event.opendetail", {
+    eventId: primaryEvent.candidateId,
+  });
+  assert.equal(
+    multipleConnector.isEligible("event.selectoccurrence", {
+      eventId: primaryEvent.candidateId,
+      occurrenceId: "session:2",
+    }),
+    true,
+  );
+});
+
 test("detail, occurrence, session, navigation, plan, and external eligibility use stable visible targets", async () => {
   const owner = ownerFixture();
   const connector = createEventConnector({ eventController: owner });

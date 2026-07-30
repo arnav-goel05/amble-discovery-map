@@ -4,10 +4,17 @@
 
 **Created**: 2026-07-18
 
-**Status**: Draft — amended for constitution v2.4.0 shared-capability, deterministic-interpreter,
-and MCP-foundation architecture
+**Status**: Draft — amended through constitution v2.6.0 for shared capabilities, deterministic
+interpretation, MCP-foundation architecture, privacy-safe reliability tracing, and explicit local
+content diagnostics
 
 **Input**: User description: "Replace research-heavy search with open-ended conversational discovery, highlight suitable areas when zoomed out, make user location and Singapore MRT context clear, and let users control every user-facing application feature by voice."
+
+## Clarifications
+
+### Session 2026-07-29
+
+- Q: Where may content-bearing debug data be captured? → A: Explicitly activated local developer sessions only; secrets and raw audio remain excluded.
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -77,24 +84,37 @@ As a user, I can use natural voice commands to operate every user-facing feature
 
 ### User Story 4 - Speak Naturally in Public or Noisy Places (Priority: P2)
 
-As a mobile user, I can choose voice-first interaction while retaining a visible transcript, text input, interruption controls, and a clear microphone state.
+As a mobile user, I can choose voice-first interaction with interrupt and stop controls, a clear microphone state, and the application's ordinary direct controls.
 
 **Why this priority**: Voice should feel natural without making the application unusable on public transport, in noisy environments, or when microphone access is unavailable.
 
-**Independent Test**: A user can begin, pause, resume, correct, interrupt, and continue a conversation using voice or text while always understanding whether the microphone is active.
+**Independent Test**: A user can begin, pause, resume, correct, interrupt, and continue a voice conversation while always understanding whether the microphone is active.
 
 **Acceptance Scenarios**:
 
 1. **Given** voice is available, **When** the user explicitly activates it, **Then** the application clearly indicates listening, processing, speaking, muted, and stopped states.
-2. **Given** a voice exchange, **When** either participant speaks, **Then** a readable transcript
-   stays visible and a same-session text input remains available without obscuring the map.
+2. **Given** Amble is responding, **When** the user selects Interrupt, **Then** playback stops,
+   Amble returns to listening, and the user's next utterance becomes the active turn.
 3. **Given** the assistant is speaking, **When** the user interrupts, **Then** playback stops promptly and the new request becomes the active conversational turn.
-4. **Given** microphone permission is denied or audio quality is insufficient, **When** the user attempts voice interaction, **Then** the application explains the limitation and preserves full text-based access to the same actions.
+4. **Given** microphone permission is denied or audio quality is insufficient, **When** the user attempts voice interaction, **Then** the application explains the limitation and preserves ordinary search and direct-interface access.
 5. **Given** the online voice service is unavailable, disabled, over budget, or terminates
    unexpectedly, **When** the failure is known, **Then** the application says “Voice service is
    currently unavailable. Please try again later.”, stops microphone capture and audio playback,
    clears the voice session and pending voice work, and does not silently hand the utterance to a
    local or offline voice assistant.
+6. **Given** a submitted voice turn does not produce a completed response within the configured
+   response deadline, **When** the deadline expires, **Then** the application cancels that provider
+   response, terminates the affected voice session through the ordinary unavailable path, and
+   records enough privacy-safe phase timing to identify where the turn stopped.
+7. **Given** a developer is reproducing a voice defect locally, **When** they explicitly activate
+   content diagnostics before starting the local process, **Then** the local process records the
+   complete permitted transcript, prompt, tool, and redacted relay-event content for that session
+   while excluding credentials, authorization material, cookies, session tokens, signing material,
+   and raw audio.
+8. **Given** content diagnostics were not explicitly activated or the application is running in
+   preview or production, **When** voice traffic is processed, **Then** no content-bearing
+   diagnostic record can be emitted and only the closed privacy-safe operational phase records are
+   available.
 
 ---
 
@@ -196,6 +216,11 @@ or registered external transport exists.
 - Location permission is approximate, stale, denied, or unavailable.
 - MRT data is missing or temporarily unavailable at a relevant zoom level.
 - The realtime conversation service is slow, unavailable, reaches its usage limit, or ends unexpectedly.
+- A response request is accepted but never emits audio or a terminal completion event.
+- Provider events continue arriving without completing the active response.
+- Local content diagnostics are requested in a production or preview process.
+- A debug event contains nested credential, authorization, cookie, session-token, signing-material,
+  or raw-audio fields.
 - An event utterance contains overlapping recognized values, unmatched wording, or a stale catalogue
   revision.
 - A future protocol projection attempts to expose an ineligible capability or bypass confirmation.
@@ -231,8 +256,8 @@ or registered external transport exists.
   with the specified unavailable message and MUST NOT masquerade as a local or offline voice
   assistant. The ordinary event composer, search, and direct controls remain available without
   calling another paid model.
-- **Privacy and lifecycle**: Microphone use MUST begin only after explicit user action and MUST be visibly indicated. Continuous background listening is prohibited. Raw audio MUST NOT be retained by the application. Conversation transcripts, exact location, and current interface context MUST remain session-scoped unless the user explicitly invokes an existing persistence feature. Provider-side retention and processing behavior MUST be disclosed before voice activation. No voice, transcript, or location analytics may be collected.
-- **Experience**: The feature MUST support the project’s required current desktop and mobile browsers. Voice is the primary conversational entry, but every voice interaction MUST have a text and direct-interface alternative. Spoken output, transcript updates, map motion, and selection changes MUST not compete for attention or obscure the active task.
+- **Privacy and lifecycle**: Microphone use MUST begin only after explicit user action and MUST be visibly indicated. Continuous background listening is prohibited. Raw audio MUST NOT be retained by the application. Conversation transcripts, exact location, and current interface context MUST remain session-scoped unless the user explicitly invokes an existing persistence feature. Provider-side retention and processing behavior MUST be disclosed before voice activation. No voice, transcript, or location analytics may be collected. Production and preview reliability logs MAY contain a one-way session identifier, bounded lifecycle phase, timestamps, durations, event code, and terminal reason only; they MUST NOT contain audio, transcripts, prompts, tool arguments or results, provider payloads, exact location, secrets, or raw session identifiers. An explicitly activated local-development diagnostic session MAY additionally emit complete permitted transcripts, prompts, tool arguments/results, and redacted provider/browser event bodies to its active process output only. It MUST default off, create no application persistence or remote telemetry, end with the local process/session, and structurally exclude credentials, API keys, authorization material, cookies, session tokens, signing material, and raw audio. Audio is represented only by sizes, format, timing, and lifecycle metadata.
+- **Experience**: The feature MUST support the project’s required current desktop and mobile browsers. Voice is the conversational entry, while ordinary search and direct-interface alternatives remain available. Spoken output, transcript updates, map motion, and selection changes MUST not compete for attention or obscure the active task.
 
 ## Requirements _(mandatory)_
 
@@ -254,7 +279,7 @@ or registered external transport exists.
 - **FR-014**: Consequential, destructive, privacy-sensitive, or external actions MUST require explicit confirmation that names the target and effect.
 - **FR-015**: The system MUST allow users to interrupt spoken output, cancel a pending action, and undo reversible actions wherever the equivalent direct interface supports undo.
 - **FR-016**: While the online conversation is active, the system MUST provide voice-first
-  interaction with a visible transcript and an equivalent text input within that same conversation.
+  interaction with explicit interrupt and stop controls.
 - **FR-017**: The system MUST clearly communicate microphone listening, processing, responding, muted, unavailable, and stopped states.
 - **FR-018**: The system MUST preserve ordinary composer, search, and direct-interface access when
   microphone access or the realtime voice service is unavailable, while keeping that non-voice
@@ -308,9 +333,9 @@ or registered external transport exists.
   projector is a protocol adapter foundation, not an application connector or active
   infrastructure transport. No unrelated email, calendar, messaging, file-storage, or
   collaboration connector is required.
-- **FR-037**: Consent, push-to-talk, interruption, mute, stop, and confirmation controls MUST remain
-  protected browser-owned lifecycle controls. Spoken stop, mute, unmute, and interrupt requests MAY
-  use a deterministic local `session.*` router, but the model MUST NOT invoke consent or confirm its
+- **FR-037**: Disclosure, interruption, stop, and confirmation controls MUST remain protected
+  browser-owned lifecycle controls. Spoken stop, mute, unmute, and interrupt requests MAY use a
+  deterministic local `session.*` router, but the model MUST NOT invoke disclosure or confirm its
   own consequential action.
 - **FR-038**: Capability coverage MUST include multi-value event filters, placement/location
   filters, individual filter removal, occurrence selection, event-session expansion, and map
@@ -353,6 +378,35 @@ or registered external transport exists.
   eligible capabilities belonging to connector families relevant to the bounded request and
   current interface state. A deterministically routed capability MUST be excluded from provider
   tools for that turn.
+- **FR-050**: The relay MUST emit a privacy-safe operational trace for each voice turn covering
+  audio committed, transcription completed, response requested, response created, first audio,
+  response completed, and terminal failure where applicable. Each record MUST contain only a
+  one-way session identifier, turn number, phase, timestamp, elapsed durations, bounded event code,
+  and terminal reason.
+- **FR-051**: Every requested provider response MUST have a configurable deadline independent of
+  session idle and maximum-duration limits. The first-release deadline MUST be 30 seconds and MUST
+  begin when the response request is sent.
+- **FR-052**: When a response deadline expires, the relay MUST record a `response_timeout` terminal
+  outcome, cancel the in-flight provider response where possible, clear its watchdog and pending
+  reservation, terminate the session through the standard unavailable lifecycle, and ignore any
+  late provider completion for that terminated session.
+- **FR-053**: Operational trace records MUST NOT contain raw audio, transcripts, prompts, tool
+  arguments or results, provider request or response bodies, exact location, secrets, or raw
+  session identifiers, and MUST NOT be used as product analytics.
+- **FR-054**: Content-bearing voice diagnostics MUST be disabled by default and MUST require an
+  explicit local-development process activation before relay construction.
+- **FR-055**: Content-bearing diagnostics MUST be structurally unavailable in production and
+  preview configurations even when a caller supplies the local activation value.
+- **FR-056**: An active local diagnostic session MUST emit complete permitted browser and provider
+  event bodies, transcripts, prompts, tool arguments, and tool results to the active local process
+  output with a one-way session identifier and direction/event metadata.
+- **FR-057**: Local diagnostic serialization MUST recursively replace credentials, API keys,
+  authorization material, cookies, session tokens, signing material, and raw audio before any
+  logger receives the record. Audio events MUST expose only byte count, format, timing, and
+  lifecycle metadata.
+- **FR-058**: Local content diagnostics MUST create no file, database row, cache, browser-storage
+  entry, remote telemetry request, or background upload and MUST cease when the local process or
+  voice session ends.
 
 ### Key Entities
 
@@ -380,6 +434,14 @@ or registered external transport exists.
 - **Confirmation Request**: A pending consequential action with its target, effect, expiry, and explicit approval or rejection state.
 - **User Location State**: The current permission, position, accuracy, freshness, and availability state used for map orientation.
 - **Transit Context**: MRT stations and lines relevant to the visible map, plus whether transit has been explicitly activated as a recommendation constraint.
+- **Voice Turn Trace**: A session-scoped reliability state containing a one-way session
+  identifier, monotonically increasing turn number, the current bounded phase, phase timestamps,
+  elapsed durations, event code, and terminal reason. It contains no conversational content and
+  is emitted only as minimal operational logging.
+- **Local Content Diagnostic Record**: An explicitly enabled local-process record containing
+  direction, bounded event identity, one-way session identity, timestamp, and a recursively
+  sanitized copy of the permitted browser/provider payload. It has no persistent store and cannot
+  exist in preview or production.
 
 ## Success Criteria _(mandatory)_
 
@@ -427,6 +489,18 @@ or registered external transport exists.
   direct controls without a provider tool proposal for that command.
 - **SC-025**: 100% of turn-scope fixtures expose no eligible capability outside the selected
   connector families, and audio responses are not created before the final transcript is scoped.
+- **SC-026**: 100% of successful voice-turn fixtures emit the ordered applicable lifecycle phases,
+  and every phase record passes an allowlist test proving it contains no conversational content,
+  precise location, provider body, secret, or raw session identifier.
+- **SC-027**: 100% of stalled-response fixtures terminate within the configured response deadline
+  plus one scheduler interval, cancel the pending provider response, release pending budget state,
+  emit `response_timeout`, and leave no response watchdog active.
+- **SC-028**: 100% of local content-diagnostic fixtures require explicit activation and reproduce
+  every permitted transcript, prompt, tool argument/result, and non-audio event field needed by the
+  fixture.
+- **SC-029**: 100% of production, preview, default-off, nested-secret, and raw-audio fixtures emit
+  zero prohibited content; no application file, database, cache, browser storage, or remote request
+  is created by the diagnostic path.
 
 ## Assumptions
 
@@ -444,3 +518,7 @@ or registered external transport exists.
 - The MCP work in this amendment is a disabled contract-projection foundation only. Enabling a
   network server requires a separate approved specification covering identity, authorization,
   rate limits, session isolation, remote confirmation, exposure, logging, and operations.
+- The first-release response deadline is 30 seconds. It is a reliability boundary, not a response
+  token or content-length ceiling, and does not alter the provider/model intrinsic output limit.
+- “Local development” means the Node development relay process started by the developer; browser
+  runtime flags and request payloads cannot activate content diagnostics.

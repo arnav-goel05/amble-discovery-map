@@ -12,6 +12,7 @@ import {
   readFileSync,
   renameSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { hostname } from "node:os";
@@ -27,6 +28,7 @@ import {
   commitFrontendSnapshot,
   loadCurrentApprovedData,
   prepareFrontendSnapshot,
+  selectChangedPoiRecords,
   writeVerifiedStageHandoffs,
 } from "./event-frontend-snapshot.mjs";
 import { extractCoordinates } from "./extract-web-evidence.mjs";
@@ -90,6 +92,15 @@ import {
   buildEventDashboardPayloadFromRun,
   syncEventDashboard,
 } from "./lib/event-pipeline/dashboard-sync.mjs";
+import {
+  createStageInputManifest,
+  findReusableStageCheckpoint,
+  fingerprintArtifact,
+  runCheckpointedStage,
+  summarizeStageCheckpointMetrics,
+  writeStageCheckpoint,
+} from "./lib/event-pipeline/stage-checkpoints.mjs";
+import { runIdempotentDelivery } from "./lib/event-pipeline/delivery-receipts.mjs";
 
 const require = createRequire(import.meta.url);
 const Database = require("better-sqlite3");
@@ -177,6 +188,77 @@ function fail(message, code = 1) {
 
 function sha(value) {
   return createHash("sha256").update(value).digest("hex");
+}
+
+function workspaceCodeIdentity() {
+  const git = (args) =>
+    execFileSync("git", args, {
+      cwd: ROOT,
+      encoding: "utf8",
+      maxBuffer: 64 * 1024 * 1024,
+    });
+  const excluded = [
+    ":(exclude)specs/**",
+    ":(exclude)data/approved-snapshot.json",
+    ":(exclude)data/snapshots/**",
+    ":(exclude)public/poi-tiles/event-venues/tileset.json",
+  ];
+  const head = git(["rev-parse", "HEAD"]).trim();
+  const trackedDiff = git([
+    "diff",
+    "--binary",
+    "HEAD",
+    "--",
+    ".",
+    ...excluded,
+  ]);
+  const untracked = git(["ls-files", "--others", "--exclude-standard"])
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .filter(
+      (ref) =>
+        !ref.startsWith("specs/") &&
+        !ref.startsWith("data/snapshots/") &&
+        ref !== "data/approved-snapshot.json" &&
+        ref !== "public/poi-tiles/event-venues/tileset.json",
+    )
+    .sort()
+    .map((ref) => ({
+      ref,
+      sha256: sha(readFileSync(join(ROOT, ref))),
+    }));
+  return {
+    head,
+    trackedDiffSha256: sha(trackedDiff),
+    untracked,
+  };
+}
+
+function checkpointArtifact(path, ref) {
+  const fingerprint = fingerprintArtifact(path, { ref });
+  return {
+    ref: fingerprint.ref,
+    sha256: fingerprint.sha256,
+    bytes: fingerprint.bytes,
+    fileCount: fingerprint.fileCount,
+  };
+}
+
+function executionIdentity() {
+  const identity = workspaceCodeIdentity();
+  return { ...identity, sha256: sha(JSON.stringify(identity)) };
+}
+
+function assertRunExecutionIdentity(runId) {
+  const runDir = runDirectory(runId);
+  const run = readJson(join(runDir, "run.json"));
+  if (!run.executionIdentity?.sha256) return;
+  const current = executionIdentity();
+  if (current.sha256 !== run.executionIdentity.sha256)
+    fail(
+      "Pipeline execution identity changed after the run started; preserve the current candidate and restart from a new run after code changes are complete",
+      2,
+    );
 }
 
 function atomicWrite(path, value) {
@@ -1035,6 +1117,7 @@ function resume(options) {
     fail(
       "Resume rejected: current executable pipeline configuration differs from the run snapshot",
     );
+  assertRunExecutionIdentity(options.run);
   run.resume.requestedRunId = options.run;
   const invalidatedArtifacts = invalidateResumeArtifacts(runDir, state, run);
   writeJson(join(runDir, "run.json"), run);
@@ -1065,6 +1148,7 @@ function registerArtifacts(runDir, references, inputSha256 = []) {
       fail(`Referenced artifact does not exist: ${reference}`);
     run.artifacts[reference] = {
       sha256: sha(readFileSync(path)),
+      bytes: statSync(path).size,
       status: "success",
       inputSha256,
     };
@@ -1104,6 +1188,7 @@ function start(options) {
       .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
     const configSha256 = sha(JSON.stringify({ manifestSha256, adapters }));
     const now = new Date().toISOString();
+    const runExecutionIdentity = executionIdentity();
     writeJson(join(runDir, "run.json"), {
       schemaVersion: "1.0",
       runId,
@@ -1121,6 +1206,7 @@ function start(options) {
         sha256: definitionSha256,
       },
       configSha256,
+      executionIdentity: runExecutionIdentity,
       adapters,
       resume: { requestedRunId: null, parentRunId: null },
       artifacts: {},
@@ -2748,6 +2834,7 @@ async function recoverMissingVenues(options, { force = false } = {}) {
   const config = readPipelineConfig();
   const result = await recoverMissingEventVenues({
     runDir,
+    cacheDir: join(OUTPUT_ROOT, "recovery-cache"),
     state,
     run: readJson(join(runDir, "run.json")),
     config: config.missingVenueRecovery,
@@ -4323,6 +4410,7 @@ async function advance(options) {
   ]);
   const executed = [];
   while (true) {
+    assertRunExecutionIdentity(options.run);
     const state = loadState(options.run);
     let next = nextAction(state);
     if (next.action === "record-stage" && next.stage === "resolve") {
@@ -4568,7 +4656,38 @@ async function stageFrontend(options) {
     requireVerification: false,
   });
   const registry = join(runDir, "frontend/approved-pois.json");
+  const extractionRegistry = join(
+    runDir,
+    "frontend/extraction-approved-pois.json",
+  );
   const assetsRoot = join(runDir, "frontend/assets");
+  const checkpointRoot = join(runDir, "checkpoints");
+  const codeIdentity = workspaceCodeIdentity();
+  const registryDocument = readJson(registry);
+  const changedPois = selectChangedPoiRecords(plan, registryDocument.records);
+  const changedPoiIds = new Set(changedPois.map(({ id }) => id));
+  writeJson(extractionRegistry, {
+    ...registryDocument,
+    records: changedPois,
+  });
+  const frontendInputArtifacts = [
+    ["frontend/approved-pois.json", registry],
+    [
+      "frontend/approved-landmarks.json",
+      join(runDir, "frontend/approved-landmarks.json"),
+    ],
+    [
+      "frontend/approved-events.json",
+      join(runDir, "frontend/approved-events.json"),
+    ],
+    [
+      "frontend/approved-activities.json",
+      join(runDir, "frontend/approved-activities.json"),
+    ],
+    ["pipeline-config.snapshot.json", join(runDir, "pipeline-config.snapshot.json")],
+  ]
+    .filter(([, path]) => existsSync(path))
+    .map(([ref, path]) => checkpointArtifact(path, ref));
   const results = {};
   const boundedDiagnostic = (value) => {
     const redacted = String(redactTraceValue(String(value ?? "")))
@@ -4609,11 +4728,140 @@ async function stageFrontend(options) {
       blocker: results[name].status === "failed" ? diagnostics : null,
     });
   };
-  if (plan.geometryChanged) {
+  const executeGate = async (
+    name,
+    command,
+    args,
+    env = process.env,
+    extraArtifacts = [],
+  ) => {
+    const environment = Object.fromEntries(
+      [
+        "PLAYWRIGHT_PORT",
+        "PLAYWRIGHT_REUSE_EXISTING_SERVER",
+        "PLAYWRIGHT_WORKERS",
+        "EVENT_PIPELINE_RUN_DIR",
+        "EVENT_PIPELINE_BROWSER_ORIGIN",
+        "NODE_ENV",
+      ]
+        .filter((key) => env[key] !== undefined)
+        .map((key) => [key, env[key]]),
+    );
+    const manifest = createStageInputManifest({
+      stage: `verification-${name}`,
+      contractVersion: "1.0",
+      codeIdentity,
+      configuration: [...frontendInputArtifacts, ...extraArtifacts],
+      upstreamArtifacts: [],
+      dependencies: {
+        command,
+        args,
+        environment,
+        geometryChanged: plan.geometryChanged,
+      },
+    });
+    try {
+      const checkpoint = await runCheckpointedStage({
+        checkpointRoot,
+        manifest,
+        execute: async () => {
+          execute(name, command, args, env);
+          if (results[name].status !== "success") {
+            const error = new Error(results[name].diagnostics || `${name} failed`);
+            error.gateResult = results[name];
+            throw error;
+          }
+          return {
+            outputs: [],
+            metrics: {
+              gateExecutions: 1,
+              reasonCode: "checkpoint_executed",
+            },
+          };
+        },
+      });
+      if (checkpoint.reused)
+        results[name] = {
+          status: "success",
+          exitCode: 0,
+          command: `reused: ${[command, ...args].join(" ")}`,
+          reused: true,
+          inputHash: manifest.inputHash,
+        };
+      else
+        results[name] = {
+          ...results[name],
+          reused: false,
+          inputHash: manifest.inputHash,
+        };
+      pipelineTrace(runDir, {
+        stage: "verification",
+        action: checkpoint.reused ? `${name}_reused` : `${name}_checkpointed`,
+        outcome: "success",
+        entityType: "gate",
+        entityId: name,
+        reasonCode: checkpoint.metrics.reasonCode,
+        counts: checkpoint.metrics,
+      });
+    } catch (error) {
+      results[name] =
+        error.gateResult ?? {
+          status: "failed",
+          exitCode: 1,
+          command: [command, ...args].join(" "),
+          diagnostics: boundedDiagnostic(error.message),
+        };
+    }
+  };
+  const assetInputArtifacts = [
+    ...frontendInputArtifacts,
+    ...(existsSync(join(ROOT, "optimized-tiles/tileset.json"))
+      ? [
+          checkpointArtifact(
+            join(ROOT, "optimized-tiles/tileset.json"),
+            "optimized-tiles/tileset.json",
+          ),
+        ]
+      : []),
+  ];
+  const assetManifest = createStageInputManifest({
+    stage: "frontend-assets",
+    contractVersion: "1.0",
+    codeIdentity,
+    configuration: assetInputArtifacts,
+    upstreamArtifacts: [],
+    dependencies: {
+      geometryChanged: plan.geometryChanged,
+      changedPoiIds: [...changedPoiIds].sort(),
+    },
+  });
+  const reusableAssets =
+    plan.geometryChanged &&
+    existsSync(assetsRoot) &&
+    findReusableStageCheckpoint(checkpointRoot, assetManifest);
+  if (reusableAssets) {
+    results.extraction = {
+      status: "success",
+      command: "reused: exact-input frontend asset checkpoint",
+      reused: true,
+      inputHash: assetManifest.inputHash,
+    };
+    results.combinedPoiTileset = {
+      status: "success",
+      command: "reused with frontend asset checkpoint",
+      reused: true,
+    };
+  } else if (plan.geometryChanged) {
+    mkdirSync(assetsRoot, { recursive: true });
+    for (const poiId of changedPoiIds)
+      rmSync(join(assetsRoot, "public/poi-tiles", poiId), {
+        recursive: true,
+        force: true,
+      });
     execute("extraction", process.execPath, [
       "scripts/extract-cbd-poi-tilesets.mjs",
       "--registry",
-      registry,
+      extractionRegistry,
       "--publish-root",
       assetsRoot,
       "--work-root",
@@ -4650,7 +4898,11 @@ async function stageFrontend(options) {
       status: "success",
       command: "skipped: geometry content hash unchanged",
     };
-  if (results.extraction.status === "success") {
+  let assetCheckpoint = reusableAssets;
+  if (
+    results.extraction.status === "success" &&
+    !results.combinedPoiTileset
+  ) {
     try {
       const stagedPois = readJson(registry).records;
       const combinedOutput = join(
@@ -4664,15 +4916,6 @@ async function stageFrontend(options) {
           const staged = join(assetsRoot, "public", poi.data);
           return existsSync(staged) ? staged : join(ROOT, "public", poi.data);
         },
-        resolveContentUri: (poi) =>
-          relative(
-            dirname(combinedOutput),
-            existsSync(join(assetsRoot, "public", poi.data))
-              ? join(assetsRoot, "public", poi.data)
-              : join(ROOT, "public", poi.data),
-          )
-            .split(/[/\\]/)
-            .join("/"),
       });
       results.combinedPoiTileset = {
         status: "success",
@@ -4682,16 +4925,41 @@ async function stageFrontend(options) {
       results.combinedPoiTileset = { status: "failed", error: error.message };
     }
   }
+  if (
+    plan.geometryChanged &&
+    !reusableAssets &&
+    results.extraction.status === "success" &&
+    results.combinedPoiTileset?.status === "success"
+  )
+    assetCheckpoint = writeStageCheckpoint(checkpointRoot, {
+      manifest: assetManifest,
+      status: "success",
+      outputs: [assetsRoot],
+      metrics: {
+        artifactsCreated: 1,
+        reasonCode: "frontend_assets_generated",
+      },
+    });
+  const assetGateInputs = assetCheckpoint?.outputs?.length
+    ? [
+        {
+          ref: "frontend/assets",
+          sha256: assetCheckpoint.outputs[0].sha256,
+          bytes: assetCheckpoint.outputs[0].bytes,
+          fileCount: assetCheckpoint.outputs[0].fileCount,
+        },
+      ]
+    : [];
   if (results.extraction.status === "success")
-    execute("poiSeparation", process.execPath, [
+    await executeGate("poiSeparation", process.execPath, [
       "scripts/verify-poi-background-separation.mjs",
       "--registry",
       registry,
       "--root",
       plan.geometryChanged ? assetsRoot : ROOT,
-    ]);
-  execute("build", "npm", ["run", "build"]);
-  execute(
+    ], process.env, assetGateInputs);
+  await executeGate("build", "npm", ["run", "build"], process.env, assetGateInputs);
+  await executeGate(
     "eventUi",
     "npx",
     [
@@ -4704,8 +4972,9 @@ async function stageFrontend(options) {
     browserVerificationEnvironment(options.run, {
       PLAYWRIGHT_WORKERS: process.env.PLAYWRIGHT_WORKERS ?? "2",
     }),
+    assetGateInputs,
   );
-  execute(
+  await executeGate(
     "browser",
     "npx",
     [
@@ -4718,10 +4987,12 @@ async function stageFrontend(options) {
     browserVerificationEnvironment(options.run, {
       EVENT_PIPELINE_RUN_DIR: runDir,
     }),
+    assetGateInputs,
   );
   const failed = Object.entries(results)
     .filter(([, value]) => value.status !== "success")
     .map(([name]) => name);
+  assertRunExecutionIdentity(options.run);
   const verification = {
     status: failed.length ? "failed" : "success",
     ...results,
@@ -4893,17 +5164,29 @@ async function finalize(options) {
       venueId,
       evidenceHash: venue.evidenceHash ?? branchEvidenceHash(runDir, venue),
     }));
-  const repository = new AdminRepository({ databasePath: adminDatabasePath() });
-  try {
-    state.adminReviewReconciliation = {
-      ...repository.reconcileVenueReviewQueue(activeReviewVenues),
-      reconciledAt: new Date().toISOString(),
-    };
-  } finally {
-    repository.close();
-  }
+  const finalizedAt = state.finalizedAt ?? new Date().toISOString();
+  const adminDelivery = await runIdempotentDelivery({
+    receiptRoot: join(runDir, "delivery-receipts"),
+    operation: "admin_reconcile",
+    payload: { activeReviewVenues },
+    destination: adminDatabasePath(),
+    execute: async () => {
+      const repository = new AdminRepository({
+        databasePath: adminDatabasePath(),
+      });
+      try {
+        return {
+          ...repository.reconcileVenueReviewQueue(activeReviewVenues),
+          reconciledAt: finalizedAt,
+        };
+      } finally {
+        repository.close();
+      }
+    },
+  });
+  state.adminReviewReconciliation = adminDelivery.value;
   state.overallStatus = deriveTerminalStatus(state);
-  state.finalizedAt = new Date().toISOString();
+  state.finalizedAt = finalizedAt;
   saveState(runDir, state);
   const run = readJson(join(runDir, "run.json"));
   const frontendPlanPath = join(runDir, "frontend/plan.json");
@@ -4945,9 +5228,20 @@ async function finalize(options) {
     activeLandmarksPath && existsSync(activeLandmarksPath)
       ? readJson(activeLandmarksPath).length
       : 0;
-  const dashboardSync = await syncEventDashboard(
-    buildEventDashboardPayloadFromRun(runDir, baseSummary, { highlightedPois }),
+  const dashboardPayload = buildEventDashboardPayloadFromRun(
+    runDir,
+    baseSummary,
+    { highlightedPois },
   );
+  const dashboardDelivery = await runIdempotentDelivery({
+    receiptRoot: join(runDir, "delivery-receipts"),
+    operation: "dashboard_sync",
+    payload: dashboardPayload,
+    destination:
+      process.env.EVENT_DASHBOARD_SYNC_URL ?? "dashboard_sync_not_configured",
+    execute: () => syncEventDashboard(dashboardPayload),
+  });
+  const dashboardSync = dashboardDelivery.value;
   pipelineTrace(runDir, {
     stage: "reporting",
     action: "dashboard_sync",
@@ -4962,9 +5256,62 @@ async function finalize(options) {
     nextAction: null,
   });
   const tracePath = join(runDir, "logs/trace.jsonl");
+  const resourceMetrics = {
+    schemaVersion: "1.0",
+    checkpointSummary: summarizeStageCheckpointMetrics(
+      join(runDir, "checkpoints"),
+    ),
+    missingVenueRecovery: state.missingVenueRecovery?.counts ?? null,
+    deliveries: {
+      adminReconciliationReused: adminDelivery.reused,
+      dashboardSyncReused: dashboardDelivery.reused,
+      adminReconciliation: adminDelivery.metrics,
+      dashboardSync: dashboardDelivery.metrics,
+    },
+    registeredArtifacts: {
+      count: Object.keys(run.artifacts ?? {}).length,
+      bytes: Object.values(run.artifacts ?? {}).reduce(
+        (total, artifact) => total + Number(artifact.bytes ?? 0),
+        0,
+      ),
+    },
+  };
+  writeJson(join(runDir, "resource-metrics.json"), resourceMetrics);
+  registerArtifacts(runDir, ["resource-metrics.json"]);
+  pipelineTrace(runDir, {
+    stage: "reporting",
+    action: "resource_metrics_recorded",
+    outcome: "success",
+    entityType: "run",
+    entityId: options.run,
+    counts: {
+      checkpoints: resourceMetrics.checkpointSummary.checkpoints,
+      checkpointSuccesses:
+        resourceMetrics.checkpointSummary.reusableSuccesses,
+      externalRequests:
+        resourceMetrics.checkpointSummary.metrics.externalRequests,
+      cacheHits: resourceMetrics.checkpointSummary.metrics.cacheHits,
+      artifactsCreated:
+        resourceMetrics.checkpointSummary.metrics.artifactsCreated,
+      artifactsReused:
+        resourceMetrics.checkpointSummary.metrics.artifactsReused,
+      bytesRead: resourceMetrics.checkpointSummary.metrics.bytesRead,
+      bytesWritten:
+        resourceMetrics.checkpointSummary.metrics.bytesWritten +
+        resourceMetrics.registeredArtifacts.bytes,
+      registeredArtifacts: resourceMetrics.registeredArtifacts.count,
+      deliveryBlockingMs:
+        Number(adminDelivery.metrics?.blockingMs ?? 0) +
+        Number(dashboardDelivery.metrics?.blockingMs ?? 0),
+      adminReconciliationReused: Number(adminDelivery.reused),
+      dashboardSyncReused: Number(dashboardDelivery.reused),
+    },
+    evidenceRef: "resource-metrics.json",
+  });
   const summary = {
     ...baseSummary,
     dashboardSync,
+    resourceMetrics,
     trace: {
       path: "logs/trace.jsonl",
       sha256: existsSync(tracePath) ? sha(readFileSync(tracePath)) : null,
@@ -5073,6 +5420,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     )
       await commands[command](options);
     else {
+      assertRunExecutionIdentity(options.run);
       acquireLock(options.run);
       try {
         await commands[command](options);

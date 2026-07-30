@@ -65,8 +65,13 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 - **Operations and privacy**: Use free/open sources unless the constitution names a scoped
   exception. For an exception, cite its approval and define its operational owner, concrete
   usage and spending limits, credential boundary, disable control, limit-exhaustion behavior,
-  and free fallback. Also define retention, cleanup, stale-data behavior, generated-artifact
-  policy, and single-host constraints.
+  and free fallback. For the Realtime exception, verify that provider requests contain no
+  application-imposed output-token ceiling and that conservative reservations use only the
+  reviewed provider/model intrinsic maximum. If content-bearing diagnostics are requested,
+  prove they are explicit, local-development-only, disabled by default, unavailable in
+  production/preview, non-persistent, session-bounded, and structurally redact credentials,
+  authorization material, cookies, session tokens, signing material, and raw audio. Also define
+  retention, cleanup, stale-data behavior, generated-artifact policy, and single-host constraints.
 
 ## Project Structure
 

@@ -490,4 +490,49 @@ failure-message gaps before Feature 004 is considered complete.
 - [x] T117 Synchronize deterministic gateway outcomes with response creation, catch execution failures, and give the model only a validated success/failure acknowledgement context in `activity-scenes/assistant/assistant-controller.js`, `activity-scenes/assistant/realtime-relay-client.js`, `scripts/lib/realtime-relay-protocol.mjs`, and `cloudflare/realtime-relay.mjs` per FR-013, FR-028, and FR-048 (partial)
 - [x] T118 Automatically expire and release matching pending confirmations before dependent execution while preserving identity-bound rejection and replay safety in `activity-scenes/assistant/action-gateway.js`, `activity-scenes/assistant/assistant-controller.js`, and `activity-scenes/assistant/confirmation-controller.js` per FR-015 and SC-006 (partial)
 - [x] T119 Normalize every online admission/runtime failure to “Voice service is currently unavailable. Please try again later.” while preserving terminal cleanup and ordinary direct/text access in `activity-scenes/assistant/assistant-controller.js`, `activity-scenes/assistant/assistant-view.js`, `activity-scenes/assistant/realtime-relay-client.js`, `scripts/realtime-voice-api-plugin.cjs`, and `cloudflare/cloud-native-worker.mjs` per FR-027 and T090 (contradicts)
-- [ ] T120 Run the focused protocol/scoping/lifecycle suites, full voice tests, six-browser affected journeys, capability/action verifiers, lint, scoped formatting, production build, and a bounded owner-controlled model-proposed consequential smoke if the existing live authorization remains valid; update `specs/004-conversational-voice-map/quickstart.md` with accurate evidence and rerun Spec Kit convergence per SC-004–SC-025 (partial)
+- [x] T120 Run the focused protocol/scoping/lifecycle suites, full voice tests, six-browser affected journeys, capability/action verifiers, lint, scoped formatting, production build, and a bounded owner-controlled model-proposed consequential smoke if the existing live authorization remains valid; update `specs/004-conversational-voice-map/quickstart.md` with accurate evidence and rerun Spec Kit convergence per SC-004–SC-025 (partial)
+
+---
+
+## Phase 14: Uncapped Realtime Responses
+
+**Purpose**: Prevent application-level token truncation while preserving the lifetime budget.
+
+- [x] T121 Add policy and relay tests proving provider session/response payloads omit `max_output_tokens` and rejecting any checked-in application output ceiling in `tests/realtime-policy.test.mjs` and `tests/realtime-relay.test.mjs`
+- [x] T122 Remove the application response-token ceiling and reserve against the reviewed 4,096-token provider maximum only for cost accounting in `data/realtime-voice-policy.json`, `scripts/lib/realtime-policy.mjs`, and `cloudflare/realtime-relay.mjs`
+- [x] T123 Amend Constitution v2.5.0 and dependent Feature 004 contracts and operations guidance so the ceiling cannot return in later changes
+- [x] T124 Run focused policy/relay tests, scoped formatting, and the production build and record the results in `specs/004-conversational-voice-map/quickstart.md`
+
+---
+
+## Phase 15: Voice Reliability Tracing and Response Watchdog
+
+**Purpose**: Make stalled Realtime turns diagnosable and bounded without retaining conversational
+content, adding analytics, or restoring an application response-token ceiling.
+
+- [x] T125 [P] [US4] Add policy validation for the exact 30-second response deadline and its independence from idle, session-duration, and provider output-token settings in `tests/realtime-policy.test.mjs`
+- [x] T126 [P] [US4] Add relay tests for ordered audio/text/opening phase traces, exact log-field allowlisting, one-way session correlation, sensitive-content exclusion, response timeout cancellation, reservation reconciliation, and watchdog cleanup across every response/session terminal path in `tests/realtime-relay.test.mjs`
+- [x] T127 [US4] Add the checked-in response deadline and fail-closed validation in `data/realtime-voice-policy.json` and `scripts/lib/realtime-policy.mjs`
+- [x] T128 [US4] Implement structured privacy-safe phase tracing, injected-clock durations, a per-response watchdog, timeout cancellation, conservative reservation reconciliation, terminal cleanup, and production/local logger wiring in `cloudflare/realtime-relay.mjs`, `scripts/lib/realtime-relay-protocol.mjs`, `cloudflare/cloud-native-worker.mjs`, and `scripts/realtime-voice-api-plugin.cjs`
+- [x] T129 [US4] Document Worker/local operational-log interpretation and the response-timeout recovery path without adding content logging in `docs/production-configuration.md`
+- [x] T130 [US4] Run focused policy/relay tests, the complete voice suite, scoped formatting, and the production build; record exact zero-spend evidence in `specs/004-conversational-voice-map/quickstart.md`
+
+---
+
+## Phase 16: Explicit Local Content Diagnostics
+
+**Purpose**: Allow complete permitted voice protocol debugging in an explicitly activated local
+developer process without changing default, preview, or production privacy.
+
+### Tests first
+
+- [x] T131 [P] [US4] Add recursive sanitizer tests proving transcripts, prompts, tool arguments/results, and ordinary provider fields remain visible while nested credentials, authorization/cookies/tokens/signing material, raw session IDs, and audio bytes are omitted in `tests/realtime-content-debug.test.mjs`
+- [x] T132 [P] [US4] Add activation and isolation tests proving the logger requires both local development and explicit startup activation, cannot be enabled by browser input, is absent from Worker/preview/production wiring, and has no persistent or remote sink in `tests/realtime-content-debug.test.mjs`
+- [x] T133 [US4] Add relay-boundary tests for complete sanitized browser/provider inbound/outbound records, one-way session correlation, and terminal cleanup without changing privacy-safe phase logs in `tests/realtime-relay.test.mjs`
+
+### Implementation and proof
+
+- [x] T134 [US4] Implement centralized recursive content sanitization and local-process record construction in `scripts/lib/realtime-content-debug.mjs`
+- [x] T135 [US4] Instrument the four relay message directions through an optional injected logger and wire it only from an explicitly activated local development process in `cloudflare/realtime-relay.mjs` and `scripts/realtime-voice-api-plugin.cjs`
+- [x] T136 [US4] Document safe local activation, record interpretation, prohibited redirection/persistence, and production impossibility in `docs/production-configuration.md` and `specs/004-conversational-voice-map/quickstart.md`
+- [x] T137 [US4] Run focused content-debug/relay/privacy tests, the complete voice suite, scoped formatting, the production build, and Spec Kit convergence; record zero-provider-spend evidence in `specs/004-conversational-voice-map/quickstart.md`

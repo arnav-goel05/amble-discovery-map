@@ -11,6 +11,12 @@ description: "Task list template for feature implementation"
 **Branch**: Execute feature tasks on `develop`; do not create or switch branches unless the user explicitly requests it.
 
 **Tests**: Relevant automated tests and the production build are REQUIRED by the project constitution. Include success, failure, recovery, and lifecycle coverage in proportion to risk.
+For work touching the Realtime exception, include fixtures proving that no session or response
+request transmits an application `max_output_tokens` ceiling and that budget reservation still
+uses the reviewed provider/model intrinsic maximum. If local content diagnostics are included,
+add tests proving explicit opt-in, production/preview impossibility, zero persistence, terminal
+cleanup, and structural exclusion of credentials, authorization material, cookies, session
+tokens, signing material, and raw audio.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 

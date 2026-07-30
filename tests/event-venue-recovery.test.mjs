@@ -8,6 +8,7 @@ import { normalizeRun } from "../scripts/event-normalizer.mjs";
 import {
   recoverMissingEventVenues,
   recoverMissingVenueOccurrence,
+  recoveryCacheExpiry,
 } from "../scripts/lib/event-sources/tinyfish-venue-recovery.mjs";
 
 const config = {
@@ -311,6 +312,200 @@ test("recovery overlay is reusable, applies before normalization, and failures r
   } finally {
     rmSync(runDir, { recursive: true, force: true });
   }
+});
+
+test("persistent recovery cache reuses cross-run negatives until the 7-day near-event expiry", async () => {
+  const root = join(
+    tmpdir(),
+    `event-venue-persistent-negative-${process.pid}-${Date.now()}`,
+  );
+  const cacheDir = join(root, "cache");
+  const recordRef = "raw/visit/details/event.json#/records/0";
+  const state = {
+    sources: {
+      "Visit Singapore All Happenings": {
+        status: "success",
+        operatingMode: "required",
+        processedSourceRecordRefs: [recordRef],
+        invalidSourceRecordRefs: [],
+      },
+    },
+  };
+  const sourceDefinitions = [
+    {
+      name: "Visit Singapore All Happenings",
+      evidenceRole: "direct",
+      officialDomains: ["visitsingapore.com"],
+    },
+  ];
+  let searches = 0;
+  const execute = async (runId, nowIso) => {
+    const runDir = join(root, runId);
+    mkdirSync(join(runDir, "raw/visit/details"), { recursive: true });
+    writeFileSync(
+      join(runDir, "raw/visit/details/event.json"),
+      `${JSON.stringify({ schemaVersion: "1.0", records: [record] }, null, 2)}\n`,
+    );
+    return recoverMissingEventVenues({
+      runDir,
+      cacheDir,
+      state,
+      run: {
+        runId,
+        window: {
+          start: "2026-07-21T00:00:00+08:00",
+          end: "2026-07-28T23:59:59+08:00",
+        },
+      },
+      config,
+      sourceDefinitions,
+      searchClient: async () => {
+        searches += 1;
+        return { results: [] };
+      },
+      renderedClient: {
+        fetchBatch: async () => assert.fail("no candidate should be fetched"),
+      },
+      now: () => nowIso,
+    });
+  };
+  try {
+    const first = await execute("run-one", "2026-07-21T00:00:00.000Z");
+    assert.equal(first.counts.attempted, 1);
+    assert.equal(first.counts.notFound, 1);
+    const second = await execute("run-two", "2026-07-27T00:00:00.000Z");
+    assert.equal(second.counts.attempted, 0);
+    assert.equal(second.counts.reused, 1);
+    assert.equal(second.perSource["Visit Singapore All Happenings"].reused, 1);
+    const expired = await execute("run-three", "2026-07-29T00:00:00.000Z");
+    assert.equal(expired.counts.attempted, 1);
+    assert.equal(searches, 2);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("persistent recovery cache reuses positive outcomes and invalidates adapter inputs", async () => {
+  const root = join(
+    tmpdir(),
+    `event-venue-persistent-positive-${process.pid}-${Date.now()}`,
+  );
+  const cacheDir = join(root, "cache");
+  const recordRef = "raw/visit/details/event.json#/records/0";
+  const state = {
+    sources: {
+      "Visit Singapore All Happenings": {
+        status: "success",
+        operatingMode: "required",
+        processedSourceRecordRefs: [recordRef],
+        invalidSourceRecordRefs: [],
+      },
+    },
+  };
+  let searches = 0;
+  const execute = async (runId, language = "en") => {
+    const runDir = join(root, runId);
+    mkdirSync(join(runDir, "raw/visit/details"), { recursive: true });
+    writeFileSync(
+      join(runDir, "raw/visit/details/event.json"),
+      `${JSON.stringify({ schemaVersion: "1.0", records: [record] }, null, 2)}\n`,
+    );
+    return recoverMissingEventVenues({
+      runDir,
+      cacheDir,
+      state,
+      run: {
+        runId,
+        window: {
+          start: "2026-07-21T00:00:00+08:00",
+          end: "2026-07-28T23:59:59+08:00",
+        },
+      },
+      config: {
+        ...config,
+        search: { ...config.search, language },
+      },
+      sourceDefinitions: [
+        {
+          name: "Visit Singapore All Happenings",
+          evidenceRole: "direct",
+          officialDomains: ["visitsingapore.com"],
+        },
+      ],
+      searchClient: async () => {
+        searches += 1;
+        return {
+          results: [
+            {
+              url: "https://www.nationalgallery.sg/events/lanterns-after-dark",
+              title: record.title,
+            },
+          ],
+        };
+      },
+      renderedClient: {
+        fetchBatch: async ([url]) => ({
+          results: [
+            {
+              url,
+              document: {
+                title: record.title,
+                text: `${record.title}\nVenue: Supreme Court Terrace\nAddress: 1 St Andrew's Road, Singapore 178957`,
+                fields: {
+                  Venue: "Supreme Court Terrace",
+                  Address: "1 St Andrew's Road, Singapore 178957",
+                },
+              },
+            },
+          ],
+          errors: [],
+        }),
+      },
+      now: () => "2026-07-21T00:00:00.000Z",
+    });
+  };
+  try {
+    assert.equal((await execute("run-one")).counts.attempted, 1);
+    assert.equal((await execute("run-two")).counts.reused, 1);
+    assert.equal(
+      (await execute("run-three", "fr")).counts.attempted,
+      1,
+      "adapter-language change must invalidate",
+    );
+    assert.equal(searches, 2);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("negative recovery freshness is 7 days near an event and 30 days when undated", () => {
+  assert.equal(
+    recoveryCacheExpiry({
+      record,
+      occurrence: record,
+      outcome: "not_found",
+      createdAt: "2026-07-21T00:00:00.000Z",
+    }),
+    "2026-07-28T00:00:00.000Z",
+  );
+  assert.equal(
+    recoveryCacheExpiry({
+      record: { ...record, dateText: null },
+      occurrence: { ...record, dateText: null },
+      outcome: "ambiguous",
+      createdAt: "2026-07-21T00:00:00.000Z",
+    }),
+    "2026-08-20T00:00:00.000Z",
+  );
+  assert.equal(
+    recoveryCacheExpiry({
+      record,
+      occurrence: record,
+      outcome: "recovered",
+      createdAt: "2026-07-21T00:00:00.000Z",
+    }),
+    null,
+  );
 });
 
 test("a provider failure is recorded for only the affected occurrence", async () => {

@@ -489,6 +489,7 @@ export function createEventConnector({
     if (id === "event.selectoccurrence")
       return (
         current.detailOpen &&
+        event?.occurrenceIds.length > 1 &&
         event?.occurrenceIds.includes(args.occurrenceId) === true
       );
     if (id === "event.setsessionsexpanded")

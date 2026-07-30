@@ -4,7 +4,9 @@ const variants = new Map(
   variantConfig.variants.map((variant) => [variant.id, variant]),
 );
 
-export function requestedPerformanceVariant(search = globalThis.location?.search) {
+export function requestedPerformanceVariant(
+  search = globalThis.location?.search,
+) {
   const params = new URLSearchParams(search ?? "");
   if (params.get("performanceDiagnostics") !== "1") return null;
   const id = params.get("performanceVariant");
@@ -58,15 +60,15 @@ export function installPerformanceVariantController({
       removeMatchingLayers((id) => id.startsWith("mrt-"));
     if (workloads.waterParks === false)
       removeMatchingLayers(
-        (id) => id.startsWith("water-overlay") || id.startsWith("parks-overlay"),
+        (id) =>
+          id.startsWith("water-overlay") || id.startsWith("parks-overlay"),
       );
     if (workloads.restaurantMap === false)
       removeMatchingLayers((id) => id.startsWith("viewport-restaurant-"));
     if (workloads.discoveryContext === false)
       removeMatchingLayers(
         (id) =>
-          id.startsWith("discovery-areas-") ||
-          id.startsWith("user-location-"),
+          id.startsWith("discovery-areas-") || id.startsWith("user-location-"),
       );
     if (workloads.minimapViewportTracking === false)
       eventScene?.setDiagnosticMinimapViewportTracking?.(false);
@@ -92,9 +94,8 @@ export function installPerformanceVariantController({
       after: buildingHighlights.diagnosticSnapshot(),
       eventDiagnostics: {
         minimapViewportTracking:
-          documentRef
-            .getElementById("event-density-minimap")
-            ?.dataset.viewportTracking ?? null,
+          documentRef.getElementById("event-density-minimap")?.dataset
+            .viewportTracking ?? null,
         moveEndSearchRefresh:
           documentRef.body.dataset.eventSearchMoveEndRefreshEnabled ?? null,
         moveEndSearchRefreshMode:
@@ -104,12 +105,17 @@ export function installPerformanceVariantController({
   };
   const destroy = () => {
     delete globalRef.__applyPerformanceDiagnosticVariant;
+    delete globalRef.__preserveNextMovementRendering;
     delete globalRef.__setPerformanceDiagnosticEventWorkloads;
     documentRef
       .getElementById("performance-diagnostic-hide-interface")
       ?.remove();
   };
   globalRef.__applyPerformanceDiagnosticVariant = apply;
+  globalRef.__preserveNextMovementRendering = () => {
+    buildingHighlights.preserveNextMovementRendering?.();
+    return buildingHighlights.diagnosticSnapshot();
+  };
   globalRef.__setPerformanceDiagnosticEventWorkloads = ({
     minimapViewportTracking,
     moveEndSearchRefresh,
@@ -118,21 +124,21 @@ export function installPerformanceVariantController({
     minimapViewportTracking:
       minimapViewportTracking == null
         ? null
-        : eventScene?.setDiagnosticMinimapViewportTracking?.(
+        : (eventScene?.setDiagnosticMinimapViewportTracking?.(
             minimapViewportTracking,
-          ) ?? false,
+          ) ?? false),
     moveEndSearchRefresh:
       moveEndSearchRefresh == null
         ? null
-        : eventScene?.setDiagnosticMoveEndSearchRefresh?.(
+        : (eventScene?.setDiagnosticMoveEndSearchRefresh?.(
             moveEndSearchRefresh,
-          ) ?? false,
+          ) ?? false),
     moveEndSearchRefreshMode:
       moveEndSearchRefreshMode == null
         ? null
-        : eventScene?.setDiagnosticMoveEndSearchRefreshMode?.(
+        : (eventScene?.setDiagnosticMoveEndSearchRefreshMode?.(
             moveEndSearchRefreshMode,
-          ) ?? false,
+          ) ?? false),
   });
   documentRef.body.dataset.performanceVariant = variant.id;
   documentRef.body.dataset.performanceVariantApplied = "false";

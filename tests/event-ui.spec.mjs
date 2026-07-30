@@ -1908,6 +1908,422 @@ test("event panel renders the complete display contract and only exposes validat
   });
 });
 
+test("event panel exposes canonical source offers and complete sessions from map and search entry points", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const result = await page.evaluate(async () => {
+    const { createLandmarkEventPanel } =
+      await import("/activity-scenes/landmark-event-panel.js");
+    const trigger = document.getElementById("map-focus");
+    const landmark = {
+      id: "marina-square",
+      label: "MARINA SQUARE",
+      anchor: { lat: 1.2915, lng: 103.8577 },
+    };
+    const activity = {
+      schemaVersion: "1.0",
+      activityId: "activity:funvee",
+      title: "FunVee Singapore: Day Tour by Open-Top Bus",
+      description: "Open-top sightseeing tour.",
+      category: "Tours & Experiences",
+      organizer: null,
+      price: "SGD 22",
+      sessions: [
+        {
+          sessionId: "session:morning",
+          schedule: {
+            kind: "exact",
+            start: "2026-07-26T00:00:00+08:00",
+            end: "2026-07-26T02:00:00+08:00",
+            displayText: "2026-07-26",
+          },
+          availability: "available",
+          venueGroupIds: ["venue-group:marina"],
+        },
+        {
+          sessionId: "session:evening",
+          schedule: {
+            kind: "exact",
+            start: "2026-07-27T18:30:00+08:00",
+            end: "2026-07-27T20:30:00+08:00",
+            displayText: "2026-07-27",
+          },
+          availability: "available",
+          venueGroupIds: ["venue-group:promenade"],
+        },
+      ],
+      venueGroups: [
+        {
+          venueGroupId: "venue-group:marina",
+          activityId: "activity:funvee",
+          label: "MARINA SQUARE",
+          address: "6 Raffles Boulevard",
+          publicPlacement: "mapped",
+          mappingStatus: "approved",
+          approvedLocationId: "marina-square",
+          coordinates: { lat: 1.2915, lng: 103.8577 },
+          sessionIds: ["session:morning"],
+        },
+        {
+          venueGroupId: "venue-group:promenade",
+          activityId: "activity:funvee",
+          label: "PROMENADE",
+          address: "Temasek Avenue",
+          publicPlacement: "mapped",
+          mappingStatus: "approved",
+          approvedLocationId: "promenade",
+          coordinates: { lat: 1.293, lng: 103.861 },
+          sessionIds: ["session:evening"],
+        },
+      ],
+      sourceOffers: [
+        {
+          offerId: "offer:fever",
+          source: "Fever Singapore",
+          url: "https://feverup.com/m/137694",
+          scope: "activity",
+          sessionIds: [],
+        },
+        {
+          offerId: "offer:evening",
+          source: "Evening tickets",
+          url: "https://tickets.example/evening",
+          scope: "sessions",
+          sessionIds: ["session:evening"],
+        },
+      ],
+      scheduleSummary: {
+        kind: "multiple",
+        label: "2 sessions",
+        sessionCount: 2,
+      },
+    };
+    const readFields = () =>
+      Object.fromEntries(
+        [...document.querySelectorAll(".landmark-event-panel__field")].map(
+          (row) => [
+            row.querySelector("dt").textContent,
+            row.querySelector("dd").textContent,
+          ],
+        ),
+      );
+    const readLinks = () =>
+      [
+        ...document.querySelectorAll(".landmark-event-panel__reference-link"),
+      ].map((link) => ({ label: link.textContent, href: link.href }));
+
+    let panel = createLandmarkEventPanel();
+    panel.open({ landmark, sourceEvents: [activity], trigger });
+    const mapInitial = {
+      state: panel.snapshot(),
+      fields: readFields(),
+      links: readLinks(),
+      standaloneSchedulePresent: Boolean(
+        document.querySelector(".landmark-event-panel__schedule"),
+      ),
+      dateChoiceRowPresent: Boolean(
+        document.querySelector(".landmark-event-panel__field--date-choices"),
+      ),
+      timeChoiceRowPresent: Boolean(
+        document.querySelector(".landmark-event-panel__field--time-choices"),
+      ),
+      dateChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--date"),
+      ].map((button) => button.textContent),
+      timeChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--time"),
+      ].map((button) => button.textContent),
+    };
+    document
+      .querySelectorAll(".landmark-event-panel__session--date")[1]
+      .click();
+    const mapEvening = {
+      state: panel.snapshot(),
+      fields: readFields(),
+      links: readLinks(),
+      selectedDates: [
+        ...document.querySelectorAll(".landmark-event-panel__session--date"),
+      ].map((button) => ({
+        label: button.textContent,
+        selected: button.getAttribute("aria-pressed"),
+      })),
+      timeChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--time"),
+      ].map((button) => button.textContent),
+    };
+    panel.destroy();
+
+    panel = createLandmarkEventPanel();
+    panel.open({
+      landmark,
+      sourceEvents: [activity],
+      activity: {
+        ...activity,
+        matchingOccurrences: [{ occurrenceId: "session:morning" }],
+      },
+      trigger,
+    });
+    const searchInitial = {
+      state: panel.snapshot(),
+      fields: readFields(),
+      links: readLinks(),
+      standaloneSchedulePresent: Boolean(
+        document.querySelector(".landmark-event-panel__schedule"),
+      ),
+      dateChoiceRowPresent: Boolean(
+        document.querySelector(".landmark-event-panel__field--date-choices"),
+      ),
+      timeChoiceRowPresent: Boolean(
+        document.querySelector(".landmark-event-panel__field--time-choices"),
+      ),
+      dateChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--date"),
+      ].map((button) => button.textContent),
+      timeChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--time"),
+      ].map((button) => button.textContent),
+    };
+    panel.destroy();
+
+    return { mapInitial, mapEvening, searchInitial };
+  });
+
+  expect(result.mapInitial.state.occurrenceIds).toEqual([
+    "session:morning",
+    "session:evening",
+  ]);
+  expect(result.mapInitial.standaloneSchedulePresent).toBe(false);
+  expect(result.mapInitial.dateChoiceRowPresent).toBe(true);
+  expect(result.mapInitial.timeChoiceRowPresent).toBe(true);
+  expect(result.mapInitial.dateChoices).toEqual(["2026-07-26", "2026-07-27"]);
+  expect(result.mapInitial.timeChoices).toEqual(["12:00 AM"]);
+  expect(result.mapInitial.fields.Date).toBe("2026-07-262026-07-27");
+  expect(result.mapInitial.fields.Time).toBe("12:00 AM");
+  expect(result.mapInitial.state.referenceIds).toEqual(["offer:fever"]);
+  expect(result.mapInitial.links).toEqual([
+    {
+      label: "Fever Singapore",
+      href: "https://feverup.com/m/137694",
+    },
+  ]);
+  expect(result.mapInitial.fields).toMatchObject({
+    "Sources & tickets": "Fever Singapore",
+    Category: "Tours & Experiences",
+    Price: "SGD 22",
+    Organizer: "Not available",
+  });
+  expect(result.mapEvening.state.selectedOccurrenceId).toBe("session:evening");
+  expect(result.mapEvening.selectedDates).toEqual([
+    { label: "2026-07-26", selected: "false" },
+    { label: "2026-07-27", selected: "true" },
+  ]);
+  expect(result.mapEvening.timeChoices).toEqual(["6:30 PM"]);
+  expect(result.mapEvening.state.referenceIds).toEqual([
+    "offer:fever",
+    "offer:evening",
+  ]);
+  expect(result.mapEvening.links).toEqual([
+    {
+      label: "Fever Singapore",
+      href: "https://feverup.com/m/137694",
+    },
+    {
+      label: "Evening tickets",
+      href: "https://tickets.example/evening",
+    },
+  ]);
+  expect(result.mapEvening.fields).toMatchObject({
+    "Sources & tickets": "Fever Singapore · Evening tickets",
+  });
+  expect(result.searchInitial).toEqual(result.mapInitial);
+});
+
+test("single-session schedule is omitted while same-date multiple timings remain selectable", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const result = await page.evaluate(async () => {
+    const { createLandmarkEventPanel } =
+      await import("/activity-scenes/landmark-event-panel.js");
+    const trigger = document.getElementById("map-focus");
+    const landmark = {
+      id: "sculpture-square",
+      label: "SCULPTURE SQUARE",
+      anchor: { lat: 1.301, lng: 103.852 },
+    };
+    const makeActivity = (activityId, starts) => ({
+      schemaVersion: "1.0",
+      activityId,
+      title: "Schedule presentation fixture",
+      description: null,
+      category: null,
+      organizer: null,
+      price: null,
+      sessions: starts.map((start, index) => ({
+        sessionId: `session:${activityId}:${index + 1}`,
+        schedule: {
+          kind: "exact",
+          start,
+          end: start,
+          displayText: "2026-07-31",
+        },
+        availability: "unknown",
+        venueGroupIds: ["venue-group:sculpture"],
+      })),
+      venueGroups: [
+        {
+          venueGroupId: "venue-group:sculpture",
+          activityId,
+          label: "SCULPTURE SQUARE",
+          address: "155 Middle Road",
+          publicPlacement: "mapped",
+          mappingStatus: "approved",
+          approvedLocationId: "sculpture-square",
+          coordinates: { lat: 1.301, lng: 103.852 },
+          sessionIds: starts.map(
+            (_, index) => `session:${activityId}:${index + 1}`,
+          ),
+        },
+      ],
+      sourceOffers: [],
+      scheduleSummary: {
+        kind: starts.length === 1 ? "exact" : "multiple",
+        label: starts.length === 1 ? "2026-07-31" : "2 sessions",
+        sessionCount: starts.length,
+      },
+    });
+    const readFields = () =>
+      Object.fromEntries(
+        [...document.querySelectorAll(".landmark-event-panel__field")].map(
+          (row) => [
+            row.querySelector("dt").textContent,
+            row.querySelector("dd").textContent,
+          ],
+        ),
+      );
+    const readSchedule = () => ({
+      standalonePresent: Boolean(
+        document.querySelector(".landmark-event-panel__schedule"),
+      ),
+      dateChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--date"),
+      ].map((button) => button.textContent),
+      timeChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--time"),
+      ].map((button) => button.textContent),
+    });
+
+    let panel = createLandmarkEventPanel();
+    const singleton = makeActivity("activity:singleton", [
+      "2026-07-31T00:00:00+08:00",
+    ]);
+    panel.open({ landmark, sourceEvents: [singleton], trigger });
+    const single = {
+      schedule: readSchedule(),
+      fields: readFields(),
+      selectionAccepted: panel.selectOccurrence(
+        "activity:singleton",
+        "session:activity:singleton:1",
+      ),
+    };
+    panel.destroy();
+
+    panel = createLandmarkEventPanel();
+    const multiple = makeActivity("activity:multiple", [
+      "2026-07-31T10:00:00+08:00",
+      "2026-07-31T14:00:00+08:00",
+    ]);
+    panel.open({ landmark, sourceEvents: [multiple], trigger });
+    const multipleBefore = readSchedule();
+    const selectionAccepted = panel.selectOccurrence(
+      "activity:multiple",
+      "session:activity:multiple:2",
+    );
+    const multipleAfter = {
+      selectedOccurrenceId: panel.snapshot().selectedOccurrenceId,
+      fields: readFields(),
+    };
+    panel.destroy();
+
+    panel = createLandmarkEventPanel();
+    panel.open({
+      landmark,
+      sourceEvents: [
+        {
+          id: "flexible-1",
+          parentActivityId: "activity:flexible",
+          title: "Flexible schedule",
+          dateText: "By appointment",
+          venue: "SCULPTURE SQUARE",
+        },
+        {
+          id: "flexible-2",
+          parentActivityId: "activity:flexible",
+          title: "Flexible schedule",
+          dateText: "Selected weekends",
+          venue: "SCULPTURE SQUARE",
+        },
+      ],
+      trigger,
+    });
+    const flexible = {
+      dateChoices: document.querySelectorAll(
+        ".landmark-event-panel__session--date",
+      ).length,
+      timeChoices: document.querySelectorAll(
+        ".landmark-event-panel__session--time",
+      ).length,
+      scheduleChoices: [
+        ...document.querySelectorAll(
+          ".landmark-event-panel__session--schedule",
+        ),
+      ].map((button) => button.textContent),
+    };
+    panel.destroy();
+
+    return {
+      single,
+      multipleBefore,
+      selectionAccepted,
+      multipleAfter,
+      flexible,
+    };
+  });
+
+  expect(result.single).toEqual({
+    schedule: {
+      standalonePresent: false,
+      dateChoices: [],
+      timeChoices: [],
+    },
+    fields: expect.objectContaining({
+      Date: "2026-07-31",
+      Time: "12:00 AM",
+      Venue: "SCULPTURE SQUARE",
+      Address: "155 Middle Road",
+    }),
+    selectionAccepted: false,
+  });
+  expect(result.multipleBefore).toEqual({
+    standalonePresent: false,
+    dateChoices: ["2026-07-31"],
+    timeChoices: ["10:00 AM", "2:00 PM"],
+  });
+  expect(result.selectionAccepted).toBe(true);
+  expect(result.multipleAfter.selectedOccurrenceId).toBe(
+    "session:activity:multiple:2",
+  );
+  expect(result.multipleAfter.fields.Date).toBe("2026-07-31");
+  expect(result.multipleAfter.fields.Time).toBe("10:00 AM2:00 PM");
+  expect(result.multipleAfter.fields.Venue).toBe("SCULPTURE SQUARE");
+  expect(result.flexible).toEqual({
+    dateChoices: 0,
+    timeChoices: 0,
+    scheduleChoices: ["By appointment", "Selected weekends"],
+  });
+});
+
 test("event panel combines sibling occurrences and keeps exact session planning identity", async ({
   page,
 }) => {
@@ -1954,7 +2370,7 @@ test("event panel combines sibling occurrences and keeps exact session planning 
       trigger,
     });
     const sessions = [
-      ...document.querySelectorAll(".landmark-event-panel__session"),
+      ...document.querySelectorAll(".landmark-event-panel__session--date"),
     ];
     sessions[1].click();
     panel.addToPlan();
@@ -1964,7 +2380,7 @@ test("event panel combines sibling occurrences and keeps exact session planning 
       ).hidden,
       sessionCount: sessions.length,
       selected: [
-        ...document.querySelectorAll(".landmark-event-panel__session"),
+        ...document.querySelectorAll(".landmark-event-panel__session--date"),
       ].map((item) => item.getAttribute("aria-pressed")),
       plannedId: planned?.id,
       reference: document.querySelector(".landmark-event-panel__link").href,
@@ -2003,27 +2419,53 @@ test("event panel reveals large session lists without hiding exact identities", 
       trigger: document.getElementById("map-focus"),
     });
     const before = document.querySelectorAll(
-      ".landmark-event-panel__session",
+      ".landmark-event-panel__session--date",
     ).length;
     const reveal = document.querySelector(
       ".landmark-event-panel__session-reveal",
     );
     const collapsedLabel = reveal.textContent;
+    const comparableStyle = (element) => {
+      const style = getComputedStyle(element);
+      return {
+        backgroundColor: style.backgroundColor,
+        borderRadius: style.borderRadius,
+        color: style.color,
+        fontSize: style.fontSize,
+        fontWeight: style.fontWeight,
+        minHeight: style.minHeight,
+        padding: style.padding,
+      };
+    };
+    const styleMatchesUnselectedDateChoice =
+      JSON.stringify(comparableStyle(reveal)) ===
+      JSON.stringify(
+        comparableStyle(
+          document.querySelectorAll(".landmark-event-panel__session--date")[1],
+        ),
+      );
     reveal.click();
     const expanded = document.querySelectorAll(
-      ".landmark-event-panel__session",
+      ".landmark-event-panel__session--date",
     ).length;
     const expandedState = document
       .querySelector(".landmark-event-panel__session-reveal")
       .getAttribute("aria-expanded");
     panel.destroy();
-    return { before, collapsedLabel, expanded, expandedState };
+    return {
+      before,
+      collapsedLabel,
+      expanded,
+      expandedState,
+      styleMatchesUnselectedDateChoice,
+    };
   });
   expect(result).toEqual({
     before: 6,
-    collapsedLabel: "Show 3 more sessions",
+    collapsedLabel: "+3 dates",
     expanded: 9,
     expandedState: "true",
+    styleMatchesUnselectedDateChoice: true,
   });
 });
 

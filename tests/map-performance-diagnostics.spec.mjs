@@ -24,9 +24,16 @@ test("diagnostic variants are opt-in, allowlisted, and lifecycle bounded", async
     .toBe("function");
   await expect
     .poll(() =>
-      page.evaluate(
-        () => document.body.dataset.performanceVariantApplied,
-      ),
+      page.evaluate(() => typeof globalThis.__preserveNextMovementRendering),
+    )
+    .toBe("function");
+  const preserved = await page.evaluate(() =>
+    globalThis.__preserveNextMovementRendering(),
+  );
+  expect(preserved.started).toBe(true);
+  await expect
+    .poll(() =>
+      page.evaluate(() => document.body.dataset.performanceVariantApplied),
     )
     .toBe("false");
   const result = await page.evaluate(() =>
@@ -36,9 +43,7 @@ test("diagnostic variants are opt-in, allowlisted, and lifecycle bounded", async
   expect(result.after.backgroundLayerPresent).toBe(false);
   await expect
     .poll(() =>
-      page.evaluate(
-        () => document.body.dataset.performanceVariantApplied,
-      ),
+      page.evaluate(() => document.body.dataset.performanceVariantApplied),
     )
     .toBe("true");
 });

@@ -14,7 +14,9 @@ import {
 } from "../scripts/lib/realtime-relay-protocol.mjs";
 import {
   AMBLE_WELCOME_MESSAGE,
+  OUT_OF_SCOPE_RESPONSE,
   buildAmbleSessionInstructions,
+  buildVerbatimSpeechInstructions,
   createRealtimeRelay,
   describeAvailableCapabilities,
   validateDiscoveryToolArguments,
@@ -75,7 +77,14 @@ function createSocket(messages, listeners = {}) {
   };
 }
 
-async function createRelayHarness() {
+async function createRelayHarness({
+  operationalLogger = () => {},
+  contentDebugLogger = null,
+  responseSetTimeout,
+  responseClearTimeout,
+  now = () => new Date("2026-07-26T10:00:00.000Z"),
+  budgetRepository: budgetOverrides = {},
+} = {}) {
   const policy = JSON.parse(
     fs.readFileSync(path.join(root, "data/realtime-voice-policy.json"), "utf8"),
   );
@@ -94,11 +103,17 @@ async function createRelayHarness() {
       async reserve() {},
       async settle() {},
       async hold() {},
+      ...budgetOverrides,
     },
     providerConnector: async () => providerSocket,
     randomId: () => `relay-fixture-${++identity}`,
     hash: async () => "sha256:relay-fixture",
-    now: () => new Date("2026-07-26T10:00:00.000Z"),
+    now,
+    openingGreeting: false,
+    operationalLogger,
+    ...(contentDebugLogger ? { contentDebugLogger } : {}),
+    ...(responseSetTimeout ? { responseSetTimeout } : {}),
+    ...(responseClearTimeout ? { responseClearTimeout } : {}),
   });
   const admitted = await relay.admit(admission());
   await relay.attach(admitted.data.sessionId, createSocket(browserMessages));
@@ -110,6 +125,336 @@ async function createRelayHarness() {
     relay,
   };
 }
+
+test("voice operational traces expose only allowlisted phase timing", async () => {
+  const records = [];
+  const scheduled = [];
+  const cleared = [];
+  const harness = await createRelayHarness({
+    operationalLogger: (record) => records.push(structuredClone(record)),
+    responseSetTimeout(callback, delay) {
+      const timer = { callback, delay };
+      scheduled.push(timer);
+      return timer;
+    },
+    responseClearTimeout(timer) {
+      cleared.push(timer);
+    },
+  });
+  const sessionId = harness.admitted.data.sessionId;
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "text.submit",
+      turnId: "turn-sensitive",
+      text: "secret transcript at 1.3001,103.8001",
+    }),
+  );
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "response.created",
+      response: { id: "provider-secret-id" },
+    }),
+  });
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "response.output_audio.delta",
+      delta: "secret-audio-payload",
+    }),
+  });
+  const completion = fixture("transcript-provider-events.json").events.find(
+    (event) => event.type === "response.done",
+  );
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "response.done",
+      api_key: "sk-secret-sentinel",
+      response: { usage: completion.usage },
+    }),
+  });
+  await flushRelay();
+
+  assert.deepEqual(
+    records.map(({ phase }) => phase),
+    ["response_requested", "response_created", "first_audio", "response_done"],
+  );
+  const fields = [
+    "elapsedMs",
+    "event",
+    "eventCode",
+    "occurredAt",
+    "phase",
+    "schemaVersion",
+    "sessionIdHash",
+    "sincePreviousPhaseMs",
+    "terminalReason",
+    "turnNumber",
+  ].sort();
+  for (const record of records) {
+    assert.deepEqual(Object.keys(record).sort(), fields);
+    assert.equal(record.event, "voice.phase");
+    assert.equal(record.sessionIdHash, "sha256:relay-fixture");
+    assert.equal(Number.isInteger(record.elapsedMs), true);
+    assert.equal(Number.isInteger(record.sincePreviousPhaseMs), true);
+  }
+  assert.doesNotMatch(
+    JSON.stringify(records),
+    /secret transcript|1\.3001|103\.8001|provider-secret|secret-audio|sk-secret|turn-sensitive/i,
+  );
+  assert.equal(scheduled.length, 1);
+  assert.equal(cleared.includes(scheduled[0]), true);
+});
+
+test("audio turns trace commit and transcription before response creation", async () => {
+  const records = [];
+  const harness = await createRelayHarness({
+    operationalLogger: (record) => records.push(structuredClone(record)),
+  });
+  const sessionId = harness.admitted.data.sessionId;
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "turn.request", turnId: "turn-audio" }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "audio.commit", turnId: "turn-audio" }),
+  );
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "conversation.item.input_audio_transcription.completed",
+      item_id: "input-item",
+      transcript: "find an event",
+    }),
+  });
+  await flushRelay();
+
+  assert.deepEqual(
+    records.map(({ phase }) => phase),
+    ["audio_committed", "transcription_completed", "response_requested"],
+  );
+  harness.relay.stop(sessionId, "user");
+});
+
+test("stalled transcriptions terminate at the provider-stage deadline", async () => {
+  const records = [];
+  const held = [];
+  const settled = [];
+  const scheduled = [];
+  const cleared = [];
+  let currentMs = Date.parse("2026-07-29T10:00:00.000Z");
+  const harness = await createRelayHarness({
+    operationalLogger: (record) => records.push(structuredClone(record)),
+    now: () => new Date(currentMs),
+    responseSetTimeout(callback, delay) {
+      const timer = { callback, delay };
+      scheduled.push(timer);
+      return timer;
+    },
+    responseClearTimeout(timer) {
+      cleared.push(timer);
+    },
+    budgetRepository: {
+      async hold(value) {
+        held.push(value);
+      },
+      async settle(value) {
+        settled.push(value);
+      },
+    },
+  });
+  const sessionId = harness.admitted.data.sessionId;
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "turn.request",
+      turnId: "turn-transcription-timeout",
+    }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "audio.commit",
+      turnId: "turn-transcription-timeout",
+    }),
+  );
+  const transcriptionTimer = scheduled.find(({ delay }) => delay === 30_000);
+  assert(transcriptionTimer);
+  currentMs += 30_000;
+  transcriptionTimer.callback();
+  await flushRelay();
+
+  assert.equal(
+    harness.providerMessages.some(({ type }) => type === "response.create"),
+    false,
+  );
+  assert.equal(harness.relay.sessions.has(sessionId), false);
+  assert.equal(held.length, 1);
+  assert.equal(held[0].reason, "terminal_without_trusted_usage");
+  assert.equal(settled.length, 1);
+  assert.equal(settled[0].settledMicroUsd, 0);
+  assert.deepEqual(
+    records.map(({ phase }) => phase),
+    ["audio_committed", "transcription_timeout", "session_terminal"],
+  );
+  assert.equal(records.at(-2).terminalReason, "provider");
+  assert.equal(cleared.includes(transcriptionTimer), true);
+  assert.equal(
+    harness.browserMessages.some(
+      (message) =>
+        message.type === "error" &&
+        message.code === "provider_unavailable" &&
+        message.message === VOICE_SERVICE_UNAVAILABLE_MESSAGE,
+    ),
+    true,
+  );
+  assert.equal(
+    harness.browserMessages.some(
+      (message) =>
+        message.type === "session.stopped" && message.reason === "provider",
+    ),
+    true,
+  );
+});
+
+test("explicit transcription failures terminate without waiting for the deadline", async () => {
+  const records = [];
+  const held = [];
+  const scheduled = [];
+  const cleared = [];
+  const harness = await createRelayHarness({
+    operationalLogger: (record) => records.push(structuredClone(record)),
+    responseSetTimeout(callback, delay) {
+      const timer = { callback, delay };
+      scheduled.push(timer);
+      return timer;
+    },
+    responseClearTimeout(timer) {
+      cleared.push(timer);
+    },
+    budgetRepository: {
+      async hold(value) {
+        held.push(value);
+      },
+    },
+  });
+  const sessionId = harness.admitted.data.sessionId;
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "turn.request",
+      turnId: "turn-transcription-failed",
+    }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "audio.commit",
+      turnId: "turn-transcription-failed",
+    }),
+  );
+  const transcriptionTimer = scheduled.find(({ delay }) => delay === 30_000);
+  assert(transcriptionTimer);
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "conversation.item.input_audio_transcription.failed",
+      item_id: "input-item-failed",
+      error: { type: "server_error", code: "transcription_failed" },
+    }),
+  });
+  await flushRelay();
+
+  assert.equal(
+    harness.providerMessages.some(({ type }) => type === "response.create"),
+    false,
+  );
+  assert.equal(harness.relay.sessions.has(sessionId), false);
+  assert.equal(held.length, 1);
+  assert.deepEqual(
+    records.map(({ phase }) => phase),
+    ["audio_committed", "transcription_failed", "session_terminal"],
+  );
+  assert.equal(cleared.includes(transcriptionTimer), true);
+  assert.equal(
+    harness.browserMessages.some(
+      (message) =>
+        message.type === "error" && message.code === "provider_unavailable",
+    ),
+    true,
+  );
+});
+
+test("stalled responses cancel and terminate at the response deadline", async () => {
+  const records = [];
+  const held = [];
+  const scheduled = [];
+  const cleared = [];
+  let currentMs = Date.parse("2026-07-29T10:00:00.000Z");
+  const harness = await createRelayHarness({
+    operationalLogger: (record) => records.push(structuredClone(record)),
+    now: () => new Date(currentMs),
+    responseSetTimeout(callback, delay) {
+      const timer = { callback, delay };
+      scheduled.push(timer);
+      return timer;
+    },
+    responseClearTimeout(timer) {
+      cleared.push(timer);
+    },
+    budgetRepository: {
+      async hold(value) {
+        held.push(value);
+      },
+    },
+  });
+  const sessionId = harness.admitted.data.sessionId;
+  assert.equal(harness.admitted.data.limits.responseTimeoutSeconds, 30);
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "text.submit",
+      turnId: "turn-timeout",
+      text: "find events",
+    }),
+  );
+  const responseTimer = scheduled.find(({ delay }) => delay === 30_000);
+  assert(responseTimer);
+  currentMs += 30_000;
+  responseTimer.callback();
+  await flushRelay();
+
+  assert.equal(
+    harness.providerMessages.some(({ type }) => type === "response.cancel"),
+    true,
+  );
+  assert.equal(harness.relay.sessions.has(sessionId), false);
+  assert.equal(held.length, 1);
+  assert.equal(held[0].reason, "terminal_without_trusted_usage");
+  assert.equal(records.at(-1).phase, "response_timeout");
+  assert.equal(records.at(-1).terminalReason, "response_timeout");
+  assert.equal(cleared.includes(responseTimer), true);
+  assert.equal(
+    harness.browserMessages.some(
+      (message) =>
+        message.type === "error" &&
+        message.code === "provider_unavailable" &&
+        message.message === VOICE_SERVICE_UNAVAILABLE_MESSAGE,
+    ),
+    true,
+  );
+  assert.equal(
+    harness.browserMessages.some(
+      (message) =>
+        message.type === "session.stopped" &&
+        message.reason === "response_timeout",
+    ),
+    true,
+  );
+});
 
 const inspectCapabilityResult = (revision = 7) => ({
   capabilityId: "app.inspect",
@@ -144,6 +489,87 @@ const inspectCapabilityResult = (revision = 7) => ({
     availableCapabilityIds: ["app.inspect", "catalog.get", "catalog.search"],
   },
   errorCode: null,
+});
+
+test("explicit content diagnostics trace all relay boundaries with permitted content and terminal cleanup", async () => {
+  const records = [];
+  const harness = await createRelayHarness({
+    contentDebugLogger: (record) => records.push(structuredClone(record)),
+  });
+  const sessionId = harness.admitted.data.sessionId;
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "text.submit",
+      turnId: "turn-debug",
+      text: "find jazz near Bugis",
+    }),
+  );
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "response.function_call_arguments.done",
+      name: "app.inspect",
+      call_id: "call-debug",
+      arguments: "{}",
+      api_key: "sk-provider-secret",
+    }),
+  });
+  await flushRelay();
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "capability.result",
+      callId: "call-debug",
+      capabilityId: "app.inspect",
+      kind: "query",
+      result: inspectCapabilityResult(),
+    }),
+  );
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "response.output_audio.delta",
+      delta: "UklGRkFVRElP",
+    }),
+  });
+  await flushRelay();
+
+  assert.deepEqual(
+    [...new Set(records.map(({ direction }) => direction))].sort(),
+    [
+      "browser_to_relay",
+      "provider_to_relay",
+      "relay_to_browser",
+      "relay_to_provider",
+    ],
+  );
+  assert.equal(
+    records.every(
+      ({ event, sessionIdHash }) =>
+        event === "voice.content_debug" &&
+        sessionIdHash === "sha256:relay-fixture",
+    ),
+    true,
+  );
+  const serialized = JSON.stringify(records);
+  assert.match(serialized, /find jazz near Bugis/);
+  assert.match(serialized, /Current eligible capabilities/);
+  assert.match(serialized, /call-debug/);
+  assert.match(serialized, /stateDigest/);
+  assert.doesNotMatch(serialized, /sk-provider-secret|UklGRkFVRElP/);
+  assert.match(serialized, /"omitted":true/);
+
+  harness.relay.stop(sessionId, "user");
+  const stoppedCount = records.length;
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "response.created",
+      transcript: "late content",
+    }),
+  });
+  await flushRelay();
+  assert.equal(records.length, stoppedCount);
+  assert.doesNotMatch(JSON.stringify(records), /relay-fixture-1/);
 });
 
 test("session admission returns only bounded public configuration", () => {
@@ -256,9 +682,13 @@ test("Amble answers an opening greeting with a specific product introduction", (
 
   assert.equal(
     AMBLE_WELCOME_MESSAGE,
-    "Hi, I'm Amble, your Singapore discovery guide. Tell me what you're in the mood for, and I can suggest areas and places, search events or restaurants, and control the map—including your location and MRT context.",
+    "Hi, I'm Amble, your Singapore discovery guide. Tell me what you're in the mood for—I can find events, restaurants, and places, or help you explore the map.",
   );
   assert.match(instructions, /opening greeting/i);
+  assert.match(instructions, /CRITICAL VERBATIM SPEECH RULES/);
+  assert.match(instructions, /EXACTLY AND ONLY/);
+  assert.match(instructions, /DO NOT.*PREFACE/);
+  assert.match(instructions, /DO NOT.*PARAPHRASE/);
   assert.match(
     instructions,
     new RegExp(AMBLE_WELCOME_MESSAGE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
@@ -267,6 +697,79 @@ test("Amble answers an opening greeting with a specific product introduction", (
     instructions,
     /what's up|tiny mystery|just saying hello/i,
   );
+  assert.match(
+    instructions,
+    new RegExp(OUT_OF_SCOPE_RESPONSE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+  );
+  assert.doesNotMatch(instructions, /offer a relevant in-app alternative/i);
+});
+
+test("verbatim speech instructions contain one exact payload and forbid additions", () => {
+  const instructions = buildVerbatimSpeechInstructions(AMBLE_WELCOME_MESSAGE);
+
+  assert.equal(instructions.split(AMBLE_WELCOME_MESSAGE).length - 1, 1);
+  assert.match(instructions, /SPEAK EXACTLY AND ONLY/);
+  assert.match(instructions, /DO NOT ADD A PREFACE/);
+  assert.match(instructions, /DO NOT.*PARAPHRASE/);
+  assert.match(instructions, /exact supplied text and nothing else/i);
+});
+
+test("a new voice session reserves and starts Amble's welcome before user audio", async () => {
+  const policy = JSON.parse(
+    fs.readFileSync(path.join(root, "data/realtime-voice-policy.json"), "utf8"),
+  );
+  const providerMessages = [];
+  const browserMessages = [];
+  const reservations = [];
+  const operationalRecords = [];
+  const providerSocket = createSocket(providerMessages);
+  let identity = 0;
+  const relay = createRealtimeRelay({
+    policy,
+    apiKey: "server-only-fixture",
+    budgetRepository: {
+      async getLedger() {
+        return { enabled: true };
+      },
+      async reserve(value) {
+        reservations.push(value);
+      },
+      async settle() {},
+      async hold() {},
+    },
+    providerConnector: async () => providerSocket,
+    randomId: () => `welcome-fixture-${++identity}`,
+    hash: async () => "sha256:welcome-fixture",
+    now: () => new Date("2026-07-29T17:00:00.000Z"),
+    operationalLogger: (record) =>
+      operationalRecords.push(structuredClone(record)),
+  });
+  const admitted = await relay.admit(admission());
+
+  await relay.attach(admitted.data.sessionId, createSocket(browserMessages));
+
+  assert.equal(reservations.length, 1);
+  assert.equal(reservations[0].kind, "response");
+  assert.equal(browserMessages.at(-1).type, "session.state");
+  assert.equal(browserMessages.at(-1).state, "processing");
+  assert.deepEqual(
+    operationalRecords.map(({ phase }) => phase),
+    ["response_requested"],
+  );
+  assert.deepEqual(
+    providerMessages.slice(-2).map(({ type }) => type),
+    ["conversation.item.create", "response.create"],
+  );
+  assert.equal(
+    providerMessages.at(-1).response.instructions,
+    buildVerbatimSpeechInstructions(AMBLE_WELCOME_MESSAGE),
+  );
+  assert.equal("max_output_tokens" in providerMessages.at(-1).response, false);
+  assert.match(
+    providerMessages.at(-2).item.content[0].text,
+    new RegExp(AMBLE_WELCOME_MESSAGE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+  );
+  assert.equal(relay.sessions.get(admitted.data.sessionId).responseCount, 1);
 });
 
 test("browser message validation accepts only the declared protocol allowlist", () => {
@@ -564,6 +1067,59 @@ test("deterministic commands delay the model reply until the browser returns an 
     harness.providerMessages.at(-2).item.content[0].text,
     /completed/i,
   );
+});
+
+test("deterministic unavailable and failed outcomes are authoritative before acknowledgement", async () => {
+  for (const [status, errorCode] of [
+    ["unavailable", "unavailable"],
+    ["failed", "execution_failed"],
+  ]) {
+    const harness = await createRelayHarness();
+    const sessionId = harness.admitted.data.sessionId;
+    await harness.relay.handleBrowserMessage(
+      sessionId,
+      JSON.stringify({
+        type: "context.update",
+        context: {
+          revision: 7,
+          visibleTargets: [],
+          availableCapabilityIds: ["map.zoomin"],
+        },
+      }),
+    );
+    await harness.relay.handleBrowserMessage(
+      sessionId,
+      JSON.stringify({
+        type: "text.submit",
+        turnId: `turn-deterministic-${status}`,
+        text: "zoom in",
+      }),
+    );
+    await harness.relay.handleBrowserMessage(
+      sessionId,
+      JSON.stringify({
+        type: "deterministic.result",
+        capabilityId: "map.zoomin",
+        kind: "command",
+        result: {
+          capabilityId: "map.zoomin",
+          kind: "command",
+          status,
+          changed: false,
+          affectedTargetIds: [],
+          contextRevision: 7,
+          data: null,
+          errorCode,
+        },
+      }),
+    );
+
+    assert.match(
+      harness.providerMessages.at(-2).item.content[0].text,
+      new RegExp(`"status":"${status}"`),
+    );
+    assert.equal(harness.providerMessages.at(-1).type, "response.create");
+  }
 });
 
 test("audio and text remain bounded and require an admitted turn", () => {
@@ -1082,6 +1638,7 @@ test("server relay owns provider configuration and reserves before billable even
     randomId: () => `identity-${++identity}`,
     hash: async () => "sha256:fixture",
     now: () => new Date("2026-07-18T00:00:00.000Z"),
+    openingGreeting: false,
   });
   const admitted = await relay.admit(admission());
   await relay.attach(admitted.data.sessionId, socket(browserMessages));
@@ -1089,6 +1646,7 @@ test("server relay owns provider configuration and reserves before billable even
   assert.equal(providerMessages[0].type, "session.update");
   assert.equal(providerMessages[0].session.model, "gpt-realtime-2.1-mini");
   assert.equal("fallback_model" in providerMessages[0].session, false);
+  assert.equal("max_output_tokens" in providerMessages[0].session, false);
   assert.equal(providerMessages[0].session.audio.input.turn_detection, null);
   assert.deepEqual(
     providerMessages[0].session.tools.map(({ name }) => name),
@@ -1277,6 +1835,7 @@ test("server relay rejects overlapping turns without overwriting reservation ide
     randomId: () => `identity-${++identity}`,
     hash: async () => "sha256:fixture",
     now: () => new Date("2026-07-18T00:00:00.000Z"),
+    openingGreeting: false,
   });
   const admitted = await relay.admit(admission());
   await relay.attach(admitted.data.sessionId, socket());

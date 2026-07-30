@@ -6,7 +6,7 @@ import {
   renameSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 
 import { field, renderedDocument } from "./rendered-adapter-utils.mjs";
 import { assessActivityInclusion } from "./activity-policy.mjs";
@@ -111,10 +111,38 @@ function occurrenceKey(sourceName, recordRef, occurrenceIndex) {
   return sha(`${sourceName}\n${recordRef}\n${occurrenceIndex}`);
 }
 
-function occurrenceInputHash(sourceName, record, occurrence, occurrenceIndex) {
+function occurrenceInputHash(
+  sourceName,
+  record,
+  occurrence,
+  occurrenceIndex,
+  { config = {}, sourceDefinition = null } = {},
+) {
   return sha(
     JSON.stringify({
       recoveryPolicyVersion: RECOVERY_POLICY_VERSION,
+      adapterContract: {
+        maxCandidates: config.maxCandidates ?? null,
+        search: {
+          providerId: config.search?.providerId ?? null,
+          endpoint: config.search?.endpoint ?? null,
+          location: config.search?.location ?? null,
+          language: config.search?.language ?? null,
+        },
+        fetch: {
+          providerId: config.fetch?.providerId ?? null,
+          endpoint: config.fetch?.endpoint ?? null,
+          format: config.fetch?.format ?? null,
+        },
+      },
+      evidenceContract: {
+        role: sourceDefinition?.evidenceRole ?? null,
+        domains: [
+          ...(sourceDefinition?.officialDomains ??
+            sourceDefinition?.domains ??
+            []),
+        ].sort(),
+      },
       sourceName,
       sourceId: record.sourceId ?? record.sourceRecordId ?? null,
       occurrenceIndex,
@@ -125,6 +153,87 @@ function occurrenceInputHash(sourceName, record, occurrence, occurrenceIndex) {
       detailUrl: occurrence.detailUrl ?? record.detailUrl ?? null,
     }),
   );
+}
+
+const NEGATIVE_CACHE_OUTCOMES = new Set(["not_found", "ambiguous"]);
+const CACHEABLE_OUTCOMES = new Set(["recovered", "not_found", "ambiguous"]);
+
+function eventStart(record, occurrence) {
+  for (const value of [
+    occurrence.startDateTime,
+    occurrence.schedule?.start,
+    record.startDateTime,
+    record.schedule?.start,
+    occurrence.dateText,
+    record.dateText,
+  ]) {
+    const parsed = Date.parse(value ?? "");
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return null;
+}
+
+export function recoveryCacheExpiry({
+  record,
+  occurrence,
+  outcome,
+  createdAt,
+}) {
+  if (!NEGATIVE_CACHE_OUTCOMES.has(outcome)) return null;
+  const created = Date.parse(createdAt);
+  if (!Number.isFinite(created))
+    throw new Error("Recovery cache requires a valid creation timestamp");
+  const startsAt = eventStart(record, occurrence);
+  const withinThirtyDays =
+    startsAt !== null && startsAt - created <= 30 * 24 * 60 * 60 * 1000;
+  const ttlDays = withinThirtyDays ? 7 : 30;
+  return new Date(created + ttlDays * 24 * 60 * 60 * 1000).toISOString();
+}
+
+function recoveryCachePath(cacheDir, inputHash) {
+  return join(resolve(cacheDir), inputHash.slice(0, 2), `${inputHash}.json`);
+}
+
+function readPersistentRecovery(cacheDir, inputHash, nowIso) {
+  const path = recoveryCachePath(cacheDir, inputHash);
+  if (!existsSync(path)) return null;
+  try {
+    const entry = JSON.parse(readFileSync(path, "utf8"));
+    if (
+      entry.schemaVersion !== "1.0" ||
+      entry.recoveryPolicyVersion !== RECOVERY_POLICY_VERSION ||
+      entry.inputHash !== inputHash ||
+      !CACHEABLE_OUTCOMES.has(entry.result?.outcome)
+    )
+      return null;
+    if (entry.expiresAt && Date.parse(entry.expiresAt) <= Date.parse(nowIso))
+      return null;
+    return entry.result;
+  } catch {
+    return null;
+  }
+}
+
+function writePersistentRecovery(
+  cacheDir,
+  inputHash,
+  result,
+  { record, occurrence, createdAt },
+) {
+  if (!CACHEABLE_OUTCOMES.has(result?.outcome)) return;
+  atomicJson(recoveryCachePath(cacheDir, inputHash), {
+    schemaVersion: "1.0",
+    recoveryPolicyVersion: RECOVERY_POLICY_VERSION,
+    inputHash,
+    createdAt,
+    expiresAt: recoveryCacheExpiry({
+      record,
+      occurrence,
+      outcome: result.outcome,
+      createdAt,
+    }),
+    result,
+  });
 }
 
 function candidateUrl(value, authorityDomains = []) {
@@ -403,6 +512,7 @@ export async function recoverMissingVenueOccurrence({
     record,
     occurrence,
     occurrenceIndex,
+    { config, sourceDefinition },
   );
   const base = {
     key,
@@ -630,6 +740,7 @@ export async function recoverMissingEventVenues({
   logger = () => {},
   now = () => new Date().toISOString(),
   force = false,
+  cacheDir = join(runDir, ".recovery-cache"),
 }) {
   const path = join(runDir, OVERLAY_REF);
   const previous = existsSync(path)
@@ -696,6 +807,7 @@ export async function recoverMissingEventVenues({
   const records = [];
   let attempted = 0;
   let reused = 0;
+  const reusedKeys = new Set();
   for (const candidate of candidates) {
     const key = occurrenceKey(
       candidate.sourceName,
@@ -707,21 +819,39 @@ export async function recoverMissingEventVenues({
       candidate.record,
       candidate.occurrence,
       candidate.occurrenceIndex,
+      {
+        config,
+        sourceDefinition: sourceDefinitions.find(
+          ({ name }) => name === candidate.sourceName,
+        ),
+      },
     );
     const saved = previousByKey.get(key);
+    const nowIso = now();
+    const persistent = force
+      ? null
+      : readPersistentRecovery(cacheDir, inputHash, nowIso);
     if (
       !force &&
-      saved?.inputHash === inputHash &&
-      saved.outcome !== "failed"
+      ((saved?.inputHash === inputHash && saved.outcome !== "failed") ||
+        persistent)
     ) {
-      records.push(saved);
+      const reusedRecord =
+        saved?.inputHash === inputHash && saved.outcome !== "failed"
+          ? saved
+          : persistent;
+      records.push(reusedRecord);
       reused += 1;
+      reusedKeys.add(key);
       logger({
         stage: "venue_search_recovery",
         action: "missing_venue_recovery_reused",
         sourceName: candidate.sourceName,
         entityId: key,
-        outcome: saved.outcome,
+        outcome: reusedRecord.outcome,
+        reasonCode: persistent
+          ? "persistent_evidence_cache_hit"
+          : "run_overlay_cache_hit",
       });
       continue;
     }
@@ -736,19 +866,23 @@ export async function recoverMissingEventVenues({
         format: config.fetch?.format ?? "markdown",
         logger,
       });
-      records.push(
-        await recoverMissingVenueOccurrence({
-          ...candidate,
-          config,
-          searchClient: actualSearch,
-          renderedClient: actualRendered,
-          logger,
-          now,
-          sourceDefinition: sourceDefinitions.find(
-            ({ name }) => name === candidate.sourceName,
-          ),
-        }),
-      );
+      const recovered = await recoverMissingVenueOccurrence({
+        ...candidate,
+        config,
+        searchClient: actualSearch,
+        renderedClient: actualRendered,
+        logger,
+        now,
+        sourceDefinition: sourceDefinitions.find(
+          ({ name }) => name === candidate.sourceName,
+        ),
+      });
+      records.push(recovered);
+      writePersistentRecovery(cacheDir, inputHash, recovered, {
+        record: candidate.record,
+        occurrence: candidate.occurrence,
+        createdAt: recovered.searchedAt ?? nowIso,
+      });
     } catch (error) {
       records.push({
         key,
@@ -774,14 +908,9 @@ export async function recoverMissingEventVenues({
         const sourceCandidates = candidates.filter(
           (item) => item.sourceName === sourceName,
         ).length;
-        const sourceReused = sourceRecords.filter((item) => {
-          const saved = previousByKey.get(item.key);
-          return (
-            !force &&
-            saved?.inputHash === item.inputHash &&
-            saved.outcome !== "failed"
-          );
-        }).length;
+        const sourceReused = sourceRecords.filter((item) =>
+          reusedKeys.has(item.key),
+        ).length;
         return [
           sourceName,
           overlayCounts(sourceRecords, {

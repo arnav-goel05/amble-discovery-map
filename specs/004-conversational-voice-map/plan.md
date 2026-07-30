@@ -1,6 +1,6 @@
 # Implementation Plan: Conversational Voice Map Assistant
 
-**Branch**: `develop` | **Date**: 2026-07-18 | **Amended**: 2026-07-27 |
+**Branch**: `develop` | **Date**: 2026-07-18 | **Amended**: 2026-07-29 |
 **Spec**: [spec.md](spec.md)
 
 **Input**: Feature specification from `specs/004-conversational-voice-map/spec.md`
@@ -25,6 +25,13 @@ The paid relay uses only `gpt-realtime-2.1-mini`. Obvious map, transit-layer, an
 commands are interpreted deterministically and executed through the shared gateway before the
 model acknowledges them. Each response receives only foundational queries plus the connector
 families selected from the bounded request and current interface state.
+The relay also emits content-free structured phase timing for each turn and enforces a separate
+30-second response watchdog, making provider stalls diagnosable and terminal without retaining
+conversation content or imposing a response-token ceiling. When a developer explicitly starts the
+local Node relay in content-debug mode, a separate process-local diagnostic stream may include
+sanitized browser/provider messages, transcripts, prompts, and tool arguments/results. That mode is
+off by default, cannot be activated by a browser request, is absent from preview/production wiring,
+never persists records, and recursively removes secrets and raw audio.
 
 ## Technical Context
 
@@ -37,13 +44,18 @@ Capture and Web Audio APIs; versioned GeoJSON derived from data.gov.sg; no new t
 connector or MCP runtime dependency
 
 **Storage**: D1 global budget ledger and immutable reservation/settlement rows containing no audio,
-transcript, location, or UI context; in-memory conversation state only; checked-in versioned
-GeoJSON and source manifests for URA subzones and MRT context
+transcript, location, or UI context; in-memory conversation and turn-timing state only; structured
+operational logs containing allowlisted phase metadata only; optional explicitly activated local
+developer content traces written to the current process output only, with no file/database/cache/
+browser-storage/remote sink; checked-in versioned GeoJSON and source manifests for URA subzones and
+MRT context
 
 **Testing**: Node test runner for pure models/contracts, Playwright desktop/mobile Chromium,
 WebKit, and Firefox with mocked audio/realtime streams, existing build and production verification,
 frontend performance benchmarks, deterministic event-interpreter parity fixtures, atomic
-composer-state tests, and disabled MCP projection contract tests
+composer-state tests, disabled MCP projection contract tests, phase-order and log-privacy tests,
+deterministic response-watchdog tests using an injected scheduler, and local-content diagnostic
+activation/redaction/no-persistence/environment-isolation fixtures
 
 **Target Platform**: Current desktop and mobile Chrome, Safari, Firefox, and Edge; Cloudflare
 Worker production runtime with a Node local-development equivalent
@@ -53,6 +65,7 @@ assets, and thin local/Cloudflare API adapters
 
 **Performance Goals**: Visible listening/acting feedback within 250 ms of local state changes;
 first assistant audio/text begins within 4 seconds for at least 90% of mocked representative turns;
+stalled responses terminate within the configured 30-second deadline plus one scheduler interval;
 map pan/zoom remains visually smooth with no more than 10% regression in the existing benchmark;
 area, location, and MRT layers update without rebuilding 3D tiles
 
@@ -65,7 +78,10 @@ background listening is prohibited. Existing direct interactions must keep worki
 disabled. Voice-service failure must stop capture/playback, clear pending/session state, display the
 required unavailable message, and never silently invoke a local voice interpreter. MCP projection
 code is disabled and transport-free. Current security headers and device gate require scoped
-changes.
+changes. Content-bearing diagnostics require both an explicit process-start flag and the exact
+local-development environment. They may preserve permitted text and structured payload fields for
+debugging, but must recursively omit credentials, authentication material, raw session identities,
+and raw or encoded audio and must stop with the local process/session.
 
 **Scale/Scope**: One public application and global voice budget; anonymous sessions limited to five
 minutes, sixty seconds idle, and six assistant responses initially; 100% of eligible first-release
@@ -114,12 +130,20 @@ _GATE: Passed before Phase 0 and re-checked after Phase 1 design._
   unavailable message, clears capture/playback and pending state, and leaves regular direct search
   available without presenting it as an offline assistant.
 - **UX and performance — PASS**: Mobile support becomes foundational. The required automated
-  browser matrix, live transcripts, visible microphone states, reduced-motion behavior,
+  browser matrix, session-scoped transcript handling, visible microphone states, reduced-motion behavior,
   accessible controls, and before/after map benchmarks are release gates.
-- **Operations and privacy — PASS**: Constitution v2.4.0 retains the Realtime API exception first
+- **Operations and privacy — PASS**: Constitution v2.6.0 retains the Realtime API exception first
   approved in v2.2.0. Arnav owns it; the cumulative cap is USD 10; D1 and environment kill switches
-  fail closed; no paid fallback exists; and terminal session paths clear application-held personal
-  context.
+  fail closed; no paid fallback exists; provider requests impose no application output-token
+  ceiling; the provider intrinsic maximum is used only for conservative reservation; and terminal
+  session paths clear application-held personal context. Operational logging is an allowlisted
+  reliability surface rather than analytics: it contains a one-way session identifier, turn/phase
+  codes, timestamps, durations, and terminal reasons only. Each response request owns a 30-second
+  watchdog independent of idle and maximum-session timers and clears it on every response/session
+  terminal path. Content-bearing traces are a separate explicit local-development mode: default
+  relay and all preview/production adapters cannot construct the logger; the browser protocol has
+  no activation field; recursive sanitization removes credentials and audio payloads; and the only
+  sink is the active local process output with no persistence or remote transport.
 
 ### Post-design re-check
 
@@ -222,7 +246,7 @@ map-layers/
 
 cloudflare/
 ├── cloud-native-worker.mjs
-├── realtime-relay.mjs
+├── realtime-relay.mjs             # phase trace + response watchdog owner
 ├── voice-budget-repository.mjs
 └── migrations/
     └── 0003_voice_budget.sql
@@ -233,6 +257,7 @@ scripts/
 ├── realtime-voice-api-plugin.cjs
 ├── serve-app.cjs
 └── lib/
+    ├── realtime-content-debug.mjs
     ├── realtime-policy.mjs
     └── voice-budget-ledger.mjs
 
@@ -255,6 +280,7 @@ tests/
 ├── assistant-event-query-integration.test.mjs
 ├── assistant-mcp-foundation.test.mjs
 ├── assistant-discovery.test.mjs
+├── realtime-content-debug.test.mjs
 ├── realtime-relay.test.mjs
 ├── transit-location.test.mjs
 ├── voice-budget.test.mjs

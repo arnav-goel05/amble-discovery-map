@@ -4,7 +4,7 @@
 
 **Decision**: Use a same-origin browser WebSocket to a backend relay, which maintains the provider
 WebSocket connection. Keep `OPENAI_API_KEY`, model choice, session instructions, automatic-response
-settings, tools, and token bounds entirely server-side.
+settings, tools, and budget/accounting bounds entirely server-side.
 
 **Rationale**: OpenAI recommends WebRTC for browser media quality, but direct WebRTC requires a
 client credential and lets a modified anonymous client submit provider events. Usage is reported
@@ -21,11 +21,13 @@ sideband monitor sees usage too late to be the sole admission control.
 ## Model and conversation bounds
 
 **Decision**: Pin `gpt-realtime-2.1-mini` as the sole model in the paid-exception policy, with no
-fallback model. Start with five-minute sessions,
-sixty-second idle expiry, six assistant responses, 4,000 post-instruction context tokens, 512 output
-tokens per response, low reasoning effort, no automatic provider response creation, and no image
-input in the default flow. Pin the supported input-transcription model and its rate formula in the
-same policy before release.
+fallback model. Start with five-minute sessions, sixty-second idle expiry, six assistant responses,
+4,000 post-instruction context tokens, low reasoning effort, no automatic provider response
+creation, and no image input in the default flow. Do not transmit `max_output_tokens` in session or
+response requests; OpenAI documents a default of `inf`, meaning the maximum available for the
+model, and a 4,096-token Realtime response maximum. Pin 4,096 only as the conservative
+response-cost reservation bound. Pin the supported input-transcription model and its rate formula
+in the same policy before release.
 
 **Rationale**: OpenAI positions the mini model as the faster, lower-cost Realtime voice option.
 Small, request-scoped prompts and tools reduce input cost and bound the next-turn reservation.
@@ -35,10 +37,64 @@ Images are unnecessary when stable structured UI IDs are present. See the
 [Realtime costs](https://developers.openai.com/api/docs/guides/realtime-costs), and
 [Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription).
 
+Fixed guidance uses short, capitalized bullet rules plus a response-specific instruction override.
+The exact text is provided once between explicit delimiters, and the prompt forbids additions,
+omissions, repetition, translation, and paraphrase. This follows OpenAI's Realtime prompting
+guidance to prefer precise short bullets, examples, and capitalization for important rules.
+
 **Alternatives considered**: Full-size Realtime models and silent model fallback are rejected for
 this feature because they increase cost and make the reviewed policy nondeterministic. Continuous
 screenshot context adds cost, staleness, and location exposure. Unbounded sessions conflict with
-the USD 10 ceiling.
+the USD 10 ceiling. A lower application output-token ceiling was rejected because it can truncate
+otherwise valid assistant responses; duration, response-count, context, interruption, spending,
+and kill-switch controls retain bounded operation.
+
+## Privacy-safe response tracing and stalled-response recovery
+
+**Decision**: Emit one structured operational record at each applicable turn boundary:
+`audio_committed`, `transcription_completed`, `response_requested`, `response_created`,
+`first_audio`, `response_done`, and terminal failure. Records contain only a one-way session
+identifier, monotonic turn number, bounded phase/event code, timestamp, elapsed durations, and
+terminal reason. Start a separate 30-second watchdog when `response.create` is sent. Clear it on
+`response.done`, cancellation, or any terminal session path. If it expires, emit
+`response_timeout`, attempt `response.cancel`, conservatively reconcile the pending reservation
+through the existing repository contract, and terminate through the standard provider-unavailable
+path.
+
+**Rationale**: Idle and maximum-session timers do not identify a single stalled provider response,
+and unrelated browser/provider activity can keep an otherwise stuck session alive. Phase timing
+shows whether delay occurred before transcription, response creation, or first audio without
+recording user content. A dedicated deadline makes the failure bounded and testable while remaining
+independent of the provider/model response-token limit prohibited by constitution v2.5.0.
+
+**Alternatives considered**: Content-bearing logs remain prohibited in routine, preview, and
+production operation. Relying on the five-minute session timer leaves the user in a processing
+state too long. A browser-only timer cannot authoritatively cancel the provider or reconcile the
+server-side reservation. A response token ceiling is unrelated to latency and is constitutionally
+prohibited.
+
+## Explicit local content diagnostics
+
+**Decision**: Add a second diagnostic channel that exists only when the local Node relay process is
+started with both `NODE_ENV=development` and `REALTIME_CONTENT_DEBUG=true`. The relay records all
+permitted browser-to-relay, relay-to-provider, provider-to-relay, and relay-to-browser messages
+after recursive sanitization. Transcripts, prompts, tool arguments/results, and non-sensitive
+provider/browser fields remain visible. Credential-shaped values, authorization/cookie material,
+raw session identities, and raw or encoded audio are replaced with bounded omission metadata. The
+sink is synchronous process output only; records are never stored or transported.
+
+**Rationale**: Phase timings identify where a stall occurs but cannot explain malformed provider
+events, prompts, capability calls, or results. An explicit developer-only trace gives enough
+evidence to reproduce those failures without weakening production privacy. Requiring the local
+adapter to inject the logger makes activation structurally unavailable to the browser, Worker, and
+preview/production configuration. Centralized sanitization prevents individual call sites from
+forgetting audio or secret removal.
+
+**Alternatives considered**: Always-on content logs, browser-controlled activation, Worker
+environment flags, persistent debug files, remote telemetry, and raw audio capture are rejected.
+Logging only selected tool events was also rejected because it would not diagnose ordering and
+provider-body failures; the permitted sanitized protocol stream is more complete and simpler to
+reason about.
 
 ## Deterministic command routing and per-turn tools
 
@@ -311,7 +367,8 @@ assistant context. Persisting the last position would conflict with anonymous pr
 automatic reset; an increase or reset requires an explicit owner-approved policy change. Store a D1
 singleton ledger and immutable reservations. Before accepting each audio-transcription turn and
 before the relay emits each `response.create`, atomically reserve a worst-case envelope using a
-pinned rate card and configured maximums. Settle only from trusted provider usage. Missing or
+pinned rate card and the provider/model intrinsic maximum output capacity. This accounting bound
+is not sent to the provider as a generation cutoff. Settle only from trusted provider usage. Missing or
 unrecognized usage keeps the reservation held and disables new work when safety cannot be proven.
 
 **Rationale**: `spent + reserved + nextReservation <= cap` makes application authorization atomic

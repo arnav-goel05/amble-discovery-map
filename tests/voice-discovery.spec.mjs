@@ -25,7 +25,6 @@ const approvedCandidates = fixture("approved-candidates.json");
 
 const selectors = {
   open: '[data-testid="assistant-open"]',
-  acceptDisclosure: '[data-testid="assistant-disclosure-accept"]',
   panel: '[data-testid="assistant-panel"]',
   transcriptUser: '[data-testid="assistant-transcript-user"]',
   areaCard: '[data-testid="assistant-area-card"]',
@@ -99,7 +98,10 @@ async function installApprovedCandidates(page) {
 }
 
 async function startVoice(page) {
-  await page.locator(selectors.acceptDisclosure).click();
+  await expect(page.locator(selectors.open)).toHaveAttribute(
+    "aria-expanded",
+    "true",
+  );
 }
 
 async function mockRealtime(page, { initialResult, refinementResult } = {}) {
@@ -515,8 +517,8 @@ test("material ambiguity asks one focused clarification inside the voice flow", 
     clarification.getByRole("button", { name: "Garden walk" }),
   ).toBeVisible();
   await expect(
-    page.locator('[data-testid="assistant-text-input"]'),
-  ).toBeVisible();
+    page.locator('[data-testid="assistant-text-form"]'),
+  ).toHaveCount(0);
   expect(relay.providerUrls).toEqual([]);
 });
 
@@ -543,12 +545,12 @@ test("unsupported discovery returns an honest empty state instead of invented pl
   await expect(page.locator(selectors.empty)).toContainText(/try|refine/i);
   await expect(page.locator(selectors.areaCard)).toHaveCount(0);
   await expect(
-    page.locator('[data-testid="assistant-text-input"]'),
-  ).toBeVisible();
+    page.locator('[data-testid="assistant-text-form"]'),
+  ).toHaveCount(0);
   expect(relay.providerUrls).toEqual([]);
 });
 
-test("provider failure keeps the voice pill retryable while preserving the same text conversation", async ({
+test("provider failure keeps the voice pill retryable without opening a text composer", async ({
   page,
 }) => {
   await installApprovedCandidates(page);
@@ -579,8 +581,8 @@ test("provider failure keeps the voice pill retryable while preserving the same 
     "Voice service is currently unavailable. Please try again later.",
   );
   await expect(
-    page.locator('[data-testid="assistant-text-input"]'),
-  ).toBeVisible();
+    page.locator('[data-testid="assistant-text-form"]'),
+  ).toHaveCount(0);
   await expect(page.locator("#landmark-event-search-input")).toBeEnabled();
   expect(sessionRequests).toBe(1);
   expect(providerUrls).toEqual([]);

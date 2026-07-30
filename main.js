@@ -216,6 +216,7 @@ async function bootstrapApplication() {
         featureTour.start();
       };
       map.once("moveend", startTour);
+      if (!reduceMotion) buildingHighlights?.preserveNextMovementRendering?.();
       map.easeTo({ ...EXPLORE_CAMERA, duration: reduceMotion ? 0 : 5_000 });
       window.setTimeout(startTour, reduceMotion ? 850 : 5_300);
     },

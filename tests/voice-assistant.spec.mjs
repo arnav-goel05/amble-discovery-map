@@ -16,7 +16,6 @@ const selectors = {
   open: '[data-testid="assistant-open"]',
   panel: '[data-testid="assistant-panel"]',
   disclosure: '[data-testid="assistant-voice-disclosure"]',
-  acceptDisclosure: '[data-testid="assistant-disclosure-accept"]',
   stopVoice: '[data-testid="assistant-stop-voice"]',
   orb: '[data-testid="assistant-voice-orb"]',
   microphone: '[data-testid="assistant-microphone-icon"]',
@@ -25,10 +24,10 @@ const selectors = {
   interrupt: '[data-testid="assistant-interrupt"]',
   mute: '[data-testid="assistant-mute"]',
   voiceState: '[data-testid="assistant-voice-state"]',
+  transcript: ".assistant-transcript",
   transcriptUser: '[data-testid="assistant-transcript-user"]',
   transcriptAssistant: ".assistant-transcript__assistant",
-  textInput: '[data-testid="assistant-text-input"]',
-  textSubmit: '[data-testid="assistant-text-submit"]',
+  textForm: '[data-testid="assistant-text-form"]',
   confirmation: '[data-testid="assistant-confirmation"]',
   confirmationAccept: '[data-testid="assistant-confirmation-accept"]',
   confirmationReject: '[data-testid="assistant-confirmation-reject"]',
@@ -68,6 +67,7 @@ async function installMicrophoneMock(page, { denied = false } = {}) {
         mediaRequests: 0,
         mediaTrackStops: 0,
         permissionRevocations: 0,
+        disclosureVisibleWhenRequested: false,
       };
       globalThis.__revokeVoicePermission = () => {
         globalThis.__voiceTest.permissionRevocations += 1;
@@ -79,6 +79,14 @@ async function installMicrophoneMock(page, { denied = false } = {}) {
           getUserMedia: async (constraints) => {
             globalThis.__voiceTest.mediaRequests += 1;
             globalThis.__voiceTest.constraints = constraints;
+            const disclosure = document.querySelector(
+              '[data-testid="assistant-voice-disclosure"]',
+            );
+            globalThis.__voiceTest.disclosureVisibleWhenRequested = Boolean(
+              disclosure &&
+              !disclosure.hidden &&
+              getComputedStyle(disclosure).display !== "none",
+            );
             if (shouldDeny) {
               throw new DOMException(
                 "Microphone permission denied",
@@ -202,7 +210,14 @@ async function mockRelay(
 }
 
 async function openAssistant(page, { beforeOpen } = {}) {
+  const initializationError = new Promise((_, reject) => {
+    page.once("pageerror", reject);
+  });
   await page.goto("/?autoStart&emptyApprovedSnapshot");
+  await Promise.race([
+    page.locator(selectors.open).waitFor({ state: "visible", timeout: 60_000 }),
+    initializationError,
+  ]);
   await beforeOpen?.();
   await page.locator(selectors.open).click();
   await expect
@@ -224,12 +239,12 @@ async function openAssistant(page, { beforeOpen } = {}) {
 }
 
 async function acceptAndStartVoice(page) {
-  const disclosure = page.locator(selectors.disclosure);
-  if (await disclosure.isVisible())
-    await page.locator(selectors.acceptDisclosure).click();
+  await expect
+    .poll(() => page.locator(selectors.shell).getAttribute("data-state"))
+    .not.toBe("idle");
 }
 
-test("discloses OpenAI processing and retention before acquiring the microphone", async ({
+test("starts directly while briefly disclosing OpenAI processing before microphone capture", async ({
   page,
 }) => {
   await installMicrophoneMock(page);
@@ -246,22 +261,18 @@ test("discloses OpenAI processing and retention before acquiring the microphone"
   await expect(page.locator(selectors.disclosure)).toContainText(
     /not (?:store|retain)|no application retention/i,
   );
-  await expect(page.locator(selectors.acceptDisclosure)).toHaveAttribute(
-    "data-control-owner",
-    "browser",
-  );
-  expect(await page.evaluate(() => globalThis.__voiceTest.mediaRequests)).toBe(
-    0,
-  );
-  expect(relay.admissionBodies).toHaveLength(0);
-
-  await page.locator(selectors.acceptDisclosure).click();
+  await expect(page.locator(selectors.textForm)).toHaveCount(0);
   await expect.poll(() => relay.admissionBodies.length).toBe(1);
   expect(relay.admissionBodies[0].disclosureAccepted).toBe(true);
   expect(relay.admissionBodies[0].protocolVersion).toBe("1.1");
   await expect
     .poll(() => page.evaluate(() => globalThis.__voiceTest.mediaRequests))
     .toBe(1);
+  expect(
+    await page.evaluate(
+      () => globalThis.__voiceTest.disclosureVisibleWhenRequested,
+    ),
+  ).toBe(true);
   expect(relay.providerUrls).toEqual([]);
 });
 
@@ -278,6 +289,17 @@ test("returning consent starts voice directly from the expanding pill", async ({
     beforeOpen: async () => {
       await expect(page.locator(selectors.microphone)).toBeVisible();
       await expect(page.locator(selectors.orb)).toBeHidden();
+      const shellBounds = await page.locator(selectors.shell).boundingBox();
+      const builderBounds = await page
+        .locator(".landmark-event-search__builder")
+        .boundingBox();
+      expect(
+        Math.abs(
+          (builderBounds?.x || 0) +
+            (builderBounds?.width || 0) -
+            ((shellBounds?.x || 0) + (shellBounds?.width || 0)),
+        ),
+      ).toBeLessThanOrEqual(6);
     },
   });
 
@@ -330,7 +352,7 @@ test("returning consent starts voice directly from the expanding pill", async ({
   await expect.poll(() => relay.admissionBodies.length).toBe(1);
 });
 
-test("speech during playback interrupts Amble and becomes the next voice turn", async ({
+test("the interrupt button stops playback and returns Amble to listening", async ({
   page,
 }) => {
   await page.addInitScript(() =>
@@ -344,7 +366,8 @@ test("speech during playback interrupts Amble and becomes the next voice turn", 
   relay.send({ type: "session.state", state: "speaking" });
   await expect(page.locator(selectors.voiceState)).toContainText(/speaking/i);
 
-  await page.locator(selectors.pushToTalk).dispatchEvent("pointerdown");
+  await expect(page.locator(selectors.interrupt)).toBeEnabled();
+  await page.locator(selectors.interrupt).click();
   await expect
     .poll(() =>
       relay.browserMessages.some(
@@ -354,6 +377,7 @@ test("speech during playback interrupts Amble and becomes the next voice turn", 
     .toBe(true);
 
   relay.send({ type: "session.state", state: "listening" });
+  await expect(page.locator(selectors.voiceState)).toContainText(/listening/i);
   await expect
     .poll(() =>
       relay.browserMessages.find((message) => message.type === "turn.request"),
@@ -363,19 +387,12 @@ test("speech during playback interrupts Amble and becomes the next voice turn", 
     (message) => message.type === "turn.request",
   );
   relay.send({ type: "turn.ready", turnId: requestedTurn.turnId });
-  await page.locator(selectors.pushToTalk).dispatchEvent("pointerup");
-  await expect
-    .poll(() =>
-      relay.browserMessages.some(
-        (message) =>
-          message.type === "audio.commit" &&
-          message.turnId === requestedTurn.turnId,
-      ),
-    )
-    .toBe(true);
+  relay.send({ type: "session.state", state: "processing" });
+  relay.send({ type: "session.state", state: "speaking" });
+  await expect(page.locator(selectors.voiceState)).toContainText(/speaking/i);
 });
 
-test("permission denial explains the limitation while preserving the same text conversation", async ({
+test("permission denial explains the limitation without opening a text composer", async ({
   page,
 }) => {
   await installMicrophoneMock(page, { denied: true });
@@ -387,11 +404,7 @@ test("permission denial explains the limitation while preserving the same text c
   await expect(page.locator(selectors.error)).toContainText(
     /microphone|permission/i,
   );
-  await expect(page.locator(selectors.textInput)).toBeVisible();
-  await expect(page.locator(selectors.textInput)).toHaveAttribute(
-    "aria-label",
-    "Message Amble",
-  );
+  await expect(page.locator(selectors.textForm)).toHaveCount(0);
 });
 
 test("permission revocation stops capture and keeps the voice pill retryable", async ({
@@ -408,7 +421,7 @@ test("permission revocation stops capture and keeps the voice pill retryable", a
   await expect(page.locator(selectors.error)).toContainText(
     /microphone|permission/i,
   );
-  await expect(page.locator(selectors.textInput)).toBeVisible();
+  await expect(page.locator(selectors.textForm)).toHaveCount(0);
   await expect
     .poll(() =>
       relay.browserMessages.some(
@@ -480,10 +493,10 @@ test("an obvious spoken zoom command executes through the application gateway", 
   expect(pageErrors).toEqual([]);
 });
 
-test("voice transcript, assistant text, and typed text remain one continuous conversation", async ({
+test("voice transcript remains session-scoped but is not shown in the interface", async ({
   page,
 }) => {
-  const assistantReply = "I can keep this conversation going by voice or text.";
+  const assistantReply = "I can keep this conversation going by voice.";
   await installMicrophoneMock(page);
   const relay = await mockRelay(page, {
     transcript: noisySinglishRequest,
@@ -498,32 +511,17 @@ test("voice transcript, assistant text, and typed text remain one continuous con
   await expect(page.locator(selectors.transcriptAssistant)).toContainText(
     assistantReply,
   );
-  await page.locator(selectors.open).click();
-  await expect(page.locator(selectors.textInput)).toBeVisible();
-  await page.locator(selectors.textInput).fill("Show me the quieter option");
-  await page.locator(selectors.textSubmit).click();
-
-  await expect
-    .poll(() =>
-      relay.browserMessages.find(
-        (message) =>
-          message.type === "text.submit" &&
-          message.text === "Show me the quieter option",
-      ),
-    )
-    .toBeTruthy();
+  await expect(page.locator(selectors.transcript)).toBeHidden();
+  await expect(page.locator(selectors.textForm)).toHaveCount(0);
   await expect(page.locator(selectors.transcriptUser)).toContainText(
     noisySinglishRequest,
-  );
-  await expect(page.locator(selectors.transcriptUser)).toContainText(
-    "Show me the quieter option",
   );
   await expect(page.locator(selectors.transcriptAssistant)).toContainText(
     assistantReply,
   );
 });
 
-test("push-to-talk, mute, interrupt, and stop stay explicit browser-owned controls", async ({
+test("interrupt and stop are the only visible browser-owned voice controls", async ({
   page,
 }) => {
   await page.addInitScript(() =>
@@ -533,33 +531,21 @@ test("push-to-talk, mute, interrupt, and stop stay explicit browser-owned contro
   const relay = await mockRelay(page, { transcript: noisySinglishRequest });
   await openAssistant(page);
   await expect(page.locator(selectors.voiceState)).toContainText(/listening/i);
-  await page.locator(selectors.open).click();
-
-  for (const selector of [
-    selectors.pushToTalk,
-    selectors.mute,
-    selectors.interrupt,
-    selectors.stopVoice,
-  ])
+  for (const selector of [selectors.interrupt, selectors.stopVoice])
     await expect(page.locator(selector)).toHaveAttribute(
       "data-control-owner",
       "browser",
     );
-
-  await page.locator(selectors.mute).click();
-  await expect(page.locator(selectors.mute)).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
-  await expect(page.locator(selectors.voiceState)).toContainText(/muted/i);
-  await page.locator(selectors.mute).click();
-  await expect(page.locator(selectors.mute)).toHaveAttribute(
-    "aria-pressed",
-    "false",
-  );
+  await expect(page.locator(selectors.interrupt)).toBeVisible();
+  await expect(page.locator(selectors.interrupt)).toBeDisabled();
+  await expect(page.locator(selectors.stopVoice)).toBeVisible();
+  await expect(page.locator(selectors.pushToTalk)).toHaveCount(0);
+  await expect(page.locator(selectors.mute)).toHaveCount(0);
+  await expect(page.locator(selectors.transcript)).toBeHidden();
 
   relay.send({ type: "session.state", state: "speaking" });
   await expect(page.locator(selectors.voiceState)).toContainText(/speaking/i);
+  await expect(page.locator(selectors.interrupt)).toBeEnabled();
   await page.locator(selectors.interrupt).click();
   await expect
     .poll(() =>
@@ -647,7 +633,7 @@ for (const admissionFailure of [
     message: "Voice service is currently unavailable. Please try again later.",
   },
 ]) {
-  test(`${admissionFailure.name} fails closed before microphone capture and preserves text access`, async ({
+  test(`${admissionFailure.name} fails closed before microphone capture without opening a text composer`, async ({
     page,
   }) => {
     await installMicrophoneMock(page);
@@ -660,7 +646,7 @@ for (const admissionFailure of [
     await expect(page.locator(selectors.error)).toContainText(
       admissionFailure.message,
     );
-    await expect(page.locator(selectors.textInput)).toBeVisible();
+    await expect(page.locator(selectors.textForm)).toHaveCount(0);
     expect(
       await page.evaluate(() => globalThis.__voiceTest.mediaRequests),
     ).toBe(0);
@@ -701,7 +687,7 @@ for (const terminalReason of ["usage_limit", "disabled"]) {
     expect(
       await page.evaluate(() => globalThis.__voiceTest.mediaTrackStops),
     ).toBe(1);
-    expect(await page.locator(selectors.textInput).inputValue()).toBe("");
+    await expect(page.locator(selectors.textForm)).toHaveCount(0);
   });
 }
 

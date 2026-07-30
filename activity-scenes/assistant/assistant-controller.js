@@ -446,6 +446,7 @@ export function createAssistantController({
         const snapshot = contextCoordinator.snapshot();
         if (!force && snapshot.revision === lastPublishedContextRevision)
           return;
+        await invalidatePendingActionForContext(snapshot.revision);
         relay?.updateContext?.(snapshot);
         lastPublishedContextRevision = snapshot.revision;
       })
@@ -725,6 +726,20 @@ export function createAssistantController({
       () => void expirePendingAction(),
       Math.max(0, Date.parse(action.confirmation.expiresAt) - Date.now()),
     );
+  };
+  const invalidatePendingActionForContext = async (contextRevision) => {
+    const action = pendingAction;
+    if (
+      !isRelayAction(action) ||
+      action.message.contextRevision === contextRevision
+    )
+      return;
+    confirmationController.invalidate("context_change");
+    clearConfirmationTimer();
+    releasePendingConfirmation(action);
+    pendingAction = null;
+    view.clearConfirmation();
+    await reportRejectedConfirmation(action);
   };
 
   const handleDiscovery = (result, source = envelope()) => {
@@ -1026,9 +1041,15 @@ export function createAssistantController({
         return output;
       }
     } catch (error) {
-      if (confirmation) {
-        capabilityGateway.releasePendingConfirmation(confirmation);
+      const failedConfirmation = confirmation ?? output?.confirmation ?? null;
+      if (failedConfirmation) {
+        capabilityGateway.releasePendingConfirmation(failedConfirmation);
         confirmationController.invalidate(error?.code || "execution_failed");
+        if (
+          pendingAction?.confirmation.confirmationId ===
+          failedConfirmation.confirmationId
+        )
+          pendingAction = null;
       }
       output = await failureResult(message, error);
     }
@@ -1303,7 +1324,12 @@ export function createAssistantController({
     if (relayReady) {
       view.appendTranscript("user", text);
       recordUserRequest(text);
-      relay?.submitText(`text-${++turn}`, text);
+      try {
+        relay?.submitText(`text-${++turn}`, text);
+      } catch {
+        terminateVoiceUnavailable("protocol");
+        return;
+      }
       void routeAndReportObviousCommand(text, "same_session_text");
       return;
     }
@@ -1389,13 +1415,39 @@ export function createAssistantController({
     }
   };
   const routeAndReportObviousCommand = async (text, source) => {
-    const routed = await routeObviousCommand(text, source);
+    let routed;
+    try {
+      routed = await routeObviousCommand(text, source);
+    } catch (error) {
+      const proposal = interpretObviousCommand({
+        text,
+        baseContextRevision: 0,
+        catalogRevision: "deterministic-failure",
+      });
+      if (!proposal) return null;
+      const contract = capabilityRegistry.get(proposal.capabilityId);
+      routed = {
+        proposal,
+        result: await failureResult(
+          {
+            capabilityId: proposal.capabilityId,
+            kind: contract.kind,
+            contextRevision: 0,
+          },
+          error,
+        ),
+      };
+    }
     if (!routed) return null;
-    relay?.returnDeterministicResult?.({
-      capabilityId: routed.proposal.capabilityId,
-      kind: routed.result.kind,
-      result: routed.result,
-    });
+    try {
+      relay?.returnDeterministicResult?.({
+        capabilityId: routed.proposal.capabilityId,
+        kind: routed.result.kind,
+        result: routed.result,
+      });
+    } catch {
+      if (sessionStarted) terminateVoiceUnavailable("protocol");
+    }
     return routed.result;
   };
 

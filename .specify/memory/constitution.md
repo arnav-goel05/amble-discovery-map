@@ -1,16 +1,15 @@
 <!--
 Sync Impact Report
-- Version change: 2.3.0 -> 2.4.0
+- Version change: 2.5.0 -> 2.6.0
 - Modified principles:
-  - IV. Domain Boundaries and Explicit Contracts -> Domain Boundaries, Shared
-    Capabilities, and Explicit Contracts: every user-facing capability now requires one
-    shared typed command/query contract, rich validated query results, observable command
-    results, authoritative post-command context synchronization, contextual eligibility,
-    environment parity, and protocol adapters without duplicated business logic.
-  - Product, Data, and Privacy Constraints: conversational search is limited to approved
-    application data unless a separate constitutional exception authorizes runtime research.
-  - Development and Release Workflow: specifications, tasks, review, and release gates now
-    require direct-interface/assistant capability parity and contract coverage.
+  - Testable, Secure Changes: credentials, authorization material, cookies, and raw audio
+    are explicitly prohibited from every diagnostic surface.
+  - Product, Data, and Privacy Constraints: added an owner-approved, explicit,
+    local-development-only content diagnostic exception for Feature 004. It is disabled by
+    default, unavailable in production, non-persistent, session-bounded, and redacted.
+  - Development and Release Workflow: review must reject production content tracing,
+    implicit activation, persistent debug capture, or logging of prohibited secret/audio
+    material.
 - Added sections: none.
 - Removed sections: none.
 - Templates:
@@ -21,11 +20,10 @@ Sync Impact Report
 - Dependent artifacts:
   - ✅ AGENTS.md (reviewed; no runtime-command change required)
   - ✅ README.md (reviewed; no architecture overview change required before implementation)
-  - ✅ docs/production-configuration.md (reviewed; provider boundary remains aligned)
+  - ✅ docs/production-configuration.md
   - ✅ specs/004-conversational-voice-map/{spec,plan,research,data-model,quickstart}.md
-  - ✅ specs/004-conversational-voice-map/contracts/
-  - ✅ specs/004-conversational-voice-map/tasks.md regenerated from the amended design with
-    capability-contract 2.0 and relay-protocol-1.1 migration tasks.
+  - ✅ specs/004-conversational-voice-map/contracts/realtime-relay.md
+  - ✅ specs/004-conversational-voice-map/tasks.md
 - Deferred items: none.
 -->
 
@@ -115,7 +113,9 @@ Every production change MUST pass the production build and all relevant automate
 before it is complete. Changed behavior MUST have regression coverage for its success,
 failure, recovery, and lifecycle paths in proportion to risk. Publication and migration
 changes MUST test rollback or recovery. Secrets and privileged credentials MUST remain
-server-side and outside the repository. External URLs and content MUST be constrained by
+server-side and outside the repository. Credentials, API keys, authorization headers,
+cookies, session tokens, signing material, and raw audio MUST NOT be written to
+operational or diagnostic logs in any environment. External URLs and content MUST be constrained by
 provenance, robots rules, request limits, and server-side request-forgery protections.
 Anonymous public users MUST NOT gain administrative capability. The single private admin
 account MUST use authenticated sessions and securely managed password credentials.
@@ -169,7 +169,13 @@ future iteration.
   Before implementation research begins, the plan MUST name an operational owner and define
   concrete usage and spending limits. Before production use, server-side credential
   handling, an immediate service-disable control, limit-exhaustion behavior, and equivalent
-  text and direct-interface fallbacks MUST be implemented and verified.
+  text and direct-interface fallbacks MUST be implemented and verified. The application
+  MUST NOT impose or transmit a per-response output-token ceiling for this Realtime
+  experience; responses use the provider/model intrinsic maximum. That intrinsic maximum
+  MAY be pinned solely as the conservative budget-reservation bound and MUST be updated
+  with reviewed provider evidence when the approved model changes. Session duration,
+  response-count, idle, context, spending, interruption, and kill-switch boundaries remain
+  mandatory.
 - Event and restaurant/deal collection MUST run weekly. Each event run MUST cover at least
   the run date through the following seven days and MAY retain all active and future events
   exposed by configured bounded source surfaces.
@@ -187,6 +193,17 @@ future iteration.
 - The product MUST NOT collect user analytics or product telemetry. Minimal operational
   logs MAY be retained only for reliability and security and MUST avoid unnecessary
   personal data.
+- Feature 004 MAY emit content-bearing diagnostic records only in an explicitly activated
+  local-development session owned by the developer. This exception MUST default off, MUST
+  be structurally unavailable in production and preview deployments, MUST write only to
+  the active local process output, MUST stop when that process or voice session ends, and
+  MUST NOT create application files, database rows, caches, browser storage, remote
+  telemetry, or background uploads. It MAY include transcripts, prompts, tool arguments
+  and results, and redacted provider/browser event bodies needed to reproduce a defect.
+  Credentials, API keys, authorization material, cookies, session tokens, signing
+  material, and raw audio remain prohibited. Audio events MAY record only byte counts,
+  timing, format, and lifecycle metadata. Production and preview MUST retain the closed
+  privacy-safe operational phase schema defined by Feature 004.
 - Initial production deployment targets one application host and local durable storage.
   Automatic daily backups are not required. Any future multi-host design is a separately
   specified architectural change.
@@ -218,7 +235,13 @@ future iteration.
 8. Code review MUST reject fabricated evidence, venue-specific hardcoding outside approved
    registries or fixtures, unbounded recovery loops, silent data loss, unverified
    generated-data changes, duplicated UI/assistant business logic, success-only tool
-   results, stale post-command assistant context, and untested capability drift.
+   results, stale post-command assistant context, and untested capability drift. For the
+   approved Realtime exception, review MUST also reject application-generated
+   `max_output_tokens` fields or equivalent per-response token ceilings in provider session
+   or response requests. Review MUST also reject content-bearing voice diagnostics outside
+   explicitly activated local development, any production/preview activation path,
+   persistent debug capture, or diagnostic output containing credentials, authorization
+   material, cookies, session tokens, signing material, or raw audio.
 
 ## Governance
 
@@ -231,4 +254,4 @@ for non-semantic clarification. Every specification, plan, implementation review
 release MUST verify compliance. Unjustified violations block completion. Runtime-specific
 instructions remain in `AGENTS.md` and domain documentation but MUST conform to this file.
 
-**Version**: 2.4.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-26
+**Version**: 2.6.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-29

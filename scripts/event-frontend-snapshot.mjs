@@ -46,6 +46,25 @@ const writeJson = (path, value) =>
 const moduleText = (name, records) =>
   `export const ${name} = ${JSON.stringify(records, null, 2)};\n`;
 
+export function makeTilesetUrisDurable(tileset) {
+  const rewrite = (tile) => {
+    const content = tile?.content;
+    if (content)
+      for (const key of ["uri", "url"])
+        if (typeof content[key] === "string") {
+          content[key] = content[key].replace(
+            /^\/.*?\/frontend\/assets\/public\//,
+            "/",
+          );
+          if (content[key].startsWith("/poi-tiles/"))
+            content[key] = `../../../../${content[key].slice(1)}`;
+        }
+    for (const child of tile?.children ?? []) rewrite(child);
+  };
+  rewrite(tileset?.root);
+  return tileset;
+}
+
 function catalogueEvents(catalogue) {
   if (Array.isArray(catalogue)) return catalogue;
   return [...(catalogue?.mapped ?? []), ...(catalogue?.offMap ?? [])];
@@ -289,6 +308,15 @@ function referenceLandmarkActivities(landmarks, internalCatalogue) {
   }));
 }
 
+export function selectChangedPoiRecords(plan, records) {
+  const changedPoiIds = new Set(
+    (plan?.classifications ?? [])
+      .filter(({ highlightAction }) => highlightAction !== "noop")
+      .map(({ poiId }) => poiId),
+  );
+  return (records ?? []).filter(({ id }) => changedPoiIds.has(id));
+}
+
 export async function prepareFrontendSnapshot({
   runDir,
   state,
@@ -427,8 +455,17 @@ export async function prepareFrontendSnapshot({
 
   const frontendDir = join(runDir, "frontend"),
     assetsDir = join(frontendDir, "assets");
+  const preservedAssets = join(runDir, ".frontend-assets-preserved");
+  if (existsSync(preservedAssets) && !existsSync(assetsDir)) {
+    mkdirSync(frontendDir, { recursive: true });
+    renameSync(preservedAssets, assetsDir);
+  }
+  rmSync(preservedAssets, { recursive: true, force: true });
+  if (existsSync(assetsDir)) renameSync(assetsDir, preservedAssets);
   rmSync(frontendDir, { recursive: true, force: true });
-  mkdirSync(assetsDir, { recursive: true });
+  mkdirSync(frontendDir, { recursive: true });
+  if (existsSync(preservedAssets)) renameSync(preservedAssets, assetsDir);
+  else mkdirSync(assetsDir, { recursive: true });
   const nextPois = [...pois.values()],
     nextLandmarks = [...landmarks.values()];
   for (const landmark of nextLandmarks)
@@ -691,21 +728,7 @@ export function commitFrontendSnapshot({
             readFileSync(join(current.directory, current.tilesetRef), "utf8"),
           )
         : { asset: { version: "1.0" }, geometricError: 0, root: {} };
-    const makeDurable = (tile) => {
-      const content = tile?.content;
-      if (content)
-        for (const key of ["uri", "url"])
-          if (typeof content[key] === "string") {
-            content[key] = content[key].replace(
-              /^\/.*?\/frontend\/assets\/public\//,
-              "/",
-            );
-            if (content[key].startsWith("/poi-tiles/"))
-              content[key] = `../../../../${content[key].slice(1)}`;
-          }
-      for (const child of tile?.children ?? []) makeDurable(child);
-    };
-    makeDurable(tileset.root);
+    makeTilesetUrisDurable(tileset);
     const records = (name) =>
       JSON.parse(readFileSync(join(frontendDir, name), "utf8")).records;
     const activities = JSON.parse(

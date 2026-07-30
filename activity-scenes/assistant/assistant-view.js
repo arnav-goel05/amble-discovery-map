@@ -12,12 +12,8 @@ const VOICE_DISCLOSURE_KEY = "amble.voice-disclosure.v1";
 export function createAssistantView({
   onStartVoice,
   onStopVoice,
-  onPushToTalkStart,
-  onPushToTalkEnd,
   onInterrupt,
-  onToggleMute,
   onConfirmation,
-  onSubmitText,
   onSelectArea,
   onCompareAreas,
   onDismissArea,
@@ -72,31 +68,19 @@ export function createAssistantView({
       "Voice is processed by OpenAI, which may retain data for abuse monitoring. Amble does not store your audio, transcript, context, or precise location.",
     ),
   );
-  const acceptDisclosure = element("button", "", "Continue with voice");
-  acceptDisclosure.type = "button";
-  acceptDisclosure.dataset.testid = "assistant-disclosure-accept";
-  acceptDisclosure.dataset.controlOwner = "browser";
-  const cancelDisclosure = element("button", "", "Cancel");
-  cancelDisclosure.type = "button";
-  cancelDisclosure.dataset.controlOwner = "browser";
-  disclosure.append(acceptDisclosure, cancelDisclosure);
-  const voiceControls = element("div", "assistant-voice-controls");
   const voiceState = element("span", "assistant-voice-state", "Voice stopped");
   voiceState.dataset.testid = "assistant-voice-state";
   voiceState.setAttribute("aria-live", "polite");
-  const pushToTalk = element(
-    "button",
-    "assistant-push-to-talk",
-    "Hold to talk",
-  );
-  pushToTalk.type = "button";
-  pushToTalk.dataset.testid = "assistant-push-to-talk";
-  pushToTalk.dataset.controlOwner = "browser";
-  pushToTalk.setAttribute("aria-pressed", "false");
-  const interrupt = element("button", "assistant-interrupt", "Interrupt");
+  voiceState.hidden = true;
+  const interrupt = element("button", "assistant-interrupt");
   interrupt.type = "button";
   interrupt.dataset.testid = "assistant-interrupt";
   interrupt.dataset.controlOwner = "browser";
+  interrupt.title = "Interrupt and speak";
+  interrupt.setAttribute("aria-label", "Interrupt Amble and speak");
+  const interruptIcon = element("i", "ph-bold ph-hand-palm");
+  interruptIcon.setAttribute("aria-hidden", "true");
+  interrupt.replaceChildren(interruptIcon);
   const stopVoice = element("button", "assistant-stop-voice", "Stop voice");
   stopVoice.type = "button";
   stopVoice.dataset.testid = "assistant-stop-voice";
@@ -106,34 +90,13 @@ export function createAssistantView({
   const stopIcon = element("i", "ph-bold ph-stop");
   stopIcon.setAttribute("aria-hidden", "true");
   stopVoice.replaceChildren(stopIcon);
-  const mute = element("button", "assistant-mute", "Mute");
-  mute.type = "button";
-  mute.dataset.testid = "assistant-mute";
-  mute.dataset.controlOwner = "browser";
-  mute.setAttribute("aria-pressed", "false");
-  voiceControls.append(voiceState, pushToTalk, interrupt, mute);
-  voiceControls.hidden = true;
   const transcript = element("div", "assistant-transcript");
+  transcript.hidden = true;
   transcript.setAttribute("aria-live", "polite");
   const userTranscript = element("div", "assistant-transcript__user");
   userTranscript.dataset.testid = "assistant-transcript-user";
   const assistantTranscript = element("div", "assistant-transcript__assistant");
   transcript.append(userTranscript, assistantTranscript);
-  const textForm = element("form", "assistant-text-form");
-  textForm.dataset.testid = "assistant-text-form";
-  const textLabel = element("label", "assistant-text-label", "Type to Amble");
-  const textInput = element("input", "assistant-text-input");
-  textInput.type = "text";
-  textInput.maxLength = 2_000;
-  textInput.autocomplete = "off";
-  textInput.dataset.testid = "assistant-text-input";
-  textInput.setAttribute("aria-label", "Message Amble");
-  const textSubmit = element("button", "assistant-text-submit", "Send");
-  textSubmit.type = "submit";
-  textSubmit.dataset.testid = "assistant-text-submit";
-  textSubmit.dataset.controlOwner = "browser";
-  textLabel.append(textInput);
-  textForm.append(textLabel, textSubmit);
   const status = element("div", "assistant-status");
   const confirmation = element("section", "assistant-confirmation");
   confirmation.hidden = true;
@@ -141,14 +104,13 @@ export function createAssistantView({
   const results = element("div", "assistant-results");
   panel.append(
     disclosure,
-    voiceControls,
+    voiceState,
     transcript,
-    textForm,
     status,
     confirmation,
     results,
   );
-  shell.append(open, stopVoice, panel);
+  shell.append(open, interrupt, stopVoice, panel);
   const searchBuilder = document.querySelector(
     "#landmark-event-search .landmark-event-search__builder",
   );
@@ -162,7 +124,7 @@ export function createAssistantView({
   const comparisonAreaIds = new Set();
   let voiceMode = "stopped";
   let hasLiveTranscript = false;
-  let pushToTalkActive = false;
+  let disclosureTimer = null;
   const activeVoiceModes = new Set([
     "connecting",
     "listening",
@@ -225,15 +187,20 @@ export function createAssistantView({
   };
   const startFromPill = () => {
     setOpen(true);
-    if (!disclosureAccepted()) {
-      shell.dataset.mode = "consent";
+    const isFirstUse = !disclosureAccepted();
+    if (isFirstUse) {
+      rememberDisclosure();
+      shell.dataset.mode = "notice";
       disclosure.hidden = false;
-      acceptDisclosure.focus();
-      return;
+      clearTimeout(disclosureTimer);
+      disclosureTimer = setTimeout(() => {
+        disclosure.hidden = true;
+        if (activeVoiceModes.has(voiceMode)) shell.dataset.mode = "voice";
+      }, 4_000);
+    } else {
+      shell.dataset.mode = "voice";
+      disclosure.hidden = true;
     }
-    shell.dataset.mode = "voice";
-    disclosure.hidden = true;
-    voiceControls.hidden = false;
     onStartVoice?.({ disclosureAccepted: true });
   };
   open.addEventListener("click", () => {
@@ -246,74 +213,8 @@ export function createAssistantView({
     else if (voiceMode === "stopped" && disclosure.hidden)
       void executeAssistantVisibility(false);
   });
-  acceptDisclosure.addEventListener("click", () => {
-    if (acceptDisclosure.disabled) return;
-    acceptDisclosure.disabled = true;
-    rememberDisclosure();
-    shell.dataset.mode = "voice";
-    disclosure.hidden = true;
-    voiceControls.hidden = false;
-    onStartVoice?.({ disclosureAccepted: true });
-  });
-  cancelDisclosure.addEventListener("click", () => {
-    shell.dataset.mode = "idle";
-    disclosure.hidden = true;
-    setOpen(false);
-    open.focus();
-  });
   stopVoice.addEventListener("click", () => onStopVoice?.("user"));
-  const beginPushToTalk = () => {
-    if (pushToTalkActive || pushToTalk.disabled) return;
-    pushToTalkActive = true;
-    pushToTalk.setAttribute("aria-pressed", "true");
-    onPushToTalkStart?.();
-  };
-  const endPushToTalk = () => {
-    if (!pushToTalkActive) return;
-    pushToTalkActive = false;
-    pushToTalk.setAttribute("aria-pressed", "false");
-    onPushToTalkEnd?.();
-  };
-  pushToTalk.addEventListener("pointerdown", (event) => {
-    try {
-      pushToTalk.setPointerCapture?.(event.pointerId);
-    } catch {
-      // Synthetic pointer events do not own a browser pointer to capture.
-    }
-    beginPushToTalk();
-  });
-  for (const eventName of [
-    "pointerup",
-    "pointercancel",
-    "lostpointercapture",
-    "pointerleave",
-  ])
-    pushToTalk.addEventListener(eventName, endPushToTalk);
-  pushToTalk.addEventListener("keydown", (event) => {
-    if (event.key !== " " && event.key !== "Enter") return;
-    event.preventDefault();
-    beginPushToTalk();
-  });
-  pushToTalk.addEventListener("keyup", (event) => {
-    if (event.key !== " " && event.key !== "Enter") return;
-    event.preventDefault();
-    endPushToTalk();
-  });
-  pushToTalk.addEventListener("blur", endPushToTalk);
   interrupt.addEventListener("click", () => onInterrupt?.());
-  mute.addEventListener("click", () => {
-    const muted = mute.getAttribute("aria-pressed") !== "true";
-    mute.setAttribute("aria-pressed", String(muted));
-    mute.textContent = muted ? "Resume voice" : "Mute";
-    onToggleMute?.(muted);
-  });
-  textForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const text = textInput.value.trim();
-    if (!text) return;
-    textInput.value = "";
-    onSubmitText?.(text);
-  });
   const clearStatus = () => {
     status.replaceChildren();
   };
@@ -324,8 +225,6 @@ export function createAssistantView({
     status.append(node);
   };
   const resetSessionContent = () => {
-    pushToTalkActive = false;
-    pushToTalk.setAttribute("aria-pressed", "false");
     userTranscript.replaceChildren();
     assistantTranscript.replaceChildren();
     results.replaceChildren();
@@ -334,10 +233,8 @@ export function createAssistantView({
     confirmation.hidden = true;
     confirmation.removeAttribute("aria-busy");
     comparisonAreaIds.clear();
-    textInput.value = "";
-    mute.setAttribute("aria-pressed", "false");
-    mute.textContent = "Mute";
-    acceptDisclosure.disabled = false;
+    clearTimeout(disclosureTimer);
+    disclosureTimer = null;
     hasLiveTranscript = false;
     livePreview.textContent = "Explore Singapore by voice";
   };
@@ -592,20 +489,15 @@ export function createAssistantView({
       ].includes(state);
       shell.classList.toggle("is-voice-active", active);
       searchBuilder?.classList.toggle("is-assistant-active", active);
-      pushToTalk.disabled = !active || state === "connecting";
-      interrupt.disabled = !active || state === "connecting";
-      mute.disabled = !active || state === "connecting";
+      interrupt.disabled = !["processing", "speaking"].includes(state);
       stopVoice.disabled = !active;
-      const isMuted = state === "muted";
-      mute.setAttribute("aria-pressed", String(isMuted));
-      mute.textContent = isMuted ? "Resume voice" : "Mute";
-      if (!active) endPushToTalk();
       if (state === "connecting") clearStatus();
       if (
         ["connecting", "listening", "processing", "speaking", "muted"].includes(
           state,
         ) &&
-        shell.dataset.mode !== "results"
+        shell.dataset.mode !== "results" &&
+        disclosure.hidden
       )
         shell.dataset.mode = "voice";
       open.dataset.state = state;
@@ -656,7 +548,6 @@ export function createAssistantView({
       if (state === "stopped") {
         resetSessionContent();
         shell.dataset.mode = "idle";
-        voiceControls.hidden = true;
         disclosure.hidden = true;
         setOpen(false);
       } else {
@@ -664,6 +555,7 @@ export function createAssistantView({
       }
     },
     destroy() {
+      clearTimeout(disclosureTimer);
       subscribers.clear();
       searchBuilder?.classList.remove("is-assistant-active");
       shell.remove();

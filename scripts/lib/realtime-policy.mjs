@@ -8,7 +8,8 @@ const EXACT = Object.freeze({
   maxSessionSeconds: 300,
   idleSeconds: 60,
   maxResponses: 6,
-  maxOutputTokens: 512,
+  responseTimeoutSeconds: 30,
+  providerMaxOutputTokens: 4_096,
   maxContextTokens: 4_000,
 });
 
@@ -72,7 +73,7 @@ export function calculateWorstCaseReservations(policy) {
     1_000_000,
   );
   const responseOutputMicroUsd = checkedCeilProduct(
-    response?.maxOutputTokens,
+    response?.providerMaxOutputTokens,
     rates.audioOutputMicroUsdPerMillionTokens,
     1_000_000,
   );
@@ -93,7 +94,7 @@ export function calculateWorstCaseReservations(policy) {
 }
 
 export function validateRealtimePolicy(policy) {
-  if (policy?.schemaVersion !== "1.0")
+  if (policy?.schemaVersion !== "1.1")
     fail("policy_schema_invalid", "Unsupported realtime policy schema");
   if (policy.owner !== EXACT.owner)
     fail("policy_owner_invalid", "Realtime policy owner is invalid");
@@ -111,11 +112,16 @@ export function validateRealtimePolicy(policy) {
       "policy_cap_invalid",
       "Budget cap or reset policy differs from owner approval",
     );
+  if ("maxOutputTokens" in policy)
+    fail(
+      "policy_output_ceiling_forbidden",
+      "Realtime policy must not impose an application output-token ceiling",
+    );
   for (const key of [
     "maxSessionSeconds",
     "idleSeconds",
     "maxResponses",
-    "maxOutputTokens",
+    "responseTimeoutSeconds",
     "maxContextTokens",
   ]) {
     if (!safeInteger(policy[key]))
@@ -123,6 +129,14 @@ export function validateRealtimePolicy(policy) {
     if (policy[key] !== EXACT[key])
       fail("policy_limit_invalid", `${key} differs from the reviewed limit`);
   }
+  if (
+    policy.worstCaseReservation?.response?.providerMaxOutputTokens !==
+    EXACT.providerMaxOutputTokens
+  )
+    fail(
+      "policy_reservation_bound_invalid",
+      "Response reservation must use the reviewed provider maximum",
+    );
   if (policy.rateCardVersion !== policy.rateCard?.version)
     fail("policy_rate_card_mismatch", "Rate-card versions differ");
   const calculated = calculateWorstCaseReservations(policy);

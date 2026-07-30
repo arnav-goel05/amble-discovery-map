@@ -14,6 +14,35 @@ test("the initial intro is styled before the application bundle loads", async ({
   expect(
     await wordmark.evaluate((element) => element.getBoundingClientRect().width),
   ).toBeLessThanOrEqual(300);
+  await expect(page.getByRole("button", { name: "Try again" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Let's explore" }),
+  ).toBeHidden();
+  await expect(page.locator("body")).toHaveAttribute(
+    "data-experience-intro",
+    "error",
+  );
+});
+
+test("the intro has no artificial minimum once the scene is ready", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  await page.evaluate(async () => {
+    const { createExperienceIntro } =
+      await import("/activity-scenes/experience-intro.js");
+    window.__experienceIntro = createExperienceIntro({
+      sceneReady: () => true,
+    });
+  });
+
+  await expect(
+    page.getByRole("button", { name: "Let's explore" }),
+  ).toBeVisible();
+  await expect(page.locator("#experience-intro")).toHaveAttribute(
+    "data-ready-reason",
+    "scene-ready",
+  );
 });
 
 test("the intro waits for initial 3D content and fades away on entry", async ({
@@ -26,7 +55,6 @@ test("the intro waits for initial 3D content and fades away on entry", async ({
     window.__introEnterCount = 0;
     window.__experienceIntro = createExperienceIntro({
       pollIntervalMs: 10,
-      minimumDisplayMs: 0,
       readySettleMs: 40,
       onEnter: () => {
         window.__introEnterCount += 1;
@@ -87,7 +115,6 @@ test("the ready state must remain stable before entry is offered", async ({
     window.__sceneReady = false;
     window.__experienceIntro = createExperienceIntro({
       pollIntervalMs: 10,
-      minimumDisplayMs: 0,
       readySettleMs: 100,
       sceneReady: () => window.__sceneReady,
     });
@@ -107,7 +134,7 @@ test("the ready state must remain stable before entry is offered", async ({
   await expect(enter).toBeVisible();
 });
 
-test("the intro offers entry when the initial 3D scene does not become ready", async ({
+test("the intro keeps waiting when the initial 3D scene does not become ready", async ({
   page,
 }) => {
   await page.goto("/test-harness.html");
@@ -115,18 +142,60 @@ test("the intro offers entry when the initial 3D scene does not become ready", a
     const { createExperienceIntro } =
       await import("/activity-scenes/experience-intro.js");
     window.__experienceIntro = createExperienceIntro({
-      minimumDisplayMs: 0,
-      maximumWaitMs: 50,
+      pollIntervalMs: 10,
       sceneReady: () => false,
     });
   });
 
   const enter = page.getByRole("button", { name: "Let's explore" });
-  await expect(enter).toBeVisible();
-  await expect(page.locator("#experience-intro")).toHaveAttribute(
-    "data-ready-reason",
-    "maximum-wait",
+  await page.waitForTimeout(150);
+  await expect(enter).toBeHidden();
+  await expect(page.getByText("Bringing Singapore into view")).toBeVisible();
+  await expect(page.locator("body")).toHaveAttribute(
+    "data-experience-intro",
+    "loading",
   );
+});
+
+test("a genuine startup failure offers retry instead of entry", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  await page.evaluate(async () => {
+    const { createExperienceIntro } =
+      await import("/activity-scenes/experience-intro.js");
+    window.__sceneFailure = null;
+    window.__retryCount = 0;
+    window.__experienceIntro = createExperienceIntro({
+      pollIntervalMs: 10,
+      sceneReady: () => false,
+      sceneFailure: () => window.__sceneFailure,
+      onRetry: () => {
+        window.__retryCount += 1;
+      },
+    });
+    window.__sceneFailure = "application_start_failed";
+  });
+
+  await expect(
+    page.getByText(
+      "Singapore couldn't finish loading. Check your connection and try again.",
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Let's explore" }),
+  ).toBeHidden();
+  await expect(page.locator("body")).toHaveAttribute(
+    "data-experience-intro",
+    "error",
+  );
+  await expect(page.locator("#experience-intro")).toHaveAttribute(
+    "data-failure-reason",
+    "application_start_failed",
+  );
+
+  await page.getByRole("button", { name: "Try again" }).click();
+  expect(await page.evaluate(() => window.__retryCount)).toBe(1);
 });
 
 test("auto-start can bypass the first-load experience", async ({ page }) => {

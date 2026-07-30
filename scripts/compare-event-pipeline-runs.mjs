@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import { compareCanonicalSurfaces } from "./lib/event-pipeline/equivalence.mjs";
 
 const option = (name) => {
   const index = process.argv.indexOf(name);
@@ -13,7 +14,9 @@ const snapshotRoot = resolve(
     new URL("../data/snapshots", import.meta.url).pathname,
 );
 if (!beforeRun || !afterRun)
-  throw new Error("Usage: compare-event-pipeline-runs --before <run-dir> --after <run-dir> [--output file]");
+  throw new Error(
+    "Usage: compare-event-pipeline-runs --before <run-dir> --after <run-dir> [--output file]",
+  );
 
 const readJson = (path) => JSON.parse(readFileSync(path, "utf8"));
 const readRun = (runDir) => {
@@ -24,14 +27,37 @@ const readRun = (runDir) => {
     status.publication?.activeSnapshotId ??
     null;
   let published = { mapped: [], offMap: [] };
+  let snapshot = {
+    manifest: null,
+    activities: null,
+    landmarks: null,
+    pois: null,
+    tileset: null,
+  };
   if (snapshotId) {
     try {
       const manifest = readJson(`${snapshotRoot}/${snapshotId}/manifest.json`);
-      const internalEventsRef = manifest.internalEventsRef ?? manifest.eventsRef;
+      const internalEventsRef =
+        manifest.internalEventsRef ?? manifest.eventsRef;
       if (internalEventsRef)
         published = readJson(
           `${snapshotRoot}/${snapshotId}/${internalEventsRef}`,
         );
+      snapshot = {
+        manifest,
+        activities: manifest.activitiesRef
+          ? readJson(`${snapshotRoot}/${snapshotId}/${manifest.activitiesRef}`)
+          : null,
+        landmarks: manifest.landmarksRef
+          ? readJson(`${snapshotRoot}/${snapshotId}/${manifest.landmarksRef}`)
+          : null,
+        pois: manifest.poisRef
+          ? readJson(`${snapshotRoot}/${snapshotId}/${manifest.poisRef}`)
+          : null,
+        tileset: manifest.tilesetRef
+          ? readJson(`${snapshotRoot}/${snapshotId}/${manifest.tilesetRef}`)
+          : null,
+      };
     } catch {
       // A preserved-previous or pre-publication run can still be compared at normalization.
     }
@@ -42,13 +68,18 @@ const readRun = (runDir) => {
     events: readJson(`${root}/normalized/events.json`).records,
     excluded: readJson(`${root}/normalized/excluded.json`).records,
     published,
+    snapshot,
   };
 };
 
 function sourcesOf(event) {
   if (event?.event) return sourcesOf(event.event);
-  const sources = (event.sources ?? []).map(({ source }) => source).filter(Boolean);
-  return [...new Set(sources.length ? sources : [event.sourceName].filter(Boolean))];
+  const sources = (event.sources ?? [])
+    .map(({ source }) => source)
+    .filter(Boolean);
+  return [
+    ...new Set(sources.length ? sources : [event.sourceName].filter(Boolean)),
+  ];
 }
 
 function summarizeCompleteness(records) {
@@ -78,8 +109,12 @@ function summarize(run) {
   ]);
   const bySource = {};
   for (const source of [...sourceNames].sort()) {
-    const events = run.events.filter((event) => sourcesOf(event).includes(source));
-    const excluded = run.excluded.filter((event) => sourcesOf(event).includes(source));
+    const events = run.events.filter((event) =>
+      sourcesOf(event).includes(source),
+    );
+    const excluded = run.excluded.filter((event) =>
+      sourcesOf(event).includes(source),
+    );
     const mapped = (run.published.mapped ?? []).filter((event) =>
       sourcesOf(event).includes(source),
     );
@@ -112,9 +147,12 @@ function summarize(run) {
     totals: {
       events: run.events.length,
       excluded: run.excluded.length,
-      eligiblePreDedup: run.status.deduplication?.counts?.eligiblePreDedup ?? null,
-      duplicatesCollapsed: run.status.deduplication?.counts?.crossSourceDuplicateCollapsed ?? null,
-      uniqueActivities: run.status.deduplication?.counts?.acceptedPrimary ?? run.events.length,
+      eligiblePreDedup:
+        run.status.deduplication?.counts?.eligiblePreDedup ?? null,
+      duplicatesCollapsed:
+        run.status.deduplication?.counts?.crossSourceDuplicateCollapsed ?? null,
+      uniqueActivities:
+        run.status.deduplication?.counts?.acceptedPrimary ?? run.events.length,
       publishedMapped: run.published.mapped?.length ?? 0,
       publishedOffMap: run.published.offMap?.length ?? 0,
     },
@@ -122,25 +160,55 @@ function summarize(run) {
   };
 }
 
-const before = summarize(readRun(beforeRun));
-const after = summarize(readRun(afterRun));
+const beforeRaw = readRun(beforeRun);
+const afterRaw = readRun(afterRun);
+const before = summarize(beforeRaw);
+const after = summarize(afterRaw);
 const delta = {};
-for (const source of new Set([...Object.keys(before.bySource), ...Object.keys(after.bySource)])) {
+for (const source of new Set([
+  ...Object.keys(before.bySource),
+  ...Object.keys(after.bySource),
+])) {
   const left = before.bySource[source] ?? {};
   const right = after.bySource[source] ?? {};
   delta[source] = Object.fromEntries(
-    ["uniqueActivities", "excluded", "mapped", "offMap", "mappingReview"].map((field) => [
-      field,
-      (right[field] ?? 0) - (left[field] ?? 0),
-    ]),
+    ["uniqueActivities", "excluded", "mapped", "offMap", "mappingReview"].map(
+      (field) => [field, (right[field] ?? 0) - (left[field] ?? 0)],
+    ),
   );
 }
 const report = {
-  schemaVersion: "1.0",
+  schemaVersion: "2.0",
   createdAt: new Date().toISOString(),
   before,
   after,
   delta,
+  equivalence: compareCanonicalSurfaces(
+    {
+      sourceAccounting: beforeRaw.status.sources,
+      normalization: beforeRaw.events,
+      exclusions: beforeRaw.excluded,
+      deduplication: beforeRaw.status.deduplication,
+      venues: beforeRaw.status.venues,
+      publishedEvents: beforeRaw.published,
+      activities: beforeRaw.snapshot.activities,
+      landmarks: beforeRaw.snapshot.landmarks,
+      pois: beforeRaw.snapshot.pois,
+      tileset: beforeRaw.snapshot.tileset,
+    },
+    {
+      sourceAccounting: afterRaw.status.sources,
+      normalization: afterRaw.events,
+      exclusions: afterRaw.excluded,
+      deduplication: afterRaw.status.deduplication,
+      venues: afterRaw.status.venues,
+      publishedEvents: afterRaw.published,
+      activities: afterRaw.snapshot.activities,
+      landmarks: afterRaw.snapshot.landmarks,
+      pois: afterRaw.snapshot.pois,
+      tileset: afterRaw.snapshot.tileset,
+    },
+  ),
 };
 const output = option("--output");
 if (output) {

@@ -41,8 +41,55 @@ requires another explicit owner-approved policy change.
 - Routine development, CI, and browser tests use deterministic mock traffic and spend USD 0.
 - The server reserves a conservative worst-case amount before accepting each billable turn.
   Unknown rates, models, usage shapes, or missing settlement events fail closed.
+- Realtime session and response requests do not set `max_output_tokens`; generation uses the
+  approved model's intrinsic maximum. The policy uses that documented provider maximum only to
+  reserve a conservative worst-case response cost before work begins.
 - Cap exhaustion, either kill switch, or provider failure ends active voice work and preserves
   local text and direct-interface controls without calling another paid model.
+
+### Voice reliability logs and response timeout
+
+Each provider response has a 30-second server-side watchdog independent of the 60-second idle
+limit, five-minute session limit, and provider output-token maximum. `response.done`, browser
+interruption, and every terminal session path clear the watchdog. If the provider never completes,
+the relay attempts `response.cancel`, records `response_timeout`, conservatively holds the pending
+reservation, and terminates through the standard voice-unavailable lifecycle.
+
+Worker and local relay logs emit one JSON record per applicable phase:
+`audio_committed`, `transcription_completed`, `response_requested`, `response_created`,
+`first_audio`, `response_done`, `response_timeout`, or `session_terminal`. Use `sessionIdHash` and
+`turnNumber` to correlate records, then compare `elapsedMs` and `sincePreviousPhaseMs` to locate the
+delay. For example, a long gap between `response_created` and `first_audio` is provider
+generation/audio latency; a missing `response_created` after `response_requested` is a provider
+acceptance stall.
+
+The record schema is deliberately closed to `schemaVersion`, `event`, `sessionIdHash`,
+`turnNumber`, `phase`, `occurredAt`, `elapsedMs`, `sincePreviousPhaseMs`, `eventCode`, and
+`terminalReason`. Never add audio, transcripts, prompts, tool arguments/results, provider bodies,
+exact location, raw session IDs, credentials, or other user content. These records are minimal
+reliability logs and must not be repurposed as product analytics.
+
+### Local content-debug mode
+
+Detailed voice protocol content is available only from an explicitly activated local development
+process:
+
+```bash
+NODE_ENV=development REALTIME_CONTENT_DEBUG=true npm run dev
+```
+
+This emits `voice.content_debug` JSON records to the active terminal for
+`browser_to_relay`, `relay_to_provider`, `provider_to_relay`, and `relay_to_browser` messages.
+Permitted transcripts, prompts, tool arguments/results, and provider/browser fields are included so
+ordering and malformed-payload failures can be reproduced. Credential, authorization, cookie,
+token, password, secret, signing/private-key, raw-session-identity, and audio values are
+recursively replaced before the logger receives the record.
+
+The mode is off unless both startup values match exactly. It cannot be activated by the browser and
+is not wired into the Cloudflare Worker, preview, or production adapters. It writes no file,
+database, cache, browser storage, analytics, or remote telemetry. Do not redirect or tee this
+terminal output into a file; stop the local process when debugging is complete. Production and
+routine local operation continue to use only the closed privacy-safe phase records above.
 
 ### Realtime protocol 1.1 rollout
 
@@ -72,9 +119,11 @@ deleted when the complete challenge session becomes terminal, or after seven day
 session is abandoned. The service stores no photo bytes and no product telemetry.
 
 Realtime audio, transcripts, exact location, screenshots, interface context, and confirmations are
-session-only and are never written to application storage or logs. Provider-side processing and
-retention are disclosed before microphone access; clearing application state does not imply that the
-provider has deleted its independently governed safety records.
+session-only and are never written to application storage or routine/production logs. The explicit
+local content-debug mode may print permitted sanitized content to the active terminal only; it
+creates no application persistence. Provider-side processing and retention are disclosed before
+microphone access; clearing application state does not imply that the provider has deleted its
+independently governed safety records.
 
 # Conversational map context assets
 

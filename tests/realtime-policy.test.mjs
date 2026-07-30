@@ -24,7 +24,7 @@ const rejectsWith = (callback, code) =>
 test("checked-in realtime policy pins the approved model, budget, and bounded session", () => {
   const policy = loadRealtimePolicy(policyPath);
 
-  assert.equal(policy.schemaVersion, "1.0");
+  assert.equal(policy.schemaVersion, "1.1");
   assert.equal(policy.owner, "Arnav");
   assert.equal(policy.modelId, "gpt-realtime-2.1-mini");
   assert.equal(policy.transcriptionModelId, "gpt-realtime-whisper");
@@ -33,7 +33,12 @@ test("checked-in realtime policy pins the approved model, budget, and bounded se
   assert.equal(policy.maxSessionSeconds, 300);
   assert.equal(policy.idleSeconds, 60);
   assert.equal(policy.maxResponses, 6);
-  assert.equal(policy.maxOutputTokens, 512);
+  assert.equal(policy.responseTimeoutSeconds, 30);
+  assert.equal("maxOutputTokens" in policy, false);
+  assert.equal(
+    policy.worstCaseReservation.response.providerMaxOutputTokens,
+    4_096,
+  );
   assert.equal(policy.maxContextTokens, 4_000);
   assert.equal(policy.automaticResponseCreation, false);
   assert.equal(policy.imageInputEnabled, false);
@@ -97,12 +102,26 @@ test("unknown models and altered bounds are rejected", () => {
     "policy_limit_invalid",
   );
   rejectsWith(
+    () =>
+      validateRealtimePolicy({
+        ...clone(policy),
+        responseTimeoutSeconds: 31,
+      }),
+    "policy_limit_invalid",
+  );
+  rejectsWith(
     () => validateRealtimePolicy({ ...clone(policy), maxResponses: 7 }),
     "policy_limit_invalid",
   );
   rejectsWith(
-    () => validateRealtimePolicy({ ...clone(policy), maxOutputTokens: 513 }),
-    "policy_limit_invalid",
+    () => validateRealtimePolicy({ ...clone(policy), maxOutputTokens: 512 }),
+    "policy_output_ceiling_forbidden",
+  );
+  const alteredProviderBound = clone(policy);
+  alteredProviderBound.worstCaseReservation.response.providerMaxOutputTokens = 512;
+  rejectsWith(
+    () => validateRealtimePolicy(alteredProviderBound),
+    "policy_reservation_bound_invalid",
   );
   rejectsWith(
     () => validateRealtimePolicy({ ...clone(policy), maxContextTokens: 4_001 }),
@@ -173,9 +192,9 @@ test("worst-case reservations use uncached highest enabled rates and match polic
   assert.deepEqual(reservation, {
     inputTranscriptionMicroUsd: 17_000,
     responseInputMicroUsd: 40_000,
-    responseOutputMicroUsd: 10_240,
-    responseMicroUsd: 50_240,
-    turnMicroUsd: 67_240,
+    responseOutputMicroUsd: 81_920,
+    responseMicroUsd: 121_920,
+    turnMicroUsd: 138_920,
   });
   assert.equal(
     reservation.inputTranscriptionMicroUsd,

@@ -186,6 +186,7 @@ async function voiceSessionAdmissionResponse(request, env) {
         apiKey: env.OPENAI_API_KEY,
         approvedCandidateIds: APPROVED_VOICE_CANDIDATE_IDS,
         approvedCandidates: APPROVED_VOICE_CANDIDATES,
+        operationalLogger: (record) => console.info(JSON.stringify(record)),
       });
       VOICE_RELAYS.set(env, relay);
     }

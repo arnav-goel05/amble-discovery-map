@@ -4,6 +4,7 @@ import {
   validateBrowserMessage,
   validateSessionAdmission,
 } from "../scripts/lib/realtime-relay-protocol.mjs";
+import { createRealtimeContentDebugRecord } from "../scripts/lib/realtime-content-debug.mjs";
 import {
   compileSchema,
   createCapabilityResultValidator,
@@ -17,10 +18,26 @@ import catalogGetResultSchema from "../specs/004-conversational-voice-map/contra
 import catalogSearchResultSchema from "../specs/004-conversational-voice-map/contracts/catalog-search-result.schema.json" with { type: "json" };
 
 const OPENAI_REALTIME_URL = "https://api.openai.com/v1/realtime";
-const OUT_OF_SCOPE_RESPONSE =
+export const OUT_OF_SCOPE_RESPONSE =
   "I can only help you explore Singapore and use Amble's current features.";
 export const AMBLE_WELCOME_MESSAGE =
-  "Hi, I'm Amble, your Singapore discovery guide. Tell me what you're in the mood for, and I can suggest areas and places, search events or restaurants, and control the map—including your location and MRT context.";
+  "Hi, I'm Amble, your Singapore discovery guide. Tell me what you're in the mood for—I can find events, restaurants, and places, or help you explore the map.";
+const VOICE_SERVICE_UNAVAILABLE_MESSAGE =
+  "Voice service is currently unavailable. Please try again later.";
+
+export function buildVerbatimSpeechInstructions(text) {
+  return [
+    "CRITICAL VERBATIM SPEECH TASK.",
+    "SPEAK EXACTLY AND ONLY THE TEXT BETWEEN BEGIN EXACT SPEECH AND END EXACT SPEECH.",
+    "DO NOT ADD A PREFACE, ACKNOWLEDGEMENT, EXPLANATION, FOLLOW-UP, OR CLOSING.",
+    "DO NOT REMOVE, REORDER, REPEAT, SUMMARIZE, TRANSLATE, OR PARAPHRASE ANY WORD.",
+    "DO NOT SPEAK THE DELIMITER LABELS.",
+    "BEGIN EXACT SPEECH",
+    text,
+    "END EXACT SPEECH",
+    "Before responding, silently verify that the spoken response contains the exact supplied text and nothing else.",
+  ].join("\n");
+}
 
 const boundedAppInspectResultSchema = structuredClone(appInspectResultSchema);
 boundedAppInspectResultSchema.properties.availableCapabilityIds.items.maxLength = 128;
@@ -36,12 +53,17 @@ export function describeAvailableCapabilities(tools = []) {
 export function buildAmbleSessionInstructions(tools = []) {
   const capabilities = describeAvailableCapabilities(tools);
   return [
+    "CRITICAL VERBATIM SPEECH RULES:",
+    "- WHEN AN INSTRUCTION SAYS TO SPEAK OR SAY TEXT EXACTLY, OUTPUT EXACTLY AND ONLY THAT TEXT.",
+    "- DO NOT ADD A PREFACE, ACKNOWLEDGEMENT, EXPLANATION, FOLLOW-UP, OR CLOSING.",
+    "- DO NOT REMOVE, REORDER, REPEAT, SUMMARIZE, TRANSLATE, OR PARAPHRASE ANY WORD.",
+    "- THESE VERBATIM RULES OVERRIDE CONVERSATIONAL STYLE OR HELPFULNESS.",
     "You are Amble, the in-application voice guide and controller for this Singapore discovery application. You are not a general-purpose assistant.",
     "Stay strictly within Amble: discover from supplied approved application data, explain currently eligible Amble features, and control the application only through the supplied typed tools.",
-    `For unrelated requests or general knowledge, reply briefly: \"${OUT_OF_SCOPE_RESPONSE}\" Then offer a relevant in-app alternative when one exists. Do not answer the unrelated question.`,
+    `For unrelated requests or general knowledge, say exactly and only: \"${OUT_OF_SCOPE_RESPONSE}\" Do not answer the unrelated question or add any other text.`,
     "You must not browse or search the open web. Search tools query only approved data already available inside Amble. Never imply that you have unrestricted browser, device, operating-system, or application control.",
     "When asked what you can do, describe only the current eligible capabilities listed below. Group them concisely in user language. Do not mention unavailable, internal, or imagined features.",
-    `For the user's opening greeting or a simple hello, respond exactly with: \"${AMBLE_WELCOME_MESSAGE}\" Do not invite general conversation, games of chat, trivia, mysteries, or unrelated help.`,
+    `For the user's opening greeting or a simple hello, say exactly and only: \"${AMBLE_WELCOME_MESSAGE}\" Do not add any other text.`,
     "For every application state change, call an eligible supplied tool. Never claim an action succeeded until its tool result confirms success. If a tool fails, say so and do not pretend the state changed.",
     "Never invent candidate IDs, target IDs, URLs, places, events, prices, availability, routes, locations, attributes, or transport constraints. Use only supplied approved candidates and authoritative interface context.",
     "Ask one focused clarification when a target or required argument is ambiguous. Never self-confirm a consequential action; wait for the application's explicit confirmation flow.",
@@ -287,13 +309,15 @@ export function validateDiscoveryToolArguments(
 function validateCloudRelayPolicy(policy) {
   const expected = policy?.worstCaseReservation;
   if (
-    policy?.schemaVersion !== "1.0" ||
+    policy?.schemaVersion !== "1.1" ||
     policy.owner !== "Arnav" ||
     policy.modelId !== "gpt-realtime-2.1-mini" ||
     policy.transcriptionModelId !== "gpt-realtime-whisper" ||
     policy.capMicroUsd !== 10_000_000 ||
     policy.resetPolicy !== "none" ||
+    "maxOutputTokens" in policy ||
     policy.rateCardVersion !== policy.rateCard?.version ||
+    expected?.response?.providerMaxOutputTokens !== 4_096 ||
     !Number.isSafeInteger(expected?.inputTranscription?.reservedMicroUsd) ||
     !Number.isSafeInteger(expected?.response?.reservedMicroUsd)
   ) {
@@ -315,7 +339,6 @@ function providerSessionUpdate(policy, tools = []) {
       model: policy.modelId,
       instructions: buildAmbleSessionInstructions(tools),
       output_modalities: ["audio"],
-      max_output_tokens: policy.maxOutputTokens,
       audio: {
         input: {
           format: { type: "audio/pcm", rate: 24_000 },
@@ -396,6 +419,11 @@ export function createRealtimeRelay({
   tools = capabilityContracts.map(toRelayTool),
   approvedCandidateIds = [],
   approvedCandidates = [],
+  openingGreeting = true,
+  operationalLogger = null,
+  contentDebugLogger = null,
+  responseSetTimeout = setTimeout,
+  responseClearTimeout = clearTimeout,
 } = {}) {
   validateCloudRelayPolicy(policy);
   if (!budgetRepository || typeof budgetRepository.reserve !== "function")
@@ -432,13 +460,168 @@ export function createRealtimeRelay({
     session.idleTimer?.unref?.();
   };
 
+  const startTurnTrace = (session) => {
+    session.turnNumber += 1;
+    session.turnTrace = {
+      turnNumber: session.turnNumber,
+      responseRequestedAtMs: null,
+      previousPhaseAtMs: null,
+      firstAudioObserved: false,
+    };
+    return session.turnTrace;
+  };
+
+  const tracePhase = (
+    session,
+    phase,
+    { eventCode = phase, terminalReason = null } = {},
+  ) => {
+    const trace = session.turnTrace || startTurnTrace(session);
+    const occurredAt = now();
+    const occurredAtMs = occurredAt.getTime();
+    if (phase === "response_requested")
+      trace.responseRequestedAtMs = occurredAtMs;
+    const elapsedMs =
+      trace.responseRequestedAtMs === null
+        ? 0
+        : Math.max(0, occurredAtMs - trace.responseRequestedAtMs);
+    const sincePreviousPhaseMs =
+      trace.previousPhaseAtMs === null
+        ? 0
+        : Math.max(0, occurredAtMs - trace.previousPhaseAtMs);
+    trace.previousPhaseAtMs = occurredAtMs;
+    const record = Object.freeze({
+      schemaVersion: "1.0",
+      event: "voice.phase",
+      sessionIdHash: session.sessionIdHash,
+      turnNumber: trace.turnNumber,
+      phase,
+      occurredAt: occurredAt.toISOString(),
+      elapsedMs,
+      sincePreviousPhaseMs,
+      eventCode,
+      terminalReason,
+    });
+    try {
+      operationalLogger?.(record);
+    } catch {}
+    return record;
+  };
+
+  const traceContent = (session, direction, payload) => {
+    if (!contentDebugLogger) return;
+    try {
+      contentDebugLogger(
+        createRealtimeContentDebugRecord({
+          sessionIdHash: session.sessionIdHash,
+          rawSessionId: session.sessionId,
+          direction,
+          payload,
+          occurredAt: now(),
+        }),
+      );
+    } catch {}
+  };
+
+  const sendBrowser = (session, event) => {
+    traceContent(session, "relay_to_browser", event);
+    return send(session.browserSocket, event);
+  };
+
+  const sendProvider = (session, event) => {
+    traceContent(session, "relay_to_provider", event);
+    return send(session.providerSocket, event);
+  };
+
+  const clearResponseWatchdog = (session) => {
+    if (!session.responseTimer) return false;
+    responseClearTimeout(session.responseTimer);
+    session.responseTimer = null;
+    return true;
+  };
+
+  const clearTranscriptionWatchdog = (session) => {
+    if (!session.transcriptionTimer) return false;
+    responseClearTimeout(session.transcriptionTimer);
+    session.transcriptionTimer = null;
+    return true;
+  };
+
+  const failTranscriptionTurn = (session, phase, eventCode) => {
+    if (
+      sessions.get(session.sessionId) !== session ||
+      session.state === "stopped" ||
+      !session.inputReservationId ||
+      !session.inputCommitted
+    )
+      return false;
+    clearTranscriptionWatchdog(session);
+    tracePhase(session, phase, {
+      eventCode,
+      terminalReason: "provider",
+    });
+    sendBrowser(session, {
+      type: "error",
+      code: "provider_unavailable",
+      message: VOICE_SERVICE_UNAVAILABLE_MESSAGE,
+    });
+    stop(session.sessionId, "provider");
+    return true;
+  };
+
+  const startTranscriptionWatchdog = (session) => {
+    clearTranscriptionWatchdog(session);
+    session.transcriptionTimer = responseSetTimeout(
+      () =>
+        failTranscriptionTurn(
+          session,
+          "transcription_timeout",
+          "transcription_timeout",
+        ),
+      policy.responseTimeoutSeconds * 1_000,
+    );
+    session.transcriptionTimer?.unref?.();
+  };
+
+  const sendResponseCreate = (session, response = {}) => {
+    if (!session.turnTrace) startTurnTrace(session);
+    clearResponseWatchdog(session);
+    session.responseCreated = true;
+    session.turnTrace.firstAudioObserved = false;
+    tracePhase(session, "response_requested");
+    session.responseTimer = responseSetTimeout(() => {
+      if (
+        sessions.get(session.sessionId) !== session ||
+        session.state === "stopped" ||
+        !session.responseReservationId
+      )
+        return;
+      tracePhase(session, "response_timeout", {
+        eventCode: "response_timeout",
+        terminalReason: "response_timeout",
+      });
+      sendBrowser(session, {
+        type: "error",
+        code: "provider_unavailable",
+        message: VOICE_SERVICE_UNAVAILABLE_MESSAGE,
+      });
+      sendProvider(session, { type: "response.cancel" });
+      stop(session.sessionId, "response_timeout");
+    }, policy.responseTimeoutSeconds * 1_000);
+    session.responseTimer?.unref?.();
+    return sendProvider(session, {
+      type: "response.create",
+      response,
+    });
+  };
+
   const resumeListeningWhenSettled = (session) => {
     if (
       !session.inputReservationId &&
       !session.responseReservationId &&
       !session.activeReservedTurnId
     )
-      send(session.browserSocket, {
+      sendBrowser(session, {
         type: "session.state",
         state: "listening",
       });
@@ -463,7 +646,7 @@ export function createRealtimeRelay({
       ...scope.capabilityIds,
     ]);
     session.tools = tools.filter(({ name }) => available.has(name));
-    send(session.providerSocket, providerSessionUpdate(policy, session.tools));
+    sendProvider(session, providerSessionUpdate(policy, session.tools));
     return scope;
   };
 
@@ -482,10 +665,47 @@ export function createRealtimeRelay({
       };
       return true;
     }
-    session.responseCreated = true;
-    send(session.providerSocket, {
-      type: "response.create",
-      response: { max_output_tokens: policy.maxOutputTokens },
+    sendResponseCreate(session);
+    return true;
+  };
+
+  const startOpeningGreeting = async (session) => {
+    if (!openingGreeting) {
+      sendBrowser(session, {
+        type: "session.state",
+        state: "listening",
+      });
+      return true;
+    }
+    if (session.responseCount >= policy.maxResponses)
+      return stop(session.sessionId, "usage_limit");
+    try {
+      session.responseReservationId = await reserve(
+        session,
+        "response",
+        reservations.responseMicroUsd,
+      );
+    } catch {
+      stop(session.sessionId, "usage_limit");
+      return false;
+    }
+    session.responseCount += 1;
+    sendBrowser(session, { type: "session.state", state: "processing" });
+    sendProvider(session, {
+      type: "conversation.item.create",
+      item: {
+        type: "message",
+        role: "system",
+        content: [
+          {
+            type: "input_text",
+            text: buildVerbatimSpeechInstructions(AMBLE_WELCOME_MESSAGE),
+          },
+        ],
+      },
+    });
+    sendResponseCreate(session, {
+      instructions: buildVerbatimSpeechInstructions(AMBLE_WELCOME_MESSAGE),
     });
     return true;
   };
@@ -493,7 +713,14 @@ export function createRealtimeRelay({
   const stop = (sessionId, reason) => {
     const session = sessions.get(sessionId);
     if (!session) return null;
-    send(session.browserSocket, { type: "session.stopped", reason });
+    if (reason !== "response_timeout" && session.turnTrace)
+      tracePhase(session, "session_terminal", {
+        eventCode: "session_stopped",
+        terminalReason: reason,
+      });
+    clearTranscriptionWatchdog(session);
+    clearResponseWatchdog(session);
+    sendBrowser(session, { type: "session.stopped", reason });
     for (const reservationId of session.openReservations) {
       const mustHold =
         reservationId === session.responseReservationId
@@ -601,7 +828,7 @@ export function createRealtimeRelay({
       ...pendingCall,
       result: structuredClone(pendingCall.result),
     });
-    send(session.providerSocket, {
+    sendProvider(session, {
       type: "conversation.item.create",
       item: {
         type: "function_call_output",
@@ -609,34 +836,46 @@ export function createRealtimeRelay({
         output: JSON.stringify(pendingCall.result),
       },
     });
-    send(session.browserSocket, {
+    sendBrowser(session, {
       type: "capability.completed",
       callId: pendingCall.callId,
       capabilityId: pendingCall.capabilityId,
       kind: pendingCall.kind,
       result: pendingCall.result,
     });
-    send(session.providerSocket, {
-      type: "response.create",
-      response: { max_output_tokens: policy.maxOutputTokens },
-    });
+    sendResponseCreate(session);
   };
 
   const onProviderEvent = async (session, rawEvent) => {
+    if (
+      session.state === "stopped" ||
+      sessions.get(session.sessionId) !== session
+    )
+      return;
     let event;
     try {
       event = typeof rawEvent === "string" ? JSON.parse(rawEvent) : rawEvent;
     } catch {
       return stop(session.sessionId, "protocol");
     }
+    traceContent(session, "provider_to_relay", event);
     session.lastProviderEventType = event.type;
-    if (event.type === "response.created")
-      send(session.browserSocket, {
+    if (event.type === "response.created") {
+      tracePhase(session, "response_created");
+      sendBrowser(session, {
         type: "session.state",
         state: "processing",
       });
+    }
+    if (
+      event.type === "response.output_audio.delta" &&
+      !session.turnTrace?.firstAudioObserved
+    ) {
+      session.turnTrace.firstAudioObserved = true;
+      tracePhase(session, "first_audio");
+    }
     if (event.type === "response.output_audio.delta")
-      send(session.browserSocket, { type: "session.state", state: "speaking" });
+      sendBrowser(session, { type: "session.state", state: "speaking" });
     if (event.type === "response.function_call_arguments.done") {
       const tool = session.tools.find(
         (candidate) => candidate.name === event.name,
@@ -682,7 +921,7 @@ export function createRealtimeRelay({
           !session.responseReservationId
         )
           return stop(session.sessionId, "protocol");
-        send(session.providerSocket, {
+        sendProvider(session, {
           type: "conversation.item.create",
           item: {
             type: "function_call_output",
@@ -690,10 +929,7 @@ export function createRealtimeRelay({
             output: JSON.stringify(terminalCall.result),
           },
         });
-        return send(session.providerSocket, {
-          type: "response.create",
-          response: { max_output_tokens: policy.maxOutputTokens },
-        });
+        return sendResponseCreate(session);
       }
       if (session.pendingCalls.size >= 1)
         return stop(session.sessionId, "protocol");
@@ -708,7 +944,7 @@ export function createRealtimeRelay({
         validateResult: registered.validateResult,
         result: null,
       });
-      send(session.browserSocket, {
+      sendBrowser(session, {
         type: "capability.proposed",
         callId: event.call_id,
         capabilityId: event.name,
@@ -722,6 +958,8 @@ export function createRealtimeRelay({
       event.type === "conversation.item.input_audio_transcription.completed" &&
       session.inputReservationId
     ) {
+      clearTranscriptionWatchdog(session);
+      tracePhase(session, "transcription_completed");
       const sanitized = sanitizeProviderEvent(event);
       const settled = await settleInputReservation(
         session,
@@ -734,14 +972,27 @@ export function createRealtimeRelay({
         session,
         typeof event.transcript === "string" ? event.transcript : "",
       );
-      if (sanitized?.browserEvent)
-        send(session.browserSocket, sanitized.browserEvent);
+      if (sanitized?.browserEvent) sendBrowser(session, sanitized.browserEvent);
+      return;
+    }
+    if (
+      event.type === "conversation.item.input_audio_transcription.failed" &&
+      session.inputReservationId
+    ) {
+      failTranscriptionTurn(
+        session,
+        "transcription_failed",
+        "transcription_failed",
+      );
       return;
     }
     const sanitized = sanitizeProviderEvent(event);
     if (!sanitized) return;
-    if (sanitized.browserEvent)
-      send(session.browserSocket, sanitized.browserEvent);
+    if (event.type === "response.done") {
+      clearResponseWatchdog(session);
+      tracePhase(session, "response_done");
+    }
+    if (sanitized.browserEvent) sendBrowser(session, sanitized.browserEvent);
     if (
       event.type === "response.done" &&
       session.responseReservationId &&
@@ -801,12 +1052,9 @@ export function createRealtimeRelay({
         modelId: policy.modelId,
         fetchImpl,
       });
-      send(
-        session.providerSocket,
-        providerSessionUpdate(policy, session.tools),
-      );
+      sendProvider(session, providerSessionUpdate(policy, session.tools));
       if (session.approvedCandidates.length)
-        send(session.providerSocket, {
+        sendProvider(session, {
           type: "conversation.item.create",
           item: {
             type: "message",
@@ -832,13 +1080,14 @@ export function createRealtimeRelay({
       stop(sessionId, "network"),
     );
     browserSocket.addEventListener?.("message", (event) => {
+      if (session.state === "stopped") return;
       session.browserEventQueue = session.browserEventQueue
         .then(() => handleBrowserMessage(sessionId, event.data))
         .catch(() => stop(sessionId, "protocol"));
     });
     browserSocket.addEventListener?.("close", () => stop(sessionId, "network"));
     scheduleIdle(session);
-    send(browserSocket, { type: "session.state", state: "listening" });
+    await startOpeningGreeting(session);
     return session;
   };
 
@@ -860,6 +1109,7 @@ export function createRealtimeRelay({
     } catch {
       return stop(sessionId, "protocol");
     }
+    traceContent(session, "browser_to_relay", parsed);
     let message;
     try {
       message = validateBrowserMessage(parsed, {
@@ -902,19 +1152,19 @@ export function createRealtimeRelay({
         return stop(sessionId, "usage_limit");
       }
       session.activeReservedTurnId = message.turnId;
-      return send(session.browserSocket, {
+      return sendBrowser(session, {
         type: "turn.ready",
         turnId: message.turnId,
       });
     }
     if (message.type === "audio.append")
-      return send(session.providerSocket, {
+      return sendProvider(session, {
         type: "input_audio_buffer.append",
         audio: message.audio,
       });
     if (message.type === "audio.commit") {
-      send(session.providerSocket, { type: "input_audio_buffer.commit" });
-      session.inputCommitted = true;
+      startTurnTrace(session);
+      tracePhase(session, "audio_committed");
       session.activeReservedTurnId = null;
       try {
         session.responseReservationId = await reserve(
@@ -927,6 +1177,9 @@ export function createRealtimeRelay({
       }
       session.responseCount += 1;
       session.responseCreated = false;
+      session.inputCommitted = true;
+      startTranscriptionWatchdog(session);
+      sendProvider(session, { type: "input_audio_buffer.commit" });
       return;
     }
     if (message.type === "text.submit") {
@@ -938,6 +1191,7 @@ export function createRealtimeRelay({
         return stop(sessionId, "protocol");
       if (session.responseCount >= policy.maxResponses)
         return stop(sessionId, "usage_limit");
+      startTurnTrace(session);
       try {
         session.responseReservationId = await reserve(
           session,
@@ -949,7 +1203,7 @@ export function createRealtimeRelay({
       }
       session.responseCount += 1;
       session.responseCreated = false;
-      send(session.providerSocket, {
+      sendProvider(session, {
         type: "conversation.item.create",
         item: {
           type: "message",
@@ -980,7 +1234,7 @@ export function createRealtimeRelay({
         confirmationId: message.confirmationId,
         fingerprint: message.fingerprint,
       };
-      return send(session.browserSocket, {
+      return sendBrowser(session, {
         type: "confirmation.required",
         callId: message.callId,
         confirmationId: message.confirmationId,
@@ -994,8 +1248,7 @@ export function createRealtimeRelay({
       session.pendingConfirmation = null;
     if (message.type === "deterministic.result") {
       session.pendingDeterministic = null;
-      session.responseCreated = true;
-      send(session.providerSocket, {
+      sendProvider(session, {
         type: "conversation.item.create",
         item: {
           type: "message",
@@ -1008,13 +1261,12 @@ export function createRealtimeRelay({
           ],
         },
       });
-      return send(session.providerSocket, {
-        type: "response.create",
-        response: { max_output_tokens: policy.maxOutputTokens },
-      });
+      return sendResponseCreate(session);
     }
-    if (message.type === "response.cancel")
-      return send(session.providerSocket, { type: "response.cancel" });
+    if (message.type === "response.cancel") {
+      clearResponseWatchdog(session);
+      return sendProvider(session, { type: "response.cancel" });
+    }
     if (message.type === "context.update") {
       if (
         session.interfaceContext &&
@@ -1029,12 +1281,9 @@ export function createRealtimeRelay({
         session.tools = tools.filter(({ name }) =>
           FOUNDATIONAL_CAPABILITY_IDS.has(name),
         );
-        send(
-          session.providerSocket,
-          providerSessionUpdate(policy, session.tools),
-        );
+        sendProvider(session, providerSessionUpdate(policy, session.tools));
       }
-      send(session.providerSocket, {
+      sendProvider(session, {
         type: "conversation.item.create",
         item: {
           type: "message",
@@ -1080,6 +1329,10 @@ export function createRealtimeRelay({
       inputReservationId: null,
       inputCommitted: false,
       responseCreated: false,
+      transcriptionTimer: null,
+      responseTimer: null,
+      turnNumber: 0,
+      turnTrace: null,
       openReservations: [],
       pendingCallIds: new Set(),
       pendingCalls: new Map(),
@@ -1119,6 +1372,7 @@ export function createRealtimeRelay({
           maxSessionSeconds: policy.maxSessionSeconds,
           idleSeconds: policy.idleSeconds,
           maxResponses: policy.maxResponses,
+          responseTimeoutSeconds: policy.responseTimeoutSeconds,
         },
       },
     };
@@ -1154,10 +1408,7 @@ export function createRealtimeRelay({
       FOUNDATIONAL_CAPABILITY_IDS.has(name),
     );
     if (session.providerSocket)
-      send(
-        session.providerSocket,
-        providerSessionUpdate(policy, session.tools),
-      );
+      sendProvider(session, providerSessionUpdate(policy, session.tools));
     return session.tools.map(({ name }) => name);
   };
 

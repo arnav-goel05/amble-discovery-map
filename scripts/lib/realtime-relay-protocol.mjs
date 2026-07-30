@@ -8,6 +8,7 @@ const TERMINAL_REASONS = new Set([
   "disabled",
   "usage_limit",
   "provider",
+  "response_timeout",
   "network",
   "protocol",
 ]);
@@ -336,6 +337,8 @@ export function cleanupRelaySession(session, reason = "protocol") {
   } catch {}
   clearTimeout(session?.idleTimer);
   clearTimeout(session?.durationTimer);
+  clearTimeout(session?.transcriptionTimer);
+  clearTimeout(session?.responseTimer);
   if (session) {
     session.state = "stopped";
     session.terminalEvent = { type: "session.stopped", reason: terminalReason };
@@ -358,6 +361,8 @@ export function cleanupRelaySession(session, reason = "protocol") {
     session.abortController = null;
     session.idleTimer = null;
     session.durationTimer = null;
+    session.transcriptionTimer = null;
+    session.responseTimer = null;
   }
   return session;
 }

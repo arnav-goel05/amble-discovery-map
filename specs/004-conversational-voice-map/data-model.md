@@ -19,6 +19,8 @@ on every terminal session path. Map assets are versioned checked-in artifacts, n
 | `intent`                                   | `DiscoveryIntent`  | Memory only                                                                                                                           |
 | `contextRevision`                          | integer            | Monotonic revision of interface context                                                                                               |
 | `pendingConfirmationId`                    | nullable string    | At most one active confirmation                                                                                                       |
+| `responseWatchdog`                         | nullable timer     | Armed only while one provider response is active; cleared on response/session terminal paths                                          |
+| `turnTrace`                                | nullable object    | Content-free current-turn phase/timing state; replaced when the next response is requested                                            |
 
 **Transitions**: `idle → disclosure → connecting → listening`; listening and processing/speaking may
 cycle while limits permit. Any state may enter `degraded` or `stopping`; `stopping → stopped` is
@@ -26,6 +28,42 @@ terminal. `awaiting_confirmation` returns to listening after accept, reject, exp
 context invalidation. Provider, transport, admission, kill-switch, and budget failures transition
 through `stopping → stopped` after publishing the required unavailable presentation; they never
 transition into a local conversational session. A stopped session cannot resume.
+
+## VoiceTurnTrace (memory only plus emitted operational records)
+
+| Field                  | Type           | Rules                                                             |
+| ---------------------- | -------------- | ----------------------------------------------------------------- |
+| `sessionIdHash`        | one-way string | Operational correlation only; raw session ID is never emitted     |
+| `turnNumber`           | integer        | Monotonic within one session                                      |
+| `phase`                | bounded enum   | Approved lifecycle phase or `response_timeout` only               |
+| `phaseStartedAt`       | timestamp      | Server clock                                                      |
+| `elapsedMs`            | integer        | Since `response_requested`, non-negative                          |
+| `sincePreviousPhaseMs` | integer        | Non-negative duration between emitted phases                      |
+| `eventCode`            | nullable enum  | Allowlisted lifecycle code, never a raw provider event or payload |
+| `terminalReason`       | nullable enum  | Public bounded stop reason only                                   |
+
+The emitted record uses an exact allowlist. Audio, transcript text, prompts, tool arguments/results,
+provider bodies, exact location, secrets, and raw session identifiers are structurally impossible.
+Records are minimal reliability logs, not product analytics.
+
+## LocalContentDiagnosticRecord (local process output only)
+
+| Field           | Type           | Rules                                                                   |
+| --------------- | -------------- | ----------------------------------------------------------------------- |
+| `schemaVersion` | exact string   | `1.0`                                                                   |
+| `event`         | exact string   | `voice.content_debug`                                                   |
+| `sessionIdHash` | one-way string | Correlates with phase logs; never the raw session ID                    |
+| `occurredAt`    | timestamp      | Local relay clock                                                       |
+| `direction`     | bounded enum   | Browser/relay/provider boundary direction                               |
+| `eventType`     | bounded string | Sanitized protocol type or `unknown`                                    |
+| `payload`       | JSON value     | Complete permitted message after recursive redaction and audio omission |
+
+This record exists only when the local Node process starts with explicit content-debug activation.
+It is written to that process's standard diagnostic output and has no file, database, cache,
+browser-storage, analytics, or remote-transport sink. Recursive sanitization replaces
+credential/authentication/cookie/token/signing fields, raw session identities, and raw or encoded
+audio before the logger receives the record. Session cleanup makes the record unreachable in
+memory; process exit ends the diagnostic stream.
 
 ## TranscriptItem (memory only)
 
@@ -264,16 +302,18 @@ conflicting replays are protocol violations.
 
 ## VoiceBudgetPolicy (checked-in policy plus D1 singleton)
 
-| Field                                                                 | Type      | Rules                                                                 |
-| --------------------------------------------------------------------- | --------- | --------------------------------------------------------------------- |
-| `policyVersion`                                                       | string    | Pins model, transcription model, rates, and limits                    |
-| `owner`                                                               | string    | `Arnav (project owner)`                                               |
-| `capMicroUsd`                                                         | integer   | Exactly `10_000_000`                                                  |
-| `spentMicroUsd`, `reservedMicroUsd`                                   | integer   | Non-negative; sum never exceeds cap                                   |
-| `enabled`                                                             | boolean   | D1 kill switch, default false until configured                        |
-| `modelId`, `rateCardVersion`                                          | string    | `gpt-realtime-2.1-mini` and its exact reviewed rate card; no fallback |
-| `maxSessionSeconds`, `idleSeconds`, `maxResponses`, `maxOutputTokens` | integer   | Server-enforced bounds                                                |
-| `updatedAt`                                                           | timestamp | Operational state only                                                |
+| Field                                              | Type      | Rules                                                                                                           |
+| -------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------- |
+| `policyVersion`                                    | string    | Pins model, transcription model, rates, and limits                                                              |
+| `owner`                                            | string    | `Arnav (project owner)`                                                                                         |
+| `capMicroUsd`                                      | integer   | Exactly `10_000_000`                                                                                            |
+| `spentMicroUsd`, `reservedMicroUsd`                | integer   | Non-negative; sum never exceeds cap                                                                             |
+| `enabled`                                          | boolean   | D1 kill switch, default false until configured                                                                  |
+| `modelId`, `rateCardVersion`                       | string    | `gpt-realtime-2.1-mini` and its exact reviewed rate card; no fallback                                           |
+| `maxSessionSeconds`, `idleSeconds`, `maxResponses` | integer   | Server-enforced lifecycle bounds                                                                                |
+| `responseTimeoutSeconds`                           | integer   | Exactly 30 in the first release; independent of idle/session/token limits                                       |
+| `providerMaxOutputTokens`                          | integer   | Provider intrinsic maximum used only for worst-case cost reservation; never transmitted as a generation ceiling |
+| `updatedAt`                                        | timestamp | Operational state only                                                                                          |
 
 ## VoiceBudgetReservation (persisted, no conversation content)
 

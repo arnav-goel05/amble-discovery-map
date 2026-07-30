@@ -83,7 +83,8 @@
 - **In scope**: [User-visible capabilities and operational behavior included]
 - **Out of scope**: [Adjacent capabilities explicitly excluded]
 - **Evidence and dependencies**: [Authoritative sources, free/open constraints or an explicitly approved constitutional exception, and fallback behavior]
-- **Privacy and lifecycle**: [Anonymous use, retention, expiry, and deletion behavior]
+- **Privacy and lifecycle**: [Anonymous use, retention, expiry, deletion behavior, operational
+  logging fields, and any explicitly approved local-only diagnostic boundary]
 - **Experience**: [Supported devices/browsers and relevant interaction guidance]
 
 ## Requirements _(mandatory)_
