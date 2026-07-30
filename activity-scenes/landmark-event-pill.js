@@ -5,6 +5,7 @@ import {
   eventIdentity,
 } from "./events/event-discovery-model.js";
 import { eventLocationLabel } from "./events/event-location-label.js";
+import { createLandmarkEventClusterLayer } from "./landmark-event-clusters.js";
 import { LANDMARK_PILL_MIN_ZOOM } from "./map-location-focus.js";
 
 const DEFAULT_ROTATION_MS = 3000;
@@ -148,11 +149,7 @@ function renderState(state) {
   location.hidden = !event.locationLabel;
 }
 
-function updatePosition(map, state, minZoom, onHidden) {
-  const point = map.project([
-    state.landmark.anchor.lng,
-    state.landmark.anchor.lat,
-  ]);
+function updatePosition(map, state, minZoom, onHidden, point) {
   const cardWidth = state.cardWidth || state.root.offsetWidth;
   const edgePadding = 18;
   const minCardCenter = edgePadding + cardWidth / 2;
@@ -203,6 +200,7 @@ export function createLandmarkEventPillLayer({
   rotationMs = DEFAULT_ROTATION_MS,
 }) {
   const states = [];
+  const clusterLayer = createLandmarkEventClusterLayer({ map, minZoom });
   let positionFrame = null;
   let positionFallback = null;
   let rotationTimer = null;
@@ -229,12 +227,51 @@ export function createLandmarkEventPillLayer({
       Number(body.dataset.landmarkEventPillPositionUpdateCount || 0) +
         states.length,
     );
+    body.dataset.landmarkEventClusterPositionPassCount = String(
+      Number(body.dataset.landmarkEventClusterPositionPassCount || 0) + 1,
+    );
   };
 
   const updateAllPositions = () => {
-    if (!states.length) return;
+    if (!states.length) {
+      clusterLayer.reconcile([]);
+      return;
+    }
     recordPositionPass();
-    for (const state of states) updatePosition(map, state, minZoom, onHidden);
+    const currentZoom = Number(map.getZoom?.());
+    const clusterLocations = [];
+    for (const state of states) {
+      const point = map.project([
+        state.landmark.anchor.lng,
+        state.landmark.anchor.lat,
+      ]);
+      updatePosition(map, state, minZoom, onHidden, point);
+      const isNavigationTarget = state.root.classList.contains(
+        "is-navigation-target",
+      );
+      const isInViewport =
+        point.x >= -VIEWPORT_MARGIN &&
+        point.x <= window.innerWidth + VIEWPORT_MARGIN &&
+        point.y >= -VIEWPORT_MARGIN &&
+        point.y <= window.innerHeight + VIEWPORT_MARGIN;
+      if (
+        currentZoom < minZoom &&
+        state.matchesSearch &&
+        !isNavigationTarget &&
+        isInViewport
+      ) {
+        clusterLocations.push({
+          id: state.landmark.id,
+          label: state.landmark.label,
+          lat: state.landmark.anchor.lat,
+          lng: state.landmark.anchor.lng,
+          x: point.x,
+          y: point.y,
+        });
+      }
+    }
+    clusterLayer.reconcile(clusterLocations);
+    scheduleRotation();
   };
 
   function schedulePositionUpdate() {
@@ -259,6 +296,7 @@ export function createLandmarkEventPillLayer({
     let rendered = false;
     for (const state of states) {
       if (
+        !state.isVisible ||
         state.visibleEventIndices.length < 2 ||
         now - state.lastRotationAt < rotationMs
       )
@@ -281,7 +319,7 @@ export function createLandmarkEventPillLayer({
   function scheduleRotation() {
     if (rotationTimer !== null) clearTimeout(rotationTimer);
     const rotatingStates = states.filter(
-      (state) => state.visibleEventIndices.length > 1,
+      (state) => state.isVisible && state.visibleEventIndices.length > 1,
     );
     if (!rotatingStates.length) {
       rotationTimer = null;
@@ -334,6 +372,7 @@ export function createLandmarkEventPillLayer({
       trigger: state.card,
     });
     state.root.remove();
+    updateAllPositions();
     scheduleRotation();
     return true;
   };
@@ -393,7 +432,7 @@ export function createLandmarkEventPillLayer({
     state.cardWidth = root.offsetWidth;
     resizeObserver?.observe(root);
     renderState(state);
-    updatePosition(map, state, minZoom, onHidden);
+    updateAllPositions();
     scheduleRotation();
     return root;
   };
@@ -430,7 +469,7 @@ export function createLandmarkEventPillLayer({
       `Open ${landmark.label} event details`,
     );
     renderState(existing);
-    updatePosition(map, existing, minZoom, onHidden);
+    updateAllPositions();
     scheduleRotation();
     onEventsChanged?.({
       landmark,
@@ -567,6 +606,7 @@ export function createLandmarkEventPillLayer({
       map.off?.(eventName, schedulePositionUpdate);
     window.removeEventListener("resize", schedulePositionUpdate);
     resizeObserver?.disconnect();
+    clusterLayer.destroy();
     for (const state of states) state.root.remove();
     states.length = 0;
   };

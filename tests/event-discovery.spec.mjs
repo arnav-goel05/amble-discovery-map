@@ -774,6 +774,36 @@ test("anonymous startup renders one compact full-title pill and tracks its map a
   await page.evaluate(() => window._map?.remove()).catch(() => {});
 });
 
+test("zoomed-out discovery counts lead toward event pills", async ({
+  page,
+}) => {
+  await page.goto("/?autoStart#10/1.3521/103.8198/0/45");
+  const counts = page.locator(".landmark-event-cluster__count");
+  await expect.poll(() => counts.count()).toBeGreaterThan(0);
+  await expect(
+    page.locator(".landmark-event-pill:not(.is-hidden)"),
+  ).toHaveCount(0);
+
+  const beforeZoom = await page.evaluate(() => window._map.getZoom());
+  await counts.first().click();
+  await expect
+    .poll(() => page.evaluate(() => window._map.getZoom()))
+    .toBeGreaterThan(beforeZoom);
+
+  await page.evaluate(() =>
+    window._map.jumpTo({
+      center: [103.8579, 1.2858],
+      zoom: 17,
+    }),
+  );
+  await expect(counts).toHaveCount(0);
+  await expect(page.locator("#fixture-hall-event-pill")).toHaveAttribute(
+    "aria-hidden",
+    "false",
+  );
+  await page.evaluate(() => window._map?.remove()).catch(() => {});
+});
+
 test("a multi-location activity is labelled at each mapped venue", async ({
   page,
 }) => {

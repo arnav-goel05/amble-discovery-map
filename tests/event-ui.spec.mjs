@@ -1210,7 +1210,7 @@ test("pill and direction positioning stay idle until the map changes", async ({
       listeners.get(name)?.forEach((listener) => listener());
     const map = {
       getCanvas: () => document.getElementById("map-focus"),
-      getZoom: () => 17,
+      getZoom: () => 15,
       on,
       off,
       project: ([lng]) =>
@@ -1241,6 +1241,9 @@ test("pill and direction positioning stay idle until the map changes", async ({
       direction: Number(
         document.body.dataset.landmarkDirectionUpdateCount || 0,
       ),
+      clusterPasses: Number(
+        document.body.dataset.landmarkEventClusterPositionPassCount || 0,
+      ),
       pillPasses: Number(
         document.body.dataset.landmarkEventPillPositionPassCount || 0,
       ),
@@ -1252,6 +1255,7 @@ test("pill and direction positioning stay idle until the map changes", async ({
       const currentCounts = readCounts();
       stableTicks =
         currentCounts.direction === previousCounts.direction &&
+        currentCounts.clusterPasses === previousCounts.clusterPasses &&
         currentCounts.pillPasses === previousCounts.pillPasses
           ? stableTicks + 1
           : 0;
@@ -1267,6 +1271,7 @@ test("pill and direction positioning stay idle until the map changes", async ({
       const currentCounts = readCounts();
       if (
         currentCounts.direction > afterIdle.direction &&
+        currentCounts.clusterPasses > afterIdle.clusterPasses &&
         currentCounts.pillPasses > afterIdle.pillPasses
       )
         break;
@@ -1276,15 +1281,20 @@ test("pill and direction positioning stay idle until the map changes", async ({
     pills.destroy();
     direction.destroy();
     return {
+      idleClusterPasses: afterIdle.clusterPasses - beforeIdle.clusterPasses,
       idleDirectionUpdates: afterIdle.direction - beforeIdle.direction,
       idlePillPasses: afterIdle.pillPasses - beforeIdle.pillPasses,
+      movementClusterPasses:
+        afterMovement.clusterPasses - afterIdle.clusterPasses,
       movementDirectionUpdates: afterMovement.direction - afterIdle.direction,
       movementPillPasses: afterMovement.pillPasses - afterIdle.pillPasses,
     };
   });
   expect(result).toEqual({
+    idleClusterPasses: 0,
     idleDirectionUpdates: 0,
     idlePillPasses: 0,
+    movementClusterPasses: 1,
     movementDirectionUpdates: 1,
     movementPillPasses: 1,
   });
@@ -1387,6 +1397,240 @@ test("hidden pills cannot be selected with a pointer", async ({ page }) => {
     .toBe(0);
 
   await page.evaluate(() => window.__hiddenPillLayer.destroy());
+});
+
+test("zoomed-out event locations reconcile into filtered cluster counts before pills", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const state = await page.evaluate(async () => {
+    const { createLandmarkEventPillLayer } =
+      await import("/activity-scenes/landmark-event-pill.js");
+    let zoom = 15;
+    const listeners = new Map();
+    const map = {
+      easeTo: () => {},
+      getCanvas: () => document.getElementById("map-focus"),
+      getZoom: () => zoom,
+      on: (name, listener) => listeners.set(name, listener),
+      off: (name) => listeners.delete(name),
+      project: ([lng, lat]) => ({ x: lng, y: lat }),
+    };
+    const layer = createLandmarkEventPillLayer({ map, panelId: "panel" });
+    for (const item of [
+      {
+        landmark: {
+          id: "alpha-cluster",
+          label: "Alpha Hall",
+          anchor: { lng: 100, lat: 220 },
+        },
+        sourceEvents: [
+          {
+            id: "alpha-event",
+            title: "Alpha Night",
+            dateText: "12 Jul 2026",
+          },
+        ],
+      },
+      {
+        landmark: {
+          id: "bravo-cluster",
+          label: "Bravo Hall",
+          anchor: { lng: 145, lat: 220 },
+        },
+        sourceEvents: [
+          {
+            id: "bravo-event",
+            title: "Bravo Night",
+            dateText: "13 Jul 2026",
+          },
+        ],
+      },
+      {
+        landmark: {
+          id: "charlie-cluster",
+          label: "Charlie Hall",
+          anchor: { lng: 300, lat: 220 },
+        },
+        sourceEvents: [
+          {
+            id: "charlie-event",
+            title: "Charlie Night",
+            dateText: "14 Jul 2026",
+          },
+        ],
+      },
+    ]) {
+      layer.add(item);
+    }
+
+    const snapshot = () => ({
+      clusterAriaLabels: [
+        ...document.querySelectorAll(".landmark-event-cluster__count"),
+      ].map((element) => element.getAttribute("aria-label")),
+      clusterCounts: [
+        ...document.querySelectorAll(".landmark-event-cluster__count"),
+      ]
+        .map((element) => Number(element.textContent))
+        .sort((left, right) => right - left),
+      clusterMembers: [...document.querySelectorAll(".landmark-event-cluster")]
+        .map((element) => element.dataset.clusterMembers)
+        .sort(),
+      pillVisibility: [
+        ...document.querySelectorAll(".landmark-event-pill"),
+      ].map((element) => element.getAttribute("aria-hidden")),
+    });
+
+    const overview = snapshot();
+    layer.setSearchQuery("Alpha");
+    const filtered = snapshot();
+    layer.setSearchQuery("");
+    layer.setNavigationTarget("alpha-cluster");
+    const navigationTarget = snapshot();
+    layer.setNavigationTarget(null);
+    zoom = 17;
+    listeners.get("zoom")?.();
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    const detail = snapshot();
+    zoom = 15;
+    listeners.get("zoom")?.();
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    const overviewAgain = snapshot();
+    layer.setSearchQuery("No matching event");
+    const empty = snapshot();
+    layer.destroy();
+    const destroyedClusterCount = document.querySelectorAll(
+      ".landmark-event-cluster",
+    ).length;
+
+    return {
+      destroyedClusterCount,
+      detail,
+      empty,
+      filtered,
+      navigationTarget,
+      overview,
+      overviewAgain,
+    };
+  });
+
+  expect(state.overview.clusterCounts).toEqual([2, 1]);
+  expect(state.overview.clusterMembers).toEqual([
+    "alpha-cluster,bravo-cluster",
+    "charlie-cluster",
+  ]);
+  expect(state.overview.clusterAriaLabels).toEqual(
+    expect.arrayContaining([
+      "Zoom in to explore 2 event locations",
+      "Zoom in to explore Charlie Hall event location",
+    ]),
+  );
+  expect(state.overview.pillVisibility).toEqual(["true", "true", "true"]);
+  expect(state.filtered.clusterCounts).toEqual([1]);
+  expect(state.filtered.clusterMembers).toEqual(["alpha-cluster"]);
+  expect(state.navigationTarget.clusterCounts).toEqual([1, 1]);
+  expect(state.navigationTarget.clusterMembers).not.toContain("alpha-cluster");
+  expect(state.navigationTarget.pillVisibility).toEqual([
+    "false",
+    "true",
+    "true",
+  ]);
+  expect(state.detail.clusterCounts).toEqual([]);
+  expect(state.detail.pillVisibility).toEqual(["false", "false", "false"]);
+  expect(state.overviewAgain.clusterCounts).toEqual([2, 1]);
+  expect(state.empty.clusterCounts).toEqual([]);
+  expect(state.empty.pillVisibility).toEqual(["true", "true", "true"]);
+  expect(state.destroyedClusterCount).toBe(0);
+});
+
+test("event cluster counts navigate with pointer and keyboard activation", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  await page.evaluate(async () => {
+    const { createLandmarkEventPillLayer } =
+      await import("/activity-scenes/landmark-event-pill.js");
+    let zoom = 14;
+    const easeCalls = [];
+    const map = {
+      easeTo: (options) => {
+        easeCalls.push(options);
+        zoom = options.zoom;
+      },
+      getCanvas: () => document.getElementById("map-focus"),
+      getZoom: () => zoom,
+      on: () => {},
+      off: () => {},
+      project: ([lng, lat]) => ({ x: lng, y: lat }),
+    };
+    const layer = createLandmarkEventPillLayer({ map, panelId: "panel" });
+    layer.add({
+      landmark: {
+        id: "keyboard-cluster",
+        label: "Keyboard Hall",
+        anchor: { lng: 320, lat: 240 },
+      },
+      sourceEvents: [
+        {
+          id: "keyboard-event",
+          title: "Keyboard Night",
+          dateText: "12 Jul 2026",
+        },
+      ],
+    });
+    layer.add({
+      landmark: {
+        id: "pointer-cluster",
+        label: "Pointer Hall",
+        anchor: { lng: 360, lat: 240 },
+      },
+      sourceEvents: [
+        {
+          id: "pointer-event",
+          title: "Pointer Night",
+          dateText: "13 Jul 2026",
+        },
+      ],
+    });
+    window.__eventClusterTest = {
+      easeCalls,
+      layer,
+      setZoom: (value) => {
+        zoom = value;
+      },
+    };
+  });
+
+  const count = page.locator(".landmark-event-cluster__count");
+  await expect(count).toHaveCount(1);
+  await expect(count).toHaveAttribute(
+    "aria-label",
+    "Zoom in to explore 2 event locations",
+  );
+  await count.click();
+  await count.press("Enter");
+  await count.press("Space");
+  await page.evaluate(() => {
+    window.__eventClusterTest.setZoom(14);
+    window.__eventClusterTest.layer.setSearchQuery("Keyboard");
+  });
+  await expect(count).toHaveAttribute(
+    "aria-label",
+    "Zoom in to explore Keyboard Hall event location",
+  );
+  await count.click();
+  const calls = await page.evaluate(() => window.__eventClusterTest.easeCalls);
+  expect(calls).toEqual([
+    { center: [340, 240], duration: 700, zoom: 16 },
+    { center: [340, 240], duration: 700, zoom: 16.65 },
+    { center: [340, 240], duration: 700, zoom: 16.65 },
+    { center: [320, 240], duration: 700, zoom: 16.65 },
+  ]);
+
+  await count.focus();
+  await expect(count).toBeFocused();
+  await page.evaluate(() => window.__eventClusterTest.layer.destroy());
+  await expect(page.locator("#map-focus")).toBeFocused();
 });
 
 test("pill rotates events every three seconds without a progress indicator", async ({
