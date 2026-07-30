@@ -19,6 +19,7 @@ import { createRuntimeActionDispatcher } from "./activity-scenes/assistant/runti
 import { createDiscoveryAreaLayerManager } from "./map-layers/discovery-area-layers.js";
 import discoveryAreasUrl from "./data/discovery-areas.geojson?url";
 import transitContextUrl from "./data/transit-context.geojson?url";
+import backgroundGeometryRelease from "./data/background-geometry-release.json";
 import { createLocationController } from "./activity-scenes/location/location-controller.js";
 import {
   createLocationModel,
@@ -284,7 +285,7 @@ async function bootstrapApplication() {
   }
   const tilesetUrl =
     injectedSnapshot?.backgroundTilesetUrl ??
-    "optimized-tiles/tileset.json?assetMount=site-root-v1";
+    backgroundGeometryRelease.tilesetUrl;
   const poiTilesetUrl =
     injectedSnapshot?.poiTilesetUrl ??
     activeSnapshot?.metadata.tilesetRef ??
