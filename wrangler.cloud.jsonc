@@ -6,7 +6,7 @@
   "workers_dev": true,
   "preview_urls": false,
   "vars": {
-    "REALTIME_ENABLED": "false",
+    "REALTIME_ENABLED": "true",
   },
   "observability": {
     "enabled": true,
