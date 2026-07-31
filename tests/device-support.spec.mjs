@@ -56,6 +56,7 @@ test("phones stop at the device gate while larger screens enter the application"
     ).toBeVisible();
     await expect(page.locator("#device-gate")).toBeVisible();
     await expect(page.locator("#map")).toHaveCount(0);
+    await expect(page.locator("#map-brand")).toHaveCount(0);
     await expect(page.locator("#experience-intro")).toHaveCount(0);
     expect(
       await page.evaluate(() => ({
@@ -63,8 +64,35 @@ test("phones stop at the device gate while larger screens enter the application"
         applicationRequested: performance
           .getEntriesByType("resource")
           .some(({ name }) => new URL(name).pathname === "/main.js"),
+        gateFitsViewport: (() => {
+          const gate = document
+            .getElementById("device-gate")
+            ?.getBoundingClientRect();
+          return Boolean(
+            gate &&
+            gate.width <= window.innerWidth + 1 &&
+            gate.height <= window.innerHeight + 1,
+          );
+        })(),
+        cardIntersectsViewport: (() => {
+          const card = document
+            .querySelector(".device-gate__card")
+            ?.getBoundingClientRect();
+          return Boolean(
+            card &&
+            card.bottom > 0 &&
+            card.top < window.innerHeight &&
+            card.right > 0 &&
+            card.left < window.innerWidth,
+          );
+        })(),
       })),
-    ).toEqual({ mapCreated: false, applicationRequested: false });
+    ).toEqual({
+      mapCreated: false,
+      applicationRequested: false,
+      gateFitsViewport: true,
+      cardIntersectsViewport: true,
+    });
     return;
   } else {
     await expect(page.locator("body")).toHaveAttribute(
