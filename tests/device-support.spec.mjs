@@ -1,6 +1,6 @@
 import { expect, test } from "playwright/test";
 
-test("phones and larger screens enter the application with capability-based support", async ({
+test("phones stop at the device gate while larger screens enter the application", async ({
   page,
 }, testInfo) => {
   const mobileProject = testInfo.project.name.endsWith("-mobile");
@@ -47,18 +47,25 @@ test("phones and larger screens enter the application with capability-based supp
   if (mobileProject) {
     await expect(page.locator("body")).toHaveAttribute(
       "data-device-support",
-      /supported|degraded/,
+      "unsupported",
     );
-    await expect(page.locator("#device-gate")).toHaveCount(0);
-    await expect(page.locator("#map")).toHaveCount(1);
-    // Playwright has no Firefox Android engine; this project covers only its narrow touch layout.
-    if (testInfo.project.name !== "firefox-mobile") {
-      await expect
-        .poll(() => page.evaluate(() => Boolean(window._map)), {
-          timeout: 15_000,
-        })
-        .toBe(true);
-    }
+    await expect(
+      page.getByRole("heading", {
+        name: "Singapore is waiting on the big screen",
+      }),
+    ).toBeVisible();
+    await expect(page.locator("#device-gate")).toBeVisible();
+    await expect(page.locator("#map")).toHaveCount(0);
+    await expect(page.locator("#experience-intro")).toHaveCount(0);
+    expect(
+      await page.evaluate(() => ({
+        mapCreated: Boolean(window._map),
+        applicationRequested: performance
+          .getEntriesByType("resource")
+          .some(({ name }) => new URL(name).pathname === "/main.js"),
+      })),
+    ).toEqual({ mapCreated: false, applicationRequested: false });
+    return;
   } else {
     await expect(page.locator("body")).toHaveAttribute(
       "data-device-support",

@@ -29,7 +29,7 @@ const supportFor = ({
     },
   });
 
-test("device support allows laptop, desktop, phone, and tablet browsers", () => {
+test("device support allows laptop and desktop browsers", () => {
   assert.equal(MINIMUM_SUPPORTED_SCREEN_EDGE, 1024);
   assert.equal(
     supportFor({
@@ -49,6 +49,9 @@ test("device support allows laptop, desktop, phone, and tablet browsers", () => 
     }).supported,
     true,
   );
+});
+
+test("device support blocks phones, tablets, and undersized screens", () => {
   assert.equal(
     supportFor({
       width: 430,
@@ -56,7 +59,16 @@ test("device support allows laptop, desktop, phone, and tablet browsers", () => 
       userAgent: "Mozilla/5.0 iPhone",
       mobile: true,
     }).supported,
-    true,
+    false,
+  );
+  assert.equal(
+    supportFor({
+      width: 1280,
+      height: 800,
+      userAgent: "Mozilla/5.0 Android",
+      mobile: false,
+    }).supported,
+    false,
   );
   assert.equal(
     supportFor({
@@ -66,16 +78,25 @@ test("device support allows laptop, desktop, phone, and tablet browsers", () => 
       mobile: false,
       maxTouchPoints: 5,
     }).supported,
-    true,
+    false,
+  );
+  assert.equal(
+    supportFor({
+      width: 900,
+      height: 700,
+      userAgent: "Mozilla/5.0 Linux",
+      mobile: false,
+    }).supported,
+    false,
   );
 });
 
-test("missing voice capabilities degrades to text and direct controls instead of blocking the app", () => {
+test("missing voice capabilities degrades a supported desktop to direct controls", () => {
   const degraded = supportFor({
-    width: 430,
-    height: 932,
-    userAgent: "Mozilla/5.0 iPhone",
-    mobile: true,
+    width: 1440,
+    height: 900,
+    userAgent: "Mozilla/5.0 Macintosh Chrome",
+    mobile: false,
     media: false,
   });
   assert.equal(degraded.supported, true);
@@ -89,8 +110,8 @@ test("missing voice capabilities degrades to text and direct controls instead of
 
 test("missing realtime transport preserves direct mode and identifies the missing capability", () => {
   const degraded = supportFor({
-    width: 900,
-    height: 700,
+    width: 1440,
+    height: 900,
     userAgent: "Mozilla/5.0 Linux",
     mobile: false,
     socket: false,
