@@ -12,7 +12,7 @@
 
 **Purpose**: Preserve comparable pre-change evidence.
 
-- [X] T001 Record the existing movement value and latest benchmark metrics in `specs/010-coarsen-moving-buildings/validation.md`
+- [x] T001 Record the existing movement value and latest benchmark metrics in `specs/010-coarsen-moving-buildings/validation.md`
 
 ---
 
@@ -24,12 +24,12 @@
 
 ### Tests for User Story 1
 
-- [X] T002 [US1] Update the direct movement/refinement expectation in `tests/map-render-sync.spec.mjs` and confirm it fails before implementation
+- [x] T002 [US1] Update the direct movement/refinement expectation in `tests/map-render-sync.spec.mjs` and confirm it fails before implementation
 
 ### Implementation for User Story 1
 
-- [X] T003 [US1] Change only the movement screen-space error from 12 to 24 in `map-layers/building-highlight-layers.js`
-- [X] T004 [US1] Run the focused lifecycle test, Chromium map synchronization test, production build, and real-browser loading check from `specs/010-coarsen-moving-buildings/quickstart.md`
+- [x] T003 [US1] Change only the movement screen-space error from 12 to 24 in `map-layers/building-highlight-layers.js`
+- [x] T004 [US1] Run the focused lifecycle test, Chromium map synchronization test, production build, and real-browser loading check from `specs/010-coarsen-moving-buildings/quickstart.md`
 
 ---
 
@@ -37,8 +37,8 @@
 
 **Purpose**: Prove the movement-only adjustment remains safe and measurable.
 
-- [X] T005 Run `npm run benchmark:release`, record post-change metrics in `specs/010-coarsen-moving-buildings/validation.md`, and verify every configured budget passes
-- [X] T006 Review the final diff and confirm no application behavior outside `map-layers/building-highlight-layers.js` and its direct test changed
+- [x] T005 Run `npm run benchmark:release`, record post-change metrics in `specs/010-coarsen-moving-buildings/validation.md`, and verify every configured budget passes
+- [x] T006 Review the final diff and confirm no application behavior outside `map-layers/building-highlight-layers.js` and its direct test changed
 
 ## Dependencies & Execution Order
 

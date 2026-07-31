@@ -14,7 +14,10 @@ import { inspectB3dm } from "../scripts/inspect-3d-tile-assets.mjs";
 const config = validateVariantConfig(
   JSON.parse(
     await readFile(
-      new URL("../config/map-performance-diagnostic-variants.json", import.meta.url),
+      new URL(
+        "../config/map-performance-diagnostic-variants.json",
+        import.meta.url,
+      ),
       "utf8",
     ),
   ),
@@ -22,7 +25,10 @@ const config = validateVariantConfig(
 
 test("diagnostic variants are versioned, unique, and allowlisted", () => {
   assert.equal(config.schemaVersion, 1);
-  assert.equal(new Set(config.variants.map(({ id }) => id)).size, config.variants.length);
+  assert.equal(
+    new Set(config.variants.map(({ id }) => id)).size,
+    config.variants.length,
+  );
   assert.throws(() =>
     validateVariantConfig({
       schemaVersion: 1,
@@ -60,8 +66,14 @@ test("CPU profiles are reduced to bounded self-time attribution", () => {
   const summary = summarizeCpuProfile(
     {
       nodes: [
-        { id: 1, callFrame: { functionName: "slow", url: "app.js", lineNumber: 4 } },
-        { id: 2, callFrame: { functionName: "fast", url: "app.js", lineNumber: 8 } },
+        {
+          id: 1,
+          callFrame: { functionName: "slow", url: "app.js", lineNumber: 4 },
+        },
+        {
+          id: 2,
+          callFrame: { functionName: "fast", url: "app.js", lineNumber: 8 },
+        },
       ],
       samples: [1, 2, 1],
       timeDeltas: [5_000, 1_000, 7_000],
@@ -161,9 +173,7 @@ test("B3DM inspection attributes geometry and texture payloads", () => {
     bufferViews: [{ buffer: 0, byteOffset: 0, byteLength: png.length }],
     accessors: [{ count: 9 }, { count: 9 }],
     images: [{ bufferView: 0, mimeType: "image/tiff" }],
-    meshes: [
-      { primitives: [{ attributes: { POSITION: 0 }, indices: 1 }] },
-    ],
+    meshes: [{ primitives: [{ attributes: { POSITION: 0 }, indices: 1 }] }],
     extensionsUsed: ["KHR_draco_mesh_compression"],
   };
   const jsonBytes = Buffer.from(JSON.stringify(gltf));
@@ -171,8 +181,7 @@ test("B3DM inspection attributes geometry and texture payloads", () => {
   const jsonChunk = Buffer.concat([jsonBytes, jsonPadding]);
   const binaryPadding = Buffer.alloc((4 - (png.length % 4)) % 4);
   const binaryChunk = Buffer.concat([png, binaryPadding]);
-  const glbLength =
-    12 + 8 + jsonChunk.length + 8 + binaryChunk.length;
+  const glbLength = 12 + 8 + jsonChunk.length + 8 + binaryChunk.length;
   const glb = Buffer.alloc(glbLength);
   glb.write("glTF", 0);
   glb.writeUInt32LE(2, 4);

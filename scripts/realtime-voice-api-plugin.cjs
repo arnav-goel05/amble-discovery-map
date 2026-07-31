@@ -11,6 +11,9 @@ const {
 const {
   createLocalVoiceBudgetRepository,
 } = require("./lib/voice-budget-repository.cjs");
+const {
+  createRealtimeContentAuditLogger,
+} = require("./lib/realtime-content-audit.cjs");
 
 const SESSION_PATH = "/api/voice/sessions";
 const STREAM_PATH = /^\/api\/voice\/sessions\/([^/]+)\/stream$/;
@@ -42,11 +45,19 @@ function createLocalRelayOptions({
   approvedCandidates,
   operationalLogger,
   contentDebugLogger,
+  contentAuditLogger,
 }) {
   const contentDebugEnabled =
     runtimeMode === "development" &&
     environment.NODE_ENV === "development" &&
     environment.REALTIME_CONTENT_DEBUG === "true";
+  const contentAuditEnabled =
+    contentDebugEnabled && environment.REALTIME_CONTENT_AUDIT === "true";
+  const processContentLogger =
+    contentDebugLogger ??
+    ((record) => {
+      console.debug(JSON.stringify(record));
+    });
   return {
     policy,
     budgetRepository: repository,
@@ -59,11 +70,12 @@ function createLocalRelayOptions({
       }),
     ...(contentDebugEnabled
       ? {
-          contentDebugLogger:
-            contentDebugLogger ??
-            ((record) => {
-              console.debug(JSON.stringify(record));
-            }),
+          contentDebugLogger: contentAuditEnabled
+            ? (record) => {
+                processContentLogger(record);
+                contentAuditLogger?.(record);
+              }
+            : processContentLogger,
         }
       : {}),
     ...(capabilityContracts ? { capabilityContracts } : {}),
@@ -84,6 +96,7 @@ function realtimeVoiceApiPlugin({
   approvedCandidates,
   operationalLogger,
   contentDebugLogger,
+  contentAuditLogger,
 } = {}) {
   const policy = JSON.parse(
     fs.readFileSync(path.join(root, "data/realtime-voice-policy.json"), "utf8"),
@@ -97,10 +110,22 @@ function realtimeVoiceApiPlugin({
   });
   let relayPromise;
   let runtimeMode = "unconfigured";
+  let localContentAuditLogger;
   const relay = () =>
     (relayPromise ??= import("../cloudflare/realtime-relay.mjs").then(
-      ({ createRealtimeRelay }) =>
-        createRealtimeRelay(
+      ({ createRealtimeRelay }) => {
+        const contentAuditEnabled =
+          runtimeMode === "development" &&
+          environment.NODE_ENV === "development" &&
+          environment.REALTIME_CONTENT_DEBUG === "true" &&
+          environment.REALTIME_CONTENT_AUDIT === "true";
+        if (contentAuditEnabled && !localContentAuditLogger)
+          localContentAuditLogger =
+            contentAuditLogger ??
+            createRealtimeContentAuditLogger({
+              root,
+            });
+        return createRealtimeRelay(
           createLocalRelayOptions({
             policy,
             repository,
@@ -113,8 +138,10 @@ function realtimeVoiceApiPlugin({
             approvedCandidates,
             operationalLogger,
             contentDebugLogger,
+            contentAuditLogger: localContentAuditLogger,
           }),
-        ),
+        );
+      },
     ));
 
   const requestOrigin = (request) => {
@@ -216,8 +243,12 @@ function realtimeVoiceApiPlugin({
           socket,
           head,
           (browserSocket) => {
+            const sessionId = decodeURIComponent(match[1]);
+            browserSocket.on("error", () => {
+              void activeRelay.stop(sessionId, "network");
+            });
             activeRelay
-              .attach(decodeURIComponent(match[1]), browserSocket)
+              .attach(sessionId, browserSocket)
               .catch(() => browserSocket.close(1011, "Voice unavailable"));
           },
         );

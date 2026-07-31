@@ -3,7 +3,6 @@ import test from "node:test";
 
 import {
   ConversationModelError,
-  conversationLimitReason,
   createConversationSession,
   reconcileTranscriptItem,
   stopConversationSession,
@@ -68,7 +67,7 @@ test("transcript deltas reconcile by item identity and finals replace partial te
   );
 });
 
-test("assistant identity is stable across partial/final reconciliation and counts one response", () => {
+test("assistant identity is stable across partial/final reconciliation without limiting responses", () => {
   let session = listeningSession();
   session = reconcileTranscriptItem(session, {
     type: "assistant.text.delta",
@@ -87,7 +86,7 @@ test("assistant identity is stable across partial/final reconciliation and count
   });
   assert.equal(session.transcriptItems.length, 1);
   assert.equal(session.transcriptItems[0].modality, "text");
-  assert.equal(session.responseCount, 1);
+  assert.equal("responseCount" in session, false);
   assert.throws(
     () =>
       reconcileTranscriptItem(session, {
@@ -117,38 +116,26 @@ test("conversation lifecycle permits documented cycles and rejects terminal resu
   );
 });
 
-test("idle, duration, and response limits are deterministic", () => {
-  const idle = listeningSession({
-    idleSeconds: 10,
-    maxSessionSeconds: 30,
-    maxResponses: 2,
-  });
-  assert.equal(conversationLimitReason(idle, { now: at(9) }), null);
-  assert.equal(conversationLimitReason(idle, { now: at(10) }), "idle");
-  assert.equal(conversationLimitReason(idle, { now: at(30) }), "duration");
-
-  let responses = reconcileTranscriptItem(
-    idle,
-    { type: "assistant.text.done", itemId: "a-1", text: "One" },
-    { now: at(1) },
-  );
-  responses = reconcileTranscriptItem(
-    responses,
-    { type: "assistant.text.done", itemId: "a-2", text: "Two" },
-    { now: at(1) },
-  );
+test("conversation remains active across former idle, duration, and response thresholds", () => {
+  let session = listeningSession();
+  for (let index = 1; index <= 7; index += 1)
+    session = reconcileTranscriptItem(
+      session,
+      {
+        type: "assistant.text.done",
+        itemId: `assistant-${index}`,
+        text: `Response ${index}`,
+      },
+      { now: at(Math.min(index, 59)) },
+    );
+  assert.equal(session.state, "listening");
+  assert.equal("expiresAt" in session, false);
+  assert.equal("responseCount" in session, false);
   assert.equal(
-    conversationLimitReason(responses, { now: at(1) }),
-    "response_limit",
-  );
-  assert.throws(
-    () =>
-      reconcileTranscriptItem(
-        responses,
-        { type: "assistant.text.done", itemId: "a-3", text: "Three" },
-        { now: at(2) },
-      ),
-    (error) => error.code === "response_limit",
+    transitionConversationSession(session, "processing", {
+      now: new Date(Date.UTC(2026, 6, 19, 12, 0, 0)),
+    }).state,
+    "processing",
   );
 });
 

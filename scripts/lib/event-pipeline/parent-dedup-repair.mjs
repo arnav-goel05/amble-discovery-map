@@ -41,7 +41,11 @@ function existingStage(root, snapshotId, sourceSnapshotId) {
   };
 }
 
-function repairLandmarks(activeLandmarks, internalActivities, publicActivities) {
+function repairLandmarks(
+  activeLandmarks,
+  internalActivities,
+  publicActivities,
+) {
   const activitiesByLandmark = new Map();
   for (const activity of internalActivities.records)
     for (const group of activity.venueGroups ?? []) {
@@ -59,9 +63,9 @@ function repairLandmarks(activeLandmarks, internalActivities, publicActivities) 
     const { activityRefs: _activityRefs, ...base } = landmark;
     return {
       ...base,
-      events: [
-        ...new Set(activitiesByLandmark.get(landmark.id) ?? []),
-      ].map((activityId) => ({ activityId })),
+      events: [...new Set(activitiesByLandmark.get(landmark.id) ?? [])].map(
+        (activityId) => ({ activityId }),
+      ),
     };
   });
   return projectPublicLandmarks(referenced, publicActivities);
@@ -74,8 +78,7 @@ export function repairParentDedupSnapshot({
 } = {}) {
   const active = loadApprovedSnapshot({ root });
   const activeManifest = read(path.join(active.directory, "manifest.json"));
-  const priorRepair =
-    activeManifest.eventPipelineProvenance?.parentDedupRepair;
+  const priorRepair = activeManifest.eventPipelineProvenance?.parentDedupRepair;
   if (priorRepair?.version === REPAIR_VERSION)
     return {
       complete: true,
@@ -89,9 +92,7 @@ export function repairParentDedupSnapshot({
   if (!active.internalEventsRef || !active.activitiesRef)
     throw new Error("parent_dedup_repair_requires_activity_snapshot");
 
-  const internal = read(
-    path.join(active.directory, active.internalEventsRef),
-  );
+  const internal = read(path.join(active.directory, active.internalEventsRef));
   const activeLandmarks = read(
     path.join(active.directory, active.landmarksRef),
   );

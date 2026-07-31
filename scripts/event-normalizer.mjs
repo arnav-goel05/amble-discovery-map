@@ -313,9 +313,7 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
         availability: performance.availability ?? record.availability,
         accessRestriction:
           performance.accessRestriction ?? record.accessRestriction,
-        venueKey: isStructuralVenueLabel(
-          performance.venue ?? record.venue,
-        )
+        venueKey: isStructuralVenueLabel(performance.venue ?? record.venue)
           ? (performance.address ?? record.address ?? null)
           : (performance.venue ?? record.venue),
       },
@@ -949,7 +947,10 @@ export function normalizeRun({
     "normalized/invalid.json",
     "normalized/dedup-decisions.json",
   ];
-  atomicJson(join(runDir, "normalized/events.json"), envelope(run.runId, null, events));
+  atomicJson(
+    join(runDir, "normalized/events.json"),
+    envelope(run.runId, null, events),
+  );
   atomicJson(
     join(runDir, "normalized/activities.json"),
     activityProjection.activities,
@@ -1000,8 +1001,7 @@ export function normalizeRun({
         activityProjection.parentGrouping.counts.candidates,
       parentGroupingMerges:
         activityProjection.parentGrouping.counts.mergedParents,
-      parentGroupingReviews:
-        activityProjection.parentGrouping.counts.reviews,
+      parentGroupingReviews: activityProjection.parentGrouping.counts.reviews,
     },
     venueBranches: [...venues.values()],
     sourceAccounting,

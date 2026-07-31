@@ -39,12 +39,18 @@ if (!existsSync(eventsPath))
 const artifact = readJson(eventsPath);
 const records = Array.isArray(artifact) ? artifact : artifact.records;
 if (!Array.isArray(records))
-  throw new Error("The event artifact must be an array or contain a records array.");
+  throw new Error(
+    "The event artifact must be an array or contain a records array.",
+  );
 
 let run = {};
 const runPath = join(runRoot, "run.json");
 if (existsSync(runPath)) run = readJson(runPath);
-const asOf = option("--as-of") ?? run.window?.start ?? run.createdAt ?? new Date().toISOString();
+const asOf =
+  option("--as-of") ??
+  run.window?.start ??
+  run.createdAt ??
+  new Date().toISOString();
 const futureHorizonYears = Number(option("--future-years") ?? 3);
 const maximumDurationDays = Number(option("--maximum-duration-days") ?? 730);
 if (!Number.isFinite(futureHorizonYears) || futureHorizonYears <= 0)

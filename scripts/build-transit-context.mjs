@@ -323,8 +323,7 @@ function popHeap(heap) {
       const right = left + 1;
       if (left >= heap.length) break;
       const child =
-        right < heap.length &&
-        heap[right].distance < heap[left].distance
+        right < heap.length && heap[right].distance < heap[left].distance
           ? right
           : left;
       if (heap[child].distance >= last.distance) break;
@@ -389,10 +388,7 @@ function catmullRomSegment(previous, start, end, next, subdivisions = 12) {
               4 * end[axis] -
               next[axis]) *
               squared +
-            (-previous[axis] +
-              3 * start[axis] -
-              3 * end[axis] +
-              next[axis]) *
+            (-previous[axis] + 3 * start[axis] - 3 * end[axis] + next[axis]) *
               cubed),
       ),
     );
@@ -646,7 +642,9 @@ function buildLines(
     for (let index = 0; index < ordered.length - 1; index += 1) {
       const start = ordered[index].geometry.coordinates;
       const end = ordered[index + 1].geometry.coordinates;
-      const startNode = nearestByStation.get(ordered[index].properties.stationId);
+      const startNode = nearestByStation.get(
+        ordered[index].properties.stationId,
+      );
       const endNode = nearestByStation.get(
         ordered[index + 1].properties.stationId,
       );
@@ -660,17 +658,11 @@ function buildLines(
         path.distance <= Math.max(0.003, directDistance * 4.5) &&
         path.coordinates.length >= 2;
       if (plausiblePath) {
-        appendCoordinates(coordinates, [
-          start,
-          ...path.coordinates,
-          end,
-        ]);
+        appendCoordinates(coordinates, [start, ...path.coordinates, end]);
         authoritativeSegments += 1;
       } else {
-        const previous =
-          ordered[index - 1]?.geometry.coordinates ?? start;
-        const next =
-          ordered[index + 2]?.geometry.coordinates ?? end;
+        const previous = ordered[index - 1]?.geometry.coordinates ?? start;
+        const next = ordered[index + 2]?.geometry.coordinates ?? end;
         appendCoordinates(
           coordinates,
           catmullRomSegment(previous, start, end, next),

@@ -5,7 +5,8 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 
-const writeJson = (path, value) => writeFileSync(path, `${JSON.stringify(value)}\n`);
+const writeJson = (path, value) =>
+  writeFileSync(path, `${JSON.stringify(value)}\n`);
 
 test("run comparison reads final placements and nested excluded source identities", () => {
   const root = mkdtempSync(join(tmpdir(), "event-comparison-"));
@@ -23,13 +24,24 @@ test("run comparison reads final placements and nested excluded source identitie
       records: [{ sourceName: "Source A", title: "Event" }],
     });
     writeJson(join(root, runId, "normalized", "excluded.json"), {
-      records: runId === "after" ? [{ event: { sourceName: "Source A", title: "Excluded" } }] : [],
+      records:
+        runId === "after"
+          ? [{ event: { sourceName: "Source A", title: "Excluded" } }]
+          : [],
     });
     writeJson(join(snapshotRoot, runId, "events.json"), {
-      mapped: runId === "after" ? [{ sourceName: "Source A", title: "Event" }] : [],
-      offMap: runId === "after"
-        ? [{ sourceName: "Source A", title: "Review", mappingStatus: "pending_review" }]
-        : [],
+      mapped:
+        runId === "after" ? [{ sourceName: "Source A", title: "Event" }] : [],
+      offMap:
+        runId === "after"
+          ? [
+              {
+                sourceName: "Source A",
+                title: "Review",
+                mappingStatus: "pending_review",
+              },
+            ]
+          : [],
     });
     writeJson(join(snapshotRoot, runId, "manifest.json"), {
       schemaVersion: "1.0",
@@ -42,10 +54,14 @@ test("run comparison reads final placements and nested excluded source identitie
     process.execPath,
     [
       "scripts/compare-event-pipeline-runs.mjs",
-      "--before", join(root, "before"),
-      "--after", join(root, "after"),
-      "--snapshot-root", snapshotRoot,
-      "--output", output,
+      "--before",
+      join(root, "before"),
+      "--after",
+      join(root, "after"),
+      "--snapshot-root",
+      snapshotRoot,
+      "--output",
+      output,
     ],
     { cwd: new URL("..", import.meta.url), encoding: "utf8" },
   );

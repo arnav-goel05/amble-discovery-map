@@ -1290,18 +1290,15 @@ test("source detail mappers produce the universal fixture contract", () => {
 });
 
 test("enumerated schedules become exact Singapore sessions instead of date envelopes", () => {
-  const parsed = parseEnumeratedSchedule(
-    "26 Jul & 2 Aug 2026, Sun, 9am",
-  );
+  const parsed = parseEnumeratedSchedule("26 Jul & 2 Aug 2026, Sun, 9am");
   assert.equal(parsed.reasonCode, "enumerated_dates_parsed");
   assert.deepEqual(
     parsed.performances.map((item) => item.startDateTime),
-    [
-      "2026-07-26T09:00:00+08:00",
-      "2026-08-02T09:00:00+08:00",
-    ],
+    ["2026-07-26T09:00:00+08:00", "2026-08-02T09:00:00+08:00"],
   );
-  assert.ok(parsed.performances.every((item) => item.schedule.kind === "exact"));
+  assert.ok(
+    parsed.performances.every((item) => item.schedule.kind === "exact"),
+  );
   assert.equal(strictIsoOffsetTimestamp("26 Jul 2026"), null);
 
   const mapped = mapSisticDetail(
@@ -1319,15 +1316,16 @@ test("enumerated schedules become exact Singapore sessions instead of date envel
   );
   assert.equal(mapped.performances.length, 2);
   assert.deepEqual(mapped.authorityRefs, ["sistic:palacews0826"]);
-  assert.ok(mapped.performances.every((item) => item.schedule.kind === "exact"));
+  assert.ok(
+    mapped.performances.every((item) => item.schedule.kind === "exact"),
+  );
 
   const catchMapped = mapCatchDetail(
     {
       DisplayEventTitle: "Memory Palace",
       Location: "Offsite",
       EventFormat: "Physical",
-      BookingUrl:
-        "https://ticketing.sistic.com.sg/catch/booking/palacews0826",
+      BookingUrl: "https://ticketing.sistic.com.sg/catch/booking/palacews0826",
       LstDateTime: [
         {
           SetDate: "26/Jul/2026",

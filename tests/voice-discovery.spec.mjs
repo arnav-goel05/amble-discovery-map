@@ -125,11 +125,9 @@ async function mockRealtime(page, { initialResult, refinementResult } = {}) {
           sessionId: "session-fixture-001",
           protocolVersion: "1.1",
           streamPath: "/api/voice/sessions/session-fixture-001/stream",
-          expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
           limits: {
-            maxSessionSeconds: 300,
-            idleSeconds: 60,
-            maxResponses: 6,
+            maxResponseStagesPerTurn: 3,
+            responseTimeoutSeconds: 30,
           },
         },
       }),
@@ -516,9 +514,9 @@ test("material ambiguity asks one focused clarification inside the voice flow", 
   await expect(
     clarification.getByRole("button", { name: "Garden walk" }),
   ).toBeVisible();
-  await expect(
-    page.locator('[data-testid="assistant-text-form"]'),
-  ).toHaveCount(0);
+  await expect(page.locator('[data-testid="assistant-text-form"]')).toHaveCount(
+    0,
+  );
   expect(relay.providerUrls).toEqual([]);
 });
 
@@ -544,9 +542,9 @@ test("unsupported discovery returns an honest empty state instead of invented pl
   );
   await expect(page.locator(selectors.empty)).toContainText(/try|refine/i);
   await expect(page.locator(selectors.areaCard)).toHaveCount(0);
-  await expect(
-    page.locator('[data-testid="assistant-text-form"]'),
-  ).toHaveCount(0);
+  await expect(page.locator('[data-testid="assistant-text-form"]')).toHaveCount(
+    0,
+  );
   expect(relay.providerUrls).toEqual([]);
 });
 
@@ -580,9 +578,9 @@ test("provider failure keeps the voice pill retryable without opening a text com
   await expect(page.locator(selectors.error)).toHaveText(
     "Voice service is currently unavailable. Please try again later.",
   );
-  await expect(
-    page.locator('[data-testid="assistant-text-form"]'),
-  ).toHaveCount(0);
+  await expect(page.locator('[data-testid="assistant-text-form"]')).toHaveCount(
+    0,
+  );
   await expect(page.locator("#landmark-event-search-input")).toBeEnabled();
   expect(sessionRequests).toBe(1);
   expect(providerUrls).toEqual([]);

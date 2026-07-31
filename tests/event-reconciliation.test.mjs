@@ -275,10 +275,10 @@ test("landmark updates do not reuse one prior identity for sibling sessions", ()
     ["Theatre"],
   );
 
-  assert.deepEqual(
-    result.landmark.events.map(({ id }) => id).sort(),
-    ["incoming:second", "published:first"],
-  );
+  assert.deepEqual(result.landmark.events.map(({ id }) => id).sort(), [
+    "incoming:second",
+    "published:first",
+  ]);
 });
 
 test("one stable parent preserves sibling sessions and splits only reliable venue-session pairs", () => {

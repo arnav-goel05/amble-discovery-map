@@ -1659,20 +1659,12 @@ test("SISTIC maps official event_date_notes into exact performance times", () =>
   );
   assert.equal(simple.timeText, "7pm");
   assert.deepEqual(
-    simple.performances.map(
-      ({ startDateTime, endDateTime, schedule }) => [
-        startDateTime,
-        endDateTime,
-        schedule.evidenceReasonCode,
-      ],
-    ),
-    [
-      [
-        "2026-10-26T19:00:00+08:00",
-        null,
-        "sistic_event_date_notes_parsed",
-      ],
-    ],
+    simple.performances.map(({ startDateTime, endDateTime, schedule }) => [
+      startDateTime,
+      endDateTime,
+      schedule.evidenceReasonCode,
+    ]),
+    [["2026-10-26T19:00:00+08:00", null, "sistic_event_date_notes_parsed"]],
   );
 
   const multiple = mapSisticDetail(
@@ -1705,7 +1697,10 @@ test("SISTIC maps official event_date_notes into exact performance times", () =>
     "https://www.sistic.com.sg/event-details/comicart1",
     1,
   );
-  assert.equal(range.performances[0].startDateTime, "2026-08-16T14:00:00+08:00");
+  assert.equal(
+    range.performances[0].startDateTime,
+    "2026-08-16T14:00:00+08:00",
+  );
   assert.equal(range.performances[0].endDateTime, "2026-08-16T16:00:00+08:00");
 });
 

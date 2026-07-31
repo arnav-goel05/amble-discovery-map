@@ -1,15 +1,11 @@
 <!--
 Sync Impact Report
-- Version change: 2.5.0 -> 2.6.0
+- Version change: 2.7.0 -> 2.8.0
 - Modified principles:
-  - Testable, Secure Changes: credentials, authorization material, cookies, and raw audio
-    are explicitly prohibited from every diagnostic surface.
-  - Product, Data, and Privacy Constraints: added an owner-approved, explicit,
-    local-development-only content diagnostic exception for Feature 004. It is disabled by
-    default, unavailable in production, non-persistent, session-bounded, and redacted.
-  - Development and Release Workflow: review must reject production content tracing,
-    implicit activation, persistent debug capture, or logging of prohibited secret/audio
-    material.
+  - Product, Data, and Privacy Constraints: removed the arbitrary per-session voice
+    response-count, maximum-duration, and idle-expiry requirements while retaining
+    per-response admission, per-turn loop prevention, cumulative spending, interruption,
+    explicit lifecycle termination, and kill-switch safeguards.
 - Added sections: none.
 - Removed sections: none.
 - Templates:
@@ -23,8 +19,12 @@ Sync Impact Report
   - ✅ docs/production-configuration.md
   - ✅ specs/004-conversational-voice-map/{spec,plan,research,data-model,quickstart}.md
   - ✅ specs/004-conversational-voice-map/contracts/realtime-relay.md
+  - ✅ specs/004-conversational-voice-map/contracts/native-audio-routing.md
   - ✅ specs/004-conversational-voice-map/tasks.md
-- Deferred items: none.
+- Deferred items:
+  - Runtime removal of `maxResponses`, `maxSessionSeconds`, and `idleSeconds`, plus
+    migration to the per-turn response-stage guard, are planned in Feature 004 Phase 22
+    tasks T171 and T175; no application code changed during this planning amendment.
 -->
 
 # What's Here Constitution
@@ -173,9 +173,12 @@ future iteration.
   MUST NOT impose or transmit a per-response output-token ceiling for this Realtime
   experience; responses use the provider/model intrinsic maximum. That intrinsic maximum
   MAY be pinned solely as the conservative budget-reservation bound and MUST be updated
-  with reviewed provider evidence when the approved model changes. Session duration,
-  response-count, idle, context, spending, interruption, and kill-switch boundaries remain
-  mandatory.
+  with reviewed provider evidence when the approved model changes. Context, spending,
+  interruption, explicit stop, navigation/permission loss, provider failure, and
+  kill-switch boundaries remain mandatory. Voice MUST NOT impose a per-session user-turn,
+  assistant-response-count, maximum-duration, or idle-expiry limit. Each admitted user turn
+  MUST retain a finite internal provider-stage loop guard, with independent admission and
+  settlement for every billable stage.
 - Event and restaurant/deal collection MUST run weekly. Each event run MUST cover at least
   the run date through the following seven days and MAY retain all active and future events
   exposed by configured bounded source surfaces.
@@ -195,11 +198,18 @@ future iteration.
   personal data.
 - Feature 004 MAY emit content-bearing diagnostic records only in an explicitly activated
   local-development session owned by the developer. This exception MUST default off, MUST
-  be structurally unavailable in production and preview deployments, MUST write only to
-  the active local process output, MUST stop when that process or voice session ends, and
-  MUST NOT create application files, database rows, caches, browser storage, remote
-  telemetry, or background uploads. It MAY include transcripts, prompts, tool arguments
+  be structurally unavailable in production and preview deployments, and MUST stop when
+  the local process or voice session ends. Process-output diagnostics MAY remain
+  ephemeral. Persistent diagnostics require a separate explicit startup flag and MAY
+  write sanitized newline-delimited records only to a fixed, gitignored, owner-controlled
+  local development directory. Persistent files MUST use restrictive permissions, rotate
+  before exceeding 5 MiB, retain no more than five files, and be deleted no later than
+  seven days after creation. Cleanup MUST run on logger startup and rotation without a
+  background uploader or remote sink. Persistent diagnostics MUST NOT write to application
+  data, databases, browser storage, analytics, telemetry, or network services. Diagnostic
+  records MAY include available provider-generated transcripts, prompts, tool arguments
   and results, and redacted provider/browser event bodies needed to reproduce a defect.
+  They MUST NOT claim or synthesize a user transcript when native audio produces none.
   Credentials, API keys, authorization material, cookies, session tokens, signing
   material, and raw audio remain prohibited. Audio events MAY record only byte counts,
   timing, format, and lifecycle metadata. Production and preview MUST retain the closed
@@ -240,8 +250,10 @@ future iteration.
    `max_output_tokens` fields or equivalent per-response token ceilings in provider session
    or response requests. Review MUST also reject content-bearing voice diagnostics outside
    explicitly activated local development, any production/preview activation path,
-   persistent debug capture, or diagnostic output containing credentials, authorization
-   material, cookies, session tokens, signing material, or raw audio.
+   persistent debug capture that lacks the separate audit flag, fixed ignored location,
+   rotation, retention cleanup, restrictive permissions, or sanitized-before-write
+   boundary, and diagnostic output containing credentials, authorization material,
+   cookies, session tokens, signing material, or raw audio.
 
 ## Governance
 
@@ -254,4 +266,4 @@ for non-semantic clarification. Every specification, plan, implementation review
 release MUST verify compliance. Unjustified violations block completion. Runtime-specific
 instructions remain in `AGENTS.md` and domain documentation but MUST conform to this file.
 
-**Version**: 2.6.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-29
+**Version**: 2.8.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-30

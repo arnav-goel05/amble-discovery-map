@@ -2,7 +2,11 @@ import { createHash } from "node:crypto";
 import { extractEventPageEvidence } from "./event-field-extraction.mjs";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
-const DIRECT_STAGES = new Set(["detail", "discovery_detail", "authority_confirmation"]);
+const DIRECT_STAGES = new Set([
+  "detail",
+  "discovery_detail",
+  "authority_confirmation",
+]);
 
 function hasUsableDirectEventEvidence(result) {
   if (result?.retrievalMethod !== "direct_html") return true;
@@ -36,21 +40,44 @@ function hasUsableDirectEventEvidence(result) {
   );
 }
 
-export function createLayeredDetailFetchClient({ directClient, fallbackClient, logger = () => {} } = {}) {
+export function createLayeredDetailFetchClient({
+  directClient,
+  fallbackClient,
+  logger = () => {},
+} = {}) {
   if (!directClient?.fetchBatch || !fallbackClient?.fetchBatch)
-    throw new Error("Layered detail retrieval requires direct and fallback clients");
+    throw new Error(
+      "Layered detail retrieval requires direct and fallback clients",
+    );
   async function fetchBatch(urls, context = {}) {
-    if (!DIRECT_STAGES.has(context.stage)) return fallbackClient.fetchBatch(urls, context);
+    if (!DIRECT_STAGES.has(context.stage))
+      return fallbackClient.fetchBatch(urls, context);
     const direct = await directClient.fetchBatch(urls, context);
-    const usableDirectResults = direct.results.filter(hasUsableDirectEventEvidence);
+    const usableDirectResults = direct.results.filter(
+      hasUsableDirectEventEvidence,
+    );
     const completed = new Set(
-      usableDirectResults.map((item) => item.url ?? item.final_url).filter(Boolean),
+      usableDirectResults
+        .map((item) => item.url ?? item.final_url)
+        .filter(Boolean),
     );
     const failedUrls = urls.filter((url) => !completed.has(url));
     if (!failedUrls.length) return direct;
-    logger({ action: "detail_retrieval_fallback", sourceName: context.sourceName, stage: context.stage, entityId: context.entityId, requested: urls.length, fallback: failedUrls.length, directFailureCodes: [...new Set(direct.errors.map((item) => item.code))] });
+    logger({
+      action: "detail_retrieval_fallback",
+      sourceName: context.sourceName,
+      stage: context.stage,
+      entityId: context.entityId,
+      requested: urls.length,
+      fallback: failedUrls.length,
+      directFailureCodes: [...new Set(direct.errors.map((item) => item.code))],
+    });
     const fallback = await fallbackClient.fetchBatch(failedUrls, context);
-    const fallbackCompleted = new Set(fallback.results.map((item) => item.url ?? item.final_url).filter(Boolean));
+    const fallbackCompleted = new Set(
+      fallback.results
+        .map((item) => item.url ?? item.final_url)
+        .filter(Boolean),
+    );
     return {
       urls,
       results: [...usableDirectResults, ...fallback.results],

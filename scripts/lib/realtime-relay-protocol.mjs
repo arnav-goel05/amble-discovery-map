@@ -2,8 +2,6 @@ const MAX_ADMISSION_BYTES = 64 * 1024;
 const TERMINAL_REASONS = new Set([
   "user",
   "pagehide",
-  "idle",
-  "duration",
   "permission",
   "disabled",
   "usage_limit",
@@ -54,7 +52,7 @@ const MESSAGE_FIELDS = Object.freeze({
   "deterministic.result": new Set(["type", "capabilityId", "kind", "result"]),
   "response.cancel": new Set(["type"]),
   "context.update": new Set(["type", "context"]),
-  "session.stop": new Set(["type"]),
+  "session.stop": new Set(["type", "reason"]),
 });
 
 export class RelayProtocolError extends Error {
@@ -148,6 +146,11 @@ export function validateBrowserMessage(message, options = {}) {
     Object.keys(message).length < 2
   )
     fail("browser_message_unapproved", "Browser message is incomplete");
+  if (
+    message.type === "session.stop" &&
+    !["user", "pagehide", "permission"].includes(message.reason)
+  )
+    fail("browser_message_unapproved", "Session stop reason is invalid");
   if (
     ["turn.request", "audio.append", "audio.commit", "text.submit"].includes(
       message.type,
@@ -256,6 +259,25 @@ export function validateBrowserMessage(message, options = {}) {
   }
   if (message.type === "context.update") {
     const context = message.context;
+    const eventFacetCatalog = context?.eventFacetCatalog;
+    const validEventFacetCatalog =
+      eventFacetCatalog === undefined ||
+      (eventFacetCatalog &&
+        typeof eventFacetCatalog === "object" &&
+        !Array.isArray(eventFacetCatalog) &&
+        typeof eventFacetCatalog.catalogRevision === "string" &&
+        eventFacetCatalog.catalogRevision.length <= 160 &&
+        ["what", "when", "where", "price"].every(
+          (facet) =>
+            Array.isArray(eventFacetCatalog[facet]) &&
+            eventFacetCatalog[facet].length <= (facet === "what" ? 60 : 20) &&
+            eventFacetCatalog[facet].every(
+              (label) =>
+                typeof label === "string" &&
+                label.length > 0 &&
+                label.length <= 160,
+            ),
+        ));
     if (
       !context ||
       typeof context !== "object" ||
@@ -263,7 +285,8 @@ export function validateBrowserMessage(message, options = {}) {
       !Array.isArray(context.visibleTargets) ||
       context.visibleTargets.length > 100 ||
       !Array.isArray(context.availableCapabilityIds) ||
-      context.availableCapabilityIds.length > 128
+      context.availableCapabilityIds.length > 128 ||
+      !validEventFacetCatalog
     )
       fail("browser_message_unapproved", "Interface context is invalid");
   }
@@ -337,7 +360,6 @@ export function cleanupRelaySession(session, reason = "protocol") {
   } catch {}
   clearTimeout(session?.idleTimer);
   clearTimeout(session?.durationTimer);
-  clearTimeout(session?.transcriptionTimer);
   clearTimeout(session?.responseTimer);
   if (session) {
     session.state = "stopped";
@@ -355,13 +377,11 @@ export function cleanupRelaySession(session, reason = "protocol") {
     session.browserEventQueue = null;
     session.openReservations = [];
     session.responseReservationId = null;
-    session.inputReservationId = null;
     session.providerSocket = null;
     session.browserSocket = null;
     session.abortController = null;
     session.idleTimer = null;
     session.durationTimer = null;
-    session.transcriptionTimer = null;
     session.responseTimer = null;
   }
   return session;

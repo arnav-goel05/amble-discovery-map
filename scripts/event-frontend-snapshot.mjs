@@ -138,7 +138,10 @@ export function loadCurrentApprovedData(root) {
     );
     const events = active.internalEventsRef
       ? JSON.parse(
-          readFileSync(join(active.directory, active.internalEventsRef), "utf8"),
+          readFileSync(
+            join(active.directory, active.internalEventsRef),
+            "utf8",
+          ),
         )
       : active.eventsRef
         ? JSON.parse(
@@ -260,8 +263,7 @@ export function projectEventCatalogue(
       groupingReviews: activityProjection.reviews.counts.records,
       parentCandidates: activityProjection.parentGrouping.counts.candidates,
       parentMerges: activityProjection.parentGrouping.counts.mergedParents,
-      parentGroupingReviews:
-        activityProjection.parentGrouping.counts.reviews,
+      parentGroupingReviews: activityProjection.parentGrouping.counts.reviews,
     },
   };
 }
@@ -471,10 +473,10 @@ export async function prepareFrontendSnapshot({
   for (const landmark of nextLandmarks)
     for (const event of landmark.events ?? []) {
       const location = {
-          approvedLocationId: landmark.id,
-          coordinates: landmark.anchor,
-          label: landmark.label,
-        };
+        approvedLocationId: landmark.id,
+        coordinates: landmark.anchor,
+        label: landmark.label,
+      };
       for (const alias of [
         event?.id,
         event?.occurrenceId,
@@ -489,8 +491,7 @@ export async function prepareFrontendSnapshot({
     events,
     state,
     mappedEventIds,
-    currentEventsCatalogue?.activities?.records ??
-      [],
+    currentEventsCatalogue?.activities?.records ?? [],
     mappedLocations,
   );
   const projectedActivities = projectPublicActivityCatalogue(

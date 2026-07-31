@@ -5,39 +5,42 @@ import {
 } from "./activity-reconciliation.mjs";
 
 const sha = (value) => createHash("sha256").update(String(value)).digest("hex");
-const clean = (value) => String(value ?? "").replace(/\s+/g, " ").trim();
+const clean = (value) =>
+  String(value ?? "")
+    .replace(/\s+/g, " ")
+    .trim();
 const unique = (values) => [...new Set(values.filter(Boolean))].sort();
-const scheduleOf = (event) => event.schedule ?? event.sessions?.[0]?.schedule ?? {};
+const scheduleOf = (event) =>
+  event.schedule ?? event.sessions?.[0]?.schedule ?? {};
 const occurrenceIdOf = (event) => clean(event.occurrenceId ?? event.id);
-const canonical = (value) => JSON.stringify(value, Object.keys(value ?? {}).sort());
-const monthNumber = new Map(
-  [
-    ["jan", 1],
-    ["january", 1],
-    ["feb", 2],
-    ["february", 2],
-    ["mar", 3],
-    ["march", 3],
-    ["apr", 4],
-    ["april", 4],
-    ["may", 5],
-    ["jun", 6],
-    ["june", 6],
-    ["jul", 7],
-    ["july", 7],
-    ["aug", 8],
-    ["august", 8],
-    ["sep", 9],
-    ["sept", 9],
-    ["september", 9],
-    ["oct", 10],
-    ["october", 10],
-    ["nov", 11],
-    ["november", 11],
-    ["dec", 12],
-    ["december", 12],
-  ],
-);
+const canonical = (value) =>
+  JSON.stringify(value, Object.keys(value ?? {}).sort());
+const monthNumber = new Map([
+  ["jan", 1],
+  ["january", 1],
+  ["feb", 2],
+  ["february", 2],
+  ["mar", 3],
+  ["march", 3],
+  ["apr", 4],
+  ["april", 4],
+  ["may", 5],
+  ["jun", 6],
+  ["june", 6],
+  ["jul", 7],
+  ["july", 7],
+  ["aug", 8],
+  ["august", 8],
+  ["sep", 9],
+  ["sept", 9],
+  ["september", 9],
+  ["oct", 10],
+  ["october", 10],
+  ["nov", 11],
+  ["november", 11],
+  ["dec", 12],
+  ["december", 12],
+]);
 const genericParentTitleTokens = new Set([
   "activity",
   "admission",
@@ -74,8 +77,7 @@ function normalizedParentTitle(value) {
 function genericParentTitle(value) {
   const parts = value.split(" ").filter(Boolean);
   return (
-    !parts.length ||
-    parts.every((part) => genericParentTitleTokens.has(part))
+    !parts.length || parts.every((part) => genericParentTitleTokens.has(part))
   );
 }
 
@@ -102,7 +104,9 @@ function singaporeDay(value) {
     month: "2-digit",
     day: "2-digit",
   }).formatToParts(new Date(parsed));
-  const field = Object.fromEntries(parts.map((item) => [item.type, item.value]));
+  const field = Object.fromEntries(
+    parts.map((item) => [item.type, item.value]),
+  );
   return `${field.year}-${field.month}-${field.day}`;
 }
 
@@ -134,10 +138,7 @@ function scheduleCoverage(events) {
   for (const event of events) {
     const schedule = scheduleOf(event);
     let start = dayOrdinal(
-      schedule.start ??
-        event.startDateTime ??
-        event.startsAt ??
-        event.dateText,
+      schedule.start ?? event.startDateTime ?? event.startsAt ?? event.dateText,
     );
     let end =
       dayOrdinal(
@@ -176,8 +177,7 @@ function coverageCompatible(a, b) {
     return a.start <= b.end && b.start <= a.end;
   if (a.start === null && b.start === null)
     return a.flexibleKinds.some((kind) => b.flexibleKinds.includes(kind));
-  const flexible =
-    a.start === null ? a.flexibleKinds : b.flexibleKinds;
+  const flexible = a.start === null ? a.flexibleKinds : b.flexibleKinds;
   if (
     flexible.some((kind) =>
       ["anytime", "recurring", "selectable"].includes(kind),
@@ -190,7 +190,7 @@ function coverageCompatible(a, b) {
 function canonicalUrl(value) {
   try {
     const url = new URL(value);
-    if (!['http:', 'https:'].includes(url.protocol)) return null;
+    if (!["http:", "https:"].includes(url.protocol)) return null;
     url.hash = "";
     for (const key of [...url.searchParams.keys()])
       if (/^(?:utm_|fbclid$|gclid$)/i.test(key)) url.searchParams.delete(key);
@@ -220,13 +220,16 @@ function parentRecords(event) {
   const explicit = Array.isArray(event.sourceParentActivities)
     ? event.sourceParentActivities
     : [];
-  const fallback = event.parentActivityId || event.parentListingId
-    ? [{
-        source: event.sourceName ?? event.sources?.[0]?.source ?? "unknown",
-        parentActivityId: event.parentActivityId ?? null,
-        parentListingId: event.parentListingId ?? null,
-      }]
-    : [];
+  const fallback =
+    event.parentActivityId || event.parentListingId
+      ? [
+          {
+            source: event.sourceName ?? event.sources?.[0]?.source ?? "unknown",
+            parentActivityId: event.parentActivityId ?? null,
+            parentListingId: event.parentListingId ?? null,
+          },
+        ]
+      : [];
   return [...explicit, ...fallback]
     .map((item) => ({
       source: clean(item?.source) || "unknown",
@@ -234,12 +237,16 @@ function parentRecords(event) {
       parentListingId: clean(item?.parentListingId) || null,
     }))
     .filter((item) => item.parentActivityId || item.parentListingId)
-    .filter((item, index, rows) =>
-      rows.findIndex((candidate) => canonical(candidate) === canonical(item)) === index,
+    .filter(
+      (item, index, rows) =>
+        rows.findIndex(
+          (candidate) => canonical(candidate) === canonical(item),
+        ) === index,
     );
 }
 
-const parentKey = (record) => record.parentActivityId ?? `listing:${record.parentListingId}`;
+const parentKey = (record) =>
+  record.parentActivityId ?? `listing:${record.parentListingId}`;
 const scheduleFingerprint = (event) => {
   const schedule = scheduleOf(event);
   return canonical({
@@ -250,13 +257,14 @@ const scheduleFingerprint = (event) => {
     displayText: schedule.displayText ?? event.dateText ?? null,
   });
 };
-const venueFingerprint = (event) => clean(
-  event.venueOccurrences?.[0]?.approvedLocationId ??
-    event.approvedLocationId ??
-    event.venueId ??
-    event.venue ??
-    event.venueName,
-).toLocaleLowerCase();
+const venueFingerprint = (event) =>
+  clean(
+    event.venueOccurrences?.[0]?.approvedLocationId ??
+      event.approvedLocationId ??
+      event.venueId ??
+      event.venue ??
+      event.venueName,
+  ).toLocaleLowerCase();
 
 function review({ runId, reasonCode, occurrenceIds, evidence = null }) {
   const members = unique(occurrenceIds);
@@ -294,7 +302,9 @@ function parentSummary(root, rows) {
       rows.map((item) => [occurrenceIdOf(item.event), item.event]),
     ).values(),
   ];
-  const titles = unique(events.map((event) => normalizedParentTitle(event.title)));
+  const titles = unique(
+    events.map((event) => normalizedParentTitle(event.title)),
+  );
   const organizers = unique(
     events.map((event) => normalizedParentTitle(event.organizer)),
   );
@@ -324,13 +334,7 @@ function intersects(a, b) {
   return a.some((value) => right.has(value));
 }
 
-function linkCompatibleParents({
-  eligible,
-  find,
-  union,
-  reviews,
-  runId,
-}) {
+function linkCompatibleParents({ eligible, find, union, reviews, runId }) {
   const byRoot = new Map();
   for (const item of eligible) {
     const root = find(item.keys[0]);
@@ -388,10 +392,7 @@ function linkCompatibleParents({
     );
     const bothHaveLocations =
       a.approvedLocationIds.length > 0 && b.approvedLocationIds.length > 0;
-    const venueMatch = intersects(
-      a.approvedLocationIds,
-      b.approvedLocationIds,
-    );
+    const venueMatch = intersects(a.approvedLocationIds, b.approvedLocationIds);
     const organizerConflict =
       a.organizers.length > 0 &&
       b.organizers.length > 0 &&
@@ -456,7 +457,7 @@ function linkCompatibleParents({
             ? "same_product_identity"
             : sharedAuthorityRefs.length > 0
               ? "same_authority_identity"
-            : "compatible_parent_evidence",
+              : "compatible_parent_evidence",
       });
     } else
       decisions.push({
@@ -491,23 +492,34 @@ function deconflict(events, runId) {
     rows.push(event);
     byId.set(id, rows);
   }
-  const accepted = [], reviews = [];
+  const accepted = [],
+    reviews = [];
   for (const [id, rows] of [...byId].sort(([a], [b]) => a.localeCompare(b))) {
     if (!id) {
-      reviews.push(review({ runId, reasonCode: "missing_occurrence_identity", occurrenceIds: [], evidence: null }));
+      reviews.push(
+        review({
+          runId,
+          reasonCode: "missing_occurrence_identity",
+          occurrenceIds: [],
+          evidence: null,
+        }),
+      );
       continue;
     }
     const schedules = unique(rows.map(scheduleFingerprint));
     const venues = unique(rows.map(venueFingerprint));
     if (schedules.length > 1 || venues.length > 1) {
-      reviews.push(review({
-        runId,
-        reasonCode: schedules.length > 1
-          ? "contradictory_session_schedule"
-          : "contradictory_session_venue",
-        occurrenceIds: [id],
-        evidence: { schedules, venues },
-      }));
+      reviews.push(
+        review({
+          runId,
+          reasonCode:
+            schedules.length > 1
+              ? "contradictory_session_schedule"
+              : "contradictory_session_venue",
+          occurrenceIds: [id],
+          evidence: { schedules, venues },
+        }),
+      );
     } else accepted.push(rows[0]);
   }
   return { accepted, reviews };
@@ -525,12 +537,15 @@ function sessionFor(
   return {
     sessionId: `session:${sha(`${activityId}\0${fingerprint}`).slice(0, 24)}`,
     occurrenceIds: [occurrenceId],
-    sourceSessionIds: unique((event.sessions ?? []).flatMap((item) => [
-      item.sessionId,
-      ...(item.sourceSessionIds ?? []),
-    ])),
+    sourceSessionIds: unique(
+      (event.sessions ?? []).flatMap((item) => [
+        item.sessionId,
+        ...(item.sourceSessionIds ?? []),
+      ]),
+    ),
     schedule,
-    availability: event.availability ?? event.sessions?.[0]?.availability ?? "unknown",
+    availability:
+      event.availability ?? event.sessions?.[0]?.availability ?? "unknown",
     venueGroupIds: [],
     evidenceRefs: unique([
       ...(event.provenanceRefs ?? []),
@@ -556,24 +571,21 @@ function singaporeMoment(value) {
     minute: "2-digit",
     hourCycle: "h23",
   }).formatToParts(new Date(parsed));
-  const field = Object.fromEntries(parts.map((item) => [item.type, item.value]));
+  const field = Object.fromEntries(
+    parts.map((item) => [item.type, item.value]),
+  );
   return `${field.year}-${field.month}-${field.day}T${field.hour}:${field.minute}`;
 }
 
 function displayClock(value) {
-  const match = clean(value).match(
-    /\b(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm)\b/i,
-  );
+  const match = clean(value).match(/\b(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm)\b/i);
   if (!match) return null;
   let hour = Number(match[1]);
   const minute = Number(match[2] ?? 0);
   if (hour < 1 || hour > 12 || minute > 59) return null;
   if (hour === 12) hour = 0;
   if (match[3].toLowerCase() === "pm") hour += 12;
-  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(
-    2,
-    "0",
-  )}`;
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
 }
 
 function explicitScheduleMoment(event) {
@@ -699,9 +711,7 @@ function preferredVenueByOccurrence(members, scheduleTargets) {
       start: singaporeMoment(schedule.start ?? event.startDateTime),
       end: authorityRefs.length
         ? null
-        : singaporeMoment(
-            schedule.end ?? event.endDateTime ?? schedule.start,
-          ),
+        : singaporeMoment(schedule.end ?? event.endDateTime ?? schedule.start),
       recurrence: clean(schedule.recurrence) || null,
       authorityRefs,
     });
@@ -777,12 +787,8 @@ function mergeEquivalentSessions(activityId, members) {
   for (const event of members) {
     const scheduleEvent =
       schedulePlan.targets.get(occurrenceIdOf(event)) ?? event;
-    const venueEvent =
-      preferredVenue.get(occurrenceIdOf(event)) ?? event;
-    const fingerprint = equivalentSessionFingerprint(
-      scheduleEvent,
-      venueEvent,
-    );
+    const venueEvent = preferredVenue.get(occurrenceIdOf(event)) ?? event;
+    const fingerprint = equivalentSessionFingerprint(scheduleEvent, venueEvent);
     const current =
       byFingerprint.get(fingerprint) ??
       sessionFor(activityId, event, venueEvent, scheduleEvent);
@@ -858,7 +864,9 @@ function singaporeScheduleLabel(schedule) {
     minute: "2-digit",
     hour12: true,
   }).formatToParts(new Date(schedule.start));
-  const field = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  const field = Object.fromEntries(
+    parts.map(({ type, value }) => [type, value]),
+  );
   const clock = `${field.hour}${
     field.minute === "00" ? "" : `.${field.minute}`
   }${field.dayPeriod.toLocaleLowerCase("en-SG")}`;
@@ -877,13 +885,24 @@ function scheduleSummary(sessions) {
         label: singaporeScheduleLabel(exact[0]),
         sessionCount: sessions.length,
       };
-    const first = exact[0].start, last = exact.at(-1).end ?? exact.at(-1).start;
-    return { kind: "multiple", label: `${sessions.length} upcoming sessions · ${first} – ${last}`, sessionCount: sessions.length };
+    const first = exact[0].start,
+      last = exact.at(-1).end ?? exact.at(-1).start;
+    return {
+      kind: "multiple",
+      label: `${sessions.length} upcoming sessions · ${first} – ${last}`,
+      sessionCount: sessions.length,
+    };
   }
-  const flexible = sessions.find((item) => ["anytime", "selectable", "recurring"].includes(item.schedule?.kind));
+  const flexible = sessions.find((item) =>
+    ["anytime", "selectable", "recurring"].includes(item.schedule?.kind),
+  );
   return {
     kind: flexible?.schedule?.kind ?? "unverified",
-    label: flexible?.schedule?.displayText ?? (sessions.length ? `${sessions.length} sessions` : "Schedule unavailable"),
+    label:
+      flexible?.schedule?.displayText ??
+      (sessions.length
+        ? `${sessions.length} sessions`
+        : "Schedule unavailable"),
     sessionCount: sessions.length,
   };
 }
@@ -900,18 +919,23 @@ function sourceOffers(
   for (const event of members) {
     const sessionId = sessionByOccurrence.get(occurrenceIdOf(event));
     for (const source of event.sources ?? []) {
-      const url = canonicalUrl(source.sourceUrl ?? source.url ?? event.eventUrl);
+      const url = canonicalUrl(
+        source.sourceUrl ?? source.url ?? event.eventUrl,
+      );
       if (!url) {
         if (source.sourceUrl || source.url || event.eventUrl)
-          reviews.push(review({
-            runId,
-            reasonCode: "invalid_source_offer_url",
-            occurrenceIds: [occurrenceIdOf(event)],
-            evidence: { source: source.source ?? event.sourceName },
-          }));
+          reviews.push(
+            review({
+              runId,
+              reasonCode: "invalid_source_offer_url",
+              occurrenceIds: [occurrenceIdOf(event)],
+              evidence: { source: source.source ?? event.sourceName },
+            }),
+          );
         continue;
       }
-      const label = clean(source.source ?? event.sourceName) || new URL(url).hostname;
+      const label =
+        clean(source.source ?? event.sourceName) || new URL(url).hostname;
       const key = `${label}\0${url}`;
       const current = offers.get(key) ?? {
         offerId: `offer:${sha(key).slice(0, 24)}`,
@@ -926,7 +950,10 @@ function sourceOffers(
         current.coversActivity = true;
       else if (sessionId) current.sessionIds.push(sessionId);
       else current.coversActivity = true;
-      current.evidenceRefs.push(source.recordRef, ...(event.provenanceRefs ?? []));
+      current.evidenceRefs.push(
+        source.recordRef,
+        ...(event.provenanceRefs ?? []),
+      );
       offers.set(key, current);
     }
   }
@@ -943,7 +970,9 @@ function sourceOffers(
       if (offer.scope === "activity") offer.sessionIds = [];
       return offer;
     })
-    .sort((a, b) => a.source.localeCompare(b.source) || a.url.localeCompare(b.url));
+    .sort(
+      (a, b) => a.source.localeCompare(b.source) || a.url.localeCompare(b.url),
+    );
 }
 
 export function projectEventActivities({
@@ -952,7 +981,9 @@ export function projectEventActivities({
   runId = null,
   generatedAt = new Date().toISOString(),
 } = {}) {
-  const ordered = [...events].sort((a, b) => occurrenceIdOf(a).localeCompare(occurrenceIdOf(b)));
+  const ordered = [...events].sort((a, b) =>
+    occurrenceIdOf(a).localeCompare(occurrenceIdOf(b)),
+  );
   const { accepted, reviews } = deconflict(ordered, runId);
   const parent = new Map();
   const find = (id) => {
@@ -964,14 +995,21 @@ export function projectEventActivities({
     return id;
   };
   const union = (a, b) => {
-    const ar = find(a), br = find(b);
+    const ar = find(a),
+      br = find(b);
     if (ar !== br) parent.set(ar < br ? br : ar, ar < br ? ar : br);
   };
   const eligible = [];
   for (const event of accepted) {
     const parents = parentRecords(event);
     if (!parents.length) {
-      reviews.push(review({ runId, reasonCode: "missing_parent_activity_identity", occurrenceIds: [occurrenceIdOf(event)] }));
+      reviews.push(
+        review({
+          runId,
+          reasonCode: "missing_parent_activity_identity",
+          occurrenceIds: [occurrenceIdOf(event)],
+        }),
+      );
       continue;
     }
     const keys = parents.map(parentKey);
@@ -996,11 +1034,21 @@ export function projectEventActivities({
   const records = [];
   let coarseEnvelopesSuppressed = 0;
   for (const rows of groups.values()) {
-    const members = rows.map((item) => item.event).sort((a, b) => occurrenceIdOf(a).localeCompare(occurrenceIdOf(b)));
-    const parentActivities = unique(rows.flatMap((item) => item.parents.map((record) => record.parentActivityId)));
-    const preferred = unique(members.map((event) => clean(event.parentActivityId)));
-    const activityId = preferred.find((id) => id.startsWith("activity:")) ??
-      parentActivities[0] ?? `activity:${sha(unique(rows.flatMap((item) => item.keys)).join("\0")).slice(0, 24)}`;
+    const members = rows
+      .map((item) => item.event)
+      .sort((a, b) => occurrenceIdOf(a).localeCompare(occurrenceIdOf(b)));
+    const parentActivities = unique(
+      rows.flatMap((item) =>
+        item.parents.map((record) => record.parentActivityId),
+      ),
+    );
+    const preferred = unique(
+      members.map((event) => clean(event.parentActivityId)),
+    );
+    const activityId =
+      preferred.find((id) => id.startsWith("activity:")) ??
+      parentActivities[0] ??
+      `activity:${sha(unique(rows.flatMap((item) => item.keys)).join("\0")).slice(0, 24)}`;
     const {
       sessions,
       sessionByOccurrence,
@@ -1021,11 +1069,25 @@ export function projectEventActivities({
       const group = venueGroups.get(id) ?? {
         venueGroupId: id,
         activityId,
-        label: clean(venueOccurrence.publishedVenueName ?? venueEvent.venue ?? venueEvent.venueName) || "Location TBA",
+        label:
+          clean(
+            venueOccurrence.publishedVenueName ??
+              venueEvent.venue ??
+              venueEvent.venueName,
+          ) || "Location TBA",
         address: clean(venueOccurrence.address ?? venueEvent.address) || null,
-        publicPlacement: venueEvent.publicPlacement ?? venueOccurrence.publicPlacement ?? "none",
-        mappingStatus: venueEvent.mappingStatus ?? venueOccurrence.mappingStatus ?? "pending_review",
-        approvedLocationId: venueOccurrence.approvedLocationId ?? venueEvent.approvedLocationId ?? null,
+        publicPlacement:
+          venueEvent.publicPlacement ??
+          venueOccurrence.publicPlacement ??
+          "none",
+        mappingStatus:
+          venueEvent.mappingStatus ??
+          venueOccurrence.mappingStatus ??
+          "pending_review",
+        approvedLocationId:
+          venueOccurrence.approvedLocationId ??
+          venueEvent.approvedLocationId ??
+          null,
         coordinates: venueEvent.coordinates ?? null,
         occurrenceIds: [],
         sessionIds: [],
@@ -1049,18 +1111,33 @@ export function projectEventActivities({
       schemaVersion: "1.0",
       activityId,
       title: clean(primary.title),
-      description: members.map((item) => clean(item.description)).find(Boolean) ?? null,
-      category: members.map((item) => clean(item.category)).find(Boolean) ?? null,
-      organizer: members.map((item) => clean(item.organizer)).find(Boolean) ?? null,
+      description:
+        members.map((item) => clean(item.description)).find(Boolean) ?? null,
+      category:
+        members.map((item) => clean(item.category)).find(Boolean) ?? null,
+      organizer:
+        members.map((item) => clean(item.organizer)).find(Boolean) ?? null,
       price: members.map((item) => clean(item.price)).find(Boolean) ?? null,
-      lifecycleState: members.some((item) => item.lifecycleState === "active") ? "active" : (primary.lifecycleState ?? "active"),
-      freshness: members.some((item) => item.freshness === "stale") ? "stale" : "current",
+      lifecycleState: members.some((item) => item.lifecycleState === "active")
+        ? "active"
+        : (primary.lifecycleState ?? "active"),
+      freshness: members.some((item) => item.freshness === "stale")
+        ? "stale"
+        : "current",
       sourceParentActivityIds: parentActivities,
-      sourceParentListingIds: unique(rows.flatMap((item) => item.parents.map((record) => record.parentListingId))),
-      sources: unique(rows.flatMap((item) => item.parents.map((record) => record.source))),
+      sourceParentListingIds: unique(
+        rows.flatMap((item) =>
+          item.parents.map((record) => record.parentListingId),
+        ),
+      ),
+      sources: unique(
+        rows.flatMap((item) => item.parents.map((record) => record.source)),
+      ),
       occurrenceIds: members.map(occurrenceIdOf),
       sessions,
-      venueGroups: [...venueGroups.values()].sort((a, b) => a.venueGroupId.localeCompare(b.venueGroupId)),
+      venueGroups: [...venueGroups.values()].sort((a, b) =>
+        a.venueGroupId.localeCompare(b.venueGroupId),
+      ),
       sourceOffers: sourceOffers(
         activityId,
         members,
@@ -1071,9 +1148,10 @@ export function projectEventActivities({
       ),
       scheduleSummary: scheduleSummary(sessions),
       groupingDecision: {
-        strategy: parentActivities.length > 1
-          ? "parent_evidence_group"
-          : "source_parent_activity",
+        strategy:
+          parentActivities.length > 1
+            ? "parent_evidence_group"
+            : "source_parent_activity",
         selectedActivityId: activityId,
         memberOccurrenceIds: members.map(occurrenceIdOf),
       },
@@ -1083,19 +1161,40 @@ export function projectEventActivities({
   reviews.sort((a, b) => a.reviewId.localeCompare(b.reviewId));
   const counts = {
     inputOccurrences: events.length,
-    occurrences: records.reduce((sum, item) => sum + item.occurrenceIds.length, 0),
+    occurrences: records.reduce(
+      (sum, item) => sum + item.occurrenceIds.length,
+      0,
+    ),
     activities: records.length,
     sessions: records.reduce((sum, item) => sum + item.sessions.length, 0),
-    venueGroups: records.reduce((sum, item) => sum + item.venueGroups.length, 0),
-    sourceOffers: records.reduce((sum, item) => sum + item.sourceOffers.length, 0),
+    venueGroups: records.reduce(
+      (sum, item) => sum + item.venueGroups.length,
+      0,
+    ),
+    sourceOffers: records.reduce(
+      (sum, item) => sum + item.sourceOffers.length,
+      0,
+    ),
     reviews: reviews.length,
     parentCandidates: parentGrouping.counts.candidates,
     parentMerges: parentGrouping.counts.mergedParents,
     parentGroupingReviews: parentGrouping.counts.reviews,
     coarseEnvelopesSuppressed,
   };
-  const activities = { schemaVersion: "1.0", runId, generatedAt, counts, records };
-  const reviewArtifact = { schemaVersion: "1.0", runId, generatedAt, counts: { records: reviews.length }, records: reviews };
+  const activities = {
+    schemaVersion: "1.0",
+    runId,
+    generatedAt,
+    counts,
+    records,
+  };
+  const reviewArtifact = {
+    schemaVersion: "1.0",
+    runId,
+    generatedAt,
+    counts: { records: reviews.length },
+    records: reviews,
+  };
   const decisions = reconcileActivityProjection({
     runId,
     records,
@@ -1112,7 +1211,8 @@ export function projectEventActivities({
 export function validateActivityProjection(activities, reviews) {
   if (activities?.schemaVersion !== "1.0" || reviews?.schemaVersion !== "1.0")
     throw new Error("activity_projection_schema_invalid");
-  const activityIds = new Set(), occurrenceIds = new Set();
+  const activityIds = new Set(),
+    occurrenceIds = new Set();
   for (const activity of activities.records ?? []) {
     if (!activity.activityId || activityIds.has(activity.activityId))
       throw new Error("activity_projection_identity_invalid");
@@ -1143,10 +1243,17 @@ export function validateActivityProjection(activities, reviews) {
       if ((group.sessionIds ?? []).some((id) => !sessionIds.has(id)))
         throw new Error("activity_projection_venue_session_invalid");
     for (const offer of activity.sourceOffers ?? [])
-      if (!canonicalUrl(offer.url) || (offer.scope === "sessions" && offer.sessionIds.some((id) => !sessionIds.has(id))))
+      if (
+        !canonicalUrl(offer.url) ||
+        (offer.scope === "sessions" &&
+          offer.sessionIds.some((id) => !sessionIds.has(id)))
+      )
         throw new Error("activity_projection_offer_invalid");
   }
-  if (activities.counts.activities !== activityIds.size || activities.counts.occurrences !== occurrenceIds.size)
+  if (
+    activities.counts.activities !== activityIds.size ||
+    activities.counts.occurrences !== occurrenceIds.size
+  )
     throw new Error("activity_projection_counts_invalid");
   return activities;
 }

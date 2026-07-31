@@ -10,9 +10,7 @@ export function median(values) {
 }
 
 export function summarizeCpuProfile(profile, limit = 20) {
-  const nodes = new Map(
-    (profile?.nodes ?? []).map((node) => [node.id, node]),
-  );
+  const nodes = new Map((profile?.nodes ?? []).map((node) => [node.id, node]));
   const selfTime = new Map();
   for (let index = 0; index < (profile?.samples?.length ?? 0); index += 1) {
     const frame = nodes.get(profile.samples[index])?.callFrame ?? {};
@@ -64,7 +62,9 @@ export function validateVariantConfig(config) {
   ];
   for (const variant of config.variants) {
     if (!variant?.id || ids.has(variant.id))
-      throw new Error(`Invalid or duplicate diagnostic variant: ${variant?.id}`);
+      throw new Error(
+        `Invalid or duplicate diagnostic variant: ${variant?.id}`,
+      );
     ids.add(variant.id);
     if (!variant.comparisonGroup || !variant.intendedDifference)
       throw new Error(`${variant.id} lacks comparison metadata`);
@@ -78,9 +78,7 @@ export function validateVariantConfig(config) {
       throw new Error(`${variant.id} has unknown workloads: ${unknown.join()}`);
     if (
       variant.workloads.moveEndSearchRefreshMode != null &&
-      !["full", "viewport"].includes(
-        variant.workloads.moveEndSearchRefreshMode,
-      )
+      !["full", "viewport"].includes(variant.workloads.moveEndSearchRefreshMode)
     )
       throw new Error(
         `${variant.id}.moveEndSearchRefreshMode must be full or viewport`,
@@ -116,9 +114,9 @@ export function compatibleVariants(control, candidate) {
       ? (workloads[key] ?? "viewport")
       : key === "minimapRenderMode"
         ? (workloads[key] ?? "cached")
-      : key === "primeEventSearch"
-        ? (workloads[key] ?? false)
-      : (workloads[key] ?? true);
+        : key === "primeEventSearch"
+          ? (workloads[key] ?? false)
+          : (workloads[key] ?? true);
   const changed = [...keys].filter(
     (key) =>
       workloadValue(control.workloads, key) !==
@@ -154,15 +152,14 @@ const stats = (trials) => ({
 });
 
 export function compareVariants(config, trials) {
-  const variants = new Map(config.variants.map((variant) => [variant.id, variant]));
-  const valid = trials.filter(
-    (trial) => trial.validity?.state === "valid",
+  const variants = new Map(
+    config.variants.map((variant) => [variant.id, variant]),
   );
+  const valid = trials.filter((trial) => trial.validity?.state === "valid");
   const byVariant = (id) => valid.filter((trial) => trial.variantId === id);
   return config.variants
     .filter(
-      (candidate) =>
-        candidate.controlId && variants.has(candidate.controlId),
+      (candidate) => candidate.controlId && variants.has(candidate.controlId),
     )
     .map((candidate) => {
       const control = variants.get(candidate.controlId);

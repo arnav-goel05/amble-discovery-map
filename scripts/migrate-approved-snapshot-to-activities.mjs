@@ -63,8 +63,8 @@ if (
 }
 
 const sourceSnapshotId = active.activitiesRef
-  ? activeManifest.eventPipelineProvenance?.activityContractMigration
-      ?.sourceSnapshotId ?? activeManifest.previousSnapshotId
+  ? (activeManifest.eventPipelineProvenance?.activityContractMigration
+      ?.sourceSnapshotId ?? activeManifest.previousSnapshotId)
   : active.snapshotId;
 const sourceDirectory = active.activitiesRef
   ? path.join(root, "data/snapshots", sourceSnapshotId)

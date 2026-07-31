@@ -41,11 +41,7 @@ const variants = requestedIds.length
       config.variants.find((variant) => variant.id === id),
     )
   : config.variants;
-if (
-  requestedIds.some(
-    (id) => !variants.some((variant) => variant?.id === id),
-  )
-)
+if (requestedIds.some((id) => !variants.some((variant) => variant?.id === id)))
   throw new Error("Unknown diagnostic variant requested");
 const stamp = new Date().toISOString().replaceAll(":", "").replaceAll(".", "");
 const output = path.resolve(
@@ -181,8 +177,7 @@ async function runTrial(browser, variant, runNumber) {
   const relevantActiveRequests = () =>
     [...requests.values()].filter(
       ({ url }) =>
-        !url.startsWith("blob:") &&
-        !/\/draco-worker\.js(?:$|\?)/.test(url),
+        !url.startsWith("blob:") && !/\/draco-worker\.js(?:$|\?)/.test(url),
     );
   let idleSince = null;
   const idleDeadline = Date.now() + 30_000;
@@ -233,19 +228,14 @@ async function runTrial(browser, variant, runNumber) {
       .map((time, index) => time - frames[index]);
     const elapsed = frames.at(-1) - frames[0];
     const longTasks = window.__mapDiagnostic.longTasks.filter(
-      (entry) =>
-        entry.startTime >= start && entry.startTime <= end,
+      (entry) => entry.startTime >= start && entry.startTime <= end,
     );
     return {
-      averageFps:
-        elapsed > 0 ? ((frames.length - 1) * 1000) / elapsed : null,
+      averageFps: elapsed > 0 ? ((frames.length - 1) * 1000) / elapsed : null,
       elapsedMs: elapsed,
       frameCount: frames.length,
       intervals,
-      longTaskMs: longTasks.reduce(
-        (sum, entry) => sum + entry.duration,
-        0,
-      ),
+      longTaskMs: longTasks.reduce((sum, entry) => sum + entry.duration, 0),
       longTasks,
     };
   }, config.route);
@@ -315,9 +305,7 @@ async function runTrial(browser, variant, runNumber) {
       layers: state.layers,
       datasets: state.datasets,
       datasetsBeforeMotion,
-      cpuProfileTop: profile
-        ? summarizeCpuProfile(profile.profile)
-        : [],
+      cpuProfileTop: profile ? summarizeCpuProfile(profile.profile) : [],
     },
     memory: state.memory,
     errors: pageErrors,

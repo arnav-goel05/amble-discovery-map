@@ -82,8 +82,10 @@ async function openLocalAreaResults(page) {
           sessionId: "area-list-session",
           protocolVersion: "1.1",
           streamPath: "/api/voice/sessions/area-list-session/stream",
-          expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
-          limits: { maxSessionSeconds: 300, idleSeconds: 60, maxResponses: 6 },
+          limits: {
+            maxResponseStagesPerTurn: 3,
+            responseTimeoutSeconds: 30,
+          },
         },
       }),
     }),

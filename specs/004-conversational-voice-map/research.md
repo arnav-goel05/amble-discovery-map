@@ -21,21 +21,23 @@ sideband monitor sees usage too late to be the sole admission control.
 ## Model and conversation bounds
 
 **Decision**: Pin `gpt-realtime-2.1-mini` as the sole model in the paid-exception policy, with no
-fallback model. Start with five-minute sessions, sixty-second idle expiry, six assistant responses,
-4,000 post-instruction context tokens, low reasoning effort, no automatic provider response
-creation, and no image input in the default flow. Do not transmit `max_output_tokens` in session or
-response requests; OpenAI documents a default of `inf`, meaning the maximum available for the
-model, and a 4,096-token Realtime response maximum. Pin 4,096 only as the conservative
-response-cost reservation bound. Pin the supported input-transcription model and its rate formula
-in the same policy before release.
+fallback model. Use 4,000 post-instruction context tokens, low reasoning effort, no automatic
+provider response creation, and no image input in the default flow. Do not impose a per-session
+turn, assistant-response-count, maximum-duration, or idle-expiry limit. Do not transmit
+`max_output_tokens` in session or response requests; OpenAI documents a default of `inf`, meaning
+the maximum available for the model, and a 4,096-token Realtime response maximum. Pin 4,096 only as
+the conservative response-cost reservation bound. Use the Realtime model's native audio
+understanding rather than a separate input-transcription model.
 
 **Rationale**: OpenAI positions the mini model as the faster, lower-cost Realtime voice option.
 Small, request-scoped prompts and tools reduce input cost and bound the next-turn reservation.
-Images are unnecessary when stable structured UI IDs are present. See the
+Images are unnecessary when stable structured UI IDs are present. Per-response admission,
+reservation, watchdog, and terminal cleanup prevent runaway provider work without imposing an
+arbitrary conversation-length limit. See the
 [OpenAI API changelog](https://developers.openai.com/api/docs/changelog),
 [GPT-Realtime-2.1 Mini](https://developers.openai.com/api/docs/models/gpt-realtime-2.1-mini),
 [Realtime costs](https://developers.openai.com/api/docs/guides/realtime-costs), and
-[Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription).
+[Realtime conversations](https://developers.openai.com/api/docs/guides/realtime-conversations).
 
 Fixed guidance uses short, capitalized bullet rules plus a response-specific instruction override.
 The exact text is provided once between explicit delimiters, and the prompt forbids additions,
@@ -44,16 +46,18 @@ guidance to prefer precise short bullets, examples, and capitalization for impor
 
 **Alternatives considered**: Full-size Realtime models and silent model fallback are rejected for
 this feature because they increase cost and make the reviewed policy nondeterministic. Continuous
-screenshot context adds cost, staleness, and location exposure. Unbounded sessions conflict with
-the USD 10 ceiling. A lower application output-token ceiling was rejected because it can truncate
-otherwise valid assistant responses; duration, response-count, context, interruption, spending,
-and kill-switch controls retain bounded operation.
+screenshot context adds cost, staleness, and location exposure. Fixed response-count,
+maximum-duration, and idle-expiry limits were rejected because they end healthy conversations for
+reasons unrelated to user intent. The current response counter also charges the one-shot greeting.
+A lower application output-token ceiling was rejected because it can truncate otherwise valid
+assistant responses; per-response admission, context, interruption, explicit lifecycle
+termination, spending, and kill-switch controls retain safe operation.
 
 ## Privacy-safe response tracing and stalled-response recovery
 
 **Decision**: Emit one structured operational record at each applicable turn boundary:
-`audio_committed`, `transcription_completed`, `response_requested`, `response_created`,
-`first_audio`, `response_done`, and terminal failure. Records contain only a one-way session
+`audio_committed`, `response_requested`, `response_created`, `first_audio`, `response_done`, and
+terminal failure. Records contain only a one-way session
 identifier, monotonic turn number, bounded phase/event code, timestamp, elapsed durations, and
 terminal reason. Start a separate 30-second watchdog when `response.create` is sent. Clear it on
 `response.done`, cancellation, or any terminal session path. If it expires, emit
@@ -61,17 +65,17 @@ terminal reason. Start a separate 30-second watchdog when `response.create` is s
 through the existing repository contract, and terminate through the standard provider-unavailable
 path.
 
-**Rationale**: Idle and maximum-session timers do not identify a single stalled provider response,
-and unrelated browser/provider activity can keep an otherwise stuck session alive. Phase timing
-shows whether delay occurred before transcription, response creation, or first audio without
-recording user content. A dedicated deadline makes the failure bounded and testable while remaining
-independent of the provider/model response-token limit prohibited by constitution v2.5.0.
+**Rationale**: A session-level timer does not identify a single stalled provider response. Phase
+timing shows whether delay occurred before response creation or first audio without recording user
+content. A dedicated per-response deadline makes the failure bounded and testable without limiting
+the conversation and remains independent of the provider/model response-token limit prohibited by
+constitution v2.8.0.
 
 **Alternatives considered**: Content-bearing logs remain prohibited in routine, preview, and
-production operation. Relying on the five-minute session timer leaves the user in a processing
-state too long. A browser-only timer cannot authoritatively cancel the provider or reconcile the
-server-side reservation. A response token ceiling is unrelated to latency and is constitutionally
-prohibited.
+production operation. The former five-minute session timer left the user in a processing state too
+long and is now rejected as a conversation limit. A browser-only timer cannot authoritatively
+cancel the provider or reconcile the server-side reservation. A response token ceiling is
+unrelated to latency and is constitutionally prohibited.
 
 ## Explicit local content diagnostics
 
@@ -81,7 +85,7 @@ permitted browser-to-relay, relay-to-provider, provider-to-relay, and relay-to-b
 after recursive sanitization. Transcripts, prompts, tool arguments/results, and non-sensitive
 provider/browser fields remain visible. Credential-shaped values, authorization/cookie material,
 raw session identities, and raw or encoded audio are replaced with bounded omission metadata. The
-sink is synchronous process output only; records are never stored or transported.
+default sink is synchronous process output only.
 
 **Rationale**: Phase timings identify where a stall occurs but cannot explain malformed provider
 events, prompts, capability calls, or results. An explicit developer-only trace gives enough
@@ -91,47 +95,122 @@ preview/production configuration. Centralized sanitization prevents individual c
 forgetting audio or secret removal.
 
 **Alternatives considered**: Always-on content logs, browser-controlled activation, Worker
-environment flags, persistent debug files, remote telemetry, and raw audio capture are rejected.
+environment flags, unbounded debug files, remote telemetry, and raw audio capture are rejected.
 Logging only selected tool events was also rejected because it would not diagnose ordering and
 provider-body failures; the permitted sanitized protocol stream is more complete and simpler to
 reason about.
 
-## Deterministic command routing and per-turn tools
+## Bounded persistent local audit
+
+**Decision**: Permit persistence only when local development mode, `NODE_ENV=development`,
+`REALTIME_CONTENT_DEBUG=true`, and `REALTIME_CONTENT_AUDIT=true` are all present before relay
+construction. Append already-sanitized records as JSONL to
+`outputs/realtime-content-audit/`, using owner-only permissions, rotation before 5 MiB, at most five
+files, and startup/rotation deletion after seven days. Store the first permitted large static
+configuration and compact later identical copies by fingerprint. Replace a single oversized record
+with a bounded fingerprint marker. Preserve actual provider transcript events, tool calls/results,
+errors, lifecycle, and validated terminal cause; never synthesize absent native-audio user text.
+Audit I/O failures warn safely and cannot change relay behavior.
+
+**Rationale**: Terminal output is truncated and disappears on restart, so it cannot reliably answer
+what happened in a completed multi-turn session. A separate startup gate prevents routine content
+debugging from silently becoming persistent. Bounded local storage retains enough evidence for
+later diagnosis without creating an application data store, remote telemetry system, or background
+retention service. Fingerprinting repeated configuration prevents large stable tool schemas from
+crowding out the conversational records developers need.
+
+**Alternatives considered**: Redirecting terminal output cannot enforce sanitization, permissions,
+rotation, or retention. Browser storage would expose content to application code and users.
+Application databases and remote observability would cross the approved privacy boundary.
+Persisting raw audio or locally inferring a user transcript is unnecessary and prohibited.
+
+## Provider-safe capability projection and configuration barrier
+
+**Decision**: Preserve canonical capability IDs such as `event.search` everywhere inside Amble.
+Project each canonical segment to a provider-only name joined by a reserved double underscore, for
+example `event__search`. Canonical segments cannot contain underscores, so this mapping is
+injective and reversible without a lookup guess; nevertheless the relay constructs and validates
+explicit forward and reverse maps and rejects collisions. Provider function calls are resolved
+through the reverse map before contract lookup.
+
+Treat every provider `session.update` as an asynchronous configuration barrier. Queue the opening
+or active-turn continuation, release it only after `session.updated`, and reject overlapping,
+missing, stale, or duplicate acknowledgements. A provider `error` is terminal and uses the existing
+provider-unavailable cleanup. The opening welcome is supplied only in the opening
+`response.create.instructions`; no persistent system item is created.
+
+**Rationale**: The live provider accepts function names containing letters, numbers, underscores,
+and hyphens, while Amble's canonical IDs deliberately contain dots. Replacing canonical IDs
+throughout the application would break stable identity and shared gateway contracts. A transport
+alias isolates the incompatibility at the correct boundary. Waiting for acknowledgement prevents
+the relay from speaking under default provider instructions after a rejected update. Removing the
+persistent welcome item prevents a one-turn exact-speech command from influencing later turns.
+
+**Alternatives considered**: Renaming every capability was rejected because transport syntax must
+not redefine domain identity. Blind dot-to-underscore replacement without collision validation was
+rejected as fragile. Sending `session.update` and relying only on WebSocket ordering was rejected
+because an invalid update is still processed in order but rejected; explicit acknowledgement is
+the only proof that Amble's configuration is active.
+
+## Bounded live provider validation
+
+**Decision**: After deterministic suites pass, run one owner-authorized live session containing the
+opening response and one representative typed turn, then stop. Inspect the persisted sanitized
+audit and fail the smoke if it lacks configuration acknowledgements, contains any provider error,
+repeats the opening unexpectedly, or leaves the session active.
+
+**Rationale**: The previous fake provider accepted an invalid function-name grammar, so deterministic
+tests alone could not prove the external contract. A two-response smoke is the smallest useful
+validation of initial configuration, per-turn configuration, instructions, response lifecycle,
+and cleanup while retaining the lifetime budget.
+
+**Alternatives considered**: A full exploratory conversation spends more budget and is less
+deterministic. Mock-only validation cannot surface provider schema drift. Running an unbounded live
+loop is prohibited.
+
+## Deterministic command routing and per-turn tools (superseded for native audio)
 
 **Decision**: Recognize a deliberately narrow set of obvious application commands in a bounded,
 side-effect-free browser interpreter. Execute recognized commands through the same capability
 gateway as direct controls, then let the model provide the conversational acknowledgement. Before
-each response, select only eligible capabilities from connector families indicated by the request
-and current overlay; exclude a deterministically routed capability from that turn's provider tools.
-For audio, wait for the final transcript before creating the response so this scope is available.
+each text response, select only eligible capabilities from connector families indicated by the
+request and current overlay; exclude a deterministically routed capability from that turn's
+provider tools. The earlier native-audio choice to expose foundational queries plus all
+context-eligible capabilities is superseded by the forced-ingress decision below.
 
 **Rationale**: Map camera and layer commands and deterministic event-filter phrases do not benefit
 from probabilistic tool selection. Shared gateway execution preserves schema, eligibility,
 confirmation, context-revision, and observable-result rules. Per-turn family selection avoids
-re-sending the previously observed 63-tool eligible set and reduces both prompt cost and tool-choice
-ambiguity.
+irrelevant tools when authoritative text exists. Forced native ingress supplies bounded routing
+text without adding a separate transcription service, so the broader current-state audio menu is
+no longer accepted.
 
-**Alternatives considered**: Sending the full eligible registry on every context refresh leaves
-tool selection entirely to the model and repeats irrelevant schemas. Building a second executor in
-the interpreter would bypass the registry and is rejected. Broad natural-language parsing is also
-rejected; unmatched requests remain with the scoped model path.
+**Alternatives considered**: Sending the full eligible registry on every context refresh repeats
+irrelevant schemas even when no turn is active. Waiting for an auxiliary transcript blocks
+native-audio response creation and is rejected. A second model/tool round trip solely to unlock a
+connector family adds latency and accounting complexity without improving authorization, because
+the gateway already validates every proposed capability. Building a second executor in the
+interpreter would bypass the registry and is rejected.
 
 ## Turn taking, interruption, and transcripts
 
 **Decision**: Use explicit microphone activation. Start with semantic voice activity detection for
 turn boundaries but keep provider automatic response creation disabled; the relay commits a bounded
-turn only after budget reservation. Enable interruption, cancel queued output on new speech, and
-provide push-to-talk and text input as fallbacks. Reconcile transcript deltas by provider item ID.
+native-audio turn only after response-budget reservation. Enable interruption, cancel queued output
+on new speech, and retain ordinary direct/text controls. Do not configure a separate
+input-transcription service for new audio turns.
 
 **Rationale**: Semantic detection better preserves hesitant conversational speech than silence-only
-detection, while server-controlled response creation retains spending authority. Item identity
-prevents duplicate or reordered transcript lines. Representative tests must cover Singlish,
-code-switching, place names, MRT announcements, and barge-in. See
+detection, while server-controlled response creation retains spending authority. The Realtime model
+accepts audio natively, so removing the transcription prerequisite eliminates redundant latency,
+cost, and failure state. Representative tests must cover Singlish, code-switching, place names, MRT
+announcements, and barge-in. See
 [voice activity detection](https://developers.openai.com/api/docs/guides/realtime-vad).
 
 **Alternatives considered**: Always-on listening violates the specification. Server VAD is simpler
-but more likely to cut off hesitant turns. Push-to-talk alone is less conversational and remains a
-fallback rather than the default.
+but more likely to cut off hesitant turns. A separate asynchronous transcript retained only for
+display or diagnostics was rejected because the product no longer exposes a live user transcript
+and the extra paid operation provides no required user value.
 
 ## Shared capability registry
 
@@ -365,10 +444,10 @@ assistant context. Persisting the last position would conflict with anonymous pr
 
 **Decision**: Arnav owns a single lifetime feature budget of `10_000_000` micro-USD. There is no
 automatic reset; an increase or reset requires an explicit owner-approved policy change. Store a D1
-singleton ledger and immutable reservations. Before accepting each audio-transcription turn and
-before the relay emits each `response.create`, atomically reserve a worst-case envelope using a
-pinned rate card and the provider/model intrinsic maximum output capacity. This accounting bound
-is not sent to the provider as a generation cutoff. Settle only from trusted provider usage. Missing or
+singleton ledger and immutable reservations. Before accepting each native-audio turn or emitting a
+text/opening `response.create`, atomically reserve the worst-case response envelope using a pinned
+rate card and the provider/model intrinsic maximum output capacity. This accounting bound is not
+sent to the provider as a generation cutoff. Settle only from trusted provider usage. Missing or
 unrecognized usage keeps the reservation held and disables new work when safety cannot be proven.
 
 **Rationale**: `spent + reserved + nextReservation <= cap` makes application authorization atomic
@@ -406,6 +485,95 @@ must not promise provider-side deletion. See
 **Alternatives considered**: A generic `paid` cost class would accidentally authorize unrelated
 providers. Silent paid fallback would violate the constitution. Persisting transcripts for resume
 would create a new personal-data lifecycle without user need.
+
+## One atomic event-query tool for native audio
+
+**Decision**: Project `event.applyquery` as the sole native-audio event discovery and filter
+mutation tool. It receives the complete spoken request and handles one or several filters through
+the same replace, refine, or remove contract. Keep `event.search`, `event.setfilter`,
+`event.removefilter`, `event.clearfilters`, and legacy setters as application/direct-control
+capabilities, but do not offer them to the Realtime model.
+
+**Rationale**: Offering both a free-text search command and the atomic sentence interpreter lets
+the model choose a lossy path for compound requests such as “today at Marina Bay Sands.” One
+provider-facing event-query route prevents partial intent loss without adding transcription,
+duplicating parsing, or changing authoritative event behavior.
+
+**Alternatives considered**: Prompting the model to prefer `event.applyquery` leaves the incorrect
+tool callable. Removing lower-level commands from the shared registry would break direct semantic
+controls and parity. Restoring transcript-gated routing would add latency and a redundant paid
+operation.
+
+## Forced native ingress with progressive tool disclosure
+
+**Decision**: On audio commit, expose and force exactly one provider-only
+`voice.submitutterance` function. Its closed argument contains the complete bounded utterance heard
+by the existing Realtime model. Bind context revision in the relay, run the existing deterministic
+text-turn router, execute deterministic capabilities directly, and expose at most one routed
+connector family only when a second model choice is genuinely required.
+
+**Rationale**: Native audio supplies no relay-visible transcript before the model responds, so
+request-specific tool scoping cannot happen before that response. Forcing one function uses the
+same native model to produce bounded routing text without restoring a separate transcription
+service. The Realtime API supports forcing a specific function through `tool_choice`, and
+`session.update` can replace the active tool list between stages. The design removes the model's
+56-way initial choice, prevents broad catalogue search from competing with event interpretation,
+and reuses the already tested typed-turn router rather than creating voice-only business logic.
+
+**Alternatives considered**: Keeping `tool_choice: auto` with better descriptions cannot guarantee
+selection. Exposing only 10–15 top-level domain tools reduces noise but still lets overlapping
+domains compete. A generic dispatcher accepting arbitrary capability IDs would duplicate the
+capability gateway and weaken per-command schemas. Restoring input transcription would recreate
+the latency, cost, and lifecycle dependency removed by FR-059–FR-064.
+
+## Same-response OpenAI event facets with deterministic verification
+
+**Decision**: Extend the existing forced native-ingress function arguments with an event-domain
+proposal containing evidence-backed What, When, Where, Price, residual, and unresolved fields.
+OpenAI proposes natural-language labels in the same Realtime response that captures the utterance.
+Pure application code resolves only unique labels from the current bounded facet catalogue and
+either passes the verified proposal to `event.applyquery` or returns clarification with no partial
+mutation.
+
+**Rationale**: The observed native phrase “can you please find events in my device and today”
+showed that regex-only classification retained command boilerplate and an unrecognized
+location-shaped fragment as search text. The Realtime model already hears the complete utterance
+and can classify natural paraphrases without a second provider call. Catalogue-bound verification,
+evidence checks, current revisions, and the shared executor keep model output non-authoritative.
+Voice-only scope preserves the free deterministic typed/direct experience.
+
+**Alternatives considered**: A second Realtime response or separate classifier API adds latency,
+spend, reservation state, and another failure boundary. Fully deterministic parsing cannot cover
+open natural phrasing and recognition substitutions without an expanding alias list. Fully
+model-owned execution can invent options or bypass current context. Sending raw full event records
+would exceed the classifier's need and broaden privacy and prompt surface; the compact catalogue
+contains only approved filter labels grouped by facet.
+
+**Provider evidence**: The official
+[Realtime API reference](https://platform.openai.com/docs/api-reference/realtime?lang=javascript)
+documents `auto`, `required`, and a specific forced function as supported tool-choice modes. The
+official
+[Realtime client-events reference](https://platform.openai.com/docs/api-reference/realtime-client-events)
+documents replacing the active session tool list through `session.update`.
+
+## Relay-owned live reliability
+
+**Decision**: Treat Realtime tool arguments and fixed speech as stochastic transport output, not
+authority. Canonicalize only bounded shape-equivalent ingress, independently verify the domain with
+the deterministic application router, buffer tool-stage commentary, and validate fixed-response
+transcripts before releasing audio. Retry one malformed fixed response within the existing
+three-stage turn guard.
+
+**Rationale**: The live matrix observed semantically identical fields at the root and under
+`eventQuery`, `eventWhere` aliases, null unused facets, missing required utterances, incorrect event
+domain guesses, tool preambles, and spoken instruction delimiters. Prompt changes alone did not
+eliminate these variants. Relay-owned normalization and validation preserve application semantics
+without hardcoding the sixteen utterances or trusting the model to execute state.
+
+**Alternatives considered**: Strictly terminating every equivalent shape causes avoidable user
+failures. Trusting the provider domain or event proposal permits incorrect mutation. Releasing
+audio before transcript validation exposes preambles and delimiters. Adding an unbounded retry
+loop weakens cost and lifecycle guarantees.
 
 ## Mobile and security-header compatibility
 

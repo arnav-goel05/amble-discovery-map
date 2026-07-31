@@ -10,9 +10,7 @@ import {
 } from "../approved-snapshot.mjs";
 import { assessEventDateQuality } from "./date-quality-audit.mjs";
 import { normalizeSchedule } from "../event-sources/activity-policy.mjs";
-import {
-  parseEnumeratedSchedule,
-} from "../event-sources/schedule-semantics.mjs";
+import { parseEnumeratedSchedule } from "../event-sources/schedule-semantics.mjs";
 import { projectEventActivities } from "./activity-projection.mjs";
 
 const require = createRequire(import.meta.url);
@@ -97,15 +95,13 @@ export function reuseApprovedVenueEvidence(events) {
       ...event,
       venue: publishedVenueName ?? event.venue,
       venueName: publishedVenueName ?? event.venueName,
-      address:
-        match.occurrence.address ?? match.event.address ?? event.address,
+      address: match.occurrence.address ?? match.event.address ?? event.address,
       coordinates: match.event.coordinates ?? event.coordinates,
       publicPlacement: "mapped",
       mappingStatus: "approved",
       approvedLocationId,
       venueOccurrences: (event.venueOccurrences ?? []).map((occurrence) =>
-        occurrence.venueOccurrenceId ===
-        match.occurrence.venueOccurrenceId
+        occurrence.venueOccurrenceId === match.occurrence.venueOccurrenceId
           ? {
               ...occurrence,
               publishedVenueName:
@@ -135,7 +131,9 @@ function existingStage(root, snapshotId, sourceSnapshotId) {
     repair?.version !== REPAIR_VERSION ||
     repair?.sourceSnapshotId !== sourceSnapshotId
   )
-    throw new Error(`schedule_semantics_repair_snapshot_collision:${snapshotId}`);
+    throw new Error(
+      `schedule_semantics_repair_snapshot_collision:${snapshotId}`,
+    );
   return {
     snapshotId,
     snapshotDirectory,
@@ -170,7 +168,7 @@ function exactOccurrence(event, performance, activityId, split) {
   const start = performance.startDateTime;
   const repairedId = split
     ? `${event.occurrenceId ?? event.id}#schedule:${start}`
-    : event.occurrenceId ?? event.id;
+    : (event.occurrenceId ?? event.id);
   const schedule = {
     kind: "exact",
     start,
@@ -178,7 +176,9 @@ function exactOccurrence(event, performance, activityId, split) {
     recurrence: null,
     sessionRefs: [],
     displayText:
-      [performance.dateText, performance.timeText].filter(Boolean).join(" · ") ||
+      [performance.dateText, performance.timeText]
+        .filter(Boolean)
+        .join(" · ") ||
       (event.schedule?.displayText ?? event.dateText ?? start),
     finalKnownOccurrence: start,
     evidenceReasonCode:
@@ -219,10 +219,7 @@ function normalizeRepairedEvent(event) {
   let supplied = event.schedule ?? {};
   const concreteStart =
     event.schedule?.start ?? event.startDateTime ?? event.startsAt ?? null;
-  if (
-    supplied.kind === "selectable" &&
-    strictTimedStart(concreteStart)
-  )
+  if (supplied.kind === "selectable" && strictTimedStart(concreteStart))
     supplied = {
       ...supplied,
       kind: "exact",
@@ -256,10 +253,7 @@ function normalizeRepairedEvent(event) {
         event,
       ),
     );
-  if (
-    schedule.kind === "range" &&
-    (!schedule.start || !schedule.end)
-  )
+  if (schedule.kind === "range" && (!schedule.start || !schedule.end))
     Object.assign(
       schedule,
       normalizeSchedule(
@@ -340,7 +334,9 @@ export function repairScheduleEvents({ events, previousActivities }) {
         event.schedule?.start ?? event.startDateTime ?? event.startsAt;
       const matching = performanceByDay.get(singaporeDay(currentStart));
       if (matching && !strictTimedStart(currentStart)) {
-        repaired.push(exactOccurrence(event, matching, activity.activityId, false));
+        repaired.push(
+          exactOccurrence(event, matching, activity.activityId, false),
+        );
         audit.coarseOccurrencesEnriched += 1;
       } else repaired.push(attachApprovedParent(event, activity.activityId));
     }
@@ -352,10 +348,7 @@ export function repairScheduleEvents({ events, previousActivities }) {
   const concreteSchedulesExactified = repaired.filter((event) => {
     const start =
       event.schedule?.start ?? event.startDateTime ?? event.startsAt;
-    return (
-      event.schedule?.kind === "selectable" &&
-      strictTimedStart(start)
-    );
+    return event.schedule?.kind === "selectable" && strictTimedStart(start);
   }).length;
   const normalizedEvents = repaired.map(normalizeRepairedEvent);
   const unsupportedBoundariesHeld = normalizedEvents.filter(
@@ -366,17 +359,20 @@ export function repairScheduleEvents({ events, previousActivities }) {
   audit.concreteSchedulesExactified = concreteSchedulesExactified;
   audit.unsupportedBoundariesHeld = unsupportedBoundariesHeld;
   return {
-    events: normalizedEvents
-      .sort((a, b) =>
-        String(a.occurrenceId ?? a.id).localeCompare(
-          String(b.occurrenceId ?? b.id),
-        ),
+    events: normalizedEvents.sort((a, b) =>
+      String(a.occurrenceId ?? a.id).localeCompare(
+        String(b.occurrenceId ?? b.id),
       ),
+    ),
     audit,
   };
 }
 
-function repairLandmarks(activeLandmarks, internalActivities, publicActivities) {
+function repairLandmarks(
+  activeLandmarks,
+  internalActivities,
+  publicActivities,
+) {
   const activitiesByLandmark = new Map();
   for (const activity of internalActivities.records)
     for (const group of activity.venueGroups ?? []) {
@@ -415,8 +411,7 @@ function validateScheduleIntegrity(activities) {
         );
       if (
         schedule.kind === "range" &&
-        (!strict.test(schedule.start ?? "") ||
-          !strict.test(schedule.end ?? ""))
+        (!strict.test(schedule.start ?? "") || !strict.test(schedule.end ?? ""))
       )
         throw new Error(
           `schedule_semantics_repair_range_boundary_invalid:${session.sessionId}`,
@@ -454,7 +449,9 @@ export function repairScheduleSemanticsSnapshot({
     throw new Error("schedule_semantics_repair_requires_activity_snapshot");
 
   const internal = read(path.join(active.directory, active.internalEventsRef));
-  const activeLandmarks = read(path.join(active.directory, active.landmarksRef));
+  const activeLandmarks = read(
+    path.join(active.directory, active.landmarksRef),
+  );
   const activeEvents = [...(internal.mapped ?? []), ...(internal.offMap ?? [])];
   const recoveredDateReviews = recoveredDateReviewEvents(
     root,

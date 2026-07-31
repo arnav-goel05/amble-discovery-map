@@ -1,31 +1,29 @@
-const MONTHS = new Map(
-  [
-    ["jan", 1],
-    ["january", 1],
-    ["feb", 2],
-    ["february", 2],
-    ["mar", 3],
-    ["march", 3],
-    ["apr", 4],
-    ["april", 4],
-    ["may", 5],
-    ["jun", 6],
-    ["june", 6],
-    ["jul", 7],
-    ["july", 7],
-    ["aug", 8],
-    ["august", 8],
-    ["sep", 9],
-    ["sept", 9],
-    ["september", 9],
-    ["oct", 10],
-    ["october", 10],
-    ["nov", 11],
-    ["november", 11],
-    ["dec", 12],
-    ["december", 12],
-  ],
-);
+const MONTHS = new Map([
+  ["jan", 1],
+  ["january", 1],
+  ["feb", 2],
+  ["february", 2],
+  ["mar", 3],
+  ["march", 3],
+  ["apr", 4],
+  ["april", 4],
+  ["may", 5],
+  ["jun", 6],
+  ["june", 6],
+  ["jul", 7],
+  ["july", 7],
+  ["aug", 8],
+  ["august", 8],
+  ["sep", 9],
+  ["sept", 9],
+  ["september", 9],
+  ["oct", 10],
+  ["october", 10],
+  ["nov", 11],
+  ["november", 11],
+  ["dec", 12],
+  ["december", 12],
+]);
 
 const MONTH_PATTERN =
   "Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?";
@@ -70,10 +68,7 @@ export function normalizeSingaporeTimestamp(
     ),
   );
   const compact = text.match(
-    new RegExp(
-      `^(\\d{1,2})\\s+(${MONTH_PATTERN})\\s+[’']?(\\d{2})$`,
-      "i",
-    ),
+    new RegExp(`^(\\d{1,2})\\s+(${MONTH_PATTERN})\\s+[’']?(\\d{2})$`, "i"),
   );
   if (!human && !monthFirst && !compact) return null;
   const day = Number(human?.[1] ?? monthFirst?.[2] ?? compact[1]);
@@ -116,9 +111,7 @@ function validCalendarDate(year, month, day) {
 
 function parseClock(value) {
   if (typeof value !== "string") return null;
-  const match = value.match(
-    /\b(\d{1,2})(?:(?::|\.)(\d{2}))?\s*(am|pm)\b/i,
-  );
+  const match = value.match(/\b(\d{1,2})(?:(?::|\.)(\d{2}))?\s*(am|pm)\b/i);
   if (!match) return null;
   let hour = Number(match[1]);
   const minute = Number(match[2] ?? 0);
@@ -170,11 +163,13 @@ function dateMatches(text) {
     );
   }
 
-  return [...new Map(
-    matches
-      .sort((a, b) => a.index - b.index)
-      .map((item) => [`${item.index}:${item.day}:${item.month}`, item]),
-  ).values()];
+  return [
+    ...new Map(
+      matches
+        .sort((a, b) => a.index - b.index)
+        .map((item) => [`${item.index}:${item.day}:${item.month}`, item]),
+    ).values(),
+  ];
 }
 
 export function parseEnumeratedSchedule(displayText) {
@@ -184,9 +179,9 @@ export function parseEnumeratedSchedule(displayText) {
       : "";
   const rangeConnector = /\s[-–—]\s|\b(?:to|until|through)\b/i.test(text);
   const years = text.match(/\b20\d{2}\b/g) ?? [];
-  const timedClauses = text.match(/\b\d{1,2}(?:(?::|\.)\d{2})?\s*(?:am|pm)\b/gi) ?? [];
-  const enumerationEvidence =
-    text.includes("&") || years.length >= 2;
+  const timedClauses =
+    text.match(/\b\d{1,2}(?:(?::|\.)\d{2})?\s*(?:am|pm)\b/gi) ?? [];
+  const enumerationEvidence = text.includes("&") || years.length >= 2;
   if (!text || rangeConnector || !enumerationEvidence)
     return { performances: [], reasonCode: "not_enumerated" };
 
@@ -204,10 +199,7 @@ export function parseEnumeratedSchedule(displayText) {
     const next = matches[index + 1];
     const localText = text.slice(item.endIndex, next?.index ?? text.length);
     const clock = parseClock(localText) ?? globalClock ?? "00:00";
-    if (
-      !item.month ||
-      !validCalendarDate(item.year, item.month, item.day)
-    )
+    if (!item.month || !validCalendarDate(item.year, item.month, item.day))
       return null;
     const date = `${item.year}-${pad(item.month)}-${pad(item.day)}`;
     return {
@@ -225,9 +217,7 @@ export function parseEnumeratedSchedule(displayText) {
   if (performances.some((item) => item == null))
     return { performances: [], reasonCode: "enumeration_invalid_date" };
   const unique = [
-    ...new Map(
-      performances.map((item) => [item.startDateTime, item]),
-    ).values(),
+    ...new Map(performances.map((item) => [item.startDateTime, item])).values(),
   ];
   return unique.length >= 2
     ? { performances: unique, reasonCode: "enumerated_dates_parsed" }

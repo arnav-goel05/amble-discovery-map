@@ -161,7 +161,11 @@ test("review identity is stable for unchanged evidence and changes with evidence
       },
     },
     assessment,
-    { ...options, sourceRecordRef: "raw/example.json#/records/0", occurrenceIndex: 0 },
+    {
+      ...options,
+      sourceRecordRef: "raw/example.json#/records/0",
+      occurrenceIndex: 0,
+    },
   );
   assert.equal(first.reviewId, repeated.reviewId);
   assert.notEqual(first.reviewId, changed.reviewId);
@@ -254,7 +258,8 @@ test("date-review artifact validation rejects overlap and unknown reasons", () =
   };
   assert.equal(validateDateReviewArtifact(envelope), envelope);
   assert.throws(
-    () => validateDateReviewArtifact(envelope, { acceptedEventIds: [event.id] }),
+    () =>
+      validateDateReviewArtifact(envelope, { acceptedEventIds: [event.id] }),
     /both accepted and held/,
   );
   assert.throws(

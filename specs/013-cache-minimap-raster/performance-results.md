@@ -10,15 +10,15 @@ Evidence:
 - `outputs/map-performance-diagnostics/issue-2-minimap-cache/report.json`
 - `outputs/map-performance-diagnostics/issue-2-minimap-cache-reversed/report.json`
 
-| Metric (median of 6) | Legacy redraw | Cached raster | Change |
-| --- | ---: | ---: | ---: |
-| Minimap movement render time | 701.6 ms | 1.9 ms | 99.7% lower |
-| Static raster builds during movement | 45 | 0 | eliminated |
-| Average FPS | 52.10 | 52.93 | 1.6% higher |
-| Worst frame | 233.1 ms | 232.9 ms | effectively unchanged |
-| Long-task time | 240 ms | 240 ms | unchanged |
-| Median frame | 16.7 ms | 16.7 ms | unchanged |
-| p95 frame | 17.7 ms | 17.6 ms | effectively unchanged |
+| Metric (median of 6)                 | Legacy redraw | Cached raster |                Change |
+| ------------------------------------ | ------------: | ------------: | --------------------: |
+| Minimap movement render time         |      701.6 ms |        1.9 ms |           99.7% lower |
+| Static raster builds during movement |            45 |             0 |            eliminated |
+| Average FPS                          |         52.10 |         52.93 |           1.6% higher |
+| Worst frame                          |      233.1 ms |      232.9 ms | effectively unchanged |
+| Long-task time                       |        240 ms |        240 ms |             unchanged |
+| Median frame                         |       16.7 ms |       16.7 ms |             unchanged |
+| p95 frame                            |       17.7 ms |       17.6 ms | effectively unchanged |
 
 The component-level optimization is decisive and exceeds the 80% requirement. The
 whole-scene result is intentionally reported as **no material improvement**: after Issue 1,

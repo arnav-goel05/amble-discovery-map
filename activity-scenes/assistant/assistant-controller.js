@@ -32,12 +32,14 @@ import { createSessionLifecycleRouter } from "./session-lifecycle-router.js";
 import { createDomainIntentRouter } from "./interpreters/domain-intent-router.js";
 import { interpretEventQuery } from "./interpreters/event-query-interpreter.js";
 import { interpretObviousCommand } from "./interpreters/obvious-command-interpreter.js";
+import { selectCapabilityTurnScope } from "./capability-turn-scope.js";
 import { normalizeOptionLabel } from "../events/event-filter-options.js";
 import { createConfirmationController } from "./confirmation-controller.js";
 import { createInterfaceContext } from "./interface-context.js";
 import {
   createBrowserPcmCapture,
   createBrowserPcmPlayback,
+  createPostPlaybackSpeechGuard,
 } from "./browser-audio-io.js";
 export { ASSISTANT_OWNED_ACTION_IDS } from "./assistant-owned-actions.js";
 
@@ -68,6 +70,7 @@ export function createAssistantController({
   audioControllerFactory = createAudioController,
   captureFactory = createBrowserPcmCapture,
   audioPlayback = createBrowserPcmPlayback(),
+  postPlaybackSpeechGuard = createPostPlaybackSpeechGuard(),
 } = {}) {
   let relay = null;
   let audioController = null;
@@ -913,6 +916,12 @@ export function createAssistantController({
           catalog: { all, groups },
         });
         if (
+          interpretation.outcome === "clarification_required" &&
+          argumentsValue.facetProposal
+        ) {
+          // The event owner returns the browser-visible clarification result
+          // without mutating state.
+        } else if (
           interpretation.outcome !== "applicable" ||
           interpretation.proposedCalls.length !== 1
         ) {
@@ -923,8 +932,7 @@ export function createAssistantController({
           );
           error.code = "invalid_action_result";
           throw error;
-        }
-        argumentsValue = interpretation.proposedCalls[0].arguments;
+        } else argumentsValue = interpretation.proposedCalls[0].arguments;
       }
       if (message.capabilityId === "discovery.presentareas") {
         if (!activeCatalogPage)
@@ -1118,6 +1126,7 @@ export function createAssistantController({
 
   const onRelayEvent = (message) => {
     if (message.type === "session.state") {
+      postPlaybackSpeechGuard.observeState(message.state);
       relayReady = message.state === "listening";
       view.setVoiceState(message.state);
       if (relayReady) void publishCapabilityContext({ force: true });
@@ -1197,7 +1206,10 @@ export function createAssistantController({
 
   function beginAudioTurn() {
     if (muted || activeTurnId) return false;
-    if (relayReady) return startReservedAudioTurn();
+    if (relayReady) {
+      if (!postPlaybackSpeechGuard.allowsSpeech()) return false;
+      return startReservedAudioTurn();
+    }
     if (!explicitBargeIn) return false;
     if (!sessionStarted || bargeInPending) return false;
     bargeInPending = true;
@@ -1388,12 +1400,26 @@ export function createAssistantController({
     const context = contextCoordinator.snapshot();
     const eventState = eventConnector?.snapshot();
     const composerState = eventState?.activeFilters?.eventComposerState;
-    const proposal = interpretObviousCommand({
+    let proposal = interpretObviousCommand({
       text,
       baseContextRevision:
         composerState?.contextRevision ?? context.revision ?? 0,
       catalogRevision: composerState?.catalogRevision ?? null,
     });
+    if (!proposal) {
+      const scope = selectCapabilityTurnScope({
+        utterance: text,
+        availableCapabilityIds: context.availableCapabilityIds ?? [],
+        activeOverlayId: context.activeOverlayId ?? null,
+        baseContextRevision: context.revision ?? 0,
+        catalogRevision: composerState?.catalogRevision ?? null,
+      });
+      if (scope.deterministicCapabilityId)
+        proposal = {
+          capabilityId: scope.deterministicCapabilityId,
+          arguments: scope.deterministicArguments,
+        };
+    }
     if (!proposal) return null;
     const contract = capabilityRegistry.get(proposal.capabilityId);
     const message = {

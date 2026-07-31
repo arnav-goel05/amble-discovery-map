@@ -73,6 +73,7 @@ test("scopes requests to relevant connector families instead of the full registr
       families: ["restaurant"],
       capabilityIds: ["restaurant.search", "restaurant.open"],
       deterministicCapabilityId: null,
+      deterministicArguments: null,
     },
   );
   assert.deepEqual(
@@ -84,6 +85,12 @@ test("scopes requests to relevant connector families instead of the full registr
       families: ["event"],
       capabilityIds: ["event.select"],
       deterministicCapabilityId: "event.applyquery",
+      deterministicArguments: {
+        text: "find free events",
+        mode: "replace",
+        baseContextRevision: 0,
+        catalogRevision: "turn-scope",
+      },
     },
   );
 });
@@ -99,6 +106,7 @@ test("uses current interface state for an otherwise unclassified turn", () => {
       families: ["plan"],
       capabilityIds: ["plan.addstop", "plan.removeitem"],
       deterministicCapabilityId: null,
+      deterministicArguments: null,
     },
   );
 });
@@ -115,6 +123,7 @@ test("uses connector metadata to expose overlay-navigation capabilities", () => 
       families: ["navigation"],
       capabilityIds: ["navigation.closeoverlay", "navigation.openexternal"],
       deterministicCapabilityId: null,
+      deterministicArguments: null,
     },
   );
   assert.deepEqual(
@@ -128,6 +137,7 @@ test("uses connector metadata to expose overlay-navigation capabilities", () => 
       families: ["navigation"],
       capabilityIds: ["navigation.closeoverlay", "navigation.openexternal"],
       deterministicCapabilityId: null,
+      deterministicArguments: null,
     },
   );
 });
@@ -143,6 +153,107 @@ test("unknown turns receive no unrelated command families", () => {
       families: [],
       capabilityIds: [],
       deterministicCapabilityId: null,
+      deterministicArguments: null,
+    },
+  );
+});
+
+const automatedRoutingScenarios = [
+  {
+    name: "date plus nearby location",
+    utterance: "find events today nearby in my area",
+    activeOverlayId: "events",
+    expectedFamilies: ["event"],
+    expectedCapabilityId: "event.applyquery",
+  },
+  {
+    name: "type, price, date, and named venue",
+    utterance: "find free exhibitions this weekend at Marina Bay Sands",
+    activeOverlayId: "events",
+    expectedFamilies: ["event"],
+    expectedCapabilityId: "event.applyquery",
+  },
+  {
+    name: "single event filter",
+    utterance: "find concerts tomorrow",
+    activeOverlayId: "events",
+    expectedFamilies: ["event"],
+    expectedCapabilityId: "event.applyquery",
+  },
+  {
+    name: "event follow-up using current overlay",
+    utterance: "only the free ones",
+    activeOverlayId: "events",
+    expectedFamilies: ["event"],
+    expectedCapabilityId: "event.applyquery",
+  },
+  {
+    name: "restaurant compound request",
+    utterance: "find a restaurant deal nearby",
+    activeOverlayId: null,
+    expectedFamilies: ["restaurant"],
+    expectedCapabilityId: null,
+  },
+  {
+    name: "obvious map command",
+    utterance: "zoom in",
+    activeOverlayId: null,
+    expectedFamilies: ["map"],
+    expectedCapabilityId: "map.zoomin",
+  },
+  {
+    name: "mixed domains require clarification",
+    utterance: "find events and restaurants",
+    activeOverlayId: null,
+    expectedFamilies: [],
+    expectedCapabilityId: null,
+  },
+  {
+    name: "unsupported general request exposes nothing",
+    utterance: "tell me tomorrow's weather",
+    activeOverlayId: null,
+    expectedFamilies: [],
+    expectedCapabilityId: null,
+  },
+];
+
+for (const scenario of automatedRoutingScenarios) {
+  test(`automated native routing matrix: ${scenario.name}`, () => {
+    const scope = selectCapabilityTurnScope({
+      utterance: scenario.utterance,
+      availableCapabilityIds,
+      capabilityFamilies,
+      activeOverlayId: scenario.activeOverlayId,
+      baseContextRevision: 14,
+      catalogRevision: "events:v14",
+    });
+
+    assert.deepEqual(scope.families, scenario.expectedFamilies);
+    assert.equal(
+      scope.deterministicCapabilityId,
+      scenario.expectedCapabilityId,
+    );
+    if (scenario.expectedCapabilityId === "event.applyquery") {
+      assert.equal(scope.deterministicArguments.baseContextRevision, 14);
+      assert.equal(scope.deterministicArguments.text, scenario.utterance);
+    }
+    assert.ok(scope.capabilityIds.length <= 15);
+  });
+}
+
+test("mixed-domain requests expose no action family instead of choosing one", () => {
+  assert.deepEqual(
+    selectCapabilityTurnScope({
+      utterance: "find events and restaurants",
+      availableCapabilityIds,
+      capabilityFamilies,
+      catalogRevision: "events:v1",
+    }),
+    {
+      families: [],
+      capabilityIds: [],
+      deterministicCapabilityId: null,
+      deterministicArguments: null,
     },
   );
 });

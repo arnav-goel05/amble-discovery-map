@@ -27,15 +27,11 @@ export function createAssistantView({
   open.dataset.testid = "assistant-open";
   open.setAttribute("aria-expanded", "false");
   open.setAttribute("aria-label", "Speak to Amble");
-  const orbFrame = element("span", "assistant-orb-frame");
-  orbFrame.setAttribute("aria-hidden", "true");
-  const orb = element("img", "assistant-orb");
-  orb.dataset.testid = "assistant-voice-orb";
-  orb.src = "/brand/amble-voice-orb.png";
-  orb.alt = "";
-  orb.width = 64;
-  orb.height = 64;
-  orbFrame.append(orb);
+  const voiceDots = element("span", "assistant-voice-dots");
+  voiceDots.dataset.testid = "assistant-voice-dots";
+  voiceDots.setAttribute("aria-hidden", "true");
+  for (let index = 0; index < 3; index += 1)
+    voiceDots.append(element("span", "assistant-voice-dot"));
   const openCopy = element("span", "assistant-open__copy");
   const openTitle = element("span", "assistant-open__title", "Speak to Amble");
   const livePreview = element(
@@ -49,7 +45,7 @@ export function createAssistantView({
   microphone.dataset.testid = "assistant-microphone-icon";
   microphone.setAttribute("aria-hidden", "true");
   microphone.append(element("i", "ph-bold ph-microphone"));
-  open.append(microphone, orbFrame, openCopy);
+  open.append(microphone, voiceDots, openCopy);
 
   const shell = element("div", "assistant-shell frosted-control-bar");
   shell.dataset.expanded = "false";

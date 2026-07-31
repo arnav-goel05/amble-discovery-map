@@ -56,11 +56,9 @@ async function installProtocolHarness(page) {
           protocolVersion: "1.1",
           streamPath:
             "/api/voice/sessions/transit-location-voice-session/stream",
-          expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
           limits: {
-            maxSessionSeconds: 300,
-            idleSeconds: 60,
-            maxResponses: 6,
+            maxResponseStagesPerTurn: 3,
+            responseTimeoutSeconds: 30,
           },
         },
       }),

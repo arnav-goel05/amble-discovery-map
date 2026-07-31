@@ -3,12 +3,23 @@
   "$id": "background-geometry-release.schema.json",
   "title": "Background Geometry Release Descriptor",
   "type": "object",
-  "required": ["schemaVersion", "releaseId", "snapshotId", "tilesetUrl", "objectCount", "manifestSha256", "verifiedAt"],
+  "required": [
+    "schemaVersion",
+    "releaseId",
+    "snapshotId",
+    "tilesetUrl",
+    "objectCount",
+    "manifestSha256",
+    "verifiedAt"
+  ],
   "properties": {
     "schemaVersion": { "const": "background-geometry-release-v1" },
     "releaseId": { "type": "string", "pattern": "^[a-f0-9]{16}$" },
     "snapshotId": { "type": "string", "minLength": 1 },
-    "tilesetUrl": { "type": "string", "pattern": "^optimized-tiles/tileset\\.json\\?backgroundRelease=[a-f0-9]{16}$" },
+    "tilesetUrl": {
+      "type": "string",
+      "pattern": "^optimized-tiles/tileset\\.json\\?backgroundRelease=[a-f0-9]{16}$"
+    },
     "objectCount": { "type": "integer", "minimum": 1 },
     "manifestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "verifiedAt": { "type": "string", "format": "date-time" }

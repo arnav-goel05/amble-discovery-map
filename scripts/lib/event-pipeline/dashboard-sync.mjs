@@ -248,8 +248,7 @@ export function buildEventDashboardPayload({
 
   const sources = Object.entries(status.sources ?? {})
     .filter(([sourceName]) => SOURCE_IDS[sourceName])
-    .map(
-    ([sourceName, source]) => {
+    .map(([sourceName, source]) => {
       const counts = source.counts ?? {};
       const outcomes = placement[sourceName] ?? {
         mapped: 0,
@@ -295,8 +294,7 @@ export function buildEventDashboardPayload({
         reasons: reasons[sourceName] ?? {},
         fields: fieldCounts(counts),
       };
-    },
-  );
+    });
 
   return {
     schemaVersion: "1.0",

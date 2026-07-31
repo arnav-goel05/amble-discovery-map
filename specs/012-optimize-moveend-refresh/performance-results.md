@@ -9,15 +9,15 @@
 Both modes completed the same full discovery pass before motion, closed the search UI, and
 then ran the same map route. The only changed workload was the move-end refresh mode.
 
-| Metric (median of 3) | Legacy full refresh | Viewport-only refresh | Change |
-| --- | ---: | ---: | ---: |
-| Move-end refresh duration | 449.6 ms | 11.4 ms | 97.5% lower |
-| Full discovery count after route | 3 | 2 | 1 repeated pass removed |
-| Average FPS | 44.87 | 52.85 | 17.8% higher |
-| Worst frame | 483.3 ms | 201.4 ms | 58.3% lower |
-| Long-task time | 484 ms | 216 ms | 55.4% lower |
-| Median frame | 16.7 ms | 16.7 ms | unchanged |
-| p95 frame | 18.7 ms | 18.6 ms | effectively unchanged |
+| Metric (median of 3)             | Legacy full refresh | Viewport-only refresh |                  Change |
+| -------------------------------- | ------------------: | --------------------: | ----------------------: |
+| Move-end refresh duration        |            449.6 ms |               11.4 ms |             97.5% lower |
+| Full discovery count after route |                   3 |                     2 | 1 repeated pass removed |
+| Average FPS                      |               44.87 |                 52.85 |            17.8% higher |
+| Worst frame                      |            483.3 ms |              201.4 ms |             58.3% lower |
+| Long-task time                   |              484 ms |                216 ms |             55.4% lower |
+| Median frame                     |             16.7 ms |               16.7 ms |               unchanged |
+| p95 frame                        |             18.7 ms |               18.6 ms |   effectively unchanged |
 
 The two pre-route discovery passes are intentional and identical: one initializes the
 density model and one primes the search result. Only the legacy mode performs the third

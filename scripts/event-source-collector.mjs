@@ -601,8 +601,7 @@ function detailUrlForListing(source, listing) {
     const slug = decodeURIComponent(
       new URL(publicUrl).pathname.split("/").filter(Boolean).at(-1) ?? "",
     );
-    if (!slug || slug.startsWith("*"))
-      return { invalid: "invalid_detail_url" };
+    if (!slug || slug.startsWith("*")) return { invalid: "invalid_detail_url" };
     return { publicUrl };
   } catch {
     return { invalid: "invalid_detail_url" };
@@ -671,7 +670,8 @@ function parseSisticEventDateNotes(notes, dateText) {
     ),
   ];
   const fallbackDate =
-    fallbackDates.length === 1 && !/\b(?:to|until|through)\b|\s[-–—]\s/i.test(dateText ?? "")
+    fallbackDates.length === 1 &&
+    !/\b(?:to|until|through)\b|\s[-–—]\s/i.test(dateText ?? "")
       ? sisticDate(fallbackDates[0][0])
       : null;
   const performances = [];
@@ -681,10 +681,9 @@ function parseSisticEventDateNotes(notes, dateText) {
     if (!clocks.length) continue;
     const date = sisticDate(line) ?? fallbackDate;
     const separator =
-      clocks.length >= 2
-        ? line.slice(clocks[0].endIndex, clocks[1].index)
-        : "";
-    const isRange = clocks.length === 2 && /^\s*(?:[-–—]|to)\s*$/i.test(separator);
+      clocks.length >= 2 ? line.slice(clocks[0].endIndex, clocks[1].index) : "";
+    const isRange =
+      clocks.length === 2 && /^\s*(?:[-–—]|to)\s*$/i.test(separator);
     timeLabels.push(
       isRange
         ? `${clocks[0].display} - ${clocks[1].display}`
@@ -827,8 +826,7 @@ export function mapSisticDetail(detail, listing, detailUrl, listingPage) {
     if (occurrences.length >= 2) fixture.performances = occurrences;
   }
   if (!fixture.performances.length) {
-    const structuredStart =
-      text(detail.start_date) ?? text(listing.start_date);
+    const structuredStart = text(detail.start_date) ?? text(listing.start_date);
     const structuredEnd = text(detail.end_date) ?? text(listing.end_date);
     const enumerated = parseEnumeratedSchedule(fixture.dateText);
     if (enumerated.performances.length)
@@ -1477,8 +1475,7 @@ async function collectDiscoveryDetails({
       performances: discoveryPerformances,
       schedule: discoveryPerformances.length
         ? normalizeSchedule({
-            kind:
-              discoveryPerformances.length > 1 ? "recurring" : "exact",
+            kind: discoveryPerformances.length > 1 ? "recurring" : "exact",
             start: discoveryPerformances[0]?.startDateTime ?? null,
             end:
               discoveryPerformances.at(-1)?.endDateTime ??
@@ -1487,7 +1484,7 @@ async function collectDiscoveryDetails({
             displayText:
               claims.timeText && claims.dateText
                 ? `${claims.dateText} · ${claims.timeText}`
-                : claims.dateText ?? claims.timeText ?? null,
+                : (claims.dateText ?? claims.timeText ?? null),
             evidenceReasonCode: "editorial_detail_schedule_parsed",
           })
         : normalizeSchedule({
@@ -2213,32 +2210,31 @@ export async function collectRenderedSource({
       retrievedAt,
     });
     artifactRefs.push(officialReferenceRef);
-    const fixtures = listingRecords.map(
-      ({ record, listingRef, listingUrl }) =>
-        applyEventFieldCompleteness(
-          {
-            ...record,
+    const fixtures = listingRecords.map(({ record, listingRef, listingUrl }) =>
+      applyEventFieldCompleteness(
+        {
+          ...record,
+          detailUrl: canonicalRenderedUrl(listingUrl),
+          ...sourceRecordProvenance({
+            run,
+            source,
+            retrievedAt,
+            listingRef,
+            responseRef: listingRef,
+            officialReferenceRef,
+            officialReference: {
+              requestedUrl: listingUrl,
+              finalUrl: listingUrl,
+              status: 200,
+            },
             detailUrl: canonicalRenderedUrl(listingUrl),
-            ...sourceRecordProvenance({
-              run,
-              source,
-              retrievedAt,
-              listingRef,
-              responseRef: listingRef,
-              officialReferenceRef,
-              officialReference: {
-                requestedUrl: listingUrl,
-                finalUrl: listingUrl,
-                status: 200,
-              },
-              detailUrl: canonicalRenderedUrl(listingUrl),
-            }),
-          },
-          {
-            evidenceHash: record.rawDocumentHash,
-            evidenceRef: listingRef,
-          },
-        ),
+          }),
+        },
+        {
+          evidenceHash: record.rawDocumentHash,
+          evidenceRef: listingRef,
+        },
+      ),
     );
     writeJson(join(runDir, fixtureRef), {
       schemaVersion: "1.0",

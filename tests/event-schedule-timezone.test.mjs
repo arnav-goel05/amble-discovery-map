@@ -43,11 +43,7 @@ process.stdout.write(JSON.stringify({
 `;
 
 test("Singapore calendar filtering is invariant across host timezones", () => {
-  for (const timezone of [
-    "Asia/Singapore",
-    "UTC",
-    "America/Los_Angeles",
-  ]) {
+  for (const timezone of ["Asia/Singapore", "UTC", "America/Los_Angeles"]) {
     const child = spawnSync(
       process.execPath,
       ["--input-type=module", "--eval", PROGRAM],

@@ -51,8 +51,7 @@ const relayAdmission = (overrides = {}) => ({
       sessionId: "session-terminal",
       protocolVersion: "1.1",
       streamPath: "/api/voice/sessions/session-terminal/stream",
-      expiresAt: "2026-07-26T10:05:00.000Z",
-      limits: { maxSessionSeconds: 300, idleSeconds: 60, maxResponses: 6 },
+      limits: { maxResponseStagesPerTurn: 3, responseTimeoutSeconds: 30 },
       ...overrides,
     },
   }),
@@ -391,6 +390,10 @@ test("failed admission is terminal and retry requires a fresh client session", a
   await retry.admit({ disclosureAccepted: true });
   const socket = retry.connect();
   socket.open();
+  assert.equal(retry.snapshot().state, "connecting");
+  socket.emit("message", {
+    data: JSON.stringify({ type: "session.state", state: "listening" }),
+  });
   assert.equal(retry.snapshot().state, "listening");
   assert.equal(retry.snapshot().sessionId, "session-retry");
 });

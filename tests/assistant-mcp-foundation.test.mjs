@@ -6,9 +6,12 @@ import {
   projectCapabilityDescriptors,
 } from "../activity-scenes/assistant/protocol-adapters/capability-descriptor-projector.js";
 import {
+  createProviderCapabilityAliasMap,
+  fromProviderFunctionName,
   invokeRealtimeFunctionFixture,
   projectAvailableRealtimeFunctionTools,
   projectRealtimeFunctionTool,
+  toProviderFunctionName,
 } from "../activity-scenes/assistant/protocol-adapters/realtime-function-adapter.js";
 import {
   invokeMcpFoundationFixture,
@@ -124,7 +127,7 @@ test("descriptor projection is deterministic and retains caller order", () => {
 test("Realtime tools preserve protocol-1.1 provider shape and current eligibility", () => {
   assert.deepEqual(projectRealtimeFunctionTool(queryContract), {
     type: "function",
-    name: queryContract.capabilityId,
+    name: "catalog__search",
     description: queryContract.description,
     parameters: queryContract.argumentSchema,
   });
@@ -134,9 +137,36 @@ test("Realtime tools preserve protocol-1.1 provider shape and current eligibilit
   });
   assert.deepEqual(
     tools.map(({ name }) => name),
-    ["map.reset"],
+    ["map__reset"],
   );
   assert.equal(Object.isFrozen(tools), true);
+});
+
+test("provider function aliases are valid, deterministic, collision-free, and reversible", () => {
+  const map = createProviderCapabilityAliasMap([
+    "catalog.search",
+    "map.reset",
+    "navigation.openexternal",
+  ]);
+  assert.deepEqual(
+    [...map.canonicalToProvider.entries()],
+    [
+      ["catalog.search", "catalog__search"],
+      ["map.reset", "map__reset"],
+      ["navigation.openexternal", "navigation__openexternal"],
+    ],
+  );
+  for (const [canonical, provider] of map.canonicalToProvider) {
+    assert.match(provider, /^[a-zA-Z0-9_-]+$/);
+    assert.equal(map.providerToCanonical.get(provider), canonical);
+    assert.equal(fromProviderFunctionName(provider), canonical);
+    assert.equal(toProviderFunctionName(canonical), provider);
+  }
+  assert.throws(() =>
+    createProviderCapabilityAliasMap(["catalog.search", "catalog.search"]),
+  );
+  assert.throws(() => fromProviderFunctionName("catalog___search"));
+  assert.throws(() => toProviderFunctionName("catalog_search"));
 });
 
 test("MCP foundation descriptors remain disabled and preserve contract policy", () => {

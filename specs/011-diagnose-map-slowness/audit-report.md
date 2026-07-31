@@ -1,7 +1,7 @@
 # Map Slowness Root-Cause Audit
 
-**Date:** 25 July 2026  
-**Branch:** `develop`  
+**Date:** 25 July 2026
+**Branch:** `develop`
 **Scope:** diagnosis and solution research only; no performance optimization was
 implemented.
 
@@ -28,13 +28,13 @@ costs on the browser main/render threads:
 
 With the exact same loaded scene and camera route:
 
-| Same-scene stage | Median FPS | Median frame | Median p95 | Median worst frame |
-| --- | ---: | ---: | ---: | ---: |
-| Full application | 8.6 | 65.7 ms | 650.2 ms | 650.2 ms |
-| No `moveend` discovery rebuild | 14.6 | 66.7 ms | 117.4 ms | 183.4 ms |
-| Also no per-frame minimap redraw | 17.8 | 50.2 ms | 84.0 ms | 84.1 ms |
-| Also no highlighted 3D venue layer | 25.3 | 33.5 ms | 65.7 ms | 66.7 ms |
-| Also no background 3D layer | 60.0 | 16.7 ms | 17.6 ms | 17.7 ms |
+| Same-scene stage                   | Median FPS | Median frame | Median p95 | Median worst frame |
+| ---------------------------------- | ---------: | -----------: | ---------: | -----------------: |
+| Full application                   |        8.6 |      65.7 ms |   650.2 ms |           650.2 ms |
+| No `moveend` discovery rebuild     |       14.6 |      66.7 ms |   117.4 ms |           183.4 ms |
+| Also no per-frame minimap redraw   |       17.8 |      50.2 ms |    84.0 ms |            84.1 ms |
+| Also no highlighted 3D venue layer |       25.3 |      33.5 ms |    65.7 ms |            66.7 ms |
+| Also no background 3D layer        |       60.0 |      16.7 ms |    17.6 ms |            17.7 ms |
 
 These are diagnostic ablations, not proposed product behavior.
 
@@ -85,7 +85,7 @@ new nested projection. Venue-group construction then scans the sessions again.
    Build the activity/session projection once when data or filters change.
    On `moveend`, update only `distanceFromCenter`, `inView`, and result order.
 2. Cache grouped results by `(snapshotId, query, category, date, price,
-   placement)` so moving the map reuses the same immutable activity objects.
+placement)` so moving the map reuses the same immutable activity objects.
 3. If full regrouping remains necessary, move the pure projection to a Web
    Worker or yield it in bounded chunks. This reduces blocking but does not
    remove the redundant work.
@@ -213,14 +213,14 @@ specifically texture-dominated.
 
 ## Contributing factors and non-causes
 
-| Item | Classification | Evidence |
-| --- | --- | --- |
-| 3D polygon count | Not primary for highlighted loading | Largest 30 assets have modest geometry; 99.8% of bytes are images. |
-| Draco decode | Contributing loading cost, not primary byte cause | Geometry is already Draco-compressed; profile contains decode/upload work, but imagery dominates transfer and decoded memory. |
-| MRT/water/restaurant/discovery map overlays | Not a primary cause | With both 3D layers removed, the same overlays and interface sustain 60 FPS. |
-| Browser software rendering | Benchmark artifact | Headless SwiftShader caused misleading single-digit FPS; hardware Metal measurements supersede it. |
-| Network activity during motion | Excluded from final causal comparison | Final same-scene attribution froze 3D traversal before measuring. |
-| `maximumMemoryUsage` alone | Not a complete solution | Required visible tiles may exceed the cap to meet screen-space error, per loaders.gl. |
+| Item                                        | Classification                                    | Evidence                                                                                                                      |
+| ------------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 3D polygon count                            | Not primary for highlighted loading               | Largest 30 assets have modest geometry; 99.8% of bytes are images.                                                            |
+| Draco decode                                | Contributing loading cost, not primary byte cause | Geometry is already Draco-compressed; profile contains decode/upload work, but imagery dominates transfer and decoded memory. |
+| MRT/water/restaurant/discovery map overlays | Not a primary cause                               | With both 3D layers removed, the same overlays and interface sustain 60 FPS.                                                  |
+| Browser software rendering                  | Benchmark artifact                                | Headless SwiftShader caused misleading single-digit FPS; hardware Metal measurements supersede it.                            |
+| Network activity during motion              | Excluded from final causal comparison             | Final same-scene attribution froze 3D traversal before measuring.                                                             |
+| `maximumMemoryUsage` alone                  | Not a complete solution                           | Required visible tiles may exceed the cap to meet screen-space error, per loaders.gl.                                         |
 
 ## Recommended order for a future implementation
 

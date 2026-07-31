@@ -68,11 +68,11 @@ export function renderedDocument(result) {
     return { title: null, text: document, links: [] };
   const rawContent =
     document.markdown ??
-      document.text ??
-      document.content ??
-      result?.markdown ??
-      result?.text ??
-      "";
+    document.text ??
+    document.content ??
+    result?.markdown ??
+    result?.text ??
+    "";
   const text = readableText(rawContent);
   const links = [
     ...markdownLinks(text),
@@ -267,7 +267,10 @@ export function parseAuthorityDetail(
     return fallback;
   };
   const title = withListingFallback(
-    structured.fields.title ?? event?.name ?? document.title ?? field(document, ["Event", "Title"]),
+    structured.fields.title ??
+      event?.name ??
+      document.title ??
+      field(document, ["Event", "Title"]),
     "title",
   );
   const dateText = withListingFallback(
@@ -295,7 +298,9 @@ export function parseAuthorityDetail(
     "venue",
   );
   const address = withListingFallback(
-    structured.fields.address ?? location.address ?? field(document, ["Address"]),
+    structured.fields.address ??
+      location.address ??
+      field(document, ["Address"]),
     "address",
   );
   const organizerValue =
@@ -303,7 +308,9 @@ export function parseAuthorityDetail(
       ? event.organizer.name
       : event?.organizer;
   const modeText = normalized(
-    structured.attendanceMode ?? event?.eventAttendanceMode ?? field(document, ["Mode", "Format"]),
+    structured.attendanceMode ??
+      event?.eventAttendanceMode ??
+      field(document, ["Mode", "Format"]),
   );
   const mode =
     modeText.includes("online") &&
@@ -391,19 +398,27 @@ export function parseAuthorityDetail(
     accessRestriction,
   });
   const category = withListingFallback(
-    structured.fields.category ?? event?.eventType ?? field(document, ["Category", "Type"]),
+    structured.fields.category ??
+      event?.eventType ??
+      field(document, ["Category", "Type"]),
     "category",
   );
   const price = withListingFallback(
-    structured.fields.price ?? event?.offers?.price ?? field(document, ["Price", "Admission"]),
+    structured.fields.price ??
+      event?.offers?.price ??
+      field(document, ["Price", "Admission"]),
     "price",
   );
   const description = withListingFallback(
-    structured.fields.description ?? event?.description ?? field(document, ["Description"]),
+    structured.fields.description ??
+      event?.description ??
+      field(document, ["Description"]),
     "description",
   );
   const organizer = withListingFallback(
-    structured.fields.organizer ?? organizerValue ?? field(document, ["Organizer", "Presented by"]),
+    structured.fields.organizer ??
+      organizerValue ??
+      field(document, ["Organizer", "Presented by"]),
     "organizer",
   );
   const record = {

@@ -27,7 +27,8 @@ const clean = (value) => {
     .trim();
   return parsed || null;
 };
-const values = (value) => (Array.isArray(value) ? value : value == null ? [] : [value]);
+const values = (value) =>
+  Array.isArray(value) ? value : value == null ? [] : [value];
 
 function typed(value, name) {
   return values(value?.["@type"])
@@ -66,13 +67,19 @@ function allObjects(input) {
 }
 
 function selectJsonLdEvent(blocks) {
-  return allObjects(blocks)
-    .filter((item) => typed(item, "Event"))
-    .sort(
-      (a, b) =>
-        [b.name, b.startDate, b.location, b.organizer, b.offers].filter(Boolean).length -
-        [a.name, a.startDate, a.location, a.organizer, a.offers].filter(Boolean).length,
-    )[0] ?? null;
+  return (
+    allObjects(blocks)
+      .filter((item) => typed(item, "Event"))
+      .sort(
+        (a, b) =>
+          [b.name, b.startDate, b.location, b.organizer, b.offers].filter(
+            Boolean,
+          ).length -
+          [a.name, a.startDate, a.location, a.organizer, a.offers].filter(
+            Boolean,
+          ).length,
+      )[0] ?? null
+  );
 }
 
 function addressText(address) {
@@ -114,8 +121,11 @@ function jsonLdFields(event) {
   const offer = values(event.offers)[0];
   const price = offer?.price ?? offer?.lowPrice;
   const currency = offer?.priceCurrency;
-  const availabilityText = clean(offer?.availability ?? event.eventStatus)?.toLowerCase() ?? "";
-  const availability = /soldout|eventcancelled|discontinued/.test(availabilityText)
+  const availabilityText =
+    clean(offer?.availability ?? event.eventStatus)?.toLowerCase() ?? "";
+  const availability = /soldout|eventcancelled|discontinued/.test(
+    availabilityText,
+  )
     ? "sold_out"
     : /preorder|waitlist|limitedavailability/.test(availabilityText)
       ? "waitlist"
@@ -132,11 +142,15 @@ function jsonLdFields(event) {
       event.startDate || event.endDate
         ? { start: clean(event.startDate), end: clean(event.endDate) }
         : null,
-    venue: locations.length > 1 ? "Multiple locations" : locations[0]?.venue ?? null,
-    address: locations.length > 1 ? null : locations[0]?.address ?? null,
+    venue:
+      locations.length > 1
+        ? "Multiple locations"
+        : (locations[0]?.venue ?? null),
+    address: locations.length > 1 ? null : (locations[0]?.address ?? null),
     description: clean(event.description),
     category: category.length ? category : null,
-    price: price == null ? null : clean([currency, price].filter(Boolean).join(" ")),
+    price:
+      price == null ? null : clean([currency, price].filter(Boolean).join(" ")),
     organizer: named(event.organizer ?? event.performer),
     availability,
     url: clean(event.url ?? offer?.url),
@@ -156,26 +170,40 @@ function jsonLdFields(event) {
 
 function itemprop(html, name) {
   const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const meta = html.match(
-    new RegExp(`<(?:meta|link|time)\\b[^>]*itemprop=["'][^"']*\\b${escaped}\\b[^"']*["'][^>]*(?:content|href|datetime)=["']([^"']+)["'][^>]*>`, "i"),
-  ) ?? html.match(
-    new RegExp(`<(?:meta|link|time)\\b[^>]*(?:content|href|datetime)=["']([^"']+)["'][^>]*itemprop=["'][^"']*\\b${escaped}\\b[^"']*["'][^>]*>`, "i"),
-  );
+  const meta =
+    html.match(
+      new RegExp(
+        `<(?:meta|link|time)\\b[^>]*itemprop=["'][^"']*\\b${escaped}\\b[^"']*["'][^>]*(?:content|href|datetime)=["']([^"']+)["'][^>]*>`,
+        "i",
+      ),
+    ) ??
+    html.match(
+      new RegExp(
+        `<(?:meta|link|time)\\b[^>]*(?:content|href|datetime)=["']([^"']+)["'][^>]*itemprop=["'][^"']*\\b${escaped}\\b[^"']*["'][^>]*>`,
+        "i",
+      ),
+    );
   if (meta?.[1]) return clean(meta[1]);
   const element = html.match(
-    new RegExp(`<([a-z0-9]+)\\b[^>]*itemprop=["'][^"']*\\b${escaped}\\b[^"']*["'][^>]*>([\\s\\S]*?)<\\/\\1>`, "i"),
+    new RegExp(
+      `<([a-z0-9]+)\\b[^>]*itemprop=["'][^"']*\\b${escaped}\\b[^"']*["'][^>]*>([\\s\\S]*?)<\\/\\1>`,
+      "i",
+    ),
   );
   return clean(element?.[2]);
 }
 
 function microdataFields(html) {
-  if (!/itemtype=["'][^"']*schema\.org\/(?:[A-Za-z]*Event)\b/i.test(html)) return {};
-  const locationBlock = html.match(
-    /<([a-z0-9]+)\b[^>]*itemprop=["'][^"']*\blocation\b[^"']*["'][^>]*>([\s\S]*?)<\/\1>/i,
-  )?.[2] ?? "";
-  const organizerBlock = html.match(
-    /<([a-z0-9]+)\b[^>]*itemprop=["'][^"']*\borganizer\b[^"']*["'][^>]*>([\s\S]*?)<\/\1>/i,
-  )?.[2] ?? "";
+  if (!/itemtype=["'][^"']*schema\.org\/(?:[A-Za-z]*Event)\b/i.test(html))
+    return {};
+  const locationBlock =
+    html.match(
+      /<([a-z0-9]+)\b[^>]*itemprop=["'][^"']*\blocation\b[^"']*["'][^>]*>([\s\S]*?)<\/\1>/i,
+    )?.[2] ?? "";
+  const organizerBlock =
+    html.match(
+      /<([a-z0-9]+)\b[^>]*itemprop=["'][^"']*\borganizer\b[^"']*["'][^>]*>([\s\S]*?)<\/\1>/i,
+    )?.[2] ?? "";
   const start = itemprop(html, "startDate");
   const end = itemprop(html, "endDate");
   return {
@@ -193,8 +221,13 @@ function microdataFields(html) {
 }
 
 function canonicalFromHtml(html, finalUrl) {
-  const href = html.match(/<link\b[^>]*rel=["'][^"']*canonical[^"']*["'][^>]*href=["']([^"']+)["']/i)?.[1]
-    ?? html.match(/<link\b[^>]*href=["']([^"']+)["'][^>]*rel=["'][^"']*canonical[^"']*["']/i)?.[1];
+  const href =
+    html.match(
+      /<link\b[^>]*rel=["'][^"']*canonical[^"']*["'][^>]*href=["']([^"']+)["']/i,
+    )?.[1] ??
+    html.match(
+      /<link\b[^>]*href=["']([^"']+)["'][^>]*rel=["'][^"']*canonical[^"']*["']/i,
+    )?.[1];
   try {
     return new URL(href ?? finalUrl, finalUrl).href;
   } catch {
@@ -202,7 +235,11 @@ function canonicalFromHtml(html, finalUrl) {
   }
 }
 
-export function extractEventPageEvidence({ html = "", jsonLd = [], finalUrl = null } = {}) {
+export function extractEventPageEvidence({
+  html = "",
+  jsonLd = [],
+  finalUrl = null,
+} = {}) {
   const blocks = [...values(jsonLd), ...embeddedJsonLd(html)];
   const event = selectJsonLdEvent(blocks);
   const json = jsonLdFields(event);
@@ -212,8 +249,10 @@ export function extractEventPageEvidence({ html = "", jsonLd = [], finalUrl = nu
   const conflicts = [];
   for (const field of EVENT_FIELDS) {
     if (
-      json[field] !== null && json[field] !== undefined &&
-      micro[field] !== null && micro[field] !== undefined &&
+      json[field] !== null &&
+      json[field] !== undefined &&
+      micro[field] !== null &&
+      micro[field] !== undefined &&
       JSON.stringify(json[field]) !== JSON.stringify(micro[field])
     ) {
       conflicts.push({
@@ -222,10 +261,22 @@ export function extractEventPageEvidence({ html = "", jsonLd = [], finalUrl = nu
         alternative: { method: "microdata", value: micro[field] },
       });
     }
-    const value = json[field] ?? micro[field] ?? (field === "url" ? canonicalFromHtml(html, finalUrl) : null);
-    if (value !== null && value !== undefined && !(Array.isArray(value) && !value.length)) {
+    const value =
+      json[field] ??
+      micro[field] ??
+      (field === "url" ? canonicalFromHtml(html, finalUrl) : null);
+    if (
+      value !== null &&
+      value !== undefined &&
+      !(Array.isArray(value) && !value.length)
+    ) {
       fields[field] = value;
-      methods[field] = json[field] != null ? "json_ld" : micro[field] != null ? "microdata" : "canonical";
+      methods[field] =
+        json[field] != null
+          ? "json_ld"
+          : micro[field] != null
+            ? "microdata"
+            : "canonical";
     } else fields[field] = null;
   }
   return {
@@ -247,13 +298,23 @@ export function extractEventPageEvidence({ html = "", jsonLd = [], finalUrl = nu
 function hasValue(record, field) {
   if (field === "schedule")
     return Boolean(
-      record.schedule?.start || record.schedule?.end || record.schedule?.displayText ||
-      record.dateText || record.startDateTime || record.performances?.length,
+      record.schedule?.start ||
+      record.schedule?.end ||
+      record.schedule?.displayText ||
+      record.dateText ||
+      record.startDateTime ||
+      record.performances?.length,
     );
-  if (field === "url") return Boolean(record.detailUrl ?? record.eventUrl ?? record.officialUrl);
+  if (field === "url")
+    return Boolean(record.detailUrl ?? record.eventUrl ?? record.officialUrl);
   const value = record[field];
   if (field === "availability" && (!value || value === "unknown")) return false;
-  return value !== null && value !== undefined && value !== "" && (!Array.isArray(value) || value.length > 0);
+  return (
+    value !== null &&
+    value !== undefined &&
+    value !== "" &&
+    (!Array.isArray(value) || value.length > 0)
+  );
 }
 
 export function applyEventFieldCompleteness(
@@ -294,8 +355,16 @@ export function applyEventFieldCompleteness(
         ? (methods[field] ?? previous?.method ?? "source_adapter")
         : null,
       evidenceRef: evidenceRef ?? previous?.evidenceRef ?? null,
-      reasonCode: present ? null : failed ? "field_extraction_failed" : "field_not_published",
+      reasonCode: present
+        ? null
+        : failed
+          ? "field_extraction_failed"
+          : "field_not_published",
     };
   }
-  return { ...record, fieldCompleteness, extractionContractVersion: contractVersion };
+  return {
+    ...record,
+    fieldCompleteness,
+    extractionContractVersion: contractVersion,
+  };
 }

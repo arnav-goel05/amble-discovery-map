@@ -123,9 +123,9 @@ export function inspectB3dm(buffer, sourcePath = "") {
             (view.byteOffset ?? 0) + byteLength,
           )
         : Buffer.alloc(0);
-    const detectedMimeType = bytes.subarray(0, 8).equals(
-      Buffer.from("89504e470d0a1a0a", "hex"),
-    )
+    const detectedMimeType = bytes
+      .subarray(0, 8)
+      .equals(Buffer.from("89504e470d0a1a0a", "hex"))
       ? "image/png"
       : bytes[0] === 0xff && bytes[1] === 0xd8
         ? "image/jpeg"
@@ -212,10 +212,7 @@ export async function inspectObservedAssets({
     inspectedAssetCount: assets.length,
     inspectedBytes: assets.reduce((sum, asset) => sum + asset.fileBytes, 0),
     vertices: assets.reduce((sum, asset) => sum + asset.vertices, 0),
-    triangles: assets.reduce(
-      (sum, asset) => sum + asset.estimatedTriangles,
-      0,
-    ),
+    triangles: assets.reduce((sum, asset) => sum + asset.estimatedTriangles, 0),
     imageBytes: assets.reduce((sum, asset) => sum + asset.imageBytes, 0),
     estimatedDecodedRGBABytes: assets.reduce(
       (sum, asset) => sum + asset.estimatedDecodedRGBABytes,

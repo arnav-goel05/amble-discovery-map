@@ -21,18 +21,19 @@ const rejectsWith = (callback, code) =>
     return true;
   });
 
-test("checked-in realtime policy pins the approved model, budget, and bounded session", () => {
+test("checked-in realtime policy pins the approved model and budget without session limits", () => {
   const policy = loadRealtimePolicy(policyPath);
 
   assert.equal(policy.schemaVersion, "1.1");
   assert.equal(policy.owner, "Arnav");
   assert.equal(policy.modelId, "gpt-realtime-2.1-mini");
-  assert.equal(policy.transcriptionModelId, "gpt-realtime-whisper");
+  assert.equal("transcriptionModelId" in policy, false);
   assert.equal(policy.capMicroUsd, 10_000_000);
   assert.equal(policy.resetPolicy, "none");
-  assert.equal(policy.maxSessionSeconds, 300);
-  assert.equal(policy.idleSeconds, 60);
-  assert.equal(policy.maxResponses, 6);
+  assert.equal("maxSessionSeconds" in policy, false);
+  assert.equal("idleSeconds" in policy, false);
+  assert.equal("maxResponses" in policy, false);
+  assert.equal(policy.maxResponseStagesPerTurn, 3);
   assert.equal(policy.responseTimeoutSeconds, 30);
   assert.equal("maxOutputTokens" in policy, false);
   assert.equal(
@@ -43,6 +44,11 @@ test("checked-in realtime policy pins the approved model, budget, and bounded se
   assert.equal(policy.automaticResponseCreation, false);
   assert.equal(policy.imageInputEnabled, false);
   assert.equal("fallbackModelId" in policy, false);
+  assert.equal(
+    "transcriptionMicroUsdPerMinute" in policy.rateCard.rates,
+    false,
+  );
+  assert.equal("inputTranscription" in policy.worstCaseReservation, false);
 });
 
 test("schema and rate-card identity fail closed", () => {
@@ -70,7 +76,7 @@ test("schema and rate-card identity fail closed", () => {
   rejectsWith(() => validateRealtimePolicy(missingRate), "policy_rate_unknown");
 });
 
-test("unknown models and altered bounds are rejected", () => {
+test("unknown models and altered response bounds are rejected", () => {
   const policy = loadRealtimePolicy(policyPath);
 
   rejectsWith(
@@ -87,19 +93,11 @@ test("unknown models and altered bounds are rejected", () => {
         ...clone(policy),
         transcriptionModelId: "transcribe-latest",
       }),
-    "policy_transcription_model_unknown",
+    "policy_transcription_forbidden",
   );
   rejectsWith(
     () => validateRealtimePolicy({ ...clone(policy), capMicroUsd: 10_000_001 }),
     "policy_cap_invalid",
-  );
-  rejectsWith(
-    () => validateRealtimePolicy({ ...clone(policy), maxSessionSeconds: 301 }),
-    "policy_limit_invalid",
-  );
-  rejectsWith(
-    () => validateRealtimePolicy({ ...clone(policy), idleSeconds: 61 }),
-    "policy_limit_invalid",
   );
   rejectsWith(
     () =>
@@ -110,7 +108,11 @@ test("unknown models and altered bounds are rejected", () => {
     "policy_limit_invalid",
   );
   rejectsWith(
-    () => validateRealtimePolicy({ ...clone(policy), maxResponses: 7 }),
+    () =>
+      validateRealtimePolicy({
+        ...clone(policy),
+        maxResponseStagesPerTurn: 4,
+      }),
     "policy_limit_invalid",
   );
   rejectsWith(
@@ -190,16 +192,11 @@ test("worst-case reservations use uncached highest enabled rates and match polic
   const reservation = calculateWorstCaseReservations(policy);
 
   assert.deepEqual(reservation, {
-    inputTranscriptionMicroUsd: 17_000,
     responseInputMicroUsd: 40_000,
     responseOutputMicroUsd: 81_920,
     responseMicroUsd: 121_920,
-    turnMicroUsd: 138_920,
+    turnMicroUsd: 121_920,
   });
-  assert.equal(
-    reservation.inputTranscriptionMicroUsd,
-    policy.worstCaseReservation.inputTranscription.reservedMicroUsd,
-  );
   assert.equal(
     reservation.responseInputMicroUsd,
     policy.worstCaseReservation.response.inputReservedMicroUsd,
@@ -216,7 +213,10 @@ test("worst-case reservations use uncached highest enabled rates and match polic
     reservation.turnMicroUsd,
     policy.worstCaseReservation.maxTurnReservedMicroUsd,
   );
-  assert(reservation.turnMicroUsd * policy.maxResponses <= policy.capMicroUsd);
+  assert(
+    reservation.turnMicroUsd * policy.maxResponseStagesPerTurn <=
+      policy.capMicroUsd,
+  );
   assert.equal(
     policy.rateCard.reservationRules.ignoreCachedInputDiscounts,
     true,

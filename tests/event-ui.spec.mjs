@@ -12,6 +12,11 @@ const sampanLandmarkFixture = approvedLandmarksFixture.find((landmark) =>
 const approvedPoisFixture = JSON.parse(
   readFileSync(new URL("../data/snapshots/initial/pois.json", import.meta.url)),
 );
+const backgroundGeometryRelease = JSON.parse(
+  readFileSync(
+    new URL("../data/background-geometry-release.json", import.meta.url),
+  ),
+);
 const sampanPoiFixture = approvedPoisFixture.find(
   (poi) => poi.id === sampanLandmarkFixture.id,
 );
@@ -84,7 +89,7 @@ test("empty approved snapshot renders no highlights, pills, or panels", async ({
   );
   await expect(page.locator("body")).toHaveAttribute(
     "data-background-tileset-url",
-    "optimized-tiles/tileset.json?assetMount=site-root-v1",
+    backgroundGeometryRelease.tilesetUrl,
   );
   expect(errors).toEqual([]);
 

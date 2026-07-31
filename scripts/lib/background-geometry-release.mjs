@@ -105,8 +105,12 @@ export function buildReleaseIdentity(snapshotId, objects) {
 }
 
 function summarize(results) {
-  const retained = sorted(results.flatMap((result) => result.retainedGmlIds ?? []));
-  const venues = sorted(results.flatMap((result) => result.affectedVenueIds ?? []));
+  const retained = sorted(
+    results.flatMap((result) => result.retainedGmlIds ?? []),
+  );
+  const venues = sorted(
+    results.flatMap((result) => result.affectedVenueIds ?? []),
+  );
   return {
     checkedObjects: results.length,
     matchedObjects: results.filter(({ status }) => status === "matched").length,
@@ -133,21 +137,21 @@ export async function auditBackgroundObjects({
       const index = cursor;
       cursor += 1;
       const item = objects[index];
-    try {
+      try {
         results[index] = classifyRemoteObject(item, await fetchObject(item));
-    } catch (error) {
+      } catch (error) {
         results[index] = {
-        objectKey: item.objectKey,
-        status: "failed",
-        remoteState: "unavailable",
-        remoteSha256: null,
-        remoteByteLength: null,
-        retainedGmlIds: [],
-        affectedVenueIds: [],
-        error: {
-          code: "remote_object_unverifiable",
-          message: String(error?.message ?? error).slice(0, 500),
-        },
+          objectKey: item.objectKey,
+          status: "failed",
+          remoteState: "unavailable",
+          remoteSha256: null,
+          remoteByteLength: null,
+          retainedGmlIds: [],
+          affectedVenueIds: [],
+          error: {
+            code: "remote_object_unverifiable",
+            message: String(error?.message ?? error).slice(0, 500),
+          },
         };
       }
     }

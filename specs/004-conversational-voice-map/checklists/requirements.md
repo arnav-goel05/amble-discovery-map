@@ -2,7 +2,8 @@
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-07-18
-**Revalidated**: 2026-07-29 for privacy-safe phase tracing, response timeout recovery, and explicit local content diagnostics
+**Revalidated**: 2026-07-30 for non-blocking native-audio responses, bounded local auditing, and
+single-path native event queries
 **Feature**: [spec.md](../spec.md)
 
 ## Content Quality
@@ -39,12 +40,34 @@
       operations specification
 - [x] Voice reliability tracing is allowlisted and explicitly excludes conversational content,
       exact location, provider payloads, secrets, and raw identifiers
-- [x] Stalled provider responses have a bounded, testable terminal lifecycle independent of the
-      session idle and maximum-duration limits
+- [x] Stalled provider responses have a bounded, testable terminal lifecycle that does not impose a
+      conversation-duration or idle-expiry limit
 - [x] Content-bearing diagnostics require explicit local-process activation and are structurally
       unavailable to browser, preview, and production adapters
-- [x] Permitted local diagnostic fields, recursively prohibited secret/audio fields, zero
-      persistence, and terminal cleanup are explicit and testable
+- [x] Permitted local diagnostic fields and recursively prohibited secret/audio fields are explicit
+      and testable
+- [x] Persistent diagnostics require a separate local-development startup gate
+- [x] Persistent audit storage has fixed path, owner-only permissions, size/count/age bounds, and
+      no background or remote transport
+- [x] Repeated static and oversized payload handling preserves useful evidence within hard bounds
+- [x] Missing native-audio user transcripts are never inferred or synthesized
+- [x] Browser stop causes are a validated closed set and remain auditable
+- [x] Audit I/O failure cannot alter voice behavior
+- [x] Provider-only tool aliases preserve canonical capability identity and are collision-free
+- [x] Initial and per-turn configuration acknowledgement is required before response creation
+- [x] Provider configuration errors fail closed instead of continuing generically
+- [x] The welcome exact-speech instruction is one-shot and absent from later conversation history
+- [x] Live provider validation is a deliberately bounded smoke, while the product has no conversation response-count cap
+- [x] Audit compaction uses stable content rather than changing occurrence metadata
+- [x] Native-audio response creation is independent of transcription completion or failure
+- [x] Typed capability eligibility, validation, confirmation, execution, and observable outcomes
+      remain authoritative without transcript-gated routing
+- [x] Text-turn deterministic interpretation and connector-family scoping remain unchanged
+- [x] Audio-turn budget reservations cover only operations that the new path can invoke
+- [x] Native audio exposes one atomic event-query path for both single- and multi-filter requests
+      while direct semantic filter controls remain available
+- [x] Native audio has one forced ingress tool, reuses typed deterministic routing, and bounds any
+      later application menu to one connector family
 
 ## Notes
 
@@ -53,8 +76,11 @@
 - Constitution v2.4.0 makes the shared capability registry and thin-adapter boundary authoritative.
 - Constitution v2.5.0 forbids response-token ceilings while retaining independent session and
   reliability boundaries such as the response deadline.
-- Constitution v2.6.0 permits explicitly activated local-process content diagnostics while
-  retaining production/default-off privacy and prohibiting secrets, raw audio, persistence, and
-  remote telemetry.
+- Constitution v2.7.0 permits explicitly activated local-process content diagnostics and a
+  separately gated bounded persistent local audit while retaining production/default-off privacy
+  and prohibiting secrets, raw audio, application storage, and remote telemetry.
 - Feature 004 workflows use explicit `SPECIFY_FEATURE` overrides because the shared worktree's active
   Spec Kit pointer belongs to concurrent Feature 016 work and must remain unchanged.
+- The 2026-07-30 amendment removes the separate input-transcription service from new audio turns;
+  the approved Realtime model consumes native audio and the existing response watchdog remains the
+  bounded provider-failure lifecycle.

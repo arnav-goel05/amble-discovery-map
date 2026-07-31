@@ -19,7 +19,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 
 function b3dm(gmlIds) {
-  const feature = Buffer.from(`${JSON.stringify({ BATCH_LENGTH: gmlIds.length })} `);
+  const feature = Buffer.from(
+    `${JSON.stringify({ BATCH_LENGTH: gmlIds.length })} `,
+  );
   const batch = Buffer.from(`${JSON.stringify({ "gml:id": gmlIds })} `);
   const bytes = Buffer.alloc(28 + feature.length + batch.length);
   bytes.write("b3dm", 0);
@@ -62,12 +64,18 @@ test("derives the complete active object set and National Stadium levels", () =>
   const release = deriveActiveBackgroundObjects({ root });
   assert.equal(release.pois.length, 136);
   assert.equal(release.objects.length, 665);
-  assert.equal(new Set(release.objects.map(({ objectKey }) => objectKey)).size, 665);
+  assert.equal(
+    new Set(release.objects.map(({ objectKey }) => objectKey)).size,
+    665,
+  );
   const stadium = release.objects.filter(({ owners }) =>
     owners.includes("national-stadium"),
   );
   assert.equal(stadium.length, 5);
-  assert.deepEqual(stadium.map(({ level }) => level), [0, 1, 2, 3, 4]);
+  assert.deepEqual(
+    stadium.map(({ level }) => level),
+    [0, 1, 2, 3, 4],
+  );
   for (const item of stadium)
     assert.ok(
       item.selectedGmlIds.includes(
@@ -241,7 +249,10 @@ test("synchronization never publishes on upload failure and resumes as a no-op",
 
 test("release descriptor contract is internally consistent", () => {
   const descriptor = JSON.parse(
-    readFileSync(path.join(root, "data/background-geometry-release.json"), "utf8"),
+    readFileSync(
+      path.join(root, "data/background-geometry-release.json"),
+      "utf8",
+    ),
   );
   assert.equal(descriptor.schemaVersion, "background-geometry-release-v1");
   assert.match(descriptor.releaseId, /^[a-f0-9]{16}$/);

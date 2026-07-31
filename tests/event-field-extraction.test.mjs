@@ -24,7 +24,10 @@ test("JSON-LD supplies the complete event contract with nested location and offe
       "offers":{"@type":"Offer","price":"28","priceCurrency":"SGD","availability":"https://schema.org/InStock","url":"https://events.example.sg/tickets"},
       "keywords":["Art","Nightlife"],"url":"https://events.example.sg/event/one"
     }</script></head><body><h1>Ignored lower-priority heading</h1></body></html>`;
-  const extracted = extractEventPageEvidence({ html, finalUrl: "https://events.example.sg/event/one" });
+  const extracted = extractEventPageEvidence({
+    html,
+    finalUrl: "https://events.example.sg/event/one",
+  });
   assert.equal(extracted.fields.title, "Night Garden");
   assert.equal(extracted.fields.venue, "Example Hall");
   assert.match(extracted.fields.address, /123456/);
@@ -45,7 +48,10 @@ test("supported event microdata is used when JSON-LD is absent", () => {
     </div>
     <div itemprop="organizer" itemscope><span itemprop="name">Film Club</span></div>
   </article>`;
-  const extracted = extractEventPageEvidence({ html, finalUrl: "https://example.sg/film" });
+  const extracted = extractEventPageEvidence({
+    html,
+    finalUrl: "https://example.sg/film",
+  });
   assert.equal(extracted.fields.title, "Microdata Film");
   assert.equal(extracted.fields.venue, "Cinema One");
   assert.equal(extracted.fields.organizer, "Film Club");
@@ -59,7 +65,10 @@ test("JSON-LD wins over conflicting microdata and the conflict remains auditable
     <h1 itemprop="name">Stale microdata title</h1>
     <meta itemprop="startDate" content="2026-09-01">
   </article>`;
-  const extracted = extractEventPageEvidence({ html, finalUrl: "https://example.sg/conflict" });
+  const extracted = extractEventPageEvidence({
+    html,
+    finalUrl: "https://example.sg/conflict",
+  });
   assert.equal(extracted.fields.title, "Official JSON-LD title");
   assert.equal(extracted.methods.title, "json_ld");
   assert.ok(extracted.conflicts.some(({ field }) => field === "title"));
@@ -74,7 +83,10 @@ test("multiple structured locations remain off-map instead of choosing one build
       {"@type":"Place","name":"Hall B","address":"2 B Street"}
     ]
   }</script>`;
-  const extracted = extractEventPageEvidence({ html, finalUrl: "https://example.sg/two" });
+  const extracted = extractEventPageEvidence({
+    html,
+    finalUrl: "https://example.sg/two",
+  });
   assert.equal(extracted.fields.venue, "Multiple locations");
   assert.equal(extracted.fields.address, null);
   assert.equal(extracted.locations.length, 2);
@@ -83,12 +95,24 @@ test("multiple structured locations remain off-map instead of choosing one build
 test("completeness distinguishes source omission from extraction failure", () => {
   const complete = applyEventFieldCompleteness(
     { title: "One", detailUrl: "https://example.sg/one", venue: null },
-    { evidenceHash: "a".repeat(64), methods: { title: "json_ld", url: "canonical" } },
+    {
+      evidenceHash: "a".repeat(64),
+      methods: { title: "json_ld", url: "canonical" },
+    },
   );
   assert.equal(complete.fieldCompleteness.title.status, "present");
-  assert.equal(complete.fieldCompleteness.venue.status, "not_published_by_source");
-  assert.equal(complete.fieldCompleteness.venue.reasonCode, "field_not_published");
-  assert.equal(complete.fieldCompleteness.title.contractVersion, EVENT_FIELD_CONTRACT_VERSION);
+  assert.equal(
+    complete.fieldCompleteness.venue.status,
+    "not_published_by_source",
+  );
+  assert.equal(
+    complete.fieldCompleteness.venue.reasonCode,
+    "field_not_published",
+  );
+  assert.equal(
+    complete.fieldCompleteness.title.contractVersion,
+    EVENT_FIELD_CONTRACT_VERSION,
+  );
 
   const failed = applyEventFieldCompleteness(
     { title: null, detailUrl: "https://example.sg/one" },
@@ -99,20 +123,30 @@ test("completeness distinguishes source omission from extraction failure", () =>
 });
 
 test("completeness cache reuses stable evidence, invalidates versions and retries failures", () => {
-  const base = { title: "One", detailUrl: "https://example.sg/one", venue: null };
+  const base = {
+    title: "One",
+    detailUrl: "https://example.sg/one",
+    venue: null,
+  };
   const first = applyEventFieldCompleteness(base, {
     evidenceHash: "c".repeat(64),
   });
   const reused = applyEventFieldCompleteness(first, {
     evidenceHash: "c".repeat(64),
   });
-  assert.strictEqual(reused.fieldCompleteness.venue, first.fieldCompleteness.venue);
+  assert.strictEqual(
+    reused.fieldCompleteness.venue,
+    first.fieldCompleteness.venue,
+  );
 
   const invalidated = applyEventFieldCompleteness(first, {
     evidenceHash: "c".repeat(64),
     contractVersion: "2.0",
   });
-  assert.notStrictEqual(invalidated.fieldCompleteness.venue, first.fieldCompleteness.venue);
+  assert.notStrictEqual(
+    invalidated.fieldCompleteness.venue,
+    first.fieldCompleteness.venue,
+  );
   assert.equal(invalidated.fieldCompleteness.venue.contractVersion, "2.0");
 
   const failed = applyEventFieldCompleteness(base, {
@@ -125,7 +159,10 @@ test("completeness cache reuses stable evidence, invalidates versions and retrie
   );
   assert.equal(failed.fieldCompleteness.venue.status, "extraction_failed");
   assert.equal(recovered.fieldCompleteness.venue.status, "present");
-  assert.notStrictEqual(recovered.fieldCompleteness.venue, failed.fieldCompleteness.venue);
+  assert.notStrictEqual(
+    recovered.fieldCompleteness.venue,
+    failed.fieldCompleteness.venue,
+  );
 });
 
 test("direct HTML fetch validates redirects, size and official domains", async () => {
@@ -161,9 +198,15 @@ test("direct HTML fetch follows bounded redirects and rejects oversized or non-H
     maximumResponseBytes: 16,
     fetchImpl: async (url) => {
       if (mode === "redirect" && url.endsWith("/start"))
-        return new Response(null, { status: 302, headers: { location: "/final" } });
+        return new Response(null, {
+          status: 302,
+          headers: { location: "/final" },
+        });
       if (mode === "non-html")
-        return new Response("{}", { status: 200, headers: { "content-type": "application/json" } });
+        return new Response("{}", {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        });
       return new Response(mode === "large" ? "x".repeat(17) : "<p>ok</p>", {
         status: 200,
         headers: { "content-type": "text/html" },
@@ -192,11 +235,19 @@ test("direct HTML fetch honors robots rules and logs hashes without page URLs", 
     fetchImpl: async (url) =>
       url.endsWith("/robots.txt")
         ? new Response("User-agent: *\nDisallow: /private", { status: 200 })
-        : new Response("<p>secret</p>", { status: 200, headers: { "content-type": "text/html" } }),
+        : new Response("<p>secret</p>", {
+            status: 200,
+            headers: { "content-type": "text/html" },
+          }),
   });
   const batch = await client.fetchBatch(["https://example.sg/private/event"]);
   assert.equal(batch.errors[0].code, "robots_disallowed");
-  assert.ok(logs.every((entry) => !JSON.stringify(entry).includes("https://example.sg/private/event")));
+  assert.ok(
+    logs.every(
+      (entry) =>
+        !JSON.stringify(entry).includes("https://example.sg/private/event"),
+    ),
+  );
 });
 
 test("layered detail retrieval falls back only for failed direct pages", async () => {
@@ -204,19 +255,34 @@ test("layered detail retrieval falls back only for failed direct pages", async (
   const client = createLayeredDetailFetchClient({
     directClient: {
       fetchBatch: async (urls) => ({
-        results: urls.filter((url) => url.endsWith("/ok")).map((url) => ({ url, final_url: url, text: "ok" })),
-        errors: urls.filter((url) => url.endsWith("/blocked")).map((url) => ({ url, code: "bot_blocked" })),
+        results: urls
+          .filter((url) => url.endsWith("/ok"))
+          .map((url) => ({ url, final_url: url, text: "ok" })),
+        errors: urls
+          .filter((url) => url.endsWith("/blocked"))
+          .map((url) => ({ url, code: "bot_blocked" })),
         payloadHash: "direct",
       }),
     },
     fallbackClient: {
       fetchBatch: async (urls) => {
         fallbackCalls.push(...urls);
-        return { results: urls.map((url) => ({ url, final_url: url, text: "fallback" })), errors: [], payloadHash: "fallback" };
+        return {
+          results: urls.map((url) => ({
+            url,
+            final_url: url,
+            text: "fallback",
+          })),
+          errors: [],
+          payloadHash: "fallback",
+        };
       },
     },
   });
-  const detail = await client.fetchBatch(["https://example.sg/ok", "https://example.sg/blocked"], { stage: "detail" });
+  const detail = await client.fetchBatch(
+    ["https://example.sg/ok", "https://example.sg/blocked"],
+    { stage: "detail" },
+  );
   assert.equal(detail.results.length, 2);
   assert.deepEqual(fallbackCalls, ["https://example.sg/blocked"]);
   await client.fetchBatch(["https://example.sg/listing"], { stage: "listing" });

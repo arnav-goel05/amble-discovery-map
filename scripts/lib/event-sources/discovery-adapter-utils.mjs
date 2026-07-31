@@ -85,7 +85,8 @@ export function parseDiscoveryDetail(
     category:
       structured.fields.category ??
       field(document, ["Category", "Type"]) ??
-      listingRecord?.category ?? null,
+      listingRecord?.category ??
+      null,
     price:
       structured.fields.price ??
       field(document, ["Price", "Admission"]) ??
@@ -127,9 +128,7 @@ export function parseDiscoveryDetail(
       ...discovery,
       ...claims,
       detailUrl,
-      schedule: claims.dateText
-        ? { displayText: claims.dateText }
-        : null,
+      schedule: claims.dateText ? { displayText: claims.dateText } : null,
     },
     {
       evidenceHash: sha(JSON.stringify(document)),

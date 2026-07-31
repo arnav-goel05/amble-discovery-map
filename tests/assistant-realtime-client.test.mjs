@@ -2,9 +2,26 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  DEFAULT_RELAY_CLIENT_LIMITS,
   RealtimeRelayClientError,
   createRealtimeRelayClient,
 } from "../activity-scenes/assistant/realtime-relay-client.js";
+
+test("default browser payload bounds fit within the local relay envelope", () => {
+  assert.equal(DEFAULT_RELAY_CLIENT_LIMITS.maxOutboundMessageBytes, 16 * 1_024);
+  assert.equal(DEFAULT_RELAY_CLIENT_LIMITS.maxInboundMessageBytes, 64 * 1_024);
+  assert.equal(DEFAULT_RELAY_CLIENT_LIMITS.maxAudioChunkBytes, 8 * 1_024);
+  assert.equal(
+    DEFAULT_RELAY_CLIENT_LIMITS.maxInboundAudioChunkBytes,
+    64 * 1_024,
+  );
+  const encodedAudioBytes =
+    Math.ceil(DEFAULT_RELAY_CLIENT_LIMITS.maxAudioChunkBytes / 3) * 4;
+  assert.ok(
+    encodedAudioBytes + 512 <
+      DEFAULT_RELAY_CLIENT_LIMITS.maxOutboundMessageBytes,
+  );
+});
 
 class SocketFixture {
   static instances = [];
@@ -45,8 +62,7 @@ const admissionResponse = (overrides = {}) => ({
       sessionId: "session-1",
       protocolVersion: "1.1",
       streamPath: "/api/voice/sessions/session-1/stream",
-      expiresAt: "2026-07-18T12:05:00.000Z",
-      limits: { maxSessionSeconds: 300, idleSeconds: 60, maxResponses: 6 },
+      limits: { maxResponseStagesPerTurn: 3, responseTimeoutSeconds: 30 },
       ...overrides,
     },
   }),
@@ -64,6 +80,9 @@ async function connectedClient(options = {}) {
   await client.admit({ disclosureAccepted: true });
   const socket = client.connect();
   socket.open();
+  socket.emit("message", {
+    data: JSON.stringify({ type: "session.state", state: "listening" }),
+  });
   return { client, events, socket };
 }
 
@@ -115,7 +134,9 @@ test("relay admission and WebSocket stay same-origin and never reconnect", async
     "wss://amble.example/api/voice/sessions/session-1/stream",
   );
   socket.open();
-  assert.equal(client.snapshot().state, "listening");
+  assert.equal(client.snapshot().state, "connecting");
+  receive(socket, { type: "session.state", state: "processing" });
+  assert.equal(client.snapshot().state, "processing");
   assert.throws(
     client.connect,
     (error) => error.code === "reconnect_prohibited",
@@ -330,6 +351,35 @@ test("changed completion waits for refreshed context before it is emitted", asyn
   );
   assert.equal(client.snapshot().pendingCapabilityCallId, null);
   assert.equal(client.snapshot().state, "listening");
+});
+
+test("context update carries the session-only event facet catalogue unchanged", async () => {
+  const { client, socket } = await connectedClient();
+  const eventFacetCatalog = {
+    catalogRevision: "events:v12",
+    what: ["Exhibitions"],
+    when: ["Today"],
+    where: ["Marina Bay"],
+    price: ["Free"],
+  };
+
+  client.updateContext({
+    revision: 12,
+    visibleTargets: [],
+    availableCapabilityIds: ["event.applyquery"],
+    eventFacetCatalog,
+  });
+
+  assert.deepEqual(socket.sent.at(-1), {
+    type: "context.update",
+    context: {
+      revision: 12,
+      visibleTargets: [],
+      availableCapabilityIds: ["event.applyquery"],
+      eventFacetCatalog,
+    },
+  });
+  assert.equal("eventFacetCatalog" in client.snapshot(), false);
 });
 
 test("overlapping, mismatched, and out-of-order capability calls fail closed", async () => {
@@ -593,22 +643,22 @@ test("terminal relay events clear pending capability, confirmation, context, and
     expiresAt: "2026-07-26T10:00:25.000Z",
   });
   receive(socket, { type: "assistant.audio.delta", audio: "AQID" });
-  receive(socket, { type: "session.stopped", reason: "duration" });
+  receive(socket, { type: "session.stopped", reason: "provider" });
 
   assert.deepEqual(client.snapshot(), {
     state: "stopped",
     sessionId: null,
     protocolVersion: null,
     queuedAudioChunks: 0,
-    terminalReason: "duration",
+    terminalReason: "provider",
     pendingCapabilityCallId: null,
     pendingConfirmationId: null,
     publishedRevision: -1,
   });
 });
 
-test("explicit stop and pagehide send one terminal event and clear playback/session state", async () => {
-  for (const reason of ["user", "pagehide"]) {
+test("explicit stop, permission loss, and pagehide preserve one terminal cause", async () => {
+  for (const reason of ["user", "permission", "pagehide"]) {
     const listeners = new Map();
     const page = {
       addEventListener: (type, listener) => listeners.set(type, listener),
@@ -625,8 +675,9 @@ test("explicit stop and pagehide send one terminal event and clear playback/sess
     if (reason === "pagehide") {
       client.bindPageLifecycle(page);
       listeners.get("pagehide")();
-    } else client.stop("user");
+    } else client.stop(reason);
     assert.equal(socket.sent.at(-1).type, "session.stop");
+    assert.equal(socket.sent.at(-1).reason, reason);
     assert.equal(client.snapshot().state, "stopped");
     assert.equal(client.snapshot().sessionId, null);
     assert.equal(client.snapshot().queuedAudioChunks, 0);

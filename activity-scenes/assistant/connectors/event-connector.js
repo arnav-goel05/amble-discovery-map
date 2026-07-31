@@ -33,6 +33,38 @@ const MAX_EVENTS = 50;
 const MAX_OCCURRENCES = 20;
 const MAX_FILTER_OPTIONS = 100;
 const MAX_FILTER_TOKENS = 20;
+const FACET_SELECTION_SCHEMA = Object.freeze({
+  type: "object",
+  additionalProperties: false,
+  required: ["label", "evidence"],
+  properties: {
+    label: { type: "string", minLength: 1, maxLength: 160 },
+    evidence: { type: "string", minLength: 1, maxLength: 160 },
+  },
+});
+const EVENT_FACET_PROPOSAL_SCHEMA = Object.freeze({
+  type: "object",
+  additionalProperties: false,
+  required: ["what", "when", "where", "price", "residualQuery", "unresolved"],
+  properties: {
+    what: {
+      type: "array",
+      maxItems: 6,
+      uniqueItems: true,
+      items: FACET_SELECTION_SCHEMA,
+    },
+    when: { anyOf: [FACET_SELECTION_SCHEMA, { type: "null" }] },
+    where: { anyOf: [FACET_SELECTION_SCHEMA, { type: "null" }] },
+    price: { anyOf: [FACET_SELECTION_SCHEMA, { type: "null" }] },
+    residualQuery: { type: "string", maxLength: 200 },
+    unresolved: {
+      type: "array",
+      maxItems: 4,
+      uniqueItems: true,
+      items: { enum: ["what", "when", "where", "price"] },
+    },
+  },
+});
 const EVENT_APPLY_QUERY_ARGUMENT_SCHEMA = Object.freeze({
   type: "object",
   additionalProperties: false,
@@ -46,6 +78,7 @@ const EVENT_APPLY_QUERY_ARGUMENT_SCHEMA = Object.freeze({
       maximum: Number.MAX_SAFE_INTEGER,
     },
     catalogRevision: { type: "string", minLength: 1, maxLength: 160 },
+    facetProposal: EVENT_FACET_PROPOSAL_SCHEMA,
   },
 });
 
@@ -54,7 +87,7 @@ export const EVENT_APPLY_QUERY_CAPABILITY_CONTRACT = Object.freeze({
   version: "2.0",
   kind: "command",
   description:
-    "Atomically apply a deterministic sentence to the approved event filters.",
+    "Apply the complete spoken event request atomically, whether it contains one or several filters.",
   connectorId: "events",
   argumentSchema: EVENT_APPLY_QUERY_ARGUMENT_SCHEMA,
   eligibleStates: ["application_ready"],
@@ -288,6 +321,19 @@ function projectSnapshot(ownerState, discoveryState, revision) {
     resultsOpen: ownerState.resultsOpen === true,
     detailOpen: ownerState.detailOpen === true && Boolean(selectedEventId),
     filterOptions: Object.freeze(options),
+    eventFacetCatalog: Object.freeze({
+      catalogRevision: activeFilters.eventComposerState.catalogRevision,
+      ...Object.fromEntries(
+        ["what", "when", "where", "price"].map((facet) => [
+          facet,
+          Object.freeze(
+            options
+              .filter((option) => option.facet === facet)
+              .map((option) => option.label),
+          ),
+        ]),
+      ),
+    }),
     filterTokens: Object.freeze(filterTokens),
     events: Object.freeze(events),
     visibleTargets: Object.freeze(
@@ -335,6 +381,7 @@ function contextPatch(snapshot) {
       : snapshot.resultsOpen
         ? "event-search"
         : null,
+    eventFacetCatalog: snapshot.eventFacetCatalog,
   });
 }
 

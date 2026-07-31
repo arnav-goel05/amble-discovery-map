@@ -126,6 +126,18 @@ function normalizeVisibleTargets(input = []) {
   return targets;
 }
 
+function normalizeEventFacetCatalog(input = {}) {
+  return {
+    catalogRevision: boundedString(input.catalogRevision, 160),
+    ...Object.fromEntries(
+      ["what", "when", "where", "price"].map((facet) => [
+        facet,
+        uniqueStrings(input[facet], facet === "what" ? 60 : 20, 160),
+      ]),
+    ),
+  };
+}
+
 function mergeParts(parts) {
   const merged = {
     visibleTargets: [],
@@ -203,6 +215,7 @@ export function canonicalizeContextState(input = {}) {
       ? input.assistantPresentation
       : null,
     activeFilters: normalizeFilters(input.activeFilters),
+    eventFacetCatalog: normalizeEventFacetCatalog(input.eventFacetCatalog),
     plan: {
       stopIds: uniqueStrings(plan.stopIds, 20),
       travelMode: travelModes.has(plan.travelMode)

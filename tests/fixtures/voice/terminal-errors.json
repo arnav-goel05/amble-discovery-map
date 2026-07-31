@@ -56,16 +56,6 @@
       "terminal": { "type": "session.stopped", "reason": "protocol" }
     },
     {
-      "id": "idle-expiry",
-      "error": null,
-      "terminal": { "type": "session.stopped", "reason": "idle" }
-    },
-    {
-      "id": "duration-expiry",
-      "error": null,
-      "terminal": { "type": "session.stopped", "reason": "duration" }
-    },
-    {
       "id": "explicit-stop",
       "error": null,
       "terminal": { "type": "session.stopped", "reason": "user" }

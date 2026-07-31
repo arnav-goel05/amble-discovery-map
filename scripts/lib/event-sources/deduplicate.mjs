@@ -147,8 +147,8 @@ function scheduleCompatiblePairs(events) {
         addPair(anytime[left].index, anytime[right].index);
   return [...pairKeys]
     .map((key) => key.split(":").map(Number))
-    .sort(([aLeft, aRight], [bLeft, bRight]) =>
-      aLeft - bLeft || aRight - bRight,
+    .sort(
+      ([aLeft, aRight], [bLeft, bRight]) => aLeft - bLeft || aRight - bRight,
     );
 }
 
@@ -158,51 +158,51 @@ export function generateDedupCandidates(events) {
     compare(a.occurrenceId ?? a.id, b.occurrenceId ?? b.id),
   );
   for (const [left, right] of scheduleCompatiblePairs(sorted)) {
-      const a = sorted[left],
-        b = sorted[right];
-      const aSources = new Set((a.sources ?? []).map(({ source }) => source));
-      const sharesSource = (b.sources ?? []).some(({ source }) =>
-        aSources.has(source),
-      );
-      const differentSameSourceParents =
-        sharesSource &&
-        a.parentActivityId !== b.parentActivityId &&
-        a.parentListingId !== b.parentListingId;
-      const semanticRepeat =
-        differentSameSourceParents && sameSourceSemanticRepeat(a, b);
-      if (differentSameSourceParents && !semanticRepeat) continue;
-      if (
-        !scheduleCompatible(a, b) ||
-        !titleCompatible(a.title, b.title) ||
-        !organizersCompatible(a, b)
-      )
-        continue;
-      const aOffMapSubtype = offMapSubtypeOf(a),
-        bOffMapSubtype = offMapSubtypeOf(b);
-      const offMapCompatible =
-        a.publicPlacement === "off_map" &&
-        b.publicPlacement === "off_map" &&
-        aOffMapSubtype === bOffMapSubtype &&
-        Boolean(aOffMapSubtype) &&
-        canonicalEventTitle(a.venue) === canonicalEventTitle(b.venue);
-      candidates.push({
-        candidateId: `candidate:${sha(`${a.occurrenceId}:${b.occurrenceId}`)}`,
-        occurrenceIds: [a.occurrenceId, b.occurrenceId].sort(),
-        reasons: [
-          "compatible_title",
-          "compatible_schedule",
-          ...(offMapCompatible ? ["compatible_off_map_state"] : []),
-          ...(semanticRepeat
-            ? ["same_source_semantic_repeat"]
-            : sharesSource
-              ? ["same_parent_repeat"]
-              : []),
-        ],
-        rawVenueCompatible:
-          canonicalEventTitle(a.venue) === canonicalEventTitle(b.venue),
-        offMapCompatible,
-        sameParentRepeat: sharesSource,
-      });
+    const a = sorted[left],
+      b = sorted[right];
+    const aSources = new Set((a.sources ?? []).map(({ source }) => source));
+    const sharesSource = (b.sources ?? []).some(({ source }) =>
+      aSources.has(source),
+    );
+    const differentSameSourceParents =
+      sharesSource &&
+      a.parentActivityId !== b.parentActivityId &&
+      a.parentListingId !== b.parentListingId;
+    const semanticRepeat =
+      differentSameSourceParents && sameSourceSemanticRepeat(a, b);
+    if (differentSameSourceParents && !semanticRepeat) continue;
+    if (
+      !scheduleCompatible(a, b) ||
+      !titleCompatible(a.title, b.title) ||
+      !organizersCompatible(a, b)
+    )
+      continue;
+    const aOffMapSubtype = offMapSubtypeOf(a),
+      bOffMapSubtype = offMapSubtypeOf(b);
+    const offMapCompatible =
+      a.publicPlacement === "off_map" &&
+      b.publicPlacement === "off_map" &&
+      aOffMapSubtype === bOffMapSubtype &&
+      Boolean(aOffMapSubtype) &&
+      canonicalEventTitle(a.venue) === canonicalEventTitle(b.venue);
+    candidates.push({
+      candidateId: `candidate:${sha(`${a.occurrenceId}:${b.occurrenceId}`)}`,
+      occurrenceIds: [a.occurrenceId, b.occurrenceId].sort(),
+      reasons: [
+        "compatible_title",
+        "compatible_schedule",
+        ...(offMapCompatible ? ["compatible_off_map_state"] : []),
+        ...(semanticRepeat
+          ? ["same_source_semantic_repeat"]
+          : sharesSource
+            ? ["same_parent_repeat"]
+            : []),
+      ],
+      rawVenueCompatible:
+        canonicalEventTitle(a.venue) === canonicalEventTitle(b.venue),
+      offMapCompatible,
+      sameParentRepeat: sharesSource,
+    });
   }
   return candidates;
 }
@@ -405,17 +405,23 @@ export function finalizeDeduplication({
         (item) => item.sourceRecordId ?? JSON.stringify(item),
       );
       const sourceParentActivities = uniqueBy(
-        members.flatMap(({ sourceParentActivities = [] }) => sourceParentActivities),
+        members.flatMap(
+          ({ sourceParentActivities = [] }) => sourceParentActivities,
+        ),
         (item) =>
           `${item.source ?? ""}\0${item.parentActivityId ?? ""}\0${item.parentListingId ?? ""}`,
       );
       const firstValue = (field) =>
-        members.map((member) => member[field]).find((value) => {
-          if (value === null || value === undefined || value === "")
-            return false;
-          if (field === "availability" && value === "unknown") return false;
-          return !Array.isArray(value) || value.length > 0;
-        }) ?? primary[field] ?? null;
+        members
+          .map((member) => member[field])
+          .find((value) => {
+            if (value === null || value === undefined || value === "")
+              return false;
+            if (field === "availability" && value === "unknown") return false;
+            return !Array.isArray(value) || value.length > 0;
+          }) ??
+        primary[field] ??
+        null;
       return {
         ...primary,
         description: firstValue("description"),

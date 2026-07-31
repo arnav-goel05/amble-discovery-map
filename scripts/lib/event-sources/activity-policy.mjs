@@ -61,9 +61,7 @@ function displayRange(value) {
   const parts = source.split(/\s+(?:to|[-–—])\s+/i);
   if (parts.length !== 2) return { start: null, end: null };
   const yearToken = source.match(/\b(20\d{2})\b|[’'](\d{2})\b/);
-  const year = yearToken
-    ? yearToken[1] ?? `20${yearToken[2]}`
-    : null;
+  const year = yearToken ? (yearToken[1] ?? `20${yearToken[2]}`) : null;
   const monthPattern =
     /\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\b/i;
   const endMonth = parts[1].match(monthPattern)?.[1] ?? null;
@@ -74,8 +72,7 @@ function displayRange(value) {
       .trim();
     if (!monthPattern.test(text) && fallbackMonth)
       text = `${text} ${fallbackMonth}`;
-    if (!/\b20\d{2}\b|[’']\d{2}\b/.test(text) && year)
-      text = `${text} ${year}`;
+    if (!/\b20\d{2}\b|[’']\d{2}\b/.test(text) && year) text = `${text} ${year}`;
     return text;
   };
   return {
@@ -105,32 +102,23 @@ export function normalizeSchedule(schedule = {}, record = {}) {
   let end =
     validDate(schedule.end ?? record.endDateTime, {
       fallbackTime:
-        schedule.kind === "exact"
-          ? displayText ?? record.timeText
-          : null,
+        schedule.kind === "exact" ? (displayText ?? record.timeText) : null,
       endOfDay: schedule.kind === "range",
     }) ??
     range.end ??
     validDate(
-      start &&
-        !/\b(?:to|until|through)\b|\s[-–]\s/i.test(record.dateText ?? "")
+      start && !/\b(?:to|until|through)\b|\s[-–]\s/i.test(record.dateText ?? "")
         ? record.dateText
         : null,
     );
-  if (
-    kind === "exact" &&
-    range.start &&
-    range.end &&
-    range.start !== range.end
-  )
+  if (kind === "exact" && range.start && range.end && range.start !== range.end)
     kind = "range";
   const sessionRefs = [
     ...new Set((schedule.sessionRefs ?? []).filter(Boolean).map(String)),
   ].sort();
   if (!kind) {
     if (schedule.recurrence) kind = "recurring";
-    else if (record._concretePerformance === true && start)
-      kind = "exact";
+    else if (record._concretePerformance === true && start) kind = "exact";
     else if (sessionRefs.length || (record.performances?.length ?? 0) > 1)
       kind = "selectable";
     else if (

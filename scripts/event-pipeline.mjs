@@ -57,9 +57,7 @@ import {
 } from "./lib/event-pipeline/reporting.mjs";
 import { computeVenueEvidenceHash } from "./lib/event-pipeline/evidence-hash.mjs";
 import { isStructuralVenueLabel } from "./lib/event-pipeline/venue-values.mjs";
-import {
-  validateDateReviewArtifact,
-} from "./lib/event-pipeline/date-quality-audit.mjs";
+import { validateDateReviewArtifact } from "./lib/event-pipeline/date-quality-audit.mjs";
 import {
   projectEventActivities,
   validateActivityProjection,
@@ -204,14 +202,7 @@ function workspaceCodeIdentity() {
     ":(exclude)public/poi-tiles/event-venues/tileset.json",
   ];
   const head = git(["rev-parse", "HEAD"]).trim();
-  const trackedDiff = git([
-    "diff",
-    "--binary",
-    "HEAD",
-    "--",
-    ".",
-    ...excluded,
-  ]);
+  const trackedDiff = git(["diff", "--binary", "HEAD", "--", ".", ...excluded]);
   const untracked = git(["ls-files", "--others", "--exclude-standard"])
     .split(/\r?\n/)
     .filter(Boolean)
@@ -2647,9 +2638,7 @@ function recordNormalization(options) {
           : [],
       ),
       ...normalizedExcluded.records.map((record) => record.sourceRecordRef),
-      ...normalizedDateReviews.records.map(
-        (record) => record.sourceRecordRef,
-      ),
+      ...normalizedDateReviews.records.map((record) => record.sourceRecordRef),
     ]);
     const expectedProcessedRefs = new Set(
       normalizableSources.flatMap((source) => source.processedSourceRecordRefs),
@@ -2956,13 +2945,13 @@ function finalizeDedupCommand(options) {
         ...(approved?.events?.offMap ?? []),
       ];
   const priorClusters = priorEvents.map((event) => ({
-      identityAnchor: event.identityAnchor ?? stableEventKey(event),
-      memberIds:
-        event.sourceOccurrenceIds ??
-        (event.sources ?? []).map(
-          ({ source, sourceId }) => `${source}:${sourceId}`,
-        ),
-    }));
+    identityAnchor: event.identityAnchor ?? stableEventKey(event),
+    memberIds:
+      event.sourceOccurrenceIds ??
+      (event.sources ?? []).map(
+        ({ source, sourceId }) => `${source}:${sourceId}`,
+      ),
+  }));
   const sourcePrecedence = Object.fromEntries(
     readPipelineConfig()
       .sources.filter(({ sourceRole }) => sourceRole === "authoritative")
@@ -3055,8 +3044,7 @@ function finalizeDedupCommand(options) {
         activityProjection.parentGrouping.counts.candidates,
       parentGroupingMerges:
         activityProjection.parentGrouping.counts.mergedParents,
-      parentGroupingReviews:
-        activityProjection.parentGrouping.counts.reviews,
+      parentGroupingReviews: activityProjection.parentGrouping.counts.reviews,
     },
     evidence: summarizeEvidenceLevels(result.events),
     artifactRefs: [
@@ -4684,7 +4672,10 @@ async function stageFrontend(options) {
       "frontend/approved-activities.json",
       join(runDir, "frontend/approved-activities.json"),
     ],
-    ["pipeline-config.snapshot.json", join(runDir, "pipeline-config.snapshot.json")],
+    [
+      "pipeline-config.snapshot.json",
+      join(runDir, "pipeline-config.snapshot.json"),
+    ],
   ]
     .filter(([, path]) => existsSync(path))
     .map(([ref, path]) => checkpointArtifact(path, ref));
@@ -4767,7 +4758,9 @@ async function stageFrontend(options) {
         execute: async () => {
           execute(name, command, args, env);
           if (results[name].status !== "success") {
-            const error = new Error(results[name].diagnostics || `${name} failed`);
+            const error = new Error(
+              results[name].diagnostics || `${name} failed`,
+            );
             error.gateResult = results[name];
             throw error;
           }
@@ -4804,13 +4797,12 @@ async function stageFrontend(options) {
         counts: checkpoint.metrics,
       });
     } catch (error) {
-      results[name] =
-        error.gateResult ?? {
-          status: "failed",
-          exitCode: 1,
-          command: [command, ...args].join(" "),
-          diagnostics: boundedDiagnostic(error.message),
-        };
+      results[name] = error.gateResult ?? {
+        status: "failed",
+        exitCode: 1,
+        command: [command, ...args].join(" "),
+        diagnostics: boundedDiagnostic(error.message),
+      };
     }
   };
   const assetInputArtifacts = [
@@ -4899,10 +4891,7 @@ async function stageFrontend(options) {
       command: "skipped: geometry content hash unchanged",
     };
   let assetCheckpoint = reusableAssets;
-  if (
-    results.extraction.status === "success" &&
-    !results.combinedPoiTileset
-  ) {
+  if (results.extraction.status === "success" && !results.combinedPoiTileset) {
     try {
       const stagedPois = readJson(registry).records;
       const combinedOutput = join(
@@ -4951,14 +4940,26 @@ async function stageFrontend(options) {
       ]
     : [];
   if (results.extraction.status === "success")
-    await executeGate("poiSeparation", process.execPath, [
-      "scripts/verify-poi-background-separation.mjs",
-      "--registry",
-      registry,
-      "--root",
-      plan.geometryChanged ? assetsRoot : ROOT,
-    ], process.env, assetGateInputs);
-  await executeGate("build", "npm", ["run", "build"], process.env, assetGateInputs);
+    await executeGate(
+      "poiSeparation",
+      process.execPath,
+      [
+        "scripts/verify-poi-background-separation.mjs",
+        "--registry",
+        registry,
+        "--root",
+        plan.geometryChanged ? assetsRoot : ROOT,
+      ],
+      process.env,
+      assetGateInputs,
+    );
+  await executeGate(
+    "build",
+    "npm",
+    ["run", "build"],
+    process.env,
+    assetGateInputs,
+  );
   await executeGate(
     "eventUi",
     "npx",
@@ -5286,8 +5287,7 @@ async function finalize(options) {
     entityId: options.run,
     counts: {
       checkpoints: resourceMetrics.checkpointSummary.checkpoints,
-      checkpointSuccesses:
-        resourceMetrics.checkpointSummary.reusableSuccesses,
+      checkpointSuccesses: resourceMetrics.checkpointSummary.reusableSuccesses,
       externalRequests:
         resourceMetrics.checkpointSummary.metrics.externalRequests,
       cacheHits: resourceMetrics.checkpointSummary.metrics.cacheHits,

@@ -627,9 +627,8 @@ export function addRestaurantExplorer(
     "click",
     () => void dispatchDirect("restaurant.closeresults"),
   );
-  const stopWatchingOverlays = closeWhenAnotherOverlayOpens(
-    "restaurants",
-    () => close({ restoreFocus: false }),
+  const stopWatchingOverlays = closeWhenAnotherOverlayOpens("restaurants", () =>
+    close({ restoreFocus: false }),
   );
   document.body.dataset.restaurantExplorer = "mounted";
   return {

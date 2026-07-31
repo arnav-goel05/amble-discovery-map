@@ -356,9 +356,7 @@ const scheduleAliases = (event) =>
 const publishedEventMatchScore = (published, current) => {
   const publishedAliases = occurrenceAliases(published);
   if (
-    [...occurrenceAliases(current)].some((alias) =>
-      publishedAliases.has(alias),
-    )
+    [...occurrenceAliases(current)].some((alias) => publishedAliases.has(alias))
   )
     return 100;
   const publishedSources = sourceIdentities(published);
@@ -412,16 +410,16 @@ export function reconcilePublishedLandmarks({ landmarks = [], events = [] }) {
         }
         return [
           {
-          ...published,
-          ...current,
-          coordinates: published.coordinates,
-          venueVerified: published.venueVerified,
-          publicPlacement: published.publicPlacement,
-          mappingStatus: published.mappingStatus,
-          lifecycleState:
-            current.lifecycleState ?? published.lifecycleState ?? "active",
-        },
-      ];
+            ...published,
+            ...current,
+            coordinates: published.coordinates,
+            venueVerified: published.venueVerified,
+            publicPlacement: published.publicPlacement,
+            mappingStatus: published.mappingStatus,
+            lifecycleState:
+              current.lifecycleState ?? published.lifecycleState ?? "active",
+          },
+        ];
       }),
     };
   });

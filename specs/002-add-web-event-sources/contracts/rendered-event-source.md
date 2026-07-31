@@ -88,8 +88,18 @@ semantic parameters. Redirects must remain within approved public-network destin
     "url": "https://..."
   },
   "fieldCompleteness": {
-    "title": { "status": "present", "evidenceHash": "sha256:...", "contractVersion": "1.0", "method": "json_ld" },
-    "organizer": { "status": "not_published_by_source", "evidenceHash": "sha256:...", "contractVersion": "1.0", "method": null }
+    "title": {
+      "status": "present",
+      "evidenceHash": "sha256:...",
+      "contractVersion": "1.0",
+      "method": "json_ld"
+    },
+    "organizer": {
+      "status": "not_published_by_source",
+      "evidenceHash": "sha256:...",
+      "contractVersion": "1.0",
+      "method": null
+    }
   },
   "evidenceRefs": ["raw/...#..."],
   "terminalOutcome": null,

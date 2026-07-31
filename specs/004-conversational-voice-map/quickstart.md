@@ -1,5 +1,66 @@
 # Quickstart Validation: Conversational Voice Map Assistant
 
+## Planned validation — Forced native ingress
+
+This amendment is specified and planned but not implemented.
+
+The planned relay has no per-session user-turn, assistant-response-count, maximum-duration, or
+idle-expiry limit. Deterministic tests must complete more than six consecutive turns and remain
+active beyond the former duration and idle thresholds while separately proving that the
+ingress/domain/final state machine cannot loop beyond its three valid internal stages for one
+request.
+
+1. Commit a mocked native-audio turn and verify the first acknowledged provider configuration
+   contains exactly `voice__submitutterance` with forced tool choice.
+2. Return `{"utterance":"today at Marina Bay Sands"}` and verify the existing deterministic router
+   proposes `event.applyquery` with the complete sentence, never `app.inspect` or `catalog.search`.
+3. Exercise a non-deterministic restaurant/detail request and verify the second-stage tool menu has
+   at most fifteen currently eligible tools from exactly one connector.
+4. Verify deterministic results create a no-tool final response, while malformed, duplicate,
+   stale, overlapping, interrupted, and timed-out ingress calls mutate nothing and clean up.
+5. Run the full voice suite, capability verifiers, affected browser journeys, lint, formatting, and
+   production build. Compare against the recorded 56-tool/three-response event baseline. Do not use
+   a live provider call unless separately authorized.
+
+## 2026-07-30 — Single native event-query path
+
+- Native audio now exposes `event.applyquery` as its only event discovery/filter mutation tool.
+  `event.search`, individual event filter mutations, and legacy setters remain registered for
+  direct application controls but are withheld from the Realtime model.
+- The atomic tool description requires the complete spoken event request and explicitly covers
+  both one filter and several filters. Other eligible event interactions, such as selecting a
+  result, remain available.
+- The two new test-first fixtures failed against the previous dual-path projection and passed after
+  the scoped change. The complete relay suite passed 39/39 and the full voice/shared-capability
+  suite passed 214/214.
+- Capability verification passed for 64 version-2 capabilities and 61 direct/conversational parity
+  cases; the 17 contract/result/environment checks also passed.
+- ESLint, scoped Prettier, `git diff --check`, and the production build passed. The build retained
+  only the repository's existing third-party direct-`eval`, large-chunk, and output-preparation
+  timing warnings.
+- No event-pipeline run, live provider call, or paid spend was used.
+
+## 2026-07-30 — Transcript-independent native audio
+
+- The relay no longer configures, reserves, waits for, or settles a separate input-transcription
+  service. It reserves the reviewed response envelope before accepting microphone audio, commits
+  the native audio buffer, and immediately emits `response.create`.
+- Native-audio turns expose the three foundational queries plus only capability IDs currently
+  eligible in authoritative interface context. Provider tool proposals still pass through the
+  existing registry schemas, context revision, confirmation, gateway execution, and result
+  validation. Typed turns retain deterministic interpretation and connector-family scoping.
+- Missing, failed, duplicate, and late transcription-event fixtures cannot block, duplicate,
+  terminate, or otherwise control the native response.
+- The checked-in policy contains no transcription model, transcription rate, or input-transcription
+  reservation. A worst-case turn now reserves only the existing `121,920` micro-USD response
+  envelope; historical ledger rows remain readable for reconciliation.
+- Focused policy, relay, and scoping validation passed 45/45 tests. The complete voice and shared
+  capability suite passed 212/212 tests, and the affected Chromium voice journey passed 15/15
+  cases.
+- ESLint, scoped Prettier and diff checks, and the production build passed. The build retained only
+  the repository's existing dependency `eval`, large-chunk, and output-preparation timing warnings.
+  No live provider call or paid spend was used.
+
 ## 2026-07-27 — Phase 13 convergence
 
 - Consequential provider calls now use the complete browser-owned protocol:
@@ -162,18 +223,18 @@ npm run test:voice
 
 Validate:
 
-1. An audio turn emits `audio_committed`, `transcription_completed`, `response_requested`,
-   `response_created`, `first_audio`, and `response_done` in order.
-2. Opening and text turns begin at `response_requested` and omit inapplicable audio/transcription
-   phases.
+1. An audio turn emits `audio_committed`, `response_requested`, `response_created`, `first_audio`,
+   and `response_done` in order without a transcription phase.
+2. Opening and text turns begin at `response_requested` and omit the inapplicable audio phase.
 3. Every emitted record has only the contract allowlist and a one-way session identifier; fixtures
    containing transcript text, prompts, tool arguments, provider payloads, coordinates, and secret
    sentinels never appear in serialized logs.
 4. A response that never completes expires at 30 seconds, sends `response.cancel`, records
    `response_timeout`, terminates through the standard unavailable lifecycle, and leaves no active
    watchdog or reusable pending reservation.
-5. `response.done`, browser interruption, provider failure, explicit stop, idle expiry, and duration
-   expiry clear the watchdog exactly once.
+5. `response.done`, browser interruption, provider failure, and explicit stop clear the watchdog
+   exactly once. Phase 22 additionally verifies that the former idle and duration thresholds no
+   longer terminate a healthy session.
 6. No provider request contains `max_output_tokens`; the watchdog does not alter response content or
    the intrinsic provider/model response maximum.
 
@@ -204,8 +265,9 @@ Exercise these mocked journeys:
    clarification rather than opening the wrong result.
 3. Execute reversible zoom/filter/open actions immediately; verify external navigation, deletion,
    precise-location sharing, and other consequential fixtures wait for matching confirmation.
-4. Switch between audio and text, interrupt speech, deny microphone access, and terminate via stop,
-   page navigation, idle timeout, duration limit, network error, provider error, kill switch, and cap.
+4. Switch between audio and text, interrupt speech, deny microphone access, remain active beyond
+   the former idle and duration thresholds, and terminate via stop, page navigation, network error,
+   provider error, kill switch, and budget cap.
 5. Identify the user point and accuracy circle; verify denied/stale states; show MRT stations and
    lines without changing recommendation order until transit is explicitly requested.
 6. Cover all registered event, restaurant, planning, game, map, tour, saved-content, and navigation
@@ -299,6 +361,26 @@ Validate one bounded turn, interruption, one safe action, one rejected consequen
 explicit stop. Confirm the provider key is absent from the browser bundle/network responses, the
 reservation settles from trusted usage, and the cumulative ledger remains within USD 10. Disable
 voice immediately after the smoke. Do not run live-provider tests in CI.
+
+### Provider-valid configuration smoke
+
+Before creating any response, the relay sends a provider-only capability projection whose function
+names contain only letters, digits, underscores, or hyphens. Canonical application capability IDs
+remain dotted everywhere else. The relay waits for a matching `session.updated` acknowledgement
+before continuing; missing, stale, duplicate, mismatched, or provider-error events terminate the
+session instead of silently falling back to provider defaults.
+
+For a bounded validation, exercise only the opening response and one typed follow-up. Confirm that:
+
+1. every `session.update` has one matching `session.updated`;
+2. no provider `error` event occurs;
+3. all provider tool names match `^[a-zA-Z0-9_-]+$`;
+4. the opening welcome appears only in `response.create.instructions`, never in a persistent
+   conversation item; and
+5. the session returns to listening after each response and stops explicitly.
+
+Inspect the owner-only local audit only when all development audit gates are active. Never make this
+paid smoke part of CI or a routine test command.
 
 ## Implementation validation record — 2026-07-18
 
@@ -527,6 +609,9 @@ This initial attempt was incomplete at the time. It is superseded by the success
 
 No live provider call or paid spend was used.
 
+This historical validation predates and is superseded for audio-turn accounting by the
+2026-07-30 native-audio validation above.
+
 - The checked-in policy schema is `1.1` and contains no application `maxOutputTokens` setting.
 - Realtime `session.update` and every `response.create` omit `max_output_tokens`, allowing the
   provider/model intrinsic response maximum.
@@ -541,6 +626,9 @@ No live provider call or paid spend was used.
 ## Voice reliability tracing and watchdog implementation — 2026-07-29
 
 No live provider call or paid spend was used.
+
+This historical validation predates and is superseded for audio phase ordering by the 2026-07-30
+native-audio validation above.
 
 - The checked-in policy now independently pins a 30-second response deadline while continuing to
   omit `max_output_tokens` from provider requests.
@@ -600,3 +688,183 @@ Validation completed with zero provider calls and USD 0 spend:
   `eval`, large-chunk, and Vite output-preparation timing warnings.
 - Spec Kit convergence checked FR-054–FR-058, SC-028–SC-029, the Phase 16 plan decisions, and
   constitution v2.6.0 and found no remaining implementation gap.
+
+## Bounded persistent local voice-audit validation — 2026-07-30
+
+No live provider call or paid spend is required. Persistence is active only with all local gates:
+
+```bash
+NODE_ENV=development REALTIME_CONTENT_DEBUG=true REALTIME_CONTENT_AUDIT=true npm run dev
+```
+
+Sanitized JSONL appears under `outputs/realtime-content-audit/`. Routine content-debug mode without
+`REALTIME_CONTENT_AUDIT=true` remains process-only. Preview, production, browser messages, URLs,
+headers, and admission payloads cannot activate either content path.
+
+Validate deterministically:
+
+```bash
+node --test tests/realtime-content-debug.test.mjs tests/assistant-realtime-client.test.mjs tests/realtime-relay.test.mjs
+npm run test:voice
+npm run build
+```
+
+Expected proof:
+
+1. Persistent activation requires the development adapter, development environment, explicit
+   content-debug mode, and the separate audit flag.
+2. Files are JSONL, owner-only, below 5 MiB, limited to five, and cleaned after seven days.
+3. Nested secrets, authorization material, raw session identities, and raw or encoded audio are
+   absent from persistent bytes.
+4. Repeated large static configuration becomes compact fingerprint records after its first
+   permitted copy; a single oversized record becomes a bounded marker.
+5. Provider transcript content is recorded only if emitted. Native-audio user speech is never
+   inferred or synthesized when no user-transcription event exists.
+6. `user`, `pagehide`, and `permission` terminal causes are preserved, while invalid browser causes
+   fail closed.
+7. Audit I/O failure emits a safe bounded warning and does not alter the voice lifecycle.
+
+Validation completed with zero provider calls and USD 0 spend:
+
+- Focused content-audit, relay-protocol, and browser-client validation passed 56/56 tests.
+- The complete voice/shared-capability suite passed 212/212 tests.
+- Privacy/no-telemetry and realtime-policy validation passed 16/16 tests.
+- ESLint, scoped Prettier, and `git diff --check` passed.
+- `npm run build` completed successfully. It retained only the repository's existing dependency
+  `eval`, large-chunk, and Vite output-preparation timing warnings.
+- Spec Kit convergence checked FR-065–FR-073, SC-035–SC-041, all User Story 9 acceptance
+  scenarios, the bounded-audit plan decisions, and constitution v2.7.0 and found no remaining
+  implementation gap.
+
+## Provider-valid configuration validation — 2026-07-30
+
+Arnav explicitly authorized live testing with the existing local provider configuration. One
+bounded local session used the real relay and `gpt-realtime-2.1-mini` for the opening response and
+one typed follow-up, then stopped explicitly.
+
+- The live provider accepted two `session.update` messages and returned two matching
+  `session.updated` acknowledgements.
+- Both responses completed and returned to listening. The opening transcript exactly matched
+  `AMBLE_WELCOME_MESSAGE`; the follow-up remained within Amble's current capabilities.
+- The persistent audit recorded zero provider `error` events, zero invalid provider tool names, and
+  no persistent conversation item containing the welcome.
+- The two trusted-usage settlements were 5,295 and 4,578 micro-USD, or USD 0.009873 total.
+- Focused relay/alias/audit validation passed 56/56 tests. The complete voice suite passed 213/213;
+  capability/action verification passed for 64 v2 capabilities and 61 direct/conversational parity
+  cases; the affected Chromium browser matrix passed 39/39; lint, scoped Prettier, and the
+  production build passed.
+- The repository formatting wrapper was not independently runnable because it requires the CI-only
+  `CI_BASE_SHA`; direct Prettier validation of every changed Feature 004 file passed instead.
+- The production build emitted only the existing third-party direct-`eval` and bundle-size
+  warnings. No new provider, browser, protocol, build, or lint failure remained.
+
+## Forced native ingress and progressive disclosure validation — 2026-07-30
+
+No live provider call or paid spend was used.
+
+- Native audio now begins with one forced, provider-only `voice.submitutterance` tool instead of
+  the recorded 56 application tools. Its closed argument contains the complete model-heard
+  utterance and is bounded to 500 characters.
+- Single- and multi-filter event requests route directly to one atomic `event.applyquery`
+  proposal. The representative “find events today at Marina Bay Sands” case preserved both
+  constraints, used one context revision, exposed neither `app.inspect` nor `catalog.search`, and
+  required two provider responses after audio commit instead of the recorded three.
+- Non-deterministic requests expose at most 15 currently eligible tools from one connector
+  family. The restaurant fixture exposed all 13 eligible restaurant actions—not one action—while
+  excluding event, map, application-state, and broad catalogue tools. Mixed event/restaurant
+  requests and unsupported requests expose no action menu and ask for clarification.
+- Final responses expose zero tools. Missing, malformed, duplicate, stale, overlapping, and
+  unacknowledged stages fail closed through the existing cleanup path.
+- Per-session turn, response-count, maximum-duration, and idle-expiry limits are absent. Seven
+  consecutive deterministic turns remained active after simulated 70-second gaps and beyond the
+  former five-minute session duration. A simulated fourth provider stage in one user turn stopped
+  with `protocol` before another effect.
+- Each provider stage retains independent budget admission, configuration acknowledgement,
+  trusted-usage settlement, the 30-second response watchdog, interruption, privacy-safe
+  diagnostics, and terminal cleanup. A denied stage reservation stops before `turn.ready`.
+- Focused ingress, routing, ambiguity, lifecycle, and protocol validation passed 61/61 tests. The
+  complete voice/shared-capability suite passed 215/215 tests, and action coverage verified 64
+  v2 capabilities with 61 direct/conversational parity cases.
+- The affected Chromium browser matrix passed 41/41 journeys. ESLint, direct Prettier validation
+  of all changed files, `git diff --check`, and the production build passed. The build retained
+  only the existing third-party direct-`eval` and bundle-size warnings.
+
+## Live revision regression and automated utterance matrix — 2026-07-30
+
+No additional live provider call or paid spend was used.
+
+- The local audit showed that forced ingress captured the complete request and selected
+  `event.applyquery`, but proposed `baseContextRevision: 0` against authoritative application
+  revision `4`; the browser correctly returned `stale_context`.
+- Native routing now always binds the gateway's authoritative application revision while retaining
+  the event composer's catalogue revision. A regression fixture deliberately keeps the composer at
+  revision `0` and the application at revision `9`, then requires the proposal to use revision `9`.
+- Automated matrices cover date plus location, type/date/location/price combinations, event
+  follow-ups, restaurant and map routing, mixed-domain clarification, unsupported requests,
+  rolling date windows, map-area placement, and mystery locations.
+- The observed wording “find events today nearby in my area” now produces both `when:today` and
+  `where:near-me` rather than leaving the location as residual text.
+- Focused routing, relay, interpretation, and event-query validation passed 83/83 tests. The
+  complete voice/shared-capability suite passed 228/228; action coverage verified 64 v2
+  capabilities with 61 direct/conversational parity cases; all 17 capability-verification tests
+  passed.
+- All 41 affected Chromium browser journeys passed. One unrelated map-tileset readiness check was
+  flaky on its first attempt and passed on its automatic retry. ESLint, scoped Prettier,
+  `git diff --check`, and the production build passed with only the existing third-party
+  direct-`eval` and bundle-size warnings.
+
+## Voice event-facet classifier validation
+
+The implementation is complete when deterministic tests prove all of the following without a live
+provider call:
+
+- Forced native ingress still creates one provider response and one forced tool, now returning the
+  complete utterance, `domain`, and a closed event-facet proposal.
+- Natural compound requests classify What, When, Where, and Price together; generic “events”
+  creates no category restriction; request boilerplate is absent from residual search.
+- Every proposed label and evidence span is verified against the current bounded catalogue and
+  utterance before `event.applyquery`; unknown, conflicting, malformed, or stale proposals mutate
+  nothing.
+- Unresolved location wording produces one focused clarification rather than residual text or a
+  guessed Near me filter.
+- Typed and direct event queries make no provider request and preserve the deterministic
+  classifier's existing results.
+- Relay, event integration, capability parity, privacy/audit, browser journeys, lint, formatting,
+  build, and Spec Kit convergence pass.
+
+# Same-response voice event facets validation (2026-07-30)
+
+- The forced ingress response now carries the exact utterance, domain, and current-catalogue event
+  facet proposal in one provider response; no additional provider request or spend was introduced.
+- Pure verifier and event integration, relay, context, connector, and client tests passed.
+- Complete voice suite: 242/242 passed.
+- Capability gates: 64 direct/conversational parity cases and 17 protocol capability tests passed.
+- Affected Chromium event/voice journeys, scoped lint/formatting, and production build passed.
+- No live provider call and no event-pipeline run were used for this deterministic validation.
+
+## Sixteen-case live reliability loop (2026-07-30)
+
+- Final machine report:
+  `outputs/live-voice-matrix/matrix-2026-07-30T162201586Z.json`.
+- All 16/16 independent owner-authorized attempts passed in one uninterrupted run: typed help,
+  typed map/restaurant/event commands, native map and repeated transit commands, repeated
+  restaurant discovery, unsupported input, compound and refining event queries, repeated
+  category/price/location requests, ambiguity, and repeated event execution.
+- Every passing action used the expected capability and arguments, produced the expected
+  application outcome, returned one grounded response, resumed listening, and had no protocol
+  stop, timeout, crash, or unsupported mutation.
+- Regressions added during convergence cover bounded ingress shape normalization, deterministic
+  domain verification, optional event facets and refinement, typed tool-stage preamble buffering,
+  structured result narration, asymmetric browser/server payload limits, and socket isolation.
+- Fixed speech is now buffered and transcript-validated. One malformed provider response is
+  discarded and retried within the existing three-stage turn guard; it is never played to the
+  browser.
+- Final local budget ledger after the acceptance run recorded `4,289,631` micro-USD spent and
+  `2,211,560` micro-USD held/reserved under the existing USD 10 cap. Held amounts came from
+  deliberately failed protocol reproductions and were not silently released.
+- The complete voice suite passed 250/250. Action coverage passed for 64 capabilities and 61
+  direct/conversational parity cases; all 17 protocol capability tests passed. ESLint and
+  `git diff --check` passed.
+- The affected Chromium matrix completed with all 41 journeys passing; three unrelated
+  area-tileset readiness cases passed on their automatic retry. The production build passed with
+  only the existing third-party direct-`eval` and large-chunk warnings.

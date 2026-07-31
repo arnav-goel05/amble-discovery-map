@@ -66,6 +66,7 @@ outcome, with active and future eligible activities retained regardless of week.
 4. **Given** a date-dependent activity has no reliable schedule, **When** normalization
    completes, **Then** it is retained as `schedule_unverified` for review without an invented
    date.
+
 ---
 
 ### User Story 2 - Discover Activities Without Exact Buildings (Priority: P1)

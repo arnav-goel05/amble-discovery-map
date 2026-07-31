@@ -14,9 +14,12 @@ description: "Task list template for feature implementation"
 For work touching the Realtime exception, include fixtures proving that no session or response
 request transmits an application `max_output_tokens` ceiling and that budget reservation still
 uses the reviewed provider/model intrinsic maximum. If local content diagnostics are included,
-add tests proving explicit opt-in, production/preview impossibility, zero persistence, terminal
-cleanup, and structural exclusion of credentials, authorization material, cookies, session
-tokens, signing material, and raw audio.
+add tests proving explicit opt-in, production/preview impossibility, terminal cleanup, and
+structural exclusion of credentials, authorization material, cookies, session tokens, signing
+material, and raw audio. If persistent local audit files are included, also prove the separate
+activation flag, fixed gitignored location, restrictive permissions, sanitized-before-write
+boundary, 5 MiB rotation, five-file maximum, seven-day deletion, and zero database, browser,
+remote, or background-upload paths.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 

@@ -17,7 +17,7 @@ const selectors = {
   panel: '[data-testid="assistant-panel"]',
   disclosure: '[data-testid="assistant-voice-disclosure"]',
   stopVoice: '[data-testid="assistant-stop-voice"]',
-  orb: '[data-testid="assistant-voice-orb"]',
+  voiceDots: '[data-testid="assistant-voice-dots"]',
   microphone: '[data-testid="assistant-microphone-icon"]',
   livePreview: '[data-testid="assistant-live-preview"]',
   pushToTalk: '[data-testid="assistant-push-to-talk"]',
@@ -104,7 +104,12 @@ async function installMicrophoneMock(page, { denied = false } = {}) {
 
 async function mockRelay(
   page,
-  { transcript, assistantText, admissionError = null } = {},
+  {
+    transcript,
+    assistantText,
+    admissionError = null,
+    initialState = "listening",
+  } = {},
 ) {
   const admissionBodies = [];
   const browserMessages = [];
@@ -141,11 +146,9 @@ async function mockRelay(
           protocolVersion: "1.1",
           streamPath:
             "/api/voice/sessions/session-browser-lifecycle-001/stream",
-          expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
           limits: {
-            maxSessionSeconds: 300,
-            idleSeconds: 60,
-            maxResponses: 6,
+            maxResponseStagesPerTurn: 3,
+            responseTimeoutSeconds: 30,
           },
         },
       }),
@@ -155,9 +158,10 @@ async function mockRelay(
     "**/api/voice/sessions/session-browser-lifecycle-001/stream",
     (socket) => {
       browserSocket = socket;
-      socket.send(
-        JSON.stringify({ type: "session.state", state: "listening" }),
-      );
+      if (initialState)
+        socket.send(
+          JSON.stringify({ type: "session.state", state: initialState }),
+        );
       if (transcript) {
         socket.send(
           JSON.stringify({
@@ -208,6 +212,36 @@ async function mockRelay(
     },
   };
 }
+
+test("WebSocket connection stays connecting until the relay confirms the opening state", async ({
+  page,
+}) => {
+  await installMicrophoneMock(page);
+  const relay = await mockRelay(page, { initialState: null });
+
+  await openAssistant(page);
+  await expect(page.locator(selectors.voiceState)).toContainText(/connecting/i);
+  await expect(page.locator(selectors.open)).toContainText(/connecting/i);
+
+  relay.send({ type: "session.state", state: "processing" });
+  await expect(page.locator(selectors.voiceState)).toContainText(
+    /processing|thinking/i,
+  );
+
+  relay.send({ type: "session.state", state: "speaking" });
+  await expect(page.locator(selectors.voiceState)).toContainText(/speaking/i);
+  await expect
+    .poll(() =>
+      page
+        .locator(`${selectors.voiceDots} .assistant-voice-dot`)
+        .first()
+        .evaluate((node) => getComputedStyle(node).animationName),
+    )
+    .toBe("amble-voice-dot-speaking");
+
+  relay.send({ type: "session.state", state: "listening" });
+  await expect(page.locator(selectors.voiceState)).toContainText(/listening/i);
+});
 
 async function openAssistant(page, { beforeOpen } = {}) {
   const initializationError = new Promise((_, reject) => {
@@ -288,7 +322,7 @@ test("returning consent starts voice directly from the expanding pill", async ({
   await openAssistant(page, {
     beforeOpen: async () => {
       await expect(page.locator(selectors.microphone)).toBeVisible();
-      await expect(page.locator(selectors.orb)).toBeHidden();
+      await expect(page.locator(selectors.voiceDots)).toBeHidden();
       const shellBounds = await page.locator(selectors.shell).boundingBox();
       const builderBounds = await page
         .locator(".landmark-event-search__builder")
@@ -333,23 +367,54 @@ test("returning consent starts voice directly from the expanding pill", async ({
   expect(shellBounds?.height || 0).toBeLessThanOrEqual(
     builderBounds?.height || 0,
   );
-  await expect(page.locator(selectors.orb)).toBeVisible();
-  await expect(page.locator(selectors.orb)).toHaveAttribute(
-    "src",
-    /amble-voice-orb\.png$/,
-  );
+  await expect(page.locator(selectors.voiceDots)).toBeVisible();
+  await expect(
+    page.locator(`${selectors.voiceDots} .assistant-voice-dot`),
+  ).toHaveCount(3);
   await expect(page.locator(selectors.livePreview)).toContainText(
     /mood|say|listening/i,
   );
   await expect
     .poll(() =>
-      page.locator(selectors.orb).evaluate((node) => {
-        const animation = getComputedStyle(node).animationName;
-        return animation && animation !== "none";
-      }),
+      page
+        .locator(`${selectors.voiceDots} .assistant-voice-dot`)
+        .first()
+        .evaluate((node) => {
+          const animation = getComputedStyle(node).animationName;
+          return animation === "none";
+        }),
     )
     .toBe(true);
   await expect.poll(() => relay.admissionBodies.length).toBe(1);
+});
+
+test("voice keeps the real filter bubbles visible and editable", async ({
+  page,
+}) => {
+  await page.addInitScript(() =>
+    localStorage.setItem("amble.voice-disclosure.v1", "accepted"),
+  );
+  await installMicrophoneMock(page);
+  await mockRelay(page);
+
+  await openAssistant(page, {
+    beforeOpen: async () => {
+      const input = page.locator("#landmark-event-search-input");
+      await input.fill("Find exhibitions in the next 7 days");
+      await input.press("Enter");
+      await expect(
+        page.locator(".landmark-event-search__token"),
+      ).not.toHaveCount(0);
+    },
+  });
+
+  const tokens = page.locator(".landmark-event-search__token");
+  await expect(tokens.first()).toBeVisible();
+  await expect(page.locator(selectors.voiceDots)).toBeVisible();
+  await expect(page.locator(".assistant-open__title")).toBeHidden();
+
+  await tokens.first().click();
+  await expect(page.locator(".landmark-event-search__popover")).toBeVisible();
 });
 
 test("the interrupt button stops playback and returns Amble to listening", async ({

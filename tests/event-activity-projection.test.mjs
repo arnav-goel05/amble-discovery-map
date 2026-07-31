@@ -30,34 +30,30 @@ const occurrence = ({
   identityAnchor: id,
   parentActivityId: parent,
   parentListingId: listing,
-  sourceParentActivities:
-    sourceParents ?? [
-      { source, parentActivityId: parent, parentListingId: listing },
-    ],
+  sourceParentActivities: sourceParents ?? [
+    { source, parentActivityId: parent, parentListingId: listing },
+  ],
   title,
   authorityRefs,
   venue,
   organizer,
-  schedule:
-    schedule ?? {
-      kind: "exact",
-      start: date,
-      end: date,
-      displayText: date,
-      finalKnownOccurrence: date,
-    },
+  schedule: schedule ?? {
+    kind: "exact",
+    start: date,
+    end: date,
+    displayText: date,
+    finalKnownOccurrence: date,
+  },
   sessions: [
     {
       sessionId: `source-session:${id}`,
-      schedule:
-        schedule ?? { kind: "exact", start: date, end: date },
+      schedule: schedule ?? { kind: "exact", start: date, end: date },
       venueKey: venue,
     },
   ],
-  sources:
-    sources ?? [
-      { source, sourceId: id, sourceUrl: url, recordRef: `raw/${id}` },
-    ],
+  sources: sources ?? [
+    { source, sourceId: id, sourceUrl: url, recordRef: `raw/${id}` },
+  ],
   lifecycleState: "active",
   publicPlacement,
   mappingStatus,
@@ -129,7 +125,10 @@ test("authority-linked exact evidence suppresses a redundant coarse offsite proj
   assert.equal(activity.venueGroups.length, 1);
   assert.equal(activity.venueGroups[0].approvedLocationId, "national-museum");
   assert.equal(activity.sourceOffers.length, 2);
-  assert.equal(activity.sessions.every((session) => session.occurrenceIds.length === 2), true);
+  assert.equal(
+    activity.sessions.every((session) => session.occurrenceIds.length === 2),
+    true,
+  );
   assert.equal(result.activities.counts.coarseEnvelopesSuppressed, 0);
 });
 
@@ -193,10 +192,7 @@ test("collected-shape authority evidence reconciles Memory Palace to two timed s
   const activity = result.activities.records[0];
   assert.deepEqual(
     activity.sessions.map(({ schedule }) => schedule.start).sort(),
-    [
-      "2026-07-26T09:00:00+08:00",
-      "2026-08-02T09:00:00+08:00",
-    ],
+    ["2026-07-26T09:00:00+08:00", "2026-08-02T09:00:00+08:00"],
   );
   assert.equal(
     activity.sessions.some(({ schedule }) =>
@@ -284,7 +280,10 @@ test("groups sibling occurrences into one activity without losing sessions", () 
   });
   assert.equal(result.activities.records.length, 1);
   assert.equal(result.activities.records[0].sessions.length, 2);
-  assert.deepEqual(result.activities.records[0].occurrenceIds, ["show-1", "show-2"]);
+  assert.deepEqual(result.activities.records[0].occurrenceIds, [
+    "show-1",
+    "show-2",
+  ]);
   assert.equal(result.activities.counts.occurrences, 2);
   assert.equal(result.activities.counts.activities, 1);
   assert.equal(result.reviews.records.length, 0);
@@ -293,7 +292,9 @@ test("groups sibling occurrences into one activity without losing sessions", () 
     result.activities.records[0].groupingDecision.strategy,
     "source_parent_activity",
   );
-  assert.doesNotThrow(() => validateActivityProjection(result.activities, result.reviews));
+  assert.doesNotThrow(() =>
+    validateActivityProjection(result.activities, result.reviews),
+  );
 });
 
 test("schedule summary derives a Singapore clock when display text is date-only", () => {
@@ -357,20 +358,47 @@ test("classifies no-op, update, expire, and review outcomes deterministically", 
 
 test("an accepted occurrence bridge links source parents but unrelated titles remain separate", () => {
   const bridgeParents = [
-    { source: "SISTIC", parentActivityId: "activity:sistic-show", parentListingId: "SISTIC:show" },
-    { source: "Fever Singapore", parentActivityId: "activity:fever-show", parentListingId: "Fever:show" },
+    {
+      source: "SISTIC",
+      parentActivityId: "activity:sistic-show",
+      parentListingId: "SISTIC:show",
+    },
+    {
+      source: "Fever Singapore",
+      parentActivityId: "activity:fever-show",
+      parentListingId: "Fever:show",
+    },
   ];
   const result = projectEventActivities({
     runId: "run-2",
     generatedAt: "2026-07-22T00:00:00.000Z",
     events: [
-      occurrence({ id: "merged-1", parent: "activity:sistic-show", sourceParents: bridgeParents }),
-      occurrence({ id: "fever-2", parent: "activity:fever-show", listing: "Fever:show", source: "Fever Singapore", date: "2026-08-02" }),
-      occurrence({ id: "other", parent: "activity:other", title: "Example Show: Youth Edition" }),
+      occurrence({
+        id: "merged-1",
+        parent: "activity:sistic-show",
+        sourceParents: bridgeParents,
+      }),
+      occurrence({
+        id: "fever-2",
+        parent: "activity:fever-show",
+        listing: "Fever:show",
+        source: "Fever Singapore",
+        date: "2026-08-02",
+      }),
+      occurrence({
+        id: "other",
+        parent: "activity:other",
+        title: "Example Show: Youth Edition",
+      }),
     ],
   });
   assert.equal(result.activities.records.length, 2);
-  assert.equal(result.activities.records.find((item) => item.occurrenceIds.includes("merged-1")).occurrenceIds.length, 2);
+  assert.equal(
+    result.activities.records.find((item) =>
+      item.occurrenceIds.includes("merged-1"),
+    ).occurrenceIds.length,
+    2,
+  );
 });
 
 test("projection is input-order independent", () => {
@@ -378,8 +406,16 @@ test("projection is input-order independent", () => {
     occurrence({ id: "show-2", date: "2026-08-02" }),
     occurrence({ id: "show-1", date: "2026-08-01" }),
   ];
-  const first = projectEventActivities({ runId: "run", generatedAt: "2026-07-22T00:00:00.000Z", events });
-  const second = projectEventActivities({ runId: "run", generatedAt: "2026-07-22T00:00:00.000Z", events: [...events].reverse() });
+  const first = projectEventActivities({
+    runId: "run",
+    generatedAt: "2026-07-22T00:00:00.000Z",
+    events,
+  });
+  const second = projectEventActivities({
+    runId: "run",
+    generatedAt: "2026-07-22T00:00:00.000Z",
+    events: [...events].reverse(),
+  });
   assert.deepEqual(first, second);
 });
 
@@ -387,9 +423,16 @@ test("direct contradictions isolate the affected occurrence in review", () => {
   const first = occurrence({ id: "same", date: "2026-08-01" });
   const conflict = occurrence({ id: "same", date: "2026-08-02" });
   const safe = occurrence({ id: "safe", date: "2026-08-03" });
-  const result = projectEventActivities({ runId: "run", generatedAt: "2026-07-22T00:00:00.000Z", events: [first, conflict, safe] });
+  const result = projectEventActivities({
+    runId: "run",
+    generatedAt: "2026-07-22T00:00:00.000Z",
+    events: [first, conflict, safe],
+  });
   assert.equal(result.reviews.records.length, 1);
-  assert.equal(result.reviews.records[0].reasonCode, "contradictory_session_schedule");
+  assert.equal(
+    result.reviews.records[0].reasonCode,
+    "contradictory_session_schedule",
+  );
   assert.deepEqual(result.activities.records[0].occurrenceIds, ["safe"]);
 });
 
@@ -398,13 +441,30 @@ test("deduplicates safe offers and scopes partial coverage to sessions", () => {
     runId: "run",
     generatedAt: "2026-07-22T00:00:00.000Z",
     events: [
-      occurrence({ id: "show-1", sources: [{ source: "SISTIC", sourceId: "1", sourceUrl: "https://www.sistic.com.sg/events/show?utm_source=x", recordRef: "raw/1" }] }),
-      occurrence({ id: "show-2", date: "2026-08-02", url: "javascript:alert(1)" }),
+      occurrence({
+        id: "show-1",
+        sources: [
+          {
+            source: "SISTIC",
+            sourceId: "1",
+            sourceUrl: "https://www.sistic.com.sg/events/show?utm_source=x",
+            recordRef: "raw/1",
+          },
+        ],
+      }),
+      occurrence({
+        id: "show-2",
+        date: "2026-08-02",
+        url: "javascript:alert(1)",
+      }),
     ],
   });
   const activity = result.activities.records[0];
   assert.equal(activity.sourceOffers.length, 1);
-  assert.equal(activity.sourceOffers[0].url, "https://www.sistic.com.sg/events/show");
+  assert.equal(
+    activity.sourceOffers[0].url,
+    "https://www.sistic.com.sg/events/show",
+  );
   assert.equal(activity.sourceOffers[0].scope, "sessions");
   assert.equal(activity.sourceOffers[0].sessionIds.length, 1);
 });
@@ -479,12 +539,15 @@ test("treats ISO and human-readable date-only values as the same Singapore day",
   });
 
   assert.equal(result.activities.records.length, 1);
-  assert.deepEqual(result.activities.records[0].sources, ["Catch.sg", "SISTIC"]);
+  assert.deepEqual(result.activities.records[0].sources, [
+    "Catch.sg",
+    "SISTIC",
+  ]);
   assert.equal(result.activities.records[0].sessions.length, 1);
-  assert.deepEqual(
-    result.activities.records[0].sessions[0].occurrenceIds,
-    ["catch-two-worlds", "sistic-two-worlds"],
-  );
+  assert.deepEqual(result.activities.records[0].sessions[0].occurrenceIds, [
+    "catch-two-worlds",
+    "sistic-two-worlds",
+  ]);
   assert.equal(result.activities.records[0].sourceOffers.length, 2);
 });
 
@@ -530,14 +593,8 @@ test("date-only source evidence yields to a single richer timed session determin
     "catch-chloe",
     "sistic-chloe",
   ]);
-  assert.equal(
-    forward.sessions[0].schedule.start,
-    "2026-10-08T19:30:00+08:00",
-  );
-  assert.equal(
-    forward.scheduleSummary.label,
-    "Thu, 8 October 2026, 7.30pm",
-  );
+  assert.equal(forward.sessions[0].schedule.start, "2026-10-08T19:30:00+08:00");
+  assert.equal(forward.scheduleSummary.label, "Thu, 8 October 2026, 7.30pm");
   assert.deepEqual(forward.sessions, reverse.sessions);
   assert.deepEqual(forward.scheduleSummary, reverse.scheduleSummary);
 });

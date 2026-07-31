@@ -180,10 +180,7 @@ test("rail lines retain identity while runtime geometry is simplified and valida
     ),
     "the runtime route should retain curved authoritative centreline vertices",
   );
-  assert.equal(
-    line.properties.geometrySource,
-    "authoritative_rail_centreline",
-  );
+  assert.equal(line.properties.geometrySource, "authoritative_rail_centreline");
   assert.equal(line.properties.authoritativeSegments, 1);
   assert.equal(line.properties.curvedFallbackSegments, 0);
   assert.equal(manifest.validationReport.geometry, true);

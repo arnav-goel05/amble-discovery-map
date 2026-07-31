@@ -4,9 +4,9 @@
 
 **Created**: 2026-07-18
 
-**Status**: Draft — amended through constitution v2.6.0 for shared capabilities, deterministic
+**Status**: Draft — amended through constitution v2.7.0 for shared capabilities, deterministic
 interpretation, MCP-foundation architecture, privacy-safe reliability tracing, and explicit local
-content diagnostics
+content diagnostics with a bounded persistent local audit mode
 
 **Input**: User description: "Replace research-heavy search with open-ended conversational discovery, highlight suitable areas when zoomed out, make user location and Singapore MRT context clear, and let users control every user-facing application feature by voice."
 
@@ -15,6 +15,21 @@ content diagnostics
 ### Session 2026-07-29
 
 - Q: Where may content-bearing debug data be captured? → A: Explicitly activated local developer sessions only; secrets and raw audio remain excluded.
+
+### Session 2026-07-30
+
+- Q: May sanitized voice-session diagnostics survive the local process for later debugging? → A:
+  Yes, only behind a separate explicit local-development audit flag, in a bounded rotating
+  gitignored store with no remote transport.
+- Q: How should Amble preserve dotted capability identities when the provider rejects dots in
+  function names? → A: Keep canonical capability IDs unchanged and use a deterministic,
+  collision-free, reversible provider-only alias.
+- Q: Should event-facet classification require a second provider request? → A: No. The existing
+  forced Realtime ingress response returns both the complete utterance and its proposed structured
+  What, When, Where, and Price facets; deterministic application code verifies the proposal.
+- Q: Which event-query entry points use OpenAI facet classification? → A: Native voice only.
+  Typed and direct event queries remain deterministic and free; all entry points share the same
+  deterministic verifier and `event.applyquery` executor.
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -170,6 +185,15 @@ phrases, residual query, results, and single new context revision.
    user is asked to retry or clarify against the current state.
 6. **Given** a compound event sentence, **When** one recognized part is invalid or ambiguous,
    **Then** none of its proposed query or filter changes are committed.
+7. **Given** native voice is active, **When** the user says either “today” or “today at Marina Bay
+   Sands,” **Then** the complete spoken event request is submitted through the same single atomic
+   event-query path and no alternative event filter tool can discard part of the request.
+8. **Given** a native-audio turn begins, **When** the committed speech reaches the provider,
+   **Then** the provider is forced to return one bounded complete-utterance ingress call rather than
+   choose among application tools.
+9. **Given** the ingress call contains an event sentence, **When** deterministic routing succeeds,
+   **Then** the relay proposes `event.applyquery` directly through the shared gateway without
+   exposing `app.inspect`, `catalog.search`, or any other competing event-search route.
 
 ---
 
@@ -200,6 +224,119 @@ or registered external transport exists.
    credentials, and registered connectors are inspected, **Then** no network-exposed MCP server or
    client is present and the projection foundation is disabled by default.
 
+---
+
+### User Story 8 - Respond Directly From Native Audio (Priority: P1)
+
+As a voice user, I want Amble to begin handling my spoken request without waiting for a separate
+speech-to-text result, so a delayed or unavailable transcript cannot leave the experience stuck on
+“Thinking.”
+
+**Why this priority**: Native audio is already the authoritative input to the approved conversational
+model. Making a separate transcript a prerequisite adds latency and creates a failure dependency
+that is unnecessary for the requested voice experience.
+
+**Independent Test**: Commit a representative spoken turn while the auxiliary transcription event
+is absent, delayed, or explicitly failed; Amble must still request a native-audio response, expose
+only currently eligible typed capabilities, preserve confirmation and result validation, and reach
+a normal response or the existing bounded response-timeout lifecycle.
+
+**Acceptance Scenarios**:
+
+1. **Given** an admitted spoken turn and current authoritative interface context, **When** the audio
+   turn is committed, **Then** Amble requests a model response without waiting for a transcript.
+2. **Given** no transcription event is ever emitted, **When** the native-audio response completes,
+   **Then** the conversation returns to listening without a transcription timeout or terminal
+   transcription error.
+3. **Given** a spoken request causes a tool proposal, **When** the model chooses an eligible typed
+   capability, **Then** the existing argument validation, current-state eligibility, confirmation,
+   shared executor, observable result, and refreshed-context rules remain unchanged.
+4. **Given** the user submits text instead of audio, **When** the turn is processed, **Then** the
+   existing deterministic text interpretation and connector-family scoping remain unchanged.
+
+---
+
+### User Story 9 - Audit a Past Local Voice Session (Priority: P2)
+
+As a developer reproducing a voice defect locally, I can explicitly retain a compact sanitized
+session audit long enough to inspect the conversation lifecycle after the process or browser
+session ends.
+
+**Why this priority**: Process-only output is frequently truncated and disappears when the server
+restarts, preventing reliable diagnosis of delayed, interrupted, or multi-turn failures.
+
+**Independent Test**: Start the local relay with development mode, content diagnostics, and the
+separate persistent-audit flag; complete and interrupt representative sessions; restart the
+process; and verify the bounded JSONL audit still contains the sanitized lifecycle, provider
+transcript events that actually existed, tool calls, results, and terminal causes.
+
+**Acceptance Scenarios**:
+
+1. **Given** all three local-development gates are active, **When** permitted content diagnostics
+   are emitted, **Then** sanitized JSONL records are written to the fixed gitignored local audit
+   directory and remain available after the session or process ends.
+2. **Given** the persistent-audit flag is absent, **When** local content diagnostics are active,
+   **Then** permitted records remain process-only and no audit file is created.
+3. **Given** preview or production mode, **When** any caller supplies diagnostic or audit flags,
+   **Then** no content-bearing process record or persistent audit file can be created.
+4. **Given** audit files exceed the size, count, or age bounds, **When** startup or rotation cleanup
+   runs, **Then** files are rotated or removed while the newest bounded audit history remains.
+5. **Given** repeated large static provider payloads such as identical session configuration,
+   **When** they are audited, **Then** the first permitted payload and compact fingerprinted
+   repetitions remain traceable without crowding out conversational turns.
+6. **Given** the native-audio provider emits no user transcript, **When** the audit is reviewed,
+   **Then** it records audio metadata and lifecycle only and never invents or claims a user
+   transcript.
+7. **Given** the browser explicitly stops a session, unloads the page, or loses microphone
+   permission, **When** the relay terminates it, **Then** the validated terminal reason is retained
+   in the audit.
+8. **Given** the local audit store is unavailable or unwritable, **When** a voice record is
+   produced, **Then** voice behavior remains unchanged and the local process emits only a safe
+   bounded diagnostic warning.
+
+---
+
+### User Story 10 - Start Every Live Voice Session With Valid Amble Controls (Priority: P1)
+
+As a voice user, I receive Amble's configured product behavior and currently eligible controls
+before the greeting or my first turn, rather than silently falling back to a generic assistant when
+provider configuration is rejected.
+
+**Why this priority**: A rejected provider configuration removes both Amble's instructions and all
+application controls while leaving plausible speech working, which is a misleading baseline
+failure.
+
+**Independent Test**: Connect a live provider session, apply a capability set containing canonical
+dotted IDs, wait for provider acknowledgement, speak the one-shot welcome, submit a representative
+turn, and verify the provider reports no configuration error and any function proposal maps back to
+the exact canonical capability ID.
+
+**Acceptance Scenarios**:
+
+1. **Given** canonical Amble capability IDs contain dots, **When** tools are projected to the
+   provider, **Then** every provider name satisfies its accepted naming grammar and maps
+   bijectively back to exactly one canonical capability ID.
+2. **Given** a new provider connection, **When** Amble sends its initial configuration, **Then** no
+   greeting or user turn is processed until the provider acknowledges that configuration.
+3. **Given** a later turn changes the eligible tool set, **When** the relay updates provider
+   configuration, **Then** that turn waits for the matching acknowledgement before response
+   creation.
+4. **Given** the provider rejects configuration or emits another provider error, **When** the relay
+   receives it, **Then** the session follows the ordinary terminal provider-unavailable lifecycle
+   rather than continuing with default behavior.
+5. **Given** the opening response is requested, **When** it completes, **Then** its exact-speech
+   instruction does not remain as a persistent conversation item capable of influencing later
+   turns.
+6. **Given** the provider proposes an aliased function name, **When** the relay validates it,
+   **Then** the browser receives only the matching canonical capability ID and every existing
+   schema, eligibility, confirmation, execution, and result rule remains unchanged.
+7. **Given** identical sanitized static configuration is audited at different timestamps, **When**
+   compaction runs, **Then** one full payload and compact repetitions remain, while genuinely
+   different configurations remain separate.
+8. **Given** the bounded live smoke is authorized and configured, **When** it runs, **Then** it
+   records provider acknowledgement, exact welcome completion, one representative turn, terminal
+   cleanup, and zero provider error events.
+
 ### Edge Cases
 
 - The microphone is revoked, disconnected, or changes while a conversation is active.
@@ -218,9 +355,24 @@ or registered external transport exists.
 - The realtime conversation service is slow, unavailable, reaches its usage limit, or ends unexpectedly.
 - A response request is accepted but never emits audio or a terminal completion event.
 - Provider events continue arriving without completing the active response.
+- A native-audio response completes without any user-transcription event.
+- A stale or unexpected transcription event arrives after the native-audio response has completed.
+- The currently eligible typed capability set changes immediately before an audio turn is committed.
 - Local content diagnostics are requested in a production or preview process.
 - A debug event contains nested credential, authorization, cookie, session-token, signing-material,
   or raw-audio fields.
+- A single permitted diagnostic payload is larger than the maximum audit-file size.
+- Identical large session configuration events repeat across turns or reconnects.
+- Old audit files remain after the retention window or the local clock changes.
+- The local audit directory becomes unavailable or unwritable during an active voice session.
+- Two canonical capability IDs could normalize to the same provider alias.
+- A provider acknowledgement is missing, delayed, stale, duplicated, or refers to a different
+  configuration update.
+- The provider rejects an initial or per-turn configuration while speech responses remain
+  otherwise available.
+- A provider function proposal uses an unknown, stale, or malformed transport alias.
+- The one-shot welcome succeeds but its instruction accidentally remains in later conversation
+  context.
 - An event utterance contains overlapping recognized values, unmatched wording, or a stale catalogue
   revision.
 - A future protocol projection attempts to expose an ineligible capability or bypass confirmation.
@@ -374,18 +526,19 @@ or registered external transport exists.
   and free-event filtering, MUST be recognized by a bounded deterministic application interpreter
   and executed through the shared capability gateway. The model MAY phrase the reply but MUST NOT
   be the sole action-selection authority for those commands.
-- **FR-049**: Before each model response, the relay MUST expose only foundational queries and the
-  eligible capabilities belonging to connector families relevant to the bounded request and
+- **FR-049**: Before each text model response, the relay MUST expose only foundational queries and
+  the eligible capabilities belonging to connector families relevant to the bounded request and
   current interface state. A deterministically routed capability MUST be excluded from provider
-  tools for that turn.
+  tools for that turn. Native-audio responses use the staged ingress and connector-family
+  projection defined by FR-061 and FR-084–FR-091.
 - **FR-050**: The relay MUST emit a privacy-safe operational trace for each voice turn covering
-  audio committed, transcription completed, response requested, response created, first audio,
-  response completed, and terminal failure where applicable. Each record MUST contain only a
+  audio committed, response requested, response created, first audio, response completed, and
+  terminal failure where applicable. Each record MUST contain only a
   one-way session identifier, turn number, phase, timestamp, elapsed durations, bounded event code,
   and terminal reason.
-- **FR-051**: Every requested provider response MUST have a configurable deadline independent of
-  session idle and maximum-duration limits. The first-release deadline MUST be 30 seconds and MUST
-  begin when the response request is sent.
+- **FR-051**: Every requested provider response MUST have a configurable deadline that bounds only
+  that in-flight response and never expires an otherwise healthy conversation. The first-release
+  deadline MUST be 30 seconds and MUST begin when the response request is sent.
 - **FR-052**: When a response deadline expires, the relay MUST record a `response_timeout` terminal
   outcome, cancel the in-flight provider response where possible, clear its watchdog and pending
   reservation, terminate the session through the standard unavailable lifecycle, and ignore any
@@ -405,8 +558,161 @@ or registered external transport exists.
   logger receives the record. Audio events MUST expose only byte count, format, timing, and
   lifecycle metadata.
 - **FR-058**: Local content diagnostics MUST create no file, database row, cache, browser-storage
-  entry, remote telemetry request, or background upload and MUST cease when the local process or
-  voice session ends.
+  entry, remote telemetry request, or background upload unless the separately gated persistent
+  local audit mode defined by FR-065–FR-073 is active. Process diagnostics MUST cease when the
+  local process or voice session ends.
+- **FR-059**: Committing an admitted audio turn MUST request the approved Realtime model response
+  without waiting for a separate input-transcription completion, delta, or failure event.
+- **FR-060**: New audio turns MUST NOT invoke or reserve a separate input-transcription service.
+  Native audio remains session-scoped model input and raw audio remains prohibited from application
+  persistence and content logs.
+- **FR-061**: Native-audio application capabilities MUST be selected only after the forced ingress
+  stage and MUST be limited to a deterministic route or one currently eligible connector family
+  from authoritative interface context. Every proposed capability MUST continue through the
+  existing schema, eligibility, confirmation, shared-executor, result-validation, and
+  refreshed-context boundaries.
+- **FR-062**: Removing transcript-gated routing MUST NOT change the deterministic interpreter or
+  connector-family scoping used for text turns.
+- **FR-063**: Missing, delayed, failed, duplicate, or stale transcription events MUST NOT block,
+  terminate, duplicate, or otherwise control a native-audio response.
+- **FR-064**: Voice budget admission and settlement MUST reserve only costs for billable operations
+  that the turn can actually invoke, while retaining the cumulative cap, kill switches, trusted
+  usage settlement, and fail-closed handling for missing response usage.
+- **FR-065**: Persistent content auditing MUST require development runtime mode,
+  `NODE_ENV=development`, explicit local content diagnostics, and a separate explicit persistent
+  audit activation before relay construction. Missing any gate MUST create no audit file.
+- **FR-066**: The persistent audit MUST write only sanitized newline-delimited JSON to the fixed
+  gitignored owner-controlled `outputs/realtime-content-audit/` directory with directory mode
+  `0700` and file mode `0600`.
+- **FR-067**: Credentials, authorization material, cookies, session or signing material, raw audio,
+  and encoded audio MUST be removed before any persistent sink receives a record. Persistent audit
+  data MUST NOT use application databases, browser storage, analytics, telemetry, or network
+  transport.
+- **FR-068**: Audit files MUST rotate before 5 MiB, retain at most five files, delete files older
+  than seven days during startup and rotation cleanup, and require no background process.
+- **FR-069**: A single record that cannot fit within the file-size bound MUST be replaced with a
+  bounded marker containing its event identity, byte count, and content fingerprint rather than
+  written partially or beyond the limit.
+- **FR-070**: Repeated large static provider payloads MUST be compacted after the first permitted
+  copy using a stable fingerprint and useful bounded metadata, while conversation lifecycle,
+  provider-generated transcripts, prompts, tool arguments/results, errors, and terminal outcomes
+  remain individually auditable.
+- **FR-071**: Persistent audit records MAY contain only provider-generated transcripts that were
+  actually emitted. They MUST NOT synthesize, infer, or label user speech as transcribed when a
+  native-audio turn has no user-transcription event.
+- **FR-072**: Browser `session.stop` messages MUST carry a validated reason from the closed set
+  `user`, `pagehide`, and `permission`; the relay MUST preserve that reason in terminal diagnostics.
+- **FR-073**: Audit creation, cleanup, rotation, or append failure MUST NOT alter the voice-session
+  lifecycle. It MUST degrade to a safe bounded local warning without including prohibited content.
+- **FR-074**: Canonical capability IDs MUST remain the authoritative application identity.
+  Provider-facing function names MUST use a deterministic, collision-free, reversible alias that
+  satisfies the provider naming grammar without changing registry, gateway, result, or browser
+  identities.
+- **FR-075**: The relay MUST validate every projected provider alias and reject duplicate,
+  malformed, unknown, or non-reversible mappings before connecting or sending billable work.
+- **FR-076**: Initial and per-turn provider configuration MUST enter a pending state after
+  `session.update`; greeting or response creation MUST wait until the provider emits the matching
+  successful configuration acknowledgement.
+- **FR-077**: Provider configuration acknowledgement MUST be single-use and ordered. Missing,
+  stale, duplicate, or out-of-order acknowledgement MUST NOT authorize a response.
+- **FR-078**: Any provider `error` event MUST terminate the session through the ordinary
+  provider-unavailable lifecycle, release or conservatively hold relevant budget state, and expose
+  no raw provider error content to the browser.
+- **FR-079**: Provider function proposals MUST resolve the provider alias to one currently exposed
+  canonical capability before argument validation. All browser messages and pending-call state
+  MUST use only the canonical capability ID.
+- **FR-080**: The opening exact-speech instruction MUST apply only to the opening response and MUST
+  NOT be inserted as a persistent system conversation item.
+- **FR-081**: Static audit compaction fingerprints MUST be derived from stable sanitized content
+  and direction while excluding occurrence timestamp and other changing audit-envelope metadata.
+- **FR-082**: The live provider smoke MUST be owner-authorized, bounded to the minimum opening and
+  representative-turn responses needed for validation, preserve the cumulative budget controls,
+  stop terminally, and fail if any provider error or missing configuration acknowledgement is
+  observed.
+- **FR-083**: For native-audio event discovery, `event.applyquery` MUST be the only reachable event
+  query/filter mutation capability. The relay MUST pass the complete spoken event request through
+  that one atomic command whether it contains one filter or several, while withholding
+  `event.search`, broad catalogue search, individual filter mutation commands, and legacy filter
+  setters from the provider. Direct controls MAY continue using those lower-level semantic
+  commands.
+- **FR-084**: The first provider response after each committed native-audio user turn MUST expose
+  exactly one provider-only ingress tool and MUST force that tool. No application capability,
+  catalogue query, or domain action may be exposed at this stage.
+- **FR-085**: The ingress tool MUST return one closed bounded object containing the complete
+  model-heard utterance and, when the request is an event query, one structured proposal covering
+  What, When, Where, and Price in the same provider response. The relay, not the provider, MUST
+  bind the current context revision. The bound revision MUST be the current authoritative
+  application context revision used by the capability gateway, not a connector-local composer
+  revision. The ingress result is model interpretation, not an authoritative transcript, and MUST
+  follow the existing session-only privacy and diagnostic rules.
+- **FR-086**: After ingress, the relay MUST reuse the same bounded deterministic turn router,
+  domain interpreters, capability registry, gateway, and authoritative context used by text turns.
+  A deterministic event sentence MUST proceed directly to `event.applyquery`; obvious map, transit,
+  and lifecycle commands MUST retain their existing deterministic routes.
+- **FR-087**: If deterministic routing cannot select a complete action, the relay MAY expose only
+  the currently eligible tools from one relevant connector family, plus a bounded read-only detail
+  query when authoritative visible targets require it. The scoped menu MUST contain at most 15
+  tools and MUST NOT include an unrelated connector family.
+- **FR-088**: `app.inspect` and broad `catalog.search` MUST NOT be exposed during native-audio
+  ingress. Catalogue search MAY appear only after the deterministic router selects the approved
+  catalogue family, so it cannot compete with an event or restaurant entry command.
+- **FR-089**: A deterministic native-audio command result MUST be followed by a response that
+  cannot invoke another tool. Malformed, missing, duplicate, stale, or overlapping ingress calls
+  MUST fail closed with zero application mutation and ordinary terminal cleanup.
+- **FR-090**: The ingress response and any subsequent scoped/final response MUST retain the
+  existing reservation, response-watchdog, configuration-acknowledgement, interruption, and
+  terminal-cleanup controls. No separate transcription model, service, reservation, or persistent
+  transcript may be introduced.
+- **FR-091**: Voice sessions MUST NOT impose a per-session user-turn or assistant-response-count
+  limit, maximum duration, or idle expiry. The relay MUST instead allow at most three sequential
+  provider response stages for one admitted user turn, allow at most one unresolved stage at a
+  time, and apply billable-stage budget admission independently. Sessions end only through
+  explicit stop, navigation or socket loss, permission loss, provider/service failure, or
+  budget/kill-switch enforcement.
+- **FR-092**: OpenAI event-facet classification MUST apply only to native voice ingress. Typed and
+  direct event-query entry points MUST remain deterministic and MUST NOT require provider
+  availability or spend. Voice, typed, and direct entry points MUST converge on the same
+  deterministic proposal verifier, capability contract, and `event.applyquery` executor.
+- **FR-093**: The relay MUST normalize only documented, semantically lossless provider variations
+  of the forced ingress result before applying the closed ingress validator. Normalization MAY move
+  the known event facet, `residualQuery`, and `unresolved` members into an event proposal, discard
+  a structurally bounded event proposal when the declared domain is non-event because it has no
+  routing authority, collapse matching `eventWhat`, `eventWhen`, `eventWhere`, `eventPrice`,
+  `eventResidualQuery`, and `eventUnresolved` aliases, accept null for an unused non-event facet,
+  recover a missing non-event utterance only from a complete bounded root `residualQuery`, and MAY
+  unwrap an empty or singleton value for a single-value event facet. When an event-labeled result
+  omits the utterance but contains a bounded root residual, the relay MAY downgrade that residual
+  to non-event deterministic scope only; it MUST NOT produce an event mutation. It MUST reject
+  unknown members, conflicting aliases, multiple values for a single-value facet, domain conflicts,
+  invented labels, missing utterance evidence, or any other semantic change. A structurally
+  malformed event proposal MAY be discarded while the intact utterance continues through the
+  existing deterministic classifier; the malformed proposal itself MUST never contribute a value.
+- **FR-094**: A facet absent from an event request is optional and MUST NOT be reported as unresolved.
+  `unresolved` MUST contain only a facet whose wording is present in the current utterance and has
+  two or more materially plausible current-catalogue interpretations. Generic event wording MUST
+  NOT create an invented What selection.
+- **FR-095**: A native event refinement MUST verify newly proposed values against the current
+  utterance and MAY retain an unchanged authoritative facet only from the immediately preceding
+  event composer state. It MUST NOT require new utterance evidence for retained state, and MUST
+  reject a provider-restated inherited value when it differs from that authoritative state.
+- **FR-096**: Every deterministic text turn MUST execute the same application capability as its
+  direct control and return the authoritative result to the relay before the final no-tool provider
+  response. Provider configuration acknowledgement, capability execution, context refresh, and
+  response creation MUST be serialized so no text turn can reserve a response without eventually
+  creating or terminally cancelling it.
+- **FR-097**: Final speech after an application capability MUST describe only the structured
+  authoritative result returned by that capability. Query fixtures MUST return the bounded
+  user-facing result data required for truthful narration; a generic changed flag is insufficient
+  evidence for a discovery answer.
+- **FR-098**: Browser and local relay audio/message limits MUST agree. The browser MUST chunk below
+  the relay's accepted binary payload, and an oversized or malformed WebSocket message MUST
+  terminate only the affected session through the ordinary protocol path without crashing the
+  local server process.
+- **FR-099**: The owner-authorized live acceptance gate MUST run the same named sixteen-case matrix
+  through the real Realtime relay. Each case MUST assert the expected capability or clarification,
+  authoritative application outcome, truthful final response, terminal state, configuration
+  acknowledgements, and absence of timeout, protocol stop, process crash, or unintended mutation.
+  Failed cases MUST be retained as regression fixtures and the gate MUST repeat after correction.
 
 ### Key Entities
 
@@ -428,6 +734,15 @@ or registered external transport exists.
   ordered stable What/When/Where/Price phrases, option-catalogue revision, and context revision.
 - **Capability Projection**: A deterministic protocol descriptor derived from a registered
   capability contract; it contains no executor, authorization rule, or business logic.
+- **Native Audio Turn**: An admitted session-scoped audio turn whose response is created directly
+  from the committed audio buffer and current eligible capability registry without a transcript
+  dependency.
+- **Native Voice Ingress**: A provider-only, forced, closed function result containing the bounded
+  complete utterance inferred from committed audio. It is session-scoped routing input, not an
+  application capability or authoritative transcript.
+- **Native Tool Menu**: The immutable provider projection for one native-audio stage: exactly one
+  forced ingress tool initially, no tools after a deterministic result, or at most fifteen
+  currently eligible tools from one routed connector family.
 - **Invocation Context**: Bounded metadata such as caller origin and proposal revision that aids
   auditing but never changes capability semantics or authority.
 - **Interface Context**: The session-scoped set of visible, focused, selected, ordered, and recently discussed elements used to resolve expressions such as “this” or “the second one.”
@@ -440,8 +755,18 @@ or registered external transport exists.
   is emitted only as minimal operational logging.
 - **Local Content Diagnostic Record**: An explicitly enabled local-process record containing
   direction, bounded event identity, one-way session identity, timestamp, and a recursively
-  sanitized copy of the permitted browser/provider payload. It has no persistent store and cannot
-  exist in preview or production.
+  sanitized copy of the permitted browser/provider payload. It remains process-only unless the
+  separately gated local audit mode is active and cannot exist in preview or production.
+- **Local Content Audit Set**: At most five owner-only newline-delimited JSON files in the fixed
+  gitignored local audit directory, each smaller than 5 MiB and no older than seven days after
+  cleanup. It contains only sanitized diagnostic records or bounded fingerprint markers and has no
+  remote transport.
+- **Provider Capability Alias Map**: An immutable bijection between canonical dotted capability IDs
+  and provider-safe function names for one relay configuration. Provider aliases never cross into
+  browser, gateway, result, or application state.
+- **Provider Configuration State**: The current configuration revision, pending acknowledgement,
+  accepted revision, and queued continuation for the opening or active turn. Only a matching
+  provider acknowledgement releases the continuation.
 
 ## Success Criteria _(mandatory)_
 
@@ -488,7 +813,8 @@ or registered external transport exists.
 - **SC-024**: 100% of approved obvious-command fixtures reach the same gateway result as their
   direct controls without a provider tool proposal for that command.
 - **SC-025**: 100% of turn-scope fixtures expose no eligible capability outside the selected
-  connector families, and audio responses are not created before the final transcript is scoped.
+  connector families for text turns; native-audio fixtures expose only forced ingress,
+  deterministic routing, or one current-authoritative connector family.
 - **SC-026**: 100% of successful voice-turn fixtures emit the ordered applicable lifecycle phases,
   and every phase record passes an allowlist test proving it contains no conversational content,
   precise location, provider body, secret, or raw session identifier.
@@ -499,8 +825,95 @@ or registered external transport exists.
   every permitted transcript, prompt, tool argument/result, and non-audio event field needed by the
   fixture.
 - **SC-029**: 100% of production, preview, default-off, nested-secret, and raw-audio fixtures emit
-  zero prohibited content; no application file, database, cache, browser storage, or remote request
-  is created by the diagnostic path.
+  zero prohibited content; no application database, cache, browser storage, or remote request is
+  created by the diagnostic path, and no file is created unless every local audit gate is active.
+- **SC-030**: 100% of committed-audio fixtures emit `response_requested` without first receiving a
+  transcription completion, failure, or timeout event.
+- **SC-031**: 100% of missing, delayed, failed, duplicate, and stale-transcription fixtures leave the
+  native-audio response lifecycle unaffected and create no duplicate response.
+- **SC-032**: 100% of native-audio tool-call fixtures reject unavailable or malformed capabilities
+  and preserve the same confirmation and observable-result outcomes as direct interaction.
+- **SC-033**: New audio turns create zero input-transcription reservations, while all response
+  reservation, cumulative-cap, kill-switch, and missing-usage tests continue to pass.
+- **SC-034**: 100% of existing text-turn interpretation, deterministic-command, and per-family tool
+  scope fixtures remain unchanged.
+- **SC-035**: 100% of activation fixtures create persistent audit files only when all four
+  development, environment, content-diagnostic, and persistent-audit gates are active.
+- **SC-036**: 100% of audit fixtures keep every file below 5 MiB, retain at most five files, remove
+  files older than seven days during cleanup, and apply owner-only directory and file permissions.
+- **SC-037**: 100% of nested-secret, token, cookie, raw-audio, and encoded-audio fixtures contain
+  none of those values in persistent bytes.
+- **SC-038**: Repeating an identical large session configuration 100 times retains one permitted
+  full copy and compact fingerprinted repetitions while preserving all conversational turn,
+  tool-call, error, and terminal records.
+- **SC-039**: 100% of native-audio fixtures without provider user-transcription events contain no
+  claimed or synthetic user transcript in the persistent audit.
+- **SC-040**: 100% of user, page-unload, and microphone-permission stop fixtures preserve their
+  validated terminal reason, while invalid reasons are rejected.
+- **SC-041**: 100% of simulated audit-directory, cleanup, rotation, and append failures leave the
+  voice lifecycle and provider relay result unchanged.
+- **SC-042**: 100% of registered capability fixtures project to unique provider names matching
+  `^[a-zA-Z0-9_-]+$` and round-trip to the original canonical IDs.
+- **SC-043**: 100% of initial and per-turn response fixtures create zero provider responses before
+  matching configuration acknowledgement and exactly one afterward.
+- **SC-044**: 100% of provider-error, missing-acknowledgement, stale-acknowledgement, and
+  duplicate-acknowledgement fixtures fail closed without generic-assistant continuation.
+- **SC-045**: 100% of provider function-call fixtures expose canonical capability IDs to the
+  browser and retain existing validation, confirmation, and result behavior.
+- **SC-046**: 100 repeated identical sanitized configuration payloads across different timestamps
+  retain one full record plus compact repetitions; changed tool or instruction payloads remain
+  independently auditable.
+- **SC-047**: A bounded authorized live smoke completes the exact opening and one representative
+  turn with a provider configuration acknowledgement before each response, zero provider errors,
+  terminal cleanup, and an auditable zero-error report.
+- **SC-048**: 100% of native-audio event-routing fixtures reach `event.applyquery` for event
+  discovery and expose zero alternative event query/filter mutation tools; single-filter and
+  compound-filter requests both produce one atomic event-query proposal containing the complete
+  request.
+- **SC-049**: 100% of committed native-audio fixtures expose exactly one forced ingress tool in
+  the first provider configuration and expose zero application capabilities at that stage.
+- **SC-050**: The representative “today at Marina Bay Sands” fixture produces one
+  `event.applyquery` proposal containing both constraints, zero `app.inspect` or `catalog.search`
+  calls, exactly one resulting context revision, and no partial mutation.
+- **SC-051**: 100% of non-deterministic native-audio fixtures expose at most 15 tools from exactly
+  one relevant connector family; unsupported or ambiguous turns expose no action menu and mutate
+  nothing.
+- **SC-052**: 100% of malformed, missing, duplicate, stale, and overlapping ingress fixtures fail
+  closed without an application effect, leaked raw audio, persistent transcript, orphaned
+  reservation, or active watchdog.
+- **SC-053**: The representative event-query flow requires at most two provider responses after
+  audio commit—one forced ingress response and one final spoken response—and its first-stage tool
+  definition count decreases from 56 to 1.
+- **SC-054**: A deterministic relay fixture completes more than six consecutive user turns in one
+  active session and remains active beyond the former duration and idle thresholds without
+  `usage_limit`, `duration`, or `idle`, while a fixture attempting a fourth provider stage within
+  one user turn terminates without additional application mutation.
+- **SC-055**: A deterministic matrix covers single-filter, compound-filter, follow-up, mixed-domain,
+  and unsupported native utterances. The live wording “events today nearby in my area” binds the
+  current application revision, applies both date and nearby-location filters, and produces no
+  `stale_context` result.
+- **SC-056**: Every accepted native event facet in deterministic fixtures matches one unique
+  current catalogue label and exact utterance evidence. Invented, conflicting, unresolved,
+  malformed, and stale proposals cause zero event-state mutation, while typed event queries retain
+  their pre-existing deterministic output.
+- **SC-057**: 100% of the documented lossless ingress variants normalize to the same canonical
+  object and application outcome, while every unknown, conflicting, multi-valued, invented, or
+  evidence-free variant fails closed with zero mutation.
+- **SC-058**: Event fixtures covering omitted optional facets, genuine ambiguity, generic event
+  wording, compound replacement, and context-backed refinement produce no unnecessary
+  clarification, no invented category, and no loss of an unrelated retained facet.
+- **SC-059**: 100 consecutive deterministic text fixtures create exactly one application outcome
+  and one final provider response after matching configuration acknowledgement, with no timeout,
+  unresolved reservation, duplicate execution, or response/configuration race.
+- **SC-060**: 100% of query-result narration fixtures are supported by returned structured data and
+  contain no unrelated fallback, invented result, or success claim after a failed or unavailable
+  capability.
+- **SC-061**: Audio chunks emitted by the browser remain below the relay payload limit, and
+  oversized-message fixtures close only the offending session while a subsequent session is
+  admitted and completes normally.
+- **SC-062**: All sixteen owner-authorized live matrix cases pass in one completed report with the
+  expected routing, tool calls, application outcomes, responses, and terminal lifecycle, with zero
+  protocol stops, response timeouts, relay crashes, or unresolved defects.
 
 ## Assumptions
 

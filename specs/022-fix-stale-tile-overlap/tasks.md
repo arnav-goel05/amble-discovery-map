@@ -6,14 +6,14 @@
 
 ## Phase 1: Setup
 
-- [X] T001 Create the versioned audit and release contracts in `specs/022-fix-stale-tile-overlap/contracts/`
-- [X] T002 Document the operator audit, synchronization, recovery, and cache-version workflow in `specs/022-fix-stale-tile-overlap/quickstart.md`
+- [x] T001 Create the versioned audit and release contracts in `specs/022-fix-stale-tile-overlap/contracts/`
+- [x] T002 Document the operator audit, synchronization, recovery, and cache-version workflow in `specs/022-fix-stale-tile-overlap/quickstart.md`
 
 ## Phase 2: Foundational
 
-- [X] T003 Write failing enumeration, B3DM identity parsing, classification, shared-owner, and deterministic release-ID tests in `tests/background-geometry-release.test.mjs`
-- [X] T004 Implement active snapshot/extraction-manifest enumeration and validated B3DM inspection in `scripts/lib/background-geometry-release.mjs`
-- [X] T005 Implement exhaustive audit result aggregation and versioned tileset rewriting in `scripts/lib/background-geometry-release.mjs`
+- [x] T003 Write failing enumeration, B3DM identity parsing, classification, shared-owner, and deterministic release-ID tests in `tests/background-geometry-release.test.mjs`
+- [x] T004 Implement active snapshot/extraction-manifest enumeration and validated B3DM inspection in `scripts/lib/background-geometry-release.mjs`
+- [x] T005 Implement exhaustive audit result aggregation and versioned tileset rewriting in `scripts/lib/background-geometry-release.mjs`
 
 ## Phase 3: User Story 1 - See One Stable Venue Surface (P1)
 
@@ -22,9 +22,9 @@
 **Independent Test**: Exhaustively audit every active object and verify National Stadium and all
 other venues have zero retained identities at all detail levels.
 
-- [X] T006 [US1] Add National Stadium and multi-level overlap regression fixtures to `tests/background-geometry-release.test.mjs`
-- [X] T007 [US1] Add the production-origin exhaustive audit mode and structured report output in `scripts/sync-r2-background-tiles.mjs`
-- [X] T008 [US1] Verify local enumeration accounts for all active POIs and objects with no parsing failures
+- [x] T006 [US1] Add National Stadium and multi-level overlap regression fixtures to `tests/background-geometry-release.test.mjs`
+- [x] T007 [US1] Add the production-origin exhaustive audit mode and structured report output in `scripts/sync-r2-background-tiles.mjs`
+- [x] T008 [US1] Verify local enumeration accounts for all active POIs and objects with no parsing failures
 
 ## Phase 4: User Story 2 - Publish a Coherent Geometry Release (P1)
 
@@ -33,10 +33,10 @@ other venues have zero retained identities at all detail levels.
 **Independent Test**: Simulate stale, interrupted, resumed, failed, and no-op synchronization and
 verify the manifest/release descriptor cannot be published early.
 
-- [X] T009 [US2] Write failing upload failure, bounded retry, resume, manifest-last, and no-op tests in `tests/background-geometry-release.test.mjs`
-- [X] T010 [US2] Implement the injected Wrangler upload adapter, bounded concurrency/retries, post-upload verification, and manifest-last gate in `scripts/sync-r2-background-tiles.mjs`
-- [X] T011 [US2] Add and validate `data/background-geometry-release.json`, consume its tileset URL in `main.js`, and expose npm audit/sync commands in `package.json`
-- [X] T012 [US2] Synchronize the stale production R2 objects, verify them, publish the digest-versioned manifest, and deploy the activated release
+- [x] T009 [US2] Write failing upload failure, bounded retry, resume, manifest-last, and no-op tests in `tests/background-geometry-release.test.mjs`
+- [x] T010 [US2] Implement the injected Wrangler upload adapter, bounded concurrency/retries, post-upload verification, and manifest-last gate in `scripts/sync-r2-background-tiles.mjs`
+- [x] T011 [US2] Add and validate `data/background-geometry-release.json`, consume its tileset URL in `main.js`, and expose npm audit/sync commands in `package.json`
+- [x] T012 [US2] Synchronize the stale production R2 objects, verify them, publish the digest-versioned manifest, and deploy the activated release
 
 ## Phase 5: User Story 3 - Audit All Active Geometry (P2)
 
@@ -45,17 +45,17 @@ verify the manifest/release descriptor cannot be published early.
 **Independent Test**: Audit the production origin and reconcile summary totals against every
 per-object outcome.
 
-- [X] T013 [US3] Add report-total reconciliation and malformed/unavailable remote-object tests in `tests/background-geometry-release.test.mjs`
-- [X] T014 [US3] Run the post-deployment production audit until it reports 0 stale objects, 0 retained identities, 0 affected venues, and 0 failures
+- [x] T013 [US3] Add report-total reconciliation and malformed/unavailable remote-object tests in `tests/background-geometry-release.test.mjs`
+- [x] T014 [US3] Run the post-deployment production audit until it reports 0 stale objects, 0 retained identities, 0 affected venues, and 0 failures
 
 ## Phase 6: Polish and Cross-Cutting Validation
 
-- [X] T015 Run targeted unit tests, repository verification/build gates, and supported browser checks; fix every related failure
-- [X] T016 Run `speckit-converge`, close all discovered gaps, restore the prior Spec Kit feature pointer, and commit only feature-owned files on `develop`
+- [x] T015 Run targeted unit tests, repository verification/build gates, and supported browser checks; fix every related failure
+- [x] T016 Run `speckit-converge`, close all discovered gaps, restore the prior Spec Kit feature pointer, and commit only feature-owned files on `develop`
 
 ## Phase 7: Convergence
 
-- [X] T017 Extract background evidence enumeration and B3DM parsing from `scripts/lib/background-geometry-release.mjs` into a focused module so each new module remains below 400 lines per Constitution VII (partial)
+- [x] T017 Extract background evidence enumeration and B3DM parsing from `scripts/lib/background-geometry-release.mjs` into a focused module so each new module remains below 400 lines per Constitution VII (partial)
 
 ## Dependencies and Execution Order
 

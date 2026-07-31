@@ -151,13 +151,7 @@ test("saved-evidence repair preserves unrelated identity while normalizing its b
   assert.equal(repaired.events[0].title, unrelated.title);
   assert.equal(repaired.events[0].venue, unrelated.venue);
   assert.equal(repaired.events[0].schedule.kind, "exact");
-  assert.equal(
-    repaired.events[0].schedule.start,
-    "2026-08-08T20:00:00+08:00",
-  );
-  assert.equal(
-    repaired.events[0].schedule.end,
-    "2026-08-08T20:00:00+08:00",
-  );
+  assert.equal(repaired.events[0].schedule.start, "2026-08-08T20:00:00+08:00");
+  assert.equal(repaired.events[0].schedule.end, "2026-08-08T20:00:00+08:00");
   assert.equal(repaired.audit.enumeratedActivities, 0);
 });

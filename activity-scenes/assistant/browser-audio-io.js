@@ -1,4 +1,31 @@
 const TARGET_SAMPLE_RATE = 24_000;
+export const POST_PLAYBACK_SPEECH_GUARD_MS = 500;
+
+export function createPostPlaybackSpeechGuard({
+  cooldownMs = POST_PLAYBACK_SPEECH_GUARD_MS,
+  now = () => globalThis.performance?.now?.() ?? Date.now(),
+} = {}) {
+  if (!Number.isFinite(cooldownMs) || cooldownMs < 0)
+    throw new TypeError("Post-playback speech cooldown must be non-negative");
+  let playbackObserved = false;
+  let blockedUntil = 0;
+  return Object.freeze({
+    observeState(state) {
+      if (state === "speaking") playbackObserved = true;
+      if (state === "listening" && playbackObserved) {
+        blockedUntil = now() + cooldownMs;
+        playbackObserved = false;
+      }
+      return blockedUntil;
+    },
+    allowsSpeech() {
+      return now() >= blockedUntil;
+    },
+    snapshot() {
+      return Object.freeze({ playbackObserved, blockedUntil });
+    },
+  });
+}
 
 const toBase64 = (bytes) => {
   let binary = "";

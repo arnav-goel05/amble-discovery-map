@@ -17,9 +17,6 @@ const TRANSCRIPT_STATUSES = new Set(["partial", "final", "cancelled"]);
 const TERMINAL_REASONS = new Set([
   "user",
   "pagehide",
-  "idle",
-  "duration",
-  "response_limit",
   "permission",
   "disabled",
   "usage_limit",
@@ -83,9 +80,6 @@ const freezeSession = (session) => {
 };
 
 export const CONVERSATION_LIMITS = Object.freeze({
-  maxSessionSeconds: 300,
-  idleSeconds: 60,
-  maxResponses: 6,
   maxTranscriptChars: 4_000,
 });
 
@@ -97,12 +91,7 @@ export function createConversationSession({
 } = {}) {
   const createdAt = timestamp(now);
   const normalizedLimits = { ...CONVERSATION_LIMITS, ...limits };
-  for (const name of [
-    "maxSessionSeconds",
-    "idleSeconds",
-    "maxResponses",
-    "maxTranscriptChars",
-  ]) {
+  for (const name of ["maxTranscriptChars"]) {
     if (
       !Number.isSafeInteger(normalizedLimits[name]) ||
       normalizedLimits[name] <= 0
@@ -116,11 +105,6 @@ export function createConversationSession({
     state: "idle",
     createdAt,
     lastActivityAt: createdAt,
-    expiresAt: timestamp(
-      new Date(createdAt).getTime() +
-        normalizedLimits.maxSessionSeconds * 1_000,
-    ),
-    responseCount: 0,
     transcriptItems: [],
     intent: null,
     interfaceContext: null,
@@ -223,33 +207,16 @@ export function reconcileTranscriptItem(
   const item = { ...incoming, text, createdAt };
   if (index === -1) items.push(item);
   else items[index] = item;
-  const becameFinalAssistant =
-    incoming.role === "assistant" &&
-    incoming.status === "final" &&
-    existing?.status !== "final";
-  const responseCount = session.responseCount + Number(becameFinalAssistant);
-  if (responseCount > session.limits.maxResponses)
-    fail("response_limit", "Conversation response limit is exhausted");
   return freezeSession({
     ...session,
     transcriptItems: items,
-    responseCount,
     lastActivityAt: timestamp(now),
   });
 }
 
-export function conversationLimitReason(session, { now = Date.now() } = {}) {
+export function conversationLimitReason(session) {
   if (!session || session.state === "stopped")
     return session?.terminalReason || null;
-  const current = new Date(timestamp(now)).getTime();
-  if (current >= new Date(session.expiresAt).getTime()) return "duration";
-  if (
-    current - new Date(session.lastActivityAt).getTime() >=
-    session.limits.idleSeconds * 1_000
-  )
-    return "idle";
-  if (session.responseCount >= session.limits.maxResponses)
-    return "response_limit";
   return null;
 }
 

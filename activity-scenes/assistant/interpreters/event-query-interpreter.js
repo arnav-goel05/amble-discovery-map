@@ -1,4 +1,5 @@
 import { classifyEventQuery } from "../../events/event-query-classifier.js";
+import { verifyEventFacetProposal } from "../../events/event-facet-proposal.js";
 
 const SUPPORTED_MODES = new Set(["replace", "refine", "remove"]);
 const MAX_CLARIFICATION_CHOICES = 8;
@@ -43,8 +44,21 @@ export function interpretEventQuery({
   catalog,
   baseContextRevision,
   catalogRevision,
+  facetProposal = null,
+  currentFilterTokens = [],
 } = {}) {
-  const classified = classifyEventQuery(text, catalog);
+  const verifiedProposal = facetProposal
+    ? verifyEventFacetProposal({
+        utterance: text,
+        proposal: facetProposal,
+        catalog,
+        mode,
+        currentFilterTokens,
+      })
+    : null;
+  const classified = verifiedProposal?.accepted
+    ? verifiedProposal
+    : classifyEventQuery(text, catalog);
   const validBaseContextRevision =
     Number.isInteger(baseContextRevision) && baseContextRevision >= 0;
   const validCatalogRevision =
@@ -62,6 +76,21 @@ export function interpretEventQuery({
     !validCatalogRevision ||
     !catalog?.all
   )
+    return unsupported(common);
+
+  if (
+    verifiedProposal &&
+    !verifiedProposal.accepted &&
+    verifiedProposal.reason === "clarification_required"
+  )
+    return {
+      domain: "event",
+      ...common,
+      outcome: "clarification_required",
+      clarificationChoices: verifiedProposal.clarificationChoices,
+      proposedCalls: [],
+    };
+  if (verifiedProposal && !verifiedProposal.accepted)
     return unsupported(common);
 
   if (classified.ambiguous.length)
@@ -95,6 +124,7 @@ export function interpretEventQuery({
           mode,
           baseContextRevision,
           catalogRevision,
+          ...(facetProposal ? { facetProposal } : {}),
         },
       },
     ],

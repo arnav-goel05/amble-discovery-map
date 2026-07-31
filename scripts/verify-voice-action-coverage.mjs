@@ -17,7 +17,10 @@ import {
   createLegacyCommandCapabilityDefinitions,
   createLegacyConnectorDescriptors,
 } from "../activity-scenes/assistant/connectors/index.js";
-import { projectRealtimeFunctionTools } from "../activity-scenes/assistant/protocol-adapters/realtime-function-adapter.js";
+import {
+  fromProviderFunctionName,
+  projectRealtimeFunctionTools,
+} from "../activity-scenes/assistant/protocol-adapters/realtime-function-adapter.js";
 import { projectMcpFoundationDescriptors } from "../activity-scenes/assistant/protocol-adapters/mcp-foundation-adapter.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -253,7 +256,7 @@ export function auditCapabilityCoverage({
     if (
       descriptor.enabled !== false ||
       descriptor.capabilityId !== contract.capabilityId ||
-      descriptor.name !== realtime.name ||
+      descriptor.name !== fromProviderFunctionName(realtime.name) ||
       descriptor.description !== realtime.description ||
       JSON.stringify(descriptor.inputSchema) !==
         JSON.stringify(realtime.parameters) ||

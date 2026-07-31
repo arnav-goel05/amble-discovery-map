@@ -34,22 +34,20 @@ function dateLike(value) {
   );
 }
 
-const VISIT_MONTHS = new Map(
-  [
-    ["jan", "01"],
-    ["feb", "02"],
-    ["mar", "03"],
-    ["apr", "04"],
-    ["may", "05"],
-    ["jun", "06"],
-    ["jul", "07"],
-    ["aug", "08"],
-    ["sep", "09"],
-    ["oct", "10"],
-    ["nov", "11"],
-    ["dec", "12"],
-  ],
-);
+const VISIT_MONTHS = new Map([
+  ["jan", "01"],
+  ["feb", "02"],
+  ["mar", "03"],
+  ["apr", "04"],
+  ["may", "05"],
+  ["jun", "06"],
+  ["jul", "07"],
+  ["aug", "08"],
+  ["sep", "09"],
+  ["oct", "10"],
+  ["nov", "11"],
+  ["dec", "12"],
+]);
 
 function structuredVisitPerformance(value) {
   const match = clean(value)?.match(

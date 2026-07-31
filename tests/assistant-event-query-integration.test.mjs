@@ -77,6 +77,126 @@ test("direct and voice entry produce the same atomic canonical state", () => {
   );
 });
 
+test("verified voice facets bind a location that deterministic text does not recognize", () => {
+  const controller = createController();
+  const result = controller.applyQuery({
+    text: "Can you find exhibitions today at Marina Bay",
+    mode: "replace",
+    baseContextRevision: 7,
+    catalogRevision: "events:v1",
+    facetProposal: {
+      what: [{ label: "Exhibitions", evidence: "exhibitions" }],
+      when: { label: "Today", evidence: "today" },
+      where: { label: "Marina Bay", evidence: "Marina Bay" },
+      price: null,
+      residualQuery: "",
+      unresolved: [],
+    },
+  });
+
+  assert.equal(result.data.outcome, "applied");
+  assert.deepEqual(
+    result.data.phrases.map(({ facet, valueId }) => [facet, valueId]),
+    [
+      ["what", "what:exhibitions"],
+      ["when", "when:today"],
+      ["where", "area:marina-bay"],
+    ],
+  );
+  assert.equal(result.data.residualQuery, "");
+});
+
+test("typed query behavior remains deterministic when no proposal is supplied", () => {
+  const result = apply(
+    createController(),
+    "Can you please find exhibitions today at Marina Bay",
+  );
+  assert.equal(result.data.outcome, "applied");
+  assert.equal(result.data.residualQuery, "Can you please");
+});
+
+test("an unresolved voice facet returns clarification with zero mutation", () => {
+  const controller = createController();
+  const before = controller.snapshot();
+  const result = controller.applyQuery({
+    text: "find something today",
+    mode: "replace",
+    baseContextRevision: 7,
+    catalogRevision: "events:v1",
+    facetProposal: {
+      what: [],
+      when: { label: "Today", evidence: "today" },
+      where: null,
+      price: null,
+      residualQuery: "",
+      unresolved: ["what"],
+    },
+  });
+
+  assert.equal(result.changed, false);
+  assert.equal(result.data.outcome, "clarification_required");
+  assert.deepEqual(controller.snapshot(), before);
+});
+
+const automatedQueryScenarios = [
+  {
+    name: "live date and nearby-location wording",
+    text: "find events today nearby in my area",
+    expected: [
+      ["when", "when:today"],
+      ["where", "where:near-me"],
+    ],
+  },
+  {
+    name: "type, date, venue, and price",
+    text: "free exhibitions this weekend at Marina Bay",
+    expected: [
+      ["what", "what:exhibitions"],
+      ["when", "when:this-weekend"],
+      ["where", "area:marina-bay"],
+      ["price", "price:free"],
+    ],
+  },
+  {
+    name: "type, rolling date, and price range",
+    text: "concerts in the next 7 days under $25",
+    expected: [
+      ["what", "what:concerts"],
+      ["when", "when:7-days"],
+      ["price", "price:under-25"],
+    ],
+  },
+  {
+    name: "current viewport and longer date range",
+    text: "exhibitions in the current map area next 30 days",
+    expected: [
+      ["what", "what:exhibitions"],
+      ["when", "when:30-days"],
+      ["where", "where:map-area"],
+    ],
+  },
+  {
+    name: "secret venue placement",
+    text: "events at a mystery location this weekend",
+    expected: [
+      ["when", "when:this-weekend"],
+      ["where", "where:mystery-location"],
+    ],
+  },
+];
+
+for (const scenario of automatedQueryScenarios) {
+  test(`automated event-query matrix: ${scenario.name}`, () => {
+    const result = apply(createController(), scenario.text);
+
+    assert.equal(result.data.outcome, "applied");
+    assert.deepEqual(
+      result.data.phrases.map(({ facet, valueId }) => [facet, valueId]),
+      scenario.expected,
+    );
+  });
+}
+
 test("refine replaces touched facets while preserving the other phrases and query", () => {
   const controller = createController();
   apply(controller, "romantic exhibitions today near Marina Bay under $25");
@@ -90,6 +210,33 @@ test("refine replaces touched facets while preserving the other phrases and quer
     result.data.phrases.map(({ facet, valueId }) => [facet, valueId]),
     [
       ["what", "what:concerts"],
+      ["when", "when:this-weekend"],
+      ["where", "area:marina-bay"],
+      ["price", "price:free"],
+    ],
+  );
+});
+
+test("voice refinement preserves provider-restated authoritative facets", () => {
+  const controller = createController();
+  apply(controller, "exhibitions today at Marina Bay");
+
+  const result = apply(controller, "Make those free this weekend", "refine", {
+    facetProposal: {
+      what: [{ label: "Exhibitions", evidence: "Exhibitions" }],
+      when: { label: "This weekend", evidence: "this weekend" },
+      where: { label: "Marina Bay", evidence: "Marina Bay" },
+      price: { label: "Free", evidence: "free" },
+      residualQuery: "",
+      unresolved: [],
+    },
+  });
+
+  assert.equal(result.data.outcome, "applied");
+  assert.deepEqual(
+    result.data.phrases.map(({ facet, valueId }) => [facet, valueId]),
+    [
+      ["what", "what:exhibitions"],
       ["when", "when:this-weekend"],
       ["where", "area:marina-bay"],
       ["price", "price:free"],

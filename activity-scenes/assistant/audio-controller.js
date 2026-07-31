@@ -3,8 +3,6 @@ const VAD_STATES = new Set(["idle", "speech_started", "speech_stopped"]);
 const TERMINAL_REASONS = new Set([
   "user",
   "pagehide",
-  "idle",
-  "duration",
   "permission",
   "disabled",
   "usage_limit",

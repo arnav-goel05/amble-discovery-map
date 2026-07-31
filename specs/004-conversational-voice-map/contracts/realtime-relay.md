@@ -18,12 +18,23 @@ claims beyond approved application data, and require confirmed tool results befo
 application state change succeeded. Capability descriptions are generated from the same currently
 eligible typed query and command tools sent in each provider `session.update`; unavailable
 capabilities are not advertised.
-After a new voice session attaches, Amble speaks first using the checked-in welcome message. It
+Canonical capability IDs remain dotted application identities. The provider transport receives
+only validated reversible aliases matching `^[a-zA-Z0-9_-]+$`; aliases are translated back before
+contract lookup and never appear in browser messages or capability results.
+
+After a new voice session attaches and the provider acknowledges Amble's initial configuration,
+Amble speaks first using the checked-in welcome message. It
 briefly introduces Singapore discovery, area/place recommendations, application search, map
 control, location, and MRT context instead of inviting general-purpose conversation. This opening
 response uses the normal server-side response reservation and counts toward the session response
-limit. Both the session prompt and the opening response's one-turn instruction require the exact
-checked-in wording with no preface, addition, omission, repetition, translation, or paraphrase.
+limit. Only the opening response carries the one-turn exact-speech instruction; neither the
+welcome text nor a repeat-welcome policy is inserted into persistent session instructions or
+conversation history.
+
+Every initial and per-turn `session.update` is a configuration barrier. The relay sends no
+`response.create` until `session.updated` acknowledges the pending update. At most one update may
+be pending. A provider `error`, missing acknowledgement, stale/duplicate acknowledgement, or
+unknown function alias fails closed through the standard provider-unavailable lifecycle.
 
 ## Session admission
 
@@ -52,11 +63,8 @@ Successful response (`201`):
     "sessionId": "opaque",
     "protocolVersion": "1.1",
     "streamPath": "/api/voice/sessions/opaque/stream",
-    "expiresAt": "2026-07-18T12:05:00.000Z",
     "limits": {
-      "maxSessionSeconds": 300,
-      "idleSeconds": 60,
-      "maxResponses": 6,
+      "maxResponseStagesPerTurn": 3,
       "responseTimeoutSeconds": 30
     }
   }
@@ -84,12 +92,19 @@ declared bounds close the connection.
 
 ### Browser to relay
 
-- `turn.request`: requests a bounded input-transcription reservation before microphone chunks are
-  accepted. Relay replies `turn.ready` or `usage_limit`; the response reservation is acquired only
-  when the browser later commits the admitted turn.
+- `turn.request`: requests the bounded worst-case response reservation before microphone chunks are
+  accepted. Relay replies `turn.ready` or `usage_limit`.
 - `audio.append`: bounded audio chunk accepted only for the active reserved turn.
-- `audio.commit`: ends the audio turn; relay commits transcription, then waits for the final
-  transcript before selecting the turn's connector families and creating the response.
+- `audio.commit`: ends the audio turn, commits the native audio buffer, and starts the staged
+  [native-audio routing contract](native-audio-routing.md) without waiting for or requesting a
+  separate transcript. The first response exposes only the forced provider-only ingress tool.
+  Deterministic routing or one connector-family menu then determines any application capability;
+  `app.inspect`, broad catalogue search, and unrelated application tools cannot compete during
+  ingress. For native event requests, this same forced response contains a closed event-facet
+  proposal whose label enums come from the bounded current `eventFacetCatalog` in `context.update`.
+  The relay forwards it only through `event.applyquery`; application code re-verifies current
+  labels, exact utterance evidence, facet conflicts, residual terms, and both revisions before any
+  state change. Typed traffic does not use this proposal.
 - `text.submit`: bounded plain text input for the same action/discovery path; relay reserves the
   response before forwarding.
 - `capability.result`: validated query result or observable command outcome for a matching
@@ -105,13 +120,13 @@ declared bounds close the connection.
 - `response.cancel`: browser-owned interruption of the current provider response.
 - `context.update`: bounded authoritative interface snapshot with a monotonic revision and the
   currently eligible capability IDs.
-- `session.stop`: explicit terminal cleanup.
+- `session.stop`: explicit terminal cleanup with required validated `reason` from `user`,
+  `pagehide`, or `permission`.
 
 ### Relay to browser
 
 - `session.state`: one of the states in `ConversationSession`.
 - `turn.ready`: reservation accepted; audio may begin.
-- `transcript.delta`, `transcript.final`: bounded text keyed by item ID.
 - `assistant.audio.delta`, `assistant.audio.done`: bounded audio output.
 - `assistant.text.delta`, `assistant.text.done`: bounded assistant transcript output while the
   online session is active; not an offline fallback after termination.
@@ -120,14 +135,14 @@ declared bounds close the connection.
 - `confirmation.required`: immutable fingerprint, target, exact effect, and expiry.
 - `capability.completed`: sanitized validated result.
 - `error`: public code and safe message.
-- `session.stopped`: terminal reason (`user`, `pagehide`, `idle`, `duration`, `permission`, `disabled`,
-  `usage_limit`, `provider`, `response_timeout`, `network`, `protocol`).
+- `session.stopped`: terminal reason (`user`, `pagehide`, `permission`, `disabled`, `usage_limit`,
+  `provider`, `response_timeout`, `network`, `protocol`).
 
 Operational phase records are server-side only and are not a browser protocol message. Their exact
 allowlist is `schemaVersion`, `event`, `sessionIdHash`, `turnNumber`, `phase`, `occurredAt`,
 `elapsedMs`, `sincePreviousPhaseMs`, `eventCode`, and `terminalReason`. Applicable successful turns
-emit `audio_committed`, `transcription_completed`, `response_requested`, `response_created`,
-`first_audio`, and `response_done`; text and opening turns begin at `response_requested`. Terminal
+emit `audio_committed`, `response_requested`, `response_created`, `first_audio`, and
+`response_done`; text and opening turns begin at `response_requested`. Terminal
 stalls emit `response_timeout`, while other active-turn shutdowns emit `session_terminal`. No
 record may contain audio, transcript text, prompts, capability
 arguments/results, provider bodies, coordinates, secrets, or raw session IDs.
@@ -138,7 +153,7 @@ Detailed content diagnostics are not part of protocol 1.1 and cannot be requeste
 browser message, admission body, URL, header, capability, or provider event. The Cloudflare Worker
 and preview/production adapters do not construct or pass a content logger.
 
-The local Node adapter constructs the logger only when its startup environment has both
+The local Node adapter constructs the process logger only when its startup environment has both
 `NODE_ENV=development` and `REALTIME_CONTENT_DEBUG=true`. When active, the relay emits sanitized
 copies of permitted messages at all four boundaries: `browser_to_relay`, `relay_to_provider`,
 `provider_to_relay`, and `relay_to_browser`. Transcript text, server prompts, tool
@@ -147,44 +162,74 @@ arguments/results, and other non-sensitive event fields remain available for deb
 Before a record reaches the logger, recursive sanitization MUST replace credential/API-key/
 authorization/cookie/token/password/secret/signing/private-key values, raw session identities, and
 audio content. Audio replacement may expose only format, byte count, and an omitted marker. The
-logger writes JSON to the active local process output only. It
-MUST NOT write files, databases, caches, browser storage, analytics, or remote telemetry and it
-terminates with the local session/process.
+default logger writes JSON to the active local process output only.
+
+A persistent local audit sink may additionally be constructed only when
+`REALTIME_CONTENT_AUDIT=true` is present alongside the two gates above before relay construction.
+It writes the already-sanitized records as JSONL under `outputs/realtime-content-audit/`, with
+directory mode `0700`, file mode `0600`, rotation before 5 MiB, no more than five files, and
+startup/rotation deletion after seven days. Identical large static configuration may be compacted
+after its first permitted copy using a stable fingerprint; oversized single records become bounded
+fingerprint markers.
+
+Neither logger may write databases, caches, browser storage, analytics, telemetry, or remote
+transport. The persistent sink may retain provider-generated transcript events that actually
+arrived, but it may not infer a native-audio user transcript. Audit I/O failure is non-terminal for
+voice and emits only a safe bounded local warning.
 
 ## Billable-event rules
 
 1. Provider automatic response creation is disabled.
-2. The relay atomically reserves the maximum configured input-transcription cost before accepting a
-   billable audio turn.
-3. The relay atomically reserves the maximum response cost before emitting provider
-   `response.create`, using the reviewed provider/model intrinsic output maximum for accounting.
-4. Only trusted provider completion usage settles reservations.
-5. Missing, oversized, unknown-model, unknown-rate, or malformed usage holds the full reservation
+2. The relay atomically reserves the maximum response cost before accepting a billable native-audio
+   turn or emitting provider `response.create` for an opening/text turn, using the reviewed
+   provider/model intrinsic output maximum for accounting.
+3. Only trusted provider completion usage settles reservations.
+4. Missing, oversized, unknown-model, unknown-rate, or malformed usage holds the full reservation
    and disables further work until owner reconciliation.
-6. `spent + reserved` can never exceed `10_000_000` micro-USD.
-7. Client messages cannot change model, rates, instructions, context limits, tools, VAD response
+5. `spent + reserved` can never exceed `10_000_000` micro-USD.
+6. Client messages cannot change model, rates, instructions, context limits, tools, VAD response
    creation, or provider event types.
-8. Session and response requests omit `max_output_tokens` and any equivalent application response
+7. Session and response requests omit `max_output_tokens` and any equivalent application response
    ceiling. The provider/model intrinsic maximum is an accounting input only.
-9. Before authoritative interface context arrives, the provider receives only `app.inspect`,
-   `catalog.search`, and `catalog.get`; target-changing commands remain unavailable.
-10. Before every response, the relay intersects current eligible capability IDs with connector
-    families inferred from the bounded request and current interface state. It does not send the
-    complete eligible registry.
-11. An obvious command recognized by the deterministic application interpreter is excluded from
+8. Opening responses expose no tools. The first response after a native-audio commit exposes and
+   forces only the provider-only `voice.submitutterance` ingress function.
+9. Before every text response, the relay intersects current eligible capability IDs with connector
+   families inferred from the bounded request and current interface state. After native ingress,
+   the relay either uses a deterministic route, exposes at most fifteen currently eligible tools
+   from one connector family, or exposes no tools. Capability schemas, gateway eligibility,
+   confirmation, and execution validation remain identical for both paths.
+10. An obvious command recognized by the deterministic application interpreter is excluded from
     provider tools for that turn and executes through the shared browser capability gateway. The
     relay does not create the model response until `deterministic.result` validates; the model may
     then acknowledge or phrase the verified outcome but is not the action-selection authority.
-12. The provider model is exactly `gpt-realtime-2.1-mini`; no fallback model is configured or
+11. The provider model is exactly `gpt-realtime-2.1-mini`; no fallback model is configured or
     attempted.
-13. Each later context revision replaces the tool list and capability description with the
-    foundational queries plus command IDs eligible in that revision.
+12. Input-transcription events are not requested and cannot gate, create, cancel, or otherwise
+    control a response.
+13. Each later context revision replaces the scoped connector-family menu from current eligibility;
+    it never restores a broad foundational or all-eligible native-audio menu.
 14. Query results contain at most the contract limit, use stable approved identities, and exclude
     raw HTML, arbitrary source payloads, unapproved URLs, and exact user location.
 15. Sending `response.create` arms one 30-second server watchdog for that response. `response.done`,
     cancellation, and every terminal session path clear it. Expiry emits the allowlisted
     `response_timeout` trace, attempts `response.cancel`, reconciles the pending reservation
     conservatively, and terminates the session through the standard provider-unavailable lifecycle.
+16. The relay MUST NOT impose a per-session user-turn, assistant-response-count, maximum-duration,
+    or idle-expiry limit. It permits at most three provider response stages within one admitted
+    user turn, allows at most one unresolved stage at a time, and independently applies budget
+    admission and settlement to every billable stage.
+17. Provider ingress is canonicalized only across documented bounded shape variants. Matching
+    root/nested fields and `eventWhat`/`eventWhen`/`eventWhere`/`eventPrice` aliases may collapse;
+    conflicting aliases, unknown fields, or semantic changes fail closed. Unused non-event facets
+    may be null. A missing event utterance never promotes the provider's event guess.
+18. The deterministic application router independently verifies the provider domain. An event
+    proposal reaches `event.applyquery` only when deterministic routing also identifies the
+    utterance as an event request; obvious map, transit, and restaurant commands take precedence.
+19. Tool-stage commentary is buffered. If the response produces a function call, the buffer is
+    discarded; if it produces no call, the buffer is released as the ordinary answer. Fixed
+    welcome, policy, clarification, and capability-result speech is buffered and transcript-
+    checked before release. One malformed fixed response may retry within the existing three-stage
+    turn bound; a second mismatch terminates through protocol cleanup.
 
 ## Capability-call ordering
 
@@ -227,8 +272,8 @@ location data.
 
 ## Cleanup
 
-Explicit stop, socket close, `pagehide`, idle/duration expiry, permission revoke, cap/kill switch,
-provider error, or protocol violation cancels output, closes both sockets, stops browser media,
+Explicit stop, socket close, `pagehide`, permission revoke, budget/kill switch, provider error, or
+protocol violation cancels output, closes both sockets, stops browser media,
 invalidates confirmations, aborts work, and clears all application-held session content. D1 retains
 only non-personal reservation/settlement records.
 

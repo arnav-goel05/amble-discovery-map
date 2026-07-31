@@ -536,3 +536,199 @@ developer process without changing default, preview, or production privacy.
 - [x] T135 [US4] Instrument the four relay message directions through an optional injected logger and wire it only from an explicitly activated local development process in `cloudflare/realtime-relay.mjs` and `scripts/realtime-voice-api-plugin.cjs`
 - [x] T136 [US4] Document safe local activation, record interpretation, prohibited redirection/persistence, and production impossibility in `docs/production-configuration.md` and `specs/004-conversational-voice-map/quickstart.md`
 - [x] T137 [US4] Run focused content-debug/relay/privacy tests, the complete voice suite, scoped formatting, the production build, and Spec Kit convergence; record zero-provider-spend evidence in `specs/004-conversational-voice-map/quickstart.md`
+
+---
+
+## Phase 17: Transcript-independent native audio
+
+**Purpose**: Remove the redundant paid transcription gate so committed microphone audio is handled
+directly by the Realtime model without weakening capability authorization or changing text routing.
+
+### Tests first
+
+- [x] T138 [P] [US8] Add policy tests proving new turns reserve only the reviewed response envelope and the checked-in policy contains no separate transcription model, rate, or reservation in `tests/realtime-policy.test.mjs` per FR-060, FR-063, and SC-033
+- [x] T139 [P] [US8] Add relay tests proving audio commit immediately projects only foundational plus currently eligible capabilities and creates one response without any transcript completion, while late/failed transcription events have no control effect, in `tests/realtime-relay.test.mjs` per FR-059–FR-062 and SC-030–SC-032
+- [x] T140 [P] [US8] Preserve deterministic connector-family scoping for typed turns with explicit parity fixtures in `tests/realtime-relay.test.mjs` and `tests/assistant-capability-turn-scope.test.mjs` per FR-061 and SC-034
+
+### Implementation and proof
+
+- [x] T141 [US8] Remove the separate transcription model, rate, and new-turn reservation from `data/realtime-voice-policy.json` and `scripts/lib/realtime-policy.mjs` while retaining historical ledger compatibility per FR-060 and FR-063
+- [x] T142 [US8] Implement response-budget admission before audio acceptance, native-audio commit/response creation, current-eligible capability projection, and transcript-event independence in `cloudflare/realtime-relay.mjs` and `scripts/lib/realtime-relay-protocol.mjs` per FR-059–FR-062
+- [x] T143 [US8] Synchronize the relay contract, operating guidance, and design evidence in `specs/004-conversational-voice-map/contracts/realtime-relay.md`, `specs/004-conversational-voice-map/quickstart.md`, and `docs/production-configuration.md`
+- [x] T144 [US8] Run focused policy/relay/scoping suites, the complete voice suite, affected browser journeys, scoped formatting, the production build, and Spec Kit convergence; record exact zero-provider-spend evidence in `specs/004-conversational-voice-map/quickstart.md`
+
+---
+
+## Phase 18: Convergence
+
+- [x] T145 Add native-audio-origin relay fixtures proving unavailable and malformed capability proposals fail closed through the shared tool-call validator per SC-032 (partial)
+
+---
+
+## Phase 19: Bounded Persistent Local Voice Audit
+
+**Purpose**: Retain sanitized local voice-session evidence for later debugging without creating a
+production, browser, application-database, or remote observability path.
+
+### Tests first
+
+- [x] T146 [P] [US9] Add activation and production-isolation fixtures proving persistence requires development runtime, `NODE_ENV=development`, content-debug activation, and the separate audit flag in `tests/realtime-content-debug.test.mjs` per FR-065 and SC-035
+- [x] T147 [P] [US9] Add sanitized-byte, owner-permission, rotation, retention, repeated-static-payload compaction, oversized-record, and audit-I/O non-interference fixtures in `tests/realtime-content-debug.test.mjs` per FR-066–FR-071, FR-073, and SC-036–SC-039/SC-041
+- [x] T148 [P] [US9] Add protocol and relay fixtures proving validated `user`, `pagehide`, and `permission` stop reasons reach terminal diagnostics while invalid reasons fail closed in `tests/realtime-relay.test.mjs` and `tests/assistant-realtime-client.test.mjs` per FR-072 and SC-040
+
+### Implementation and proof
+
+- [x] T149 [US9] Implement the bounded owner-only JSONL audit sink, startup/rotation cleanup, stable compaction fingerprints, oversized markers, and safe I/O degradation in `scripts/lib/realtime-content-audit.cjs` per FR-066–FR-071 and FR-073
+- [x] T150 [US9] Wire the audit sink only through the four-gate local Node adapter while retaining process-only debug mode and structurally excluding Worker/preview/production in `scripts/realtime-voice-api-plugin.cjs` per FR-065 and SC-035
+- [x] T151 [US9] Carry validated browser terminal causes through `session.stop` in `scripts/lib/realtime-relay-protocol.mjs`, `activity-scenes/assistant/realtime-relay-client.js`, and `cloudflare/realtime-relay.mjs` per FR-072 and SC-040
+- [x] T152 [US9] Document activation, fixed audit path, record interpretation, retention/cleanup, unavailable native-audio user transcripts, and safe deletion in `docs/production-configuration.md` and `specs/004-conversational-voice-map/quickstart.md`
+- [x] T153 [US9] Run focused audit/protocol/relay tests, the complete voice suite, scoped formatting, production build, and Spec Kit convergence; record exact zero-provider-spend evidence in `specs/004-conversational-voice-map/quickstart.md`
+
+---
+
+## Phase 20: Provider-Valid Voice Configuration
+
+**Purpose**: Ensure every live provider session accepts Amble's instructions and tools before any
+response, preserves canonical capability identities, and surfaces provider contract failures.
+
+### Tests first
+
+- [x] T154 [P] [US10] Add provider-name grammar, collision, deterministic round-trip, and canonical browser-identity fixtures in `tests/assistant-mcp-foundation.test.mjs` and `tests/realtime-relay.test.mjs` per FR-074–FR-075, FR-079, and SC-042/SC-045
+- [x] T155 [P] [US10] Add initial/per-turn configuration acknowledgement, missing/stale/duplicate acknowledgement, and provider-error terminal fixtures in `tests/realtime-relay.test.mjs` per FR-076–FR-078 and SC-043–SC-044
+- [x] T156 [P] [US10] Add one-shot welcome and stable cross-timestamp audit-compaction fixtures in `tests/realtime-relay.test.mjs` and `tests/realtime-content-debug.test.mjs` per FR-080–FR-081 and SC-046
+
+### Implementation and proof
+
+- [x] T157 [US10] Implement validated provider-only capability aliases and reverse lookup in `activity-scenes/assistant/protocol-adapters/realtime-function-adapter.js` and `cloudflare/realtime-relay.mjs` per FR-074–FR-075 and FR-079
+- [x] T158 [US10] Implement the single-pending provider configuration barrier, acknowledgement continuation, bounded timeout, and terminal provider-error path in `cloudflare/realtime-relay.mjs` per FR-076–FR-078
+- [x] T159 [US10] Remove the persistent opening system item and retain the exact welcome only as an opening-response instruction in `cloudflare/realtime-relay.mjs` per FR-080
+- [x] T160 [US10] Fingerprint stable sanitized static payload content without occurrence metadata in `scripts/lib/realtime-content-audit.cjs` per FR-081 and SC-046
+- [x] T161 [US10] Document the provider alias/configuration barrier and bounded live-smoke procedure in `specs/004-conversational-voice-map/quickstart.md` and `docs/production-configuration.md`
+- [x] T162 [US10] Run focused and full deterministic gates, then one bounded owner-authorized live opening-plus-one-turn smoke; inspect the persistent audit for provider errors, append any newly surfaced work through Spec Kit convergence, and record cost-safe evidence in `specs/004-conversational-voice-map/quickstart.md` per FR-082 and SC-047
+
+---
+
+## Phase 21: Single Native Event Query Path
+
+**Purpose**: Prevent native voice from dropping event constraints by exposing one atomic event
+query/filter command for both single- and multi-filter requests.
+
+### Tests first
+
+- [x] T163 [US6] Add relay projection fixtures proving native audio exposes `event.applyquery` while withholding `event.search`, individual event filter mutation commands, and legacy event filter setters in `tests/realtime-relay.test.mjs` per FR-083 and SC-048
+- [x] T164 [US6] Add provider-tool contract coverage proving `event.applyquery` instructs the model to submit the complete spoken request for either one or several filters in `tests/realtime-relay.test.mjs` per FR-083 and SC-048
+
+### Implementation and proof
+
+- [x] T165 [US6] Implement the native-audio event-query projection boundary and strengthen the atomic command description in `cloudflare/realtime-relay.mjs` and `activity-scenes/assistant/connectors/event-connector.js` per FR-083
+- [x] T166 [US6] Synchronize the relay contract and validation evidence in `specs/004-conversational-voice-map/contracts/realtime-relay.md` and `specs/004-conversational-voice-map/quickstart.md`
+- [x] T167 [US6] Run focused relay tests, the complete voice suite, capability verifiers, scoped formatting, production build, and Spec Kit convergence; record zero-provider-spend evidence in `specs/004-conversational-voice-map/quickstart.md` per SC-048
+
+---
+
+## Phase 22: Forced Native Ingress and Progressive Tool Disclosure
+
+**Purpose**: Replace the 56-way native-audio tool choice with one forced utterance ingress, then
+reuse deterministic text routing or one bounded connector-family menu.
+
+### Tests first
+
+- [x] T168 [P] [US8] Add relay fixtures proving audio commit exposes exactly one forced `voice.submitutterance` ingress tool, no application tools, and a closed 500-character argument in `tests/realtime-relay.test.mjs` per FR-084–FR-085 and SC-049
+- [x] T169 [P] [US6] Add single- and compound-event audio fixtures proving ingress routes directly to `event.applyquery` with the complete utterance, zero `app.inspect`/`catalog.search`, one context revision, and no partial mutation in `tests/realtime-relay.test.mjs` and `tests/assistant-obvious-command-interpreter.test.mjs` per FR-086, FR-088, and SC-050
+- [x] T170 [P] [US8] Add non-deterministic, ambiguous, unsupported, and state-transition fixtures proving later menus contain at most 15 currently eligible tools from one connector family and final responses expose none in `tests/realtime-relay.test.mjs` and `tests/assistant-capability-turn-scope.test.mjs` per FR-087, FR-089, and SC-051
+- [x] T171 [P] [US8] Add malformed/missing/duplicate/stale/overlapping ingress, configuration acknowledgement, interruption, watchdog, budget, diagnostic-privacy, more-than-six-turn, former-duration/idle-threshold, and per-turn stage-loop fixtures in `tests/realtime-relay.test.mjs`, `tests/realtime-policy.test.mjs`, `tests/realtime-content-debug.test.mjs`, `tests/assistant-conversation.test.mjs`, `tests/assistant-session-lifecycle.test.mjs`, and `tests/assistant-realtime-client.test.mjs` per FR-089–FR-091 and SC-052–SC-054
+
+### Implementation and proof
+
+- [x] T172 [US8] Implement the provider-only forced ingress descriptor, protocol validation, and acknowledged stage transition in `cloudflare/realtime-relay.mjs` and `scripts/lib/realtime-relay-protocol.mjs` per FR-084–FR-085
+- [x] T173 [US6] Route ingress utterances through the existing typed-turn scope and deterministic interpreter so event sentences execute `event.applyquery` without another provider choice in `cloudflare/realtime-relay.mjs` and `activity-scenes/assistant/capability-turn-scope.js` per FR-086 and FR-088
+- [x] T174 [US8] Implement registry-derived one-connector domain menus, the 15-tool bound, optional visible-target `catalog.get`, and no-tool final responses in `activity-scenes/assistant/protocol-adapters/realtime-function-adapter.js` and `cloudflare/realtime-relay.mjs` per FR-087 and FR-089
+- [x] T175 [US8] Remove the per-session response counter, maximum-duration timer, idle-expiry timer, and corresponding browser/protocol terminal reasons; add the three-stage per-turn loop guard; and extend per-stage reservations, acknowledgements, watchdogs, interruption, terminal cleanup, and local diagnostic labels without adding transcription persistence in `data/realtime-voice-policy.json`, `cloudflare/realtime-relay.mjs`, `scripts/lib/realtime-policy.mjs`, `scripts/lib/realtime-relay-protocol.mjs`, `scripts/lib/realtime-content-debug.mjs`, `activity-scenes/assistant/conversation-model.js`, `activity-scenes/assistant/audio-controller.js`, and `activity-scenes/assistant/realtime-relay-client.js` per FR-090–FR-091
+- [x] T176 [US8] Synchronize operational guidance and deterministic validation steps in `docs/production-configuration.md`, `specs/004-conversational-voice-map/contracts/native-audio-routing.md`, and `specs/004-conversational-voice-map/quickstart.md`
+- [x] T177 [US8] Run focused ingress/routing/lifecycle tests, the complete voice suite, capability verifiers, affected browser journeys, lint, scoped formatting, production build, and Spec Kit convergence; compare the representative event flow against the recorded 56-tool/three-response baseline and prove more than six consecutive user turns plus the former duration and idle thresholds remain admitted, without a live provider call unless separately authorized per SC-049–SC-054
+
+---
+
+## Phase 23: Live Revision Regression and Automated Utterance Matrix
+
+**Purpose**: Convert the observed `stale_context` live failure into deterministic coverage and
+exercise representative request combinations without repeated manual microphone testing.
+
+- [x] T178 [P] [US6] Add a relay regression where the authoritative application revision is newer than the event-composer revision and require `event.applyquery` to bind the authoritative revision in `tests/realtime-relay.test.mjs` per FR-085 and SC-055
+- [x] T179 [P] [US6] Add automated single-filter, compound-filter, follow-up, mixed-domain, unsupported, and end-to-end event interpretation matrices in `tests/assistant-capability-turn-scope.test.mjs` and `tests/assistant-event-query-integration.test.mjs` per SC-055
+- [x] T180 [US6] Bind native event proposals to the authoritative application revision and recognize the observed nearby-location wording without changing the filter contract in `cloudflare/realtime-relay.mjs` and `activity-scenes/events/event-query-classifier.js` per FR-085 and SC-055
+- [x] T181 [US6] Run focused and complete voice tests, capability verifiers, affected browser journeys, formatting, build, and Spec Kit convergence; record the zero-provider-spend evidence in `specs/004-conversational-voice-map/quickstart.md` per SC-055
+
+---
+
+## Phase 24: Same-Response Voice Event Facets
+
+**Purpose**: Let OpenAI propose natural event facets during forced ingress while deterministic
+application code remains the sole verifier and executor.
+
+### Tests first
+
+- [x] T182 [P] [US6] Add closed-schema, catalogue-bound label, evidence-span, conflicting-value, unresolved-facet, residual-cleanup, and typed-query fallback tests in `tests/assistant-event-facet-proposal.test.mjs` and `tests/assistant-event-query-integration.test.mjs` per FR-085 and FR-092
+- [x] T183 [P] [US8] Add relay tests proving one forced response returns utterance/domain/event facets, uses only current bounded facet labels, proposes one verified `event.applyquery`, clarifies unresolved input, and rejects malformed or stale proposals in `tests/realtime-relay.test.mjs` per FR-085–FR-090
+- [x] T184 [P] [US4] Add context/protocol tests proving the compact facet catalogue stays within message bounds, updates by revision, remains session-only, and is absent from typed/direct provider traffic in `tests/assistant-context-coordinator.test.mjs`, `tests/assistant-realtime-client.test.mjs`, and `tests/realtime-content-debug.test.mjs` per FR-090 and FR-092
+
+### Implementation and proof
+
+- [x] T185 [US6] Implement pure catalogue/evidence verification, bounded clarification, and deterministic residual cleanup in `activity-scenes/events/event-facet-proposal.js` and integrate optional verified proposals into `activity-scenes/assistant/interpreters/event-query-interpreter.js` and `activity-scenes/events/event-query-controller.js` per FR-085 and FR-092
+- [x] T186 [US4] Project the compact current event-facet catalogue through authoritative context and protocol validation in `activity-scenes/assistant/connectors/event-connector.js`, `activity-scenes/assistant/context-coordinator.js`, and `scripts/lib/realtime-relay-protocol.mjs` per FR-085 and FR-090
+- [x] T187 [US8] Extend the dynamic forced-ingress tool and routing to accept same-response domain/event facets, preserve one provider response, and pass verified voice proposals without changing typed routing in `cloudflare/realtime-relay.mjs` per FR-085–FR-092
+- [x] T188 [US6] Extend the optional `event.applyquery` proposal contract and browser execution boundary while retaining the shared executor and deterministic direct path in `activity-scenes/assistant/connectors/event-connector.js` and `activity-scenes/assistant/assistant-controller.js` per FR-083, FR-085, and FR-092
+- [x] T189 [US8] Synchronize the native routing and relay contracts plus operational guidance in `specs/004-conversational-voice-map/contracts/native-audio-routing.md`, `specs/004-conversational-voice-map/contracts/realtime-relay.md`, and `docs/production-configuration.md` per FR-085–FR-092
+- [x] T190 [US6] Run focused classifier/relay/context tests, the complete voice suite, capability verifiers, affected browser journeys, lint, scoped formatting, production build, and Spec Kit convergence; record exact zero-additional-provider-spend evidence in `specs/004-conversational-voice-map/quickstart.md`
+
+---
+
+## Phase 25: Sixteen-case live reliability loop
+
+**Purpose**: Convert every failure observed in the owner-authorized live matrix into a deterministic
+regression, correct the root causes without weakening semantic validation, and repeat the identical
+live gate until all cases pass.
+
+### Tests first
+
+- [x] T191 [P] [US8] Add canonical-ingress fixtures for root/nested residual fields, empty and
+      singleton single-value arrays, unknown fields, multi-value conflicts, invented labels, missing
+      evidence, and domain conflicts in `tests/realtime-relay.test.mjs` per FR-093 and SC-057
+- [x] T192 [P] [US6] Add omitted-optional, genuine-ambiguity, generic-event, compound-replacement,
+      and authoritative-refinement fixtures in `tests/assistant-event-facet-proposal.test.mjs` and
+      `tests/assistant-event-query-integration.test.mjs` per FR-094–FR-095 and SC-058
+- [x] T193 [P] [US8] Add deterministic text sequencing and repeated-turn fixtures that assert one
+      browser outcome, matching context refresh, one acknowledged no-tool response, and no orphaned
+      reservation in `tests/realtime-relay.test.mjs` and
+      `tests/assistant-realtime-client.test.mjs` per FR-096 and SC-059
+- [x] T194 [P] [US3] Add realistic query-result narration fixtures for event, restaurant, map, and
+      transit outcomes in `tests/realtime-relay.test.mjs` per FR-097 and SC-060
+- [x] T195 [P] [US4] Add browser chunk-bound, oversized-session isolation, and subsequent-session
+      recovery fixtures in `tests/assistant-realtime-client.test.mjs` and
+      `tests/realtime-relay.test.mjs` per FR-098 and SC-061
+
+### Implementation and proof
+
+- [x] T196 [US8] Implement the bounded lossless ingress canonicalizer ahead of the unchanged closed
+      semantic verifier in `cloudflare/realtime-relay.mjs` per FR-093
+- [x] T197 [US6] Implement optional-facet ambiguity and authoritative refinement verification in
+      `activity-scenes/events/event-facet-proposal.js`,
+      `activity-scenes/assistant/interpreters/event-query-interpreter.js`, and
+      `activity-scenes/events/event-query-controller.js` per FR-094–FR-095
+- [x] T198 [US8] Serialize deterministic text capability execution, provider configuration, context
+      refresh, and final response creation in `cloudflare/realtime-relay.mjs` and
+      `activity-scenes/assistant/assistant-controller.js` per FR-096
+- [x] T199 [US3] Preserve bounded structured query result evidence through capability completion and
+      final narration in `cloudflare/realtime-relay.mjs` and the affected connector fixtures per FR-097
+- [x] T200 [US4] Align browser/server message bounds and isolate oversized socket failures in
+      `activity-scenes/assistant/realtime-relay-client.js` and
+      `scripts/realtime-voice-api-plugin.cjs` per FR-098
+- [x] T201 [US8] Promote the named sixteen-case real-provider matrix with faithful browser
+      capability execution, expected-outcome assertions, bounded spend reporting, and machine-readable
+      failure output in `scripts/live-realtime-voice-matrix.mjs` per FR-099
+- [x] T202 [US8] Run focused tests, the complete voice suite, capability gates, affected browser
+      journeys, lint, formatting, build, and Spec Kit convergence; record evidence in
+      `specs/004-conversational-voice-map/quickstart.md`
+- [x] T203 [US8] Run the identical owner-authorized sixteen-case live matrix, append every remaining
+      defect as a regression task, fix by category, and repeat T202–T203 until SC-062 passes with no
+      unresolved issue.

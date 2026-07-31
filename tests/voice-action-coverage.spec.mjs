@@ -107,7 +107,7 @@ const journeys = [
               .find((message) => message.type === "context.update")?.context
               ?.activeFilters?.eventQuery,
         )
-        .toBe("Jazz"),
+        .toBe("jazz"),
   },
   {
     family: "restaurant",
@@ -175,11 +175,9 @@ async function installVoiceHarness(page) {
           sessionId: "voice-action-session",
           protocolVersion: "1.1",
           streamPath: "/api/voice/sessions/voice-action-session/stream",
-          expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
           limits: {
-            maxSessionSeconds: 300,
-            idleSeconds: 60,
-            maxResponses: 20,
+            maxResponseStagesPerTurn: 3,
+            responseTimeoutSeconds: 30,
           },
         },
       }),
@@ -315,16 +313,17 @@ test("voice event sentences update the same authoritative composer state as dire
       () => latestContext()?.activeFilters?.eventComposerState?.catalogRevision,
     )
     .toBeTruthy();
-  const context = latestContext();
+  const revisionBeforeTranscript = latestContext().revision;
   const callId = "event-applyquery-001";
-  const contextUpdatesBefore = harness.browserMessages.filter(
-    ({ type }) => type === "context.update",
-  ).length;
 
   harness.transcript(
     "free events this weekend",
     "event-sentence-utterance-001",
   );
+  await expect
+    .poll(() => latestContext()?.revision)
+    .toBeGreaterThan(revisionBeforeTranscript);
+  const context = latestContext();
   harness.propose(
     "event.applyquery",
     {
@@ -348,15 +347,16 @@ test("voice event sentences update the same authoritative composer state as dire
       status: "completed",
       errorCode: null,
       data: { outcome: "applied" },
-      contextRevision: context.revision + 1,
     });
   await expect
     .poll(
       () =>
-        harness.browserMessages.filter(({ type }) => type === "context.update")
-          .length - contextUpdatesBefore,
+        harness.browserMessages.find(
+          (message) =>
+            message.type === "capability.result" && message.callId === callId,
+        )?.result?.contextRevision,
     )
-    .toBe(1);
+    .toBeGreaterThanOrEqual(context.revision);
   harness.propose("navigation.closeassistant", {}, "event-close-assistant-001");
   await expect(page.locator('[data-testid="assistant-panel"]')).toBeHidden();
   await expect(
@@ -447,7 +447,7 @@ test("direct and conversational zoom use the same observable map executor", asyn
   page,
 }) => {
   await installVoiceHarness(page);
-  const zoomIn = page.getByRole("button", { name: "Zoom in" });
+  const zoomIn = page.getByRole("button", { name: "Zoom in", exact: true });
   const initial = await page.evaluate(() => window._map.getZoom());
 
   if (!(await zoomIn.isVisible())) {

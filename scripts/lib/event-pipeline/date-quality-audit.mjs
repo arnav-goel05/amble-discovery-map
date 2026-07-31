@@ -69,7 +69,9 @@ function sourcesOf(record) {
   const sources = (record.sources ?? [])
     .map(({ source }) => source)
     .filter(Boolean);
-  return [...new Set(sources.length ? sources : [record.sourceName].filter(Boolean))];
+  return [
+    ...new Set(sources.length ? sources : [record.sourceName].filter(Boolean)),
+  ];
 }
 
 function addReason(reasons, code, detail) {
@@ -99,7 +101,11 @@ export function assessEventDateQuality(
     clean(value),
   );
   const parsedStarts = Object.entries(normalizedBoundaryFields(record))
-    .map(([field, value]) => ({ field, value, timestamp: parseEventDate(value) }))
+    .map(([field, value]) => ({
+      field,
+      value,
+      timestamp: parseEventDate(value),
+    }))
     .filter(({ timestamp }) => timestamp !== null);
   const start = firstParsed(startFields);
   const end = firstParsed(endFields, { endOfDay: true }) ?? start;
@@ -108,10 +114,16 @@ export function assessEventDateQuality(
   const intentionalFlexibleSchedule =
     ["anytime", "selectable"].includes(record.schedule?.kind) ||
     (record.schedule?.kind === "recurring" &&
-      Boolean(record.schedule?.recurrence ?? clean(record.schedule?.displayText)));
+      Boolean(
+        record.schedule?.recurrence ?? clean(record.schedule?.displayText),
+      ));
 
   if (!publishedStartValues.length && !intentionalFlexibleSchedule)
-    addReason(reasons, "missing_date", "No start date was published or normalized.");
+    addReason(
+      reasons,
+      "missing_date",
+      "No start date was published or normalized.",
+    );
   else if (!start && !intentionalFlexibleSchedule)
     addReason(
       reasons,
@@ -172,11 +184,14 @@ export function assessEventDateQuality(
     const waitlistText = [
       record.title,
       record.availability,
-      ...record.sessions?.map(({ availability }) => availability) ?? [],
+      ...(record.sessions?.map(({ availability }) => availability) ?? []),
     ]
       .filter(Boolean)
       .join(" ");
-    if (/\bwaitlist\b/i.test(waitlistText) && start.timestamp > horizon.getTime())
+    if (
+      /\bwaitlist\b/i.test(waitlistText) &&
+      start.timestamp > horizon.getTime()
+    )
       addReason(
         reasons,
         "waitlist_placeholder_date",
@@ -193,10 +208,18 @@ export function assessEventDateQuality(
     title: record.title ?? null,
     sources: sourcesOf(record),
     start: start
-      ? { field: start.field, value: start.value, iso: new Date(start.timestamp).toISOString() }
+      ? {
+          field: start.field,
+          value: start.value,
+          iso: new Date(start.timestamp).toISOString(),
+        }
       : null,
     end: end
-      ? { field: end.field, value: end.value, iso: new Date(end.timestamp).toISOString() }
+      ? {
+          field: end.field,
+          value: end.value,
+          iso: new Date(end.timestamp).toISOString(),
+        }
       : null,
     status: reasons.length ? "questionable" : "plausible",
     reasons,
@@ -253,9 +276,12 @@ export function createDateReviewItem(
     throw new Error("A questionable date assessment is required");
   const evidenceHash = evidenceHashOf(event);
   const identity = event.id ?? event.occurrenceId;
-  if (!identity) throw new Error("Date review requires a stable event identity");
+  if (!identity)
+    throw new Error("Date review requires a stable event identity");
   const reviewId = `date-review:${createHash("sha256")
-    .update(JSON.stringify([identity, evidenceHash, DATE_QUALITY_POLICY_VERSION]))
+    .update(
+      JSON.stringify([identity, evidenceHash, DATE_QUALITY_POLICY_VERSION]),
+    )
     .digest("hex")
     .slice(0, 24)}`;
   return {
@@ -288,7 +314,9 @@ export function auditEventDates(records, options = {}) {
   const assessments = records.map((record) =>
     assessEventDateQuality(record, options),
   );
-  const questionable = assessments.filter(({ status }) => status === "questionable");
+  const questionable = assessments.filter(
+    ({ status }) => status === "questionable",
+  );
   const byReason = {};
   const bySource = {};
   for (const assessment of questionable) {
@@ -307,7 +335,9 @@ export function auditEventDates(records, options = {}) {
       .map((code) => [
         code,
         questionable
-          .filter(({ reasons }) => reasons.some((reason) => reason.code === code))
+          .filter(({ reasons }) =>
+            reasons.some((reason) => reason.code === code),
+          )
           .slice(0, options.exampleLimit ?? 5),
       ]),
   );
@@ -329,7 +359,10 @@ export function summarizeDateReviews(items = []) {
   const bySource = {};
   for (const item of items) {
     const source = item.sourceName ?? "unknown";
-    const sourceSummary = (bySource[source] ??= { needsReview: 0, reasons: {} });
+    const sourceSummary = (bySource[source] ??= {
+      needsReview: 0,
+      reasons: {},
+    });
     sourceSummary.needsReview += 1;
     for (const code of new Set(item.reasonCodes ?? [])) {
       byReason[code] = (byReason[code] ?? 0) + 1;
@@ -375,7 +408,9 @@ export function validateDateReviewArtifact(
         "Normalized date reviews require unique review and event identities",
       );
     if (accepted.has(review.eventId))
-      throw new Error("An event cannot be both accepted and held for date review");
+      throw new Error(
+        "An event cannot be both accepted and held for date review",
+      );
     reviewIds.add(review.reviewId);
     eventIds.add(review.eventId);
   }

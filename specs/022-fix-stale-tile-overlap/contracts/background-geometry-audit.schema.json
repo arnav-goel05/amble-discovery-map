@@ -3,7 +3,16 @@
   "$id": "background-geometry-audit.schema.json",
   "title": "Background Geometry Audit",
   "type": "object",
-  "required": ["schemaVersion", "releaseId", "snapshotId", "origin", "mode", "summary", "objects", "complete"],
+  "required": [
+    "schemaVersion",
+    "releaseId",
+    "snapshotId",
+    "origin",
+    "mode",
+    "summary",
+    "objects",
+    "complete"
+  ],
   "properties": {
     "schemaVersion": { "const": "background-geometry-audit-v1" },
     "releaseId": { "type": "string", "pattern": "^[a-f0-9]{16}$" },
@@ -13,7 +22,14 @@
     "complete": { "type": "boolean" },
     "summary": {
       "type": "object",
-      "required": ["checkedObjects", "matchedObjects", "staleObjects", "failedObjects", "retainedIdentityCount", "affectedVenueCount"],
+      "required": [
+        "checkedObjects",
+        "matchedObjects",
+        "staleObjects",
+        "failedObjects",
+        "retainedIdentityCount",
+        "affectedVenueCount"
+      ],
       "properties": {
         "checkedObjects": { "type": "integer", "minimum": 0 },
         "matchedObjects": { "type": "integer", "minimum": 0 },
@@ -30,15 +46,40 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["objectKey", "status", "remoteState", "retainedGmlIds", "affectedVenueIds"],
+        "required": [
+          "objectKey",
+          "status",
+          "remoteState",
+          "retainedGmlIds",
+          "affectedVenueIds"
+        ],
         "properties": {
-          "objectKey": { "type": "string", "pattern": "^optimized-tiles/.+\\.b3dm$" },
+          "objectKey": {
+            "type": "string",
+            "pattern": "^optimized-tiles/.+\\.b3dm$"
+          },
           "status": { "enum": ["matched", "stale", "failed"] },
-          "remoteState": { "enum": ["current", "pristine", "intermediate", "unknown", "unavailable"] },
+          "remoteState": {
+            "enum": [
+              "current",
+              "pristine",
+              "intermediate",
+              "unknown",
+              "unavailable"
+            ]
+          },
           "remoteSha256": { "type": ["string", "null"] },
           "remoteByteLength": { "type": ["integer", "null"], "minimum": 0 },
-          "retainedGmlIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
-          "affectedVenueIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "retainedGmlIds": {
+            "type": "array",
+            "items": { "type": "string" },
+            "uniqueItems": true
+          },
+          "affectedVenueIds": {
+            "type": "array",
+            "items": { "type": "string" },
+            "uniqueItems": true
+          },
           "error": { "type": "object" }
         },
         "additionalProperties": true

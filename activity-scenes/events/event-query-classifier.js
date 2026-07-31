@@ -44,6 +44,11 @@ const grammarDefinitions = [
   ["when:this-weekend", "when", /\b(?:this\s+)?weekend\b/g],
   ["when:7-days", "when", /\b(?:next\s+7\s+days|next\s+week)\b/g],
   ["when:30-days", "when", /\b(?:next\s+30\s+days|next\s+month)\b/g],
+  [
+    "where:near-me",
+    "where",
+    /\b(?:near\s+me|nearby(?:\s+in\s+my\s+area)?|in\s+my\s+area)\b/g,
+  ],
   ["price:free", "price", /\bfree\b/g],
   [
     "price:under-25",

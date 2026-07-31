@@ -317,13 +317,8 @@ export const feverAdapter = {
         schedule: normalizeSchedule({
           kind: performances.length > 1 ? "selectable" : "exact",
           start:
-            performances.length === 1
-              ? performances[0].startDateTime
-              : null,
-          end:
-            performances.length === 1
-              ? performances[0].endDateTime
-              : null,
+            performances.length === 1 ? performances[0].startDateTime : null,
+          end: performances.length === 1 ? performances[0].endDateTime : null,
           sessionRefs: performances.map(({ sessionRef }) => sessionRef),
           displayText: parsed.dateText,
           finalKnownOccurrence:

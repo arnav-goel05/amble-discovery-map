@@ -229,7 +229,9 @@ export function validateEventSourceDefinitions(
         bounds.maximumResponseBytes < 1 ||
         bounds.maximumResponseBytes > 5 * 1024 * 1024
       )
-        throw new Error(`${source.name} has invalid direct HTML retrieval bounds`);
+        throw new Error(
+          `${source.name} has invalid direct HTML retrieval bounds`,
+        );
     }
     if (source.listing?.urls !== undefined) {
       if (

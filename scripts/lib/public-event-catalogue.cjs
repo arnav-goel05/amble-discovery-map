@@ -205,12 +205,18 @@ function validatePublicActivityCatalogue(catalogue) {
   return catalogue;
 }
 
-function projectPublicActivityCatalogue(activities, { snapshotId = null } = {}) {
+function projectPublicActivityCatalogue(
+  activities,
+  { snapshotId = null } = {},
+) {
   const records = (activities?.records ?? []).map(publicActivity);
   const counts = {
     activities: records.length,
     sessions: records.reduce((sum, item) => sum + item.sessions.length, 0),
-    venueGroups: records.reduce((sum, item) => sum + item.venueGroups.length, 0),
+    venueGroups: records.reduce(
+      (sum, item) => sum + item.venueGroups.length,
+      0,
+    ),
     sourceOffers: records.reduce(
       (sum, item) => sum + item.sourceOffers.length,
       0,
@@ -220,9 +226,7 @@ function projectPublicActivityCatalogue(activities, { snapshotId = null } = {}) 
     ).length,
     offMapActivities: records.filter(
       (item) =>
-        !item.venueGroups.some(
-          (group) => group.publicPlacement === "mapped",
-        ) ||
+        !item.venueGroups.some((group) => group.publicPlacement === "mapped") ||
         item.venueGroups.some((group) => group.publicPlacement !== "mapped"),
     ).length,
   };
@@ -267,8 +271,7 @@ function validatePublicLandmarks(landmarks, activities) {
         throw new Error("public_landmark_reference_invalid");
       activityRefs.add(reference.activityId);
       const activity = activityById.get(reference.activityId);
-      if (!activity)
-        throw new Error("public_landmark_activity_missing");
+      if (!activity) throw new Error("public_landmark_activity_missing");
       const groups = new Map(
         activity.venueGroups.map((group) => [group.venueGroupId, group]),
       );

@@ -70,7 +70,11 @@ const RESULT_ERRORS = new Set([
 
 export const DEFAULT_RELAY_CLIENT_LIMITS = Object.freeze({
   maxMessageBytes: 64 * 1_024,
-  maxAudioChunkBytes: 64 * 1_024,
+  maxInboundMessageBytes: 64 * 1_024,
+  maxOutboundMessageBytes: 16 * 1_024,
+  maxAudioChunkBytes: 8 * 1_024,
+  maxInboundAudioChunkBytes: 64 * 1_024,
+  maxOutboundAudioChunkBytes: 8 * 1_024,
   maxTextChars: 2_000,
 });
 
@@ -84,7 +88,28 @@ export function createRealtimeRelayClient({
   limits = {},
 } = {}) {
   if (!origin) throw new TypeError("Application origin is required");
-  const bounds = Object.freeze({ ...DEFAULT_RELAY_CLIENT_LIMITS, ...limits });
+  const legacyMessageBound = limits.maxMessageBytes;
+  const legacyAudioBound = limits.maxAudioChunkBytes;
+  const bounds = Object.freeze({
+    ...DEFAULT_RELAY_CLIENT_LIMITS,
+    ...limits,
+    maxInboundMessageBytes:
+      limits.maxInboundMessageBytes ??
+      legacyMessageBound ??
+      DEFAULT_RELAY_CLIENT_LIMITS.maxInboundMessageBytes,
+    maxOutboundMessageBytes:
+      limits.maxOutboundMessageBytes ??
+      legacyMessageBound ??
+      DEFAULT_RELAY_CLIENT_LIMITS.maxOutboundMessageBytes,
+    maxInboundAudioChunkBytes:
+      limits.maxInboundAudioChunkBytes ??
+      legacyAudioBound ??
+      DEFAULT_RELAY_CLIENT_LIMITS.maxInboundAudioChunkBytes,
+    maxOutboundAudioChunkBytes:
+      limits.maxOutboundAudioChunkBytes ??
+      legacyAudioBound ??
+      DEFAULT_RELAY_CLIENT_LIMITS.maxOutboundAudioChunkBytes,
+  });
   let state = "idle";
   let admission = null;
   let socket = null;
@@ -161,7 +186,7 @@ export function createRealtimeRelayClient({
   };
   const queueAudio = (audio) => {
     const bytes = audioBytes(audio);
-    if (bytes < 0 || bytes > bounds.maxAudioChunkBytes)
+    if (bytes < 0 || bytes > bounds.maxInboundAudioChunkBytes)
       fail("protocol", "Relay audio chunk exceeds its bound");
     if (!audioPlayback?.play) return;
     playbackQueue.push(audio);
@@ -251,7 +276,7 @@ export function createRealtimeRelayClient({
     const text = typeof raw === "string" ? raw : raw?.data;
     if (
       typeof text !== "string" ||
-      encodedBytes(text) > bounds.maxMessageBytes
+      encodedBytes(text) > bounds.maxInboundMessageBytes
     ) {
       protocolStop();
       fail("protocol", "Relay message exceeds its bound");
@@ -372,7 +397,7 @@ export function createRealtimeRelayClient({
         "Browser relay event type is not allowed",
       );
     const serialized = JSON.stringify(message);
-    if (encodedBytes(serialized) > bounds.maxMessageBytes)
+    if (encodedBytes(serialized) > bounds.maxOutboundMessageBytes)
       fail(
         "browser_message_too_large",
         "Browser relay event exceeds its bound",
@@ -458,7 +483,6 @@ export function createRealtimeRelayClient({
     connectAttempted = true;
     const url = sameOriginUrl(admission.streamPath, { websocket: true });
     socket = new WebSocketImpl(url.href);
-    socket.addEventListener?.("open", () => setState("listening"));
     socket.addEventListener?.("message", receive);
     socket.addEventListener?.("error", () => {
       if (state !== "stopped") terminateUnavailable("network");
@@ -478,7 +502,10 @@ export function createRealtimeRelayClient({
       (socket.readyState === undefined || socket.readyState === 1)
     ) {
       try {
-        send({ type: "session.stop" });
+        const browserReason = ["pagehide", "permission"].includes(reason)
+          ? reason
+          : "user";
+        send({ type: "session.stop", reason: browserReason });
       } catch {
         // Cleanup remains terminal even when the socket closes between the state change and send.
       }
@@ -588,7 +615,7 @@ export function createRealtimeRelayClient({
     snapshot,
     requestTurn: (turnId) => send({ type: "turn.request", turnId }),
     appendAudio: (turnId, audio) => {
-      if (audioBytes(audio) > bounds.maxAudioChunkBytes)
+      if (audioBytes(audio) > bounds.maxOutboundAudioChunkBytes)
         fail("audio_chunk_too_large", "Audio chunk exceeds its bound");
       return send({ type: "audio.append", turnId, audio });
     },

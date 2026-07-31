@@ -95,6 +95,43 @@ test("coordinator creates an immutable canonical snapshot and deterministic dige
   coordinator.destroy();
 });
 
+test("coordinator projects a bounded event facet catalogue", async () => {
+  const source = createSource("events", {
+    ...mapState(),
+    eventFacetCatalog: {
+      catalogRevision: "events:v4",
+      what: ["Exhibitions", "Concerts"],
+      when: ["Today"],
+      where: ["Marina Bay"],
+      price: ["Free"],
+    },
+  });
+  const coordinator = createContextCoordinator({ connectors: [source] });
+
+  const snapshot = await coordinator.start();
+
+  assert.deepEqual(snapshot.eventFacetCatalog, {
+    catalogRevision: "events:v4",
+    what: ["Exhibitions", "Concerts"],
+    when: ["Today"],
+    where: ["Marina Bay"],
+    price: ["Free"],
+  });
+  source.set({
+    ...source.snapshot(),
+    eventFacetCatalog: {
+      ...source.snapshot().eventFacetCatalog,
+      catalogRevision: "events:v5",
+      where: ["Marina Bay", "Orchard"],
+    },
+  });
+  const updated = await coordinator.waitForIdle();
+  assert.equal(updated.revision, snapshot.revision + 1);
+  assert.equal(updated.eventFacetCatalog.catalogRevision, "events:v5");
+  assert.deepEqual(updated.eventFacetCatalog.where, ["Marina Bay", "Orchard"]);
+  coordinator.destroy();
+});
+
 test("connector emissions publish only semantic changes with monotonic revisions", async () => {
   const map = createSource("map", mapState());
   const coordinator = createContextCoordinator({ connectors: [map] });

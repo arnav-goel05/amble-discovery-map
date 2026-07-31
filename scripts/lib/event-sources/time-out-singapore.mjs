@@ -264,22 +264,20 @@ function currentMonthRoute(result, source, baseUrl) {
   return unlabelled.length === 1 ? unlabelled : [];
 }
 
-const MONTH_NUMBER = new Map(
-  [
-    ["jan", "01"],
-    ["feb", "02"],
-    ["mar", "03"],
-    ["apr", "04"],
-    ["may", "05"],
-    ["jun", "06"],
-    ["jul", "07"],
-    ["aug", "08"],
-    ["sep", "09"],
-    ["oct", "10"],
-    ["nov", "11"],
-    ["dec", "12"],
-  ],
-);
+const MONTH_NUMBER = new Map([
+  ["jan", "01"],
+  ["feb", "02"],
+  ["mar", "03"],
+  ["apr", "04"],
+  ["may", "05"],
+  ["jun", "06"],
+  ["jul", "07"],
+  ["aug", "08"],
+  ["sep", "09"],
+  ["oct", "10"],
+  ["nov", "11"],
+  ["dec", "12"],
+]);
 
 function isoScheduleDate(value) {
   const match = clean(value)?.match(
@@ -356,9 +354,7 @@ function detailSchedule(document, listingRecord) {
     return [
       {
         startDateTime: `${date}T${clock.start.iso}:00+08:00`,
-        endDateTime: clock.end
-          ? `${date}T${clock.end.iso}:00+08:00`
-          : null,
+        endDateTime: clock.end ? `${date}T${clock.end.iso}:00+08:00` : null,
         dateText: match[1],
         timeText: clock.end
           ? `${clock.start.display}–${clock.end.display}`

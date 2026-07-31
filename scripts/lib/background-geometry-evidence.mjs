@@ -111,8 +111,7 @@ export function deriveActiveBackgroundObjects({ root }) {
           existing.ownersByGmlId[gmlId] ??= [];
           existing.ownersByGmlId[gmlId].push(poi.id);
         }
-        if (tile.sourceSha256)
-          existing.sourceSha256s.push(tile.sourceSha256);
+        if (tile.sourceSha256) existing.sourceSha256s.push(tile.sourceSha256);
       } else {
         if (!fs.existsSync(localPath))
           throw new Error(

@@ -278,10 +278,7 @@ test("public snapshot metadata versions the corrected tileset representation", (
     },
   });
   assert.equal(metadata.landmarksRef, "/landmarks?projection=activity-ui-v1");
-  assert.equal(
-    metadata.activitiesRef,
-    "/activities?projection=activity-ui-v1",
-  );
+  assert.equal(metadata.activitiesRef, "/activities?projection=activity-ui-v1");
   assert.equal("eventsRef" in metadata, false);
   assert.equal(
     metadata.tilesetRef,
@@ -502,7 +499,10 @@ test("parent dedup repair stages immutably, preserves rollback, activates, and b
     assert.equal(staged.activated, false);
     assert.equal(staged.audit.activitiesBefore, 2);
     assert.equal(staged.audit.activitiesAfter, 1);
-    assert.equal(loadApprovedSnapshot({ root: state.root }).snapshotId, "repair-source");
+    assert.equal(
+      loadApprovedSnapshot({ root: state.root }).snapshotId,
+      "repair-source",
+    );
 
     const activated = repairParentDedupSnapshot({
       root: state.root,

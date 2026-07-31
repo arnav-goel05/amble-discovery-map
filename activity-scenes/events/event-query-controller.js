@@ -4,6 +4,7 @@ import {
   selectFilterToken,
 } from "./event-filter-options.js";
 import { classifyEventQuery } from "./event-query-classifier.js";
+import { verifyEventFacetProposal } from "./event-facet-proposal.js";
 
 const DIMENSION_ORDER = ["what", "when", "where", "price"];
 const dimensionRank = new Map(
@@ -111,6 +112,7 @@ export function createEventQueryController({
     mode = "replace",
     baseContextRevision,
     catalogRevision: proposedCatalogRevision,
+    facetProposal = null,
   } = {}) => {
     if (
       baseContextRevision !== currentContextRevision ||
@@ -124,6 +126,8 @@ export function createEventQueryController({
       catalog: currentCatalog,
       baseContextRevision,
       catalogRevision: proposedCatalogRevision,
+      facetProposal,
+      currentFilterTokens: state.filterTokens,
     });
     if (interpretation.outcome === "clarification_required")
       return result("clarification_required", {
@@ -131,10 +135,15 @@ export function createEventQueryController({
       });
     if (interpretation.outcome !== "applicable") return result("unsupported");
 
-    const classification = classifyEventQuery(
-      interpretation.normalizedUtterance,
-      currentCatalog,
-    );
+    const classification = facetProposal
+      ? verifyEventFacetProposal({
+          utterance: interpretation.normalizedUtterance,
+          proposal: facetProposal,
+          catalog: currentCatalog,
+          mode,
+          currentFilterTokens: state.filterTokens,
+        })
+      : classifyEventQuery(interpretation.normalizedUtterance, currentCatalog);
     const optionsById = new Map(
       currentCatalog.all.map((option) => [option.id, option]),
     );

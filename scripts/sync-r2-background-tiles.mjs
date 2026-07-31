@@ -71,7 +71,9 @@ async function mapLimit(items, limit, operation) {
 }
 
 function normalizedEtag(value) {
-  return value?.replace(/^W\//u, "").replace(/^"|"$/gu, "").toLowerCase() ?? null;
+  return (
+    value?.replace(/^W\//u, "").replace(/^"|"$/gu, "").toLowerCase() ?? null
+  );
 }
 
 function objectUrl(item, query) {
@@ -103,8 +105,8 @@ async function fetchWithRetries(url, init) {
       });
       if (
         response.ok ||
-        ![408, 425, 429].includes(response.status) &&
-          (response.status < 500 || response.status > 599) ||
+        (![408, 425, 429].includes(response.status) &&
+          (response.status < 500 || response.status > 599)) ||
         attempt === retryAttempts
       )
         return response;
@@ -147,7 +149,9 @@ function remoteFetcher(queryForItem) {
       throw await responseError(headerResponse, url);
     const header = Buffer.from(await headerResponse.arrayBuffer());
     if (header.length !== 28 || header.toString("ascii", 0, 4) !== "b3dm")
-      throw new Error(`Remote object has an invalid B3DM header: ${item.objectKey}`);
+      throw new Error(
+        `Remote object has an invalid B3DM header: ${item.objectKey}`,
+      );
     const batchEnd =
       28 +
       header.readUInt32LE(12) +
@@ -219,43 +223,52 @@ async function upload(item) {
 
 const runToken = `${Date.now().toString(36)}-${randomBytes(5).toString("hex")}`;
 const active = deriveActiveBackgroundObjects({ root });
-const objects = await mapLimit(active.objects, concurrency, async (item, index) => {
-  const hashes = await hashFile(item.localPath);
-  if (hashes.sha256 !== item.sha256)
-    throw new Error(
-      `Local approved hash mismatch for ${item.objectKey}: expected ${item.sha256}, received ${hashes.sha256}`,
-    );
-  if ((index + 1) % 100 === 0)
-    console.error(`Validated ${index + 1}/${active.objects.length} local objects.`);
-  const sourceHashes = [];
-  for (const sourcePath of item.sourcePaths ?? []) {
-    if (!existsSync(sourcePath)) continue;
-    const source = await hashFile(sourcePath);
-    sourceHashes.push(source);
-  }
-  const expectedSourceHashes = new Set(item.sourceSha256s ?? []);
-  return {
-    ...item,
-    md5: hashes.md5,
-    sourceMd5s: [
-      ...new Set(
-        sourceHashes
-          .filter(
-            ({ sha256 }) =>
-              expectedSourceHashes.size === 0 ||
-              expectedSourceHashes.has(sha256),
-          )
-          .map(({ md5 }) => md5),
-      ),
-    ],
-  };
-});
+const objects = await mapLimit(
+  active.objects,
+  concurrency,
+  async (item, index) => {
+    const hashes = await hashFile(item.localPath);
+    if (hashes.sha256 !== item.sha256)
+      throw new Error(
+        `Local approved hash mismatch for ${item.objectKey}: expected ${item.sha256}, received ${hashes.sha256}`,
+      );
+    if ((index + 1) % 100 === 0)
+      console.error(
+        `Validated ${index + 1}/${active.objects.length} local objects.`,
+      );
+    const sourceHashes = [];
+    for (const sourcePath of item.sourcePaths ?? []) {
+      if (!existsSync(sourcePath)) continue;
+      const source = await hashFile(sourcePath);
+      sourceHashes.push(source);
+    }
+    const expectedSourceHashes = new Set(item.sourceSha256s ?? []);
+    return {
+      ...item,
+      md5: hashes.md5,
+      sourceMd5s: [
+        ...new Set(
+          sourceHashes
+            .filter(
+              ({ sha256 }) =>
+                expectedSourceHashes.size === 0 ||
+                expectedSourceHashes.has(sha256),
+            )
+            .map(({ md5 }) => md5),
+        ),
+      ],
+    };
+  },
+);
 
 const reportDirectory = path.join(root, "outputs/background-geometry-release");
 mkdirSync(reportDirectory, { recursive: true });
 const reportPath = path.resolve(
   root,
-  option("report", `outputs/background-geometry-release/${runToken}-${mode}.json`),
+  option(
+    "report",
+    `outputs/background-geometry-release/${runToken}-${mode}.json`,
+  ),
 );
 
 let report;
@@ -326,7 +339,9 @@ if (mode === "audit") {
         createHash("sha256").update(served).digest("hex") !==
         createHash("sha256").update(bytes).digest("hex")
       )
-        throw new Error("Published tileset manifest did not verify byte-for-byte");
+        throw new Error(
+          "Published tileset manifest did not verify byte-for-byte",
+        );
       publishedManifestBytes = bytes;
     },
   });
@@ -337,7 +352,10 @@ if (mode === "audit") {
     objects,
     manifestBytes: publishedManifestBytes,
   });
-  const descriptorPath = path.join(root, "data/background-geometry-release.json");
+  const descriptorPath = path.join(
+    root,
+    "data/background-geometry-release.json",
+  );
   const temporaryPath = `${descriptorPath}.${process.pid}.tmp`;
   writeFileSync(temporaryPath, `${JSON.stringify(descriptor, null, 2)}\n`, {
     mode: 0o644,
