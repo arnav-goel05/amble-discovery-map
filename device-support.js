@@ -35,9 +35,11 @@ export function getDeviceSupport({
 
   const voiceSupported = audioCapture && audioOutput && webSocket;
   const textAssistantSupported = webSocket;
+  const supported =
+    !mobileOrTablet && longestScreenEdge >= MINIMUM_SUPPORTED_SCREEN_EDGE;
 
   return {
-    supported: true,
+    supported,
     mode: voiceSupported && textAssistantSupported ? "full" : "degraded",
     voiceSupported,
     textAssistantSupported,
