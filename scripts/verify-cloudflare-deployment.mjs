@@ -52,7 +52,11 @@ export async function verifyCloudflareDeployment(origin = DEFAULT_ORIGIN) {
   }
 
   const html = await homepage.text();
-  if (!/<title>Amble - Singapore Events Map<\/title>/i.test(html)) {
+  if (
+    !/<title>Amble: See What(?:’|&#x2019;|&rsquo;|'|&apos;)s Happening in Singapore<\/title>/i.test(
+      html,
+    )
+  ) {
     throw new Error("homepage identity is missing or incorrect");
   }
 
