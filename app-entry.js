@@ -6,6 +6,7 @@ function showUnsupportedDevice(support) {
   document.body.dataset.deviceSupport = "unsupported";
   document.body.dataset.deviceScreenEdge = String(support.longestScreenEdge);
   document.getElementById("map")?.remove();
+  document.getElementById("map-brand")?.remove();
   document.getElementById("experience-intro")?.remove();
 
   const gate = document.createElement("main");

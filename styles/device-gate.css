@@ -1,17 +1,33 @@
 @import url("./design-tokens.css");
 
+body[data-device-support="unsupported"] {
+  margin: 0;
+  overflow: hidden;
+}
+
 .device-gate {
   position: fixed;
+  z-index: 100;
   inset: 0;
   display: grid;
   box-sizing: border-box;
   min-height: 100dvh;
-  padding: max(24px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  padding: max(24px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
   place-items: center;
   overflow: auto;
   background:
-    radial-gradient(circle at 16% 12%, rgba(255, 255, 255, 0.96), transparent 40%),
-    radial-gradient(circle at 84% 88%, rgba(75, 181, 187, 0.22), transparent 44%),
+    radial-gradient(
+      circle at 16% 12%,
+      rgba(255, 255, 255, 0.96),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 84% 88%,
+      rgba(75, 181, 187, 0.22),
+      transparent 44%
+    ),
     #dfe9ea;
   color: #172033;
   font-family: var(--font-family-system);
@@ -65,5 +81,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .device-gate { scroll-behavior: auto; }
+  .device-gate {
+    scroll-behavior: auto;
+  }
 }
