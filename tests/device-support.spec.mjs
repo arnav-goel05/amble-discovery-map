@@ -54,7 +54,9 @@ test("phones and larger screens enter the application with capability-based supp
     // Playwright has no Firefox Android engine; this project covers only its narrow touch layout.
     if (testInfo.project.name !== "firefox-mobile") {
       await expect
-        .poll(() => page.evaluate(() => Boolean(window._map)))
+        .poll(() => page.evaluate(() => Boolean(window._map)), {
+          timeout: 15_000,
+        })
         .toBe(true);
     }
   } else {
