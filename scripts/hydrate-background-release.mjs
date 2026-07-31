@@ -121,15 +121,93 @@ async function sourceFragmentPaths() {
   return [...fragments].sort();
 }
 
-async function persist(relativePath, bytes) {
-  const destination = path.join(outputRoot, relativePath);
-  if (!destination.startsWith(`${outputRoot}${path.sep}`)) {
-    throw new Error(`Unsafe background release output path: ${relativePath}`);
+async function persist(basePath, relativePath, bytes) {
+  const destination = path.join(basePath, relativePath);
+  if (!destination.startsWith(`${basePath}${path.sep}`)) {
+    throw new Error(`Unsafe release output path: ${relativePath}`);
   }
   await mkdir(path.dirname(destination), { recursive: true });
   const temporary = `${destination}.hydrate-${process.pid}`;
   await writeFile(temporary, bytes);
   await rename(temporary, destination);
+}
+
+function localTileset(tileset) {
+  const copy = structuredClone(tileset);
+  const visit = (tile) => {
+    for (const field of ["uri", "url"]) {
+      const rawUri = tile?.content?.[field];
+      if (typeof rawUri === "string") {
+        tile.content[field] = rawUri.split("?")[0];
+      }
+    }
+    for (const child of tile?.children ?? []) visit(child);
+  };
+  visit(copy.root);
+  return copy;
+}
+
+async function hydratePoiFragments() {
+  const poiRoot = path.join(root, "public/poi-tiles");
+  const directories = await readdir(poiRoot, { withFileTypes: true });
+  const entries = [];
+  for (const directory of directories) {
+    if (!directory.isDirectory()) continue;
+    const directoryPath = path.join(poiRoot, directory.name);
+    let tileset;
+    try {
+      await readFile(path.join(directoryPath, "extraction-manifest.json"));
+      tileset = JSON.parse(
+        await readFile(path.join(directoryPath, "tileset.json"), "utf8"),
+      );
+    } catch (error) {
+      if (error?.code === "ENOENT") continue;
+      throw error;
+    }
+    const visit = (tile) => {
+      const rawUri = tile?.content?.uri ?? tile?.content?.url;
+      if (typeof rawUri === "string") {
+        const pathname = decodeURIComponent(rawUri.split("?")[0]);
+        if (
+          !pathname ||
+          pathname.includes("..") ||
+          path.isAbsolute(pathname) ||
+          !pathname.endsWith(".b3dm")
+        ) {
+          throw new Error(
+            `Unsafe POI release content URI for ${directory.name}: ${rawUri}`,
+          );
+        }
+        entries.push({
+          basePath: directoryPath,
+          pathname,
+          url: releaseUrl(`poi-tiles/${directory.name}/${pathname}`),
+        });
+      }
+      for (const child of tile?.children ?? []) visit(child);
+    };
+    visit(tileset.root);
+  }
+  const unique = [
+    ...new Map(
+      entries.map((entry) => [`${entry.basePath}\0${entry.pathname}`, entry]),
+    ).values(),
+  ];
+  await mapLimit(unique, async (entry) => {
+    const existingPath = path.join(entry.basePath, entry.pathname);
+    try {
+      const existing = await readFile(existingPath);
+      if (existing.toString("ascii", 0, 4) === "b3dm") return;
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+    }
+    const bytes = await fetchBytes(entry.url);
+    if (bytes.toString("ascii", 0, 4) !== "b3dm") {
+      throw new Error(`Invalid POI B3DM release object: ${entry.pathname}`);
+    }
+    await persist(entry.basePath, entry.pathname, bytes);
+  });
+  return unique.length;
 }
 
 async function mapLimit(items, operation) {
@@ -206,10 +284,14 @@ await mapLimit(entries, async (entry) => {
       );
     }
   }
-  await persist(entry.pathname, bytes);
+  await persist(outputRoot, entry.pathname, bytes);
 });
 
-await persist("tileset.json", tilesetBytes);
+const normalizedTilesetBytes = Buffer.from(
+  `${JSON.stringify(localTileset(tileset), null, 2)}\n`,
+);
+await persist(outputRoot, "tileset.json", normalizedTilesetBytes);
+const poiFragmentCount = await hydratePoiFragments();
 console.log(
-  `Hydrated immutable background release ${release.releaseId} with ${releaseEntries.length} verified objects and ${entries.length} required source fragments.`,
+  `Hydrated immutable release ${release.releaseId} with ${releaseEntries.length} verified background objects, ${entries.length} required source fragments, and ${poiFragmentCount} POI fragments.`,
 );
