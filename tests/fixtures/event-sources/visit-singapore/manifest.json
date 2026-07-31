@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0",
+  "source": "Visit Singapore All Happenings",
+  "cases": [
+    "listing-terminal",
+    "current-event",
+    "past-guide",
+    "multi-performance",
+    "layout-change"
+  ]
+}

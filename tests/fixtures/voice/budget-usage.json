@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1.0",
+  "policy": {
+    "capMicroUsd": 10000000,
+    "enabled": true,
+    "rateCardVersion": "fixture-1"
+  },
+  "cases": [
+    {
+      "id": "reserve-within-cap",
+      "before": { "spentMicroUsd": 1200000, "reservedMicroUsd": 300000 },
+      "request": {
+        "reservationId": "reservation-001",
+        "kind": "response",
+        "requestedMicroUsd": 500000
+      },
+      "expected": {
+        "admitted": true,
+        "spentMicroUsd": 1200000,
+        "reservedMicroUsd": 800000
+      }
+    },
+    {
+      "id": "settle-trusted-usage",
+      "before": { "spentMicroUsd": 1200000, "reservedMicroUsd": 500000 },
+      "request": {
+        "reservationId": "reservation-002",
+        "reservedMicroUsd": 500000,
+        "settledMicroUsd": 310000
+      },
+      "expected": {
+        "status": "settled",
+        "spentMicroUsd": 1510000,
+        "reservedMicroUsd": 0
+      }
+    },
+    {
+      "id": "missing-usage-held",
+      "before": { "spentMicroUsd": 1510000, "reservedMicroUsd": 500000 },
+      "request": { "reservationId": "reservation-003", "usage": null },
+      "expected": {
+        "status": "held",
+        "spentMicroUsd": 1510000,
+        "reservedMicroUsd": 500000,
+        "furtherWorkAllowed": false
+      }
+    },
+    {
+      "id": "cap-exhausted",
+      "before": { "spentMicroUsd": 9500000, "reservedMicroUsd": 400000 },
+      "request": {
+        "reservationId": "reservation-004",
+        "kind": "response",
+        "requestedMicroUsd": 100001
+      },
+      "expected": { "admitted": false, "code": "usage_limit" }
+    }
+  ],
+  "forbiddenLedgerFields": [
+    "audio",
+    "transcript",
+    "coordinates",
+    "providerPayload",
+    "interfaceContext"
+  ]
+}

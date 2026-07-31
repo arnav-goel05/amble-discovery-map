@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amble.local/contracts/app-inspect-result.schema.json",
+  "title": "Amble Application Inspection Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "revision",
+    "stateDigest",
+    "viewport",
+    "visibleLayers",
+    "visibleTargets",
+    "focusedTargetId",
+    "selectedTargetIds",
+    "activeOverlayId",
+    "assistantPresentation",
+    "activeFilters",
+    "plan",
+    "location",
+    "transit",
+    "availableCapabilityIds"
+  ],
+  "properties": {
+    "revision": { "type": "integer", "minimum": 0 },
+    "stateDigest": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "viewport": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "zoom": { "type": "number", "minimum": 0, "maximum": 24 },
+        "bearing": { "type": "number", "minimum": -180, "maximum": 180 }
+      }
+    },
+    "visibleLayers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recommendations", "location", "mrtStations", "mrtLines"],
+      "properties": {
+        "recommendations": { "type": "boolean" },
+        "location": { "type": "boolean" },
+        "mrtStations": { "type": "boolean" },
+        "mrtLines": { "type": "boolean" }
+      }
+    },
+    "visibleTargets": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["targetId", "type", "label", "ordinal"],
+        "properties": {
+          "targetId": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "type": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "label": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "ordinal": { "type": "integer", "minimum": 1, "maximum": 50 }
+        }
+      }
+    },
+    "focusedTargetId": { "type": ["string", "null"], "maxLength": 256 },
+    "selectedTargetIds": {
+      "type": "array",
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": { "type": "string", "maxLength": 256 }
+    },
+    "activeOverlayId": { "type": ["string", "null"], "maxLength": 128 },
+    "assistantPresentation": {
+      "type": ["string", "null"],
+      "enum": ["recommendations", "clarification", "no_match", null]
+    },
+    "activeFilters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "eventQuery": { "type": "string", "maxLength": 500 },
+        "eventWhat": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": { "type": "string", "maxLength": 100 }
+        },
+        "eventWhen": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": { "type": "string", "maxLength": 100 }
+        },
+        "eventWhere": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": { "type": "string", "maxLength": 100 }
+        },
+        "eventPrice": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": { "type": "string", "maxLength": 100 }
+        },
+        "eventComposerState": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "canonicalSentence",
+            "residualQuery",
+            "phrases",
+            "catalogRevision",
+            "contextRevision"
+          ],
+          "properties": {
+            "canonicalSentence": { "type": "string", "maxLength": 500 },
+            "residualQuery": { "type": "string", "maxLength": 500 },
+            "phrases": {
+              "type": "array",
+              "maxItems": 24,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["phraseId", "facet", "valueId", "label"],
+                "properties": {
+                  "phraseId": { "type": "string", "maxLength": 120 },
+                  "facet": { "enum": ["what", "when", "where", "price"] },
+                  "valueId": { "type": "string", "maxLength": 120 },
+                  "label": { "type": "string", "maxLength": 160 }
+                }
+              }
+            },
+            "catalogRevision": { "type": "string", "maxLength": 160 },
+            "contextRevision": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "restaurantQuery": { "type": "string", "maxLength": 500 },
+        "restaurantCategory": { "type": ["string", "null"], "maxLength": 100 },
+        "restaurantCuisine": { "type": ["string", "null"], "maxLength": 100 }
+      }
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stopIds", "travelMode", "routeAvailable"],
+      "properties": {
+        "stopIds": {
+          "type": "array",
+          "maxItems": 20,
+          "items": { "type": "string", "maxLength": 256 }
+        },
+        "travelMode": {
+          "enum": ["walking", "driving", "bicycling", "transit"]
+        },
+        "routeAvailable": { "type": "boolean" }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["permission", "status", "coarseAreaId"],
+      "properties": {
+        "permission": {
+          "enum": ["prompt", "granted", "denied", "unavailable"]
+        },
+        "status": {
+          "enum": ["idle", "locating", "fresh", "stale", "error"]
+        },
+        "coarseAreaId": { "type": ["string", "null"], "maxLength": 256 }
+      }
+    },
+    "transit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["visible", "constraintActive"],
+      "properties": {
+        "visible": { "type": "boolean" },
+        "constraintActive": { "type": "boolean" }
+      }
+    },
+    "availableCapabilityIds": {
+      "type": "array",
+      "maxItems": 128,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9]*)+$"
+      }
+    }
+  }
+}

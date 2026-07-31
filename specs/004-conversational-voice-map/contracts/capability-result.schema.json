@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amble.local/contracts/capability-result.schema.json",
+  "title": "Amble Capability Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "capabilityId",
+    "kind",
+    "status",
+    "changed",
+    "affectedTargetIds",
+    "contextRevision",
+    "data",
+    "errorCode"
+  ],
+  "properties": {
+    "capabilityId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9]*)+$"
+    },
+    "kind": {
+      "enum": ["query", "command"]
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "empty",
+        "unavailable",
+        "failed",
+        "confirmation_required"
+      ]
+    },
+    "changed": {
+      "type": ["boolean", "null"]
+    },
+    "affectedTargetIds": {
+      "type": "array",
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      }
+    },
+    "contextRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "data": {
+      "type": ["object", "null"]
+    },
+    "errorCode": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "invalid_arguments",
+        "stale_context",
+        "unknown_target",
+        "unavailable",
+        "confirmation_required",
+        "execution_failed",
+        "result_invalid"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": { "const": "query" }
+        }
+      },
+      "then": {
+        "properties": {
+          "changed": { "const": null }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": { "const": "command" }
+        }
+      },
+      "then": {
+        "properties": {
+          "changed": { "type": "boolean" }
+        }
+      }
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": "2.0",
   "timezone": "Asia/Singapore",
   "windowDaysAfterStart": 7,
   "requestPolicy": {
@@ -9,10 +9,36 @@
     "maximumBackoffMs": 4000
   },
   "paginationCeiling": 50,
+  "missingVenueRecovery": {
+    "enabled": true,
+    "maxCandidates": 3,
+    "search": {
+      "providerId": "tinyfish-search",
+      "endpoint": "https://api.search.tinyfish.ai",
+      "location": "SG",
+      "language": "en",
+      "timeoutMs": 20000,
+      "maximumResponseBytes": 524288
+    },
+    "fetch": {
+      "providerId": "tinyfish-fetch",
+      "endpoint": "https://api.fetch.tinyfish.ai",
+      "format": "markdown",
+      "batchSize": 3,
+      "maximumUrlsPerMinute": 149,
+      "timeoutMs": 110000,
+      "maxAttempts": 3,
+      "maximumResponseBytes": 5242880
+    }
+  },
   "sources": [
     {
       "name": "Catch.sg",
       "enabled": true,
+      "evidenceRole": "direct",
+      "operatingState": "enabled",
+      "collectionOrder": 10,
+      "precedence": 10,
       "adapterId": "catch-official-listing-v1",
       "version": "1.0",
       "providerId": "catch-sg",
@@ -37,8 +63,12 @@
     {
       "name": "SISTIC",
       "enabled": true,
+      "evidenceRole": "direct",
+      "operatingState": "enabled",
+      "collectionOrder": 20,
+      "precedence": 20,
       "adapterId": "sistic-official-listing-v1",
-      "version": "1.0",
+      "version": "1.1",
       "providerId": "sistic",
       "owner": "SISTIC.com Pte Ltd",
       "officialDomains": ["sistic.com.sg"],
@@ -55,6 +85,109 @@
         "method": "GET",
         "dataPointer": ""
       }
+    },
+    {
+      "name": "Fever Singapore",
+      "enabled": true,
+      "evidenceRole": "direct",
+      "operatingState": "enabled",
+      "collectionOrder": 30,
+      "precedence": 30,
+      "adapterId": "fever-singapore-rendered-v1",
+      "version": "1.4",
+      "providerId": "fever-sg",
+      "owner": "Fever Labs, Inc.",
+      "officialDomains": ["feverup.com"],
+      "costClass": "free",
+      "directHtml": { "enabled": true, "respectRobots": true, "timeoutMs": 20000, "maximumRedirects": 5, "maximumResponseBytes": 5242880 },
+      "listing": {
+        "url": "https://feverup.com/en/singapore",
+        "method": "GET",
+        "paginationCeiling": 50,
+        "detailPathPattern": "^/m/[0-9]+",
+        "retrieval": { "format": "html", "ttl": 0, "includeSelectors": ["main a[href*='/m/']"] }
+      },
+      "detail": { "url": "https://feverup.com/en/singapore", "method": "GET" },
+      "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 }
+    },
+    {
+      "name": "Visit Singapore All Happenings",
+      "enabled": true,
+      "evidenceRole": "direct",
+      "operatingState": "enabled",
+      "collectionOrder": 40,
+      "precedence": 40,
+      "adapterId": "visit-singapore-rendered-v1",
+      "version": "1.5",
+      "providerId": "visit-singapore",
+      "owner": "Singapore Tourism Board",
+      "officialDomains": ["visitsingapore.com"],
+      "venueRecovery": {
+        "partnerDomainsByHost": {
+          "ticketmaster.sg": ["livenation.sg"]
+        }
+      },
+      "costClass": "free",
+      "directHtml": { "enabled": true, "respectRobots": true, "timeoutMs": 20000, "maximumRedirects": 5, "maximumResponseBytes": 5242880 },
+      "listing": {
+        "url": "https://www.visitsingapore.com/whats-happening/all-happenings/",
+        "method": "GET",
+        "paginationCeiling": 50,
+        "detailPathPattern": "^/whats-happening/",
+        "retrieval": { "format": "html", "ttl": 0, "includeSelectors": ["stb-event-and-festivals"] }
+      },
+      "detail": { "url": "https://www.visitsingapore.com/whats-happening/", "method": "GET" },
+      "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 }
+    },
+    {
+      "name": "Singapore Film Society",
+      "enabled": true,
+      "evidenceRole": "direct",
+      "operatingState": "enabled",
+      "collectionOrder": 50,
+      "precedence": 50,
+      "adapterId": "singapore-film-society-rendered-v1",
+      "version": "1.1",
+      "providerId": "singapore-film-society",
+      "owner": "Singapore Film Society",
+      "officialDomains": ["singaporefilmsociety.com"],
+      "costClass": "free",
+      "directHtml": { "enabled": true, "respectRobots": true, "timeoutMs": 20000, "maximumRedirects": 5, "maximumResponseBytes": 5242880 },
+      "listing": { "url": "https://events.singaporefilmsociety.com/films", "method": "GET", "paginationCeiling": 50, "detailPathPattern": "^/films/" },
+      "detail": { "url": "https://events.singaporefilmsociety.com/", "method": "GET" },
+      "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 }
+    },
+    {
+      "name": "Time Out Singapore",
+      "enabled": true,
+      "evidenceRole": "editorial",
+      "operatingState": "enabled",
+      "collectionOrder": 90,
+      "precedence": null,
+      "adapterId": "time-out-singapore-discovery-v1",
+      "version": "1.3",
+      "providerId": "time-out-singapore",
+      "owner": "Time Out England Limited",
+      "officialDomains": ["timeout.com"],
+      "costClass": "free",
+      "directHtml": { "enabled": true, "respectRobots": true, "timeoutMs": 20000, "maximumRedirects": 5, "maximumResponseBytes": 5242880 },
+      "listing": {
+        "url": "https://www.timeout.com/singapore/things-to-do/the-time-out-singapore-hotlist",
+        "urls": [
+          "https://www.timeout.com/singapore",
+          "https://www.timeout.com/singapore/things-to-do/things-to-do-in-singapore-this-weekend",
+          "https://www.timeout.com/singapore/art/the-best-art-exhibitions-in-singapore",
+          "https://www.timeout.com/singapore/music/upcoming-concerts-in-singapore"
+        ],
+        "method": "GET",
+        "paginationCeiling": 6,
+        "detailPathPattern": "^/singapore/(?:things-to-do|news|art|music)/",
+        "monthlyPathPattern": "^/singapore/things-to-do/the-best-things-to-do-in-singapore-in-[a-z]+$",
+        "retrieval": { "format": "html", "ttl": 0 }
+      },
+      "detail": { "url": "https://www.timeout.com/singapore/things-to-do/", "method": "GET" },
+      "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 },
+      "editorialPolicy": { "version": "2.0", "corroborateFirst": true, "allowSufficientEditorialOnly": true, "outboundLabels": ["event website", "website"] }
     }
   ]
 }

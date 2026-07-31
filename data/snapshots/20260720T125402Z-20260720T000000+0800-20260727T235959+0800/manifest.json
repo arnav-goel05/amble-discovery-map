@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0",
+  "snapshotId": "20260720T125402Z-20260720T000000+0800-20260727T235959+0800",
+  "publishedAt": "2026-07-20T13:39:20.212Z",
+  "coveredWindow": {
+    "start": "2026-07-20",
+    "end": "2026-07-27",
+    "timezone": "Asia/Singapore"
+  },
+  "freshness": "fresh",
+  "staleAfter": "2026-07-27T13:39:20.212Z",
+  "sourceHealth": {
+    "Catch.sg": {
+      "status": "blocked",
+      "role": "authoritative",
+      "mode": "required",
+      "lastSuccessfulAt": null,
+      "reasonCode": "layout_contract_changed",
+      "counts": {}
+    },
+    "SISTIC": {
+      "status": "success",
+      "role": "authoritative",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-20T12:57:43.589Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 12,
+        "sourceRecordsReceived": 354,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 354,
+        "occurrencesEmitted": 357,
+        "excludedOccurrences": 13,
+        "eligiblePreDedup": 344,
+        "listingAppearances": 354,
+        "uniqueSourcePointers": 354,
+        "listingDuplicatesCollapsed": 0,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 344
+      }
+    },
+    "Fever Singapore": {
+      "status": "success",
+      "role": "authoritative",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-20T13:02:54.790Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 1,
+        "sourceRecordsReceived": 122,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 122,
+        "occurrencesEmitted": 122,
+        "excludedOccurrences": 56,
+        "eligiblePreDedup": 66,
+        "listingAppearances": 176,
+        "uniqueSourcePointers": 122,
+        "listingDuplicatesCollapsed": 54,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 66
+      }
+    },
+    "Visit Singapore All Happenings": {
+      "status": "success",
+      "role": "authoritative",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-20T13:04:30.890Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 1,
+        "sourceRecordsReceived": 52,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 52,
+        "occurrencesEmitted": 52,
+        "excludedOccurrences": 40,
+        "eligiblePreDedup": 12,
+        "listingAppearances": 52,
+        "uniqueSourcePointers": 52,
+        "listingDuplicatesCollapsed": 0,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 12
+      }
+    },
+    "Singapore Film Society": {
+      "status": "success",
+      "role": "authoritative",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-20T13:04:54.846Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 1,
+        "sourceRecordsReceived": 9,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 9,
+        "occurrencesEmitted": 9,
+        "excludedOccurrences": 0,
+        "eligiblePreDedup": 9,
+        "listingAppearances": 9,
+        "uniqueSourcePointers": 9,
+        "listingDuplicatesCollapsed": 0,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 9
+      }
+    },
+    "Roots HAN": {
+      "status": "disabled",
+      "role": "authoritative",
+      "mode": "disabled",
+      "lastSuccessfulAt": null,
+      "reasonCode": "layout_contract_changed",
+      "counts": {}
+    },
+    "Honeycombers": {
+      "status": "success",
+      "role": "discovery",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-20T13:05:24.807Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 1,
+        "sourceRecordsReceived": 21,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 21,
+        "discoveryRecordsReceived": 21,
+        "occurrencesEmitted": 21,
+        "excludedOccurrences": 21,
+        "eligiblePreDedup": 0,
+        "confirmationOutcomeCounts": {
+          "authority_domain_review": 13,
+          "non_event_commercial": 2,
+          "editorial_sufficient": 2,
+          "pure_promotion": 1,
+          "direct_reused": 3
+        },
+        "authorityCaptures": 0,
+        "listingAppearances": 21,
+        "uniqueSourcePointers": 21,
+        "listingDuplicatesCollapsed": 0,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 0
+      }
+    },
+    "ArtsEquator": {
+      "status": "success",
+      "role": "discovery",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-20T13:05:27.864Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 1,
+        "sourceRecordsReceived": 1,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 1,
+        "discoveryRecordsReceived": 1,
+        "occurrencesEmitted": 1,
+        "excludedOccurrences": 0,
+        "eligiblePreDedup": 1,
+        "confirmationOutcomeCounts": {
+          "editorial_sufficient": 1
+        },
+        "authorityCaptures": 0,
+        "listingAppearances": 1,
+        "uniqueSourcePointers": 1,
+        "listingDuplicatesCollapsed": 0,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 1
+      }
+    },
+    "Time Out Singapore": {
+      "status": "blocked",
+      "role": "discovery",
+      "mode": "required",
+      "lastSuccessfulAt": null,
+      "reasonCode": "pagination_inaccessible",
+      "counts": {
+        "pages": 5,
+        "listingAppearances": 60,
+        "uniqueSourcePointers": 52,
+        "listingDuplicatesCollapsed": 8,
+        "occurrencesEmitted": 0,
+        "excludedOccurrences": 0,
+        "eligiblePreDedup": 0,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 0
+      }
+    }
+  },
+  "landmarksRef": "landmarks.json",
+  "poisRef": "pois.json",
+  "tilesetRef": "tileset.json",
+  "eventsRef": "events.json",
+  "eventPipelineProvenance": {
+    "normalizationArtifacts": [
+      "normalized/events.json",
+      "normalized/excluded.json",
+      "normalized/invalid.json",
+      "normalized/dedup-decisions.json"
+    ],
+    "deduplicationArtifacts": [
+      "normalized/dedup-candidates.json",
+      "normalized/dedup-final-decisions.json",
+      "normalized/events.json"
+    ],
+    "deduplicationCounts": {
+      "eligiblePreDedup": 432,
+      "crossSourceDuplicateCollapsed": 0,
+      "acceptedPrimary": 432,
+      "blockingReviewOccurrences": 0
+    },
+    "supportingDiscoveryRefs": [
+      "raw/honeycombers-discovery-v1/confirmations/911a80abbb018b0a0ce59d5e95d00f95ca5522d0b21f5de421d6120046a06e66.json",
+      "raw/honeycombers-discovery-v1/confirmations/2122656b6b2e1f93eeacf6b3e27bd18d9432ebdd9d6f92c474abbcf9db9a7aa5.json",
+      "raw/honeycombers-discovery-v1/confirmations/6de1de3d622f293d78513fd7cd5222b0ddd0a3d0d32b2cfc8bc55d6a4e4f2653.json",
+      "raw/honeycombers-discovery-v1/confirmations/01c197a3e1d33353630d39296b98d8d37f0c4aaed1f9ecd2c4f7dbf7d45c923c.json",
+      "raw/honeycombers-discovery-v1/confirmations/b6952da8c6f53d2177759e609e56501129e94f06696a8a1e347fbe55979dfa84.json",
+      "raw/honeycombers-discovery-v1/confirmations/2466051ae667d745984888f6b64edf694358a87f153142671f49da191b662b6f.json",
+      "raw/honeycombers-discovery-v1/confirmations/8956d415370a98b633efded80332f4d8619bcfd79d4e4c4e3bf37baa7319297b.json",
+      "raw/honeycombers-discovery-v1/confirmations/751f4db48703c3714068cbc43b2ba0e5de18b50a37ad405c0e5ad68a5d46dfcd.json",
+      "raw/honeycombers-discovery-v1/confirmations/3a254fa28e5aaa8548ef788ba750f8d111cc0917946f9bea3dc93ee167a16c33.json",
+      "raw/honeycombers-discovery-v1/confirmations/8138de301475f22f881ad3813c701b32c30c88a2877116785df031c5bc9a48bb.json",
+      "raw/honeycombers-discovery-v1/confirmations/9ed6e7cca01b9e7b4f9ffd55bf72bffe54627991cefd06f9f7a38bfb1819d21f.json",
+      "raw/honeycombers-discovery-v1/confirmations/ff9f183b9b03459a8f3eaede408a419c793a448ecb2942c37e3e7c0ce7e8a498.json",
+      "raw/honeycombers-discovery-v1/confirmations/1f001b3f7c6b125f5a0f5d40202ca0245e583020eafcf9743e2cdafee7b2a0c5.json",
+      "raw/honeycombers-discovery-v1/confirmations/dc7d63ace3c5fafe35316049f4437361e413bb55c273b481b44661d4ab8ffdcd.json",
+      "raw/honeycombers-discovery-v1/confirmations/a06f1f04278c83b7b3ec72e2ada7e56aa3c9b682046812c752306677b98f3801.json",
+      "raw/honeycombers-discovery-v1/confirmations/2b599803df8a0027ed22495d1f9e8ebd391ea774edb534867c1b5051482c94d5.json",
+      "raw/honeycombers-discovery-v1/confirmations/70103d804806a1eaee8087688b6cec2597346eb9f3e64ee6e33601e4e035ac40.json",
+      "raw/honeycombers-discovery-v1/confirmations/9f43c3e5f290caad213f8587f23cbf4041b44ac0c128c09c70eb4a07bb6ffd26.json",
+      "raw/honeycombers-discovery-v1/confirmations/8ab0395f9288892cc7c4c5e36badce11621d6dac49d9ba21acb1f696d4372316.json",
+      "raw/honeycombers-discovery-v1/confirmations/69b214278257480689cbc6337209fb1aead7786a4a90b3ba013d69e0db180114.json",
+      "raw/honeycombers-discovery-v1/confirmations/2ab9c94735363fce9e9cdc964141df821c3543707cb3838e688182d573ee802f.json",
+      "raw/arts-equator-discovery-v1/confirmations/00402d774f4cd65fb9828b963ecbead82dd89ba664605d8da784b8f9853da03b.json"
+    ]
+  },
+  "previousSnapshotId": "20260720T090424Z-20260720T000000+0800-20260727T235959+0800",
+  "artifactHashes": {
+    "landmarks.json": "f8df4e4e2bec75aaed2dba84d883ab2f8e0306a367ab617717ad15836b373f3a",
+    "pois.json": "77cce9285364fee9c81aa8462ec242d5723d96afb7fd45b88d8c87bc72be9143",
+    "events.json": "4f8097a16bb435ad1512b71c0aecb4ad7a04e0fd7f4a19171faa57f2fa106712",
+    "tileset.json": "e586bb248e8624bf7bdc498bf6d8099a4b9a0dd5054991124e854bd459650b9f"
+  },
+  "contentHash": "64875a8e5b7f5bdaff76e275909ef2fed384e2f893728be291b6157bf97aa1e2"
+}

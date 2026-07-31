@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "little-india-mrt-station",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:21.913Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/34/11_3.b3dm",
+      "sourceSha256": "95b538bce75fc7746fd26013e60524bcf56113c9738b7adfd11a21900f1c4960",
+      "originalBatchIds": [
+        100
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "gmlNames": [
+        "LITTLE INDIA MRT STATION"
+      ],
+      "poiFile": "11_3-a0e203b69e8c.b3dm",
+      "poiSha256": "eb69165e745d157ac54c8b0ebbbef42abc660fe8bec74497c4b338dbbfb7f667",
+      "poiTriangles": 328,
+      "backgroundFile": "optimized-tiles/6/34/11_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "backgroundSha256": "db6e7436c0816296d174c8414426aae36826c7aa950fc55fd5c5748084f95491",
+      "backgroundTriangles": 20032
+    },
+    {
+      "sourceTile": "tiles/6/34/11_2.b3dm",
+      "sourceSha256": "bcb8ba35b355fde583de91da00d062a7d4fd84b1c8ba85c073523fa91d6c0b93",
+      "originalBatchIds": [
+        100
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "gmlNames": [
+        "LITTLE INDIA MRT STATION"
+      ],
+      "poiFile": "11_2-5b01784b6f7e.b3dm",
+      "poiSha256": "1f7e3a72770f19ff0de03baf38ccd08a4be663fca5af00c20ea4dbc38a4b1da6",
+      "poiTriangles": 328,
+      "backgroundFile": "optimized-tiles/6/34/11_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "backgroundSha256": "2e11fd0bc36b4f4def86fbb6a1a6b4ab633ab19c67e6e6ddbef8fd29ff6bc919",
+      "backgroundTriangles": 20032
+    },
+    {
+      "sourceTile": "tiles/6/34/11_1.b3dm",
+      "sourceSha256": "33617bfd50129a0e8757cd74bbd204563b6b2ae5788af9c1ea25b0fa3973b8cf",
+      "originalBatchIds": [
+        100
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "gmlNames": [
+        "LITTLE INDIA MRT STATION"
+      ],
+      "poiFile": "11_1-8fcb726284a1.b3dm",
+      "poiSha256": "b92c1e708f55dde233819f2aeed08a5d76b2bf4b05e0cf2e9659a4910786fc6e",
+      "poiTriangles": 328,
+      "backgroundFile": "optimized-tiles/6/34/11_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "backgroundSha256": "476ef8195bb014e78e96588601fb66f127c0e3768e51f0a3dd586b50c49ebb92",
+      "backgroundTriangles": 20032
+    },
+    {
+      "sourceTile": "tiles/6/34/11_0.b3dm",
+      "sourceSha256": "c5101538695580ef385880cf98bc88f9e10dcd04e3cfa0a615c9fbe016ad9455",
+      "originalBatchIds": [
+        100
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "gmlNames": [
+        "LITTLE INDIA MRT STATION"
+      ],
+      "poiFile": "11_0-96b008e96d3b.b3dm",
+      "poiSha256": "408d58a2ef206442039fe2e09572f72efc345e29c3ab126226dc983743e6e08b",
+      "poiTriangles": 328,
+      "backgroundFile": "optimized-tiles/6/34/11_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "backgroundSha256": "edb39dc92e478b92de40d3bfcdfaf52f15af74c93ed5276eb5e83a3e9da6f559",
+      "backgroundTriangles": 20032
+    },
+    {
+      "sourceTile": "tiles/6/34/11_4.b3dm",
+      "sourceSha256": "647b2c3eb5fd43f6024a263d90179351e9dd709444d50dd56b0bf47a7c5e1abb",
+      "originalBatchIds": [
+        100
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "gmlNames": [
+        "LITTLE INDIA MRT STATION"
+      ],
+      "poiFile": "11_4-fb55546374f3.b3dm",
+      "poiSha256": "c61d71071e4798aa592dddfba781d06cdd05da96418e2b6e44b0da18470567f5",
+      "poiTriangles": 328,
+      "backgroundFile": "optimized-tiles/6/34/11_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "backgroundSha256": "93569cd66881154463bd3577732fb873eec5a5df8e0d0403eaf85b2219220bd9",
+      "backgroundTriangles": 20032
+    },
+    {
+      "sourceTile": "tiles/6/34/11_5.b3dm",
+      "sourceSha256": "0c8df3fd8fee5428ed5784fe5fb4ccb0ff719f0d59ba001eb16e7bec11ab4974",
+      "originalBatchIds": [
+        100
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "gmlNames": [
+        "LITTLE INDIA MRT STATION"
+      ],
+      "poiFile": "11_5-98e015c38525.b3dm",
+      "poiSha256": "6025292ddafa5dcf5ff8193d11eb19f341c4f1ac780f348830c4b272cddd2c48",
+      "poiTriangles": 328,
+      "backgroundFile": "optimized-tiles/6/34/11_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_52e0129e-8b76-485a-a559-bfdb1261e90d"
+      ],
+      "backgroundSha256": "72ce93987d0f6d664d898147ff9e009fa0e3c7edea64c2ba24e79ec685b8e421",
+      "backgroundTriangles": 20032
+    }
+  ]
+}

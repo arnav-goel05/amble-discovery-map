@@ -1,60 +1,406 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import {
+  reconcileActivityIdentity,
+  reconcileLandmark,
+  reconcilePublishedLandmarks,
+  reconcileSourceAvailability,
+  stableEventKey,
+} from "../scripts/reconcile-event-content.mjs";
+import { buildActivityHierarchy } from "../scripts/event-normalizer.mjs";
 
-import { pruneExpiredContent, reconcileLandmark, stableEventKey } from "../scripts/reconcile-event-content.mjs";
-
-const occurrence = (sourceId, title, overrides = {}) => ({
-  id: `Catch.sg:${sourceId}`, occurrenceId: `Catch.sg:${sourceId}`, parentListingId: "Catch.sg:listing-1",
-  mergedEventId: `merged:${title}`, parentEventId: "listing-1", venue: "Hall", title,
-  dateText: "16 Jul 2026", sources: [{ source: "Catch.sg", sourceId }], ...overrides,
-});
-
-test("sibling occurrences under one listing replace independently", () => {
-  const first = occurrence("listing-1#2026-07-16T10:00:00+08:00", "Morning");
-  const second = occurrence("listing-1#2026-07-16T19:00:00+08:00", "Evening");
-  assert.notEqual(stableEventKey(first), stableEventKey(second));
-  const current = { id: "hall", label: "Hall", events: [first, second] };
-  const updatedFirst = { ...first, id: "merged:changed-membership", title: "Morning updated" };
-  const result = reconcileLandmark(current, { ...current, events: [updatedFirst, second] }, ["Hall"]);
-  assert.equal(result.action, "update");
-  assert.deepEqual(result.landmark.events.map(({ title }) => title), ["Morning updated", "Evening"]);
-});
-
-test("a changed merged membership updates evidence without changing occurrence identity", () => {
-  const currentEvent = occurrence("listing-1#one", "Event", { mergedEventId: "merged:one" });
-  const nextEvent = {
-    ...currentEvent,
-    mergedEventId: "merged:two",
-    sources: [...currentEvent.sources, { source: "SISTIC", sourceId: "show#one" }],
-  };
-  const result = reconcileLandmark(
-    { id: "hall", events: [currentEvent] },
-    { id: "hall", events: [nextEvent] },
-    ["Hall"],
+test("reconciliation prefers a persisted identity anchor over current source membership", () => {
+  assert.equal(
+    stableEventKey({
+      identityAnchor: "persisted",
+      sources: [{ source: "SISTIC", sourceId: "new" }],
+      occurrenceId: "new",
+    }),
+    "persisted",
   );
-  assert.equal(stableEventKey(currentEvent), stableEventKey(nextEvent));
-  assert.equal(result.action, "update");
-  assert.equal(result.landmark.events[0].occurrenceId, currentEvent.occurrenceId);
 });
 
-test("unchanged occurrence content is a no-op even when copied", () => {
-  const current = { id: "hall", label: "Hall", events: [occurrence("listing-1#one", "Event")] };
-  const result = reconcileLandmark(current, structuredClone(current), ["Hall"]);
-  assert.equal(result.action, "noop");
-  assert.strictEqual(result.landmark, current);
-});
-
-test("expiry preserves undated events and retains locations with any future occurrence", () => {
-  const result = pruneExpiredContent({
-    asOf: "2026-07-14T00:00:00+08:00",
-    landmarks: [
-      { id: "mixed", events: [{ id: "old", dateText: "13 Jul 2026" }, { id: "future", dateText: "16 Jul 2026" }] },
-      { id: "undated", events: [{ id: "review", dateText: null }] },
-      { id: "expired", events: [{ id: "gone", dateText: "12 Jul 2026" }] },
+test("prior anchors survive evidence, source membership, schedule, and location-state changes", () => {
+  const current = {
+    id: "published:one",
+    identityAnchor: "published:one",
+    publishedEventId: "published:one",
+    parentActivityId: "activity:one",
+    evidenceLevel: "editorial_authoritative",
+    schedule: { kind: "anytime" },
+    publicPlacement: "off_map",
+    sources: [{ source: "Time Out Singapore", sourceId: "guide" }],
+  };
+  const incoming = {
+    id: "catch:new",
+    identityAnchor: "catch:new",
+    publishedEventId: "catch:new",
+    parentActivityId: "activity:one",
+    evidenceLevel: "direct_corroborated",
+    schedule: { kind: "exact", start: "2026-08-01T20:00:00+08:00" },
+    publicPlacement: "mapped",
+    mappingStatus: "approved",
+    sources: [
+      { source: "Catch.sg", sourceId: "new" },
+      { source: "Time Out Singapore", sourceId: "guide" },
     ],
-    pois: [{ id: "mixed" }, { id: "undated" }, { id: "expired" }],
+  };
+  const result = reconcileActivityIdentity(current, incoming);
+  assert.deepEqual(
+    [
+      result.id,
+      result.occurrenceId,
+      result.identityAnchor,
+      result.publishedEventId,
+    ],
+    ["published:one", "published:one", "published:one", "published:one"],
+  );
+  assert.equal(result.evidenceLevel, "direct_corroborated");
+  assert.equal(result.schedule.kind, "exact");
+  assert.equal(result.publicPlacement, "mapped");
+  assert.equal(result.sources.length, 2);
+});
+
+test("retired-only events are archived with traceable source evidence", () => {
+  const result = reconcileSourceAvailability({
+    previousEvents: [
+      {
+        id: "retired:event",
+        sources: [{ source: "Retired Guide", sourceId: "guide" }],
+        sourceContributions: [
+          {
+            sourceName: "Retired Guide",
+            sourceRecordId: "retired:guide",
+          },
+        ],
+      },
+    ],
+    currentEvents: [],
+    sourceStatuses: { "Catch.sg": "success" },
+    asOf: "2026-07-23T00:00:00+08:00",
   });
-  assert.deepEqual(result.removedLandmarkIds, ["expired"]);
-  assert.deepEqual(result.landmarks.map(({ id }) => id), ["mixed", "undated"]);
-  assert.deepEqual(result.undatedReviewEventIds, ["review"]);
+
+  assert.deepEqual(result.events, []);
+  assert.equal(result.counts.retired, 1);
+  assert.deepEqual(result.traces, [
+    {
+      eventId: "retired:event",
+      outcome: "archived",
+      reasonCode: "source_retired",
+      sourceNames: ["Retired Guide"],
+      sourceRecordIds: ["retired:guide"],
+    },
+  ]);
+});
+
+test("mixed events preserve supported identity and remove retired contributions", () => {
+  const previous = {
+    id: "published:shared",
+    identityAnchor: "published:shared",
+    parentActivityId: "activity:shared",
+    sources: [
+      { source: "Catch.sg", sourceId: "official" },
+      { source: "Retired Guide", sourceId: "guide" },
+    ],
+    sourceContributions: [
+      { sourceName: "Catch.sg", sourceRecordId: "Catch.sg:official" },
+      { sourceName: "Retired Guide", sourceRecordId: "retired:guide" },
+    ],
+  };
+  const incoming = {
+    id: "Catch.sg:official:new",
+    parentActivityId: "activity:shared",
+    sources: [{ source: "Catch.sg", sourceId: "official" }],
+    sourceContributions: [
+      { sourceName: "Catch.sg", sourceRecordId: "Catch.sg:official" },
+    ],
+  };
+  const result = reconcileSourceAvailability({
+    previousEvents: [previous],
+    currentEvents: [incoming],
+    sourceStatuses: { "Catch.sg": "success" },
+  });
+
+  assert.equal(result.events[0].id, "published:shared");
+  assert.deepEqual(result.events[0].sources, [
+    { source: "Catch.sg", sourceId: "official" },
+  ]);
+  assert.deepEqual(result.events[0].sourceContributions, [
+    { sourceName: "Catch.sg", sourceRecordId: "Catch.sg:official" },
+  ]);
+  assert.equal(result.counts.retired, 0);
+});
+
+test("landmark reconciliation removes retired copies and preserves supported placement", () => {
+  const supported = {
+    id: "supported",
+    title: "Updated title",
+    sources: [{ source: "Catch.sg", sourceId: "one" }],
+  };
+  const result = reconcilePublishedLandmarks({
+    landmarks: [
+      {
+        id: "place",
+        events: [
+          {
+            id: "retired",
+            sources: [{ source: "Retired Guide", sourceId: "old" }],
+          },
+          {
+            id: "supported",
+            title: "Old title",
+            coordinates: { lat: 1.3, lng: 103.8 },
+            publicPlacement: "mapped",
+            mappingStatus: "approved",
+            lifecycleState: "active",
+            sources: [{ source: "Catch.sg", sourceId: "one" }],
+          },
+        ],
+      },
+    ],
+    events: [supported],
+  });
+
+  assert.deepEqual(result.removedEventIds, ["Retired Guide:old"]);
+  assert.equal(result.records[0].events.length, 1);
+  assert.equal(result.records[0].events[0].title, "Updated title");
+  assert.equal(result.records[0].events[0].publicPlacement, "mapped");
+  assert.deepEqual(result.records[0].events[0].coordinates, {
+    lat: 1.3,
+    lng: 103.8,
+  });
+});
+
+test("landmark reconciliation does not move sibling sessions between venues", () => {
+  const parentActivityId = "activity:festival";
+  const result = reconcilePublishedLandmarks({
+    landmarks: [
+      {
+        id: "venue-a",
+        events: [
+          {
+            id: "session-a-old",
+            parentActivityId,
+            venue: "Venue A",
+            schedule: { start: "2026-07-24T19:30:00+08:00" },
+            coordinates: { lat: 1.3, lng: 103.8 },
+            publicPlacement: "mapped",
+            mappingStatus: "approved",
+            lifecycleState: "active",
+            sources: [{ source: "SISTIC", sourceId: "festival" }],
+          },
+        ],
+      },
+    ],
+    events: [
+      {
+        id: "session-b",
+        parentActivityId,
+        venue: "Venue B",
+        schedule: { start: "2026-07-26T17:00:00+08:00" },
+        sources: [{ source: "SISTIC", sourceId: "festival" }],
+      },
+    ],
+  });
+
+  assert.deepEqual(result.records[0].events, []);
+  assert.deepEqual(result.removedEventIds, ["SISTIC:festival"]);
+});
+
+test("held current occurrences are removed from previously published landmarks", () => {
+  const result = reconcilePublishedLandmarks({
+    landmarks: [
+      {
+        id: "venue",
+        events: [
+          {
+            id: "published:event",
+            identityAnchor: "published:event",
+            venue: "Venue",
+            lifecycleState: "active",
+          },
+        ],
+      },
+    ],
+    events: [
+      {
+        id: "incoming:event",
+        identityAnchor: "published:event",
+        venue: "Venue",
+        lifecycleState: "held",
+      },
+    ],
+  });
+
+  assert.deepEqual(result.records[0].events, []);
+  assert.deepEqual(result.removedEventIds, ["published:event"]);
+});
+
+test("landmark updates do not reuse one prior identity for sibling sessions", () => {
+  const parentActivityId = "activity:show";
+  const source = [{ source: "SISTIC", sourceId: "show" }];
+  const result = reconcileLandmark(
+    {
+      id: "theatre",
+      events: [
+        {
+          id: "published:first",
+          identityAnchor: "published:first",
+          parentActivityId,
+          venue: "Theatre",
+          schedule: { start: "2026-08-01T14:00:00+08:00" },
+          sources: source,
+        },
+      ],
+    },
+    {
+      id: "theatre",
+      events: [
+        {
+          id: "incoming:first",
+          parentActivityId,
+          venue: "Theatre",
+          schedule: { start: "2026-08-01T14:00:00+08:00" },
+          sources: source,
+        },
+        {
+          id: "incoming:second",
+          parentActivityId,
+          venue: "Theatre",
+          schedule: { start: "2026-08-01T19:00:00+08:00" },
+          sources: source,
+        },
+      ],
+    },
+    ["Theatre"],
+  );
+
+  assert.deepEqual(result.landmark.events.map(({ id }) => id).sort(), [
+    "incoming:second",
+    "published:first",
+  ]);
+});
+
+test("one stable parent preserves sibling sessions and splits only reliable venue-session pairs", () => {
+  const reliable = buildActivityHierarchy({
+    sourceName: "SFS",
+    sourceRecordId: "film:1",
+    title: "Island Film",
+    schedule: { kind: "selectable" },
+    sessions: [
+      { sourceSessionId: "one", venueKey: "gv" },
+      { sourceSessionId: "two", venueKey: "projector" },
+    ],
+    venues: [
+      { venueKey: "gv", name: "GV Cineleisure" },
+      { venueKey: "projector", name: "The Projector" },
+    ],
+  });
+  assert.equal(reliable.sessions.length, 2);
+  assert.equal(reliable.venueOccurrences.length, 2);
+  assert.equal(
+    new Set(reliable.sessions.map(({ sessionId }) => sessionId)).size,
+    2,
+  );
+  assert.ok(
+    reliable.venueOccurrences.every(
+      ({ sessionIds }) => sessionIds.length === 1,
+    ),
+  );
+
+  const unresolved = buildActivityHierarchy({
+    sourceName: "Guide",
+    sourceRecordId: "tour:1",
+    title: "Pop-up Tour",
+    schedule: { kind: "recurring" },
+    venues: [{ name: "Various venues" }, { name: "Several studios" }],
+  });
+  assert.equal(unresolved.venueOccurrences.length, 1);
+  assert.deepEqual(
+    [
+      unresolved.venueOccurrences[0].publicPlacement,
+      unresolved.venueOccurrences[0].offMapSubtype,
+    ],
+    ["off_map", "multiple_locations"],
+  );
+});
+
+test("authoritative activity evidence classifies mobile occurrences before venue resolution", () => {
+  const cyclingTour = buildActivityHierarchy({
+    sourceName: "Fever Singapore",
+    sourceRecordId: "/m/100539",
+    title: "Historical Singapore Bike Tour Tickets",
+    venue: "Let's Go Tour Singapore",
+    schedule: { kind: "selectable" },
+  });
+  assert.deepEqual(
+    [
+      cyclingTour.venueOccurrences[0].publicPlacement,
+      cyclingTour.venueOccurrences[0].mappingStatus,
+      cyclingTour.venueOccurrences[0].offMapSubtype,
+    ],
+    ["off_map", "not_required", "mobile_route"],
+  );
+
+  const walkingTour = buildActivityHierarchy({
+    sourceName: "Fixture",
+    sourceRecordId: "walking",
+    title: "Chinatown Walking Tour",
+    venue: "Local Walking Tours",
+    schedule: { kind: "selectable" },
+  });
+  assert.equal(walkingTour.venueOccurrences[0].offMapSubtype, "mobile_route");
+
+  const multiStopSpeedboat = buildActivityHierarchy({
+    sourceName: "SISTIC",
+    sourceRecordId: "Speedboat",
+    title: "Albatross Hop-On Hop-Off Speedboat Pass",
+    venue: "Royal Albatross in Resorts World Sentosa",
+    sourceCoordinates: { lat: 1.2569835, lng: 103.8202676 },
+    description:
+      "Unlimited rides between Sentosa, Lazarus, Kusu and Sisters' Islands. Boats operate on a continuous loop from either boarding point.",
+  });
+  assert.deepEqual(
+    [
+      multiStopSpeedboat.venueOccurrences[0].publicPlacement,
+      multiStopSpeedboat.venueOccurrences[0].offMapSubtype,
+    ],
+    ["off_map", "mobile_route"],
+  );
+});
+
+test("mobile inference preserves a usable fixed meeting point and remains occurrence-specific", () => {
+  const fixedTour = buildActivityHierarchy({
+    sourceName: "Fixture",
+    sourceRecordId: "fixed-tour",
+    title: "Backstage Walking Tour",
+    venue: "Esplanade Concert Hall",
+    address: "1 Esplanade Drive, Singapore 038981",
+  });
+  assert.deepEqual(
+    [
+      fixedTour.venueOccurrences[0].publicPlacement,
+      fixedTour.venueOccurrences[0].mappingStatus,
+      fixedTour.venueOccurrences[0].offMapSubtype,
+    ],
+    ["none", "pending_review", null],
+    "a source-backed meeting building remains eligible for OneMap resolution",
+  );
+
+  const fixedCruiseMeetingPoint = buildActivityHierarchy({
+    sourceName: "SISTIC",
+    sourceRecordId: "dinner",
+    title: "Dinner Cruise - Romance Under Sail",
+    venue: "Royal Albatross in Resorts World Sentosa",
+    address: "8 Sentosa Gateway, Singapore 098269",
+    description:
+      "The experience begins at Resorts World Sentosa before the ship sails into port waters.",
+  });
+  assert.deepEqual(
+    [
+      fixedCruiseMeetingPoint.venueOccurrences[0].publicPlacement,
+      fixedCruiseMeetingPoint.venueOccurrences[0].offMapSubtype,
+    ],
+    ["none", null],
+  );
 });

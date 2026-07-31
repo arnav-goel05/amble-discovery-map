@@ -37,7 +37,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "9_0.b3dm"
+          "uri": "9_0-afa6a4407ca9.b3dm"
         }
       },
       {
@@ -54,7 +54,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "9_1.b3dm"
+          "uri": "9_1-1c0bd00ea8da.b3dm"
         }
       },
       {
@@ -71,7 +71,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "9_2.b3dm"
+          "uri": "9_2-1e300311bf66.b3dm"
         }
       },
       {
@@ -88,7 +88,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "9_3.b3dm"
+          "uri": "9_3-aa0423e80f88.b3dm"
         }
       },
       {
@@ -105,7 +105,7 @@
         "geometricError": 0,
         "refine": "REPLACE",
         "content": {
-          "uri": "9_4.b3dm"
+          "uri": "9_4-af01b5492ba9.b3dm"
         }
       }
     ]

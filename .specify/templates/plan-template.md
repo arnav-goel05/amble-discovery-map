@@ -1,6 +1,6 @@
 # Implementation Plan: [FEATURE]
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Branch**: `develop` unless the user explicitly requested another branch | **Date**: [DATE] | **Spec**: [link]
 
 **Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
@@ -38,23 +38,44 @@
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
+- **Branch workflow**: Confirm work remains on `develop`, or cite the user's explicit
+  instruction authorizing another branch.
 - **Evidence**: Identify authoritative sources, provenance, approval boundaries, and how
   missing or ambiguous data is represented without fabrication.
 - **Automation**: Assign deterministic workflow steps to code and bound any agent or manual
   intervention with structured inputs and outputs.
 - **Identity and publication**: Define stable identities, create/update/no-op/expire/review
-  behavior, staging, atomic publication, and partial-run rollback.
+  behavior, per-identity carry-forward or hold behavior, staging, atomic publication, and
+  release-wide rollback.
 - **Boundaries**: Name domain owners, validated contracts, evolving schema versions, and
   thin external adapters.
+- **Shared capabilities**: Inventory every affected user-facing capability; define its
+  versioned command or query contract, authoritative state owner, bounded validated result,
+  stable identities, contextual eligibility, post-command context refresh, and direct/
+  conversational observable-state parity. Keep MCP or other protocols as thin adapters
+  over the same registry, and verify semantic parity across local, test, preview, and
+  production environments.
 - **Quality and security**: Identify required tests, build gates, recovery coverage,
   secret handling, administrative authorization, and external-content protections.
 - **UX and performance**: Cover the required automated desktop/mobile Chromium, WebKit,
   and Firefox matrix, Apple HIG-informed interaction, consistent component states, and
   before/after benchmarks for rendering changes. Treat branded-browser checks as optional.
-- **Operations and privacy**: Use free/open sources only; define retention, cleanup,
-  stale-data behavior, generated-artifact policy, and single-host constraints.
+- **Operations and privacy**: Use free/open sources unless the constitution names a scoped
+  exception. For an exception, cite its approval and define its operational owner, concrete
+  usage and spending limits, credential boundary, disable control, limit-exhaustion behavior,
+  and free fallback. For the Realtime exception, verify that provider requests contain no
+  application-imposed output-token ceiling and that conservative reservations use only the
+  reviewed provider/model intrinsic maximum. If content-bearing diagnostics are requested,
+  prove they are explicit, local-development-only, disabled by default, unavailable in
+  production/preview, session-bounded, and structurally redact credentials, authorization
+  material, cookies, session tokens, signing material, and raw audio. If persistent local audit
+  files are requested, prove the separate activation flag, fixed gitignored location, restrictive
+  permissions, sanitized-before-write boundary, 5 MiB rotation, five-file maximum, seven-day
+  deletion, and absence of databases, browser storage, remote sinks, or background uploads. Also
+  define retention, cleanup, stale-data behavior, generated-artifact policy, and single-host
+  constraints.
 
 ## Project Structure
 
@@ -71,6 +92,7 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
+
 <!--
   ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
   for this feature. Delete unused options and expand the chosen structure with
@@ -121,7 +143,7 @@ directories captured above]
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| Violation                  | Why Needed         | Simpler Alternative Rejected Because |
+| -------------------------- | ------------------ | ------------------------------------ |
+| [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |

@@ -1,5 +1,10 @@
 # Repository Agent Instructions
 
+## Branch workflow
+
+Perform all new feature work on `develop`. Do not create or switch to another branch unless
+the user explicitly requests a different branch or explicitly authorizes creating one.
+
 ## Event pipeline command
 
 When the task is `npm run event-pipeline -- start`, this command means run the complete event pipeline, not merely initialize it.
@@ -22,7 +27,15 @@ Keep source occurrence identity separate from parent-listing and merged-event id
 
 At the start of reconciliation, expire events whose final known date is before the run window. Remove a pipeline-managed landmark and POI only when it has no current or future events. Preserve undated events for review rather than deleting them speculatively.
 
-Publish only after every required source, venue branch, geometry check, build, event UI test, and staged browser check succeeds. An evidence-backed `not_mappable` outcome is safely accounted without a highlight. Any `needs_review`, source outage, or failed gate preserves the previous active snapshot. Successful publication writes a new immutable `data/snapshots/<run-id>/` manifest and then atomically swaps `data/approved-snapshot.json`.
+Publish only after every source and venue branch has a terminal accounted outcome and every
+release-wide geometry, build, event UI, and staged browser gate succeeds. An evidence-backed
+off-map outcome is safely accounted without a highlight. Isolate `needs_review` and source
+outages to affected identities: hold unsafe new identities and carry forward still-valid
+approved identities with stale status while unrelated safe identities continue. A failure
+that makes the assembled snapshot invalid, internally inconsistent, unsafe, or unverifiable
+preserves the previous active snapshot. Successful publication writes a new immutable
+`data/snapshots/<run-id>/` manifest and then atomically swaps
+`data/approved-snapshot.json`.
 
 `outputs/data/events.json` is event data, not a venue registry, and must never be passed to `--registry`. A reusable registry entry is trusted only when it is explicitly approved and contains both OneMap identity/tile evidence and coordinates.
 

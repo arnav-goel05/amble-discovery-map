@@ -1,0 +1,283 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "swissotel-merchant-court-singapore",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:26.448Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/7/71/11_5.b3dm",
+      "sourceSha256": "332554c8dd5af08be1ee648aed37823323b7d1375ec9108b2c246cc750e0ced9",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "gmlNames": [
+        "SWISSOTEL MERCHANT COURT SINGAPORE"
+      ],
+      "poiFile": "11_5-6e8f09bc0e6e.b3dm",
+      "poiSha256": "18ff95632b94facfe2ac277129a8944d49ad602d164cfae96472804839a6e5b8",
+      "poiTriangles": 4092,
+      "backgroundFile": "optimized-tiles/7/71/11_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8fb743ec-0d80-4368-84c9-8b3ab4a2a67f",
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "backgroundSha256": "fca667e0244b91484b3d6b6a0cdd96409a9f09fcc79238757646af2da65dd5e8",
+      "backgroundTriangles": 10264
+    },
+    {
+      "sourceTile": "tiles/7/71/11_4.b3dm",
+      "sourceSha256": "df43cd4b6a209882cefd6ab986b1202d7bffcfc2ef29b71886b2eacb2fc9987f",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "gmlNames": [
+        "SWISSOTEL MERCHANT COURT SINGAPORE"
+      ],
+      "poiFile": "11_4-3d12879c482b.b3dm",
+      "poiSha256": "c0630f24e9b883653ee595548a8874e4b6920386dd837a9ab30c5154d3f18b62",
+      "poiTriangles": 4092,
+      "backgroundFile": "optimized-tiles/7/71/11_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8fb743ec-0d80-4368-84c9-8b3ab4a2a67f",
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "backgroundSha256": "f719a9e9839b4068fa23df10009f3a5fe36f452186bfd4289dca8cda1a232237",
+      "backgroundTriangles": 10264
+    },
+    {
+      "sourceTile": "tiles/7/71/11_3.b3dm",
+      "sourceSha256": "61bd86dbe73236159ee0c300dd961cebdd223e3c9adc560ffa914b33d19548b3",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "gmlNames": [
+        "SWISSOTEL MERCHANT COURT SINGAPORE"
+      ],
+      "poiFile": "11_3-5e83692c4060.b3dm",
+      "poiSha256": "eae2d1d48a79ab0ced43126f8e177e60f62240ba5c5d872ffbab21e1a5e3a611",
+      "poiTriangles": 4092,
+      "backgroundFile": "optimized-tiles/7/71/11_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8fb743ec-0d80-4368-84c9-8b3ab4a2a67f",
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "backgroundSha256": "5ad7289988df955bd796ca828aef0ee295e21b94ec750fa37dfceb076a3b274a",
+      "backgroundTriangles": 10264
+    },
+    {
+      "sourceTile": "tiles/7/71/11_2.b3dm",
+      "sourceSha256": "9f39418b632ac1b4572a8292e8b273a4d9b4cfe9462beac007769a726b0ac490",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "gmlNames": [
+        "SWISSOTEL MERCHANT COURT SINGAPORE"
+      ],
+      "poiFile": "11_2-90f70834f393.b3dm",
+      "poiSha256": "b1396416f421b6becdf335b85a51aa1e80715c90d3b5691f03a1bd0ea0787028",
+      "poiTriangles": 4092,
+      "backgroundFile": "optimized-tiles/7/71/11_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8fb743ec-0d80-4368-84c9-8b3ab4a2a67f",
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "backgroundSha256": "901d1bfbd5bbd4c633c743acf9cd800e496bb92e9a0c75da69295513a554b143",
+      "backgroundTriangles": 10264
+    },
+    {
+      "sourceTile": "tiles/7/71/11_1.b3dm",
+      "sourceSha256": "c4b03ad6f688d4d685cc1f423c5a78cf1838fafe65fdb1530ff94a669352281e",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "gmlNames": [
+        "SWISSOTEL MERCHANT COURT SINGAPORE"
+      ],
+      "poiFile": "11_1-d35ebcec6d63.b3dm",
+      "poiSha256": "41c7e39a5c5dba480c5e811f2d4c66ab38b6c0902625a322b7a7dfb19ff3b592",
+      "poiTriangles": 4092,
+      "backgroundFile": "optimized-tiles/7/71/11_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8fb743ec-0d80-4368-84c9-8b3ab4a2a67f",
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "backgroundSha256": "e4f0ec6637d1b31281d176532675a0cc424696aad8682b94f49fe0ef37515d07",
+      "backgroundTriangles": 10264
+    },
+    {
+      "sourceTile": "tiles/7/71/11_0.b3dm",
+      "sourceSha256": "642014c3b603577e2d1a3385d9d1a5646a17f9f7a599f583129c3c53a5a7c62b",
+      "originalBatchIds": [
+        3
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "gmlNames": [
+        "SWISSOTEL MERCHANT COURT SINGAPORE"
+      ],
+      "poiFile": "11_0-6a4b8b50d693.b3dm",
+      "poiSha256": "549142ca3828d0b9cd946b0d8c213d00bbeca2113b0befc4c082108532af9e97",
+      "poiTriangles": 4092,
+      "backgroundFile": "optimized-tiles/7/71/11_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_8fb743ec-0d80-4368-84c9-8b3ab4a2a67f",
+        "SLA_BLDG2_aa3d17a8-634d-49b5-b05c-50aeafaa85b3"
+      ],
+      "backgroundSha256": "573391230774024762465e9de7c002c4049a1b7ec0e38ad36d4fb2dc98b9c2d2",
+      "backgroundTriangles": 10264
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0",
+  "cases": [
+    {
+      "id": "owner-disabled",
+      "error": {
+        "type": "error",
+        "code": "voice_disabled",
+        "message": "Voice service is currently unavailable. Please try again later."
+      },
+      "terminal": { "type": "session.stopped", "reason": "disabled" }
+    },
+    {
+      "id": "budget-cap",
+      "error": {
+        "type": "error",
+        "code": "usage_limit",
+        "message": "Voice service is currently unavailable. Please try again later."
+      },
+      "terminal": { "type": "session.stopped", "reason": "usage_limit" }
+    },
+    {
+      "id": "provider-failure",
+      "error": {
+        "type": "error",
+        "code": "provider_unavailable",
+        "message": "Voice service is currently unavailable. Please try again later."
+      },
+      "terminal": { "type": "session.stopped", "reason": "provider" }
+    },
+    {
+      "id": "network-loss",
+      "error": {
+        "type": "error",
+        "code": "provider_unavailable",
+        "message": "Voice service is currently unavailable. Please try again later."
+      },
+      "terminal": { "type": "session.stopped", "reason": "network" }
+    },
+    {
+      "id": "microphone-revoked",
+      "error": {
+        "type": "error",
+        "code": "invalid_request",
+        "message": "Microphone access ended. Allow access and try again."
+      },
+      "terminal": { "type": "session.stopped", "reason": "permission" }
+    },
+    {
+      "id": "oversized-message",
+      "error": {
+        "type": "error",
+        "code": "invalid_request",
+        "message": "The voice message could not be processed."
+      },
+      "terminal": { "type": "session.stopped", "reason": "protocol" }
+    },
+    {
+      "id": "explicit-stop",
+      "error": null,
+      "terminal": { "type": "session.stopped", "reason": "user" }
+    }
+  ],
+  "cleanupExpectation": {
+    "providerSocketClosed": true,
+    "browserSocketClosed": true,
+    "mediaTracksStopped": true,
+    "confirmationsInvalidated": true,
+    "sessionContentCleared": true
+  }
+}

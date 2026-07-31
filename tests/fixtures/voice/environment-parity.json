@@ -1,0 +1,262 @@
+{
+  "schemaVersion": "2.0",
+  "protocolVersion": "1.1",
+  "requiredEnvironmentIds": ["local", "test", "preview", "production"],
+  "allowedVarianceFields": ["approvedDataSource", "policyMode"],
+  "expected": {
+    "registeredConnectorIds": [
+      "approved-catalog",
+      "application-state",
+      "discovery-areas",
+      "events",
+      "location",
+      "map",
+      "overlay-navigation",
+      "plan",
+      "restaurants",
+      "tour",
+      "transit"
+    ],
+    "unregisteredConnectorIds": ["conditional-content"],
+    "excludedExternalConnectorIds": [
+      "box",
+      "gmail",
+      "google-calendar",
+      "notion",
+      "outlook-calendar",
+      "outlook-email",
+      "sharepoint",
+      "slack",
+      "teams"
+    ],
+    "capabilityIds": [
+      "app.inspect",
+      "catalog.get",
+      "catalog.search",
+      "map.setlayervisibility"
+    ],
+    "eligibilityCases": [
+      {
+        "fixtureId": "fully-ready",
+        "states": [
+          "application_initialized",
+          "approved_catalog_available",
+          "map_ready"
+        ],
+        "eligibleCapabilityIds": [
+          "app.inspect",
+          "catalog.get",
+          "catalog.search",
+          "map.setlayervisibility"
+        ]
+      },
+      {
+        "fixtureId": "application-only",
+        "states": ["application_initialized"],
+        "eligibleCapabilityIds": ["app.inspect"]
+      }
+    ],
+    "resultFixtureIds": [
+      "catalog-get-with-missing-target",
+      "catalog-search-page",
+      "hide-transit-layer-noop",
+      "inspect-ready",
+      "map-unavailable",
+      "show-transit-layer"
+    ]
+  },
+  "environments": [
+    {
+      "environmentId": "local",
+      "approvedDataSource": "deterministic-local-fixture",
+      "policyMode": "voice-disabled",
+      "observed": {
+        "contractFixtureId": "voice-capability-parity-v2",
+        "registeredConnectorIds": [
+          "approved-catalog",
+          "application-state",
+          "discovery-areas",
+          "events",
+          "location",
+          "map",
+          "overlay-navigation",
+          "plan",
+          "restaurants",
+          "tour",
+          "transit"
+        ],
+        "unregisteredConnectorIds": ["conditional-content"],
+        "excludedExternalConnectorIds": [
+          "box",
+          "gmail",
+          "google-calendar",
+          "notion",
+          "outlook-calendar",
+          "outlook-email",
+          "sharepoint",
+          "slack",
+          "teams"
+        ],
+        "capabilityIds": [
+          "app.inspect",
+          "catalog.get",
+          "catalog.search",
+          "map.setlayervisibility"
+        ],
+        "eligibilityFixtureIds": ["application-only", "fully-ready"],
+        "resultFixtureIds": [
+          "catalog-get-with-missing-target",
+          "catalog-search-page",
+          "hide-transit-layer-noop",
+          "inspect-ready",
+          "map-unavailable",
+          "show-transit-layer"
+        ]
+      }
+    },
+    {
+      "environmentId": "test",
+      "approvedDataSource": "deterministic-test-fixture",
+      "policyMode": "mock-provider",
+      "observed": {
+        "contractFixtureId": "voice-capability-parity-v2",
+        "registeredConnectorIds": [
+          "approved-catalog",
+          "application-state",
+          "discovery-areas",
+          "events",
+          "location",
+          "map",
+          "overlay-navigation",
+          "plan",
+          "restaurants",
+          "tour",
+          "transit"
+        ],
+        "unregisteredConnectorIds": ["conditional-content"],
+        "excludedExternalConnectorIds": [
+          "box",
+          "gmail",
+          "google-calendar",
+          "notion",
+          "outlook-calendar",
+          "outlook-email",
+          "sharepoint",
+          "slack",
+          "teams"
+        ],
+        "capabilityIds": [
+          "app.inspect",
+          "catalog.get",
+          "catalog.search",
+          "map.setlayervisibility"
+        ],
+        "eligibilityFixtureIds": ["application-only", "fully-ready"],
+        "resultFixtureIds": [
+          "catalog-get-with-missing-target",
+          "catalog-search-page",
+          "hide-transit-layer-noop",
+          "inspect-ready",
+          "map-unavailable",
+          "show-transit-layer"
+        ]
+      }
+    },
+    {
+      "environmentId": "preview",
+      "approvedDataSource": "staged-approved-snapshot",
+      "policyMode": "preview-policy",
+      "observed": {
+        "contractFixtureId": "voice-capability-parity-v2",
+        "registeredConnectorIds": [
+          "approved-catalog",
+          "application-state",
+          "discovery-areas",
+          "events",
+          "location",
+          "map",
+          "overlay-navigation",
+          "plan",
+          "restaurants",
+          "tour",
+          "transit"
+        ],
+        "unregisteredConnectorIds": ["conditional-content"],
+        "excludedExternalConnectorIds": [
+          "box",
+          "gmail",
+          "google-calendar",
+          "notion",
+          "outlook-calendar",
+          "outlook-email",
+          "sharepoint",
+          "slack",
+          "teams"
+        ],
+        "capabilityIds": [
+          "app.inspect",
+          "catalog.get",
+          "catalog.search",
+          "map.setlayervisibility"
+        ],
+        "eligibilityFixtureIds": ["application-only", "fully-ready"],
+        "resultFixtureIds": [
+          "catalog-get-with-missing-target",
+          "catalog-search-page",
+          "hide-transit-layer-noop",
+          "inspect-ready",
+          "map-unavailable",
+          "show-transit-layer"
+        ]
+      }
+    },
+    {
+      "environmentId": "production",
+      "approvedDataSource": "active-approved-snapshot",
+      "policyMode": "production-policy",
+      "observed": {
+        "contractFixtureId": "voice-capability-parity-v2",
+        "registeredConnectorIds": [
+          "approved-catalog",
+          "application-state",
+          "discovery-areas",
+          "events",
+          "location",
+          "map",
+          "overlay-navigation",
+          "plan",
+          "restaurants",
+          "tour",
+          "transit"
+        ],
+        "unregisteredConnectorIds": ["conditional-content"],
+        "excludedExternalConnectorIds": [
+          "box",
+          "gmail",
+          "google-calendar",
+          "notion",
+          "outlook-calendar",
+          "outlook-email",
+          "sharepoint",
+          "slack",
+          "teams"
+        ],
+        "capabilityIds": [
+          "app.inspect",
+          "catalog.get",
+          "catalog.search",
+          "map.setlayervisibility"
+        ],
+        "eligibilityFixtureIds": ["application-only", "fully-ready"],
+        "resultFixtureIds": [
+          "catalog-get-with-missing-target",
+          "catalog-search-page",
+          "hide-transit-layer-noop",
+          "inspect-ready",
+          "map-unavailable",
+          "show-transit-layer"
+        ]
+      }
+    }
+  ]
+}

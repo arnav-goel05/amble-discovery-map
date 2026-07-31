@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0",
+  "input": {
+    "utterance": "Somewhere calm for an evening walk.",
+    "transitConstraint": null,
+    "approvedCandidateFixture": "approved-candidates.json"
+  },
+  "expectedResult": {
+    "intentRevision": 1,
+    "areas": [
+      {
+        "areaId": "ura-subzone:marina-south",
+        "rank": 1,
+        "confidence": 0.91,
+        "reasons": [
+          {
+            "text": "The approved option combines a garden setting, waterfront views, and a calm pace.",
+            "candidateIds": ["candidate:gardens-bay-walk"],
+            "attributeKeys": ["setting", "pace"]
+          }
+        ],
+        "tradeoffs": ["The fixture does not assert current crowd levels."],
+        "candidateIds": ["candidate:gardens-bay-walk"]
+      },
+      {
+        "areaId": "ura-subzone:city-hall",
+        "rank": 2,
+        "confidence": 0.72,
+        "reasons": [
+          {
+            "text": "Approved art and waterfront options support a flexible evening.",
+            "candidateIds": [
+              "candidate:national-gallery",
+              "candidate:esplanade-waterfront"
+            ],
+            "attributeKeys": ["setting", "pace"]
+          }
+        ],
+        "tradeoffs": [
+          "One approved option is livelier than the requested mood."
+        ],
+        "candidateIds": [
+          "candidate:national-gallery",
+          "candidate:esplanade-waterfront"
+        ]
+      }
+    ],
+    "clarification": {
+      "question": "Would you prefer a garden walk or an arts-focused evening?",
+      "answerType": "choice",
+      "choices": ["Garden walk", "Arts-focused"]
+    }
+  }
+}

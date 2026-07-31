@@ -1,0 +1,261 @@
+{
+  "schemaVersion": "1.0",
+  "snapshotId": "20260718T162339Z-20260719T000000+0800-20260726T235959+0800",
+  "publishedAt": "2026-07-18T16:58:12.163Z",
+  "coveredWindow": {
+    "start": "2026-07-19",
+    "end": "2026-07-26",
+    "timezone": "Asia/Singapore"
+  },
+  "freshness": "fresh",
+  "staleAfter": "2026-07-25T16:58:12.163Z",
+  "sourceHealth": {
+    "Catch.sg": {
+      "status": "blocked",
+      "role": "authoritative",
+      "mode": "required",
+      "lastSuccessfulAt": null,
+      "reasonCode": "layout_contract_changed",
+      "counts": {}
+    },
+    "SISTIC": {
+      "status": "success",
+      "role": "authoritative",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-18T16:27:06.814Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 12,
+        "sourceRecordsReceived": 355,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 355,
+        "occurrencesEmitted": 358,
+        "excludedOccurrences": 13,
+        "eligiblePreDedup": 345,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 345
+      }
+    },
+    "Fever Singapore": {
+      "status": "success",
+      "role": "authoritative",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-18T16:30:45.917Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 1,
+        "sourceRecordsReceived": 114,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 114,
+        "occurrencesEmitted": 114,
+        "excludedOccurrences": 44,
+        "eligiblePreDedup": 70,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 70
+      }
+    },
+    "Visit Singapore All Happenings": {
+      "status": "success",
+      "role": "authoritative",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-18T16:30:51.439Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 1,
+        "sourceRecordsReceived": 10,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 10,
+        "occurrencesEmitted": 10,
+        "excludedOccurrences": 10,
+        "eligiblePreDedup": 0,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 0
+      }
+    },
+    "Singapore Film Society": {
+      "status": "success",
+      "role": "authoritative",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-18T16:31:09.144Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 1,
+        "sourceRecordsReceived": 9,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 9,
+        "occurrencesEmitted": 9,
+        "excludedOccurrences": 0,
+        "eligiblePreDedup": 9,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 9
+      }
+    },
+    "Roots HAN": {
+      "status": "disabled",
+      "role": "authoritative",
+      "mode": "disabled",
+      "lastSuccessfulAt": null,
+      "reasonCode": "layout_contract_changed",
+      "counts": {}
+    },
+    "Honeycombers": {
+      "status": "success",
+      "role": "discovery",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-18T16:31:38.227Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 1,
+        "sourceRecordsReceived": 21,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 21,
+        "discoveryRecordsReceived": 21,
+        "occurrencesEmitted": 21,
+        "excludedOccurrences": 20,
+        "eligiblePreDedup": 1,
+        "confirmationOutcomeCounts": {
+          "authority_domain_review": 13,
+          "non_event_commercial": 2,
+          "editorial_sufficient": 2,
+          "pure_promotion": 1,
+          "direct_reused": 3
+        },
+        "authorityCaptures": 0,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 1
+      }
+    },
+    "ArtsEquator": {
+      "status": "success",
+      "role": "discovery",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-18T16:31:41.527Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 1,
+        "sourceRecordsReceived": 1,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 1,
+        "discoveryRecordsReceived": 1,
+        "occurrencesEmitted": 1,
+        "excludedOccurrences": 1,
+        "eligiblePreDedup": 0,
+        "confirmationOutcomeCounts": {
+          "authority_domain_review": 1
+        },
+        "authorityCaptures": 0,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 0
+      }
+    },
+    "Time Out Singapore": {
+      "status": "success",
+      "role": "discovery",
+      "mode": "required",
+      "lastSuccessfulAt": "2026-07-18T16:32:27.139Z",
+      "reasonCode": null,
+      "counts": {
+        "pages": 1,
+        "sourceRecordsReceived": 30,
+        "invalidSourceRecords": 0,
+        "processedSourceRecords": 30,
+        "discoveryRecordsReceived": 30,
+        "occurrencesEmitted": 30,
+        "excludedOccurrences": 30,
+        "eligiblePreDedup": 0,
+        "confirmationOutcomeCounts": {
+          "authority_domain_review": 29,
+          "direct_reused": 1
+        },
+        "authorityCaptures": 0,
+        "duplicateCollapsed": 0,
+        "acceptedPrimary": 0
+      }
+    }
+  },
+  "landmarksRef": "landmarks.json",
+  "poisRef": "pois.json",
+  "tilesetRef": "tileset.json",
+  "eventsRef": "events.json",
+  "eventPipelineProvenance": {
+    "normalizationArtifacts": [
+      "normalized/events.json",
+      "normalized/excluded.json",
+      "normalized/invalid.json",
+      "normalized/dedup-decisions.json"
+    ],
+    "deduplicationArtifacts": [
+      "normalized/dedup-candidates.json",
+      "normalized/dedup-final-decisions.json",
+      "normalized/events.json"
+    ],
+    "deduplicationCounts": {
+      "eligiblePreDedup": 425,
+      "crossSourceDuplicateCollapsed": 0,
+      "acceptedPrimary": 425,
+      "blockingReviewOccurrences": 0
+    },
+    "supportingDiscoveryRefs": [
+      "raw/honeycombers-discovery-v1/confirmations/911a80abbb018b0a0ce59d5e95d00f95ca5522d0b21f5de421d6120046a06e66.json",
+      "raw/honeycombers-discovery-v1/confirmations/2122656b6b2e1f93eeacf6b3e27bd18d9432ebdd9d6f92c474abbcf9db9a7aa5.json",
+      "raw/honeycombers-discovery-v1/confirmations/6de1de3d622f293d78513fd7cd5222b0ddd0a3d0d32b2cfc8bc55d6a4e4f2653.json",
+      "raw/honeycombers-discovery-v1/confirmations/01c197a3e1d33353630d39296b98d8d37f0c4aaed1f9ecd2c4f7dbf7d45c923c.json",
+      "raw/honeycombers-discovery-v1/confirmations/b6952da8c6f53d2177759e609e56501129e94f06696a8a1e347fbe55979dfa84.json",
+      "raw/honeycombers-discovery-v1/confirmations/2466051ae667d745984888f6b64edf694358a87f153142671f49da191b662b6f.json",
+      "raw/honeycombers-discovery-v1/confirmations/8956d415370a98b633efded80332f4d8619bcfd79d4e4c4e3bf37baa7319297b.json",
+      "raw/honeycombers-discovery-v1/confirmations/751f4db48703c3714068cbc43b2ba0e5de18b50a37ad405c0e5ad68a5d46dfcd.json",
+      "raw/honeycombers-discovery-v1/confirmations/3a254fa28e5aaa8548ef788ba750f8d111cc0917946f9bea3dc93ee167a16c33.json",
+      "raw/honeycombers-discovery-v1/confirmations/8138de301475f22f881ad3813c701b32c30c88a2877116785df031c5bc9a48bb.json",
+      "raw/honeycombers-discovery-v1/confirmations/9ed6e7cca01b9e7b4f9ffd55bf72bffe54627991cefd06f9f7a38bfb1819d21f.json",
+      "raw/honeycombers-discovery-v1/confirmations/ff9f183b9b03459a8f3eaede408a419c793a448ecb2942c37e3e7c0ce7e8a498.json",
+      "raw/honeycombers-discovery-v1/confirmations/1f001b3f7c6b125f5a0f5d40202ca0245e583020eafcf9743e2cdafee7b2a0c5.json",
+      "raw/honeycombers-discovery-v1/confirmations/dc7d63ace3c5fafe35316049f4437361e413bb55c273b481b44661d4ab8ffdcd.json",
+      "raw/honeycombers-discovery-v1/confirmations/a06f1f04278c83b7b3ec72e2ada7e56aa3c9b682046812c752306677b98f3801.json",
+      "raw/honeycombers-discovery-v1/confirmations/2b599803df8a0027ed22495d1f9e8ebd391ea774edb534867c1b5051482c94d5.json",
+      "raw/honeycombers-discovery-v1/confirmations/70103d804806a1eaee8087688b6cec2597346eb9f3e64ee6e33601e4e035ac40.json",
+      "raw/honeycombers-discovery-v1/confirmations/9f43c3e5f290caad213f8587f23cbf4041b44ac0c128c09c70eb4a07bb6ffd26.json",
+      "raw/honeycombers-discovery-v1/confirmations/8ab0395f9288892cc7c4c5e36badce11621d6dac49d9ba21acb1f696d4372316.json",
+      "raw/honeycombers-discovery-v1/confirmations/69b214278257480689cbc6337209fb1aead7786a4a90b3ba013d69e0db180114.json",
+      "raw/honeycombers-discovery-v1/confirmations/2ab9c94735363fce9e9cdc964141df821c3543707cb3838e688182d573ee802f.json",
+      "raw/arts-equator-discovery-v1/confirmations/00402d774f4cd65fb9828b963ecbead82dd89ba664605d8da784b8f9853da03b.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/3e943a3f9b2f36c704b13d4802d3dc5973b8fe06cd8da9442f0e979ddf5acf97.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/53f559a7338cf79a2bf2a0a1e5f8cebc437b972f39fe3d7cc8868318d035686e.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/dadd3cb0adea0fd707c7414ffe6d27097bb6feb70182f12ec3f3a4c66bb2173f.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/dc4a9d1fc9539354a13675e7a145e759dd0a6dab891ec5b974b42dfc7a3a638e.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/9a1241989cd66e87341125243f765df7fcad43e75986b4dd459157ccce6c2002.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/0a24d4b99cf4fbb9c5a9d2739b816d9203da34c1c0861d14f4e70fded9eb29e6.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/921153d8f608a455002f1d4ea32fb0ac07a8365c6947c96f996085021d175c79.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/d49c1a8726b2757eed5d2169482be1af086f746241ea3314120fb6eefbc53ccf.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/08c87bbb3d920d20b9a3277e08d31725aa48bb21d3b196518c5282471e6a9a08.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/2480bf69c8a9b9312ad8a28dfd29d2319506b22c3a4c44b14783ca09adad6396.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/4040d089c51c96e6d2e8d7dc65292c846c0e64483e6932b1fc020995292d6054.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/26a37b5bb74d26939b0fa2f94a92fca97c800f3ddb68289c13c6f72e6889bb80.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/d971defbc2a1140e5afcf81113b807965c804d0ddf7ac1a8eb28d3df7782022c.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/c1bc8049691aea3a7dea1909f3b42cd637bef5f464baa842683b0fba68b8578d.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/7822ee886f8ad90075c9f82504e1a7bba66a98571c4dc9811bf1811ebfea2d3d.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/7fefa275404fe1988260c635df5e23b21b20771bc5d82d0a02ea206b85bbd0ca.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/5ea212080f2e30843f83751b34b340b0cb3d05ddb5f08c11e0f78bdfcc05845d.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/58f52cbbc5f48f960c7212a2b8246719ae5d527f71070f826ace9ac38bfb5803.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/df5a7bb037efea1fdfe349c365f7f3e80895ee688f33dc7a1d27e3e64cd5267b.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/9553f51ca27ce4b57d3d96191b2573404b6be8bce7b0ffb706eac12085097560.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/1fc54802701995c8798921e7ad7d41a78f0327643982af2a6b0286e81b36fedf.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/bf9641572a4d238991dc4bebdeb50be7374a2fa845550b4ccc226c6d1f9bc63e.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/0c133e3c4d1d9751cbc8626716048ab6abdd94f031838295435fbe700ac27712.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/075b50e8807f21c1eaddbeb87cf6081e62d0d7b2fc4e40dddd47cddab8716f94.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/c8d82f8fb0a7a5c346335155d6608a1aa71fce0c61217ec1074d81b08d58c14a.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/762cad70177a945136c54d2a2ff6b7c450b91875c7d977f633dd0a37fce03770.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/9626ad0bc15fd27b0daf1deffa596d09b4cb3024ea368cfe00318b7132f9bbaf.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/f6dfca874a05e86eb9fff7e450d797ee0cb79b0de95fa12574a8bbc42f86843e.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/9c5cebaf46fd7087742298f8497a668a547d7a1dff78cdc4cabb260a64cb7220.json",
+      "raw/time-out-singapore-discovery-v1/confirmations/e04ab7b0427df2f4dbf19dd237ef12e01f4e8c69f131ec02b7bdb01afad76f5e.json"
+    ]
+  },
+  "previousSnapshotId": "initial",
+  "artifactHashes": {
+    "landmarks.json": "8b9c7506240369d5504eb9c288032383ee7bfa39e1ea7484d30a8c3fde171fac",
+    "pois.json": "b21548cf3f1e1cfa65986be6ec7fd671c065884f7e99247f241c43f2c6982321",
+    "events.json": "53828b54e08300cf4479d31f76d04f92577967845839034efe0d66365f1071bc",
+    "tileset.json": "c219ad09dad61f644efb617fabcbbc71a71004df8af3e2f04140b51004b562a9"
+  },
+  "contentHash": "6ad0eb1258292b27b15d901abb29ece9953c477f79c4853e3744ef793d3e0747"
+}

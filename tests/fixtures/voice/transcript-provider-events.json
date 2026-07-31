@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0",
+  "sessionId": "session-fixture-001",
+  "events": [
+    {
+      "sequence": 1,
+      "direction": "relay_to_browser",
+      "type": "transcript.delta",
+      "itemId": "user-item-001",
+      "role": "user",
+      "modality": "audio",
+      "text": "Somewhere calm"
+    },
+    {
+      "sequence": 2,
+      "direction": "relay_to_browser",
+      "type": "transcript.final",
+      "itemId": "user-item-001",
+      "role": "user",
+      "modality": "audio",
+      "text": "Somewhere calm for an evening walk."
+    },
+    {
+      "sequence": 3,
+      "direction": "relay_to_browser",
+      "type": "assistant.text.delta",
+      "itemId": "assistant-item-001",
+      "role": "assistant",
+      "modality": "text",
+      "text": "I found two areas"
+    },
+    {
+      "sequence": 4,
+      "direction": "relay_to_browser",
+      "type": "assistant.text.done",
+      "itemId": "assistant-item-001",
+      "role": "assistant",
+      "modality": "text",
+      "text": "I found two areas with waterfront or garden walks."
+    },
+    {
+      "sequence": 5,
+      "direction": "provider_to_relay",
+      "type": "response.done",
+      "providerEventAllowed": true,
+      "usage": {
+        "input_tokens": 126,
+        "output_tokens": 26,
+        "input_token_details": { "audio_tokens": 112, "text_tokens": 14 },
+        "output_token_details": { "audio_tokens": 0, "text_tokens": 26 }
+      },
+      "expectedRelayExposure": "sanitized_usage_only"
+    }
+  ]
+}

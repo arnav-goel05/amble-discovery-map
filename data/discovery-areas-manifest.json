@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0",
+  "assetId": "discovery-areas-v1",
+  "status": "approved",
+  "generatorVersion": "1.0.0",
+  "sourceDatasetIds": [
+    "d_8594ae9ff96d0c708bc2af633048edfb"
+  ],
+  "authoritativeUrls": [
+    "https://data.gov.sg/datasets/d_8594ae9ff96d0c708bc2af633048edfb/view"
+  ],
+  "licence": "Singapore Open Data Licence",
+  "sourceObservedAt": "2026-07-18T07:25:34.690Z",
+  "generatedAt": "2026-07-18T07:25:34.690Z",
+  "sourceHashes": {
+    "d_8594ae9ff96d0c708bc2af633048edfb": "77e30aa02b1784b649d9b6f23e3b2ebb825af787de554f3a3fb76bbee3013c42"
+  },
+  "contentHash": "adf6ecab05aa381dd0eb7af4204362c713fb1ce4dfd79a619b44d832e27dbb75",
+  "featureCount": 332,
+  "validationReport": {
+    "valid": true,
+    "identity": true,
+    "geometry": true,
+    "wgs84": true
+  }
+}

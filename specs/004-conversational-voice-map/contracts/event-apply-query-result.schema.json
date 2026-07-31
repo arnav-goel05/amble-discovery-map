@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amble.local/contracts/event-apply-query-result.schema.json",
+  "title": "EventApplyQueryResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "outcome",
+    "canonicalSentence",
+    "residualQuery",
+    "phrases",
+    "clarificationChoices",
+    "catalogRevision",
+    "resultCount"
+  ],
+  "properties": {
+    "outcome": {
+      "enum": ["applied", "clarification_required", "stale", "unsupported"]
+    },
+    "canonicalSentence": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "residualQuery": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "phrases": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["phraseId", "facet", "valueId", "label"],
+        "properties": {
+          "phraseId": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "facet": {
+            "enum": ["what", "when", "where", "price"]
+          },
+          "valueId": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 160
+          }
+        }
+      }
+    },
+    "clarificationChoices": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["choiceId", "label"],
+        "properties": {
+          "choiceId": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 160
+          }
+        }
+      }
+    },
+    "catalogRevision": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "resultCount": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

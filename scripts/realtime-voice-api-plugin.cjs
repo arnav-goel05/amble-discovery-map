@@ -1,0 +1,299 @@
+"use strict";
+
+const fs = require("node:fs");
+const path = require("node:path");
+const { WebSocket, WebSocketServer } = require("ws");
+const {
+  errorEnvelope,
+  readJsonBody,
+  sendJson,
+} = require("./lib/http-contract.cjs");
+const {
+  createLocalVoiceBudgetRepository,
+} = require("./lib/voice-budget-repository.cjs");
+const {
+  createRealtimeContentAuditLogger,
+} = require("./lib/realtime-content-audit.cjs");
+
+const SESSION_PATH = "/api/voice/sessions";
+const STREAM_PATH = /^\/api\/voice\/sessions\/([^/]+)\/stream$/;
+
+function nodeProviderConnector({ apiKey, modelId }) {
+  return new Promise((resolve, reject) => {
+    const socket = new WebSocket(
+      `wss://api.openai.com/v1/realtime?model=${encodeURIComponent(modelId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      },
+    );
+    socket.once("open", () => resolve(socket));
+    socket.once("error", reject);
+  });
+}
+
+function createLocalRelayOptions({
+  policy,
+  repository,
+  environment,
+  runtimeMode = "unconfigured",
+  providerConnector,
+  capabilityContracts,
+  tools,
+  approvedCandidateIds,
+  approvedCandidates,
+  operationalLogger,
+  contentDebugLogger,
+  contentAuditLogger,
+}) {
+  const contentDebugEnabled =
+    runtimeMode === "development" &&
+    environment.NODE_ENV === "development" &&
+    environment.REALTIME_CONTENT_DEBUG === "true";
+  const contentAuditEnabled =
+    contentDebugEnabled && environment.REALTIME_CONTENT_AUDIT === "true";
+  const processContentLogger =
+    contentDebugLogger ??
+    ((record) => {
+      console.debug(JSON.stringify(record));
+    });
+  return {
+    policy,
+    budgetRepository: repository,
+    apiKey: environment.OPENAI_API_KEY,
+    providerConnector,
+    operationalLogger:
+      operationalLogger ??
+      ((record) => {
+        console.info(JSON.stringify(record));
+      }),
+    ...(contentDebugEnabled
+      ? {
+          contentDebugLogger: contentAuditEnabled
+            ? (record) => {
+                processContentLogger(record);
+                contentAuditLogger?.(record);
+              }
+            : processContentLogger,
+        }
+      : {}),
+    ...(capabilityContracts ? { capabilityContracts } : {}),
+    ...(tools ? { tools } : {}),
+    ...(approvedCandidateIds ? { approvedCandidateIds } : {}),
+    ...(approvedCandidates ? { approvedCandidates } : {}),
+  };
+}
+
+function realtimeVoiceApiPlugin({
+  root = path.resolve(__dirname, ".."),
+  environment = process.env,
+  databasePath,
+  providerConnector = nodeProviderConnector,
+  capabilityContracts,
+  tools,
+  approvedCandidateIds,
+  approvedCandidates,
+  operationalLogger,
+  contentDebugLogger,
+  contentAuditLogger,
+} = {}) {
+  const policy = JSON.parse(
+    fs.readFileSync(path.join(root, "data/realtime-voice-policy.json"), "utf8"),
+  );
+  const repository = createLocalVoiceBudgetRepository({
+    ...(databasePath ? { databasePath } : {}),
+  });
+  const webSocketServer = new WebSocketServer({
+    noServer: true,
+    maxPayload: 16 * 1024,
+  });
+  let relayPromise;
+  let runtimeMode = "unconfigured";
+  let localContentAuditLogger;
+  const relay = () =>
+    (relayPromise ??= import("../cloudflare/realtime-relay.mjs").then(
+      ({ createRealtimeRelay }) => {
+        const contentAuditEnabled =
+          runtimeMode === "development" &&
+          environment.NODE_ENV === "development" &&
+          environment.REALTIME_CONTENT_DEBUG === "true" &&
+          environment.REALTIME_CONTENT_AUDIT === "true";
+        if (contentAuditEnabled && !localContentAuditLogger)
+          localContentAuditLogger =
+            contentAuditLogger ??
+            createRealtimeContentAuditLogger({
+              root,
+            });
+        return createRealtimeRelay(
+          createLocalRelayOptions({
+            policy,
+            repository,
+            environment,
+            runtimeMode,
+            providerConnector,
+            capabilityContracts,
+            tools,
+            approvedCandidateIds,
+            approvedCandidates,
+            operationalLogger,
+            contentDebugLogger,
+            contentAuditLogger: localContentAuditLogger,
+          }),
+        );
+      },
+    ));
+
+  const requestOrigin = (request) => {
+    const proto = request.socket?.encrypted ? "https" : "http";
+    return `${proto}://${request.headers.host}`;
+  };
+
+  const middleware = async (request, response, next) => {
+    let url;
+    try {
+      url = new URL(request.url, requestOrigin(request));
+    } catch {
+      return next();
+    }
+    if (url.pathname !== SESSION_PATH) return next();
+    if (request.method !== "POST")
+      return sendJson(
+        response,
+        405,
+        errorEnvelope(
+          "invalid_request",
+          "Voice session admission requires POST.",
+        ),
+      );
+    if (request.headers.origin !== url.origin)
+      return sendJson(
+        response,
+        403,
+        errorEnvelope(
+          "origin_rejected",
+          "Voice sessions require the application origin.",
+        ),
+      );
+    let body;
+    try {
+      body = await readJsonBody(request, { maxBytes: 64 * 1024 });
+    } catch (error) {
+      const status =
+        error.status === 413 ? 413 : error.status === 415 ? 415 : 400;
+      return sendJson(
+        response,
+        status,
+        errorEnvelope("invalid_request", "Voice session request is invalid."),
+      );
+    }
+    try {
+      const activeRelay = await relay();
+      const result = await activeRelay.admit({
+        requestUrl: url.href,
+        origin: request.headers.origin,
+        contentType: request.headers["content-type"],
+        bodyBytes: Buffer.byteLength(JSON.stringify(body)),
+        body,
+        environmentEnabled: environment.REALTIME_ENABLED === "true",
+        providerPolicyValid: true,
+        rateCardValid: true,
+        reservationAvailable: true,
+        rateLimited: false,
+      });
+      return sendJson(response, 201, result);
+    } catch (error) {
+      const mapping = {
+        voice_disabled: 503,
+        usage_limit: 429,
+        rate_limited: 429,
+        origin_rejected: 403,
+        invalid_request: 400,
+        policy_mismatch: 503,
+        budget_disabled: 503,
+        budget_cap_exceeded: 429,
+      };
+      const code = mapping[error?.code] ? error.code : "provider_unavailable";
+      return sendJson(
+        response,
+        mapping[code] ?? 503,
+        errorEnvelope(
+          code,
+          "Voice service is currently unavailable. Please try again later.",
+        ),
+      );
+    }
+  };
+
+  const attachUpgrade = (server) => {
+    const onUpgrade = async (request, socket, head) => {
+      let url;
+      try {
+        url = new URL(request.url, requestOrigin(request));
+      } catch {
+        return;
+      }
+      const match = url.pathname.match(STREAM_PATH);
+      if (!match) return;
+      if (request.headers.origin !== url.origin) return socket.destroy();
+      try {
+        const activeRelay = await relay();
+        webSocketServer.handleUpgrade(
+          request,
+          socket,
+          head,
+          (browserSocket) => {
+            const sessionId = decodeURIComponent(match[1]);
+            browserSocket.on("error", () => {
+              void activeRelay.stop(sessionId, "network");
+            });
+            activeRelay
+              .attach(sessionId, browserSocket)
+              .catch(() => browserSocket.close(1011, "Voice unavailable"));
+          },
+        );
+      } catch {
+        socket.destroy();
+      }
+    };
+    server.on("upgrade", onUpgrade);
+    return () => server.off("upgrade", onUpgrade);
+  };
+
+  let detachUpgrade = null;
+  const configure = (server) => {
+    runtimeMode = "development";
+    server.middlewares.use(middleware);
+    if (server.httpServer) detachUpgrade = attachUpgrade(server.httpServer);
+  };
+  const configurePreview = (server) => {
+    runtimeMode = "preview";
+    server.middlewares.use(middleware);
+    if (server.httpServer) detachUpgrade = attachUpgrade(server.httpServer);
+  };
+  const close = async () => {
+    detachUpgrade?.();
+    if (relayPromise) {
+      const activeRelay = await relayPromise;
+      for (const sessionId of [...activeRelay.sessions.keys()])
+        activeRelay.stop(sessionId, "user");
+    }
+    webSocketServer.close();
+    repository.close();
+  };
+
+  return {
+    name: "realtime-voice-api",
+    middleware,
+    attachUpgrade,
+    close,
+    configureServer: configure,
+    configurePreviewServer: configurePreview,
+  };
+}
+
+module.exports = {
+  createLocalRelayOptions,
+  nodeProviderConnector,
+  realtimeVoiceApiPlugin,
+};

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amble.local/contracts/mcp-tool-projection.schema.json",
+  "title": "McpToolProjection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "enabled",
+    "capabilityId",
+    "version",
+    "kind",
+    "name",
+    "description",
+    "connectorId",
+    "eligibleStates",
+    "confirmationClass",
+    "contextProvider",
+    "inputSchema",
+    "resultSchema"
+  ],
+  "properties": {
+    "protocol": {
+      "const": "mcp_foundation"
+    },
+    "enabled": {
+      "const": false
+    },
+    "capabilityId": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "version": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "kind": {
+      "enum": ["query", "command"]
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "connectorId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 100
+    },
+    "eligibleStates": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 24,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      }
+    },
+    "confirmationClass": {
+      "enum": ["none", "reversible", "consequential"]
+    },
+    "contextProvider": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "inputSchema": {
+      "type": "object"
+    },
+    "resultSchema": {
+      "type": "object"
+    }
+  }
+}

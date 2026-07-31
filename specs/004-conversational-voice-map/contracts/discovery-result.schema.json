@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amble.local/contracts/discovery-result.schema.json",
+  "title": "Grounded Area-first Discovery Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["intentRevision", "mode", "areas", "clarification", "message"],
+  "properties": {
+    "intentRevision": { "type": "integer", "minimum": 0 },
+    "mode": { "enum": ["recommendations", "clarification", "no_match"] },
+    "areas": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "areaId",
+          "rank",
+          "confidence",
+          "reasons",
+          "tradeoffs",
+          "candidateIds"
+        ],
+        "properties": {
+          "areaId": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "rank": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "reasons": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["text", "candidateIds", "attributeKeys"],
+              "properties": {
+                "text": { "type": "string", "minLength": 1, "maxLength": 180 },
+                "candidateIds": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 20,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  }
+                },
+                "attributeKeys": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 12,
+                  "uniqueItems": true,
+                  "items": { "type": "string", "minLength": 1, "maxLength": 64 }
+                }
+              }
+            }
+          },
+          "tradeoffs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": { "type": "string", "minLength": 1, "maxLength": 140 }
+          },
+          "candidateIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+          }
+        }
+      }
+    },
+    "clarification": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["question", "answerType"],
+          "properties": {
+            "question": { "type": "string", "minLength": 1, "maxLength": 180 },
+            "answerType": { "enum": ["choice", "short"] },
+            "choices": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 5,
+              "items": { "type": "string", "minLength": 1, "maxLength": 60 }
+            }
+          }
+        }
+      ]
+    },
+    "message": { "type": ["string", "null"], "minLength": 1, "maxLength": 240 }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "mode": { "const": "recommendations" },
+        "areas": { "minItems": 1 },
+        "clarification": { "type": "null" },
+        "message": { "type": "null" }
+      }
+    },
+    {
+      "properties": {
+        "mode": { "const": "clarification" },
+        "areas": { "maxItems": 0 },
+        "clarification": { "type": "object" },
+        "message": { "type": "null" }
+      }
+    },
+    {
+      "properties": {
+        "mode": { "const": "no_match" },
+        "areas": { "maxItems": 0 },
+        "clarification": { "type": "null" },
+        "message": { "type": "string" }
+      }
+    }
+  ]
+}

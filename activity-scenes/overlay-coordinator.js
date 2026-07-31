@@ -9,7 +9,8 @@ export function createOverlayCoordinator() {
 
   return {
     register(id, callback) {
-      if (!id || typeof callback !== "function") throw new TypeError("Overlay identity and close callback are required");
+      if (!id || typeof callback !== "function")
+        throw new TypeError("Overlay identity and close callback are required");
       const callbacks = registrations.get(id) ?? new Set();
       callbacks.add(callback);
       registrations.set(id, callbacks);
@@ -43,11 +44,17 @@ export function createOverlayCoordinator() {
     },
     keepOpenForMapClick(event) {
       const nativeEvent = event?.originalEvent || event;
-      if (nativeEvent && typeof nativeEvent === "object") handledMapClicks.add(nativeEvent);
+      if (nativeEvent && typeof nativeEvent === "object")
+        handledMapClicks.add(nativeEvent);
     },
     dismissFromMapClick(event) {
       const nativeEvent = event?.originalEvent || event;
-      if (nativeEvent && typeof nativeEvent === "object" && handledMapClicks.delete(nativeEvent)) return false;
+      if (
+        nativeEvent &&
+        typeof nativeEvent === "object" &&
+        handledMapClicks.delete(nativeEvent)
+      )
+        return false;
       this.dismiss();
       return true;
     },
@@ -64,22 +71,38 @@ let legacyTarget = null;
 function ensureEventBridge() {
   const target = globalThis.window;
   if (!target || legacyTarget === target) return target;
-  target.addEventListener(OVERLAY_OPEN_EVENT, (event) => defaultCoordinator.open(event.detail?.id));
-  target.addEventListener(OVERLAY_CLOSE_EVENT, (event) => defaultCoordinator.closed(event.detail?.id));
-  target.addEventListener(OVERLAY_DISMISS_EVENT, () => defaultCoordinator.dismiss());
+  target.addEventListener(OVERLAY_OPEN_EVENT, (event) =>
+    defaultCoordinator.open(event.detail?.id),
+  );
+  target.addEventListener(OVERLAY_CLOSE_EVENT, (event) =>
+    defaultCoordinator.closed(event.detail?.id),
+  );
+  target.addEventListener(OVERLAY_DISMISS_EVENT, () =>
+    defaultCoordinator.dismiss(),
+  );
   legacyTarget = target;
   return target;
 }
 
 export function announceOverlayOpen(id) {
   const target = ensureEventBridge();
-  if (target) { target.dispatchEvent(new CustomEvent(OVERLAY_OPEN_EVENT, { detail: { id } })); return true; }
+  if (target) {
+    target.dispatchEvent(
+      new CustomEvent(OVERLAY_OPEN_EVENT, { detail: { id } }),
+    );
+    return true;
+  }
   return defaultCoordinator.open(id);
 }
 
 export function announceOverlayClosed(id) {
   const target = ensureEventBridge();
-  if (target) { target.dispatchEvent(new CustomEvent(OVERLAY_CLOSE_EVENT, { detail: { id } })); return true; }
+  if (target) {
+    target.dispatchEvent(
+      new CustomEvent(OVERLAY_CLOSE_EVENT, { detail: { id } }),
+    );
+    return true;
+  }
   return defaultCoordinator.closed(id);
 }
 
@@ -98,7 +121,10 @@ export function watchOverlayState(callback) {
 
 export function dismissOpenOverlays() {
   const target = ensureEventBridge();
-  if (target) { target.dispatchEvent(new Event(OVERLAY_DISMISS_EVENT)); return true; }
+  if (target) {
+    target.dispatchEvent(new Event(OVERLAY_DISMISS_EVENT));
+    return true;
+  }
   return defaultCoordinator.dismiss();
 }
 
@@ -108,6 +134,11 @@ export function keepOverlaysOpenForMapClick(event) {
 
 export function dismissOpenOverlaysFromMapClick(event) {
   return defaultCoordinator.dismissFromMapClick(event);
+}
+
+export function activeOverlayId() {
+  ensureEventBridge();
+  return defaultCoordinator.active();
 }
 
 export function closeWhenAnotherOverlayOpens(id, close) {

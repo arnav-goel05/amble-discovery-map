@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "aliwal-arts-centre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:26.668Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/39/9_0.b3dm",
+      "sourceSha256": "abf4ce1080890b9c3219ee865f627f0e5207eb6a23910343b0a192cd7d54163a",
+      "originalBatchIds": [
+        84
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "gmlNames": [
+        "ALIWAL ARTS CENTRE"
+      ],
+      "poiFile": "9_0-d5a31d386d7f.b3dm",
+      "poiSha256": "011e6b6efe57178155e10d067557c818c6ecc3d8c03b204bbd84d07bd5998ec5",
+      "poiTriangles": 792,
+      "backgroundFile": "optimized-tiles/6/39/9_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "backgroundSha256": "cb7fb209019da7958a196f967c3dd707ad1a132fe825e7320a457b3a30a542de",
+      "backgroundTriangles": 21268
+    },
+    {
+      "sourceTile": "tiles/6/39/9_1.b3dm",
+      "sourceSha256": "97a653693c78dbcab7ecc65c33a2b8b471ff9bda6bb00039a1f832db965a04f3",
+      "originalBatchIds": [
+        84
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "gmlNames": [
+        "ALIWAL ARTS CENTRE"
+      ],
+      "poiFile": "9_1-b36d52f209ba.b3dm",
+      "poiSha256": "7d82fd11d889c3a8ab6a8d2885dd247a79de0bcd3a54493ca87a023d6266080d",
+      "poiTriangles": 792,
+      "backgroundFile": "optimized-tiles/6/39/9_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "backgroundSha256": "260e1882e41f71665988f1cd05726b81d2b070d52a7eb0c6b8338fb398d94d94",
+      "backgroundTriangles": 21268
+    },
+    {
+      "sourceTile": "tiles/6/39/9_2.b3dm",
+      "sourceSha256": "7feae3272dcbd54f559a3f188de34bdb0543ad17af715faa8a3e8e5b95b9529d",
+      "originalBatchIds": [
+        84
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "gmlNames": [
+        "ALIWAL ARTS CENTRE"
+      ],
+      "poiFile": "9_2-5d0e32432a9b.b3dm",
+      "poiSha256": "c6be5f35a993b0aa3081aa0b38335c41b6069e359710aae8ec35912ab9f65eb8",
+      "poiTriangles": 792,
+      "backgroundFile": "optimized-tiles/6/39/9_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "backgroundSha256": "9f9a0ac1072738ea48a8680f1d1626ff76aadeb016624800f84b9e9e55aa2065",
+      "backgroundTriangles": 21268
+    },
+    {
+      "sourceTile": "tiles/6/39/9_3.b3dm",
+      "sourceSha256": "95e7e126268fabe8a9c0a51f585ffebcc7b8a186949f490bc5fa8cc5e9571e09",
+      "originalBatchIds": [
+        84
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "gmlNames": [
+        "ALIWAL ARTS CENTRE"
+      ],
+      "poiFile": "9_3-f00f1452d7ba.b3dm",
+      "poiSha256": "1fb98bad88e4453662b1e5f1a9beaa14c417826daaa02492d0790bc39b24eed2",
+      "poiTriangles": 792,
+      "backgroundFile": "optimized-tiles/6/39/9_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "backgroundSha256": "cfbb90ba5d3489bdb88803303f9f82efa441388a2f8c773aa42c0e4a5d343cb9",
+      "backgroundTriangles": 21268
+    },
+    {
+      "sourceTile": "tiles/6/39/9_4.b3dm",
+      "sourceSha256": "50d8592c118edb827b8e5fa69f7a9776473c6d475514a8ab82211ff038e8cdb0",
+      "originalBatchIds": [
+        84
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "gmlNames": [
+        "ALIWAL ARTS CENTRE"
+      ],
+      "poiFile": "9_4-aa63cc27dc4b.b3dm",
+      "poiSha256": "8f8e277db24191c24b33e388bab5876ad1c107dc0edaa959923051908befb37a",
+      "poiTriangles": 792,
+      "backgroundFile": "optimized-tiles/6/39/9_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "backgroundSha256": "9eecec54ad0aaf9782144909014291e8d0d17b6a896f81ca176741b37f2e240a",
+      "backgroundTriangles": 21268
+    },
+    {
+      "sourceTile": "tiles/6/39/9_5.b3dm",
+      "sourceSha256": "dd973a91b6ca7dedf44d72d4ec7703136e152be490aa5fb9145bcbd2954e1044",
+      "originalBatchIds": [
+        84
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "gmlNames": [
+        "ALIWAL ARTS CENTRE"
+      ],
+      "poiFile": "9_5-1a29f066633b.b3dm",
+      "poiSha256": "12293cfb494b1c0219c83b28b8be3d7efa8092732a5872ccce5113546ea18f61",
+      "poiTriangles": 792,
+      "backgroundFile": "optimized-tiles/6/39/9_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_c072a647-bde2-45a2-b71f-e22550135dc3"
+      ],
+      "backgroundSha256": "5fd8c1024a1502e6a496ee2507d7190d6839455278e1c51eb7136fe2e3d92623",
+      "backgroundTriangles": 21268
+    }
+  ]
+}

@@ -8,6 +8,9 @@ dist-cloudflare/
 cloudflare/generated-approved-snapshot.mjs
 cloudflare/generated-restaurant-seed.sql
 outputs/
+# Event pipeline raw rendered pages, authority indexes, pilot audit records,
+# JSONL traces, checkpoints, and routine status reports all live below outputs/.
+outputs/event-pipeline/
 external-tools/
 public/poi-tiles/source/
 # Runtime 3D geometry is published to Cloudflare R2. Keep only the small

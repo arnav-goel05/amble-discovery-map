@@ -1,0 +1,457 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "national-archives-of-singapore",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:20.542Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/36/6_5.b3dm",
+      "sourceSha256": "fef332cd27bcb47ca9854d9a4c8eeaf56c1c0a0fee4fb89f94108b86ec28f8c4",
+      "originalBatchIds": [
+        4,
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE",
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_5-30b56bc842b7.b3dm",
+      "poiSha256": "608078358ddf50cbdd6e625abed4c9c8391d34325b436dfa4215d99df8dc210d",
+      "poiTriangles": 1462,
+      "backgroundFile": "optimized-tiles/6/36/6_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "cd7f367d9849cc5322a58bc92195f8c18ed6aaf05fe9f11cfae26eeacddf3fda",
+      "backgroundTriangles": 4669
+    },
+    {
+      "sourceTile": "tiles/6/36/6_4.b3dm",
+      "sourceSha256": "307df9365f46853b71e174d70e5fcd9fdd0f55226065d934d3992f7e9dfd28a7",
+      "originalBatchIds": [
+        4,
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE",
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_4-e7313ce898f6.b3dm",
+      "poiSha256": "13bc4af7a84832b29f5a8d8efda0f3213e8353ac5bd7784368092b6b2fc374b1",
+      "poiTriangles": 1462,
+      "backgroundFile": "optimized-tiles/6/36/6_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "f884d2eabdf87fadec632690069887e3b7e6365baf27306388f5e8dc797d1922",
+      "backgroundTriangles": 4669
+    },
+    {
+      "sourceTile": "tiles/6/36/6_3.b3dm",
+      "sourceSha256": "0b6bed042ee6ea03cc403669fc8af19d69403eda021ec7b2d540497e34b1e785",
+      "originalBatchIds": [
+        4,
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE",
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_3-de19218bc3f4.b3dm",
+      "poiSha256": "5c29c5dece51b7440a36259a701f6d79675ecbd3d0bd3e5366e9d14dad5d4701",
+      "poiTriangles": 1462,
+      "backgroundFile": "optimized-tiles/6/36/6_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "9c5603be7febc57247279ed5a8e7b7c9e84a9f32a028e3c07a58e2cf5347eb0d",
+      "backgroundTriangles": 4669
+    },
+    {
+      "sourceTile": "tiles/6/36/6_2.b3dm",
+      "sourceSha256": "4cc46c31abddec831e5d08bb33565b6d57c4fb2f284492ef7776b97df6efe212",
+      "originalBatchIds": [
+        4,
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE",
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_2-eb1ac4574d88.b3dm",
+      "poiSha256": "4601d91fc595c90f20cdd9b0029230f9154c330d91e773e36951943b7158cfea",
+      "poiTriangles": 1462,
+      "backgroundFile": "optimized-tiles/6/36/6_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "7ba99482efc969b77fe72735f19236c955b23d51d3c61143bbf9768d6ea71598",
+      "backgroundTriangles": 4669
+    },
+    {
+      "sourceTile": "tiles/6/36/6_1.b3dm",
+      "sourceSha256": "ad818818acb5b3bc8f9e416388d0ec7e13c12fccffe32041de761158d655d139",
+      "originalBatchIds": [
+        4,
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE",
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_1-5c6c3bc9a914.b3dm",
+      "poiSha256": "2361be1898c1a3315b508f337e604cc4c3087fb331552caa6e90259c7022cad9",
+      "poiTriangles": 1462,
+      "backgroundFile": "optimized-tiles/6/36/6_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "0e01c6c40085775c86ca2a1dae6ea352e4cbf2a150f153032a2d850f283fa002",
+      "backgroundTriangles": 4669
+    },
+    {
+      "sourceTile": "tiles/6/36/6_0.b3dm",
+      "sourceSha256": "3c4f2060cf6ffed19b0b4d5b73932761419b4b64ab4a3e54815283c4bc49b6db",
+      "originalBatchIds": [
+        4,
+        23
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE",
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_0-b8471d22b62f.b3dm",
+      "poiSha256": "736369e3de39d1cc6b6178a41eee5cff6eb491bdbbcd15981d8db6d713c91000",
+      "poiTriangles": 1462,
+      "backgroundFile": "optimized-tiles/6/36/6_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_97e77dd3-9c05-4f4a-8e7f-d8bab711a41d",
+        "SLA_BLDG2_4955e931-4084-4ec2-b850-15e581a08b55",
+        "SLA_BLDG2_699e0f65-d059-4751-9112-22f3c41b0737",
+        "SLA_BLDG2_185037dc-21c3-4d22-b663-986878c7e3d0"
+      ],
+      "backgroundSha256": "2aca31d03f516e285cdf9ee51c5516c0cf93cf50c36fa69a11b2d05bd198e931",
+      "backgroundTriangles": 4669
+    },
+    {
+      "sourceTile": "tiles/6/37/6_0.b3dm",
+      "sourceSha256": "d3d1bddf204525a432ae6ff262ca08795f8696055b76fec0274ed63821e2817e",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_0-6f0dcbec6ee8.b3dm",
+      "poiSha256": "1018526cb21fe53a67c828d365cba4797325a412cff978013d189f7fb6dd733e",
+      "poiTriangles": 304,
+      "backgroundFile": "optimized-tiles/6/37/6_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da",
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "backgroundSha256": "79ee1ca7ef4d05132078c6efa063956d85cd8b831900909b10767a20a6883aec",
+      "backgroundTriangles": 20422
+    },
+    {
+      "sourceTile": "tiles/6/37/6_1.b3dm",
+      "sourceSha256": "39926c895925f6e93899fb1c7a407653e8a22d3ccbb7bce644ac5dd489d1e395",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_1-7f98e2daa5b5.b3dm",
+      "poiSha256": "400e4856d80978f30176637bf5cd1ba80cbc7646300c5674dbde937ee37d61f7",
+      "poiTriangles": 304,
+      "backgroundFile": "optimized-tiles/6/37/6_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da",
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "backgroundSha256": "cf0467cb55f607b395553e4adc1a8671ba6b89dedd5414087f52a76e3d57d9f2",
+      "backgroundTriangles": 20422
+    },
+    {
+      "sourceTile": "tiles/6/37/6_2.b3dm",
+      "sourceSha256": "1b4b82a4416e99197e5319b7612343637ef61c26d5d8ec120a7e8df9260297a8",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_2-16e3f5f04687.b3dm",
+      "poiSha256": "ee114eef7ce49fb0ca8c05c23f926225d456b04d18a5eac4e4f282dc7fe22e44",
+      "poiTriangles": 304,
+      "backgroundFile": "optimized-tiles/6/37/6_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da",
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "backgroundSha256": "cab8a71d8746dc1b0c949b49b08864563bd341fd2456cbb57aa7428d45e87fb2",
+      "backgroundTriangles": 20422
+    },
+    {
+      "sourceTile": "tiles/6/37/6_3.b3dm",
+      "sourceSha256": "d36e44e7cf31653a37d2d86deb6c3b53e51c9ad9569fd6529a03c4547b8983d6",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_3-9585734a5f21.b3dm",
+      "poiSha256": "242ef6a0c7a0df79fc3f0abfba2e62de9cb6385b62f168f54c1f5c87a405079b",
+      "poiTriangles": 304,
+      "backgroundFile": "optimized-tiles/6/37/6_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da",
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "backgroundSha256": "8bb2da7a83d72a53b0a1dbdbecbbb1203e646cb2ac30e85696ada305f1387da6",
+      "backgroundTriangles": 20422
+    },
+    {
+      "sourceTile": "tiles/6/37/6_4.b3dm",
+      "sourceSha256": "402188a0ec019ace407777a25f76fc227b50fbafcc2747f5958271cdec9dbbe5",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_4-0cc3135cb679.b3dm",
+      "poiSha256": "f29f58c43268f1fd6a4ef7502ef3ab3d52260daedba382378a1c51d5aaf000e0",
+      "poiTriangles": 304,
+      "backgroundFile": "optimized-tiles/6/37/6_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da",
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "backgroundSha256": "a578e2f64c1019c822b751dbb3affc4debb405c99e07e66b3040f93e49fd3ce2",
+      "backgroundTriangles": 20422
+    },
+    {
+      "sourceTile": "tiles/6/37/6_5.b3dm",
+      "sourceSha256": "c024de3dedd7e453f64dde245e28827725a9698cd9937e84ed5afa4fc1254f28",
+      "originalBatchIds": [
+        2
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "gmlNames": [
+        "NATIONAL ARCHIVES OF SINGAPORE"
+      ],
+      "poiFile": "6_5-6fd207d1ae44.b3dm",
+      "poiSha256": "6e30d99cecd2d054623d5f65e48d43aec1b66a79d2563ec51231164fe2a741b2",
+      "poiTriangles": 304,
+      "backgroundFile": "optimized-tiles/6/37/6_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_2d51ec63-9f7b-41cd-bea7-6f3aa1255abc",
+        "SLA_BLDG2_ef0e4052-5624-45eb-b10c-3226a44a48da",
+        "SLA_BLDG2_3c930255-0ef0-4fe2-8219-d0bcbc6e258e"
+      ],
+      "backgroundSha256": "8b26f62e02f04c6afa1ac9b91cc9fcad7e8a5b9f297a8b1f46e188c00dc95099",
+      "backgroundTriangles": 20422
+    }
+  ]
+}

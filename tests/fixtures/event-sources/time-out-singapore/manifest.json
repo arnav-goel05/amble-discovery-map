@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "source": "Time Out Singapore",
+  "cases": [
+    "hotlist-split",
+    "authority-link",
+    "internal-chain",
+    "evergreen",
+    "roundup",
+    "repeated-entry"
+  ]
+}

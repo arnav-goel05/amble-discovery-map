@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "background-geometry-release-v1",
+  "releaseId": "fb1f1fb9610d18d1",
+  "snapshotId": "20260726T114314Z-20260726T000000+0800-20260802T235959+0800-schedule-semantics-v10",
+  "objectCount": 665,
+  "tilesetUrl": "optimized-tiles/tileset.json?backgroundRelease=fb1f1fb9610d18d1",
+  "manifestSha256": "f0d571389be5c03181644a266c13d5e5b6bc46964b1cc03a66fdd35cc866ef4b",
+  "verifiedAt": "2026-07-30T16:13:47.522Z"
+}

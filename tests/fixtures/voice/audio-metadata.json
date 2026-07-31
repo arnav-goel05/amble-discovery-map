@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0",
+  "containsAudioBytes": false,
+  "cases": [
+    {
+      "id": "valid-short-utterance",
+      "format": "pcm16",
+      "sampleRateHz": 24000,
+      "channels": 1,
+      "durationMs": 1840,
+      "chunkCount": 46,
+      "maxChunkBytes": 1920,
+      "expected": "accepted"
+    },
+    {
+      "id": "valid-noisy-utterance",
+      "format": "pcm16",
+      "sampleRateHz": 24000,
+      "channels": 1,
+      "durationMs": 3200,
+      "chunkCount": 80,
+      "maxChunkBytes": 1920,
+      "noiseProfile": "public-transport-background",
+      "expected": "accepted"
+    },
+    {
+      "id": "unsupported-format",
+      "format": "audio/x-unknown",
+      "sampleRateHz": 44100,
+      "channels": 2,
+      "durationMs": 500,
+      "chunkCount": 1,
+      "maxChunkBytes": 4096,
+      "expected": "invalid_request"
+    },
+    {
+      "id": "oversized-chunk",
+      "format": "pcm16",
+      "sampleRateHz": 24000,
+      "channels": 1,
+      "durationMs": 2000,
+      "chunkCount": 1,
+      "maxChunkBytes": 1048577,
+      "expected": "protocol"
+    }
+  ]
+}
