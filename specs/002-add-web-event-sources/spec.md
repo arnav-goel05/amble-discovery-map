@@ -4,12 +4,12 @@
 
 **Created**: 2026-07-17
 
-**Updated**: 2026-07-18
+**Updated**: 2026-07-21
 
 **Status**: Ready for planning
 
 **Input**: Expand Singapore activity discovery through Fever Singapore, Visit Singapore,
-Singapore Film Society, Roots/HAN, Honeycombers, ArtsEquator, and Time Out Singapore;
+Singapore Film Society, Honeycombers, ArtsEquator, and Time Out Singapore;
 integrate them with Catch.sg and SISTIC; retain all active and future activities exposed by
 the configured source surfaces; support off-map activities; deduplicate across every source;
 and make collection, review, and publication traceable and failure-safe. The approved policy
@@ -66,9 +66,6 @@ outcome, with active and future eligible activities retained regardless of week.
 4. **Given** a date-dependent activity has no reliable schedule, **When** normalization
    completes, **Then** it is retained as `schedule_unverified` for review without an invented
    date.
-5. **Given** Roots/HAN remains unavailable because its source contract is not reliable,
-   **When** collection runs, **Then** it is reported as unavailable, is not fetched, and does
-   not fabricate or reuse unapproved records.
 
 ---
 
@@ -226,7 +223,7 @@ release-wide validation failure, and atomic-activation failure fixtures.
 ## Scope and Constraints _(mandatory)_
 
 - **In scope**: Maintain Catch.sg and SISTIC; integrate Fever Singapore, Visit Singapore,
-  Singapore Film Society, Roots/HAN, Honeycombers, ArtsEquator, and Time Out Singapore;
+  Singapore Film Society, Honeycombers, ArtsEquator, and Time Out Singapore;
   retrieve bounded public source surfaces; retain all exposed active and future eligible
   activities; normalize schedule, placement, and mapping states; split reliable multi-location
   occurrences; support mapped and off-map discovery; corroborate or independently qualify
@@ -244,8 +241,7 @@ release-wide validation failure, and atomic-activation failure fixtures.
 - **Source roles**: Catch.sg, SISTIC, Fever Singapore, Visit Singapore, and Singapore Film
   Society provide direct source evidence. Honeycombers, ArtsEquator, and Time Out provide
   trusted editorial evidence that first seeks direct corroboration but may authorize a
-  sufficiently evidenced activity independently. Roots/HAN remains explicitly unavailable
-  until its source contract is revalidated.
+  sufficiently evidenced activity independently.
 - **Evidence and dependencies**: Collection uses only approved free retrieval capability.
   Every activity retains its source page and evidence state. Event authority and exact
   building authority are evaluated separately. Missing optional values remain unavailable.
@@ -265,13 +261,11 @@ release-wide validation failure, and atomic-activation failure fixtures.
 
 ### Functional Requirements
 
-- **FR-001**: The system MUST define all nine configured sources independently with a direct,
-  editorial, or unavailable role and deterministic bounded collection rules.
+- **FR-001**: The system MUST define all eight configured sources independently with a direct
+  or editorial role and deterministic bounded collection rules.
 - **FR-002**: Collection MUST use only an approved free retrieval capability and MUST fail
   closed before network access when its credential, policy, destination, or free-use status
   is invalid.
-- **FR-003**: Roots/HAN MUST remain visible as explicitly unavailable, MUST NOT be fetched,
-  and MUST NOT contribute fabricated or copied historical records until revalidated.
 - **FR-004**: Every enabled source MUST account for every encountered listing or reliably
   bounded roundup entry across all reachable configured pages, without repeated canonical
   records causing duplicate captures.
@@ -386,6 +380,56 @@ release-wide validation failure, and atomic-activation failure fixtures.
   handled through stale carry-forward rather than empty success.
 - **FR-042**: An intentionally unavailable configured source MUST remain explicit in state and
   reports, perform no retrieval, and contribute no fabricated records.
+- **FR-043**: A section heading or structural label MUST NOT become venue evidence. Rendered-text
+  fields MUST use an explicit label separator, discarded structural values MUST be logged, and
+  normalization and snapshot assembly MUST prevent them from authorizing a building highlight.
+  A source adapter MAY consume a documented structured event row or event-summary tuple only when
+  the layout contains its complete ordered labels, the row title matches the source occurrence,
+  and the extracted value passes the same location safeguards; this MUST NOT relax the shared
+  rendered-field parser.
+- **FR-044**: Before a physical source occurrence terminates as `missing_venue`, the pipeline MUST
+  perform at most one bounded TinyFish Search query for that stable occurrence, inspect no more
+  than three public candidate pages through the approved TinyFish Fetch transport, and accept
+  venue or address evidence only when exactly one event-specific authoritative candidate matches
+  the activity and Singapore scope. Search snippets, directories, social pages, generic
+  homepages, and conflicting candidates MUST NOT supply recovered location fields.
+- **FR-045**: Missing-venue recovery MUST run before normalization without mutating immutable raw
+  captures. It MUST persist a versioned overlay keyed by source-record and occurrence identity,
+  reuse that overlay on resume, and log attempted, recovered, ambiguous, not-found, skipped, and
+  failed outcomes without exposing credentials or response bodies. Recovery failure MUST remain
+  isolated to the affected occurrence and MUST NOT make a complete source appear incomplete.
+- **FR-046**: Candidate-page retrieval errors returned inside a successful bounded fetch batch
+  MUST be terminally accounted as recovery failures rather than `no_verified_location`, including
+  the bounded provider reason and HTTP status when no inspected authoritative candidate verifies
+  the location. One uniquely verified exact organizer or host page MAY recover the occurrence when
+  a sibling ticket page fails, and the partial fetch failure MUST remain visible in redacted trace
+  counts. A checked-in direct-source definition MAY constrain that same single query to an
+  authoritative promoter partner for a persistently blocked ticket host. Singapore authority
+  checks MUST use an actual `.sg` domain suffix and MUST reject social-network subdomains.
+- **FR-047**: Every successfully retrieved event page MUST be evaluated against one shared
+  extraction contract containing title, schedule, venue, address, description, category, price,
+  organizer, availability, and canonical event URL. More-specific official structured evidence
+  MUST outrank less-specific page text, while material conflicts MUST remain visible and MUST NOT
+  be silently resolved by fabrication.
+- **FR-048**: For each field in FR-047, the pipeline MUST record exactly one completeness outcome:
+  `present`, `not_published_by_source`, or `extraction_failed`, together with the immutable page
+  evidence hash and extraction-contract version. A successful page with no supported value MUST
+  NOT be classified as an extraction failure.
+- **FR-049**: Structured page metadata and documented source structure MUST be interpreted before
+  generic rendered text. Official-page retrieval MUST remain free, bounded, public-network-only,
+  redirect-validated, response-size-limited, and source-domain-constrained; an approved rendered
+  retrieval MAY be used as a bounded fallback when direct official-page retrieval cannot supply
+  usable evidence.
+- **FR-050**: A terminal `not_published_by_source` outcome MUST be reusable while its page evidence
+  hash and extraction-contract version remain unchanged. A changed capture or contract version
+  MUST re-evaluate completeness, while `extraction_failed` MUST remain eligible for bounded retry.
+- **FR-051**: Enriched fields MUST participate in existing schedule identity, multi-location
+  splitting, editorial sufficiency, venue resolution, and cross-source deduplication without
+  collapsing sibling sessions, guessing venue pairings, or weakening authority requirements.
+- **FR-052**: Before publishing the enriched behavior, representative current pages from every
+  enabled source MUST be checked against the shared contract, then one clean complete pipeline run
+  MUST reconcile through publication and report per-source before/after field completeness,
+  exclusions, placement, mapping, review, and deduplication changes.
 
 ### Key Entities
 
@@ -458,6 +502,22 @@ release-wide validation failure, and atomic-activation failure fixtures.
 - **SC-011**: Focused fixtures achieve 100% expected outcomes for cross-surface repeat versus
   sibling identity, compact date ranges, exact pointer accounting, isolated surface failure,
   HTTP 469 classification, and intentionally unavailable-source handling.
+- **SC-012**: Exact rendered-page fixtures containing `Venue Description`, `Venue &
+Accessibility`, and a later explicit venue or location field produce the explicit location (or
+  a terminal missing-location outcome) and publish zero structural-label highlights.
+- **SC-013**: Focused missing-venue fixtures issue no more than one search and three candidate
+  fetches per occurrence, recover the uniquely verified authoritative venue before normalization,
+  reject ambiguous or non-authoritative results, reuse saved overlays without network access,
+  and expose fully reconciled per-source recovery counts and redacted traces.
+- **SC-014**: Representative structured-data, source-HTML, and missing-field fixtures assign the
+  expected value and one of the three FR-048 outcomes for 100% of the ten contracted fields, with
+  zero values invented from navigation, headings, snippets, or unrelated page content.
+- **SC-015**: Reprocessing unchanged successful evidence performs zero repeated recovery for fields
+  marked `not_published_by_source`; changed evidence or contract versions re-evaluate those fields,
+  and failed retrievals remain separately retryable.
+- **SC-016**: The first clean complete run after enrichment publishes only after its per-source
+  completeness comparison and all existing accounting, identity, venue, build, and browser gates
+  pass, while preserving the prior active snapshot if any release-wide gate fails.
 
 ## Assumptions
 
@@ -470,7 +530,6 @@ release-wide validation failure, and atomic-activation failure fixtures.
   sources for their public records.
 - Honeycombers, ArtsEquator, and Time Out are trusted editorial sources that may publish
   independently when their evidence satisfies FR-021.
-- Roots/HAN remains unavailable until an operator revalidates its changed source contract.
 - The existing event pipeline, admin review, map, snapshot, and browser-test boundaries are
   extended rather than replaced with a parallel system.
 - Exact building approval and activity publication are separate decisions; a valid activity

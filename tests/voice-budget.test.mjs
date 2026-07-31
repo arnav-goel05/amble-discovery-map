@@ -11,7 +11,7 @@ import {
 } from "../scripts/lib/voice-budget-ledger.mjs";
 
 const NOW = "2026-07-18T00:00:00.000Z";
-const RATE_CARD_VERSION = "openai-2026-07-18-gpt-realtime-2.1";
+const RATE_CARD_VERSION = "openai-2026-07-27-gpt-realtime-2.1-mini";
 
 function createEnabledState(overrides = {}) {
   return createVoiceBudgetState({

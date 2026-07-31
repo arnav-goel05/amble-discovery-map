@@ -1,10 +1,10 @@
 # Implementation Plan: Expand Singapore Event Discovery
 
-**Branch**: `develop` | **Feature Directory**: `specs/002-add-web-event-sources` | **Date**: 2026-07-18 | **Spec**: [spec.md](spec.md)
+**Branch**: `develop` | **Feature Directory**: `specs/002-add-web-event-sources` | **Date**: 2026-07-21 | **Spec**: [spec.md](spec.md)
 
 ## Summary
 
-Evolve the implemented nine-source event pipeline from a weekly, fixed-building,
+Evolve the implemented eight-source event pipeline from a weekly, fixed-building,
 direct-authority-only publication model into the approved activity-discovery model. Keep the
 existing rendered-source transport, adapters, evidence capture, venue recovery, deduplication,
 logging, admin review, and atomic snapshot boundaries. Change shared normalization to retain
@@ -15,13 +15,19 @@ venue-occurrence, and published identities; and reconcile failures per affected 
 before applying release-wide gates. Extend the existing search experience with mapped,
 secret/location-TBA, and multiple-location views.
 
+This amendment adds one shared ten-field extraction contract for every enabled source. Detail
+pages use bounded direct official HTML and embedded structured metadata first, retain the existing
+free rendered transport as fallback, record field-level completeness and evidence hashes, reuse
+terminal source omissions, and feed richer evidence through the existing normalization,
+deduplication, venue, reporting, and atomic-publication paths.
+
 ## Technical Context
 
 **Language/Version**: Node.js 24+ JavaScript, primarily ECMAScript modules
 
-**Primary Dependencies**: Node.js standard library and built-in `fetch`; approved free
-TinyFish Fetch REST capability; existing Vite 8, Playwright 1.61, MapLibre, deck.gl, and Three.js
-stack; no new runtime package
+**Primary Dependencies**: Node.js standard library and built-in `fetch`; official HTML,
+JSON-LD and microdata; approved free TinyFish Search and Fetch REST fallbacks; existing Vite 8, Playwright 1.61, MapLibre,
+deck.gl, and Three.js stack; no new runtime package
 
 **Storage**: Versioned JSON source/policy/venue configuration; immutable
 `data/snapshots/<run-id>/` catalogues and `data/approved-snapshot.json`; ignored captures,
@@ -41,13 +47,17 @@ and atomic catalogue publication
 fetch each canonical page at most once per run; avoid material regression in current event
 search and map interaction benchmarks; produce byte-equivalent results for identical evidence
 
+**Enrichment Goal**: Assign `present`, `not_published_by_source`, or `extraction_failed` to title,
+schedule, venue, address, description, category, price, organizer, availability, and URL for every
+retrieved event page; reuse unchanged terminal omissions by evidence hash and contract version
+
 **Constraints**: Free/open retrieval only; configured bounded source surfaces; validated
 public-network destinations and redirects; no access-control circumvention; all active/future
 retention cannot create unbounded recurrence expansion; exact building highlights still
 require approved OneMap evidence; isolated failures cannot delete or block unrelated safe
 identities; release-wide invalidity preserves the prior snapshot
 
-**Scale/Scope**: Nine configured sources—five direct, three editorial, one unavailable—with
+**Scale/Scope**: Eight configured sources—five direct and three editorial—with
 hundreds of source records, potentially longer future horizons, mapped and off-map outputs,
 and one shared reconciliation/publication path
 
@@ -60,7 +70,6 @@ and one shared reconciliation/publication path
 |    30 | Fever Singapore        | direct        | enabled         | Include dated, selectable, and anytime activities             |
 |    40 | Visit Singapore        | direct        | enabled         | Include individual happenings extracted from details/guides   |
 |    50 | Singapore Film Society | direct        | enabled         | Include public and access-restricted programmes               |
-|    60 | Roots/HAN              | unavailable   | disabled        | Report only until source contract revalidation                |
 |    70 | Honeycombers           | editorial     | enabled         | Corroborate first; publish sufficient editorial-only evidence |
 |    80 | ArtsEquator            | editorial     | enabled         | Corroborate first; publish sufficient editorial-only evidence |
 |    90 | Time Out Singapore     | editorial     | enabled         | Corroborate first; publish sufficient editorial-only evidence |
@@ -217,6 +226,10 @@ No constitution violations or exceptions.
     refusing partial-success claims, classifying provider-policy responses, parsing compact
     date ranges, and conservatively collapsing same-source cross-surface repeats. Validate this
     amendment with fixtures only; a live weekly run remains a separate operational gate.
+13. Before normalization, apply a resumable missing-venue recovery overlay. Search once per
+    otherwise location-less physical occurrence, fetch at most three candidates, require one
+    event-specific authoritative Singapore location, and leave ambiguous/not-found outcomes
+    unchanged. Keep raw captures immutable and make recovery diagnostics part of run evidence.
 
 ## Phase 0 Research Output
 

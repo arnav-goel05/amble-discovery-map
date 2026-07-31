@@ -41,8 +41,124 @@ requires another explicit owner-approved policy change.
 - Routine development, CI, and browser tests use deterministic mock traffic and spend USD 0.
 - The server reserves a conservative worst-case amount before accepting each billable turn.
   Unknown rates, models, usage shapes, or missing settlement events fail closed.
+- Realtime session and response requests do not set `max_output_tokens`; generation uses the
+  approved model's intrinsic maximum. The policy uses that documented provider maximum only to
+  reserve a conservative worst-case response cost before work begins.
 - Cap exhaustion, either kill switch, or provider failure ends active voice work and preserves
   local text and direct-interface controls without calling another paid model.
+
+### Voice reliability logs and response timeout
+
+Each provider response has a 30-second server-side watchdog independent of the 60-second idle
+limit, five-minute session limit, and provider output-token maximum. `response.done`, browser
+interruption, and every terminal session path clear the watchdog. If the provider never completes,
+the relay attempts `response.cancel`, records `response_timeout`, conservatively holds the pending
+reservation, and terminates through the standard voice-unavailable lifecycle.
+
+Worker and local relay logs emit one JSON record per applicable phase:
+`audio_committed`, `response_requested`, `response_created`, `first_audio`, `response_done`,
+`response_timeout`, or `session_terminal`. Use `sessionIdHash` and
+`turnNumber` to correlate records, then compare `elapsedMs` and `sincePreviousPhaseMs` to locate the
+delay. For example, a long gap between `response_created` and `first_audio` is provider
+generation/audio latency; a missing `response_created` after `response_requested` is a provider
+acceptance stall.
+
+Committed microphone audio is understood directly by the Realtime model. The relay does not
+configure, reserve, or wait for a separate input-transcription service. It reserves the response
+envelope before accepting audio, projects foundational plus currently eligible typed
+capabilities, commits the buffer, and immediately requests the response. Unexpected late
+transcription events are ignored and cannot alter session state.
+
+The record schema is deliberately closed to `schemaVersion`, `event`, `sessionIdHash`,
+`turnNumber`, `phase`, `occurredAt`, `elapsedMs`, `sincePreviousPhaseMs`, `eventCode`, and
+`terminalReason`. Never add audio, transcripts, prompts, tool arguments/results, provider bodies,
+exact location, raw session IDs, credentials, or other user content. These records are minimal
+reliability logs and must not be repurposed as product analytics.
+
+### Local content-debug mode
+
+Detailed voice protocol content is available only from an explicitly activated local development
+process:
+
+```bash
+NODE_ENV=development REALTIME_CONTENT_DEBUG=true npm run dev
+```
+
+This emits `voice.content_debug` JSON records to the active terminal for
+`browser_to_relay`, `relay_to_provider`, `provider_to_relay`, and `relay_to_browser` messages.
+Permitted transcripts, prompts, tool arguments/results, and provider/browser fields are included so
+ordering and malformed-payload failures can be reproduced. Credential, authorization, cookie,
+token, password, secret, signing/private-key, raw-session-identity, and audio values are
+recursively replaced before the logger receives the record.
+
+The mode is off unless both startup values match exactly. It cannot be activated by the browser and
+is not wired into the Cloudflare Worker, preview, or production adapters. It writes no file,
+database, cache, browser storage, analytics, or remote telemetry. Do not redirect or tee this
+terminal output into a file; stop the local process when debugging is complete. Production and
+routine local operation continue to use only the closed privacy-safe phase records above.
+
+### Bounded local content-audit mode
+
+When a local defect must be reviewed after the process ends, add the separate audit flag:
+
+```bash
+NODE_ENV=development REALTIME_CONTENT_DEBUG=true REALTIME_CONTENT_AUDIT=true npm run dev
+```
+
+All four gates must be active: the Vite development adapter, `NODE_ENV=development`,
+`REALTIME_CONTENT_DEBUG=true`, and `REALTIME_CONTENT_AUDIT=true`. Missing any gate creates no audit
+file. Preview and production cannot construct the sink.
+
+The sink appends already-sanitized JSONL records under
+`outputs/realtime-content-audit/`. The directory is owner-only (`0700`), files are owner-only
+(`0600`), each file rotates before 5 MiB, no more than five files remain, and files older than
+seven days are deleted during startup or rotation cleanup. There is no uploader, background
+worker, database, browser storage, analytics, or telemetry path.
+
+Repeated identical `session.update` payloads are fingerprinted after their first permitted full
+copy so static instructions and capability schemas do not crowd out conversational turns. A single
+oversized record becomes a bounded fingerprint marker. Provider-generated transcript events are
+retained only when the provider actually emitted them; native-audio turns without a user
+transcription event have audio metadata and lifecycle records only. The audit never infers user
+speech.
+
+Audit I/O failure does not stop or change a voice session; the terminal receives one bounded
+`voice.content_audit_warning` without conversational content. Delete the directory when the local
+investigation is complete. It is gitignored and must not be copied into an application data store
+or remote service.
+
+### Realtime protocol 1.1 rollout
+
+The shared capability bridge is an atomic browser/relay contract. Protocol `1.0` clients cannot
+resume against a protocol `1.1` Worker, and a protocol `1.1` client must reject a `1.0` admission
+response.
+
+1. Keep `REALTIME_ENABLED=false` and the D1 runtime switch disabled.
+2. Deploy the browser bundle, local relay, Worker admission route, provider relay, capability
+   registry, schemas, and parity fixtures from the same verified source revision.
+3. Run the mocked capability-contract, connector-parity, browser-matrix, production-build, and
+   secret-scan gates against that revision.
+4. Verify that admission requires exact protocol `1.1`, exposes only `app.inspect`,
+   `catalog.search`, and `catalog.get` before authoritative context, and rejects protocol `1.0`.
+5. Enable the D1 switch and then `REALTIME_ENABLED` only after the owner confirms the pinned policy,
+   rate card, remaining reservation capacity, and optional live-smoke authorization.
+
+Realtime capability IDs remain canonical dotted IDs in application contracts, browser messages,
+validation, and dispatch. The relay deterministically projects them to provider-only function names
+using a reversible `__` separator and validates uniqueness before admitting traffic. Do not expose
+those provider aliases as application identities.
+
+Every initial or per-turn provider configuration is an acknowledgement barrier. A response may be
+created only after the provider returns a matching `session.updated` containing the expected tool
+names and instructions. Missing, stale, duplicate, or mismatched acknowledgements and all provider
+`error` events terminate the affected session with the bounded public unavailable message. The
+opening welcome is supplied only as one response's instructions so it cannot contaminate later
+turns.
+
+To stop or roll back, disable `REALTIME_ENABLED` first and then the D1 switch. Active sessions must
+terminate and clear browser-held audio, transcript, exact-location, context, and confirmation state.
+Restore the last verified browser and Worker artifacts together; never roll back only one side of
+the protocol. Text and direct controls remain available throughout the disabled interval.
 
 ## Retention
 
@@ -51,9 +167,11 @@ deleted when the complete challenge session becomes terminal, or after seven day
 session is abandoned. The service stores no photo bytes and no product telemetry.
 
 Realtime audio, transcripts, exact location, screenshots, interface context, and confirmations are
-session-only and are never written to application storage or logs. Provider-side processing and
-retention are disclosed before microphone access; clearing application state does not imply that the
-provider has deleted its independently governed safety records.
+session-only and are never written to application storage or routine/production logs. The explicit
+local content-debug mode may print permitted sanitized content to the active terminal only; it
+creates no application persistence. Provider-side processing and retention are disclosed before
+microphone access; clearing application state does not imply that the provider has deleted its
+independently governed safety records.
 
 # Conversational map context assets
 
@@ -62,3 +180,15 @@ provider has deleted its independently governed safety records.
 Run `npm run build:map-context` before a release when the catalogue changes. Generation hashes the exact downloaded responses, validates Singapore WGS84 geometry and stable source identities, and writes review-stage outputs below `outputs/map-context-staging/`. Publish each GeoJSON asset together with its manifest only after source, identity, geometry, station-consolidation, licence, build, browser, and benchmark gates pass. A source outage, rate limit, feature loss, or failed gate must preserve the last approved pair.
 
 The runtime presents MRT stations and lines as visual context by default. Merely showing or hiding them must not affect discovery ranking; a transit constraint is activated only by an explicit user request. Location remains in memory, exposes only coarse area to assistant context by default, and is cleared on terminal cleanup.
+
+## Native event facet classification
+
+Native voice event classification is included in the existing forced ingress response. The relay
+projects only bounded current facet labels and does not issue a second OpenAI request. Model labels
+and evidence are proposals: deterministic application code verifies them against the current
+catalogue, original utterance, catalogue revision, and application revision before execution.
+Typed event search continues to use the local deterministic parser.
+
+For local diagnosis, compare the ingress `utterance`, proposed `eventQuery`, current
+`eventFacetCatalog.catalogRevision`, and terminal capability outcome in the content audit. Do not
+bypass the verifier or add source-specific label exceptions.

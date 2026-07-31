@@ -161,3 +161,39 @@ test("voice browser lifecycle modules contain no persistence APIs", () => {
     );
   }
 });
+
+test("performance diagnostics remain local and contain no telemetry transport or persistence", () => {
+  const files = [
+    "activity-scenes/performance-diagnostics.js",
+    "activity-scenes/performance-diagnostics-model.js",
+    "activity-scenes/performance-diagnostics-view.js",
+    "app-entry.js",
+  ];
+  for (const file of files) {
+    const source = fs.readFileSync(file, "utf8");
+    assert.doesNotMatch(
+      source,
+      /\b(?:fetch\s*\(|new\s+XMLHttpRequest|new\s+WebSocket|sendBeacon\s*\(|localStorage|sessionStorage|indexedDB|CacheStorage|caches\.(?:open|match|put)|document\.cookie)\b/,
+      `${file} must not transmit or persist performance diagnostics`,
+    );
+    assert.doesNotMatch(
+      source,
+      /cloudflareinsights|data-cf-beacon|google-analytics|googletagmanager|\bgtag\s*\(|\bmixpanel\b|\bsegment\.com\b/i,
+      `${file} must not include a telemetry SDK`,
+    );
+  }
+});
+
+test("performance snapshot implementation uses an aggregate allowlist", () => {
+  const source = fs.readFileSync(
+    "activity-scenes/performance-diagnostics.js",
+    "utf8",
+  );
+  assert.doesNotMatch(source, /\{\s*\.\.\.documentRef\.body\.dataset\s*\}/);
+  assert.doesNotMatch(
+    source,
+    /snapshotId|selectedDiscoveryArea|eventPanelLandmark|latitude|longitude|conversation|restaurantDetail/i,
+  );
+  assert.match(source, /poiActiveLayerCount/);
+  assert.match(source, /poiConfiguredLayerCount/);
+});

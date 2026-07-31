@@ -1,0 +1,287 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "geylang-east-public-library",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "geylang-east-public-library",
+    "tan-tock-seng-hospital",
+    "b-central",
+    "tong-fong-building",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "stamford-arts-centre",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre"
+  ],
+  "generatedAt": "2026-07-21T18:57:05.797Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/45/17_0.b3dm",
+      "sourceSha256": "8b43dcfcf050fc32f32ecc6e1b5449c33e63e279e4ca53e978de3cdfaf46b80e",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "gmlNames": [
+        "GEYLANG EAST PUBLIC LIBRARY"
+      ],
+      "poiFile": "17_0-88500a49ea3f.b3dm",
+      "poiSha256": "0996729ffd3250e7e12233ee01f9eb8afe6ce492be7660b728430e042d32e169",
+      "poiTriangles": 872,
+      "backgroundFile": "optimized-tiles/6/45/17_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "backgroundSha256": "a1856da1d4d7f9adeeaaf29768b98f00e9928e8ee6af626f76692f48c7a0d083",
+      "backgroundTriangles": 6206
+    },
+    {
+      "sourceTile": "tiles/6/45/17_1.b3dm",
+      "sourceSha256": "11fa8dd35a1ccef8baebae13c0477863869a59e698f9b8bc38428fe36b86ddb7",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "gmlNames": [
+        "GEYLANG EAST PUBLIC LIBRARY"
+      ],
+      "poiFile": "17_1-44dc9433450f.b3dm",
+      "poiSha256": "fdc6417dbf3d61452a45874a9c957450d1e9f358d4618af083d0080963e88f33",
+      "poiTriangles": 872,
+      "backgroundFile": "optimized-tiles/6/45/17_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "backgroundSha256": "1d8d669b90cac07e43571bb32c2452ff85b44517488ba9be161069a035cff8d1",
+      "backgroundTriangles": 6206
+    },
+    {
+      "sourceTile": "tiles/6/45/17_2.b3dm",
+      "sourceSha256": "a2f72075a5e0687f87ed77c0f3058aa61d8cf070aa884e507e1968ed47119404",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "gmlNames": [
+        "GEYLANG EAST PUBLIC LIBRARY"
+      ],
+      "poiFile": "17_2-479d1887e80d.b3dm",
+      "poiSha256": "f62e2434b60b965e58b73f8a31ad1c47c54c3d70abd2e1fc34558988d351d9cc",
+      "poiTriangles": 872,
+      "backgroundFile": "optimized-tiles/6/45/17_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "backgroundSha256": "a98dd36522bb53d6ebb52ad0b7840f6b693848de2d6ef1e46413c095a10e45e1",
+      "backgroundTriangles": 6206
+    },
+    {
+      "sourceTile": "tiles/6/45/17_3.b3dm",
+      "sourceSha256": "96cc4f108b2d5ef4d8bbd9e92659b8ba5a236cc4ac8fcc51b07679225bd40c4f",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "gmlNames": [
+        "GEYLANG EAST PUBLIC LIBRARY"
+      ],
+      "poiFile": "17_3-5bbe38996fb2.b3dm",
+      "poiSha256": "39c8cf152eb9b9bac2fb5e4ee9fc9087226e50897a64697b6eb5538165f43f71",
+      "poiTriangles": 872,
+      "backgroundFile": "optimized-tiles/6/45/17_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "backgroundSha256": "42925835adc2abb2ee08339fb1f2ddd115151c6a55e681df842bd917691d46c1",
+      "backgroundTriangles": 6206
+    },
+    {
+      "sourceTile": "tiles/6/45/17_4.b3dm",
+      "sourceSha256": "db638cea4db252379145becb0d64ca36d1b10f19c8604f1db857884b86682b10",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "gmlNames": [
+        "GEYLANG EAST PUBLIC LIBRARY"
+      ],
+      "poiFile": "17_4-494e11857773.b3dm",
+      "poiSha256": "68984a388c04175ba8cee3066a215377f17225fc85a044ad0b4b7085c1105570",
+      "poiTriangles": 872,
+      "backgroundFile": "optimized-tiles/6/45/17_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "backgroundSha256": "f2b04658ee05c532043a26df319e1b9cef280f8922fbe67477704ac52233eed5",
+      "backgroundTriangles": 6206
+    },
+    {
+      "sourceTile": "tiles/6/45/17_5.b3dm",
+      "sourceSha256": "c41f3ff408b1e214dbdcd8bf8d7dbbdb0ad440b835ca7521f37ba63619063f45",
+      "originalBatchIds": [
+        9
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "gmlNames": [
+        "GEYLANG EAST PUBLIC LIBRARY"
+      ],
+      "poiFile": "17_5-f1c9cc9f06d1.b3dm",
+      "poiSha256": "43dcee7a2782fe55f1f24f6a4a91f89b38063ef70d42fb5301806f89e22e4374",
+      "poiTriangles": 872,
+      "backgroundFile": "optimized-tiles/6/45/17_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_39e0c7a0-0977-4dca-8bc5-d84d77cc25f9"
+      ],
+      "backgroundSha256": "ab1696ef6ead72d4a76e0dbe059df7568a238473e0ac8b272a461098ca9f5d3e",
+      "backgroundTriangles": 6206
+    }
+  ]
+}

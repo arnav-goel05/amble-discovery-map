@@ -1,8 +1,16 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 
 import { validateApprovedSnapshot } from "./contracts/baseline-contracts.mjs";
+import { isStructuralVenueLabel } from "./event-pipeline/venue-values.mjs";
+
+const require = createRequire(import.meta.url);
+const {
+  validatePublicActivityCatalogue,
+  validatePublicLandmarks,
+} = require("./public-event-catalogue.cjs");
 
 export class ApprovedSnapshotError extends Error {
   constructor(code, message) {
@@ -120,6 +128,14 @@ export function assembleCandidateSnapshot({
         `Candidate event identity is missing or duplicated: ${publishedEventId ?? "missing"}`,
       );
     identities.add(publishedEventId);
+    if (
+      isStructuralVenueLabel(event.venue) ||
+      isStructuralVenueLabel(event.venueName)
+    )
+      fail(
+        "snapshot_event_venue_invalid",
+        `Candidate event contains a structural venue label: ${publishedEventId}`,
+      );
     const lifecycleState = event.lifecycleState ?? "held";
     if (!(lifecycleState in outcomes))
       fail(
@@ -272,7 +288,9 @@ export function loadApprovedSnapshot({
     manifest.landmarksRef,
     manifest.poisRef,
     manifest.tilesetRef,
+    manifest.activitiesRef,
     manifest.eventsRef,
+    manifest.internalEventsRef,
   ].filter(Boolean)) {
     const file = resolveInside(snapshotDirectory, reference);
     const expectedHash = manifest.artifactHashes[reference];
@@ -308,6 +326,11 @@ export function loadApprovedSnapshot({
             events: `${publicBase}${manifest.eventsRef.split("/").map(encodeURIComponent).join("/")}`,
           }
         : {}),
+      ...(manifest.activitiesRef
+        ? {
+            activities: `${publicBase}${manifest.activitiesRef.split("/").map(encodeURIComponent).join("/")}`,
+          }
+        : {}),
     },
     directory: snapshotDirectory,
     manifestHash: pointer.manifestHash,
@@ -323,6 +346,7 @@ export function resolveActiveSnapshotAsset({ root, snapshotId, reference }) {
       active.landmarksRef,
       active.poisRef,
       active.tilesetRef,
+      active.activitiesRef,
       active.eventsRef,
     ].filter(Boolean),
   );
@@ -384,11 +408,35 @@ export function stageImmutableSnapshot({
       snapshot.eventsRef && references.includes(snapshot.eventsRef)
         ? snapshot.eventsRef
         : references.find((item) => /events/i.test(item));
+    const activitiesRef =
+      snapshot.activitiesRef && references.includes(snapshot.activitiesRef)
+        ? snapshot.activitiesRef
+        : references.find((item) => /activities/i.test(item));
+    const internalEventsRef =
+      snapshot.internalEventsRef &&
+      references.includes(snapshot.internalEventsRef)
+        ? snapshot.internalEventsRef
+        : references.find((item) => /internal-events/i.test(item));
     if (!landmarksRef || !poisRef || !tilesetRef)
       fail(
         "snapshot_stage_invalid",
         "Landmark, POI, and tileset artifacts are required",
       );
+    if (activitiesRef) {
+      const activities = validatePublicActivityCatalogue(
+        readJson(
+          resolveInside(snapshotDirectory, activitiesRef),
+          "snapshot_activity_catalogue_invalid",
+        ),
+      );
+      validatePublicLandmarks(
+        readJson(
+          resolveInside(snapshotDirectory, landmarksRef),
+          "snapshot_landmarks_invalid",
+        ),
+        activities,
+      );
+    }
     const artifactHashes = Object.fromEntries(
       references.map((reference) => [
         reference,
@@ -400,9 +448,12 @@ export function stageImmutableSnapshot({
       landmarksRef,
       poisRef,
       tilesetRef,
+      ...(activitiesRef ? { activitiesRef } : {}),
       ...(eventsRef ? { eventsRef } : {}),
+      ...(internalEventsRef ? { internalEventsRef } : {}),
       artifactHashes,
     };
+    if (activitiesRef) delete base.eventsRef;
     delete base.contentHash;
     const manifest = validateApprovedSnapshot({
       ...base,

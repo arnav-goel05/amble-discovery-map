@@ -12,6 +12,11 @@ const sampanLandmarkFixture = approvedLandmarksFixture.find((landmark) =>
 const approvedPoisFixture = JSON.parse(
   readFileSync(new URL("../data/snapshots/initial/pois.json", import.meta.url)),
 );
+const backgroundGeometryRelease = JSON.parse(
+  readFileSync(
+    new URL("../data/background-geometry-release.json", import.meta.url),
+  ),
+);
 const sampanPoiFixture = approvedPoisFixture.find(
   (poi) => poi.id === sampanLandmarkFixture.id,
 );
@@ -84,7 +89,7 @@ test("empty approved snapshot renders no highlights, pills, or panels", async ({
   );
   await expect(page.locator("body")).toHaveAttribute(
     "data-background-tileset-url",
-    "optimized-tiles/tileset.json?assetMount=site-root-v1",
+    backgroundGeometryRelease.tilesetUrl,
   );
   expect(errors).toEqual([]);
 
@@ -308,7 +313,7 @@ test("search selection centers the event pill without a redundant direction poin
   expect(center[1]).toBeCloseTo(1.2841, 2);
 });
 
-test("event search matches titles, venues, and dates and reports empty results", async ({
+test("event filter typing offers local free-text commit without outlined text", async ({
   page,
 }) => {
   await page.goto("/test-harness.html");
@@ -339,39 +344,205 @@ test("event search matches titles, venues, and dates and reports empty results",
       ],
     });
     const search = createLandmarkEventSearch({
-      onSearch: (query) => layer.setSearchQuery(query),
+      categories: ["Performances"],
+      onFilter: (filters) => layer.setFilters(filters),
     });
     const input = search.input;
-    const searchFor = (query) => {
-      input.value = query;
-      input.dispatchEvent(new Event("input"));
-      return {
-        hidden: document
-          .querySelector(".landmark-event-pill")
-          .getAttribute("aria-hidden"),
-        status: document.querySelector(".landmark-event-search__status")
-          .textContent,
-      };
-    };
+    input.focus();
+    const before = document
+      .querySelector(".landmark-event-pill")
+      .getAttribute("aria-hidden");
+    input.value = "opera";
+    input.dispatchEvent(new Event("input"));
+    const noOptions = document.querySelector(
+      ".landmark-event-search__no-options",
+    );
+    const noOptionsStyle = getComputedStyle(noOptions);
     const state = {
-      title: searchFor("journey"),
-      venue: searchFor("drama"),
-      date: searchFor("14 jul"),
-      none: searchFor("opera"),
+      after: document
+        .querySelector(".landmark-event-pill")
+        .getAttribute("aria-hidden"),
+      before,
+      noOptions: noOptions?.textContent,
+      noOptionsTypography: {
+        backgroundImage: noOptionsStyle.backgroundImage,
+        textFillColor: noOptionsStyle.webkitTextFillColor,
+        textShadow: noOptionsStyle.textShadow,
+        textStrokeWidth: noOptionsStyle.webkitTextStrokeWidth,
+      },
+      status: document.querySelector(".landmark-event-search__status")
+        .textContent,
+      submitButtonCount: document.querySelectorAll(
+        ".landmark-event-search__submit",
+      ).length,
     };
     search.destroy();
     layer.destroy();
     return state;
   });
   expect(result).toEqual({
-    title: { hidden: "false", status: "" },
-    venue: { hidden: "false", status: "" },
-    date: { hidden: "false", status: "" },
-    none: { hidden: "true", status: "No matching events" },
+    after: "false",
+    before: "false",
+    noOptions: "Press Enter to search for “opera”.",
+    noOptionsTypography: {
+      backgroundImage: "none",
+      textFillColor: "rgb(82, 96, 111)",
+      textShadow: "none",
+      textStrokeWidth: "0px",
+    },
+    status: "",
+    submitButtonCount: 0,
   });
 });
 
-test("event search shows selectable results and category filters", async ({
+test("event filter typing detects a suitable dimension and supports deviations", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  await page.evaluate(async () => {
+    const { createLandmarkEventSearch } =
+      await import("/activity-scenes/landmark-event-search.js");
+    globalThis.__guidedSearch = createLandmarkEventSearch({
+      categories: ["Performances"],
+      onFilter: (filters) => ({
+        matchedEvents: 0,
+        query: filters.query,
+        results: [],
+      }),
+    });
+  });
+  const input = page.locator("#landmark-event-search-input");
+  await input.focus();
+  await expect(
+    page.locator('[data-filter-option-id="what:performances"]'),
+  ).toBeVisible();
+  await page.locator('[data-filter-dimension="where"]').click();
+  await expect(input).toHaveAttribute("placeholder", "Search Where");
+  await input.fill("today");
+  await expect(
+    page.locator('[data-filter-option-id="when:today"]'),
+  ).toBeVisible();
+  await expect(
+    page.locator(".landmark-event-search__option-group-heading"),
+  ).toHaveText("When");
+
+  await input.fill("");
+  await page.locator('[data-filter-dimension="what"]').click();
+  await expect(page.locator('[data-filter-dimension="what"]')).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
+  await page.evaluate(() => globalThis.__guidedSearch.destroy());
+});
+
+test("selected dimensions stay hidden until removed from their phrase editor", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  await page.evaluate(async () => {
+    const { createLandmarkEventSearch } =
+      await import("/activity-scenes/landmark-event-search.js");
+    globalThis.__guidedSearch = createLandmarkEventSearch({
+      categories: ["Exhibitions"],
+      onFilter: (filters) => ({
+        matchedEvents: 0,
+        query: filters.query,
+        results: [],
+      }),
+    });
+  });
+  const input = page.locator("#landmark-event-search-input");
+  await input.focus();
+  await page.locator('[data-filter-dimension="when"]').click();
+  await page.locator('[data-filter-option-id="when:today"]').click();
+  await expect(page.locator('[data-filter-dimension="when"]')).toHaveCount(0);
+  const phrase = page.locator('[data-filter-token-id="when:today"]');
+  await expect(phrase).not.toHaveCSS("border-top-style", "solid");
+  await phrase.click();
+  await expect(page.locator('[data-filter-dimension="when"]')).toBeVisible();
+  await page.getByRole("button", { name: "Remove selection" }).click();
+  await expect(phrase).toHaveCount(0);
+  await expect(page.locator('[data-filter-dimension="when"]')).toBeVisible();
+  await page.evaluate(() => globalThis.__guidedSearch.destroy());
+});
+
+test("sentence composer classifies a full request locally and renders bold phrases", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  await page.evaluate(async () => {
+    const { createLandmarkEventSearch } =
+      await import("/activity-scenes/landmark-event-search.js");
+    const discoveryModel = {
+      filterOptions: () => ({
+        categories: ["Workshops & Classes"],
+        locations: [
+          {
+            id: "venue:esplanade",
+            kind: "venue",
+            value: "Esplanade",
+            label: "Esplanade",
+            availableCount: 4,
+          },
+        ],
+      }),
+      filter: (filters) => {
+        globalThis.__sentenceFilterCalls ??= [];
+        globalThis.__sentenceFilterCalls.push(filters);
+        return { matchedEvents: 0, query: filters.query, results: [] };
+      },
+    };
+    globalThis.__sentenceSearch = createLandmarkEventSearch({
+      discoveryModel,
+    });
+  });
+  const input = page.locator("#landmark-event-search-input");
+  await input.fill(
+    "Find workshops this weekend near Esplanade under $25 romantic",
+  );
+  await input.press("Enter");
+  await expect(page.locator(".landmark-event-search__token")).toHaveCount(5);
+  await expect(page.locator(".landmark-event-search__token strong")).toHaveText(
+    [
+      "Workshops & Classes",
+      "This weekend",
+      "Esplanade",
+      "Under $25",
+      "romantic",
+    ],
+  );
+  await expect(page.locator(".landmark-event-search__token i")).toHaveCount(0);
+  const state = await page.evaluate(() => {
+    const tokenStyle = getComputedStyle(
+      document.querySelector(".landmark-event-search__token"),
+    );
+    return {
+      filters: globalThis.__sentenceFilterCalls.find(
+        ({ priceRange }) => priceRange === "under-25",
+      ),
+      requests: performance
+        .getEntriesByType("resource")
+        .filter(({ name }) => /openai|chatgpt/i.test(name)).length,
+      tokenStyle: {
+        backgroundColor: tokenStyle.backgroundColor,
+        borderTopStyle: tokenStyle.borderTopStyle,
+      },
+    };
+  });
+  expect(state.filters).toMatchObject({
+    categories: ["Workshops & Classes"],
+    dateRange: "this-weekend",
+    priceRange: "under-25",
+    query: "romantic",
+    where: { kind: "venue", venueKey: "esplanade" },
+  });
+  expect(state.requests).toBe(0);
+  expect(state.tokenStyle.backgroundColor).toBe("rgba(0, 0, 0, 0)");
+  expect(state.tokenStyle.borderTopStyle).toBe("none");
+  await page.evaluate(() => globalThis.__sentenceSearch.destroy());
+});
+
+test("event filter shows selectable results and inclusive What options", async ({
   page,
 }) => {
   await page.goto("/test-harness.html");
@@ -419,27 +590,43 @@ test("event search shows selectable results and category filters", async ({
       onFilter: (filters) => layer.setFilters(filters),
       onResultSelect: (item) => layer.selectResult(item),
     });
-    search.input.value = "concert";
-    search.input.dispatchEvent(new Event("input"));
+    search.input.focus();
     const resultTitle = document.querySelector(
       ".landmark-event-search__result strong",
     )?.textContent;
     document.querySelector(".landmark-event-search__result")?.click();
+    search.input.focus();
+    document.querySelector('[data-filter-dimension="what"]')?.click();
     const categoryButtons = [
-      ...document.querySelectorAll(".landmark-event-search__category"),
+      ...document.querySelectorAll('[data-filter-option-id^="what:"]'),
     ];
+    const categories = categoryButtons.map(
+      (node) => node.querySelector("strong")?.textContent,
+    );
+    const thumbnails = categoryButtons.map((node) =>
+      node
+        .querySelector(".landmark-event-search__thumbnail img")
+        ?.getAttribute("src"),
+    );
     categoryButtons[0]?.click();
-    categoryButtons[1]?.click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    search.input.value = "workshops";
+    search.input.dispatchEvent(new Event("input"));
+    document
+      .querySelector('[data-filter-option-id="what:workshops-classes"]')
+      ?.click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     const output = {
-      categories: [
-        ...document.querySelectorAll(".landmark-event-search__category"),
-      ].map((node) => node.getAttribute("aria-label")),
-      icons: [
-        ...document.querySelectorAll(".landmark-event-search__category i"),
-      ].map((node) => node.className),
-      pressed: categoryButtons.map((node) => node.getAttribute("aria-pressed")),
+      categories,
+      thumbnails,
+      selected: [
+        ...document.querySelectorAll('[data-filter-token-id^="what:"]'),
+      ].map((node) => node.textContent),
       resultTitle,
-      selected: selection?.sourceEvents[selection.selectedEventIndex]?.id,
+      selectedEvent: selection?.sourceEvents[selection.selectedEventIndex]?.id,
+      whatDimensionCount: document.querySelectorAll(
+        '[data-filter-dimension="what"]',
+      ).length,
     };
     search.destroy();
     layer.destroy();
@@ -447,14 +634,18 @@ test("event search shows selectable results and category filters", async ({
   });
   expect(result).toEqual({
     categories: ["Performances", "Workshops & Classes"],
-    icons: ["ph-bold ph-microphone-stage", "ph-bold ph-paint-brush"],
-    pressed: ["false", "true"],
+    thumbnails: [
+      "/event-filter-thumbnails/performances.png",
+      "/event-filter-thumbnails/workshops-classes.png",
+    ],
+    selected: ["Performances", "Workshops & Classes"],
     resultTitle: "Evening Jazz Concert",
-    selected: "concert",
+    selectedEvent: "concert",
+    whatDimensionCount: 0,
   });
 });
 
-test("event search exposes a working date filter without a price filter", async ({
+test("event filter exposes a working custom date option and recognized prices", async ({
   page,
 }) => {
   await page.goto("/test-harness.html");
@@ -469,7 +660,6 @@ test("event search exposes a working date filter without a price filter", async 
       },
     });
     const endBlankByDefault = search.filters.dateEnd.value;
-    search.filters.dateEnd.value = "2026-07-14";
     search.filters.dateButton.click();
     const endBlankWhenAnyDateOpens = search.filters.dateEnd.value;
     search.filters.dateStart.value = "2026-07-14";
@@ -482,6 +672,7 @@ test("event search exposes a working date filter without a price filter", async 
     search.filters.dateEnd.dispatchEvent(new Event("input"));
     const dateLabelBeforeApply = search.filters.dateButton.textContent;
     search.filters.dateApply.click();
+    document.querySelector('[data-filter-dimension="price"]')?.click();
     const output = {
       dateLabel: search.filters.dateButton.textContent,
       dateLabelBeforeApply,
@@ -490,7 +681,11 @@ test("event search exposes a working date filter without a price filter", async 
       hasQuickScheduleFilters: Boolean(
         document.querySelector(".landmark-event-search__quick-dates"),
       ),
-      hasPriceFilter: Boolean(document.querySelector('[name="priceRange"]')),
+      priceOptions: [
+        ...document.querySelectorAll(
+          '[data-filter-option-id^="price:"] strong',
+        ),
+      ].map((node) => node.textContent),
       sameDayLabel,
       startOnlyLabel,
       filters,
@@ -504,7 +699,7 @@ test("event search exposes a working date filter without a price filter", async 
     endBlankByDefault: "",
     endBlankWhenAnyDateOpens: "",
     hasQuickScheduleFilters: false,
-    hasPriceFilter: false,
+    priceOptions: ["Free", "Under $25", "$25–$50", "$50–$100", "Over $100"],
     sameDayLabel: "14 Jul",
     startOnlyLabel: "From 14 Jul",
     filters: {
@@ -515,6 +710,7 @@ test("event search exposes a working date filter without a price filter", async 
       dateEnd: "2026-07-21",
       placementView: "all",
       priceRange: "any",
+      where: null,
     },
   });
 });
@@ -542,20 +738,24 @@ test("event location views support keyboard, touch-sized controls, empty, and er
         return { matchedEvents: results.length, query: "", results };
       },
     });
+    search.input.focus();
+    document.querySelector('[data-filter-dimension="where"]').click();
     const secretTab = search.filters.placementViews.get("secret_tba");
-    secretTab.click();
-    const result = document.querySelector(".landmark-event-search__result");
     search.input.dispatchEvent(
       new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }),
     );
-    const keyboardFocused = document.activeElement === result;
-    const touchTargets = [
-      ...document.querySelectorAll(".landmark-event-search__view"),
-    ].every((node) => node.getBoundingClientRect().height >= 44);
-    secretTab.dispatchEvent(
-      new PointerEvent("pointerup", { pointerType: "touch", bubbles: true }),
+    const keyboardFocused = document.activeElement?.classList.contains(
+      "landmark-event-search__option",
     );
+    const touchTargets = [
+      ...document.querySelectorAll(".landmark-event-search__option"),
+    ].every((node) => node.getBoundingClientRect().height >= 44);
     secretTab.click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    document
+      .querySelector('[data-filter-token-id="where:mystery-location"]')
+      .click();
+    document.querySelector(".landmark-event-search__remove-phrase").click();
     const empty = {
       state: search.root.dataset.state,
       status: document.querySelector(".landmark-event-search__status")
@@ -696,15 +896,16 @@ test("event search supports exploration before the user knows what to type", asy
       results: [
         ...document.querySelectorAll(".landmark-event-search__result strong"),
       ].map((node) => node.textContent),
-      sameWidthAsInput:
-        Math.abs(
-          search.input.getBoundingClientRect().width -
-            document
-              .querySelector(".landmark-event-search__results")
-              .getBoundingClientRect().width,
-        ) < 0.5,
+      popoverIsCompact:
+        document
+          .querySelector(".landmark-event-search__popover")
+          .getBoundingClientRect().width <= 680,
     };
-    document.querySelector('[aria-label="Workshops & Classes"]').click();
+    document.querySelector('[data-filter-dimension="what"]').click();
+    document
+      .querySelector('[data-filter-option-id="what:workshops-classes"]')
+      .click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     const filtered = {
       heading: document.querySelector(".landmark-event-search__results-title")
         ?.textContent,
@@ -722,10 +923,10 @@ test("event search supports exploration before the user knows what to type", asy
       heading: "Closest to this view",
       count: "2 found",
       results: ["Evening Jazz Concert", "Family Art Workshop"],
-      sameWidthAsInput: result.viewportWidth > 720,
+      popoverIsCompact: true,
     },
     filtered: {
-      heading: "Workshops & Classes nearest first",
+      heading: "Workshops & Classes",
       results: ["Family Art Workshop"],
     },
     viewportWidth: result.viewportWidth,
@@ -771,6 +972,53 @@ test("dismissed event search stays closed during refresh and reopens on user inp
     afterInput: "true",
     afterOtherOverlay: "false",
     afterRefresh: "false",
+  });
+});
+
+test("event filter removes and explains stale options after a dataset replacement", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const state = await page.evaluate(async () => {
+    const { createEventDiscoveryModel } =
+      await import("/activity-scenes/events/event-discovery-model.js");
+    const { createLandmarkEventSearch } =
+      await import("/activity-scenes/landmark-event-search.js");
+    const firstModel = createEventDiscoveryModel([
+      {
+        id: "hall",
+        label: "Hall",
+        anchor: { lng: 103.85, lat: 1.29 },
+        events: [
+          {
+            id: "show",
+            title: "Evening Show",
+            category: "Performances",
+          },
+        ],
+      },
+    ]);
+    const search = createLandmarkEventSearch({ discoveryModel: firstModel });
+    search.input.focus();
+    document.querySelector('[data-filter-dimension="what"]').click();
+    document
+      .querySelector('[data-filter-option-id="what:performances"]')
+      .click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    search.setDiscoveryModel(createEventDiscoveryModel([]));
+    const result = {
+      status: document.querySelector(".landmark-event-search__status")
+        .textContent,
+      tokenCount: document.querySelectorAll(
+        '[data-filter-token-id="what:performances"]',
+      ).length,
+    };
+    search.destroy();
+    return result;
+  });
+  expect(state).toEqual({
+    status: "Performances is no longer available.",
+    tokenCount: 0,
   });
 });
 
@@ -967,7 +1215,7 @@ test("pill and direction positioning stay idle until the map changes", async ({
       listeners.get(name)?.forEach((listener) => listener());
     const map = {
       getCanvas: () => document.getElementById("map-focus"),
-      getZoom: () => 17,
+      getZoom: () => 15,
       on,
       off,
       project: ([lng]) =>
@@ -998,6 +1246,9 @@ test("pill and direction positioning stay idle until the map changes", async ({
       direction: Number(
         document.body.dataset.landmarkDirectionUpdateCount || 0,
       ),
+      clusterPasses: Number(
+        document.body.dataset.landmarkEventClusterPositionPassCount || 0,
+      ),
       pillPasses: Number(
         document.body.dataset.landmarkEventPillPositionPassCount || 0,
       ),
@@ -1009,6 +1260,7 @@ test("pill and direction positioning stay idle until the map changes", async ({
       const currentCounts = readCounts();
       stableTicks =
         currentCounts.direction === previousCounts.direction &&
+        currentCounts.clusterPasses === previousCounts.clusterPasses &&
         currentCounts.pillPasses === previousCounts.pillPasses
           ? stableTicks + 1
           : 0;
@@ -1024,6 +1276,7 @@ test("pill and direction positioning stay idle until the map changes", async ({
       const currentCounts = readCounts();
       if (
         currentCounts.direction > afterIdle.direction &&
+        currentCounts.clusterPasses > afterIdle.clusterPasses &&
         currentCounts.pillPasses > afterIdle.pillPasses
       )
         break;
@@ -1033,15 +1286,20 @@ test("pill and direction positioning stay idle until the map changes", async ({
     pills.destroy();
     direction.destroy();
     return {
+      idleClusterPasses: afterIdle.clusterPasses - beforeIdle.clusterPasses,
       idleDirectionUpdates: afterIdle.direction - beforeIdle.direction,
       idlePillPasses: afterIdle.pillPasses - beforeIdle.pillPasses,
+      movementClusterPasses:
+        afterMovement.clusterPasses - afterIdle.clusterPasses,
       movementDirectionUpdates: afterMovement.direction - afterIdle.direction,
       movementPillPasses: afterMovement.pillPasses - afterIdle.pillPasses,
     };
   });
   expect(result).toEqual({
+    idleClusterPasses: 0,
     idleDirectionUpdates: 0,
     idlePillPasses: 0,
+    movementClusterPasses: 1,
     movementDirectionUpdates: 1,
     movementPillPasses: 1,
   });
@@ -1144,6 +1402,240 @@ test("hidden pills cannot be selected with a pointer", async ({ page }) => {
     .toBe(0);
 
   await page.evaluate(() => window.__hiddenPillLayer.destroy());
+});
+
+test("zoomed-out event locations reconcile into filtered cluster counts before pills", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const state = await page.evaluate(async () => {
+    const { createLandmarkEventPillLayer } =
+      await import("/activity-scenes/landmark-event-pill.js");
+    let zoom = 15;
+    const listeners = new Map();
+    const map = {
+      easeTo: () => {},
+      getCanvas: () => document.getElementById("map-focus"),
+      getZoom: () => zoom,
+      on: (name, listener) => listeners.set(name, listener),
+      off: (name) => listeners.delete(name),
+      project: ([lng, lat]) => ({ x: lng, y: lat }),
+    };
+    const layer = createLandmarkEventPillLayer({ map, panelId: "panel" });
+    for (const item of [
+      {
+        landmark: {
+          id: "alpha-cluster",
+          label: "Alpha Hall",
+          anchor: { lng: 100, lat: 220 },
+        },
+        sourceEvents: [
+          {
+            id: "alpha-event",
+            title: "Alpha Night",
+            dateText: "12 Jul 2026",
+          },
+        ],
+      },
+      {
+        landmark: {
+          id: "bravo-cluster",
+          label: "Bravo Hall",
+          anchor: { lng: 145, lat: 220 },
+        },
+        sourceEvents: [
+          {
+            id: "bravo-event",
+            title: "Bravo Night",
+            dateText: "13 Jul 2026",
+          },
+        ],
+      },
+      {
+        landmark: {
+          id: "charlie-cluster",
+          label: "Charlie Hall",
+          anchor: { lng: 300, lat: 220 },
+        },
+        sourceEvents: [
+          {
+            id: "charlie-event",
+            title: "Charlie Night",
+            dateText: "14 Jul 2026",
+          },
+        ],
+      },
+    ]) {
+      layer.add(item);
+    }
+
+    const snapshot = () => ({
+      clusterAriaLabels: [
+        ...document.querySelectorAll(".landmark-event-cluster__count"),
+      ].map((element) => element.getAttribute("aria-label")),
+      clusterCounts: [
+        ...document.querySelectorAll(".landmark-event-cluster__count"),
+      ]
+        .map((element) => Number(element.textContent))
+        .sort((left, right) => right - left),
+      clusterMembers: [...document.querySelectorAll(".landmark-event-cluster")]
+        .map((element) => element.dataset.clusterMembers)
+        .sort(),
+      pillVisibility: [
+        ...document.querySelectorAll(".landmark-event-pill"),
+      ].map((element) => element.getAttribute("aria-hidden")),
+    });
+
+    const overview = snapshot();
+    layer.setSearchQuery("Alpha");
+    const filtered = snapshot();
+    layer.setSearchQuery("");
+    layer.setNavigationTarget("alpha-cluster");
+    const navigationTarget = snapshot();
+    layer.setNavigationTarget(null);
+    zoom = 17;
+    listeners.get("zoom")?.();
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    const detail = snapshot();
+    zoom = 15;
+    listeners.get("zoom")?.();
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    const overviewAgain = snapshot();
+    layer.setSearchQuery("No matching event");
+    const empty = snapshot();
+    layer.destroy();
+    const destroyedClusterCount = document.querySelectorAll(
+      ".landmark-event-cluster",
+    ).length;
+
+    return {
+      destroyedClusterCount,
+      detail,
+      empty,
+      filtered,
+      navigationTarget,
+      overview,
+      overviewAgain,
+    };
+  });
+
+  expect(state.overview.clusterCounts).toEqual([2, 1]);
+  expect(state.overview.clusterMembers).toEqual([
+    "alpha-cluster,bravo-cluster",
+    "charlie-cluster",
+  ]);
+  expect(state.overview.clusterAriaLabels).toEqual(
+    expect.arrayContaining([
+      "Zoom in to explore 2 event locations",
+      "Zoom in to explore Charlie Hall event location",
+    ]),
+  );
+  expect(state.overview.pillVisibility).toEqual(["true", "true", "true"]);
+  expect(state.filtered.clusterCounts).toEqual([1]);
+  expect(state.filtered.clusterMembers).toEqual(["alpha-cluster"]);
+  expect(state.navigationTarget.clusterCounts).toEqual([1, 1]);
+  expect(state.navigationTarget.clusterMembers).not.toContain("alpha-cluster");
+  expect(state.navigationTarget.pillVisibility).toEqual([
+    "false",
+    "true",
+    "true",
+  ]);
+  expect(state.detail.clusterCounts).toEqual([]);
+  expect(state.detail.pillVisibility).toEqual(["false", "false", "false"]);
+  expect(state.overviewAgain.clusterCounts).toEqual([2, 1]);
+  expect(state.empty.clusterCounts).toEqual([]);
+  expect(state.empty.pillVisibility).toEqual(["true", "true", "true"]);
+  expect(state.destroyedClusterCount).toBe(0);
+});
+
+test("event cluster counts navigate with pointer and keyboard activation", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  await page.evaluate(async () => {
+    const { createLandmarkEventPillLayer } =
+      await import("/activity-scenes/landmark-event-pill.js");
+    let zoom = 14;
+    const easeCalls = [];
+    const map = {
+      easeTo: (options) => {
+        easeCalls.push(options);
+        zoom = options.zoom;
+      },
+      getCanvas: () => document.getElementById("map-focus"),
+      getZoom: () => zoom,
+      on: () => {},
+      off: () => {},
+      project: ([lng, lat]) => ({ x: lng, y: lat }),
+    };
+    const layer = createLandmarkEventPillLayer({ map, panelId: "panel" });
+    layer.add({
+      landmark: {
+        id: "keyboard-cluster",
+        label: "Keyboard Hall",
+        anchor: { lng: 320, lat: 240 },
+      },
+      sourceEvents: [
+        {
+          id: "keyboard-event",
+          title: "Keyboard Night",
+          dateText: "12 Jul 2026",
+        },
+      ],
+    });
+    layer.add({
+      landmark: {
+        id: "pointer-cluster",
+        label: "Pointer Hall",
+        anchor: { lng: 360, lat: 240 },
+      },
+      sourceEvents: [
+        {
+          id: "pointer-event",
+          title: "Pointer Night",
+          dateText: "13 Jul 2026",
+        },
+      ],
+    });
+    window.__eventClusterTest = {
+      easeCalls,
+      layer,
+      setZoom: (value) => {
+        zoom = value;
+      },
+    };
+  });
+
+  const count = page.locator(".landmark-event-cluster__count");
+  await expect(count).toHaveCount(1);
+  await expect(count).toHaveAttribute(
+    "aria-label",
+    "Zoom in to explore 2 event locations",
+  );
+  await count.click();
+  await count.press("Enter");
+  await count.press("Space");
+  await page.evaluate(() => {
+    window.__eventClusterTest.setZoom(14);
+    window.__eventClusterTest.layer.setSearchQuery("Keyboard");
+  });
+  await expect(count).toHaveAttribute(
+    "aria-label",
+    "Zoom in to explore Keyboard Hall event location",
+  );
+  await count.click();
+  const calls = await page.evaluate(() => window.__eventClusterTest.easeCalls);
+  expect(calls).toEqual([
+    { center: [340, 240], duration: 700, zoom: 16 },
+    { center: [340, 240], duration: 700, zoom: 16.65 },
+    { center: [340, 240], duration: 700, zoom: 16.65 },
+    { center: [320, 240], duration: 700, zoom: 16.65 },
+  ]);
+
+  await count.focus();
+  await expect(count).toBeFocused();
+  await page.evaluate(() => window.__eventClusterTest.layer.destroy());
+  await expect(page.locator("#map-focus")).toBeFocused();
 });
 
 test("pill rotates events every three seconds without a progress indicator", async ({
@@ -1515,7 +2007,7 @@ test("panel sorts canonically, isolates gestures, and rejects invalid details", 
       "ph-bold ph-navigation-arrow",
       "ph-bold ph-x",
     ],
-    position: "2 of 2 events",
+    position: "2 of 2 activities",
     selected: "Late",
     unavailableLink: false,
     venue: "Verified Landmark",
@@ -1644,7 +2136,7 @@ test("event panel renders the complete display contract and only exposes validat
         ? { left: "18px", top: "18px" }
         : { left: "28px", top: "28px" },
     fieldsWithLink: {
-      Reference: "Catch.sg",
+      "Sources & tickets": "Catch.sg",
       Date: "14 Jul 2026",
       Time: "Not available",
       "Location type": "Single location",
@@ -1662,6 +2154,567 @@ test("event panel renders the complete display contract and only exposes validat
     invalidLinkHidden: true,
     officialLink: { hidden: false, href: "https://example.com/official" },
     singletonCount: 1,
+  });
+});
+
+test("event panel exposes canonical source offers and complete sessions from map and search entry points", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const result = await page.evaluate(async () => {
+    const { createLandmarkEventPanel } =
+      await import("/activity-scenes/landmark-event-panel.js");
+    const trigger = document.getElementById("map-focus");
+    const landmark = {
+      id: "marina-square",
+      label: "MARINA SQUARE",
+      anchor: { lat: 1.2915, lng: 103.8577 },
+    };
+    const activity = {
+      schemaVersion: "1.0",
+      activityId: "activity:funvee",
+      title: "FunVee Singapore: Day Tour by Open-Top Bus",
+      description: "Open-top sightseeing tour.",
+      category: "Tours & Experiences",
+      organizer: null,
+      price: "SGD 22",
+      sessions: [
+        {
+          sessionId: "session:morning",
+          schedule: {
+            kind: "exact",
+            start: "2026-07-26T00:00:00+08:00",
+            end: "2026-07-26T02:00:00+08:00",
+            displayText: "2026-07-26",
+          },
+          availability: "available",
+          venueGroupIds: ["venue-group:marina"],
+        },
+        {
+          sessionId: "session:evening",
+          schedule: {
+            kind: "exact",
+            start: "2026-07-27T18:30:00+08:00",
+            end: "2026-07-27T20:30:00+08:00",
+            displayText: "2026-07-27",
+          },
+          availability: "available",
+          venueGroupIds: ["venue-group:promenade"],
+        },
+      ],
+      venueGroups: [
+        {
+          venueGroupId: "venue-group:marina",
+          activityId: "activity:funvee",
+          label: "MARINA SQUARE",
+          address: "6 Raffles Boulevard",
+          publicPlacement: "mapped",
+          mappingStatus: "approved",
+          approvedLocationId: "marina-square",
+          coordinates: { lat: 1.2915, lng: 103.8577 },
+          sessionIds: ["session:morning"],
+        },
+        {
+          venueGroupId: "venue-group:promenade",
+          activityId: "activity:funvee",
+          label: "PROMENADE",
+          address: "Temasek Avenue",
+          publicPlacement: "mapped",
+          mappingStatus: "approved",
+          approvedLocationId: "promenade",
+          coordinates: { lat: 1.293, lng: 103.861 },
+          sessionIds: ["session:evening"],
+        },
+      ],
+      sourceOffers: [
+        {
+          offerId: "offer:fever",
+          source: "Fever Singapore",
+          url: "https://feverup.com/m/137694",
+          scope: "activity",
+          sessionIds: [],
+        },
+        {
+          offerId: "offer:evening",
+          source: "Evening tickets",
+          url: "https://tickets.example/evening",
+          scope: "sessions",
+          sessionIds: ["session:evening"],
+        },
+      ],
+      scheduleSummary: {
+        kind: "multiple",
+        label: "2 sessions",
+        sessionCount: 2,
+      },
+    };
+    const readFields = () =>
+      Object.fromEntries(
+        [...document.querySelectorAll(".landmark-event-panel__field")].map(
+          (row) => [
+            row.querySelector("dt").textContent,
+            row.querySelector("dd").textContent,
+          ],
+        ),
+      );
+    const readLinks = () =>
+      [
+        ...document.querySelectorAll(".landmark-event-panel__reference-link"),
+      ].map((link) => ({ label: link.textContent, href: link.href }));
+
+    let panel = createLandmarkEventPanel();
+    panel.open({ landmark, sourceEvents: [activity], trigger });
+    const mapInitial = {
+      state: panel.snapshot(),
+      fields: readFields(),
+      links: readLinks(),
+      standaloneSchedulePresent: Boolean(
+        document.querySelector(".landmark-event-panel__schedule"),
+      ),
+      dateChoiceRowPresent: Boolean(
+        document.querySelector(".landmark-event-panel__field--date-choices"),
+      ),
+      timeChoiceRowPresent: Boolean(
+        document.querySelector(".landmark-event-panel__field--time-choices"),
+      ),
+      dateChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--date"),
+      ].map((button) => button.textContent),
+      timeChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--time"),
+      ].map((button) => button.textContent),
+    };
+    document
+      .querySelectorAll(".landmark-event-panel__session--date")[1]
+      .click();
+    const mapEvening = {
+      state: panel.snapshot(),
+      fields: readFields(),
+      links: readLinks(),
+      selectedDates: [
+        ...document.querySelectorAll(".landmark-event-panel__session--date"),
+      ].map((button) => ({
+        label: button.textContent,
+        selected: button.getAttribute("aria-pressed"),
+      })),
+      timeChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--time"),
+      ].map((button) => button.textContent),
+    };
+    panel.destroy();
+
+    panel = createLandmarkEventPanel();
+    panel.open({
+      landmark,
+      sourceEvents: [activity],
+      activity: {
+        ...activity,
+        matchingOccurrences: [{ occurrenceId: "session:morning" }],
+      },
+      trigger,
+    });
+    const searchInitial = {
+      state: panel.snapshot(),
+      fields: readFields(),
+      links: readLinks(),
+      standaloneSchedulePresent: Boolean(
+        document.querySelector(".landmark-event-panel__schedule"),
+      ),
+      dateChoiceRowPresent: Boolean(
+        document.querySelector(".landmark-event-panel__field--date-choices"),
+      ),
+      timeChoiceRowPresent: Boolean(
+        document.querySelector(".landmark-event-panel__field--time-choices"),
+      ),
+      dateChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--date"),
+      ].map((button) => button.textContent),
+      timeChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--time"),
+      ].map((button) => button.textContent),
+    };
+    panel.destroy();
+
+    return { mapInitial, mapEvening, searchInitial };
+  });
+
+  expect(result.mapInitial.state.occurrenceIds).toEqual([
+    "session:morning",
+    "session:evening",
+  ]);
+  expect(result.mapInitial.standaloneSchedulePresent).toBe(false);
+  expect(result.mapInitial.dateChoiceRowPresent).toBe(true);
+  expect(result.mapInitial.timeChoiceRowPresent).toBe(true);
+  expect(result.mapInitial.dateChoices).toEqual(["2026-07-26", "2026-07-27"]);
+  expect(result.mapInitial.timeChoices).toEqual(["12:00 AM"]);
+  expect(result.mapInitial.fields.Date).toBe("2026-07-262026-07-27");
+  expect(result.mapInitial.fields.Time).toBe("12:00 AM");
+  expect(result.mapInitial.state.referenceIds).toEqual(["offer:fever"]);
+  expect(result.mapInitial.links).toEqual([
+    {
+      label: "Fever Singapore",
+      href: "https://feverup.com/m/137694",
+    },
+  ]);
+  expect(result.mapInitial.fields).toMatchObject({
+    "Sources & tickets": "Fever Singapore",
+    Category: "Tours & Experiences",
+    Price: "SGD 22",
+    Organizer: "Not available",
+  });
+  expect(result.mapEvening.state.selectedOccurrenceId).toBe("session:evening");
+  expect(result.mapEvening.selectedDates).toEqual([
+    { label: "2026-07-26", selected: "false" },
+    { label: "2026-07-27", selected: "true" },
+  ]);
+  expect(result.mapEvening.timeChoices).toEqual(["6:30 PM"]);
+  expect(result.mapEvening.state.referenceIds).toEqual([
+    "offer:fever",
+    "offer:evening",
+  ]);
+  expect(result.mapEvening.links).toEqual([
+    {
+      label: "Fever Singapore",
+      href: "https://feverup.com/m/137694",
+    },
+    {
+      label: "Evening tickets",
+      href: "https://tickets.example/evening",
+    },
+  ]);
+  expect(result.mapEvening.fields).toMatchObject({
+    "Sources & tickets": "Fever Singapore · Evening tickets",
+  });
+  expect(result.searchInitial).toEqual(result.mapInitial);
+});
+
+test("single-session schedule is omitted while same-date multiple timings remain selectable", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const result = await page.evaluate(async () => {
+    const { createLandmarkEventPanel } =
+      await import("/activity-scenes/landmark-event-panel.js");
+    const trigger = document.getElementById("map-focus");
+    const landmark = {
+      id: "sculpture-square",
+      label: "SCULPTURE SQUARE",
+      anchor: { lat: 1.301, lng: 103.852 },
+    };
+    const makeActivity = (activityId, starts) => ({
+      schemaVersion: "1.0",
+      activityId,
+      title: "Schedule presentation fixture",
+      description: null,
+      category: null,
+      organizer: null,
+      price: null,
+      sessions: starts.map((start, index) => ({
+        sessionId: `session:${activityId}:${index + 1}`,
+        schedule: {
+          kind: "exact",
+          start,
+          end: start,
+          displayText: "2026-07-31",
+        },
+        availability: "unknown",
+        venueGroupIds: ["venue-group:sculpture"],
+      })),
+      venueGroups: [
+        {
+          venueGroupId: "venue-group:sculpture",
+          activityId,
+          label: "SCULPTURE SQUARE",
+          address: "155 Middle Road",
+          publicPlacement: "mapped",
+          mappingStatus: "approved",
+          approvedLocationId: "sculpture-square",
+          coordinates: { lat: 1.301, lng: 103.852 },
+          sessionIds: starts.map(
+            (_, index) => `session:${activityId}:${index + 1}`,
+          ),
+        },
+      ],
+      sourceOffers: [],
+      scheduleSummary: {
+        kind: starts.length === 1 ? "exact" : "multiple",
+        label: starts.length === 1 ? "2026-07-31" : "2 sessions",
+        sessionCount: starts.length,
+      },
+    });
+    const readFields = () =>
+      Object.fromEntries(
+        [...document.querySelectorAll(".landmark-event-panel__field")].map(
+          (row) => [
+            row.querySelector("dt").textContent,
+            row.querySelector("dd").textContent,
+          ],
+        ),
+      );
+    const readSchedule = () => ({
+      standalonePresent: Boolean(
+        document.querySelector(".landmark-event-panel__schedule"),
+      ),
+      dateChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--date"),
+      ].map((button) => button.textContent),
+      timeChoices: [
+        ...document.querySelectorAll(".landmark-event-panel__session--time"),
+      ].map((button) => button.textContent),
+    });
+
+    let panel = createLandmarkEventPanel();
+    const singleton = makeActivity("activity:singleton", [
+      "2026-07-31T00:00:00+08:00",
+    ]);
+    panel.open({ landmark, sourceEvents: [singleton], trigger });
+    const single = {
+      schedule: readSchedule(),
+      fields: readFields(),
+      selectionAccepted: panel.selectOccurrence(
+        "activity:singleton",
+        "session:activity:singleton:1",
+      ),
+    };
+    panel.destroy();
+
+    panel = createLandmarkEventPanel();
+    const multiple = makeActivity("activity:multiple", [
+      "2026-07-31T10:00:00+08:00",
+      "2026-07-31T14:00:00+08:00",
+    ]);
+    panel.open({ landmark, sourceEvents: [multiple], trigger });
+    const multipleBefore = readSchedule();
+    const selectionAccepted = panel.selectOccurrence(
+      "activity:multiple",
+      "session:activity:multiple:2",
+    );
+    const multipleAfter = {
+      selectedOccurrenceId: panel.snapshot().selectedOccurrenceId,
+      fields: readFields(),
+    };
+    panel.destroy();
+
+    panel = createLandmarkEventPanel();
+    panel.open({
+      landmark,
+      sourceEvents: [
+        {
+          id: "flexible-1",
+          parentActivityId: "activity:flexible",
+          title: "Flexible schedule",
+          dateText: "By appointment",
+          venue: "SCULPTURE SQUARE",
+        },
+        {
+          id: "flexible-2",
+          parentActivityId: "activity:flexible",
+          title: "Flexible schedule",
+          dateText: "Selected weekends",
+          venue: "SCULPTURE SQUARE",
+        },
+      ],
+      trigger,
+    });
+    const flexible = {
+      dateChoices: document.querySelectorAll(
+        ".landmark-event-panel__session--date",
+      ).length,
+      timeChoices: document.querySelectorAll(
+        ".landmark-event-panel__session--time",
+      ).length,
+      scheduleChoices: [
+        ...document.querySelectorAll(
+          ".landmark-event-panel__session--schedule",
+        ),
+      ].map((button) => button.textContent),
+    };
+    panel.destroy();
+
+    return {
+      single,
+      multipleBefore,
+      selectionAccepted,
+      multipleAfter,
+      flexible,
+    };
+  });
+
+  expect(result.single).toEqual({
+    schedule: {
+      standalonePresent: false,
+      dateChoices: [],
+      timeChoices: [],
+    },
+    fields: expect.objectContaining({
+      Date: "2026-07-31",
+      Time: "12:00 AM",
+      Venue: "SCULPTURE SQUARE",
+      Address: "155 Middle Road",
+    }),
+    selectionAccepted: false,
+  });
+  expect(result.multipleBefore).toEqual({
+    standalonePresent: false,
+    dateChoices: ["2026-07-31"],
+    timeChoices: ["10:00 AM", "2:00 PM"],
+  });
+  expect(result.selectionAccepted).toBe(true);
+  expect(result.multipleAfter.selectedOccurrenceId).toBe(
+    "session:activity:multiple:2",
+  );
+  expect(result.multipleAfter.fields.Date).toBe("2026-07-31");
+  expect(result.multipleAfter.fields.Time).toBe("10:00 AM2:00 PM");
+  expect(result.multipleAfter.fields.Venue).toBe("SCULPTURE SQUARE");
+  expect(result.flexible).toEqual({
+    dateChoices: 0,
+    timeChoices: 0,
+    scheduleChoices: ["By appointment", "Selected weekends"],
+  });
+});
+
+test("event panel combines sibling occurrences and keeps exact session planning identity", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const result = await page.evaluate(async () => {
+    const { createLandmarkEventPanel } =
+      await import("/activity-scenes/landmark-event-panel.js");
+    const trigger = document.getElementById("map-focus");
+    const panel = createLandmarkEventPanel();
+    let planned = null;
+    window.addEventListener(
+      "whats-here:add-to-plan",
+      (event) => (planned = event.detail),
+      { once: true },
+    );
+    panel.open({
+      landmark: {
+        id: "victoria",
+        label: "Victoria Theatre",
+        anchor: { lat: 1.288, lng: 103.851 },
+      },
+      sourceEvents: [
+        {
+          id: "show-1",
+          occurrenceId: "show-1",
+          parentActivityId: "activity:show",
+          title: "Example Show",
+          venue: "Victoria Theatre",
+          dateText: "1 Aug 2026",
+          startDateTime: "2026-08-01T20:00:00+08:00",
+          eventUrl: "https://example.com/show/1",
+        },
+        {
+          id: "show-2",
+          occurrenceId: "show-2",
+          parentActivityId: "activity:show",
+          title: "Example Show",
+          venue: "Victoria Theatre",
+          dateText: "2 Aug 2026",
+          startDateTime: "2026-08-02T20:00:00+08:00",
+          eventUrl: "https://example.com/show/2",
+        },
+      ],
+      trigger,
+    });
+    const sessions = [
+      ...document.querySelectorAll(".landmark-event-panel__session--date"),
+    ];
+    sessions[1].click();
+    panel.addToPlan();
+    const state = {
+      activityNavigationHidden: document.querySelector(
+        ".landmark-event-panel__events",
+      ).hidden,
+      sessionCount: sessions.length,
+      selected: [
+        ...document.querySelectorAll(".landmark-event-panel__session--date"),
+      ].map((item) => item.getAttribute("aria-pressed")),
+      plannedId: planned?.id,
+      reference: document.querySelector(".landmark-event-panel__link").href,
+    };
+    panel.destroy();
+    return state;
+  });
+  expect(result).toEqual({
+    activityNavigationHidden: true,
+    sessionCount: 2,
+    selected: ["false", "true"],
+    plannedId: "show-2",
+    reference: "https://example.com/show/2",
+  });
+});
+
+test("event panel reveals large session lists without hiding exact identities", async ({
+  page,
+}) => {
+  await page.goto("/test-harness.html");
+  const result = await page.evaluate(async () => {
+    const { createLandmarkEventPanel } =
+      await import("/activity-scenes/landmark-event-panel.js");
+    const panel = createLandmarkEventPanel();
+    panel.open({
+      landmark: { id: "hall", label: "Hall", anchor: { lat: 1.3, lng: 103.8 } },
+      sourceEvents: Array.from({ length: 9 }, (_, index) => ({
+        id: `show-${index + 1}`,
+        occurrenceId: `show-${index + 1}`,
+        parentActivityId: "activity:long-show",
+        title: "Long-running Show",
+        venue: "Hall",
+        dateText: `${index + 1} Aug 2026`,
+        startDateTime: `2026-08-${String(index + 1).padStart(2, "0")}T20:00:00+08:00`,
+      })),
+      trigger: document.getElementById("map-focus"),
+    });
+    const before = document.querySelectorAll(
+      ".landmark-event-panel__session--date",
+    ).length;
+    const reveal = document.querySelector(
+      ".landmark-event-panel__session-reveal",
+    );
+    const collapsedLabel = reveal.textContent;
+    const comparableStyle = (element) => {
+      const style = getComputedStyle(element);
+      return {
+        backgroundColor: style.backgroundColor,
+        borderRadius: style.borderRadius,
+        color: style.color,
+        fontSize: style.fontSize,
+        fontWeight: style.fontWeight,
+        minHeight: style.minHeight,
+        padding: style.padding,
+      };
+    };
+    const styleMatchesUnselectedDateChoice =
+      JSON.stringify(comparableStyle(reveal)) ===
+      JSON.stringify(
+        comparableStyle(
+          document.querySelectorAll(".landmark-event-panel__session--date")[1],
+        ),
+      );
+    reveal.click();
+    const expanded = document.querySelectorAll(
+      ".landmark-event-panel__session--date",
+    ).length;
+    const expandedState = document
+      .querySelector(".landmark-event-panel__session-reveal")
+      .getAttribute("aria-expanded");
+    panel.destroy();
+    return {
+      before,
+      collapsedLabel,
+      expanded,
+      expandedState,
+      styleMatchesUnselectedDateChoice,
+    };
+  });
+  expect(result).toEqual({
+    before: 6,
+    collapsedLabel: "+3 dates",
+    expanded: 9,
+    expandedState: "true",
+    styleMatchesUnselectedDateChoice: true,
   });
 });
 

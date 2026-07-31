@@ -3,17 +3,14 @@
   "poiId": "raffles-hotel-1886",
   "extractionPoiIds": [
     "tower-3-marina-bay-sands-singapore",
-    "the-shoppes-at-marina-bay-sands",
     "national-museum-of-singapore",
     "national-gallery-singapore",
     "lion-building-c",
     "claymore-plaza",
-    "cideco-industrial-complex",
     "rumah-bebe",
     "perfect-one",
     "textile-centre",
     "song-lin-building",
-    "millenia-walk",
     "inter-continental-singapore",
     "roxy-square",
     "blk-e-e2i",
@@ -23,9 +20,7 @@
     "thian-hock-keng",
     "singapore-chinese-cultural-centre",
     "wisma-geylang-serai",
-    "thow-kwang-pottery-jungle",
     "marina-bay-sands-artscience-museum",
-    "temasek-shophouse",
     "the-commerze-irving",
     "raffles-marina",
     "gateway-theatre",
@@ -34,20 +29,10 @@
     "singapore-philatelic-museum",
     "shell-dunman",
     "63-ubi",
-    "peranakan-museum",
-    "parkway-parade",
-    "singapore-tyler-print-institute",
-    "fort-canning-centre",
-    "313-somerset",
-    "tanjong-pagar-distripark",
-    "carlton-hotel",
-    "the-star",
     "changi-chapel-and-museum",
     "reflection-at-bukit-chandu-opium-hill",
-    "pgp-building",
     "victoria-theatre-and-concert-hall-u-c",
     "marina-bay-sands-mice",
-    "national-library-building",
     "chinatown-heritage-centre",
     "south-beach",
     "velocity-novena-square",
@@ -57,155 +42,242 @@
     "woods-square",
     "punggol-neighbourhood-police-centre",
     "sentosa-development-corporation",
-    "marina-south-pier-mrt-station",
     "siloso-beach-resort",
     "bishan-green",
-    "raffles-hotel-1886",
-    "changi-point-ferry-terminal",
-    "national-community-leadership-institute",
-    "singapore-management-university",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
     "empress-place-building",
-    "gillman-barracks"
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
   ],
-  "generatedAt": "2026-07-13T14:21:09.718Z",
+  "generatedAt": "2026-07-26T13:46:28.084Z",
   "tiles": [
     {
       "sourceTile": "tiles/6/38/6_0.b3dm",
       "sourceSha256": "a17ad9302e6aff9cdd89ec650f62e1d1cd3b027ff7b986ec77c9cb4f8869168c",
       "originalBatchIds": [
-        5
+        20
       ],
       "gmlIds": [
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
       "gmlNames": [
         "RAFFLES HOTEL (1886)"
       ],
-      "poiFile": "6_0.b3dm",
-      "poiSha256": "ca2e82c7ea63853d6f378bec2b109a44868c5b39ea6e13d43f8c33124a1d4afc",
-      "poiTriangles": 2448,
+      "poiFile": "6_0-9bb465ce53ca.b3dm",
+      "poiSha256": "269474ae489eef4d92a859e6822017bb75ac6060870e051cec1ea983f4dfb8a2",
+      "poiTriangles": 2056,
       "backgroundFile": "optimized-tiles/6/38/6_0.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "85c3369a99b6dbc33f36dd7f183fc9e0619c959152821e7ad271cde0df1d12b9",
-      "backgroundTriangles": 18228
+      "backgroundSha256": "87a0de712d6c8b88593de72bb5a5cbb1b939174a3461ab7eb1c58d1069c3fc4b",
+      "backgroundTriangles": 18620
     },
     {
       "sourceTile": "tiles/6/38/6_1.b3dm",
       "sourceSha256": "4cbc09c7eb87abceac0a2af2dd05e709540af9d71b883e767a02dfc1a94d25bf",
       "originalBatchIds": [
-        5
+        20
       ],
       "gmlIds": [
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
       "gmlNames": [
         "RAFFLES HOTEL (1886)"
       ],
-      "poiFile": "6_1.b3dm",
-      "poiSha256": "9cb2359529335d995acbd64dec6c8e526ff1badcd53fefe59e6889b5fc57f8c3",
-      "poiTriangles": 2448,
+      "poiFile": "6_1-49381b968f94.b3dm",
+      "poiSha256": "12c9c0108849c7b8d6423701b84f57a0d39785b84e2d79658afbfc0fc67ecab1",
+      "poiTriangles": 2056,
       "backgroundFile": "optimized-tiles/6/38/6_1.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "01e6ca9082c64c0429339b5be0741ec92b2673d23c271ef48edb4f336943502b",
-      "backgroundTriangles": 18228
+      "backgroundSha256": "5cd15293a49728bdc5d3a05f3c22ba89cc28b694d60a8c1d4cf2888d788576d8",
+      "backgroundTriangles": 18620
     },
     {
       "sourceTile": "tiles/6/38/6_2.b3dm",
       "sourceSha256": "6418638b9c7b54bd3a28b5e7218ca50d82f290baa5a9d64fc47a3d2c41be68bf",
       "originalBatchIds": [
-        5
+        20
       ],
       "gmlIds": [
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
       "gmlNames": [
         "RAFFLES HOTEL (1886)"
       ],
-      "poiFile": "6_2.b3dm",
-      "poiSha256": "23a66120b7818d34bdd5b52b9d574f8ac138ba86e84c221b55114932608c1747",
-      "poiTriangles": 2448,
+      "poiFile": "6_2-c2305aeb72f3.b3dm",
+      "poiSha256": "0605c35d59308f677f46b053988730f3b8bd7f594f3b1c0d9e749cd17da20f70",
+      "poiTriangles": 2056,
       "backgroundFile": "optimized-tiles/6/38/6_2.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "eda2da22c9f72871744b273d65ea0147fe2e9aa3d1c414da200493347998b6af",
-      "backgroundTriangles": 18228
+      "backgroundSha256": "1fbebf23abc56f20ba3fc9ff25dbda8e5403d2736b8abc0bff3365f817368019",
+      "backgroundTriangles": 18620
     },
     {
       "sourceTile": "tiles/6/38/6_3.b3dm",
       "sourceSha256": "1f5165e2fd648b0d04e3ab233321cffafcb0b2783333e1428a06948b05697c86",
       "originalBatchIds": [
-        5
+        20
       ],
       "gmlIds": [
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
       "gmlNames": [
         "RAFFLES HOTEL (1886)"
       ],
-      "poiFile": "6_3.b3dm",
-      "poiSha256": "0d885b2377be45211162840f0bcdc9dcfed880c49fef47c32889eb6e9fb28e4f",
-      "poiTriangles": 2448,
+      "poiFile": "6_3-0c39f407f673.b3dm",
+      "poiSha256": "0d7fa77572699a9fe11a220633d54a4a3c7c44b6e8a1e0b806c8d1563a751cb3",
+      "poiTriangles": 2056,
       "backgroundFile": "optimized-tiles/6/38/6_3.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "8dc36ba3e8f8052d533f7d23119e541407b49a6cce775043e3b1ecb7c38ee501",
-      "backgroundTriangles": 18228
+      "backgroundSha256": "aa57c807c8858f508f4d1ce841d3c9a4bc8806b734dfd632bda75fe471e39281",
+      "backgroundTriangles": 18620
     },
     {
       "sourceTile": "tiles/6/38/6_4.b3dm",
       "sourceSha256": "148b984b844fa1ae08798022badde66b337dfd4a9e860a5daa3b7bf9c925f064",
       "originalBatchIds": [
-        5
+        20
       ],
       "gmlIds": [
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
       "gmlNames": [
         "RAFFLES HOTEL (1886)"
       ],
-      "poiFile": "6_4.b3dm",
-      "poiSha256": "8340a81ef6a4a0f7178c76d0f45593a70e1ca94ba492e05c30ad96872e1f275f",
-      "poiTriangles": 2448,
+      "poiFile": "6_4-c9f7eb14e8b1.b3dm",
+      "poiSha256": "da45e4be6cd2013575be3c2242b5f1d3a278a14698196e781fa9c0e82a2e6c50",
+      "poiTriangles": 2056,
       "backgroundFile": "optimized-tiles/6/38/6_4.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "4f003da9d810482e100cbf976f54421d945e0961136d80c4b486eb03562cd3de",
-      "backgroundTriangles": 18228
+      "backgroundSha256": "636c71d7871256f585ae42fb8454007c604f5c6d21f7d555d3a64f5d80db70ab",
+      "backgroundTriangles": 18620
     },
     {
       "sourceTile": "tiles/6/38/6_5.b3dm",
       "sourceSha256": "1a0a1df94ab7163d01d6449ec1049b3fbb15e277949cd8d0593acdeaaecbe876",
       "originalBatchIds": [
-        5
+        20
       ],
       "gmlIds": [
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
       "gmlNames": [
         "RAFFLES HOTEL (1886)"
       ],
-      "poiFile": "6_5.b3dm",
-      "poiSha256": "678d39f7ecab2b6b01c7726794268b7ab6584e913255519339fdc4ab93cbd105",
-      "poiTriangles": 2448,
+      "poiFile": "6_5-ebdc28d355cc.b3dm",
+      "poiSha256": "f738c2fae229152cb9648eed29a7e1fe740cf3730e2afaa5d73d8c9ac33c8ced",
+      "poiTriangles": 2056,
       "backgroundFile": "optimized-tiles/6/38/6_5.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
-        "SLA_BLDG2_0f273e69-1222-47fa-b47d-86686dd5e5da"
+        "SLA_BLDG2_efdea5db-e9f2-44b4-9cf1-d84e26e886ff"
       ],
-      "backgroundSha256": "00deec64eb97a77b0a78a921a017b5d1a78dff0fbfd92b1aee307e98a434af06",
-      "backgroundTriangles": 18228
+      "backgroundSha256": "d52fba4ba80f896159e5ec6d015f5b07cff56536471bb6e62c8a3963d4634655",
+      "backgroundTriangles": 18620
     }
   ]
 }

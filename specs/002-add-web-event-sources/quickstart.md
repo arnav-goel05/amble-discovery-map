@@ -6,7 +6,7 @@ fixture, build, browser, artifact, and full verification gates pass.
 ## Prerequisites
 
 - Node.js 24+
-- Checked-in definitions for all nine sources and approved free provider policy
+- Checked-in definitions for all eight sources and approved free provider policy
 - `TINYFISH_API_KEY` in the server environment only for the final bounded live verification
 - Immutable fixtures under `tests/fixtures/event-sources/`
 - Existing approved snapshot and venue evidence fixtures for migration/reconciliation tests
@@ -20,7 +20,6 @@ Run the adapter verifier and provider/source contract tests.
 Expected:
 
 - five direct and three editorial sources validate as enabled;
-- Roots/HAN validates as unavailable/disabled with an explicit reason;
 - editorial sources require versioned corroboration/sufficiency policy;
 - paid, policy-mismatched, unsafe-destination, redirect, body-size, timeout, and credential
   failures occur before unsafe retrieval.
@@ -211,7 +210,6 @@ or reuse old run artifacts.
 Expected:
 
 - every source and identity has a terminal accounted outcome;
-- Roots/HAN remains reported unavailable;
 - active/future and anytime records survive normalization;
 - editorial-only evidence and off-map states appear as designed;
 - duplicate, review, stale carry-forward, and archive counts reconcile;
@@ -220,9 +218,8 @@ Expected:
 ### Bounded live-run evidence (2026-07-18)
 
 - Run `20260718T130213Z-20260718T000000+0800-20260725T235959+0800` reached its terminal
-  continuation with `complete: true`. Catch.sg was isolated after HTTP 469 and Roots/HAN was
-  reported unavailable with `layout_contract_changed`; every other configured source reached a
-  terminal outcome.
+  continuation with `complete: true`. Catch.sg was isolated after HTTP 469 and every other
+  enabled source reached a terminal outcome.
 - Source accounting produced 359 accepted SISTIC occurrences, 88 Fever activities, 9 Singapore
   Film Society activities, 2 Honeycombers activities, and no accepted Visit Singapore,
   ArtsEquator, or Time Out activities. The run normalized 458 eligible activities, collapsed no
@@ -254,7 +251,7 @@ Expected:
   browser tests all passed.
 - SISTIC accepted 345 activities, Fever 70, Singapore Film Society 9, and Honeycombers 1.
   Visit Singapore, ArtsEquator, and Time Out accepted none in this capture. Catch.sg was safely
-  isolated after HTTP 469, while Roots/HAN remained explicitly disabled/unavailable.
+  isolated after HTTP 469.
 - The run accepted 425 unique activities, with 424 direct and 1 editorial-authoritative evidence
   outcome. No cross-source duplicate was collapsed and no blocking deduplication review remained.
 - Venue accounting completed for all 159 branches: 121 approved, 16 safely not mappable, and 22
@@ -294,6 +291,88 @@ node --test --test-name-pattern='structured pipeline configuration|status report
 ```
 
 Expected: compact Time Out ranges are retained; cross-surface repeats collapse without merging
-siblings; exact listing overlap is reported; a failed surface blocks the source with per-surface
-diagnostics; HTTP 469 is a non-retried provider-policy blocker; and Roots/HAN performs no fetch.
+siblings; exact listing overlap is reported; and a failed surface blocks the source with
+per-surface diagnostics while HTTP 469 remains a non-retried provider-policy blocker.
 This focused check does not satisfy the separate live-run task.
+
+## 15. Focused missing-venue recovery validation
+
+```bash
+node --test tests/event-venue-recovery.test.mjs
+node --test --test-name-pattern='pipeline config permanently|normalizer.*missing|CLI normalize command' tests/event-pipeline.test.mjs
+node scripts/verify-event-source-adapters.mjs
+```
+
+Expected: one search and at most three official candidate fetches per otherwise eligible
+location-less physical occurrence; unique verified Singapore locations enter normalization;
+ambiguous, overseas, directory, social, and unverified results remain unpromoted; provider
+failures remain occurrence-scoped; and an unchanged rerun reuses every saved overlay entry with
+zero network attempts.
+
+### Focused stored-run evidence (2026-07-21)
+
+- The recovery-only command inspected the latest stored run's 56 exact `missing_venue`
+  occurrences without recollecting any source or publishing a snapshot.
+- It recovered 7 unique authoritative Singapore venues: Fever 1, Visit Singapore 5, and Time
+  Out 1. Three outcomes remained ambiguous and 46 had no verified location; all provider
+  failures cleared on the bounded failed-only resume.
+- A subsequent unchanged command reused all 56 overlay entries with zero searches or fetches.
+- Temporary normalization replay reduced `missing_venue` from 56 to 49 and increased accepted
+  post-dedup activities from 468 to 475. The finalized stored snapshot was not republished.
+
+## 16. Shared event-field extraction validation
+
+Run the focused contract before any clean live pipeline:
+
+```bash
+node --test tests/event-field-extraction.test.mjs
+node --test tests/event-source-contract.test.mjs
+node --test --test-name-pattern='field completeness|structured event extraction|enrichment cache' tests/event-pipeline.test.mjs
+node scripts/verify-event-source-adapters.mjs
+npm run event-field-validate -- --output outputs/event-field-validation/latest.json
+npm run build
+```
+
+Expected: event JSON-LD, supported microdata, documented source HTML, explicit rendered fields, and
+listing fallback follow their declared evidence priority; all ten contracted fields receive one of
+`present`, `not_published_by_source`, or `extraction_failed`; unchanged terminal omissions reuse
+their evidence-hash cache; retrieval failures remain retryable; logs contain hashes, methods, and
+counts but no response bodies, credentials, or authorization values.
+
+Then validate one or two current detail pages for every enabled source with the checked-in bounded
+retrieval definitions. A source access failure is an explicit blocked validation result, never a
+silent pass or an empty source. Do not use this focused validation to mutate the active snapshot.
+
+## 17. Clean enriched pipeline and comparison
+
+After Step 16 passes, preserve the current active snapshot ID as the comparison baseline and run:
+
+```bash
+npm run event-pipeline -- start
+```
+
+Follow every returned continuation command exactly until `complete: true`. The run must collect
+fresh evidence and proceed through normalization, venue recovery/resolution, deduplication,
+reconciliation, staging, build, event UI, browser verification, and atomic publication. Compare the
+new run with the baseline by source for field completeness, exclusions, mapped/off-map/review
+placements, deduplication, and unique published activities. If any release-wide gate fails, verify
+that the prior approved snapshot remains active.
+
+### Completed enriched-run evidence (2026-07-21)
+
+- Live page validation covered all eight enabled sources with one current page each and no blocked
+  validation result; evidence is stored in ignored
+  `outputs/event-field-validation/2026-07-21.json`.
+- Clean run `20260721T101644Z-20260721T000000+0800-20260728T235959+0800` completed every
+  continuation and publication gate and atomically published its matching immutable snapshot.
+- Compared with `20260720T134842Z-20260720T000000+0800-20260727T235959+0800`, normalized unique
+  activities increased from 467 to 510, exclusions fell from 150 to 106, and duplicate collapse
+  remained one. Final published placements changed from 379 mapped / 64 off-map to 418 mapped /
+  59 off-map. The corrected report is stored in ignored
+  `outputs/event-field-validation/full-run-comparison.json`.
+- The final convergence fixes count rendered-detail completeness, refresh Fever completeness after
+  venue repair, expose JSON-LD/microdata conflicts, distinguish final published placements from
+  pre-venue records, and prove cache reuse, contract-version invalidation, and failure retry.
+- Focused contract tests passed 66/66; adapter verification, production build, and repository-wide
+  `npm run verify` all passed. The remaining Vite dependency `eval` and chunk-size messages are
+  warnings, not failed gates.

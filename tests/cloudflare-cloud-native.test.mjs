@@ -44,12 +44,52 @@ test("cloud runtime serves approved snapshot metadata without a local origin", a
   assert.equal(payload.data.snapshotId, APPROVED_SNAPSHOT.manifest.snapshotId);
   assert.equal(
     payload.data.landmarksRef,
-    `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.landmarksRef}`,
+    `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.landmarksRef}?projection=activity-ui-v1`,
   );
+  assert.equal(
+    payload.data.activitiesRef,
+    `/api/snapshot/assets/${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}/${APPROVED_SNAPSHOT.manifest.activitiesRef}?projection=activity-ui-v1`,
+  );
+  assert.equal("eventsRef" in payload.data, false);
   assert.equal(
     payload.data.tilesetRef,
     `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}&assetPaths=site-root-v1`,
   );
+});
+
+test("cloud runtime publishes distinct activities and landmark references", async () => {
+  const { manifest } = APPROVED_SNAPSHOT;
+  const response = await worker.fetch(
+    new Request(
+      `https://amble.example/api/snapshot/assets/${encodeURIComponent(manifest.snapshotId)}/${manifest.activitiesRef}`,
+    ),
+    {},
+    {},
+  );
+  const payload = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(payload.data.records.length, payload.data.counts.activities);
+  assert.equal(
+    new Set(payload.data.records.map((activity) => activity.activityId)).size,
+    payload.data.records.length,
+  );
+  assert.equal(JSON.stringify(payload.data).includes("evidenceRefs"), false);
+  assert.equal(JSON.stringify(payload.data).includes("occurrenceIds"), false);
+
+  const landmarksResponse = await worker.fetch(
+    new Request(
+      `https://amble.example/api/snapshot/assets/${encodeURIComponent(manifest.snapshotId)}/${manifest.landmarksRef}`,
+    ),
+    {},
+    {},
+  );
+  const landmarks = await landmarksResponse.json();
+  const mappedLandmark = landmarks.data.find(
+    (landmark) => landmark.activityRefs.length,
+  );
+  assert.ok(mappedLandmark);
+  assert.equal("events" in mappedLandmark, false);
 });
 
 test("cloud snapshot tilesets resolve relative POI children from the site root", async () => {
@@ -320,7 +360,7 @@ const voiceSessionRequest = ({
   origin = "https://amble.example",
   contentType = "application/json",
   body = JSON.stringify({
-    protocolVersion: "1.0",
+    protocolVersion: "1.1",
     disclosureAccepted: true,
     capabilities: { audioInput: true, audioOutput: true, text: true },
   }),

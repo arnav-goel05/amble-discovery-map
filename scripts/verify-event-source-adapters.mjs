@@ -3,12 +3,18 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadEventAuthorityRegistry } from "./lib/provider-policy.mjs";
+import {
+  assertProviderAllowed,
+  loadEventAuthorityRegistry,
+  loadProviderPolicy,
+} from "./lib/provider-policy.mjs";
+import { validateMissingVenueRecoveryConfig } from "./lib/event-sources/tinyfish-venue-recovery.mjs";
 import { validateSourcePolicy } from "./event-source-collector.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CONFIG_PATH = path.join(ROOT, "data/event-pipeline-config.json");
 const AUTHORITY_PATH = path.join(ROOT, "data/event-authority-registry.json");
+const PROVIDER_PATH = path.join(ROOT, "data/provider-policy.json");
 const ROLES = new Set(["direct", "editorial", "unavailable"]);
 const STATES = new Set(["enabled", "disabled"]);
 
@@ -67,6 +73,18 @@ export function validateEventSourceDefinitions(
     names = new Set(),
     orders = new Set(),
     precedences = new Set();
+  validateMissingVenueRecoveryConfig(config.missingVenueRecovery);
+  const providerPolicy = loadProviderPolicy(PROVIDER_PATH);
+  assertProviderAllowed(
+    providerPolicy,
+    config.missingVenueRecovery.search.providerId,
+    { url: config.missingVenueRecovery.search.endpoint },
+  );
+  assertProviderAllowed(
+    providerPolicy,
+    config.missingVenueRecovery.fetch.providerId,
+    { url: config.missingVenueRecovery.fetch.endpoint },
+  );
   const sources = config.sources
     .map(migrateSourceDefinition)
     .toSorted((a, b) => a.collectionOrder - b.collectionOrder);
@@ -195,6 +213,25 @@ export function validateEventSourceDefinitions(
             );
         }
       }
+    }
+    if (source.directHtml) {
+      const bounds = source.directHtml;
+      if (
+        bounds.enabled !== true ||
+        bounds.respectRobots !== true ||
+        !Number.isInteger(bounds.timeoutMs) ||
+        bounds.timeoutMs < 1 ||
+        bounds.timeoutMs > 30_000 ||
+        !Number.isInteger(bounds.maximumRedirects) ||
+        bounds.maximumRedirects < 0 ||
+        bounds.maximumRedirects > 5 ||
+        !Number.isInteger(bounds.maximumResponseBytes) ||
+        bounds.maximumResponseBytes < 1 ||
+        bounds.maximumResponseBytes > 5 * 1024 * 1024
+      )
+        throw new Error(
+          `${source.name} has invalid direct HTML retrieval bounds`,
+        );
     }
     if (source.listing?.urls !== undefined) {
       if (

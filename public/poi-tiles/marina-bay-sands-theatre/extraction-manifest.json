@@ -1,0 +1,289 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "marina-bay-sands-theatre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:20.273Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/39/5_0.b3dm",
+      "sourceSha256": "02b000ac2e001840aa1564d9101c4952e5e7d86667ae6bde177ff01db6a84525",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (THEATRE)"
+      ],
+      "poiFile": "5_0-d40eb8da5adf.b3dm",
+      "poiSha256": "7983f6ec95329524ff1c61781c5c673125399bf9ba55e2bd885123bdd7c73674",
+      "poiTriangles": 4420,
+      "backgroundFile": "optimized-tiles/6/39/5_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e",
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "backgroundSha256": "a0859be180d8e3ff2ad85786bd274dc8248a05c6576b783c16f52b0a4dee79dd",
+      "backgroundTriangles": 12376
+    },
+    {
+      "sourceTile": "tiles/6/39/5_1.b3dm",
+      "sourceSha256": "10a4ce6433ed1492c805a3d3178e766d62050e14534ac54cc416cc33dc991e66",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (THEATRE)"
+      ],
+      "poiFile": "5_1-cd4e4b348c2d.b3dm",
+      "poiSha256": "d65832f677379b9c5027d4598a3917d61511c106c076ba9d270fffd7de665c7f",
+      "poiTriangles": 4420,
+      "backgroundFile": "optimized-tiles/6/39/5_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e",
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "backgroundSha256": "0e2956fda63a345c52fd9430c413fde7cd9a34bdb075370880a3d87e1b0d2e20",
+      "backgroundTriangles": 12376
+    },
+    {
+      "sourceTile": "tiles/6/39/5_2.b3dm",
+      "sourceSha256": "a5e0d73025f22aa925f5244f062b4e890d76a1869224583e34f4fa130d066206",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (THEATRE)"
+      ],
+      "poiFile": "5_2-a7934a33a973.b3dm",
+      "poiSha256": "a9351f2c78ec82c46ce8978971d68bd7e5f38d87a54f5a68619cc27e25077da1",
+      "poiTriangles": 4420,
+      "backgroundFile": "optimized-tiles/6/39/5_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e",
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "backgroundSha256": "a0647fd35dba1d850ec4d0f44a51cf1abe45e613830407e9e98970a9747fb711",
+      "backgroundTriangles": 12376
+    },
+    {
+      "sourceTile": "tiles/6/39/5_3.b3dm",
+      "sourceSha256": "5d5665e187a3973909159a83d9416e91afcc021b92e2ada4ab328a4e195585f2",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (THEATRE)"
+      ],
+      "poiFile": "5_3-6f06961a4e01.b3dm",
+      "poiSha256": "c29e68a1a57435de0918a8253b5c97ea66658279ffa4b606eee1362d892ff685",
+      "poiTriangles": 4420,
+      "backgroundFile": "optimized-tiles/6/39/5_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e",
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "backgroundSha256": "917a0d255e9d3006705b415c5cb43492d5afa3e6bf0118867aeeb0cdc56e844f",
+      "backgroundTriangles": 12376
+    },
+    {
+      "sourceTile": "tiles/6/39/5_4.b3dm",
+      "sourceSha256": "f92690816b8de06dbb6955a91c483bc1ab23759b0807f8b838654e4988a86fa5",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (THEATRE)"
+      ],
+      "poiFile": "5_4-4da5867b1226.b3dm",
+      "poiSha256": "2b056a754d909bc409eb52a173738186e2e75ee455abafac2fe46ea6e6cfe0fc",
+      "poiTriangles": 4420,
+      "backgroundFile": "optimized-tiles/6/39/5_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e",
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "backgroundSha256": "91e420f198861c758d455f6683dc516286175677a8c60a4c3985cb5f0fa20c95",
+      "backgroundTriangles": 12376
+    },
+    {
+      "sourceTile": "tiles/6/39/5_5.b3dm",
+      "sourceSha256": "489af84868c8f91a52b75e36e9ea78e0d152d7936918f3ea55395a95c6a5cc64",
+      "originalBatchIds": [
+        15
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "gmlNames": [
+        "MARINA BAY SANDS (THEATRE)"
+      ],
+      "poiFile": "5_5-5119f8fb4fdb.b3dm",
+      "poiSha256": "4d178339077700501f234f0b4154db7b3f12ef4a3fc2b9e6a9c0fd09f123d269",
+      "poiTriangles": 4420,
+      "backgroundFile": "optimized-tiles/6/39/5_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e9e5a4f5-3776-479b-bf51-34a87711ba7c",
+        "SLA_BLDG2_31dddc10-b1b7-4616-a1e2-76412638844e",
+        "SLA_BLDG2_b867e499-adaa-4169-9f6e-2cbf27d07534"
+      ],
+      "backgroundSha256": "22cca276b26fefbd409331e78b52df07f174bbb1a995ec4bfd41f574356dd7c2",
+      "backgroundTriangles": 12376
+    }
+  ]
+}

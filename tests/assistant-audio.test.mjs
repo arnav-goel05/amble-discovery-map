@@ -7,7 +7,11 @@ import {
   createAudioController,
   validateAudioMetadata,
 } from "../activity-scenes/assistant/audio-controller.js";
-import { createBrowserPcmCapture } from "../activity-scenes/assistant/browser-audio-io.js";
+import {
+  createBrowserPcmCapture,
+  createPostPlaybackSpeechGuard,
+  POST_PLAYBACK_SPEECH_GUARD_MS,
+} from "../activity-scenes/assistant/browser-audio-io.js";
 
 const fixture = JSON.parse(
   fs.readFileSync(
@@ -130,6 +134,23 @@ test("rejected ambient speech does not interrupt assistant playback", async () =
   await controller.start({ disclosureAccepted: true });
   assert.equal(controller.setVadState("speech_started"), false);
   assert.deepEqual(events, ["ambient"]);
+});
+
+test("post-playback speech guard ignores the assistant audio tail once", () => {
+  let now = 1_000;
+  const guard = createPostPlaybackSpeechGuard({ now: () => now });
+
+  guard.observeState("speaking");
+  guard.observeState("listening");
+  assert.equal(guard.allowsSpeech(), false);
+
+  now += POST_PLAYBACK_SPEECH_GUARD_MS - 1;
+  assert.equal(guard.allowsSpeech(), false);
+  now += 1;
+  assert.equal(guard.allowsSpeech(), true);
+
+  guard.observeState("listening");
+  assert.equal(guard.allowsSpeech(), true);
 });
 
 test("permission revoke and pagehide terminate capture without retained chunks", async () => {

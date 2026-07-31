@@ -54,6 +54,25 @@ export function summarizeEvidenceLevels(events = []) {
   return { uniqueActivities: events.length, levels, upgrades };
 }
 
+export function summarizeFieldCompleteness(events = []) {
+  const summary = {};
+  for (const event of events)
+    for (const completeness of [
+      event.fieldCompleteness,
+      ...Object.values(event.fieldCompletenessByOccurrence ?? {}),
+    ].filter(Boolean))
+      for (const [field, assessment] of Object.entries(completeness)) {
+        summary[field] ??= {
+          present: 0,
+          not_published_by_source: 0,
+          extraction_failed: 0,
+        };
+        if (assessment?.status in summary[field])
+          summary[field][assessment.status] += 1;
+      }
+  return summary;
+}
+
 export function progressResponse(state) {
   const complete = Boolean(state.finalizedAt);
   const continueCommand = complete
@@ -178,9 +197,11 @@ export function renderStatus(state, run, frontendPlan = null) {
         ]
       : []),
   ];
-  const reconciliation = frontendPlan
+  let reconciliation = frontendPlan
     ? `- Expired events: ${frontendPlan.expiry.expiredEventIds.join(", ") || "none"}\n- Undated review events: ${(frontendPlan.expiry.undatedReviewEventIds ?? []).join(", ") || "none"}\n- Removed landmarks: ${frontendPlan.expiry.removedLandmarkIds.join(", ") || "none"}\n- Geometry changed: ${frontendPlan.geometryChanged}`
     : "- No frontend reconciliation plan was required.";
+  reconciliation += `\n- Date schedule reviews: ${state.normalization?.dateQuality?.needsReview ?? state.normalization?.counts?.dateReviewOccurrences ?? 0}\n- Date review reasons: ${JSON.stringify(state.normalization?.dateQuality?.byReason ?? {})}\n- Date reviews by source: ${JSON.stringify(state.normalization?.dateQuality?.bySource ?? {})}`;
+  reconciliation += `\n- Distinct activities: ${state.deduplication?.counts?.activities ?? state.normalization?.counts?.activities ?? 0}\n- Activity sessions: ${state.deduplication?.counts?.activitySessions ?? state.normalization?.counts?.activitySessions ?? 0}\n- Activity venue groups: ${state.deduplication?.counts?.activityVenueGroups ?? state.normalization?.counts?.activityVenueGroups ?? 0}\n- Source offers: ${state.deduplication?.counts?.sourceOffers ?? state.normalization?.counts?.sourceOffers ?? 0}\n- Activity grouping reviews: ${state.deduplication?.counts?.activityGroupingReviews ?? state.normalization?.counts?.activityGroupingReviews ?? 0}\n- Retired-source events archived: ${frontendPlan?.sourceReconciliation?.counts?.retired ?? 0}`;
   const publication = state.publication ?? {
     decision: eligibility.eligible ? "publish" : "preserve_previous",
     reasonCodes: eligibility.reasons,

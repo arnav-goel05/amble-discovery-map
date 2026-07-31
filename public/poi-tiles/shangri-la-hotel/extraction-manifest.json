@@ -1,0 +1,255 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "shangri-la-hotel",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:18.987Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/14/7_4.b3dm",
+      "sourceSha256": "050c4d0fecb5a36e5a0b57e835e028a4a226303f282dfbf6f9d27fa18c069544",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547"
+      ],
+      "gmlNames": [
+        "SHANGRI-LA HOTEL"
+      ],
+      "poiFile": "7_4-f0f2e2cfd419.b3dm",
+      "poiSha256": "b2a4e3b82543f72dfc2ca79ec782a2ddc55b0e4bfc5be546b01b921c97ec379f",
+      "poiTriangles": 21556,
+      "backgroundFile": "optimized-tiles/5/14/7_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547"
+      ],
+      "backgroundSha256": "3a9b273c3121d7f7248295a824ba8f63584a3ad7c11e326a26acd1670a8ae7c8",
+      "backgroundTriangles": 7784
+    },
+    {
+      "sourceTile": "tiles/5/14/7_3.b3dm",
+      "sourceSha256": "4405d8b533599cac089183fc5c1271a8d9bd50f2b2a2ff90536bbad6974c42ff",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547"
+      ],
+      "gmlNames": [
+        "SHANGRI-LA HOTEL"
+      ],
+      "poiFile": "7_3-0b08dc6cfd3d.b3dm",
+      "poiSha256": "d3055510240743e4f43ca40b9f24f7fa0993e40917404a80cf1d589f08f016d3",
+      "poiTriangles": 21556,
+      "backgroundFile": "optimized-tiles/5/14/7_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547"
+      ],
+      "backgroundSha256": "93f8b4ec8d8c26838711b7a5d4d7a5694586f99c76dde31c58b5d4bb91aad34d",
+      "backgroundTriangles": 7784
+    },
+    {
+      "sourceTile": "tiles/5/14/7_2.b3dm",
+      "sourceSha256": "7596570a18d61404df4b9cad77a656736cb9967bf00b343cd0e6abe3bd0162e9",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547"
+      ],
+      "gmlNames": [
+        "SHANGRI-LA HOTEL"
+      ],
+      "poiFile": "7_2-dfbfd3b227fa.b3dm",
+      "poiSha256": "0e1dec75c037b2ecf797498f8d5c51fa24a60cfeebea1fda60301d045f533df2",
+      "poiTriangles": 21556,
+      "backgroundFile": "optimized-tiles/5/14/7_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547"
+      ],
+      "backgroundSha256": "47558ada0568aef4da6ae707d0f62703851a8b7fff99105fd7e7c246dfdb6caf",
+      "backgroundTriangles": 7784
+    },
+    {
+      "sourceTile": "tiles/5/14/7_1.b3dm",
+      "sourceSha256": "3d169bf3a16a949ab09d1e3a79309053005ee77abf53d7178da065f5395b6561",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547"
+      ],
+      "gmlNames": [
+        "SHANGRI-LA HOTEL"
+      ],
+      "poiFile": "7_1-2729bb7d8d51.b3dm",
+      "poiSha256": "9845b4ec1171771866a1fa87a3ba2619aad183373c4c5c1aeea385d456a16fc5",
+      "poiTriangles": 21556,
+      "backgroundFile": "optimized-tiles/5/14/7_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547"
+      ],
+      "backgroundSha256": "4fffd58dfd1c6d54bf4484bf5b8bf14a628297de6dca04bfd7e9276581e83228",
+      "backgroundTriangles": 7784
+    },
+    {
+      "sourceTile": "tiles/5/14/7_0.b3dm",
+      "sourceSha256": "5768e5551caf1e0ef1346b25fc6b55ca7d83d861b482271672d2907b148b8d25",
+      "originalBatchIds": [
+        0
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547"
+      ],
+      "gmlNames": [
+        "SHANGRI-LA HOTEL"
+      ],
+      "poiFile": "7_0-14e8d23adfd5.b3dm",
+      "poiSha256": "064a45dfffe8541ffb1f6828ce608f4c42f9836cec7c3c0cd1549fc3b26a3429",
+      "poiTriangles": 21556,
+      "backgroundFile": "optimized-tiles/5/14/7_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_0b6c6b47-a605-4274-8209-a6748cdf9547"
+      ],
+      "backgroundSha256": "5b72311309995a7824db00eb9091e3f7687029c859b4306cbf3dcb72179cab70",
+      "backgroundTriangles": 7784
+    }
+  ]
+}

@@ -47,13 +47,20 @@ Map an explicit source label `Online` to `mode: online`, `Hybrid` to `hybrid`, a
 
 ## Rendered-page and discovery adapters
 
-The configured rendered-page adapters are Fever, Visit Singapore, Singapore Film Society, Roots/HAN, Honeycombers, ArtsEquator, and Time Out Singapore. Fever, Visit Singapore, and Singapore Film Society are enabled direct sources. Roots/HAN is explicitly unavailable/disabled until its layout contract is repaired. Honeycombers, ArtsEquator, and Time Out are enabled trusted editorial sources.
+The configured rendered-page adapters are Fever, Visit Singapore, Singapore Film Society, and Time Out Singapore. Fever, Visit Singapore, and Singapore Film Society are enabled direct sources. Time Out is an enabled trusted editorial source.
 
 Rendered retrieval uses the shared TinyFish transport with public HTTPS destinations only, bounded pages and response sizes, a maximum batch of 10, retry/backoff (including transient per-URL failures), and a rate below 150 URLs per minute. Checked-in source definitions may select `markdown`, `html`, or `json`, force bounded cache freshness, and scope extraction with reviewed CSS selectors. Store canonical listing/detail captures and parser fixtures in the current run. Reuse a canonical URL capture within that run so discovery-first and direct-first processing produce the same authority evidence. Never log credentials or full response bodies.
 
 Editorial assessment first reuses already collected compatible direct evidence, then attempts a bounded organizer/venue/ticketing/official-program link from `data/event-authority-registry.json`. Direct agreement yields `direct_corroborated`; conflicts or ambiguous sibling mapping enter scoped review. If no usable direct record remains after the attempt, a trusted editorial record may publish as `editorial_authoritative` only when it identifies one current Singapore activity, has a usable schedule or intentional anytime state, and has mapped or off-map placement evidence. Generic/search/directory/social evidence never supplies those claims by itself. Preserve the editorial contribution and any later direct upgrade under the same published identity.
 
-Source-specific scope rules are executable in `scripts/lib/event-sources/`: Fever retains selectable/anytime/waitlist activities and behaviorally excludes only ordinary attraction admission; Visit Singapore freshly scopes TinyFish to `stb-event-and-festivals`, emits every embedded `cardmultifield` item as a stable listing-native record, and splits guide headings only when each entry has both schedule and venue evidence; Singapore Film Society preserves screenings and access restrictions; Roots/HAN reports unavailable; Honeycombers and Time Out retain valid roundup/evergreen entries while rejecting pure promotion; ArtsEquator retains attendable programmes and rejects standalone non-attendable opportunities.
+Source-specific scope rules are executable in `scripts/lib/event-sources/`: Fever retains selectable/anytime/waitlist activities and behaviorally excludes only ordinary attraction admission; Visit Singapore freshly scopes TinyFish to `stb-event-and-festivals`, emits every embedded `cardmultifield` item as a stable listing-native record, and splits guide headings only when each entry has both schedule and venue evidence; Singapore Film Society preserves screenings and access restrictions; Time Out retains valid roundup/evergreen entries while rejecting pure promotion.
+
+Before normalization, every otherwise eligible physical occurrence that still lacks both venue
+and address evidence runs through the versioned missing-venue overlay. It issues one bounded
+TinyFish Search query, fetches at most three Singapore-local or original-source official
+candidates, and promotes a location only when one event-specific authoritative result remains.
+Ambiguous, overseas, directory, social, generic-homepage, and unverified results remain terminally
+accounted without mutating raw captures or changing source completeness. Resumes reuse the overlay.
 
 Time Out uses one bounded multi-surface listing contract: the weekly hotlist, weekend roundup, art-exhibition roundup, annual concert roundup, and the current monthly roundup discovered from the `THIS MONTH` homepage planner link. Extract only the complete numbered section configured for each roundup and stop at its next section heading. Missing headings, ordinal gaps, a missing/ambiguous current-month route, an unapproved route, or traversal beyond the shared ceiling makes the source incomplete instead of silently accepting partial coverage. Collapse identical canonical detail URLs across all Time Out surfaces before fetching details; retain the first bounded listing evidence and let normal all-source deduplication handle semantically equivalent events exposed under different URLs.
 
@@ -73,7 +80,7 @@ Time Out uses one bounded multi-surface listing contract: the weekly hotlist, we
 - Detail API: `POST https://www.catch.sg/api/site/GetEventDetail` as form data with `pathUrl`, `eventPageID`, `articlePageSize=6`, `photosPageSize=8`, `isPhotosPaginated=false`, `articlePageIndex=1`, and `photosPageIndex=1`
 - Detail response: use `/data`; a successful record has non-empty `/data/ID` and `/data/DisplayEventTitle`
 - Pagination: request page indexes `1..PageTotal`; deduplicate repeated canonical detail URLs before detail capture
-- Stable source ID: final event-detail URL path; block the record when absent
+- Stable source ID: final event-detail URL path; account a missing or malformed provider detail URL as an invalid record and continue complete source pagination
 
 ## `sistic-official-listing-v1`
 

@@ -155,6 +155,49 @@ function closedObject(value, keys) {
   );
 }
 
+function catalogueCandidates(source) {
+  if (!Array.isArray(source?.items)) return null;
+  if (
+    typeof source.catalogRevision !== "string" ||
+    !source.catalogRevision ||
+    !Array.isArray(source.sources) ||
+    source.sources.length === 0
+  )
+    discoveryFail(
+      "discovery_catalog_invalid",
+      "Discovery catalogue revision or provenance is invalid",
+    );
+  return source.items.map((item) => ({
+    candidateId: item.targetId,
+    candidateType: item.type,
+    areaId:
+      item.attributes?.areaId ?? (item.type === "area" ? item.targetId : null),
+    coordinates: null,
+    attributes: structuredClone(item.attributes || {}),
+    label: item.label,
+  }));
+}
+
+export function discoveryCandidates(source) {
+  const projected = catalogueCandidates(source);
+  return projected ?? structuredClone(source?.candidates || []);
+}
+
+function normalizedResult(result, legacy) {
+  if (!legacy) return result;
+  const mode = result.areas?.length
+    ? "recommendations"
+    : result.clarification
+      ? "clarification"
+      : "no_match";
+  return {
+    ...result,
+    mode,
+    clarification: mode === "recommendations" ? null : result.clarification,
+    message: null,
+  };
+}
+
 export function orderSuggestedAreas(areas = []) {
   return areas
     .map((area) => structuredClone(area))
@@ -166,29 +209,72 @@ export function orderSuggestedAreas(areas = []) {
     .map((area, index) => ({ ...area, rank: index + 1 }));
 }
 
-export function validateDiscoveryResult(result, envelope) {
+export function validateDiscoveryResult(
+  result,
+  source,
+  { catalogRevision = null } = {},
+) {
+  const legacy =
+    !Object.hasOwn(result || {}, "mode") &&
+    !Object.hasOwn(result || {}, "message") &&
+    Array.isArray(source?.candidates);
+  const normalized = normalizedResult(result, legacy);
+  if (
+    Array.isArray(source?.items) &&
+    catalogRevision !== null &&
+    catalogRevision !== source.catalogRevision
+  )
+    discoveryFail(
+      "discovery_catalog_revision_mismatch",
+      "Discovery result is bound to a different catalogue revision",
+    );
   if (
     !closedObject(
-      result,
-      new Set(["intentRevision", "areas", "clarification"]),
+      normalized,
+      new Set(["intentRevision", "mode", "areas", "clarification", "message"]),
     ) ||
-    !Number.isSafeInteger(result.intentRevision) ||
-    result.intentRevision < 0 ||
-    !Array.isArray(result.areas) ||
-    result.areas.length > 5
+    !Number.isSafeInteger(normalized.intentRevision) ||
+    normalized.intentRevision < 0 ||
+    !["recommendations", "clarification", "no_match"].includes(
+      normalized.mode,
+    ) ||
+    !Array.isArray(normalized.areas) ||
+    normalized.areas.length > 5 ||
+    (normalized.message !== null &&
+      (typeof normalized.message !== "string" ||
+        normalized.message.length < 1 ||
+        normalized.message.length > 240))
   )
     discoveryFail(
       "discovery_schema_invalid",
       "Discovery result schema is invalid",
     );
+  if (
+    (normalized.mode === "recommendations" &&
+      (normalized.areas.length === 0 ||
+        normalized.clarification !== null ||
+        normalized.message !== null)) ||
+    (normalized.mode === "clarification" &&
+      (normalized.areas.length !== 0 ||
+        normalized.clarification === null ||
+        normalized.message !== null)) ||
+    (normalized.mode === "no_match" &&
+      (normalized.areas.length !== 0 ||
+        normalized.clarification !== null ||
+        (!legacy && normalized.message === null)))
+  )
+    discoveryFail(
+      "discovery_schema_invalid",
+      "Discovery result mode is inconsistent with its content",
+    );
   const candidates = new Map(
-    (envelope?.candidates || []).map((candidate) => [
+    discoveryCandidates(source).map((candidate) => [
       candidate.candidateId,
       candidate,
     ]),
   );
   const areas = new Set([...candidates.values()].map(({ areaId }) => areaId));
-  for (const [index, area] of result.areas.entries()) {
+  for (const [index, area] of normalized.areas.entries()) {
     if (
       !closedObject(
         area,
@@ -203,12 +289,20 @@ export function validateDiscoveryResult(result, envelope) {
       ) ||
       !Array.isArray(area.candidateIds) ||
       area.candidateIds.length === 0 ||
+      area.candidateIds.length > 20 ||
       new Set(area.candidateIds).size !== area.candidateIds.length ||
       !Array.isArray(area.reasons) ||
       area.reasons.length < 1 ||
       area.reasons.length > 3 ||
       !Array.isArray(area.tradeoffs) ||
-      area.tradeoffs.length > 2
+      area.tradeoffs.length < 1 ||
+      area.tradeoffs.length > 2 ||
+      area.tradeoffs.some(
+        (tradeoff) =>
+          typeof tradeoff !== "string" ||
+          !tradeoff.trim() ||
+          tradeoff.length > 140,
+      )
     )
       discoveryFail(
         "discovery_schema_invalid",
@@ -228,7 +322,7 @@ export function validateDiscoveryResult(result, envelope) {
     if (
       !Number.isInteger(area.rank) ||
       area.rank !== index + 1 ||
-      (index > 0 && result.areas[index - 1].confidence < area.confidence)
+      (index > 0 && normalized.areas[index - 1].confidence < area.confidence)
     )
       discoveryFail("discovery_rank_invalid", "Suggested rank is invalid");
     for (const candidateId of area.candidateIds) {
@@ -255,8 +349,15 @@ export function validateDiscoveryResult(result, envelope) {
         reason.text.length > 180 ||
         !Array.isArray(reason.candidateIds) ||
         reason.candidateIds.length === 0 ||
+        reason.candidateIds.length > 20 ||
+        new Set(reason.candidateIds).size !== reason.candidateIds.length ||
         !Array.isArray(reason.attributeKeys) ||
-        reason.attributeKeys.length === 0
+        reason.attributeKeys.length === 0 ||
+        reason.attributeKeys.length > 12 ||
+        new Set(reason.attributeKeys).size !== reason.attributeKeys.length ||
+        reason.attributeKeys.some(
+          (key) => typeof key !== "string" || !key || key.length > 64,
+        )
       )
         discoveryFail(
           "discovery_schema_invalid",
@@ -290,7 +391,9 @@ export function validateDiscoveryResult(result, envelope) {
       }
     }
   }
-  const clarification = result.clarification;
+  const clarification = legacy
+    ? result.clarification
+    : normalized.clarification;
   if (
     clarification !== null &&
     (!closedObject(
@@ -299,11 +402,18 @@ export function validateDiscoveryResult(result, envelope) {
     ) ||
       typeof clarification.question !== "string" ||
       !clarification.question ||
+      clarification.question.length > 180 ||
       !["choice", "short"].includes(clarification.answerType) ||
       (clarification.answerType === "choice" &&
         (!Array.isArray(clarification.choices) ||
           clarification.choices.length < 2 ||
-          clarification.choices.length > 5)))
+          clarification.choices.length > 5 ||
+          clarification.choices.some(
+            (choice) =>
+              typeof choice !== "string" || !choice || choice.length > 60,
+          ))) ||
+      (clarification.answerType === "short" &&
+        clarification.choices !== undefined))
   )
     discoveryFail(
       "discovery_schema_invalid",

@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amblefinds.com/schemas/map-performance-diagnostic.schema.json",
+  "title": "Map Performance Diagnostic Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "environment",
+    "variants",
+    "trials",
+    "comparisons",
+    "findings"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "environment": { "type": "object" },
+    "variants": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/variant" },
+      "minItems": 2
+    },
+    "trials": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/trial" }
+    },
+    "comparisons": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/comparison" }
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    }
+  },
+  "$defs": {
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "comparisonGroup",
+        "controlId",
+        "workloads",
+        "intendedDifference"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "comparisonGroup": { "type": "string", "minLength": 1 },
+        "controlId": { "type": ["string", "null"] },
+        "phase": { "enum": ["cold", "warm", "network_idle"] },
+        "workloads": { "type": "object" },
+        "intendedDifference": { "type": "string" }
+      }
+    },
+    "trial": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "trialId",
+        "variantId",
+        "runNumber",
+        "validity",
+        "controls",
+        "motion",
+        "network",
+        "renderer"
+      ],
+      "properties": {
+        "trialId": { "type": "string" },
+        "variantId": { "type": "string" },
+        "runNumber": { "type": "integer", "minimum": 1 },
+        "validity": {
+          "type": "object",
+          "required": ["state", "reasons"],
+          "properties": {
+            "state": { "enum": ["valid", "invalid"] },
+            "reasons": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "controls": { "type": "object" },
+        "motion": { "type": "object" },
+        "network": { "type": "object" },
+        "renderer": { "type": "object" }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "required": [
+        "controlVariantId",
+        "candidateVariantId",
+        "compatible",
+        "classification",
+        "effect"
+      ],
+      "properties": {
+        "controlVariantId": { "type": "string" },
+        "candidateVariantId": { "type": "string" },
+        "compatible": { "type": "boolean" },
+        "classification": {
+          "enum": ["confirmed", "contributing", "inconclusive", "non_cause"]
+        },
+        "effect": { "type": "object" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "required": ["id", "classification", "smallestCause", "evidence"],
+      "properties": {
+        "id": { "type": "string" },
+        "classification": {
+          "enum": ["confirmed", "contributing", "inconclusive", "non_cause"]
+        },
+        "smallestCause": { "type": "string" },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

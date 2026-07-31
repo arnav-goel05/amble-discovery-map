@@ -103,9 +103,53 @@
     "peranakan-museum",
     "maritime-xperiential-museum",
     "marina-square",
-    "jewel-changi-airport"
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "geylang-east-public-library",
+    "tan-tock-seng-hospital",
+    "b-central",
+    "tong-fong-building",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "stamford-arts-centre",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre"
   ],
-  "generatedAt": "2026-07-19T19:39:12.773Z",
+  "generatedAt": "2026-07-21T18:56:58.794Z",
   "tiles": [
     {
       "sourceTile": "tiles/5/20/0_0.b3dm",
@@ -124,13 +168,10 @@
       "poiTriangles": 2412,
       "backgroundFile": "optimized-tiles/5/20/0_0.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0"
       ],
-      "backgroundSha256": "db436bcf1dd6f9764a98c339b827244a2125b93d64103cc33f7d0781461421b1",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "e806f2ab91e34e2671513992fa4afcb51d5fb251bed65792f9ac0a1145545db8",
+      "backgroundTriangles": 18816
     },
     {
       "sourceTile": "tiles/5/20/0_1.b3dm",
@@ -149,13 +190,10 @@
       "poiTriangles": 2412,
       "backgroundFile": "optimized-tiles/5/20/0_1.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0"
       ],
-      "backgroundSha256": "e1f6b40a48e2ce0109331fa67e0895512c21dfc49817802ea38bf25fb752a8ef",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "71da13a0fff68edc68e64d6c15d944e7eab3bd4bc9843a2b7e4a0863a85be252",
+      "backgroundTriangles": 18816
     },
     {
       "sourceTile": "tiles/5/20/0_2.b3dm",
@@ -174,13 +212,10 @@
       "poiTriangles": 2412,
       "backgroundFile": "optimized-tiles/5/20/0_2.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0"
       ],
-      "backgroundSha256": "f875755c138eced053ff956c8efdff5784d8f3b20a9d4daf9dfd0d7f987ca9a1",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "097cccd14a2064c85a285128b7a1e71b2065ae0354a18a496ee4ee863e122915",
+      "backgroundTriangles": 18816
     },
     {
       "sourceTile": "tiles/5/20/0_3.b3dm",
@@ -199,13 +234,10 @@
       "poiTriangles": 2412,
       "backgroundFile": "optimized-tiles/5/20/0_3.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0"
       ],
-      "backgroundSha256": "852cf60f1869b81a44001880851200ab57d893055dcbc1490a373bab0f467f2c",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "a7bd884af95cbcf760c9d198818a22361be49f107763e352ec80411e2bfe7215",
+      "backgroundTriangles": 18816
     },
     {
       "sourceTile": "tiles/5/20/0_4.b3dm",
@@ -224,13 +256,10 @@
       "poiTriangles": 2412,
       "backgroundFile": "optimized-tiles/5/20/0_4.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0"
       ],
-      "backgroundSha256": "3aabc871e1ff3651f0c3644560c630ac1aa272d1e50392097c697878534efa71",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "6945b449548b94b61f3823978effada4653a3886f539e191b61480f24441f785",
+      "backgroundTriangles": 18816
     },
     {
       "sourceTile": "tiles/5/20/0_5.b3dm",
@@ -249,13 +278,10 @@
       "poiTriangles": 2412,
       "backgroundFile": "optimized-tiles/5/20/0_5.b3dm",
       "backgroundRemovedGmlIds": [
-        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0",
-        "SLA_BLDG2_4a51595e-c043-4f56-a03c-a066071c716a",
-        "SLA_BLDG2_9993b3c5-5a0d-4488-984e-c67848fe6fc0",
-        "SLA_BLDG2_e278a994-d7df-49e5-a5de-3560672aa21c"
+        "SLA_BLDG2_570fa5cd-4d81-4ea6-b9d2-46675367d5b0"
       ],
-      "backgroundSha256": "1ad2043b4880cf957a005f626487356602cda04bc96c7079f298a8e0f922ddc8",
-      "backgroundTriangles": 17804
+      "backgroundSha256": "b763438c8ece43a61d7cea8db44c5eaa63d77fd93d1f7fc888e595ef62319032",
+      "backgroundTriangles": 18816
     }
   ]
 }

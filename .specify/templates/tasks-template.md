@@ -11,6 +11,15 @@ description: "Task list template for feature implementation"
 **Branch**: Execute feature tasks on `develop`; do not create or switch branches unless the user explicitly requests it.
 
 **Tests**: Relevant automated tests and the production build are REQUIRED by the project constitution. Include success, failure, recovery, and lifecycle coverage in proportion to risk.
+For work touching the Realtime exception, include fixtures proving that no session or response
+request transmits an application `max_output_tokens` ceiling and that budget reservation still
+uses the reviewed provider/model intrinsic maximum. If local content diagnostics are included,
+add tests proving explicit opt-in, production/preview impossibility, terminal cleanup, and
+structural exclusion of credentials, authorization material, cookies, session tokens, signing
+material, and raw audio. If persistent local audit files are included, also prove the separate
+activation flag, fixed gitignored location, restrictive permissions, sanitized-before-write
+boundary, 5 MiB rotation, five-file maximum, seven-day deletion, and zero database, browser,
+remote, or background-upload paths.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -70,7 +79,7 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T007 Create base models/entities that all stories depend on
 - [ ] T008 Configure error handling and logging infrastructure
 - [ ] T009 Setup environment configuration management
-- [ ] T010 Define stable identities, schema versions, provenance, retention, and atomic publication boundaries
+- [ ] T010 Define stable identities, schema versions, provenance, retention, atomic publication boundaries, and the affected capability inventory with shared command/query contracts, rich result schemas, contextual eligibility, post-command context synchronization, and environment-parity fixtures
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -160,6 +169,10 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Security hardening
 - [ ] TXXX Verify privacy retention and deletion paths
 - [ ] TXXX Verify evidence, per-identity carry-forward or hold behavior, stale-data labeling, atomic publication, and release-wide rollback
+- [ ] TXXX Verify every affected direct UI and conversational entry point uses the shared capability registry and reaches the same observable success, failure, and unavailable states
+- [ ] TXXX Verify queries return bounded validated domain results with stable identities and every state-changing command refreshes authoritative assistant context
+- [ ] TXXX Verify local, test, preview, and production expose semantically equivalent catalogue and capability contracts
+- [ ] TXXX Verify MCP or other protocol adapters contain no duplicated business rules and cannot bypass validation, provenance, authorization, confirmation, privacy, or lifecycle controls
 - [ ] TXXX For any constitution-approved paid service, verify usage and spending limits, server-side credentials, disable control, limit-exhaustion behavior, and the free fallback
 - [ ] TXXX Record before-and-after performance benchmarks for rendering-sensitive changes
 - [ ] TXXX Run the required automated desktop/mobile Chromium, WebKit, and Firefox matrix; optionally record locally available branded-browser observations

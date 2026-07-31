@@ -12,6 +12,7 @@ import {
   readFileSync,
   renameSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { hostname } from "node:os";
@@ -27,6 +28,7 @@ import {
   commitFrontendSnapshot,
   loadCurrentApprovedData,
   prepareFrontendSnapshot,
+  selectChangedPoiRecords,
   writeVerifiedStageHandoffs,
 } from "./event-frontend-snapshot.mjs";
 import { extractCoordinates } from "./extract-web-evidence.mjs";
@@ -54,11 +56,26 @@ import {
   summarizeEvidenceLevels,
 } from "./lib/event-pipeline/reporting.mjs";
 import { computeVenueEvidenceHash } from "./lib/event-pipeline/evidence-hash.mjs";
+import { isStructuralVenueLabel } from "./lib/event-pipeline/venue-values.mjs";
+import { validateDateReviewArtifact } from "./lib/event-pipeline/date-quality-audit.mjs";
+import {
+  projectEventActivities,
+  validateActivityProjection,
+} from "./lib/event-pipeline/activity-projection.mjs";
+import { validateActivityReconciliation } from "./lib/event-pipeline/activity-reconciliation.mjs";
 import {
   finalizeDeduplication,
   generateDedupCandidates,
 } from "./lib/event-sources/deduplicate.mjs";
 import { assessActivityInclusion } from "./lib/event-sources/activity-policy.mjs";
+import {
+  recoverMissingEventVenues,
+  validateMissingVenueRecoveryConfig,
+} from "./lib/event-sources/tinyfish-venue-recovery.mjs";
+import {
+  assertProviderAllowed,
+  loadProviderPolicy,
+} from "./lib/provider-policy.mjs";
 import { stableEventKey } from "./reconcile-event-content.mjs";
 import {
   createTraceWriter,
@@ -69,6 +86,19 @@ import {
   parseManifest,
   singaporeWindowForDays,
 } from "./lib/event-pipeline/cli-contract.mjs";
+import {
+  buildEventDashboardPayloadFromRun,
+  syncEventDashboard,
+} from "./lib/event-pipeline/dashboard-sync.mjs";
+import {
+  createStageInputManifest,
+  findReusableStageCheckpoint,
+  fingerprintArtifact,
+  runCheckpointedStage,
+  summarizeStageCheckpointMetrics,
+  writeStageCheckpoint,
+} from "./lib/event-pipeline/stage-checkpoints.mjs";
+import { runIdempotentDelivery } from "./lib/event-pipeline/delivery-receipts.mjs";
 
 const require = createRequire(import.meta.url);
 const Database = require("better-sqlite3");
@@ -95,6 +125,17 @@ const venueRecoveryPath = (runDir) =>
 const deterministicRecoveryPath = (runDir) =>
   join(runDir, "normalized/deterministic-location-recovery.json");
 const STAGES = ["resolve", "highlight", "pill", "panel"];
+const browserVerificationEnvironment = (runId, overrides = {}) => {
+  const offset = Number.parseInt(sha(runId).slice(0, 8), 16) % 10_000;
+  const port = 40_000 + offset;
+  return {
+    ...process.env,
+    PLAYWRIGHT_PORT: String(port),
+    PLAYWRIGHT_REUSE_EXISTING_SERVER: "0",
+    EVENT_PIPELINE_BROWSER_ORIGIN: `http://127.0.0.1:${port}`,
+    ...overrides,
+  };
+};
 const TERMINAL_SOURCE = new Set([
   "success",
   "blocked",
@@ -145,6 +186,70 @@ function fail(message, code = 1) {
 
 function sha(value) {
   return createHash("sha256").update(value).digest("hex");
+}
+
+function workspaceCodeIdentity() {
+  const git = (args) =>
+    execFileSync("git", args, {
+      cwd: ROOT,
+      encoding: "utf8",
+      maxBuffer: 64 * 1024 * 1024,
+    });
+  const excluded = [
+    ":(exclude)specs/**",
+    ":(exclude)data/approved-snapshot.json",
+    ":(exclude)data/snapshots/**",
+    ":(exclude)public/poi-tiles/event-venues/tileset.json",
+  ];
+  const head = git(["rev-parse", "HEAD"]).trim();
+  const trackedDiff = git(["diff", "--binary", "HEAD", "--", ".", ...excluded]);
+  const untracked = git(["ls-files", "--others", "--exclude-standard"])
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .filter(
+      (ref) =>
+        !ref.startsWith("specs/") &&
+        !ref.startsWith("data/snapshots/") &&
+        ref !== "data/approved-snapshot.json" &&
+        ref !== "public/poi-tiles/event-venues/tileset.json",
+    )
+    .sort()
+    .map((ref) => ({
+      ref,
+      sha256: sha(readFileSync(join(ROOT, ref))),
+    }));
+  return {
+    head,
+    trackedDiffSha256: sha(trackedDiff),
+    untracked,
+  };
+}
+
+function checkpointArtifact(path, ref) {
+  const fingerprint = fingerprintArtifact(path, { ref });
+  return {
+    ref: fingerprint.ref,
+    sha256: fingerprint.sha256,
+    bytes: fingerprint.bytes,
+    fileCount: fingerprint.fileCount,
+  };
+}
+
+function executionIdentity() {
+  const identity = workspaceCodeIdentity();
+  return { ...identity, sha256: sha(JSON.stringify(identity)) };
+}
+
+function assertRunExecutionIdentity(runId) {
+  const runDir = runDirectory(runId);
+  const run = readJson(join(runDir, "run.json"));
+  if (!run.executionIdentity?.sha256) return;
+  const current = executionIdentity();
+  if (current.sha256 !== run.executionIdentity.sha256)
+    fail(
+      "Pipeline execution identity changed after the run started; preserve the current candidate and restart from a new run after code changes are complete",
+      2,
+    );
 }
 
 function atomicWrite(path, value) {
@@ -738,6 +843,24 @@ function readPipelineConfig() {
   ) {
     fail("Invalid bounded requestPolicy");
   }
+  try {
+    validateMissingVenueRecoveryConfig(config.missingVenueRecovery);
+    const providerPolicy = loadProviderPolicy(
+      join(ROOT, "data/provider-policy.json"),
+    );
+    assertProviderAllowed(
+      providerPolicy,
+      config.missingVenueRecovery.search.providerId,
+      { url: config.missingVenueRecovery.search.endpoint },
+    );
+    assertProviderAllowed(
+      providerPolicy,
+      config.missingVenueRecovery.fetch.providerId,
+      { url: config.missingVenueRecovery.fetch.endpoint },
+    );
+  } catch (error) {
+    fail(error.message);
+  }
   const ids = new Set(),
     collectionOrders = new Set(),
     precedences = new Set();
@@ -985,6 +1108,7 @@ function resume(options) {
     fail(
       "Resume rejected: current executable pipeline configuration differs from the run snapshot",
     );
+  assertRunExecutionIdentity(options.run);
   run.resume.requestedRunId = options.run;
   const invalidatedArtifacts = invalidateResumeArtifacts(runDir, state, run);
   writeJson(join(runDir, "run.json"), run);
@@ -1015,6 +1139,7 @@ function registerArtifacts(runDir, references, inputSha256 = []) {
       fail(`Referenced artifact does not exist: ${reference}`);
     run.artifacts[reference] = {
       sha256: sha(readFileSync(path)),
+      bytes: statSync(path).size,
       status: "success",
       inputSha256,
     };
@@ -1054,6 +1179,7 @@ function start(options) {
       .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
     const configSha256 = sha(JSON.stringify({ manifestSha256, adapters }));
     const now = new Date().toISOString();
+    const runExecutionIdentity = executionIdentity();
     writeJson(join(runDir, "run.json"), {
       schemaVersion: "1.0",
       runId,
@@ -1071,6 +1197,7 @@ function start(options) {
         sha256: definitionSha256,
       },
       configSha256,
+      executionIdentity: runExecutionIdentity,
       adapters,
       resume: { requestedRunId: null, parentRunId: null },
       artifacts: {},
@@ -1190,12 +1317,65 @@ function readResult(path) {
   return readJson(resolve(ROOT, path));
 }
 
+function validateSurfaceOutcomes(result) {
+  const surfaceOutcomes = result.completion?.surfaceOutcomes;
+  if (surfaceOutcomes === undefined) return;
+  if (!Array.isArray(surfaceOutcomes) || surfaceOutcomes.length === 0)
+    fail("surface outcomes must be a non-empty array when provided");
+  if (!Array.isArray(result.artifactRefs))
+    fail("Surface outcomes require artifactRefs");
+  let appearances = 0,
+    uniquePointers = 0,
+    duplicatesCollapsed = 0;
+  for (const outcome of surfaceOutcomes) {
+    if (!["success", "blocked"].includes(outcome.status))
+      fail("surface outcome status must be success or blocked");
+    for (const key of [
+      "appearances",
+      "uniquePointers",
+      "newUniquePointers",
+      "duplicatesCollapsed",
+    ])
+      if (!Number.isInteger(outcome[key]) || outcome[key] < 0)
+        fail(`Invalid surface outcome count: ${key}`);
+    if (outcome.status === "blocked" && !outcome.reasonCode)
+      fail("Blocked surface outcome requires a reasonCode");
+    if (outcome.status === "success" && !outcome.evidenceRef)
+      fail("Successful surface outcome requires evidenceRef");
+    if (
+      outcome.httpStatus != null &&
+      (!Number.isInteger(outcome.httpStatus) ||
+        outcome.httpStatus < 100 ||
+        outcome.httpStatus > 599)
+    )
+      fail("Surface outcome httpStatus must be a valid HTTP status");
+    if (
+      outcome.evidenceRef &&
+      !result.artifactRefs.includes(outcome.evidenceRef)
+    )
+      fail("Surface outcome evidenceRef must be declared in artifactRefs");
+    appearances += outcome.appearances;
+    uniquePointers += outcome.newUniquePointers;
+    duplicatesCollapsed += outcome.duplicatesCollapsed;
+  }
+  if (result.counts?.listingAppearances !== appearances)
+    fail("Source surface appearances do not reconcile");
+  if (result.counts?.uniqueSourcePointers !== uniquePointers)
+    fail("Source surface unique pointers do not reconcile");
+  if (result.counts?.listingDuplicatesCollapsed !== duplicatesCollapsed)
+    fail("Source surface duplicate accounting does not reconcile");
+}
+
 function validateSourceResult(result) {
   if (![...TERMINAL_SOURCE, "pending", "pilot_failed"].includes(result.status))
     fail(
       "Source status must be pending, success, pilot_failed, blocked, or failed",
     );
-  if (result.status === "success") {
+  const fullyAccounted =
+    result.status === "success" ||
+    (result.status === "blocked" &&
+      Number.isInteger(result.counts?.sourceRecordsReceived));
+  if (fullyAccounted) {
     const required = [
       "pages",
       "sourceRecordsReceived",
@@ -1217,9 +1397,17 @@ function validateSourceResult(result) {
     if (c.occurrencesEmitted !== c.excludedOccurrences + c.eligiblePreDedup)
       fail("Occurrence accounting does not reconcile");
     if (!Array.isArray(result.artifactRefs) || result.artifactRefs.length === 0)
-      fail("A successful source requires artifactRefs");
-    if (result.completion?.paginationComplete !== true)
+      fail("An accounted source requires artifactRefs");
+    if (
+      result.status === "success" &&
+      result.completion?.paginationComplete !== true
+    )
       fail("A successful source requires completion.paginationComplete");
+    if (
+      result.status === "blocked" &&
+      typeof result.completion?.paginationComplete !== "boolean"
+    )
+      fail("An accounted blocked source requires pagination completion state");
     if (
       !Array.isArray(result.completion.pagesVisited) ||
       result.completion.pagesVisited.length !== c.pages
@@ -1257,6 +1445,7 @@ function validateSourceResult(result) {
     )
       fail("completion.pageRecordCounts must sum to sourceRecordsReceived");
     if (
+      result.status === "success" &&
       c.sourceRecordsReceived === 0 &&
       result.completion.zeroResultConfirmed !== true
     )
@@ -1271,14 +1460,14 @@ function validateSourceResult(result) {
       result.invalidSourceRecordRefs.length !== c.invalidSourceRecords
     )
       fail(
-        "invalidSourceRecordRefs must account for every invalid source record",
+        "Source record partition invalidSourceRecordRefs must account for every invalid source record",
       );
     if (
       !Array.isArray(result.processedSourceRecordRefs) ||
       result.processedSourceRecordRefs.length !== c.processedSourceRecords
     )
       fail(
-        "processedSourceRecordRefs must account for every processed source record",
+        "Source record partition processedSourceRecordRefs must account for every processed source record",
       );
     const received = new Set(result.sourceRecordRefs);
     const partition = [
@@ -1295,7 +1484,9 @@ function validateSourceResult(result) {
         "Invalid and processed source record refs must exactly partition unique sourceRecordRefs",
       );
     }
-  } else if (result.status === "pending") {
+  }
+  validateSurfaceOutcomes(result);
+  if (result.status === "pending") {
     if (typeof result.message !== "string" || !result.message.trim())
       fail("Pending source requires a progress message");
   } else if (result.status === "blocked") {
@@ -1314,7 +1505,8 @@ function validateSourceResult(result) {
       fail("Blocked source httpStatus must be a valid HTTP status");
   } else if (result.status === "pilot_failed") {
     if (!result.error) fail("Pilot failure requires an error");
-  } else if (!result.error) fail("Failed source requires an error");
+  } else if (result.status === "failed" && !result.error)
+    fail("Failed source requires an error");
 }
 
 function baseArtifactRef(recordRef) {
@@ -1409,6 +1601,8 @@ function validateNormalizedSemantics(
       (typeof event.venue !== "string" || !event.venue.trim())
     )
       fail(`Physical event ${event.id} requires a venue`);
+    if (isStructuralVenueLabel(event.venue))
+      fail(`Normalized event ${event.id} contains a structural venue label`);
     const finalBoundary = eventFinalBoundary(event);
     if (
       finalBoundary !== null &&
@@ -1836,10 +2030,27 @@ function validateApprovedResolution(result, root = ROOT) {
 }
 
 function validateSourceEvidence(runDir, state, result) {
-  if (result.status !== "success") return;
+  const fullyAccounted =
+    result.status === "success" ||
+    (result.status === "blocked" &&
+      Number.isInteger(result.counts?.sourceRecordsReceived));
+  const hasSurfaceAccounting =
+    result.status === "blocked" &&
+    Array.isArray(result.completion?.surfaceOutcomes);
+  if (!fullyAccounted && !hasSurfaceAccounting) return;
   const runPath = join(runDir, "run.json");
   const run = existsSync(runPath) ? readJson(runPath) : null;
   const declared = new Set(result.artifactRefs);
+  if (hasSurfaceAccounting) {
+    for (const outcome of result.completion.surfaceOutcomes) {
+      if (
+        outcome.evidenceRef &&
+        !existsSync(artifactPath(runDir, outcome.evidenceRef))
+      )
+        fail(`Surface outcome evidence does not exist: ${outcome.evidenceRef}`);
+    }
+    if (!fullyAccounted) return;
+  }
   if (result.sourceRole === "discovery") {
     for (const ref of result.artifactRefs)
       if (!existsSync(artifactPath(runDir, ref)))
@@ -2007,16 +2218,30 @@ function validateSourceEvidence(runDir, state, result) {
         readJson(artifactPath(runDir, base)),
         pointerFromArtifactRef(recordRef),
       );
+    } else if (/^raw\/[^/]+\/detail-index\/[^/]+\.json$/.test(base)) {
+      jsonPointer(
+        readJson(artifactPath(runDir, base)),
+        pointerFromArtifactRef(recordRef),
+      );
     } else if (!/^raw\/[^/]+\/details\/[^/]+\.json$/.test(base)) {
       fail(
-        `Invalid source record must target raw listing evidence or a detail fixture: ${recordRef}`,
+        `Invalid source record must target raw listing evidence, a detail index, or a detail fixture: ${recordRef}`,
       );
+    } else if (!existsSync(artifactPath(runDir, base))) {
+      fail(`Invalid source record evidence does not exist: ${recordRef}`);
     }
   }
 }
 
 function validateSourceSemantics(runDir, state, result) {
-  if (result.status !== "success") return;
+  if (
+    result.status !== "success" &&
+    !(
+      result.status === "blocked" &&
+      Number.isInteger(result.counts?.sourceRecordsReceived)
+    )
+  )
+    return;
   if (result.sourceRole === "discovery") {
     const publishableDecisions = new Set([
       "authority_confirmed",
@@ -2109,7 +2334,12 @@ function recordSource(options) {
   validateSourceResult(result);
   validateSourceEvidence(runDir, state, result);
   validateSourceSemantics(runDir, state, result);
-  if (result.status === "success")
+  if (
+    result.status === "success" ||
+    (result.status === "blocked" &&
+      (Number.isInteger(result.counts?.sourceRecordsReceived) ||
+        Array.isArray(result.completion?.surfaceOutcomes)))
+  )
     registerArtifacts(runDir, result.artifactRefs);
   state.sources[options.source] = {
     ...state.sources[options.source],
@@ -2256,7 +2486,7 @@ async function collectSourceCommand(options) {
     adapterVersion: source.version,
     entityType: "source",
     entityId: options.source,
-    counts: result.counts,
+    counts: state.deduplication.counts,
     reasonCode: result.blockerReasonCode ?? null,
     httpStatus: result.httpStatus ?? null,
     blocker: result.error ?? null,
@@ -2286,6 +2516,26 @@ function recordNormalization(options) {
       "normalized/invalid.json",
       "normalized/dedup-decisions.json",
     ];
+    const dateReviewsRef = "normalized/date-reviews.json";
+    const activitiesRef = "normalized/activities.json";
+    const activityReviewsRef = "normalized/activity-grouping-reviews.json";
+    const activityDecisionsRef = "normalized/activity-grouping-decisions.json";
+    const hasActivityProjection =
+      result.artifactRefs?.includes(activitiesRef) ||
+      result.artifactRefs?.includes(activityReviewsRef) ||
+      existsSync(join(runDir, activitiesRef)) ||
+      existsSync(join(runDir, activityReviewsRef));
+    if (hasActivityProjection)
+      requiredArtifacts.push(activitiesRef, activityReviewsRef);
+    if (
+      result.artifactRefs?.includes(activityDecisionsRef) ||
+      existsSync(join(runDir, activityDecisionsRef))
+    )
+      requiredArtifacts.push(activityDecisionsRef);
+    const hasDateReviewsArtifact =
+      result.artifactRefs?.includes(dateReviewsRef) ||
+      existsSync(join(runDir, dateReviewsRef));
+    if (hasDateReviewsArtifact) requiredArtifacts.push(dateReviewsRef);
     for (const path of requiredArtifacts)
       if (!existsSync(join(runDir, path)))
         fail(`Missing normalization artifact: ${path}`);
@@ -2294,10 +2544,23 @@ function recordNormalization(options) {
       join(runDir, "normalized/excluded.json"),
     );
     const normalizedInvalid = readJson(join(runDir, "normalized/invalid.json"));
+    if (hasActivityProjection)
+      validateActivityProjection(
+        readJson(join(runDir, activitiesRef)),
+        readJson(join(runDir, activityReviewsRef)),
+      );
+    if (requiredArtifacts.includes(activityDecisionsRef))
+      validateActivityReconciliation(
+        readJson(join(runDir, activityDecisionsRef)),
+      );
+    const normalizedDateReviews = hasDateReviewsArtifact
+      ? readJson(join(runDir, dateReviewsRef))
+      : { counts: { records: 0 }, records: [] };
     for (const [name, envelope] of [
       ["events", normalizedEvents],
       ["excluded", normalizedExcluded],
       ["invalid", normalizedInvalid],
+      ["date-reviews", normalizedDateReviews],
     ]) {
       if (
         !Array.isArray(envelope.records) ||
@@ -2305,9 +2568,12 @@ function recordNormalization(options) {
       )
         fail(`normalized/${name}.json record count does not match its records`);
     }
-    const successfulSources = Object.values(state.sources).filter(
+    const normalizableSources = Object.values(state.sources).filter(
       (source) =>
-        source.status === "success" && source.operatingMode !== "pilot",
+        source.operatingMode !== "pilot" &&
+        (source.status === "success" ||
+          (source.status === "blocked" &&
+            Number.isInteger(source.counts?.sourceRecordsReceived))),
     );
     for (const [sourceName, recordRefs] of Object.entries(
       result.sourceReclassifications ?? {},
@@ -2345,7 +2611,7 @@ function recordNormalization(options) {
       }
     }
     const expectedInvalidRefs = new Set(
-      successfulSources.flatMap((source) => source.invalidSourceRecordRefs),
+      normalizableSources.flatMap((source) => source.invalidSourceRecordRefs),
     );
     if (
       normalizedInvalid.records.some(
@@ -2372,9 +2638,10 @@ function recordNormalization(options) {
           : [],
       ),
       ...normalizedExcluded.records.map((record) => record.sourceRecordRef),
+      ...normalizedDateReviews.records.map((record) => record.sourceRecordRef),
     ]);
     const expectedProcessedRefs = new Set(
-      successfulSources.flatMap((source) => source.processedSourceRecordRefs),
+      normalizableSources.flatMap((source) => source.processedSourceRecordRefs),
     );
     if (
       [...expectedProcessedRefs].some(
@@ -2383,8 +2650,23 @@ function recordNormalization(options) {
       [...processedEvidenceRefs].some((ref) => !expectedProcessedRefs.has(ref))
     ) {
       fail(
-        "Normalized events and exclusions do not account for processed source record refs",
+        "Normalized events, exclusions, and date reviews do not account for processed source record refs",
       );
+    }
+    try {
+      validateDateReviewArtifact(
+        {
+          ...normalizedDateReviews,
+          schemaVersion: normalizedDateReviews.schemaVersion ?? "3.0",
+        },
+        {
+          acceptedEventIds: normalizedEvents.records.map(
+            (event) => event.id ?? event.occurrenceId,
+          ),
+        },
+      );
+    } catch (error) {
+      fail(error instanceof Error ? error.message : String(error));
     }
     for (const [sourceName, accounting] of Object.entries(
       result.sourceAccounting ?? {},
@@ -2394,13 +2676,18 @@ function recordNormalization(options) {
       for (const key of [
         "occurrencesEmitted",
         "excludedOccurrences",
+        "dateReviewOccurrences",
         "eligiblePreDedup",
       ]) {
-        if (!Number.isInteger(accounting[key]) || accounting[key] < 0)
+        const value = accounting[key] ?? 0;
+        if (!Number.isInteger(value) || value < 0)
           fail(`Invalid normalization source accounting: ${sourceName}/${key}`);
+        accounting[key] = value;
       }
       if (
-        accounting.excludedOccurrences + accounting.eligiblePreDedup !==
+        accounting.excludedOccurrences +
+          accounting.dateReviewOccurrences +
+          accounting.eligiblePreDedup !==
         accounting.occurrencesEmitted
       )
         fail(
@@ -2408,8 +2695,12 @@ function recordNormalization(options) {
         );
       Object.assign(source.counts, accounting);
     }
-    const eligiblePreDedup = successfulSources.reduce(
+    const eligiblePreDedup = normalizableSources.reduce(
       (total, source) => total + source.counts.eligiblePreDedup,
+      0,
+    );
+    const dateReviewOccurrences = normalizableSources.reduce(
+      (total, source) => total + (source.counts.dateReviewOccurrences ?? 0),
       0,
     );
     for (const key of [
@@ -2425,6 +2716,11 @@ function recordNormalization(options) {
       fail(
         "Normalization eligiblePreDedup does not match successful source totals",
       );
+    if (
+      (result.counts.dateReviewOccurrences ?? 0) !== dateReviewOccurrences ||
+      dateReviewOccurrences !== normalizedDateReviews.records.length
+    )
+      fail("Normalization date-review accounting does not reconcile");
     if (
       result.counts.acceptedPostDedup !==
       eligiblePreDedup - result.counts.duplicateCollapsed
@@ -2450,7 +2746,7 @@ function recordNormalization(options) {
     registerArtifacts(
       runDir,
       requiredArtifacts,
-      successfulSources.flatMap((source) =>
+      normalizableSources.flatMap((source) =>
         source.artifactRefs
           .map(
             (reference) =>
@@ -2466,6 +2762,8 @@ function recordNormalization(options) {
     artifactRefs: result.artifactRefs ?? [],
     venueBranches: result.venueBranches ?? [],
     sourceAccounting: result.sourceAccounting ?? {},
+    diagnostics: result.diagnostics ?? [],
+    dateQuality: result.dateQuality ?? null,
     evidence: result.evidence ?? null,
     sourceReconciliation: result.sourceReconciliation ?? null,
     error: result.error ?? null,
@@ -2504,13 +2802,86 @@ function recordNormalization(options) {
     entityType: "run",
     entityId: options.run,
     counts: result.counts,
+    dateQuality: result.dateQuality ?? null,
     blocker: result.error ?? null,
     nextAction: `npm run event-pipeline -- advance --run ${options.run}`,
   });
   printNext(state);
 }
 
-function normalize(options) {
+async function recoverMissingVenues(options, { force = false } = {}) {
+  const runDir = runDirectory(options.run);
+  const state = loadState(options.run);
+  if (
+    Object.values(state.sources).some(
+      (source) => !TERMINAL_SOURCE.has(source.status),
+    )
+  )
+    fail(
+      "Cannot recover missing venues until every source is terminally accounted for",
+    );
+  const config = readPipelineConfig();
+  const result = await recoverMissingEventVenues({
+    runDir,
+    cacheDir: join(OUTPUT_ROOT, "recovery-cache"),
+    state,
+    run: readJson(join(runDir, "run.json")),
+    config: config.missingVenueRecovery,
+    sourceDefinitions: config.sources,
+    force,
+    logger: (record) =>
+      pipelineTrace(runDir, {
+        stage: record.stage ?? "venue_search_recovery",
+        action: record.action ?? "missing_venue_recovery",
+        outcome:
+          record.outcome ??
+          (record.action?.includes("failed")
+            ? "failed"
+            : record.action?.includes("reused")
+              ? "reused"
+              : record.action?.includes("recovered")
+                ? "success"
+                : "started"),
+        sourceName: record.sourceName ?? null,
+        entityType: "source_occurrence",
+        entityId: record.entityId ?? options.run,
+        reasonCode: record.reasonCode ?? null,
+        httpStatus: record.httpStatus ?? null,
+        counts: record.counts ?? null,
+        evidenceRef: record.evidenceRef ?? null,
+      }),
+  });
+  registerArtifacts(runDir, [result.artifactRef]);
+  state.missingVenueRecovery = {
+    status: "success",
+    counts: result.counts,
+    perSource: result.perSource,
+    artifactRef: result.artifactRef,
+    completedAt: new Date().toISOString(),
+  };
+  saveState(runDir, state);
+  pipelineTrace(runDir, {
+    stage: "venue_search_recovery",
+    action: "missing_venue_recovery_terminal",
+    outcome: "success",
+    entityType: "run",
+    entityId: options.run,
+    counts: result.counts,
+    evidenceRef: result.artifactRef,
+  });
+  return result;
+}
+
+async function recoverMissingVenuesCommand(options) {
+  const result = await recoverMissingVenues(options, {
+    force: options.force === true || options.force === "true",
+  });
+  process.stdout.write(
+    `${JSON.stringify({ artifactRef: result.artifactRef, counts: result.counts, perSource: result.perSource }, null, 2)}\n`,
+  );
+}
+
+async function normalize(options) {
   const runDir = runDirectory(options.run);
   const state = loadState(options.run);
   if (
@@ -2519,10 +2890,16 @@ function normalize(options) {
     )
   )
     fail("Cannot normalize until every source is terminally accounted for");
+  await recoverMissingVenues(options);
+  const refreshedState = loadState(options.run);
   const resultPath = join(runDir, "normalization-result.json");
   writeJson(
     resultPath,
-    normalizeRun({ runDir, state, run: readJson(join(runDir, "run.json")) }),
+    normalizeRun({
+      runDir,
+      state: refreshedState,
+      run: readJson(join(runDir, "run.json")),
+    }),
   );
   recordNormalization({ run: options.run, result: resultPath });
 }
@@ -2551,23 +2928,30 @@ function finalizeDedupCommand(options) {
         ? readJson(join(runDir, resolveStage.outputRef)).result
         : { resolutionStatus: resolveStage.resolutionStatus ?? "needs_review" };
   }
-  const currentLandmarks =
-    environmentRecords("EVENT_PIPELINE_CURRENT_LANDMARKS") ??
-    loadCurrentApprovedData(
-      process.env.EVENT_PIPELINE_FRONTEND_ROOT
-        ? resolve(process.env.EVENT_PIPELINE_FRONTEND_ROOT)
-        : ROOT,
-    ).landmarks;
-  const priorClusters = currentLandmarks.flatMap((landmark) =>
-    (landmark.events ?? []).map((event) => ({
-      identityAnchor: event.identityAnchor ?? stableEventKey(event),
-      memberIds:
-        event.sourceOccurrenceIds ??
-        (event.sources ?? []).map(
-          ({ source, sourceId }) => `${source}:${sourceId}`,
-        ),
-    })),
+  const overriddenLandmarks = environmentRecords(
+    "EVENT_PIPELINE_CURRENT_LANDMARKS",
   );
+  const approved = overriddenLandmarks
+    ? null
+    : loadCurrentApprovedData(
+        process.env.EVENT_PIPELINE_FRONTEND_ROOT
+          ? resolve(process.env.EVENT_PIPELINE_FRONTEND_ROOT)
+          : ROOT,
+      );
+  const priorEvents = overriddenLandmarks
+    ? overriddenLandmarks.flatMap((landmark) => landmark.events ?? [])
+    : [
+        ...(approved?.events?.mapped ?? []),
+        ...(approved?.events?.offMap ?? []),
+      ];
+  const priorClusters = priorEvents.map((event) => ({
+    identityAnchor: event.identityAnchor ?? stableEventKey(event),
+    memberIds:
+      event.sourceOccurrenceIds ??
+      (event.sources ?? []).map(
+        ({ source, sourceId }) => `${source}:${sourceId}`,
+      ),
+  }));
   const sourcePrecedence = Object.fromEntries(
     readPipelineConfig()
       .sources.filter(({ sourceRole }) => sourceRole === "authoritative")
@@ -2615,6 +2999,27 @@ function finalizeDedupCommand(options) {
     counts: { records: result.events.length },
     records: result.events,
   });
+  const activityProjection = projectEventActivities({
+    events: result.events,
+    runId: options.run,
+    generatedAt: new Date().toISOString(),
+  });
+  writeJson(
+    join(runDir, "normalized/activities.json"),
+    activityProjection.activities,
+  );
+  writeJson(
+    join(runDir, "normalized/activity-grouping-reviews.json"),
+    activityProjection.reviews,
+  );
+  writeJson(
+    join(runDir, "normalized/activity-grouping-decisions.json"),
+    activityProjection.decisions,
+  );
+  writeJson(
+    join(runDir, "normalized/parent-activity-grouping.json"),
+    activityProjection.parentGrouping,
+  );
   for (const venue of Object.values(state.venues))
     venue.eventIds = [
       ...new Set(
@@ -2628,9 +3033,29 @@ function finalizeDedupCommand(options) {
     ];
   state.deduplication = {
     status: "success",
-    counts: result.counts,
+    counts: {
+      ...result.counts,
+      activities: activityProjection.activities.counts.activities,
+      activitySessions: activityProjection.activities.counts.sessions,
+      activityVenueGroups: activityProjection.activities.counts.venueGroups,
+      sourceOffers: activityProjection.activities.counts.sourceOffers,
+      activityGroupingReviews: activityProjection.reviews.counts.records,
+      parentGroupingCandidates:
+        activityProjection.parentGrouping.counts.candidates,
+      parentGroupingMerges:
+        activityProjection.parentGrouping.counts.mergedParents,
+      parentGroupingReviews: activityProjection.parentGrouping.counts.reviews,
+    },
     evidence: summarizeEvidenceLevels(result.events),
-    artifactRefs: [candidatesRef, decisionsRef, "normalized/events.json"],
+    artifactRefs: [
+      candidatesRef,
+      decisionsRef,
+      "normalized/events.json",
+      "normalized/activities.json",
+      "normalized/activity-grouping-reviews.json",
+      "normalized/activity-grouping-decisions.json",
+      "normalized/parent-activity-grouping.json",
+    ],
     blockingReviews: result.blockingReviews,
     isolatedReviewEventIds: [...isolatedReviewIds],
     error: null,
@@ -2640,6 +3065,10 @@ function finalizeDedupCommand(options) {
     candidatesRef,
     decisionsRef,
     "normalized/events.json",
+    "normalized/activities.json",
+    "normalized/activity-grouping-reviews.json",
+    "normalized/activity-grouping-decisions.json",
+    "normalized/parent-activity-grouping.json",
   ]);
   saveState(runDir, state);
   pipelineTrace(runDir, {
@@ -3969,6 +4398,7 @@ async function advance(options) {
   ]);
   const executed = [];
   while (true) {
+    assertRunExecutionIdentity(options.run);
     const state = loadState(options.run);
     let next = nextAction(state);
     if (next.action === "record-stage" && next.stage === "resolve") {
@@ -4126,6 +4556,7 @@ async function advance(options) {
     const child = spawnSync(process.execPath, args, {
       cwd: ROOT,
       encoding: "utf8",
+      maxBuffer: 16 * 1024 * 1024,
     });
     executed.push({ action: next.action, exitCode: child.status });
     if (![0, CONTINUE_EXIT_CODE].includes(child.status))
@@ -4213,7 +4644,41 @@ async function stageFrontend(options) {
     requireVerification: false,
   });
   const registry = join(runDir, "frontend/approved-pois.json");
+  const extractionRegistry = join(
+    runDir,
+    "frontend/extraction-approved-pois.json",
+  );
   const assetsRoot = join(runDir, "frontend/assets");
+  const checkpointRoot = join(runDir, "checkpoints");
+  const codeIdentity = workspaceCodeIdentity();
+  const registryDocument = readJson(registry);
+  const changedPois = selectChangedPoiRecords(plan, registryDocument.records);
+  const changedPoiIds = new Set(changedPois.map(({ id }) => id));
+  writeJson(extractionRegistry, {
+    ...registryDocument,
+    records: changedPois,
+  });
+  const frontendInputArtifacts = [
+    ["frontend/approved-pois.json", registry],
+    [
+      "frontend/approved-landmarks.json",
+      join(runDir, "frontend/approved-landmarks.json"),
+    ],
+    [
+      "frontend/approved-events.json",
+      join(runDir, "frontend/approved-events.json"),
+    ],
+    [
+      "frontend/approved-activities.json",
+      join(runDir, "frontend/approved-activities.json"),
+    ],
+    [
+      "pipeline-config.snapshot.json",
+      join(runDir, "pipeline-config.snapshot.json"),
+    ],
+  ]
+    .filter(([, path]) => existsSync(path))
+    .map(([ref, path]) => checkpointArtifact(path, ref));
   const results = {};
   const boundedDiagnostic = (value) => {
     const redacted = String(redactTraceValue(String(value ?? "")))
@@ -4254,11 +4719,141 @@ async function stageFrontend(options) {
       blocker: results[name].status === "failed" ? diagnostics : null,
     });
   };
-  if (plan.geometryChanged) {
+  const executeGate = async (
+    name,
+    command,
+    args,
+    env = process.env,
+    extraArtifacts = [],
+  ) => {
+    const environment = Object.fromEntries(
+      [
+        "PLAYWRIGHT_PORT",
+        "PLAYWRIGHT_REUSE_EXISTING_SERVER",
+        "PLAYWRIGHT_WORKERS",
+        "EVENT_PIPELINE_RUN_DIR",
+        "EVENT_PIPELINE_BROWSER_ORIGIN",
+        "NODE_ENV",
+      ]
+        .filter((key) => env[key] !== undefined)
+        .map((key) => [key, env[key]]),
+    );
+    const manifest = createStageInputManifest({
+      stage: `verification-${name}`,
+      contractVersion: "1.0",
+      codeIdentity,
+      configuration: [...frontendInputArtifacts, ...extraArtifacts],
+      upstreamArtifacts: [],
+      dependencies: {
+        command,
+        args,
+        environment,
+        geometryChanged: plan.geometryChanged,
+      },
+    });
+    try {
+      const checkpoint = await runCheckpointedStage({
+        checkpointRoot,
+        manifest,
+        execute: async () => {
+          execute(name, command, args, env);
+          if (results[name].status !== "success") {
+            const error = new Error(
+              results[name].diagnostics || `${name} failed`,
+            );
+            error.gateResult = results[name];
+            throw error;
+          }
+          return {
+            outputs: [],
+            metrics: {
+              gateExecutions: 1,
+              reasonCode: "checkpoint_executed",
+            },
+          };
+        },
+      });
+      if (checkpoint.reused)
+        results[name] = {
+          status: "success",
+          exitCode: 0,
+          command: `reused: ${[command, ...args].join(" ")}`,
+          reused: true,
+          inputHash: manifest.inputHash,
+        };
+      else
+        results[name] = {
+          ...results[name],
+          reused: false,
+          inputHash: manifest.inputHash,
+        };
+      pipelineTrace(runDir, {
+        stage: "verification",
+        action: checkpoint.reused ? `${name}_reused` : `${name}_checkpointed`,
+        outcome: "success",
+        entityType: "gate",
+        entityId: name,
+        reasonCode: checkpoint.metrics.reasonCode,
+        counts: checkpoint.metrics,
+      });
+    } catch (error) {
+      results[name] = error.gateResult ?? {
+        status: "failed",
+        exitCode: 1,
+        command: [command, ...args].join(" "),
+        diagnostics: boundedDiagnostic(error.message),
+      };
+    }
+  };
+  const assetInputArtifacts = [
+    ...frontendInputArtifacts,
+    ...(existsSync(join(ROOT, "optimized-tiles/tileset.json"))
+      ? [
+          checkpointArtifact(
+            join(ROOT, "optimized-tiles/tileset.json"),
+            "optimized-tiles/tileset.json",
+          ),
+        ]
+      : []),
+  ];
+  const assetManifest = createStageInputManifest({
+    stage: "frontend-assets",
+    contractVersion: "1.0",
+    codeIdentity,
+    configuration: assetInputArtifacts,
+    upstreamArtifacts: [],
+    dependencies: {
+      geometryChanged: plan.geometryChanged,
+      changedPoiIds: [...changedPoiIds].sort(),
+    },
+  });
+  const reusableAssets =
+    plan.geometryChanged &&
+    existsSync(assetsRoot) &&
+    findReusableStageCheckpoint(checkpointRoot, assetManifest);
+  if (reusableAssets) {
+    results.extraction = {
+      status: "success",
+      command: "reused: exact-input frontend asset checkpoint",
+      reused: true,
+      inputHash: assetManifest.inputHash,
+    };
+    results.combinedPoiTileset = {
+      status: "success",
+      command: "reused with frontend asset checkpoint",
+      reused: true,
+    };
+  } else if (plan.geometryChanged) {
+    mkdirSync(assetsRoot, { recursive: true });
+    for (const poiId of changedPoiIds)
+      rmSync(join(assetsRoot, "public/poi-tiles", poiId), {
+        recursive: true,
+        force: true,
+      });
     execute("extraction", process.execPath, [
       "scripts/extract-cbd-poi-tilesets.mjs",
       "--registry",
-      registry,
+      extractionRegistry,
       "--publish-root",
       assetsRoot,
       "--work-root",
@@ -4295,7 +4890,8 @@ async function stageFrontend(options) {
       status: "success",
       command: "skipped: geometry content hash unchanged",
     };
-  if (results.extraction.status === "success") {
+  let assetCheckpoint = reusableAssets;
+  if (results.extraction.status === "success" && !results.combinedPoiTileset) {
     try {
       const stagedPois = readJson(registry).records;
       const combinedOutput = join(
@@ -4309,15 +4905,6 @@ async function stageFrontend(options) {
           const staged = join(assetsRoot, "public", poi.data);
           return existsSync(staged) ? staged : join(ROOT, "public", poi.data);
         },
-        resolveContentUri: (poi) =>
-          relative(
-            dirname(combinedOutput),
-            existsSync(join(assetsRoot, "public", poi.data))
-              ? join(assetsRoot, "public", poi.data)
-              : join(ROOT, "public", poi.data),
-          )
-            .split(/[/\\]/)
-            .join("/"),
       });
       results.combinedPoiTileset = {
         status: "success",
@@ -4327,16 +4914,53 @@ async function stageFrontend(options) {
       results.combinedPoiTileset = { status: "failed", error: error.message };
     }
   }
+  if (
+    plan.geometryChanged &&
+    !reusableAssets &&
+    results.extraction.status === "success" &&
+    results.combinedPoiTileset?.status === "success"
+  )
+    assetCheckpoint = writeStageCheckpoint(checkpointRoot, {
+      manifest: assetManifest,
+      status: "success",
+      outputs: [assetsRoot],
+      metrics: {
+        artifactsCreated: 1,
+        reasonCode: "frontend_assets_generated",
+      },
+    });
+  const assetGateInputs = assetCheckpoint?.outputs?.length
+    ? [
+        {
+          ref: "frontend/assets",
+          sha256: assetCheckpoint.outputs[0].sha256,
+          bytes: assetCheckpoint.outputs[0].bytes,
+          fileCount: assetCheckpoint.outputs[0].fileCount,
+        },
+      ]
+    : [];
   if (results.extraction.status === "success")
-    execute("poiSeparation", process.execPath, [
-      "scripts/verify-poi-background-separation.mjs",
-      "--registry",
-      registry,
-      "--root",
-      plan.geometryChanged ? assetsRoot : ROOT,
-    ]);
-  execute("build", "npm", ["run", "build"]);
-  execute(
+    await executeGate(
+      "poiSeparation",
+      process.execPath,
+      [
+        "scripts/verify-poi-background-separation.mjs",
+        "--registry",
+        registry,
+        "--root",
+        plan.geometryChanged ? assetsRoot : ROOT,
+      ],
+      process.env,
+      assetGateInputs,
+    );
+  await executeGate(
+    "build",
+    "npm",
+    ["run", "build"],
+    process.env,
+    assetGateInputs,
+  );
+  await executeGate(
     "eventUi",
     "npx",
     [
@@ -4346,12 +4970,12 @@ async function stageFrontend(options) {
       "playwright.config.mjs",
       "tests/event-ui.spec.mjs",
     ],
-    {
-      ...process.env,
+    browserVerificationEnvironment(options.run, {
       PLAYWRIGHT_WORKERS: process.env.PLAYWRIGHT_WORKERS ?? "2",
-    },
+    }),
+    assetGateInputs,
   );
-  execute(
+  await executeGate(
     "browser",
     "npx",
     [
@@ -4361,11 +4985,15 @@ async function stageFrontend(options) {
       "playwright.config.mjs",
       "tests/event-pipeline-staged.spec.mjs",
     ],
-    { ...process.env, EVENT_PIPELINE_RUN_DIR: runDir },
+    browserVerificationEnvironment(options.run, {
+      EVENT_PIPELINE_RUN_DIR: runDir,
+    }),
+    assetGateInputs,
   );
   const failed = Object.entries(results)
     .filter(([, value]) => value.status !== "success")
     .map(([name]) => name);
+  assertRunExecutionIdentity(options.run);
   const verification = {
     status: failed.length ? "failed" : "success",
     ...results,
@@ -4393,6 +5021,7 @@ async function stageFrontend(options) {
       "frontend/plan.json",
       "frontend/approved-pois.json",
       "frontend/approved-landmarks.json",
+      "frontend/approved-public-landmarks.json",
       "frontend/approved-events.json",
       ...stageRefs,
     ]);
@@ -4494,6 +5123,7 @@ async function prepareFrontendPlan(runId) {
     run: readJson(join(runDir, "run.json")),
     currentPois: currentPois ?? approved?.pois ?? [],
     currentLandmarks: currentLandmarks ?? approved?.landmarks ?? [],
+    currentEventsCatalogue: approved?.events ?? null,
   });
 }
 
@@ -4518,7 +5148,7 @@ function renderStatus(state, run, frontendPlan = null) {
   return renderPipelineStatus(state, run, frontendPlan);
 }
 
-function finalize(options) {
+async function finalize(options) {
   const runDir = runDirectory(options.run);
   const state = loadState(options.run);
   const problems = terminalProblems(state);
@@ -4535,17 +5165,29 @@ function finalize(options) {
       venueId,
       evidenceHash: venue.evidenceHash ?? branchEvidenceHash(runDir, venue),
     }));
-  const repository = new AdminRepository({ databasePath: adminDatabasePath() });
-  try {
-    state.adminReviewReconciliation = {
-      ...repository.reconcileVenueReviewQueue(activeReviewVenues),
-      reconciledAt: new Date().toISOString(),
-    };
-  } finally {
-    repository.close();
-  }
+  const finalizedAt = state.finalizedAt ?? new Date().toISOString();
+  const adminDelivery = await runIdempotentDelivery({
+    receiptRoot: join(runDir, "delivery-receipts"),
+    operation: "admin_reconcile",
+    payload: { activeReviewVenues },
+    destination: adminDatabasePath(),
+    execute: async () => {
+      const repository = new AdminRepository({
+        databasePath: adminDatabasePath(),
+      });
+      try {
+        return {
+          ...repository.reconcileVenueReviewQueue(activeReviewVenues),
+          reconciledAt: finalizedAt,
+        };
+      } finally {
+        repository.close();
+      }
+    },
+  });
+  state.adminReviewReconciliation = adminDelivery.value;
   state.overallStatus = deriveTerminalStatus(state);
-  state.finalizedAt = new Date().toISOString();
+  state.finalizedAt = finalizedAt;
   saveState(runDir, state);
   const run = readJson(join(runDir, "run.json"));
   const frontendPlanPath = join(runDir, "frontend/plan.json");
@@ -4578,9 +5220,98 @@ function finalize(options) {
     blocker: null,
     nextAction: null,
   });
+  const baseSummary = statusSummary(state, run, frontendPlan);
+  const activeSnapshotId = baseSummary.publication?.activeSnapshotId;
+  const activeLandmarksPath = activeSnapshotId
+    ? join(ROOT, "data/snapshots", activeSnapshotId, "landmarks.json")
+    : null;
+  const highlightedPois =
+    activeLandmarksPath && existsSync(activeLandmarksPath)
+      ? readJson(activeLandmarksPath).length
+      : 0;
+  const dashboardPayload = buildEventDashboardPayloadFromRun(
+    runDir,
+    baseSummary,
+    { highlightedPois },
+  );
+  const dashboardDelivery = await runIdempotentDelivery({
+    receiptRoot: join(runDir, "delivery-receipts"),
+    operation: "dashboard_sync",
+    payload: dashboardPayload,
+    destination:
+      process.env.EVENT_DASHBOARD_SYNC_URL ?? "dashboard_sync_not_configured",
+    execute: () => syncEventDashboard(dashboardPayload),
+  });
+  const dashboardSync = dashboardDelivery.value;
+  pipelineTrace(runDir, {
+    stage: "reporting",
+    action: "dashboard_sync",
+    outcome: dashboardSync.status,
+    entityType: "run",
+    entityId: options.run,
+    reasonCode: dashboardSync.reasonCode ?? null,
+    blocker: dashboardSync.error ?? null,
+    counts: dashboardSync.httpStatus
+      ? { httpStatus: dashboardSync.httpStatus }
+      : {},
+    nextAction: null,
+  });
   const tracePath = join(runDir, "logs/trace.jsonl");
+  const resourceMetrics = {
+    schemaVersion: "1.0",
+    checkpointSummary: summarizeStageCheckpointMetrics(
+      join(runDir, "checkpoints"),
+    ),
+    missingVenueRecovery: state.missingVenueRecovery?.counts ?? null,
+    deliveries: {
+      adminReconciliationReused: adminDelivery.reused,
+      dashboardSyncReused: dashboardDelivery.reused,
+      adminReconciliation: adminDelivery.metrics,
+      dashboardSync: dashboardDelivery.metrics,
+    },
+    registeredArtifacts: {
+      count: Object.keys(run.artifacts ?? {}).length,
+      bytes: Object.values(run.artifacts ?? {}).reduce(
+        (total, artifact) => total + Number(artifact.bytes ?? 0),
+        0,
+      ),
+    },
+  };
+  writeJson(join(runDir, "resource-metrics.json"), resourceMetrics);
+  registerArtifacts(runDir, ["resource-metrics.json"]);
+  pipelineTrace(runDir, {
+    stage: "reporting",
+    action: "resource_metrics_recorded",
+    outcome: "success",
+    entityType: "run",
+    entityId: options.run,
+    counts: {
+      checkpoints: resourceMetrics.checkpointSummary.checkpoints,
+      checkpointSuccesses: resourceMetrics.checkpointSummary.reusableSuccesses,
+      externalRequests:
+        resourceMetrics.checkpointSummary.metrics.externalRequests,
+      cacheHits: resourceMetrics.checkpointSummary.metrics.cacheHits,
+      artifactsCreated:
+        resourceMetrics.checkpointSummary.metrics.artifactsCreated,
+      artifactsReused:
+        resourceMetrics.checkpointSummary.metrics.artifactsReused,
+      bytesRead: resourceMetrics.checkpointSummary.metrics.bytesRead,
+      bytesWritten:
+        resourceMetrics.checkpointSummary.metrics.bytesWritten +
+        resourceMetrics.registeredArtifacts.bytes,
+      registeredArtifacts: resourceMetrics.registeredArtifacts.count,
+      deliveryBlockingMs:
+        Number(adminDelivery.metrics?.blockingMs ?? 0) +
+        Number(dashboardDelivery.metrics?.blockingMs ?? 0),
+      adminReconciliationReused: Number(adminDelivery.reused),
+      dashboardSyncReused: Number(dashboardDelivery.reused),
+    },
+    evidenceRef: "resource-metrics.json",
+  });
   const summary = {
-    ...statusSummary(state, run, frontendPlan),
+    ...baseSummary,
+    dashboardSync,
+    resourceMetrics,
     trace: {
       path: "logs/trace.jsonl",
       sha256: existsSync(tracePath) ? sha(readFileSync(tracePath)) : null,
@@ -4595,7 +5326,7 @@ function finalize(options) {
     renderStatus(state, run, frontendPlan),
   );
   process.stdout.write(
-    `${JSON.stringify({ ...progressResponse(state), statusPath: join(runDir, "status.md"), statusJsonPath: join(runDir, "status.json"), tracePath }, null, 2)}\n`,
+    `${JSON.stringify({ ...progressResponse(state), dashboardSync, statusPath: join(runDir, "status.md"), statusJsonPath: join(runDir, "status.json"), tracePath }, null, 2)}\n`,
   );
 }
 
@@ -4614,12 +5345,13 @@ function status(options) {
 
 function usage() {
   process.stdout.write(
-    `Usage:\n  npm run event-pipeline -- run [--date YYYY-MM-DD]\n  npm run event-pipeline -- start [--date YYYY-MM-DD]\n  npm run event-pipeline -- resume --run <run-id>\n  npm run event-pipeline -- advance --run <run-id>\n  npm run event-pipeline -- status --run <run-id>\n  npm run event-pipeline -- collect-source --run <run-id> --source <name>\n  npm run event-pipeline -- record-source --run <run-id> --source <name> --result <json>\n  npm run event-pipeline -- normalize --run <run-id>\n  npm run event-pipeline -- record-normalization --run <run-id> --result <json>\n  npm run event-pipeline -- prepare-venues --run <run-id>\n  npm run event-pipeline -- resolve-local --run <run-id>\n  npm run event-pipeline -- finalize-dedup --run <run-id>\n  npm run event-pipeline -- reprocess-unresolved --run <run-id>\n  npm run event-pipeline -- record-venue-recovery --run <run-id> --venue <id> --evidence <json>\n  npm run event-pipeline -- reuse-resolution-cache --run <run-id>\n  npm run event-pipeline -- plan-frontend --run <run-id>\n  npm run event-pipeline -- stage-frontend --run <run-id>\n  npm run event-pipeline -- record-stage --run <run-id> --venue <id> --stage <stage> --result <json>\n  npm run event-pipeline -- verify --run <run-id>\n  npm run event-pipeline -- finalize --run <run-id>\n`,
+    `Usage:\n  npm run event-pipeline -- run [--date YYYY-MM-DD]\n  npm run event-pipeline -- start [--date YYYY-MM-DD]\n  npm run event-pipeline -- resume --run <run-id>\n  npm run event-pipeline -- advance --run <run-id>\n  npm run event-pipeline -- status --run <run-id>\n  npm run event-pipeline -- collect-source --run <run-id> --source <name>\n  npm run event-pipeline -- record-source --run <run-id> --source <name> --result <json>\n  npm run event-pipeline -- recover-missing-venues --run <run-id> [--force]\n  npm run event-pipeline -- normalize --run <run-id>\n  npm run event-pipeline -- record-normalization --run <run-id> --result <json>\n  npm run event-pipeline -- prepare-venues --run <run-id>\n  npm run event-pipeline -- resolve-local --run <run-id>\n  npm run event-pipeline -- finalize-dedup --run <run-id>\n  npm run event-pipeline -- reprocess-unresolved --run <run-id>\n  npm run event-pipeline -- record-venue-recovery --run <run-id> --venue <id> --evidence <json>\n  npm run event-pipeline -- reuse-resolution-cache --run <run-id>\n  npm run event-pipeline -- plan-frontend --run <run-id>\n  npm run event-pipeline -- stage-frontend --run <run-id>\n  npm run event-pipeline -- record-stage --run <run-id> --venue <id> --stage <stage> --result <json>\n  npm run event-pipeline -- verify --run <run-id>\n  npm run event-pipeline -- finalize --run <run-id>\n`,
   );
 }
 
 export {
   branchEvidenceHash,
+  browserVerificationEnvironment,
   canCommitFrontendSnapshot,
   classifyNonBuildingRecovery,
   collectLocationClues,
@@ -4635,6 +5367,7 @@ export {
   reconcileNormalizedVenueBranches,
   renderStatus,
   reopenImprovedLocalCandidates,
+  recoverMissingVenues,
   replaceLastSuccessfulUse,
   reusableResolutionEntry,
   selectDeterministicOneMapAddress,
@@ -4663,6 +5396,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       status,
       "collect-source": collectSourceCommand,
       "record-source": recordSource,
+      "recover-missing-venues": recoverMissingVenuesCommand,
       normalize,
       "record-normalization": recordNormalization,
       "prepare-venues": prepareVenues,
@@ -4686,6 +5420,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     )
       await commands[command](options);
     else {
+      assertRunExecutionIdentity(options.run);
       acquireLock(options.run);
       try {
         await commands[command](options);

@@ -3,17 +3,14 @@
   "poiId": "arts-house-at-the-old-parliament",
   "extractionPoiIds": [
     "tower-3-marina-bay-sands-singapore",
-    "the-shoppes-at-marina-bay-sands",
     "national-museum-of-singapore",
     "national-gallery-singapore",
     "lion-building-c",
     "claymore-plaza",
-    "cideco-industrial-complex",
     "rumah-bebe",
     "perfect-one",
     "textile-centre",
     "song-lin-building",
-    "millenia-walk",
     "inter-continental-singapore",
     "roxy-square",
     "blk-e-e2i",
@@ -24,7 +21,6 @@
     "singapore-chinese-cultural-centre",
     "wisma-geylang-serai",
     "marina-bay-sands-artscience-museum",
-    "temasek-shophouse",
     "the-commerze-irving",
     "raffles-marina",
     "gateway-theatre",
@@ -49,7 +45,6 @@
     "siloso-beach-resort",
     "bishan-green",
     "sembawang-park",
-    "gv-building",
     "lee-kong-chian-natural-history-museum",
     "singapore-conference-hall",
     "action-theatre",
@@ -58,7 +53,6 @@
     "cathay-cineleisure-orchard",
     "yong-siew-toh-conservatory-of-music",
     "national-university-of-singapore-university-cultural-centre",
-    "rv-point",
     "tannery-house",
     "funan",
     "kampong-glam-conservation-area",
@@ -70,7 +64,6 @@
     "tanjong-pagar-distripark",
     "arts-house-at-the-old-parliament",
     "the-cannery",
-    "singapore-repertory-theatre",
     "suntec-singapore-international-convention-and-exhibition-centre",
     "school-of-the-arts-sota",
     "singapore-polo-club",
@@ -86,146 +79,207 @@
     "hall-7-singapore-expo",
     "hpl-house",
     "chijmes",
-    "marina-south-pier",
     "kampong-ubi-industrial-estate",
     "chinatown-complex",
-    "esplanade-mall",
-    "lotus-at-joo-chiat",
     "havelock2",
     "kembangan-estate",
     "uob-plaza",
     "old-hill-street-police-station",
     "empress-place-building",
     "international-plaza",
-    "the-central",
     "tpi-building",
     "gardens-by-the-bay",
     "peranakan-museum",
     "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
     "marina-square",
-    "jewel-changi-airport"
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
   ],
-  "generatedAt": "2026-07-19T19:39:10.764Z",
+  "generatedAt": "2026-07-26T13:46:11.839Z",
   "tiles": [
     {
       "sourceTile": "tiles/7/76/11_0.b3dm",
       "sourceSha256": "5f34f00d30e2e9d8c526d913d154cf0b9247f23db512086ee5de533c6014b897",
       "originalBatchIds": [
+        4,
         3
       ],
       "gmlIds": [
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257"
       ],
       "gmlNames": [
+        "ARTS HOUSE AT THE OLD PARLIAMENT",
         "ARTS HOUSE AT THE OLD PARLIAMENT"
       ],
       "poiFile": "11_0-136054cc2793.b3dm",
-      "poiSha256": "a46520b14e1062513748939fba1db9da28c093d336332fb767458e8b8b6aa15b",
-      "poiTriangles": 1032,
+      "poiSha256": "d4e18959e943358993facd0136c05c38fb417e1d8677b91ed95dd207fec70d0d",
+      "poiTriangles": 2780,
       "backgroundFile": "optimized-tiles/7/76/11_0.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
       ],
-      "backgroundSha256": "99d6ba427792461f8802185c0b45441e064feccfa65b0f61f16ef3399f46d9d6",
-      "backgroundTriangles": 1984
+      "backgroundSha256": "b95d63f4899757675f0df68b1175ffbb28e169a566611e50aae4f390ffe258a8",
+      "backgroundTriangles": 236
     },
     {
       "sourceTile": "tiles/7/76/11_1.b3dm",
       "sourceSha256": "3477384d5ff44a317d1f4304ee96661a0c8b16b93d89d7eb7b5372c37fb3f598",
       "originalBatchIds": [
+        4,
         3
       ],
       "gmlIds": [
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257"
       ],
       "gmlNames": [
+        "ARTS HOUSE AT THE OLD PARLIAMENT",
         "ARTS HOUSE AT THE OLD PARLIAMENT"
       ],
       "poiFile": "11_1-84799406f796.b3dm",
-      "poiSha256": "d1a7b73e3cf324918b7922b952e70c4368f31704d82b7d5030333d6e8df6bb59",
-      "poiTriangles": 1032,
+      "poiSha256": "6d0b87f7d9098a75152510ecf38e77d22a4572e3a472d2ec1d3939fdcf3127db",
+      "poiTriangles": 2780,
       "backgroundFile": "optimized-tiles/7/76/11_1.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
       ],
-      "backgroundSha256": "81163ebd896fd30b460a6585fa77dc97350885ac211b92f066472e5595160eb4",
-      "backgroundTriangles": 1984
+      "backgroundSha256": "bec73f8aef731053cef551ad60a5dd310257aebe961acb620d7e7c839b8077b3",
+      "backgroundTriangles": 236
     },
     {
       "sourceTile": "tiles/7/76/11_2.b3dm",
       "sourceSha256": "2120892f4f27f0b72ed17f5fe3fb9657c244256d88f233ea2e34fe303db5ba1f",
       "originalBatchIds": [
+        4,
         3
       ],
       "gmlIds": [
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257"
       ],
       "gmlNames": [
+        "ARTS HOUSE AT THE OLD PARLIAMENT",
         "ARTS HOUSE AT THE OLD PARLIAMENT"
       ],
       "poiFile": "11_2-5f6b890dac4c.b3dm",
-      "poiSha256": "2d9686ec471d3a5c55af464884a849e49dc764a2d1e46a1d2dcd1f31009bbcb3",
-      "poiTriangles": 1032,
+      "poiSha256": "ffc4dd68b4c9e8667cfe2468c962db6257ed45a18523db4138d0c70e0da756d5",
+      "poiTriangles": 2780,
       "backgroundFile": "optimized-tiles/7/76/11_2.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
       ],
-      "backgroundSha256": "e2d3a58ac7b261341a64a2ef9de227d0490b1b31f0893e7129589c0e81024faa",
-      "backgroundTriangles": 1984
+      "backgroundSha256": "6ee259862b014f67bd7fc337c609397401c17490facc6642f7a0d20a35b9d832",
+      "backgroundTriangles": 236
     },
     {
       "sourceTile": "tiles/7/76/11_3.b3dm",
       "sourceSha256": "4cd9bee3459cd8604c81d482f2e01b3523b811c0eafd4a0a3fb42b2bfae84cca",
       "originalBatchIds": [
+        4,
         3
       ],
       "gmlIds": [
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257"
       ],
       "gmlNames": [
+        "ARTS HOUSE AT THE OLD PARLIAMENT",
         "ARTS HOUSE AT THE OLD PARLIAMENT"
       ],
       "poiFile": "11_3-8fec657d80e4.b3dm",
-      "poiSha256": "5ba7059c53180c621d8d4692b8c3e1b755edee73eb0c7bb5d65aa8e1dc1dc884",
-      "poiTriangles": 1032,
+      "poiSha256": "ccf97bf15ae4b855ff3a3a50e56b23fb95502471b23a6d37b97b2f88a2f79f6f",
+      "poiTriangles": 2780,
       "backgroundFile": "optimized-tiles/7/76/11_3.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
       ],
-      "backgroundSha256": "efac1d2da71c928abab990f6132951f2b798597069005afacf18b1464fa5730a",
-      "backgroundTriangles": 1984
+      "backgroundSha256": "21c91eb6e1238ca19e18c5ecdb4e233472ea4ae8e04682ca1811740fe03781f1",
+      "backgroundTriangles": 236
     },
     {
       "sourceTile": "tiles/7/76/11_4.b3dm",
       "sourceSha256": "fb90b72101ca455f214f9fc6d39b20e9701e0c23743dfd18035471993f976648",
       "originalBatchIds": [
+        4,
         3
       ],
       "gmlIds": [
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257"
       ],
       "gmlNames": [
+        "ARTS HOUSE AT THE OLD PARLIAMENT",
         "ARTS HOUSE AT THE OLD PARLIAMENT"
       ],
       "poiFile": "11_4-2b9cd1e8720f.b3dm",
-      "poiSha256": "e8a098228079f94f3e88396e21122833a419be6c3aa1ef5fb462fbc557958110",
-      "poiTriangles": 1032,
+      "poiSha256": "07c0261faadd88beca17d891ad55a0d5aefc5cb85a2f1438a00922f373f22f75",
+      "poiTriangles": 2780,
       "backgroundFile": "optimized-tiles/7/76/11_4.b3dm",
       "backgroundRemovedGmlIds": [
         "SLA_BLDG2_f21025bc-7836-44eb-82b6-f78da166312a",
+        "SLA_BLDG2_2d5c9141-07c9-49a7-9b40-57efba19435e",
         "SLA_BLDG2_a4f6ce65-5e91-4bd7-987e-19afec1b6257",
         "SLA_BLDG2_330831bd-c70b-4e25-86d9-6d252d737532"
       ],
-      "backgroundSha256": "e96a78f543d25a2ac343ec82785dc5de5aeec9a8fbb6b49323f3067af452c56e",
-      "backgroundTriangles": 1984
+      "backgroundSha256": "12268efbefea322c4c90eefefe10eaa50a909a2b85a2f504705928674450800c",
+      "backgroundTriangles": 236
     }
   ]
 }

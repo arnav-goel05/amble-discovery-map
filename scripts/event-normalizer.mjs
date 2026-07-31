@@ -13,6 +13,14 @@ import {
   isOrdinaryAttractionAdmission,
   normalizeSchedule,
 } from "./lib/event-sources/activity-policy.mjs";
+import { isStructuralVenueLabel } from "./lib/event-pipeline/venue-values.mjs";
+import {
+  assessEventDateQuality,
+  createDateReviewItem,
+  failedDateAssessment,
+  summarizeDateReviews,
+} from "./lib/event-pipeline/date-quality-audit.mjs";
+import { projectEventActivities } from "./lib/event-pipeline/activity-projection.mjs";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 const normalizeText = (value = "") =>
@@ -261,12 +269,31 @@ function visibleContentHash(event) {
   );
 }
 
+function occurrenceSchedule(record, performance) {
+  const hasOccurrenceSchedule =
+    performance.schedule != null ||
+    performance.startDateTime != null ||
+    performance.endDateTime != null ||
+    performance.dateText != null;
+  return normalizeSchedule(
+    hasOccurrenceSchedule ? (performance.schedule ?? {}) : record.schedule,
+    { ...record, ...performance, _concretePerformance: hasOccurrenceSchedule },
+  );
+}
+
 function canonicalEvent(sourceName, recordRef, record, performance, index) {
   const sourceId = sourceOccurrenceId(record, performance, index);
   const occurrenceId = qualifiedOccurrenceId(sourceName, sourceId);
   const parentListingId = `${sourceName}:${record.sourceId}`;
-  const startsAt = performance.startDateTime ?? null;
-  const endsAt = performance.endDateTime ?? null;
+  const schedule = occurrenceSchedule(record, performance);
+  const startsAt = schedule.start;
+  const endsAt = schedule.end;
+  const rawVenue = (performance.venue ?? record.venue)?.trim() || null;
+  const address = (performance.address ?? record.address)?.trim() || null;
+  const locationRecovery =
+    performance.locationRecovery ?? record.locationRecovery ?? null;
+  const rejectedVenueValue = isStructuralVenueLabel(rawVenue) ? rawVenue : null;
+  const venue = rejectedVenueValue ? address : rawVenue;
   const hierarchy = buildActivityHierarchy({
     sourceName,
     sourceRecordId: record.sourceId,
@@ -275,38 +302,37 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
     sourceCoordinates:
       performance.sourceCoordinates ?? record.sourceCoordinates,
     schedule: record.schedule,
-    sessions: (record.performances?.length
-      ? record.performances
-      : [record]
-    ).map((item, sessionIndex) => ({
-      sourceSessionId: sourceOccurrenceId(record, item, sessionIndex),
-      schedule: normalizeSchedule(item.schedule, { ...record, ...item }),
-      availability: item.availability ?? record.availability,
-      accessRestriction: item.accessRestriction ?? record.accessRestriction,
-      venueKey: item.venue ?? record.venue,
-    })),
-    venues: [
-      ...new Map(
-        (record.performances?.length ? record.performances : [record]).map(
-          (item) => [
-            item.venue ?? record.venue,
-            {
-              venueKey: item.venue ?? record.venue,
-              name: item.venue ?? record.venue,
-              address: item.address ?? record.address,
-              postalCode: item.postalCode ?? record.postalCode,
-              sourceCoordinates:
-                item.sourceCoordinates ?? record.sourceCoordinates,
-              offMapSubtype: item.offMapSubtype ?? record.offMapSubtype,
-            },
-          ],
-        ),
-      ).values(),
+    sessions: [
+      {
+        sourceSessionId: sourceOccurrenceId(record, performance, index),
+        schedule: normalizeSchedule(performance.schedule, {
+          ...record,
+          ...performance,
+          _concretePerformance: true,
+        }),
+        availability: performance.availability ?? record.availability,
+        accessRestriction:
+          performance.accessRestriction ?? record.accessRestriction,
+        venueKey: isStructuralVenueLabel(performance.venue ?? record.venue)
+          ? (performance.address ?? record.address ?? null)
+          : (performance.venue ?? record.venue),
+      },
     ],
-  });
-  const schedule = normalizeSchedule(performance.schedule ?? record.schedule, {
-    ...record,
-    ...performance,
+    venues: [
+      {
+        venueKey: isStructuralVenueLabel(performance.venue ?? record.venue)
+          ? (performance.address ?? record.address ?? null)
+          : (performance.venue ?? record.venue),
+        name: isStructuralVenueLabel(performance.venue ?? record.venue)
+          ? (performance.address ?? record.address ?? null)
+          : (performance.venue ?? record.venue),
+        address: performance.address ?? record.address,
+        postalCode: performance.postalCode ?? record.postalCode,
+        sourceCoordinates:
+          performance.sourceCoordinates ?? record.sourceCoordinates,
+        offMapSubtype: performance.offMapSubtype ?? record.offMapSubtype,
+      },
+    ],
   });
   return {
     schemaVersion: "3.0",
@@ -316,6 +342,21 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
     publishedEventId: occurrenceId,
     parentActivityId: hierarchy.parentActivityId,
     parentListingId,
+    authorityRefs: [
+      ...new Set(
+        [
+          ...(record.authorityRefs ?? []),
+          ...(performance.authorityRefs ?? []),
+        ].filter(Boolean),
+      ),
+    ].sort(),
+    sourceParentActivities: [
+      {
+        source: sourceName,
+        parentActivityId: hierarchy.parentActivityId,
+        parentListingId,
+      },
+    ],
     mergedEventId: null,
     sourceName,
     sourceEventId: sourceId,
@@ -333,25 +374,46 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
     allDay: /^full day$/i.test(performance.timeText ?? record.timeText ?? ""),
     timezone: "Asia/Singapore",
     venueId: null,
-    venueName: (performance.venue ?? record.venue)?.trim() || null,
-    venue: (performance.venue ?? record.venue)?.trim() || null,
+    venueName: venue,
+    venue,
     venueVerified: false,
-    address: performance.address ?? record.address ?? null,
+    address,
     addressEvidence:
       (performance.address ?? record.address)
-        ? [{ value: performance.address ?? record.address, recordRef }]
+        ? [
+            {
+              value: performance.address ?? record.address,
+              recordRef: locationRecovery?.evidenceUrls?.[0] ?? recordRef,
+              method: locationRecovery
+                ? "tinyfish_search_verified"
+                : "source_record",
+            },
+          ]
         : [],
     coordinates: null,
+    locationEvidenceIssue: rejectedVenueValue
+      ? {
+          reasonCode: "structural_venue_label",
+          observedValue: rejectedVenueValue,
+          action: address ? "replaced_with_address" : "discarded",
+        }
+      : null,
     category: record.category ?? null,
     price: record.price ?? null,
     description: record.description ?? null,
     organizer: record.organizer ?? null,
-    officialUrl: record.detailUrl ?? null,
-    eventUrl: record.detailUrl ?? null,
+    officialUrl: record.officialUrl ?? record.detailUrl ?? null,
+    eventUrl: record.officialUrl ?? record.detailUrl ?? null,
+    fieldCompleteness: record.fieldCompleteness ?? null,
+    extractionContractVersion: record.extractionContractVersion ?? null,
     isOnline: record.mode === "online",
     parentEventId: record.sourceId,
     contentHash: null,
-    provenanceRefs: [recordRef],
+    provenanceRefs: [
+      recordRef,
+      ...(locationRecovery?.artifactRef ? [locationRecovery.artifactRef] : []),
+      ...(locationRecovery?.evidenceUrls ?? []),
+    ],
     reviewStatus:
       startsAt || performance.dateText || record.dateText
         ? "eligible"
@@ -404,6 +466,7 @@ function canonicalEvent(sourceName, recordRef, record, performance, index) {
         sourceId,
         sourceUrl: record.detailUrl ?? null,
         recordRef,
+        authorityRefs: record.authorityRefs ?? [],
       },
     ],
   };
@@ -449,18 +512,39 @@ function normalizationReason(record, event) {
 function sameEvent(a, b) {
   const ai = interval(a),
     bi = interval(b);
+  const sameSingaporeDay =
+    String(a.startsAt ?? a.dateText ?? "").slice(0, 10) ===
+    String(b.startsAt ?? b.dateText ?? "").slice(0, 10);
+  const coarseDayEvidence =
+    a.allDay ||
+    b.allDay ||
+    [a, b].some(
+      (event) =>
+        !event.timeText &&
+        /^\d{4}-\d{2}-\d{2}(?:T00:00:00\+08:00)?$/.test(
+          String(event.startsAt ?? event.dateText ?? ""),
+        ),
+    );
   return (
     normalizeText(a.title) === normalizeText(b.title) &&
     normalizeText(a.venue) === normalizeText(b.venue) &&
     ai &&
     bi &&
-    ai.start <= bi.end &&
-    bi.start <= ai.end
+    ((ai.start <= bi.end && bi.start <= ai.end) ||
+      (coarseDayEvidence && sameSingaporeDay))
   );
 }
 
 function schedulePrecision(event) {
-  return Number(Boolean(event.startsAt)) * 2 + Number(Boolean(event.endsAt));
+  const explicitClock =
+    !event.allDay &&
+    (/\b\d{1,2}(?::\d{2})\b/.test(event.timeText ?? "") ||
+      /T(?!00:00:00)\d{2}:\d{2}/.test(event.startsAt ?? ""));
+  return (
+    Number(explicitClock) * 4 +
+    Number(Boolean(event.startsAt)) * 2 +
+    Number(Boolean(event.endsAt))
+  );
 }
 
 function mergedId(sources) {
@@ -474,11 +558,52 @@ function mergedId(sources) {
   return `merged:${sha(JSON.stringify(identity))}`;
 }
 
-export function normalizeRun({ runDir, state, run }) {
+export function normalizeRun({
+  runDir,
+  state,
+  run,
+  assessDateQuality = assessEventDateQuality,
+}) {
   const eligible = [],
+    dateReviews = [],
     excluded = [],
     invalid = [],
-    decisions = [];
+    decisions = [],
+    diagnostics = [];
+  const recoveryPath = join(runDir, "normalized/missing-venue-recovery.json");
+  const recoveryOverlay = existsSync(recoveryPath)
+    ? JSON.parse(readFileSync(recoveryPath, "utf8"))
+    : null;
+  if (
+    recoveryOverlay &&
+    (recoveryOverlay.schemaVersion !== "1.0" ||
+      recoveryOverlay.runId !== run.runId ||
+      !Array.isArray(recoveryOverlay.records))
+  )
+    throw new Error("Invalid missing-venue recovery overlay");
+  const recoveryRecords = recoveryOverlay?.records ?? [];
+  for (const recovery of recoveryRecords) {
+    if (
+      recovery.outcome === "recovered" &&
+      ((!recovery.venue && !recovery.address) ||
+        !Array.isArray(recovery.evidenceUrls) ||
+        recovery.evidenceUrls.length === 0 ||
+        recovery.evidenceUrls.some((url) => {
+          try {
+            return new URL(url).protocol !== "https:";
+          } catch {
+            return true;
+          }
+        }))
+    )
+      throw new Error("Recovered venue requires HTTPS authoritative evidence");
+  }
+  const recoveryByOccurrence = new Map(
+    recoveryRecords.map((record) => [
+      `${record.sourceName}\u0000${record.recordRef}\u0000${record.occurrenceIndex}`,
+      record,
+    ]),
+  );
   const sourceReclassifications = {};
   const sourceOrder = new Map(
     Object.keys(state.sources).map((name, index) => [name, index]),
@@ -489,6 +614,7 @@ export function normalizeRun({ runDir, state, run }) {
       {
         occurrencesEmitted: 0,
         excludedOccurrences: 0,
+        dateReviewOccurrences: 0,
         eligiblePreDedup: 0,
         duplicateCollapsed: 0,
         acceptedPrimary: 0,
@@ -496,22 +622,28 @@ export function normalizeRun({ runDir, state, run }) {
     ]),
   );
   for (const [sourceName, source] of Object.entries(state.sources)) {
-    if (source.status !== "success") continue;
+    const fullyAccounted =
+      source.status === "success" ||
+      (source.status === "blocked" &&
+        Number.isInteger(source.counts?.sourceRecordsReceived));
+    if (!fullyAccounted) continue;
     if (source.operatingMode === "pilot") {
       sourceReclassifications[sourceName] = [];
       continue;
     }
-    const reclassifiedRefs = (source.invalidSourceRecordRefs ?? []).filter(
-      (recordRef) => {
-        const reason = source.invalidReasonCodes?.[recordRef];
-        return (
-          ["invalid_date", "invalid_mode"].includes(reason) &&
-          recordRef.includes("#/records/") &&
-          existsSync(join(runDir, recordRef.split("#")[0]))
-        );
-      },
-    );
-    sourceReclassifications[sourceName] = reclassifiedRefs;
+    const reclassifiedRefs =
+      source.status === "success"
+        ? (source.invalidSourceRecordRefs ?? []).filter((recordRef) => {
+            const reason = source.invalidReasonCodes?.[recordRef];
+            return (
+              ["invalid_date", "invalid_mode"].includes(reason) &&
+              recordRef.includes("#/records/") &&
+              existsSync(join(runDir, recordRef.split("#")[0]))
+            );
+          })
+        : [];
+    if (source.status === "success")
+      sourceReclassifications[sourceName] = reclassifiedRefs;
     for (const recordRef of source.invalidSourceRecordRefs ?? []) {
       if (reclassifiedRefs.includes(recordRef)) continue;
       invalid.push({
@@ -551,25 +683,56 @@ export function normalizeRun({ runDir, state, run }) {
             recordType = "membership_offer";
         }
       }
-      const performances = record.performances?.length
-        ? record.performances
-        : [record];
+      const applyRecovery = (value, performanceIndex) => {
+        const recovery = recoveryByOccurrence.get(
+          `${sourceName}\u0000${recordRef}\u0000${performanceIndex}`,
+        );
+        if (recovery?.outcome !== "recovered") return value;
+        return {
+          ...value,
+          venue: recovery.venue ?? recovery.address ?? value.venue,
+          address: recovery.address ?? value.address,
+          locationRecovery: {
+            method: "tinyfish_search_verified",
+            artifactRef: `normalized/missing-venue-recovery.json#/records/${recoveryRecords.indexOf(recovery)}`,
+            evidenceUrls: recovery.evidenceUrls ?? [],
+            queryHash: recovery.queryHash,
+          },
+        };
+      };
+      const effectiveRecord = record.performances?.length
+        ? {
+            ...record,
+            performances: record.performances.map(applyRecovery),
+          }
+        : applyRecovery(record, 0);
+      const performances = effectiveRecord.performances?.length
+        ? effectiveRecord.performances
+        : [effectiveRecord];
       performances.forEach((performance, performanceIndex) => {
         sourceAccounting[sourceName].occurrencesEmitted += 1;
         const event = canonicalEvent(
           sourceName,
           recordRef,
-          record,
+          effectiveRecord,
           performance,
           performanceIndex,
         );
+        if (event.locationEvidenceIssue)
+          diagnostics.push({
+            stage: "normalization",
+            sourceName,
+            sourceRecordRef: recordRef,
+            occurrenceIndex: performanceIndex,
+            ...event.locationEvidenceIssue,
+          });
         const policy = assessActivityInclusion(
-          { ...record, ...event, schedule: event.schedule },
+          { ...effectiveRecord, ...event, schedule: event.schedule },
           { asOf: run.window.start },
         );
         const reasonCode =
-          record.reasonCode ??
-          normalizationReason(record, event) ??
+          effectiveRecord.reasonCode ??
+          normalizationReason(effectiveRecord, event) ??
           (recordType === "membership_offer"
             ? "membership_offer"
             : !event.title
@@ -577,7 +740,9 @@ export function normalizeRun({ runDir, state, run }) {
               : record.mode === "online"
                 ? "online"
                 : !event.venue
-                  ? "missing_venue"
+                  ? event.locationEvidenceIssue
+                    ? "structural_venue_label"
+                    : "missing_venue"
                   : !policy.eligible
                     ? policy.reasonCode
                     : null);
@@ -590,6 +755,35 @@ export function normalizeRun({ runDir, state, run }) {
             event,
           });
         } else {
+          let dateAssessment;
+          try {
+            dateAssessment = assessDateQuality(event, {
+              asOf: run.window.start,
+            });
+          } catch {
+            dateAssessment = failedDateAssessment(event, {
+              asOf: run.window.start,
+            });
+            diagnostics.push({
+              stage: "normalization",
+              sourceName,
+              sourceRecordRef: recordRef,
+              occurrenceIndex: performanceIndex,
+              reasonCode: "date_assessment_failed",
+              action: "held_for_review",
+            });
+          }
+          if (dateAssessment.status === "questionable") {
+            sourceAccounting[sourceName].dateReviewOccurrences += 1;
+            dateReviews.push(
+              createDateReviewItem(event, dateAssessment, {
+                asOf: run.window.start,
+                sourceRecordRef: recordRef,
+                occurrenceIndex: performanceIndex,
+              }),
+            );
+            return;
+          }
           sourceAccounting[sourceName].eligiblePreDedup += 1;
           eligible.push(event);
         }
@@ -626,6 +820,10 @@ export function normalizeRun({ runDir, state, run }) {
       ...existing.provenanceRefs,
       ...candidate.provenanceRefs,
     ];
+    const combinedParentActivities = [
+      ...(existing.sourceParentActivities ?? []),
+      ...(candidate.sourceParentActivities ?? []),
+    ];
     const previousMergedEventId = existing.mergedEventId;
     const retained =
       schedulePrecision(candidate) > schedulePrecision(existing)
@@ -634,6 +832,7 @@ export function normalizeRun({ runDir, state, run }) {
     retained.sources = combinedSources;
     retained.sourceOccurrenceIds = combinedOccurrenceIds;
     retained.provenanceRefs = combinedProvenanceRefs;
+    retained.sourceParentActivities = combinedParentActivities;
     retained.mergedEventId = mergedId(combinedSources);
     decisions.push({
       inputIds: [previousMergedEventId, ...candidate.sourceOccurrenceIds],
@@ -661,12 +860,29 @@ export function normalizeRun({ runDir, state, run }) {
     event.sourceOccurrenceIds = event.sources.map((source) =>
       qualifiedOccurrenceId(source.source, source.sourceId),
     );
-    event.provenanceRefs = event.sources.map((source) => source.recordRef);
+    event.provenanceRefs = [
+      ...new Set([
+        ...event.sources.map((source) => source.recordRef),
+        ...(event.provenanceRefs ?? []),
+      ]),
+    ];
     event.occurrenceId = event.sourceOccurrenceIds[0];
     event.id = event.occurrenceId;
     event.sourceName = event.sources[0].source;
     event.sourceEventId = event.sources[0].sourceId;
     event.parentListingId = `${event.sourceName}:${event.parentEventId}`;
+    event.sourceParentActivities = [
+      ...new Map(
+        (event.sourceParentActivities ?? []).map((parent) => [
+          `${parent.source}\0${parent.parentActivityId ?? ""}\0${parent.parentListingId ?? ""}`,
+          parent,
+        ]),
+      ).values(),
+    ].sort(
+      (a, b) =>
+        sourceOrder.get(a.source) - sourceOrder.get(b.source) ||
+        codePointCompare(a.parentActivityId ?? "", b.parentActivityId ?? ""),
+    );
     event.mergedEventId = mergedId(event.sources);
     event.eventUrl =
       event.sources.find((source) => {
@@ -715,20 +931,56 @@ export function normalizeRun({ runDir, state, run }) {
     event.venueId = venues.get(key).id;
     event.contentHash = visibleContentHash(event);
   }
+  const activityProjection = projectEventActivities({
+    events,
+    runId: run.runId,
+    generatedAt: run.startedAt ?? run.window?.start ?? new Date().toISOString(),
+  });
   const artifactRefs = [
     "normalized/events.json",
+    "normalized/activities.json",
+    "normalized/activity-grouping-reviews.json",
+    "normalized/activity-grouping-decisions.json",
+    "normalized/parent-activity-grouping.json",
+    "normalized/date-reviews.json",
     "normalized/excluded.json",
     "normalized/invalid.json",
     "normalized/dedup-decisions.json",
   ];
-  atomicJson(join(runDir, artifactRefs[0]), envelope(run.runId, null, events));
   atomicJson(
-    join(runDir, artifactRefs[1]),
+    join(runDir, "normalized/events.json"),
+    envelope(run.runId, null, events),
+  );
+  atomicJson(
+    join(runDir, "normalized/activities.json"),
+    activityProjection.activities,
+  );
+  atomicJson(
+    join(runDir, "normalized/activity-grouping-reviews.json"),
+    activityProjection.reviews,
+  );
+  atomicJson(
+    join(runDir, "normalized/activity-grouping-decisions.json"),
+    activityProjection.decisions,
+  );
+  atomicJson(
+    join(runDir, "normalized/parent-activity-grouping.json"),
+    activityProjection.parentGrouping,
+  );
+  atomicJson(
+    join(runDir, "normalized/date-reviews.json"),
+    envelope(run.runId, null, dateReviews),
+  );
+  atomicJson(
+    join(runDir, "normalized/excluded.json"),
     envelope(run.runId, null, excluded),
   );
-  atomicJson(join(runDir, artifactRefs[2]), envelope(run.runId, null, invalid));
   atomicJson(
-    join(runDir, artifactRefs[3]),
+    join(runDir, "normalized/invalid.json"),
+    envelope(run.runId, null, invalid),
+  );
+  atomicJson(
+    join(runDir, "normalized/dedup-decisions.json"),
     envelope(run.runId, null, decisions),
   );
   return {
@@ -736,15 +988,32 @@ export function normalizeRun({ runDir, state, run }) {
     artifactRefs,
     counts: {
       eligiblePreDedup: eligible.length,
+      dateReviewOccurrences: dateReviews.length,
       duplicateCollapsed: eligible.length - events.length,
       acceptedPostDedup: events.length,
       acceptedPrimary: events.length,
+      activities: activityProjection.activities.counts.activities,
+      activitySessions: activityProjection.activities.counts.sessions,
+      activityVenueGroups: activityProjection.activities.counts.venueGroups,
+      sourceOffers: activityProjection.activities.counts.sourceOffers,
+      activityGroupingReviews: activityProjection.reviews.counts.records,
+      parentGroupingCandidates:
+        activityProjection.parentGrouping.counts.candidates,
+      parentGroupingMerges:
+        activityProjection.parentGrouping.counts.mergedParents,
+      parentGroupingReviews: activityProjection.parentGrouping.counts.reviews,
     },
     venueBranches: [...venues.values()],
     sourceAccounting,
+    diagnostics,
+    dateQuality: {
+      assessed: eligible.length + dateReviews.length,
+      plausible: eligible.length,
+      ...summarizeDateReviews(dateReviews),
+    },
     sourceReclassifications,
     evidence: {
-      uniqueActivities: events.length,
+      uniqueActivities: activityProjection.activities.counts.activities,
       levels: Object.fromEntries(
         [...new Set(events.map((event) => event.evidenceLevel ?? "direct"))]
           .sort()

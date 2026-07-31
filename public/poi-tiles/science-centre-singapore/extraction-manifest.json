@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "science-centre-singapore",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:20.017Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/12/26_3.b3dm",
+      "sourceSha256": "fba6fb6eaa47e88c4b7bf5d219268a6674a0cf954c66de4fb8bfa2deb461ed76",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "gmlNames": [
+        "SCIENCE CENTRE SINGAPORE"
+      ],
+      "poiFile": "26_3-ff56e79bd76f.b3dm",
+      "poiSha256": "445f98590abab6d3be14c899f77e80d985a641bae355e233878ccb930486525d",
+      "poiTriangles": 5602,
+      "backgroundFile": "optimized-tiles/6/12/26_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "backgroundSha256": "b7feb3ed6db6840f7a5bb574210491a96eb78bc545a000e43d6af40d6519c2a4",
+      "backgroundTriangles": 8434
+    },
+    {
+      "sourceTile": "tiles/6/12/26_2.b3dm",
+      "sourceSha256": "eeca43018f6522e3add65cdede56740464424278d9ea5e8e889034e5094909e5",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "gmlNames": [
+        "SCIENCE CENTRE SINGAPORE"
+      ],
+      "poiFile": "26_2-8b1521c10126.b3dm",
+      "poiSha256": "70327d7781a31c52e023e975b7eaf48f731d15b569357574c50b7823839fddda",
+      "poiTriangles": 5602,
+      "backgroundFile": "optimized-tiles/6/12/26_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "backgroundSha256": "063d1dc1329dd63192a8ba0e2348fec4de5b2b319b93b0580e62f1ca41d79550",
+      "backgroundTriangles": 8434
+    },
+    {
+      "sourceTile": "tiles/6/12/26_0.b3dm",
+      "sourceSha256": "bbc519d693c328537da79e819baa0650ed7a17770a19c99b2ea018a95583fc5c",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "gmlNames": [
+        "SCIENCE CENTRE SINGAPORE"
+      ],
+      "poiFile": "26_0-bf9633af922f.b3dm",
+      "poiSha256": "684d8a14ab148b7cb8fecb3e0ec493a8b1e8168158d9949222459e13bd19ecad",
+      "poiTriangles": 5602,
+      "backgroundFile": "optimized-tiles/6/12/26_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "backgroundSha256": "4467979a80e81f154363e37862a73c286a9add4b82ead917eb6e9480c02d724e",
+      "backgroundTriangles": 8434
+    },
+    {
+      "sourceTile": "tiles/6/12/26_1.b3dm",
+      "sourceSha256": "d58598caa477791900575b097955e322f12f9aa81ac9c23b7adfc3735cbf815c",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "gmlNames": [
+        "SCIENCE CENTRE SINGAPORE"
+      ],
+      "poiFile": "26_1-89fd4056a9c9.b3dm",
+      "poiSha256": "ef4b097d227310f60900d21b726ae9ece211ad783247224c48cee18cf815b0d6",
+      "poiTriangles": 5602,
+      "backgroundFile": "optimized-tiles/6/12/26_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "backgroundSha256": "df4c64ccb3b0607587f05fca2a00072ded54fcc90565016246b1434babe90817",
+      "backgroundTriangles": 8434
+    },
+    {
+      "sourceTile": "tiles/6/12/26_4.b3dm",
+      "sourceSha256": "73640d6f6bc0b6698d5173e9e2a336f8583bc915092757c8590861d1f6db2018",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "gmlNames": [
+        "SCIENCE CENTRE SINGAPORE"
+      ],
+      "poiFile": "26_4-d84b3f4ab2fd.b3dm",
+      "poiSha256": "a9e3e18aff71b07e88e9c413fccb61afff0577bb741a925fb401d38515bb7280",
+      "poiTriangles": 5602,
+      "backgroundFile": "optimized-tiles/6/12/26_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "backgroundSha256": "2613bf9e6364c787378ad9301cbf5f1fe07baaa9956c5fa08111b9b3b8c823fe",
+      "backgroundTriangles": 8434
+    },
+    {
+      "sourceTile": "tiles/6/12/26_5.b3dm",
+      "sourceSha256": "51542d394b8a11ad506702e3440ad50ee9669a0e34b1278321f4c85abea18863",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "gmlNames": [
+        "SCIENCE CENTRE SINGAPORE"
+      ],
+      "poiFile": "26_5-ad28e2dd7283.b3dm",
+      "poiSha256": "97e2a7fb51dd1283561ec2b0cc7951bc3e3fad94b0ee2311a815bcfb563fadf4",
+      "poiTriangles": 5602,
+      "backgroundFile": "optimized-tiles/6/12/26_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9a35be6b-89dc-4d6a-aa97-0928b1069052"
+      ],
+      "backgroundSha256": "27add589786c924224c5cdddc291adeadcb9506ed43989dcb1c274af7f4e735e",
+      "backgroundTriangles": 8434
+    }
+  ]
+}

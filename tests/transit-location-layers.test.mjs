@@ -173,10 +173,13 @@ test("MRT lines, stations, and labels use a subordinate zoom hierarchy with isol
   assert.deepEqual(map.zoomRanges.get("mrt-lines-context"), [7, 24]);
   assert.deepEqual(map.zoomRanges.get("mrt-stations-context"), [7, 24]);
   assert.deepEqual(map.zoomRanges.get("mrt-station-labels-context"), [12, 24]);
-  const lineColour = map.getLayer("mrt-lines-context").paint["line-color"];
+  const lineLayer = map.getLayer("mrt-lines-context");
+  const lineColour = lineLayer.paint["line-color"];
   assert.equal(lineColour[0], "match");
   assert.ok(lineColour.includes(MRT_LINE_COLOURS.CC));
   assert.equal(new Set(Object.values(MRT_LINE_COLOURS)).size, 10);
+  assert.equal(lineLayer.layout["line-cap"], "round");
+  assert.equal(lineLayer.layout["line-join"], "round");
   const stationPaint = map.getLayer("mrt-stations-context").paint;
   assert.deepEqual(stationPaint["circle-radius"].slice(0, 3), [
     "interpolate",

@@ -95,6 +95,15 @@
       or precise location.
     </p>
     <div id="map"></div>
+    <div id="map-brand" class="map-brand">
+      <img
+        src="/brand/amble-wordmark.png"
+        alt="Amble"
+        width="1422"
+        height="449"
+        decoding="async"
+      />
+    </div>
     <div
       id="experience-intro"
       class="experience-intro"
@@ -123,6 +132,15 @@
           <span class="experience-intro__dots" aria-hidden="true"
             ><i></i><i></i><i></i
           ></span>
+        </div>
+        <div class="experience-intro__error" role="alert" hidden>
+          <span>
+            Singapore couldn't finish loading. Check your connection and try
+            again.
+          </span>
+          <button class="experience-intro__retry" type="button">
+            Try again
+          </button>
         </div>
         <button class="experience-intro__enter" type="button" hidden disabled>
           Let's explore

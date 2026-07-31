@@ -24,6 +24,7 @@ const artifacts = {
   "landmarks.json": "[]\n",
   "pois.json": "[]\n",
   "tileset.json": "{}\n",
+  "events.json": '{"schemaVersion":"3.1","mapped":[],"offMap":[]}\n',
 };
 
 test("v2 activity state migrates deterministically into independent v3 dimensions", () => {
@@ -244,6 +245,7 @@ test("the initial snapshot can be the previous version without changing landmark
       "landmarks.json": `${JSON.stringify([{ id: "stable-hall", events: [] }])}\n`,
       "pois.json": `${JSON.stringify([{ id: "stable-hall", data: "poi-tiles/stable-hall/tileset.json" }])}\n`,
       "tileset.json": "{}\n",
+      "events.json": '{"schemaVersion":"3.1","mapped":[],"offMap":[]}\n',
     };
     const initial = stageImmutableSnapshot({
       root: state.root,
@@ -391,6 +393,7 @@ test("source reconciliation carries stale contributions per identity, accepts co
     current: 1,
     carriedForwardStale: 1,
     archived: 1,
+    retired: 0,
   });
   assert.equal(
     reconcileSourceAvailability({
@@ -401,6 +404,64 @@ test("source reconciliation carries stale contributions per identity, accepts co
     0,
     "first-run outages cannot fabricate history",
   );
+});
+
+test("an incomplete source publishes healthy current identities and carries only missing siblings stale", () => {
+  const previous = [
+    {
+      id: "healthy",
+      identityAnchor: "healthy",
+      title: "Old healthy title",
+      schedule: { kind: "anytime" },
+      sources: [{ source: "Fever Singapore", sourceId: "healthy" }],
+      sourceContributions: [
+        {
+          sourceRecordId: "fever:healthy",
+          sourceName: "Fever Singapore",
+          freshness: "current",
+          fields: ["title"],
+        },
+      ],
+    },
+    {
+      id: "failed",
+      identityAnchor: "failed",
+      title: "Temporarily unavailable detail",
+      schedule: { kind: "anytime" },
+      sources: [{ source: "Fever Singapore", sourceId: "failed" }],
+      sourceContributions: [
+        {
+          sourceRecordId: "fever:failed",
+          sourceName: "Fever Singapore",
+          freshness: "current",
+          fields: ["title"],
+        },
+      ],
+    },
+  ];
+  const current = [
+    {
+      ...previous[0],
+      title: "Updated healthy title",
+      sourceContributions: previous[0].sourceContributions,
+    },
+  ];
+  const result = reconcileSourceAvailability({
+    previousEvents: previous,
+    currentEvents: current,
+    sourceStatuses: { "Fever Singapore": "blocked" },
+    asOf: "2026-07-20T00:00:00+08:00",
+  });
+  assert.equal(result.events.length, 2);
+  assert.equal(
+    result.events.find(({ id }) => id === "healthy").title,
+    "Updated healthy title",
+  );
+  assert.equal(
+    result.events.find(({ id }) => id === "failed").freshness,
+    "stale",
+  );
+  assert.equal(result.counts.carriedForwardStale, 1);
 });
 
 test("candidate assembly keeps lifecycle, placement, mapping, and freshness orthogonal and rejects unsafe release geometry", () => {
@@ -461,6 +522,21 @@ test("candidate assembly keeps lifecycle, placement, mapping, and freshness orth
       }),
     /duplicated/i,
   );
+  assert.throws(
+    () =>
+      assembleCandidateSnapshot({
+        events: [
+          {
+            id: "structural-venue",
+            venue: "Accessibility",
+            lifecycleState: "active",
+            publicPlacement: "mapped",
+            mappingStatus: "approved",
+          },
+        ],
+      }),
+    /structural venue label/i,
+  );
 });
 
 test("accounted source outages and isolated location reviews can publish safe updates while release gates remain atomic", () => {
@@ -515,7 +591,7 @@ test("pilot failures are visible but non-blocking while required discovery and d
         sourceRole: "authoritative",
         operatingMode: "required",
       },
-      Honeycombers: {
+      "Time Out Singapore": {
         status: "pilot_failed",
         sourceRole: "discovery",
         operatingMode: "pilot",
@@ -533,7 +609,7 @@ test("pilot failures are visible but non-blocking while required discovery and d
   });
   assert.equal(deriveTerminalStatus(base), "success");
   const promoted = structuredClone(base);
-  promoted.sources.Honeycombers.operatingMode = "required";
+  promoted.sources["Time Out Singapore"].operatingMode = "required";
   assert.ok(
     evaluateCommitEligibility(promoted).reasons.includes(
       "required_source_incomplete",
@@ -559,7 +635,7 @@ test("explicitly disabled source remains accounted without blocking publication"
   const state = {
     sources: {
       Catch: { status: "success", operatingMode: "required" },
-      "Roots HAN": {
+      "Unavailable Source": {
         status: "disabled",
         operatingMode: "disabled",
         blockerReasonCode: "layout_contract_changed",

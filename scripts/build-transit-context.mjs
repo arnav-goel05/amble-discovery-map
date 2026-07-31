@@ -209,6 +209,204 @@ function validateLineGeometry(geometry) {
   }
 }
 
+const coordinateKey = ([longitude, latitude]) =>
+  `${Number(longitude).toFixed(6)},${Number(latitude).toFixed(6)}`;
+const coordinateDistance = (left, right) =>
+  Math.hypot(left[0] - right[0], left[1] - right[1]);
+const geometryLines = (geometry) =>
+  geometry.type === "LineString"
+    ? [geometry.coordinates]
+    : geometry.coordinates;
+// URA publishes adjacent rail pieces as separate features whose endpoints can
+// be tens of metres apart. Join only feature endpoints (never arbitrary
+// centreline vertices) so station-to-station paths can follow the source data.
+const RAIL_ENDPOINT_CONNECTION_TOLERANCE = 0.0006;
+
+function addGraphEdge(nodes, left, right) {
+  const leftKey = coordinateKey(left);
+  const rightKey = coordinateKey(right);
+  if (leftKey === rightKey) return;
+  if (!nodes.has(leftKey))
+    nodes.set(leftKey, { coordinate: clone(left), edges: [] });
+  if (!nodes.has(rightKey))
+    nodes.set(rightKey, { coordinate: clone(right), edges: [] });
+  const weight = coordinateDistance(left, right);
+  nodes.get(leftKey).edges.push({ to: rightKey, weight });
+  nodes.get(rightKey).edges.push({ to: leftKey, weight });
+}
+
+function buildRailGraphs(collection, tolerance) {
+  const graphs = new Map([
+    ["MRT", { nodes: new Map(), endpoints: new Set(), featureCount: 0 }],
+    ["LRT", { nodes: new Map(), endpoints: new Set(), featureCount: 0 }],
+  ]);
+  for (const feature of collection.features) {
+    const railType =
+      property(feature.properties, ["RAIL_TYPE", "TYPE"]).toUpperCase() ||
+      "MRT";
+    if (!graphs.has(railType)) continue;
+    const identity = property(feature.properties, [
+      "INC_CRC",
+      "OBJECTID",
+      "ID",
+    ]);
+    if (!identity)
+      fail("rail_identity_missing", "Rail source identity is required");
+    const geometry = simplifyGeometry(feature.geometry, tolerance);
+    validateLineGeometry(geometry);
+    const graph = graphs.get(railType);
+    graph.featureCount += 1;
+    for (const line of geometryLines(geometry)) {
+      graph.endpoints.add(coordinateKey(line[0]));
+      graph.endpoints.add(coordinateKey(line.at(-1)));
+      for (let index = 1; index < line.length; index += 1)
+        addGraphEdge(graph.nodes, line[index - 1], line[index]);
+    }
+  }
+  for (const graph of graphs.values()) {
+    const endpoints = [...graph.endpoints].map((key) => ({
+      key,
+      coordinate: graph.nodes.get(key).coordinate,
+    }));
+    for (let left = 0; left < endpoints.length; left += 1) {
+      for (let right = left + 1; right < endpoints.length; right += 1) {
+        const distance = coordinateDistance(
+          endpoints[left].coordinate,
+          endpoints[right].coordinate,
+        );
+        if (
+          distance > 0.0000001 &&
+          distance <= RAIL_ENDPOINT_CONNECTION_TOLERANCE
+        ) {
+          addGraphEdge(
+            graph.nodes,
+            endpoints[left].coordinate,
+            endpoints[right].coordinate,
+          );
+        }
+      }
+    }
+  }
+  return graphs;
+}
+
+function nearestGraphNode(graph, coordinate) {
+  let nearest = null;
+  for (const [key, node] of graph.nodes) {
+    const distance = coordinateDistance(coordinate, node.coordinate);
+    if (!nearest || distance < nearest.distance)
+      nearest = { key, coordinate: node.coordinate, distance };
+  }
+  return nearest;
+}
+
+function pushHeap(heap, item) {
+  heap.push(item);
+  let index = heap.length - 1;
+  while (index > 0) {
+    const parent = Math.floor((index - 1) / 2);
+    if (heap[parent].distance <= item.distance) break;
+    heap[index] = heap[parent];
+    index = parent;
+  }
+  heap[index] = item;
+}
+
+function popHeap(heap) {
+  if (!heap.length) return null;
+  const first = heap[0];
+  const last = heap.pop();
+  if (heap.length) {
+    let index = 0;
+    while (true) {
+      const left = index * 2 + 1;
+      const right = left + 1;
+      if (left >= heap.length) break;
+      const child =
+        right < heap.length && heap[right].distance < heap[left].distance
+          ? right
+          : left;
+      if (heap[child].distance >= last.distance) break;
+      heap[index] = heap[child];
+      index = child;
+    }
+    heap[index] = last;
+  }
+  return first;
+}
+
+function shortestGraphPath(graph, startKey, endKey) {
+  if (startKey === endKey)
+    return {
+      coordinates: [clone(graph.nodes.get(startKey).coordinate)],
+      distance: 0,
+    };
+  const distances = new Map([[startKey, 0]]);
+  const previous = new Map();
+  const heap = [];
+  pushHeap(heap, { key: startKey, distance: 0 });
+  while (heap.length) {
+    const current = popHeap(heap);
+    if (current.distance !== distances.get(current.key)) continue;
+    if (current.key === endKey) break;
+    for (const edge of graph.nodes.get(current.key)?.edges ?? []) {
+      const distance = current.distance + edge.weight;
+      if (distance >= (distances.get(edge.to) ?? Number.POSITIVE_INFINITY))
+        continue;
+      distances.set(edge.to, distance);
+      previous.set(edge.to, current.key);
+      pushHeap(heap, { key: edge.to, distance });
+    }
+  }
+  if (!distances.has(endKey)) return null;
+  const keys = [endKey];
+  while (keys[0] !== startKey) {
+    const prior = previous.get(keys[0]);
+    if (!prior) return null;
+    keys.unshift(prior);
+  }
+  return {
+    coordinates: keys.map((key) => clone(graph.nodes.get(key).coordinate)),
+    distance: distances.get(endKey),
+  };
+}
+
+function catmullRomSegment(previous, start, end, next, subdivisions = 12) {
+  const coordinates = [];
+  for (let step = 0; step <= subdivisions; step += 1) {
+    const amount = step / subdivisions;
+    const squared = amount * amount;
+    const cubed = squared * amount;
+    coordinates.push(
+      [0, 1].map(
+        (axis) =>
+          0.5 *
+          (2 * start[axis] +
+            (-previous[axis] + end[axis]) * amount +
+            (2 * previous[axis] -
+              5 * start[axis] +
+              4 * end[axis] -
+              next[axis]) *
+              squared +
+            (-previous[axis] + 3 * start[axis] - 3 * end[axis] + next[axis]) *
+              cubed),
+      ),
+    );
+  }
+  return coordinates.filter(withinSingapore);
+}
+
+function appendCoordinates(target, coordinates) {
+  for (const coordinate of coordinates) {
+    if (
+      target.length &&
+      coordinateDistance(target.at(-1), coordinate) < 0.0000001
+    )
+      continue;
+    target.push(clone(coordinate));
+  }
+}
+
 function stationNameIndex(collection) {
   const index = new Map();
   for (const feature of collection.features) {
@@ -408,20 +606,7 @@ function buildLines(
   tolerance,
   stations,
 ) {
-  for (const feature of collection.features) {
-    const type = property(feature.properties, ["RAIL_TYPE", "TYPE"]);
-    if (type && !/^(?:mrt|lrt)$/i.test(type)) continue;
-    const identity = property(feature.properties, [
-      "INC_CRC",
-      "OBJECTID",
-      "ID",
-    ]);
-    if (!identity)
-      fail("rail_identity_missing", "Rail source identity is required");
-    const geometry = simplifyGeometry(feature.geometry, tolerance);
-    validateLineGeometry(geometry);
-  }
-
+  const railGraphs = buildRailGraphs(collection, tolerance);
   const stationsByKey = new Map(
     stations.map((station) => [
       stationKey(station.properties.stationName),
@@ -444,11 +629,50 @@ function buildLines(
     if (prepend) ordered.unshift(prepend);
     if (append) ordered.push(append);
     if (ordered.length < 2) return [];
+    const graph = railGraphs.get(definition.railType);
+    const nearestByStation = new Map(
+      ordered.map((station) => [
+        station.properties.stationId,
+        nearestGraphNode(graph, station.geometry.coordinates),
+      ]),
+    );
+    const coordinates = [];
+    let authoritativeSegments = 0;
+    let curvedFallbackSegments = 0;
+    for (let index = 0; index < ordered.length - 1; index += 1) {
+      const start = ordered[index].geometry.coordinates;
+      const end = ordered[index + 1].geometry.coordinates;
+      const startNode = nearestByStation.get(
+        ordered[index].properties.stationId,
+      );
+      const endNode = nearestByStation.get(
+        ordered[index + 1].properties.stationId,
+      );
+      const directDistance = coordinateDistance(start, end);
+      const path =
+        startNode?.distance <= 0.0045 && endNode?.distance <= 0.0045
+          ? shortestGraphPath(graph, startNode.key, endNode.key)
+          : null;
+      const plausiblePath =
+        path &&
+        path.distance <= Math.max(0.003, directDistance * 4.5) &&
+        path.coordinates.length >= 2;
+      if (plausiblePath) {
+        appendCoordinates(coordinates, [start, ...path.coordinates, end]);
+        authoritativeSegments += 1;
+      } else {
+        const previous = ordered[index - 1]?.geometry.coordinates ?? start;
+        const next = ordered[index + 2]?.geometry.coordinates ?? end;
+        appendCoordinates(
+          coordinates,
+          catmullRomSegment(previous, start, end, next),
+        );
+        curvedFallbackSegments += 1;
+      }
+    }
     const geometry = {
       type: "LineString",
-      coordinates: ordered.map((station) =>
-        clone(station.geometry.coordinates),
-      ),
+      coordinates,
     };
     validateLineGeometry(geometry);
     return [
@@ -468,6 +692,14 @@ function buildLines(
           ],
           sourceObservedAt,
           simplificationTolerance: tolerance,
+          geometrySource:
+            authoritativeSegments === ordered.length - 1
+              ? "authoritative_rail_centreline"
+              : authoritativeSegments
+                ? "mixed_authoritative_and_curved_fallback"
+                : "curved_station_fallback",
+          authoritativeSegments,
+          curvedFallbackSegments,
         },
         geometry,
       },
@@ -561,6 +793,18 @@ export function buildTransitContextAsset({
       stationNameJoin: true,
       stationCodeJoin: true,
       routeCentrelineGeneration: true,
+      authoritativeRailGeometry: lines.some(
+        ({ properties }) => properties.authoritativeSegments > 0,
+      ),
+      authoritativeSegments: lines.reduce(
+        (sum, { properties }) => sum + properties.authoritativeSegments,
+        0,
+      ),
+      curvedFallbackSegments: lines.reduce(
+        (sum, { properties }) => sum + properties.curvedFallbackSegments,
+        0,
+      ),
+      railEndpointConnectionTolerance: RAIL_ENDPOINT_CONNECTION_TOLERANCE,
       simplificationTolerance,
     },
   };

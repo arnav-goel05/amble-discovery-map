@@ -1,0 +1,96 @@
+{
+  "asset": {
+    "version": "1.0",
+    "extras": {
+      "ion": {
+        "georeferenced": true,
+        "movable": false
+      }
+    }
+  },
+  "geometricError": 512,
+  "root": {
+    "boundingVolume": {
+      "region": [
+        1.809366471052662,
+        0.023150630067092,
+        1.809880160238114,
+        0.0232733298384991,
+        0,
+        51.00528746118885
+      ]
+    },
+    "geometricError": 256,
+    "refine": "REPLACE",
+    "children": [
+      {
+        "boundingVolume": {
+          "region": [
+            1.809366471052662,
+            0.023150630067092,
+            1.809880160238114,
+            0.0232733298384991,
+            0,
+            51.00528746118885
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "6_0-e5b7fa3c96d8.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.809366471052662,
+            0.023150630067092,
+            1.809880160238114,
+            0.0232733298384991,
+            0,
+            51.00528746118885
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "6_1-4bac54b646b4.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.809366471052662,
+            0.023150630067092,
+            1.809880160238114,
+            0.0232733298384991,
+            0,
+            51.00528746118885
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "6_2-5cab7aaf31f5.b3dm"
+        }
+      },
+      {
+        "boundingVolume": {
+          "region": [
+            1.809366471052662,
+            0.023150630067092,
+            1.809880160238114,
+            0.0232733298384991,
+            0,
+            51.00528746118885
+          ]
+        },
+        "geometricError": 0,
+        "refine": "REPLACE",
+        "content": {
+          "uri": "6_3-ab258f529f1c.b3dm"
+        }
+      }
+    ]
+  }
+}

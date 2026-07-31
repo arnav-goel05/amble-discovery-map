@@ -9,6 +9,7 @@ import {
   statSync,
   writeFileSync,
 } from "node:fs";
+import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { APPROVED_POIS } from "../data/approved-pois.js";
 import { APPROVED_LANDMARKS } from "../data/approved-landmarks.js";
@@ -16,6 +17,7 @@ import {
   contentHash,
   pruneExpiredContent,
   reconcileLandmark,
+  reconcilePublishedLandmarks,
   reconcilePoi,
   reconcileSourceAvailability,
 } from "./reconcile-event-content.mjs";
@@ -25,6 +27,13 @@ import {
   loadApprovedSnapshot,
   stageImmutableSnapshot,
 } from "./lib/approved-snapshot.mjs";
+import { projectEventActivities } from "./lib/event-pipeline/activity-projection.mjs";
+
+const require = createRequire(import.meta.url);
+const {
+  projectPublicActivityCatalogue,
+  projectPublicLandmarks,
+} = require("./lib/public-event-catalogue.cjs");
 
 const atomicWrite = (path, value) => {
   mkdirSync(dirname(path), { recursive: true });
@@ -37,22 +46,121 @@ const writeJson = (path, value) =>
 const moduleText = (name, records) =>
   `export const ${name} = ${JSON.stringify(records, null, 2)};\n`;
 
+export function makeTilesetUrisDurable(tileset) {
+  const rewrite = (tile) => {
+    const content = tile?.content;
+    if (content)
+      for (const key of ["uri", "url"])
+        if (typeof content[key] === "string") {
+          content[key] = content[key].replace(
+            /^\/.*?\/frontend\/assets\/public\//,
+            "/",
+          );
+          if (content[key].startsWith("/poi-tiles/"))
+            content[key] = `../../../../${content[key].slice(1)}`;
+        }
+    for (const child of tile?.children ?? []) rewrite(child);
+  };
+  rewrite(tileset?.root);
+  return tileset;
+}
+
+function catalogueEvents(catalogue) {
+  if (Array.isArray(catalogue)) return catalogue;
+  return [...(catalogue?.mapped ?? []), ...(catalogue?.offMap ?? [])];
+}
+
+export function hydrateInternalLandmarks(landmarks, catalogue) {
+  if (landmarks.some(({ events }) => Array.isArray(events))) return landmarks;
+  const events = catalogueEvents(catalogue);
+  if (!events.length) return landmarks;
+  const activityRecords = catalogue?.activities?.records ?? [];
+  const activityByOccurrence = new Map(
+    activityRecords.flatMap((activity) =>
+      (activity.occurrenceIds ?? []).map((occurrenceId) => [
+        occurrenceId,
+        activity.activityId,
+      ]),
+    ),
+  );
+  const activityById = new Map(
+    activityRecords.map((activity) => [activity.activityId, activity]),
+  );
+  const eventsByActivity = new Map();
+  for (const event of events) {
+    const occurrenceId = event.occurrenceId ?? event.id;
+    const activityId =
+      event.activityId ??
+      event.parentActivityId ??
+      activityByOccurrence.get(occurrenceId);
+    if (!activityId) continue;
+    const rows = eventsByActivity.get(activityId) ?? [];
+    rows.push(event);
+    eventsByActivity.set(activityId, rows);
+  }
+  return landmarks.map((landmark) => {
+    const landmarkEvents = new Map();
+    for (const reference of landmark.activityRefs ?? []) {
+      const activity = activityById.get(reference.activityId);
+      const venueGroupIds = new Set(reference.venueGroupIds ?? []);
+      const sessionIds = new Set(
+        (activity?.venueGroups ?? [])
+          .filter(({ venueGroupId }) => venueGroupIds.has(venueGroupId))
+          .flatMap(({ sessionIds = [] }) => sessionIds),
+      );
+      const occurrenceIds = new Set(
+        (activity?.sessions ?? [])
+          .filter(({ sessionId }) => sessionIds.has(sessionId))
+          .flatMap(({ occurrenceIds = [] }) => occurrenceIds),
+      );
+      for (const event of eventsByActivity.get(reference.activityId) ?? []) {
+        const occurrenceId = event.occurrenceId ?? event.id;
+        if (occurrenceIds.size && !occurrenceIds.has(occurrenceId)) continue;
+        landmarkEvents.set(event.id, {
+          ...event,
+          approvedLocationId: landmark.id,
+          coordinates: landmark.anchor,
+          publicPlacement: "mapped",
+          mappingStatus: "approved",
+          lifecycleState: "active",
+        });
+      }
+    }
+    return { ...landmark, events: [...landmarkEvents.values()] };
+  });
+}
+
 export function loadCurrentApprovedData(root) {
   try {
     const active = loadApprovedSnapshot({ root });
+    const landmarks = JSON.parse(
+      readFileSync(join(active.directory, active.landmarksRef), "utf8"),
+    );
+    const events = active.internalEventsRef
+      ? JSON.parse(
+          readFileSync(
+            join(active.directory, active.internalEventsRef),
+            "utf8",
+          ),
+        )
+      : active.eventsRef
+        ? JSON.parse(
+            readFileSync(join(active.directory, active.eventsRef), "utf8"),
+          )
+        : [];
     return {
       snapshot: active,
       pois: JSON.parse(
         readFileSync(join(active.directory, active.poisRef), "utf8"),
       ),
-      landmarks: JSON.parse(
-        readFileSync(join(active.directory, active.landmarksRef), "utf8"),
-      ),
-      events: active.eventsRef
+      landmarks: hydrateInternalLandmarks(landmarks, events),
+      publicLandmarks: landmarks,
+      events,
+      activities: active.activitiesRef
         ? JSON.parse(
-            readFileSync(join(active.directory, active.eventsRef), "utf8"),
+            readFileSync(join(active.directory, active.activitiesRef), "utf8"),
           )
-        : [],
+        : null,
     };
   } catch (error) {
     if (error?.code === "snapshot_pointer_missing")
@@ -61,6 +169,7 @@ export function loadCurrentApprovedData(root) {
         pois: APPROVED_POIS,
         landmarks: APPROVED_LANDMARKS,
         events: [],
+        activities: null,
       };
     throw error;
   }
@@ -70,17 +179,40 @@ export function projectEventCatalogue(
   events,
   state,
   mappedEventIds = new Set(),
+  previousActivities = [],
+  mappedLocations = new Map(),
 ) {
   const byId = new Map(
     events.map((event) => [event.id, structuredClone(event)]),
   );
   for (const eventId of mappedEventIds) {
     const event = byId.get(eventId);
+    const location = mappedLocations.get(eventId);
     if (event)
       Object.assign(event, {
         publicPlacement: "mapped",
         mappingStatus: "approved",
         lifecycleState: "active",
+        ...(location
+          ? {
+              approvedLocationId: location.approvedLocationId,
+              coordinates: location.coordinates,
+              venue: location.label ?? event.venue,
+              venueOccurrences: [
+                {
+                  ...(event.venueOccurrences?.[0] ?? {}),
+                  approvedLocationId: location.approvedLocationId,
+                  publishedVenueName: location.label ?? event.venue,
+                  address:
+                    event.venueOccurrences?.[0]?.address ??
+                    event.address ??
+                    null,
+                  publicPlacement: "mapped",
+                  mappingStatus: "approved",
+                },
+              ],
+            }
+          : {}),
       });
   }
   for (const venue of Object.values(state.venues ?? {})) {
@@ -106,14 +238,32 @@ export function projectEventCatalogue(
   const offMap = active
     .filter((event) => event.publicPlacement === "off_map")
     .map((event) => ({ ...event, coordinates: null, venueVerified: false }));
+  const activityProjection = projectEventActivities({
+    events: active,
+    previousActivities,
+    runId: state.runId ?? null,
+    generatedAt: state.completedAt ?? state.updatedAt ?? null,
+  });
   return {
-    schemaVersion: "3.0",
+    schemaVersion: "3.1",
     mapped,
     offMap,
+    activities: activityProjection.activities,
+    activityGroupingReviews: activityProjection.reviews,
+    activityGroupingDecisions: activityProjection.decisions,
+    parentActivityGrouping: activityProjection.parentGrouping,
     counts: {
       active: active.length,
       mapped: mapped.length,
       offMap: offMap.length,
+      activities: activityProjection.activities.counts.activities,
+      sessions: activityProjection.activities.counts.sessions,
+      venueGroups: activityProjection.activities.counts.venueGroups,
+      sourceOffers: activityProjection.activities.counts.sourceOffers,
+      groupingReviews: activityProjection.reviews.counts.records,
+      parentCandidates: activityProjection.parentGrouping.counts.candidates,
+      parentMerges: activityProjection.parentGrouping.counts.mergedParents,
+      parentGroupingReviews: activityProjection.parentGrouping.counts.reviews,
     },
   };
 }
@@ -138,12 +288,44 @@ function poiFromResolution(resolution) {
   };
 }
 
+function referenceLandmarkActivities(landmarks, internalCatalogue) {
+  const activityByOccurrence = new Map(
+    (internalCatalogue.activities?.records ?? []).flatMap((activity) =>
+      (activity.occurrenceIds ?? []).map((occurrenceId) => [
+        occurrenceId,
+        activity.activityId,
+      ]),
+    ),
+  );
+  return landmarks.map((landmark) => ({
+    ...landmark,
+    events: (landmark.events ?? [])
+      .map((event) => ({
+        ...event,
+        activityId:
+          event.activityId ??
+          activityByOccurrence.get(event.occurrenceId ?? event.id),
+      }))
+      .filter((event) => event.activityId),
+  }));
+}
+
+export function selectChangedPoiRecords(plan, records) {
+  const changedPoiIds = new Set(
+    (plan?.classifications ?? [])
+      .filter(({ highlightAction }) => highlightAction !== "noop")
+      .map(({ poiId }) => poiId),
+  );
+  return (records ?? []).filter(({ id }) => changedPoiIds.has(id));
+}
+
 export async function prepareFrontendSnapshot({
   runDir,
   state,
   run,
   currentPois = APPROVED_POIS,
   currentLandmarks = APPROVED_LANDMARKS,
+  currentEventsCatalogue = null,
 }) {
   const currentEvents = JSON.parse(
     readFileSync(join(runDir, "normalized/events.json"), "utf8"),
@@ -155,12 +337,18 @@ export async function prepareFrontendSnapshot({
     ]),
   );
   const sourceReconciliation = reconcileSourceAvailability({
-    previousEvents: currentLandmarks.flatMap(({ events = [] }) => events),
+    previousEvents: catalogueEvents(currentEventsCatalogue).length
+      ? catalogueEvents(currentEventsCatalogue)
+      : currentLandmarks.flatMap(({ events = [] }) => events),
     currentEvents,
     sourceStatuses,
     asOf: run.window.start,
   });
   const events = sourceReconciliation.events;
+  const landmarkReconciliation = reconcilePublishedLandmarks({
+    landmarks: currentLandmarks,
+    events,
+  });
   // Reconciliation may intentionally preserve a previously published identity
   // when a source occurrence gains a date (and therefore a more specific raw
   // occurrence ID). Index both the stable identity and the source occurrence
@@ -179,7 +367,7 @@ export async function prepareFrontendSnapshot({
       if (alias && !eventMap.has(alias)) eventMap.set(alias, event);
   }
   const pruned = pruneExpiredContent({
-    landmarks: currentLandmarks,
+    landmarks: landmarkReconciliation.records,
     pois: currentPois,
     asOf: run.window.start,
   });
@@ -201,8 +389,7 @@ export async function prepareFrontendSnapshot({
     group.sourceVenues.push(venue.venue);
     group.eventIds.push(
       ...venue.eventIds.filter(
-        (eventId) =>
-          (eventMap.get(eventId)?.lifecycleState ?? "active") === "active",
+        (eventId) => eventMap.get(eventId)?.lifecycleState === "active",
       ),
     );
     groups.set(resolution.poiId, group);
@@ -210,12 +397,30 @@ export async function prepareFrontendSnapshot({
 
   const classifications = [];
   const mappedEventIds = new Set();
+  const mappedLocations = new Map();
   for (const [poiId, group] of groups) {
     group.eventIds = [...new Set(group.eventIds)];
     if (!group.eventIds.length) continue;
-    for (const eventId of group.eventIds)
-      mappedEventIds.add(eventMap.get(eventId)?.id ?? eventId);
     const resolution = group.resolution;
+    const location = {
+      approvedLocationId: poiId,
+      coordinates: resolution.coordinates,
+      label: resolution.canonicalVenue,
+    };
+    for (const eventId of group.eventIds) {
+      const event = eventMap.get(eventId);
+      mappedEventIds.add(event.id);
+      for (const alias of [
+        eventId,
+        event.id,
+        event.occurrenceId,
+        event.identityAnchor,
+        event.publishedEventId,
+        ...(event.sourceOccurrenceIds ?? []),
+      ])
+        if (alias && !mappedLocations.has(alias))
+          mappedLocations.set(alias, location);
+    }
     const nextPoi = poiFromResolution(resolution);
     const poiResult = reconcilePoi(pois.get(poiId), nextPoi);
     pois.set(poiId, poiResult.poi);
@@ -252,11 +457,47 @@ export async function prepareFrontendSnapshot({
 
   const frontendDir = join(runDir, "frontend"),
     assetsDir = join(frontendDir, "assets");
+  const preservedAssets = join(runDir, ".frontend-assets-preserved");
+  if (existsSync(preservedAssets) && !existsSync(assetsDir)) {
+    mkdirSync(frontendDir, { recursive: true });
+    renameSync(preservedAssets, assetsDir);
+  }
+  rmSync(preservedAssets, { recursive: true, force: true });
+  if (existsSync(assetsDir)) renameSync(assetsDir, preservedAssets);
   rmSync(frontendDir, { recursive: true, force: true });
-  mkdirSync(assetsDir, { recursive: true });
+  mkdirSync(frontendDir, { recursive: true });
+  if (existsSync(preservedAssets)) renameSync(preservedAssets, assetsDir);
+  else mkdirSync(assetsDir, { recursive: true });
   const nextPois = [...pois.values()],
     nextLandmarks = [...landmarks.values()];
-  const projectedEvents = projectEventCatalogue(events, state, mappedEventIds);
+  for (const landmark of nextLandmarks)
+    for (const event of landmark.events ?? []) {
+      const location = {
+        approvedLocationId: landmark.id,
+        coordinates: landmark.anchor,
+        label: landmark.label,
+      };
+      for (const alias of [
+        event?.id,
+        event?.occurrenceId,
+        event?.identityAnchor,
+        event?.publishedEventId,
+        ...(event?.sourceOccurrenceIds ?? []),
+      ])
+        if (alias && !mappedLocations.has(alias))
+          mappedLocations.set(alias, location);
+    }
+  const projectedEvents = projectEventCatalogue(
+    events,
+    state,
+    mappedEventIds,
+    currentEventsCatalogue?.activities?.records ?? [],
+    mappedLocations,
+  );
+  const projectedActivities = projectPublicActivityCatalogue(
+    projectedEvents.activities,
+    { snapshotId: run.runId },
+  );
   writeJson(join(frontendDir, "approved-pois.json"), {
     schemaVersion: "1.0",
     records: nextPois,
@@ -266,6 +507,15 @@ export async function prepareFrontendSnapshot({
     records: nextLandmarks,
   });
   writeJson(join(frontendDir, "approved-events.json"), projectedEvents);
+  writeJson(join(frontendDir, "approved-activities.json"), projectedActivities);
+  const projectedLandmarks = projectPublicLandmarks(
+    referenceLandmarkActivities(nextLandmarks, projectedEvents),
+    projectedActivities,
+  );
+  writeJson(join(frontendDir, "approved-public-landmarks.json"), {
+    schemaVersion: "1.0",
+    records: projectedLandmarks,
+  });
   atomicWrite(
     join(frontendDir, "approved-pois.js"),
     moduleText("APPROVED_POIS", nextPois),
@@ -298,6 +548,7 @@ export async function prepareFrontendSnapshot({
     sourceReconciliation: {
       counts: sourceReconciliation.counts,
       traces: sourceReconciliation.traces,
+      removedLandmarkEventIds: landmarkReconciliation.removedEventIds,
     },
     geometryChanged: classifications.some(
       (item) => item.highlightAction !== "noop",
@@ -306,6 +557,8 @@ export async function prepareFrontendSnapshot({
       pois: contentHash(nextPois),
       landmarks: contentHash(nextLandmarks),
       events: contentHash(projectedEvents),
+      activities: contentHash(projectedActivities),
+      publicLandmarks: contentHash(projectedLandmarks),
     },
     eventCounts: projectedEvents.counts,
   };
@@ -476,23 +729,23 @@ export function commitFrontendSnapshot({
             readFileSync(join(current.directory, current.tilesetRef), "utf8"),
           )
         : { asset: { version: "1.0" }, geometricError: 0, root: {} };
-    const makeDurable = (tile) => {
-      const content = tile?.content;
-      if (content)
-        for (const key of ["uri", "url"])
-          if (typeof content[key] === "string") {
-            content[key] = content[key].replace(
-              /^\/.*?\/frontend\/assets\/public\//,
-              "/",
-            );
-            if (content[key].startsWith("/poi-tiles/"))
-              content[key] = `../../../../${content[key].slice(1)}`;
-          }
-      for (const child of tile?.children ?? []) makeDurable(child);
-    };
-    makeDurable(tileset.root);
+    makeTilesetUrisDurable(tileset);
     const records = (name) =>
       JSON.parse(readFileSync(join(frontendDir, name), "utf8")).records;
+    const activities = JSON.parse(
+      readFileSync(join(frontendDir, "approved-activities.json"), "utf8"),
+    );
+    const internalCatalogue = JSON.parse(
+      readFileSync(join(frontendDir, "approved-events.json"), "utf8"),
+    );
+    const referencedLandmarks = referenceLandmarkActivities(
+      records("approved-landmarks.json"),
+      internalCatalogue,
+    );
+    const publicLandmarks = projectPublicLandmarks(
+      referencedLandmarks,
+      activities,
+    );
     const sourceHealth = Object.fromEntries(
       Object.entries(state?.sources ?? {}).map(([name, source]) => [
         name,
@@ -526,7 +779,8 @@ export function commitFrontendSnapshot({
       landmarksRef: "landmarks.json",
       poisRef: "pois.json",
       tilesetRef: "tileset.json",
-      eventsRef: "events.json",
+      activitiesRef: "activities.json",
+      internalEventsRef: "internal-events.json",
       eventPipelineProvenance: {
         normalizationArtifacts: state?.normalization?.artifactRefs ?? [],
         deduplicationArtifacts: state?.deduplication?.artifactRefs ?? [],
@@ -543,9 +797,10 @@ export function commitFrontendSnapshot({
       snapshot,
       commitEligibility,
       artifacts: {
-        "landmarks.json": `${JSON.stringify(records("approved-landmarks.json"), null, 2)}\n`,
+        "landmarks.json": `${JSON.stringify(publicLandmarks, null, 2)}\n`,
         "pois.json": `${JSON.stringify(records("approved-pois.json"), null, 2)}\n`,
-        "events.json": `${JSON.stringify(JSON.parse(readFileSync(join(frontendDir, "approved-events.json"), "utf8")), null, 2)}\n`,
+        "activities.json": `${JSON.stringify(activities, null, 2)}\n`,
+        "internal-events.json": `${JSON.stringify(internalCatalogue, null, 2)}\n`,
         "tileset.json": `${JSON.stringify(tileset, null, 2)}\n`,
       },
     });

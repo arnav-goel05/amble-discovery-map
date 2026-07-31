@@ -1,0 +1,265 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "tan-tock-seng-hospital",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "geylang-east-public-library",
+    "tan-tock-seng-hospital",
+    "b-central",
+    "tong-fong-building",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "stamford-arts-centre",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre"
+  ],
+  "generatedAt": "2026-07-21T18:57:05.906Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/4/8/4_0.b3dm",
+      "sourceSha256": "11d629d5ad5f5f12fd8e7258133b859515dc082f3425ae45dfc56c6beeee8491",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e72c8285-ff16-4712-bbbf-c4ced1d97c63"
+      ],
+      "gmlNames": [
+        "TAN TOCK SENG HOSPITAL"
+      ],
+      "poiFile": "4_0-0d82a35e902c.b3dm",
+      "poiSha256": "d8e452a2a01e2e29b80eccb61d9cd47833740ac32a1f2d826cb3d6f688d384eb",
+      "poiTriangles": 7476,
+      "backgroundFile": "optimized-tiles/4/8/4_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e72c8285-ff16-4712-bbbf-c4ced1d97c63"
+      ],
+      "backgroundSha256": "24048929b7ae75f09cd49ea71b42160459002d32b77ddfae78dc8ad7a01c7246",
+      "backgroundTriangles": 6600
+    },
+    {
+      "sourceTile": "tiles/4/8/4_1.b3dm",
+      "sourceSha256": "73817d4ace5b0c63b2dfac2740417574721834fddc380a8bd313838752137932",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e72c8285-ff16-4712-bbbf-c4ced1d97c63"
+      ],
+      "gmlNames": [
+        "TAN TOCK SENG HOSPITAL"
+      ],
+      "poiFile": "4_1-56e2305dc28f.b3dm",
+      "poiSha256": "282285c96c5556d189c821dfd2d80529f5354f7bfbffaf89571338b170e1c8d8",
+      "poiTriangles": 7476,
+      "backgroundFile": "optimized-tiles/4/8/4_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e72c8285-ff16-4712-bbbf-c4ced1d97c63"
+      ],
+      "backgroundSha256": "57d2ab7f0362f9375be95744af7b4cfd3d546344944f4a4fe13e85bfa59196f2",
+      "backgroundTriangles": 6600
+    },
+    {
+      "sourceTile": "tiles/4/8/4_2.b3dm",
+      "sourceSha256": "5a1ea14bf8170534035421de242358db377d9d729e6195b0faade1b5957f7411",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e72c8285-ff16-4712-bbbf-c4ced1d97c63"
+      ],
+      "gmlNames": [
+        "TAN TOCK SENG HOSPITAL"
+      ],
+      "poiFile": "4_2-a06978f390ab.b3dm",
+      "poiSha256": "ea07f9810ab2f13ae9270044eae79e584987d2ebf3ab041074a0af0d8fd3b534",
+      "poiTriangles": 7476,
+      "backgroundFile": "optimized-tiles/4/8/4_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e72c8285-ff16-4712-bbbf-c4ced1d97c63"
+      ],
+      "backgroundSha256": "181acef15f4e43574a34b94669623ed3e236aaf0495c6216919d5c89ce793c2a",
+      "backgroundTriangles": 6600
+    },
+    {
+      "sourceTile": "tiles/4/8/4_3.b3dm",
+      "sourceSha256": "c05cd9fb8cdf8047bd91eb4027567d6fac0a59fa732de03c532ea80c02a4ac46",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e72c8285-ff16-4712-bbbf-c4ced1d97c63"
+      ],
+      "gmlNames": [
+        "TAN TOCK SENG HOSPITAL"
+      ],
+      "poiFile": "4_3-20f26bd09073.b3dm",
+      "poiSha256": "80b2b4ed70ece2b6f6b3c2ad70e1680570ad776ce2ccadbb148275f530526dbf",
+      "poiTriangles": 7476,
+      "backgroundFile": "optimized-tiles/4/8/4_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e72c8285-ff16-4712-bbbf-c4ced1d97c63"
+      ],
+      "backgroundSha256": "42bf4f6ad17217de05f2d6afee4aadb225d09220d118364f290bfeb4d5b693b6",
+      "backgroundTriangles": 6600
+    },
+    {
+      "sourceTile": "tiles/4/8/4_4.b3dm",
+      "sourceSha256": "ff4752239fca87a6ffdbd3b8c0419d7751a060f7f91e3f3be9457e1feba8c698",
+      "originalBatchIds": [
+        1
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_e72c8285-ff16-4712-bbbf-c4ced1d97c63"
+      ],
+      "gmlNames": [
+        "TAN TOCK SENG HOSPITAL"
+      ],
+      "poiFile": "4_4-59e1ce747c48.b3dm",
+      "poiSha256": "2bfee3ac4827f48312b679f49ed4dc5088f7e69e98a5663d37a30a00160cea87",
+      "poiTriangles": 7476,
+      "backgroundFile": "optimized-tiles/4/8/4_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e72c8285-ff16-4712-bbbf-c4ced1d97c63"
+      ],
+      "backgroundSha256": "58ec18c634eaf60084d474589e5ad92a047f3262b24c70390da2e379384f4967",
+      "backgroundTriangles": 6600
+    }
+  ]
+}

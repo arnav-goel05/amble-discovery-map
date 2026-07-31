@@ -1,0 +1,287 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "phoon-huat-industrial-building",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "geylang-east-public-library",
+    "tan-tock-seng-hospital",
+    "b-central",
+    "tong-fong-building",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "stamford-arts-centre",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre"
+  ],
+  "generatedAt": "2026-07-21T18:57:01.926Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/44/28_5.b3dm",
+      "sourceSha256": "1ea30d1ef4a129334633cf177a5fb0eb99ef4f7051b89e4549b191c4d6f369df",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "gmlNames": [
+        "PHOON HUAT INDUSTRIAL BUILDING"
+      ],
+      "poiFile": "28_5-b97ca899bb18.b3dm",
+      "poiSha256": "8eb3fc4845bf56f31bd511fd025be0ebf23e5010437488fb1d8d9f0d7ed730d8",
+      "poiTriangles": 272,
+      "backgroundFile": "optimized-tiles/6/44/28_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "backgroundSha256": "e143dc3de50c5670c449bcc37cc0cc9461dbf86d769451e21c2cb41d0bfde2ef",
+      "backgroundTriangles": 22714
+    },
+    {
+      "sourceTile": "tiles/6/44/28_4.b3dm",
+      "sourceSha256": "6938f0427f8967aff2b451a232114267006ee6d3348089d42439bdb023d4754e",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "gmlNames": [
+        "PHOON HUAT INDUSTRIAL BUILDING"
+      ],
+      "poiFile": "28_4-e8e83231579a.b3dm",
+      "poiSha256": "0d8fc319fd737530cf917ea3b43f731dc72f7c3b6af0bac52f776e29b741cc5b",
+      "poiTriangles": 272,
+      "backgroundFile": "optimized-tiles/6/44/28_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "backgroundSha256": "4e166b0f09f8f2e7df71a5985b5d2e0b43b2bc2f38664daf7fca3268b31408a6",
+      "backgroundTriangles": 22714
+    },
+    {
+      "sourceTile": "tiles/6/44/28_2.b3dm",
+      "sourceSha256": "b797bc16985f3eeb900f5cac36a1d2a5af6839f81da6aea585bd8868d6283e7a",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "gmlNames": [
+        "PHOON HUAT INDUSTRIAL BUILDING"
+      ],
+      "poiFile": "28_2-9e3a191d3b0c.b3dm",
+      "poiSha256": "3557c90c6f7f5ecff6e3c9d42368d3b15146441f905cda6b9e799962d4645cbe",
+      "poiTriangles": 272,
+      "backgroundFile": "optimized-tiles/6/44/28_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "backgroundSha256": "778619433fef75319cf43a4eeee1864e5c6969951f131d5d5aecc4030f4e9263",
+      "backgroundTriangles": 22714
+    },
+    {
+      "sourceTile": "tiles/6/44/28_1.b3dm",
+      "sourceSha256": "d44c449b302154ee6de240b3bde730408eae27a2fbd2024360a8cf8bcf937864",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "gmlNames": [
+        "PHOON HUAT INDUSTRIAL BUILDING"
+      ],
+      "poiFile": "28_1-c63a9e90d671.b3dm",
+      "poiSha256": "2fc624b755668a68b54a843993176bf8e01a4003cf9ecc2ec76813e4f82c3af6",
+      "poiTriangles": 272,
+      "backgroundFile": "optimized-tiles/6/44/28_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "backgroundSha256": "fdbad75685a151f61435864c9184d5019a58b99dedcc0a86415fec1ff3b57d33",
+      "backgroundTriangles": 22714
+    },
+    {
+      "sourceTile": "tiles/6/44/28_0.b3dm",
+      "sourceSha256": "3121eab2b559ca0007014a6385f74db0fada07199f801c583c99a958017b5a49",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "gmlNames": [
+        "PHOON HUAT INDUSTRIAL BUILDING"
+      ],
+      "poiFile": "28_0-2e55c1ca9456.b3dm",
+      "poiSha256": "106da902a03cf6dd0e4b7cb94ea33a3ec4ed24a205d2078a7fa01b63f9a0c78d",
+      "poiTriangles": 272,
+      "backgroundFile": "optimized-tiles/6/44/28_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "backgroundSha256": "c0a5389be7e4984b171b248b25d3d003f3c966ec88842ca24a1bab59727fe15c",
+      "backgroundTriangles": 22714
+    },
+    {
+      "sourceTile": "tiles/6/44/28_3.b3dm",
+      "sourceSha256": "50f311976c966de1aea04b32ed26e7a8e8f5a435018ddd3be37a12ddec8474ff",
+      "originalBatchIds": [
+        21
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "gmlNames": [
+        "PHOON HUAT INDUSTRIAL BUILDING"
+      ],
+      "poiFile": "28_3-5ae354f44964.b3dm",
+      "poiSha256": "fa83564a2e613d9cc17bb313b99f322f30fa06b560e3d019e66ff684e0abf388",
+      "poiTriangles": 272,
+      "backgroundFile": "optimized-tiles/6/44/28_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_079cc6e7-42be-480b-81f9-f03bcbdf4e77"
+      ],
+      "backgroundSha256": "4913d372a8b1a89eb3a3422a21cc385f74371b429320c36692d05e8a35986967",
+      "backgroundTriangles": 22714
+    }
+  ]
+}

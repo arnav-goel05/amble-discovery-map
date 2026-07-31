@@ -1,0 +1,283 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "far-east-shopping-centre",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:28.713Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/29/13_0.b3dm",
+      "sourceSha256": "090f1e5349d5d6057e27f91cc2477178eabc6266977314aaa9f9d49389ecdda7",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "gmlNames": [
+        "FAR EAST SHOPPING CENTRE"
+      ],
+      "poiFile": "13_0-37fefbd3d023.b3dm",
+      "poiSha256": "23773d0619636117d84f4535a5020fc114c34e4a7d51f7427fb9505b8f9c9c68",
+      "poiTriangles": 520,
+      "backgroundFile": "optimized-tiles/6/29/13_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9094baee-143e-43ec-8942-981417d327b7",
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "backgroundSha256": "df967e431019a00a3b4093d89d590b7b667c1f2973d24a78af09ec5b547d09cd",
+      "backgroundTriangles": 13660
+    },
+    {
+      "sourceTile": "tiles/6/29/13_1.b3dm",
+      "sourceSha256": "1915dc947c860400f79a010b7a64dd3a60783b068d95c2c844399b5efa6b5261",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "gmlNames": [
+        "FAR EAST SHOPPING CENTRE"
+      ],
+      "poiFile": "13_1-b56909d8db99.b3dm",
+      "poiSha256": "9d65e07a26bbe1196f69134c865dad3be8bfd6a6ab32efff8c6c272d8d601998",
+      "poiTriangles": 520,
+      "backgroundFile": "optimized-tiles/6/29/13_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9094baee-143e-43ec-8942-981417d327b7",
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "backgroundSha256": "b289bc57ae65ff9fc122d5b76ac4ea5dcd73c97afd2df77ccea7281580352f7d",
+      "backgroundTriangles": 13660
+    },
+    {
+      "sourceTile": "tiles/6/29/13_2.b3dm",
+      "sourceSha256": "bbc6caf6d229a218eaaa57a80392fa20e856ee066868e7e5d0b553f805833b0e",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "gmlNames": [
+        "FAR EAST SHOPPING CENTRE"
+      ],
+      "poiFile": "13_2-69bb0a259e5e.b3dm",
+      "poiSha256": "2785ac7922e5d734c03c333e0dc3378870427aff5dc7da43b7deea5557a9122c",
+      "poiTriangles": 520,
+      "backgroundFile": "optimized-tiles/6/29/13_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9094baee-143e-43ec-8942-981417d327b7",
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "backgroundSha256": "5170ed53b958ccf04e1276c1666d9ac5372e747889548682dafe65b0ee7502cd",
+      "backgroundTriangles": 13660
+    },
+    {
+      "sourceTile": "tiles/6/29/13_3.b3dm",
+      "sourceSha256": "58e5e4f76937b3f60587f22b35a98971382b435804c2b07dfadb616a08a58302",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "gmlNames": [
+        "FAR EAST SHOPPING CENTRE"
+      ],
+      "poiFile": "13_3-3e5c9f101b1c.b3dm",
+      "poiSha256": "059becbb5a9378f6b5a9642ac384c2c28bdcc1bc81114bd1f1477460433ac78a",
+      "poiTriangles": 520,
+      "backgroundFile": "optimized-tiles/6/29/13_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9094baee-143e-43ec-8942-981417d327b7",
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "backgroundSha256": "bc04fc441747e56553254f4fb4babad287296900fe858ef0a9821f1eda9bc8a2",
+      "backgroundTriangles": 13660
+    },
+    {
+      "sourceTile": "tiles/6/29/13_4.b3dm",
+      "sourceSha256": "a8150d19705c1e30afa896799471e989e01909a72169eafac04eeb54b2225c2c",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "gmlNames": [
+        "FAR EAST SHOPPING CENTRE"
+      ],
+      "poiFile": "13_4-2498fd8e34c9.b3dm",
+      "poiSha256": "d593e1d09c8f08ccf6cb3df87f24fad01ff34f1c18cba3a30f3a8b327a571bdb",
+      "poiTriangles": 520,
+      "backgroundFile": "optimized-tiles/6/29/13_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9094baee-143e-43ec-8942-981417d327b7",
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "backgroundSha256": "59ded4cda2a09763deb16057135691b5e110f62a715092a0a5fb299b0420d8d0",
+      "backgroundTriangles": 13660
+    },
+    {
+      "sourceTile": "tiles/6/29/13_5.b3dm",
+      "sourceSha256": "51012ef6e6ee9d59f32ed30103e5205f701b454e7e16b7b74a975f26c1593f50",
+      "originalBatchIds": [
+        5
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "gmlNames": [
+        "FAR EAST SHOPPING CENTRE"
+      ],
+      "poiFile": "13_5-b293e44f5c45.b3dm",
+      "poiSha256": "b3bc7417943e683389befeee0a30bfd978bc65844546db881bec2e3cbaed8aba",
+      "poiTriangles": 520,
+      "backgroundFile": "optimized-tiles/6/29/13_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_9094baee-143e-43ec-8942-981417d327b7",
+        "SLA_BLDG2_ebd93df8-67b0-41d9-867b-0a7ea7068c51"
+      ],
+      "backgroundSha256": "6c9ec52ad2a5847ebd18b0ef49906f7e7b9859416e4c5c39cb6d13dac3fd7de3",
+      "backgroundTriangles": 13660
+    }
+  ]
+}

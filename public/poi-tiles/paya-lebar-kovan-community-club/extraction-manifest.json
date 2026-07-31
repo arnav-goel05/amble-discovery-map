@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "paya-lebar-kovan-community-club",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:29.023Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/5/23/20_0.b3dm",
+      "sourceSha256": "6d2a227bea522e08f81188d5c6c182ba8d99bf4d1ee7811a9c054ddebd1a8e36",
+      "originalBatchIds": [
+        29
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR KOVAN COMMUNITY CLUB"
+      ],
+      "poiFile": "20_0-2ea4ddad5af2.b3dm",
+      "poiSha256": "3a5161fb97a611afc08aec00e7424a12afb136ae9ece60246a0c37045fd4947f",
+      "poiTriangles": 440,
+      "backgroundFile": "optimized-tiles/5/23/20_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "backgroundSha256": "a8323acad5210e36a062ca6ce618b292d982c42f8ae509d5f7ec3ca6d9f54bfb",
+      "backgroundTriangles": 13847
+    },
+    {
+      "sourceTile": "tiles/5/23/20_1.b3dm",
+      "sourceSha256": "378085ce573b0669deac8a520a53826b460202b8a8abf8ec67862f3cb0cfb2e5",
+      "originalBatchIds": [
+        29
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR KOVAN COMMUNITY CLUB"
+      ],
+      "poiFile": "20_1-d04ed7984e8e.b3dm",
+      "poiSha256": "f163566a36f2e78e62063bbd654b288fd2cef6fa07cbd0edfe33128f37dbce36",
+      "poiTriangles": 440,
+      "backgroundFile": "optimized-tiles/5/23/20_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "backgroundSha256": "a89d40a9b1dff969ebd567738f821209f6e7426dfec3a779d5ef7bec5ae12fc4",
+      "backgroundTriangles": 13847
+    },
+    {
+      "sourceTile": "tiles/5/23/20_2.b3dm",
+      "sourceSha256": "d299eeaf1dd0589a9c4459c7a90b56f20a84e5b41ecd5cc9f56d087c0cb14f75",
+      "originalBatchIds": [
+        29
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR KOVAN COMMUNITY CLUB"
+      ],
+      "poiFile": "20_2-825103b790a6.b3dm",
+      "poiSha256": "79b87d324b1bdd278c35306a5661234dc01d6e60acd92f0583000206cea04483",
+      "poiTriangles": 440,
+      "backgroundFile": "optimized-tiles/5/23/20_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "backgroundSha256": "9557e7887b01d9d2db25bf13e47f1e7ec2add250d2319d2cd8f6d3dcefa9b4bd",
+      "backgroundTriangles": 13847
+    },
+    {
+      "sourceTile": "tiles/5/23/20_3.b3dm",
+      "sourceSha256": "6cf4926d79d771f174e161bd689f965fd9e7a9a7a81f68b7bfae6cf6fb6a4dda",
+      "originalBatchIds": [
+        29
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR KOVAN COMMUNITY CLUB"
+      ],
+      "poiFile": "20_3-ba6506718417.b3dm",
+      "poiSha256": "04c1102cf1b8ae37feec9c1180d6afc2369444a56f1e3018e25f97281a766a41",
+      "poiTriangles": 440,
+      "backgroundFile": "optimized-tiles/5/23/20_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "backgroundSha256": "574d37c9d2b1d65db7575300d7ce5845bcbe8d724f3c7bdbd3c98a91b92e35c4",
+      "backgroundTriangles": 13847
+    },
+    {
+      "sourceTile": "tiles/5/23/20_4.b3dm",
+      "sourceSha256": "72e6d10a14d91faa07b667c98f9368cc8d181fb0aeca1311b6c10d4bfc2ce184",
+      "originalBatchIds": [
+        29
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR KOVAN COMMUNITY CLUB"
+      ],
+      "poiFile": "20_4-3744a3d4f33b.b3dm",
+      "poiSha256": "c597b80d396fdf2f615adaf67c6e5b754f7ed4162aa52fe52aa977d59b0ad9c9",
+      "poiTriangles": 440,
+      "backgroundFile": "optimized-tiles/5/23/20_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "backgroundSha256": "a916e4a29082030850892f1950ffbafc60b1f38e7e6cc226ff5d26ba73004820",
+      "backgroundTriangles": 13847
+    },
+    {
+      "sourceTile": "tiles/5/23/20_5.b3dm",
+      "sourceSha256": "6eec6b65485652562e86913af8f86646535c965f33c8301f308a1380ce6919fe",
+      "originalBatchIds": [
+        29
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "gmlNames": [
+        "PAYA LEBAR KOVAN COMMUNITY CLUB"
+      ],
+      "poiFile": "20_5-177ee71e8485.b3dm",
+      "poiSha256": "cdaef3b1984ae784e4220dde30f6b94de07be661fac44a32301950e8b46f2b9c",
+      "poiTriangles": 440,
+      "backgroundFile": "optimized-tiles/5/23/20_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_473f9800-1385-4b62-8239-a4b7d7f213c2"
+      ],
+      "backgroundSha256": "2cc5d6af6bb1c685fc630687f5fdf7ba469af5421f54c25004120974c979dbac",
+      "backgroundTriangles": 13847
+    }
+  ]
+}

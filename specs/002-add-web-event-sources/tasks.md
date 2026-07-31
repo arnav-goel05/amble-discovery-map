@@ -37,7 +37,7 @@ runtime data.
 
 ### Implementation
 
-- [x] T088 Update all nine definitions to direct/editorial/unavailable roles, enabled/disabled state, and editorial policy v2 while retaining Roots unavailability in `data/event-pipeline-config.json`
+- [x] T088 Update the source definitions to direct/editorial/unavailable roles, enabled/disabled state, and editorial policy v2 in `data/event-pipeline-config.json`
 - [x] T089 Extend source-definition migration and validation for the new role/state contract in `scripts/verify-event-source-adapters.mjs`
 - [x] T090 Add pure shared inclusion, schedule, editorial-sufficiency, public-placement, mapping-status, lifecycle, and freshness primitives in `scripts/lib/event-sources/activity-policy.mjs`
 - [x] T091 Extend normalized artifact schema and v2 migration for parent activities, schedule states, sessions, and venue occurrences in `scripts/event-normalizer.mjs`
@@ -302,7 +302,7 @@ filters without yet changing publication or UI behavior.
 - [x] T153 Require organizer compatibility or explicit stronger evidence before cross-source deduplication and test same-title, same-schedule, same-building events from different organizers per FR-026 and SC-005 (partial)
 - [x] T154 Wire already-collected direct records and compatible editorial peers into production editorial confirmation before outbound authority retrieval, with collector integration tests per FR-020 and US3/AC1-US3/AC3 (partial)
 - [x] T155 Add dedicated mobile-route and broad-area off-map views with keyboard, touch, empty, and discovery-model coverage per FR-014, FR-036, and SC-010 (partial)
-- [ ] T156 Re-run focused tests, build, browser/performance gates, `npm run verify`, and one fresh bounded live pipeline on the final code; audit and document terminal source, deduplication, placement, review, archive, gate, and publication outcomes per SC-001-SC-010 and plan: final live verification (partial)
+- [x] T156 Re-run focused tests, build, browser/performance gates, `npm run verify`, and one fresh bounded live pipeline on the final code; audit and document terminal source, deduplication, placement, review, archive, gate, and publication outcomes per SC-001-SC-010 and plan: final live verification (partial)
 
 ## Phase 10: Visit Singapore Listing Contract Repair
 
@@ -352,3 +352,79 @@ behavior without network access.
 - [x] T179 [US1] Preserve provider HTTP status and bounded policy classification in `scripts/lib/event-sources/tinyfish-fetch.mjs` and `scripts/event-source-collector.mjs`
 - [x] T180 [US1] Expose source-surface accounting in `scripts/lib/event-pipeline/reporting.mjs`
 - [x] T181 [US1] Run the focused tests from `specs/002-add-web-event-sources/quickstart.md` and keep the separate live-run task T156 open
+
+## Phase 16: Convergence
+
+- [x] T182 [US5] Continue rendered detail processing after isolated retrieval, redirect, or parse failures; retain healthy processed records plus terminal failed-identity evidence and add regression coverage in `scripts/event-source-collector.mjs`, `scripts/event-normalizer.mjs`, `scripts/reconcile-event-content.mjs`, `tests/event-source-contract.test.mjs`, and `tests/event-publication.test.mjs` per FR-029 and US5/AC3-US5/AC4 (partial)
+- [x] T183 [US5] Validate blocked/incomplete surface outcomes, accounting invariants, HTTP metadata, record partitions, and referenced artifacts before accepting source state in `scripts/event-pipeline.mjs` and `tests/event-pipeline.test.mjs` per FR-031, FR-038, and FR-039 (partial)
+- [x] T184 [US5] Register validated successful captures from an incomplete source for safe same-run reuse without treating that source as complete in `scripts/event-pipeline.mjs`, `scripts/lib/event-sources/authority-capture.mjs`, and `tests/event-pipeline.test.mjs` per FR-005, FR-032, and FR-038 (partial)
+- [x] T185 [US5] Emit listing appearances, unique pointers, and exact-overlap counts for direct Catch and SISTIC collection and verify report parity in `scripts/event-source-collector.mjs`, `scripts/lib/event-pipeline/reporting.mjs`, `tests/event-source-contract.test.mjs`, and `tests/event-pipeline.test.mjs` per FR-004, FR-039, and SC-008 (partial)
+
+## Phase 17: Structural Venue Evidence Hardening
+
+- [x] T186 [US2] Add exact Fever regressions for `Venue Description`, `Venue & Accessibility`, and later explicit venue/location fields in `tests/event-source-contract.test.mjs`, `tests/event-pipeline.test.mjs`, and `tests/event-publication.test.mjs` per FR-043 and SC-012
+- [x] T187 [US2] Require explicit rendered-field separators, discard and log structural venue values during normalization, and reject them at normalized and snapshot boundaries in `scripts/lib/event-sources/rendered-adapter-utils.mjs`, `scripts/lib/event-pipeline/venue-values.mjs`, `scripts/event-normalizer.mjs`, `scripts/event-pipeline.mjs`, and `scripts/lib/approved-snapshot.mjs` per FR-043
+- [x] T188 Run focused and full tests, converge against the amended spec, then complete one fresh bounded live pipeline and verify that no structural venue label reaches a venue branch or active snapshot per SC-012 and T156
+
+## Phase 18: Convergence
+
+- [x] T189 CRITICAL isolate event-pipeline Playwright gates from unrelated local servers with a run-specific strict port and regression coverage in `playwright.config.mjs`, `scripts/event-pipeline.mjs`, and `tests/event-pipeline.test.mjs` per Constitution V, Constitution VI, FR-034, and SC-010 (contradicts)
+- [x] T190 [US2] Promote a bounded Fever `Getting there` venue and address when the primary location is generic or missing, while preserving exact source evidence and regression coverage in `scripts/lib/event-sources/fever.mjs` and `tests/event-source-contract.test.mjs` per FR-012 and SC-003 (partial)
+
+## Phase 19: Convergence
+
+- [x] T191 [US5] Preserve Catch detail-bootstrap HTTP blocker reason and status instead of misclassifying provider policy as a layout change, with regression coverage in `scripts/event-source-collector.mjs` and `tests/event-pipeline.test.mjs` per FR-038, FR-041, and SC-008 (partial)
+- [x] T192 [US1] Recover a unique unlabeled Time Out monthly route and a terminal single-heading art zone while rejecting ambiguous routes and placeholder articles, with saved-capture and regression verification in `scripts/lib/event-sources/time-out-singapore.mjs` and `tests/event-source-contract.test.mjs` per FR-004, FR-038, FR-039, and SC-001 (partial)
+
+## Phase 20: Convergence
+
+- [x] T193 CRITICAL make each expanded performance's explicit start/end override its parent listing schedule during normalization so expired siblings are terminally excluded before semantic validation, with regression coverage in `scripts/event-normalizer.mjs` and `tests/event-pipeline.test.mjs` per Constitution I, FR-009, FR-023, FR-028, SC-001, and SC-008 (contradicts)
+
+## Phase 21: Convergence
+
+- [x] T194 CRITICAL parse both boundaries of human-readable date ranges in the shared activity schedule contract and override an incorrectly supplied exact kind, so expired editorial ranges are excluded consistently by collection, normalization, and semantic validation, with regression coverage in `scripts/lib/event-sources/activity-policy.mjs` and `tests/event-pipeline.test.mjs` per Constitution I, FR-009, FR-028, SC-001, and SC-008 (contradicts)
+- [x] T195 Keep the required production verification gate Node-safe by isolating assistant-owned action constants from browser-only CSS imports in `activity-scenes/assistant/assistant-owned-actions.js`, `activity-scenes/assistant/assistant-controller.js`, and `scripts/verify-voice-action-coverage.mjs`, then rerun `npm run verify` per T156 (prerequisite)
+- [x] T196 Make repository-wide POI separation verification follow the hash-validated active immutable snapshot instead of the stale static POI registry, accept both snapshot arrays and pipeline `{ records }` registries in `scripts/verify-active-poi-background-separation.mjs`, `scripts/verify-poi-background-separation.mjs`, and `package.json`, and retain the static fallback when no active pointer exists, per Constitution VI and T156 (contradicts)
+- [x] T197 Isolate the repository-wide browser and performance verification servers from unrelated local development servers with bounded process-specific ports in `scripts/lib/isolated-port.mjs`, `scripts/verify-production-baseline.mjs`, and `tests/isolated-port.test.mjs` per Constitution V, Constitution VI, and T156 (contradicts)
+- [x] T198 Keep mocked browser voice sessions valid relative to execution time instead of hard-coding an already elapsed expiry in `tests/area-discovery.spec.mjs`, `tests/transit-location.spec.mjs`, `tests/voice-assistant.spec.mjs`, `tests/voice-discovery.spec.mjs`, and `tests/voice-action-coverage.spec.mjs`, so the full browser gate tests interaction rather than session expiry per T156 (prerequisite)
+- [x] T199 Restore pointer, touch, and keyboard access to voice discovery results by rendering the panel only in an explicit results mode, retaining the compact listening pill, and sequencing mocked transcript/refinement events deterministically in `activity-scenes/assistant/assistant-view.js`, `style.css`, `tests/area-discovery.spec.mjs`, `tests/transit-location.spec.mjs`, and `tests/voice-discovery.spec.mjs` per Constitution III, Constitution V, and T156 (contradicts)
+
+## Phase 22: Bounded Missing-Venue Search Recovery
+
+- [x] T200 [US2] Add focused failing tests for one-query/three-candidate bounds, authoritative success, ambiguous and non-authoritative rejection, overlay reuse, credential/provider failure isolation, per-source accounting, and trace redaction in `tests/event-venue-recovery.test.mjs` and `tests/event-pipeline.test.mjs` per FR-044, FR-045, and SC-013
+- [x] T201 [US2] Implement the TinyFish Search boundary, candidate validation, immutable recovery overlay, and normalization application in `scripts/lib/event-sources/tinyfish-venue-recovery.mjs`, `scripts/recover-missing-event-venues.mjs`, and `scripts/event-normalizer.mjs` per FR-044 and Constitution I/II/V
+- [x] T202 [US5] Wire recovery into `scripts/event-pipeline.mjs`, validate approved provider/config bounds, register artifacts, and emit redacted attempt/outcome traces without changing source completeness per FR-045 and Constitution II/V
+- [x] T203 Run only the focused venue-recovery, normalizer, pipeline, and adapter tests; then apply the recovery command to the latest stored run without recollecting unrelated sources and report before/recovered/still-missing counts per source
+
+## Phase 23: Visit Singapore Saved-Page Venue Repair
+
+- [x] T204 [US2] Add focused saved-layout regressions for Visit Singapore event-summary tuples and labelled event tables, including title mismatch and structural-label rejection, in `tests/event-source-contract.test.mjs` per FR-043
+- [x] T205 [US2] Add focused recovery regressions for per-URL TinyFish fetch errors and deceptive Singapore-looking social subdomains in `tests/event-venue-recovery.test.mjs` per FR-046
+- [x] T206 [US2] Implement guarded Visit Singapore structural venue parsing without relaxing the shared rendered-field parser, preserve listing titles when outbound pages expose generic titles, and bump the adapter version in `scripts/lib/event-sources/visit-singapore.mjs` and `data/event-pipeline-config.json`
+- [x] T207 [US5] Account for returned candidate-fetch errors as isolated recovery failures and harden Singapore-domain authority checks in `scripts/lib/event-sources/tinyfish-venue-recovery.mjs`
+- [x] T208 Run only the focused adapter, venue-recovery, and adapter-verification checks; do not recollect sources or run the complete event pipeline
+- [x] T209 [US2] Constrain the existing single recovery query to a configured authoritative promoter partner when a direct source links to a persistently blocked ticket host, with focused query coverage in `scripts/lib/event-sources/tinyfish-venue-recovery.mjs`, `data/event-pipeline-config.json`, and `tests/event-venue-recovery.test.mjs`
+- [x] T210 Replay only the saved Visit Singapore captures, live-recover its eligible missing venues, normalize the focused result, and report exact updated counts without mutating the published snapshot or recollecting other sources
+
+## Phase 24: Shared Event-Field Extraction Contract
+
+- [x] T211 [US1] Add failing shared extraction fixtures for JSON-LD, microdata, documented HTML, evidence priority/conflict, and all ten field-completeness outcomes in `tests/event-field-extraction.test.mjs` and source contract fixtures
+- [x] T212 [US5] Implement bounded direct official-page HTML retrieval with public-network, domain, redirect, robots, content-type, response-size, timeout, cache, trace-redaction, and rendered-fallback behavior in `scripts/lib/event-sources/direct-html-fetch.mjs`, `scripts/lib/event-sources/layered-detail-fetch.mjs`, and `scripts/event-source-collector.mjs`
+- [x] T213 [US1] Implement the versioned ten-field JSON-LD, microdata, source-HTML, and rendered-text extraction contract with field evidence/completeness in `scripts/lib/event-sources/event-field-extraction.mjs` and `scripts/lib/event-sources/rendered-adapter-utils.mjs`
+- [x] T214 [US1] Preserve enriched claims and field completeness through direct/editorial adapters, normalization, evidence assessment, reconciliation, snapshots, and reporting without weakening authority or sibling identity in `scripts/lib/event-sources/`, `scripts/event-normalizer.mjs`, `scripts/reconcile-event-content.mjs`, and `scripts/lib/event-pipeline/reporting.mjs`
+- [x] T215 [US5] Cache unchanged `not_published_by_source` outcomes by page evidence hash and extraction-contract version while retaining bounded retry for `extraction_failed`, with resume and invalidation tests in `scripts/event-source-collector.mjs` and `tests/event-pipeline.test.mjs`
+- [x] T216 Validate one or two current pages from every enabled source, recording blocked-source outcomes explicitly, and run focused extraction, adapter, normalizer, reconciliation, publication, logging, adapter-verification, and production-build checks
+- [x] T217 Run one new complete clean event pipeline through every continuation and publication gate; compare per-source field completeness, exclusions, placements, mapping/review, and deduplication with the active pre-enrichment snapshot
+- [x] T218 Run Spec Kit convergence against the amended artifacts, correct any remaining divergence, commit all scoped changes on `develop`, and record final verification evidence
+
+## Phase 25: Convergence
+
+- [x] T219 Count field completeness for every rendered detail record and retain correct outcomes after post-parse venue repair, with Fever and collector regressions, per FR-048, FR-051, and SC-014
+- [x] T220 Compare final published mapped/off-map placements and nested per-source exclusions instead of pre-venue normalized placeholders, with regression coverage, per FR-052 and SC-016
+- [x] T221 Add unchanged-evidence reuse, changed-contract invalidation, and retryable extraction-failure regressions for field completeness metadata per FR-050, SC-015, and T215
+- [x] T222 Re-run focused and release verification, regenerate the clean-run comparison, and record corrected convergence evidence per FR-052, SC-016, and T218
+
+## Phase 26: Remove Retired Event Source
+
+- [x] T223 Remove the retired source from active specification, configuration, policy registries, adapter registration, tests, fixtures, operator documentation, and runner contracts while preserving immutable historical snapshots and run evidence
+- [x] T224 Remove the retired zero-result row from the event dashboard, run focused source/deduplication/publication tests and both production builds, then publish the updated dashboard

@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "telok-ayer-conservation-area",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:19.652Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/36/3_0.b3dm",
+      "sourceSha256": "e2451f8ade855486ac53625a4af3bd5c49a36e9573d05ba88847cdcae6c13641",
+      "originalBatchIds": [
+        49
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "gmlNames": [
+        "TELOK AYER CONSERVATION AREA"
+      ],
+      "poiFile": "3_0-9710ad2de796.b3dm",
+      "poiSha256": "6ee8c7a004b382b5bbd202a77a68e2422901325e590f1327c744d6e3841b84ca",
+      "poiTriangles": 432,
+      "backgroundFile": "optimized-tiles/6/36/3_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "backgroundSha256": "077f8a89414c85bb6460678f7c006ec15a3d4152215dd9961b160b847c3b4203",
+      "backgroundTriangles": 17506
+    },
+    {
+      "sourceTile": "tiles/6/36/3_1.b3dm",
+      "sourceSha256": "9c08a95dcf782794c516e5b2e4a26d0b5fb7c20b4c766b58ea6de5e6370af881",
+      "originalBatchIds": [
+        49
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "gmlNames": [
+        "TELOK AYER CONSERVATION AREA"
+      ],
+      "poiFile": "3_1-951a19a1b48a.b3dm",
+      "poiSha256": "cb54a35ff2156ff4fc873e0ec5d2d9f69764d448cbedc41e7af2765271913a44",
+      "poiTriangles": 432,
+      "backgroundFile": "optimized-tiles/6/36/3_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "backgroundSha256": "d887ea8afae204bd155022bdb430437df3dffbdee2d286e830f41b3798be02e0",
+      "backgroundTriangles": 17506
+    },
+    {
+      "sourceTile": "tiles/6/36/3_2.b3dm",
+      "sourceSha256": "6bf86fd6daed0835917b43a4c51a9749b2ab8c7dd52956a0af8cfdc31f48abd5",
+      "originalBatchIds": [
+        49
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "gmlNames": [
+        "TELOK AYER CONSERVATION AREA"
+      ],
+      "poiFile": "3_2-2c197abcb4b0.b3dm",
+      "poiSha256": "10b8a788d5fbbc9025a19e660a4fe1a0915778a560937a11d5666f0e68d85194",
+      "poiTriangles": 432,
+      "backgroundFile": "optimized-tiles/6/36/3_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "backgroundSha256": "8a4226b7db51641067c931dee45c9931d93882abdcc8dd8cf34f0473c9206dc3",
+      "backgroundTriangles": 17506
+    },
+    {
+      "sourceTile": "tiles/6/36/3_3.b3dm",
+      "sourceSha256": "5d4cc4b4aa9d225e9ecbdc0cc2f7a03ca1fc2ef296f47dedf37672633b1dfe7a",
+      "originalBatchIds": [
+        49
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "gmlNames": [
+        "TELOK AYER CONSERVATION AREA"
+      ],
+      "poiFile": "3_3-3a216e28129c.b3dm",
+      "poiSha256": "b51dbdcfb46bedecd0e5f66b00f051f18dc2cd866d995d55b5cee52c09635836",
+      "poiTriangles": 432,
+      "backgroundFile": "optimized-tiles/6/36/3_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "backgroundSha256": "b74ac65ffed07c59c271d5208681709df1bb9dfc6290a79a6aaf48499579433e",
+      "backgroundTriangles": 17506
+    },
+    {
+      "sourceTile": "tiles/6/36/3_4.b3dm",
+      "sourceSha256": "f650cba0b359749b49da964f763326fdc9c7c4b6053b4fd9ac935b26e5f081f7",
+      "originalBatchIds": [
+        49
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "gmlNames": [
+        "TELOK AYER CONSERVATION AREA"
+      ],
+      "poiFile": "3_4-d51e36edf9c0.b3dm",
+      "poiSha256": "455322fcbcd3d4896f0be6dcf968a1ff72f61c211edc34ad4c8140f0f3d0d534",
+      "poiTriangles": 432,
+      "backgroundFile": "optimized-tiles/6/36/3_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "backgroundSha256": "8a9125a2a2155fdb0cf311978547d1242d8785340282d8b2131ad827b9d629eb",
+      "backgroundTriangles": 17506
+    },
+    {
+      "sourceTile": "tiles/6/36/3_5.b3dm",
+      "sourceSha256": "90849ef6d3e806969a01ba17ca653f2a4de81f6e7bf60bb262a76f6258128b0e",
+      "originalBatchIds": [
+        49
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "gmlNames": [
+        "TELOK AYER CONSERVATION AREA"
+      ],
+      "poiFile": "3_5-ad1a6357b9f8.b3dm",
+      "poiSha256": "45450d39f1f9c08066f76e98e57ac97b02f1e5dc50caeb2db5b2d5542d8a49f8",
+      "poiTriangles": 432,
+      "backgroundFile": "optimized-tiles/6/36/3_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_44b96aaa-8c5f-4b53-8858-02b5c42a72ec"
+      ],
+      "backgroundSha256": "2798f215c5a5c72ae1eb16dc377fcfa0aff3568e888525b6e3b89342ee5b51fb",
+      "backgroundTriangles": 17506
+    }
+  ]
+}

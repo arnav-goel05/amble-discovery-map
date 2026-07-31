@@ -9,6 +9,7 @@ import {
   readableText,
   renderedDocument,
 } from "./rendered-adapter-utils.mjs";
+import { normalizeSchedule } from "./activity-policy.mjs";
 
 const MONTH =
   "(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)";
@@ -71,10 +72,10 @@ function boundedEventZone(markup, surface) {
   const index = headings.findIndex((heading) =>
     surface.heading.test(readableText(heading[0])),
   );
-  if (index < 0 || !headings[index + 1]) return "";
+  if (index < 0) return "";
   return markup.slice(
     headings[index].index + headings[index][0].length,
-    headings[index + 1].index,
+    headings[index + 1]?.index ?? markup.length,
   );
 }
 
@@ -174,9 +175,12 @@ function structuredSurfaceCards(result, source, baseUrl, surface) {
 
 function semanticSurfaceCards(result, source, baseUrl, surface) {
   const zone = boundedEventZone(rawMarkup(result), surface);
-  const articles = [
-    ...zone.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/gi),
-  ].map((match) => match[1]);
+  const articles = [...zone.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/gi)]
+    .map((match) => match[1])
+    .filter((article) => {
+      const text = readableText(article);
+      return text && !/^\[(?:title|image)\]$/i.test(text);
+    });
   if (!articles.length)
     return { items: [], appearances: [], completeSequence: false };
   const base = new URL(baseUrl),
@@ -239,23 +243,90 @@ function surfaceCards(result, source, baseUrl, surface) {
 function currentMonthRoute(result, source, baseUrl) {
   const base = new URL(baseUrl),
     pattern = new RegExp(source.listing.monthlyPathPattern);
-  return [
+  const candidates = renderedDocument(result).links.flatMap((link) => {
+    try {
+      const url = canonicalRenderedUrl(new URL(link.url, base).href),
+        parsed = new URL(url);
+      return parsed.hostname === base.hostname && pattern.test(parsed.pathname)
+        ? [{ url, labelled: /^this month$/i.test(clean(link.text) ?? "") }]
+        : [];
+    } catch {
+      return [];
+    }
+  });
+  const labelled = [
     ...new Set(
-      renderedDocument(result).links.flatMap((link) => {
-        if (!/^this month$/i.test(clean(link.text) ?? "")) return [];
-        try {
-          const url = canonicalRenderedUrl(new URL(link.url, base).href),
-            parsed = new URL(url);
-          return parsed.hostname === base.hostname &&
-            pattern.test(parsed.pathname)
-            ? [url]
-            : [];
-        } catch {
-          return [];
-        }
-      }),
+      candidates.filter(({ labelled }) => labelled).map(({ url }) => url),
     ),
   ].sort();
+  if (labelled.length) return labelled;
+  const unlabelled = [...new Set(candidates.map(({ url }) => url))].sort();
+  return unlabelled.length === 1 ? unlabelled : [];
+}
+
+const MONTH_NUMBER = new Map([
+  ["jan", "01"],
+  ["feb", "02"],
+  ["mar", "03"],
+  ["apr", "04"],
+  ["may", "05"],
+  ["jun", "06"],
+  ["jul", "07"],
+  ["aug", "08"],
+  ["sep", "09"],
+  ["oct", "10"],
+  ["nov", "11"],
+  ["dec", "12"],
+]);
+
+function isoScheduleDate(value) {
+  const match = clean(value)?.match(
+    new RegExp(`^(\\d{1,2})\\s+(${MONTH})\\s+(20\\d{2})$`, "i"),
+  );
+  const month = MONTH_NUMBER.get(match?.[2]?.slice(0, 3).toLowerCase());
+  if (!match || !month) return null;
+  const day = match[1].padStart(2, "0");
+  const iso = `${match[3]}-${month}-${day}`;
+  const parsed = new Date(`${iso}T00:00:00Z`);
+  return parsed.getUTCFullYear() === Number(match[3]) &&
+    parsed.getUTCMonth() + 1 === Number(month) &&
+    parsed.getUTCDate() === Number(day)
+    ? iso
+    : null;
+}
+
+function scheduleClock(value) {
+  const match = String(value ?? "").match(
+    /\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/i,
+  );
+  if (!match) return null;
+  let hour = Number(match[1]);
+  const minute = Number(match[2] ?? 0);
+  const meridiem = match[3]?.toLowerCase();
+  if (meridiem) {
+    if (hour < 1 || hour > 12) return null;
+    if (hour === 12) hour = 0;
+    if (meridiem === "pm") hour += 12;
+  }
+  if (hour > 23 || minute > 59) return null;
+  return {
+    iso: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
+    display: `${Number(match[1])}${match[2] ? `:${match[2]}` : ""}${
+      meridiem ? ` ${meridiem}` : match[2] ? "" : ":00"
+    }`,
+    endIndex: match.index + match[0].length,
+  };
+}
+
+function rowSchedule(value) {
+  const start = scheduleClock(value);
+  if (!start) return null;
+  const remainder = String(value).slice(start.endIndex);
+  const separator = remainder.match(/^\s*(?:[-–—]|to)\s*/i);
+  const end = separator
+    ? scheduleClock(remainder.slice(separator[0].length))
+    : null;
+  return { start, end };
 }
 
 function detailSchedule(document, listingRecord) {
@@ -263,20 +334,54 @@ function detailSchedule(document, listingRecord) {
     document.text.match(
       /^###\s+Dates and times\s*\n([\s\S]*?)(?=\n###\s|(?![\s\S]))/im,
     )?.[1] ?? "";
-  const rows = [
+  const rowMatches = [
     ...scheduleBlock.matchAll(
       new RegExp(
         `^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,?\\s+(${DATE})\\s*$`,
         "gmi",
       ),
     ),
-  ].map((match) => match[1]);
-  if (rows.length > 1) return `${rows[0]} to ${rows.at(-1)}`;
-  if (rows.length === 1) return rows[0];
+  ];
+  const rows = rowMatches.map((match) => match[1]);
+  const performances = rowMatches.flatMap((match, index) => {
+    const date = isoScheduleDate(match[1]);
+    const body = scheduleBlock.slice(
+      match.index + match[0].length,
+      rowMatches[index + 1]?.index ?? scheduleBlock.length,
+    );
+    const clock = rowSchedule(body);
+    if (!date || !clock) return [];
+    return [
+      {
+        startDateTime: `${date}T${clock.start.iso}:00+08:00`,
+        endDateTime: clock.end ? `${date}T${clock.end.iso}:00+08:00` : null,
+        dateText: match[1],
+        timeText: clock.end
+          ? `${clock.start.display}–${clock.end.display}`
+          : clock.start.display,
+      },
+    ];
+  });
+  const timeText = [
+    ...new Set(performances.map((performance) => performance.timeText)),
+  ].join(", ");
+  if (rows.length > 1)
+    return {
+      dateText: `${rows[0]} to ${rows.at(-1)}`,
+      timeText: clean(timeText),
+      performances,
+    };
+  if (rows.length === 1)
+    return {
+      dateText: rows[0],
+      timeText: clean(timeText),
+      performances,
+    };
   const until = document.text.match(
     new RegExp(`(?:^|\\n)[*•-]?\\s*Until\\s+(${DATE})`, "i"),
   )?.[1];
-  if (until) return `Until ${until}`;
+  if (until)
+    return { dateText: `Until ${until}`, timeText: null, performances: [] };
   const title = document.title ?? listingRecord?.title ?? "";
   const joined = title.match(
     new RegExp(
@@ -285,8 +390,16 @@ function detailSchedule(document, listingRecord) {
     ),
   );
   if (joined)
-    return `${joined[1]} ${joined[3]} ${joined[4]} to ${joined[2]} ${joined[3]} ${joined[4]}`;
-  return clean(listingRecord?.dateText);
+    return {
+      dateText: `${joined[1]} ${joined[3]} ${joined[4]} to ${joined[2]} ${joined[3]} ${joined[4]}`,
+      timeText: null,
+      performances: [],
+    };
+  return {
+    dateText: clean(listingRecord?.dateText),
+    timeText: clean(listingRecord?.timeText),
+    performances: [],
+  };
 }
 
 function detailVenue(document, listingRecord) {
@@ -318,10 +431,11 @@ function detailVenue(document, listingRecord) {
 
 function enrichDetail(result, listingRecord) {
   const document = renderedDocument(result);
-  const dateText = detailSchedule(document, listingRecord);
+  const schedule = detailSchedule(document, listingRecord);
   const venue = detailVenue(document, listingRecord);
   return {
     ...result,
+    extractedSchedule: schedule,
     document: {
       ...document,
       // Prevent the generic field parser from treating this section heading as the value "and times".
@@ -331,7 +445,8 @@ function enrichDetail(result, listingRecord) {
       ),
       fields: {
         ...document.fields,
-        ...(dateText ? { Date: dateText } : {}),
+        ...(schedule.dateText ? { Date: schedule.dateText } : {}),
+        ...(schedule.timeText ? { Time: schedule.timeText } : {}),
         ...(venue ? { Venue: venue } : {}),
       },
     },
@@ -404,7 +519,33 @@ export const timeOutSingaporeAdapter = {
         ]),
     });
     parsed.claims.dateText = clean(enriched.document.fields.Date) ?? null;
+    parsed.claims.timeText = clean(enriched.document.fields.Time) ?? null;
     parsed.claims.venue = clean(enriched.document.fields.Venue) ?? null;
+    parsed.performances = enriched.extractedSchedule.performances;
+    parsed.schedule = normalizeSchedule(
+      {
+        kind:
+          parsed.performances.length > 1
+            ? "selectable"
+            : parsed.performances.length === 1
+              ? "exact"
+              : undefined,
+        start: parsed.performances[0]?.startDateTime ?? null,
+        end: parsed.performances[0]?.endDateTime ?? null,
+        sessionRefs: parsed.performances.map(
+          (_, index) => `${detailUrl}#session-${index + 1}`,
+        ),
+        displayText: clean(
+          [parsed.claims.dateText, parsed.claims.timeText]
+            .filter(Boolean)
+            .join(" · "),
+        ),
+      },
+      {
+        dateText: parsed.claims.dateText,
+        performances: parsed.performances,
+      },
+    );
     if (!parsed.claims.venue) {
       const text =
         result?.document?.markdown ??

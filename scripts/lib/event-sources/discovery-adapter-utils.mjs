@@ -7,6 +7,7 @@ import {
   sha,
   terminalPagination,
 } from "./rendered-adapter-utils.mjs";
+import { applyEventFieldCompleteness } from "./event-field-extraction.mjs";
 
 export function discoveryListing(result, source, url = source.listing.url) {
   return {
@@ -30,6 +31,7 @@ export function parseDiscoveryDetail(
   } = {},
 ) {
   const document = renderedDocument(result);
+  const structured = document.structured ?? { fields: {}, methods: {} };
   const labels = source.confirmation.outboundLabels.map(normalized);
   const labelled = document.links.filter((link) =>
     labels.some(
@@ -57,25 +59,55 @@ export function parseDiscoveryDetail(
   }));
   const claims = {
     title: clean(
-      document.title ??
+      structured.fields.title ??
+        document.title ??
         field(document, ["Title", "Event"]) ??
         listingRecord?.title,
     ),
     dateText:
+      structured.fields.schedule?.start ??
       field(document, ["Date", "Dates", "When"]) ??
       clean(listingRecord?.dateText),
     timeText:
       field(document, ["Time", "Times"]) ?? clean(listingRecord?.timeText),
     venue:
+      structured.fields.venue ??
       field(document, ["Venue", "Location", "Address"]) ??
       clean(listingRecord?.venue),
+    address:
+      structured.fields.address ??
+      field(document, ["Address"]) ??
+      clean(listingRecord?.address),
+    description:
+      structured.fields.description ??
+      field(document, ["Description"]) ??
+      clean(listingRecord?.description),
+    category:
+      structured.fields.category ??
+      field(document, ["Category", "Type"]) ??
+      listingRecord?.category ??
+      null,
+    price:
+      structured.fields.price ??
+      field(document, ["Price", "Admission"]) ??
+      clean(listingRecord?.price),
+    organizer:
+      structured.fields.organizer ??
+      field(document, ["Organizer", "Presented by"]) ??
+      clean(listingRecord?.organizer),
+    availability:
+      structured.fields.availability ??
+      clean(listingRecord?.availability) ??
+      "unknown",
+    url: structured.fields.url ?? detailUrl,
+    sourceCoordinates: structured.coordinates ?? null,
     scope:
       field(document, ["Country", "City"]) ??
       clean(listingRecord?.scope) ??
       "Singapore",
   };
   const reasonCode = classify({ document, claims, outboundLinks });
-  return {
+  const discovery = {
     recordType: "discovery",
     discoveryRecordId: `${source.adapterId}:${canonicalKey(detailUrl, itemKey)}`,
     sourceName: source.name,
@@ -91,6 +123,21 @@ export function parseDiscoveryDetail(
     adapterId: source.adapterId,
     adapterVersion: source.version,
   };
+  const enriched = applyEventFieldCompleteness(
+    {
+      ...discovery,
+      ...claims,
+      detailUrl,
+      schedule: claims.dateText ? { displayText: claims.dateText } : null,
+    },
+    {
+      evidenceHash: sha(JSON.stringify(document)),
+      methods: structured.methods,
+    },
+  );
+  discovery.fieldCompleteness = enriched.fieldCompleteness;
+  discovery.extractionContractVersion = enriched.extractionContractVersion;
+  return discovery;
 }
 
 function canonicalKey(detailUrl, itemKey) {

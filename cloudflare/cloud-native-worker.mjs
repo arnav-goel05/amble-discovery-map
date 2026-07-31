@@ -13,23 +13,35 @@ const OVERPASS_ENDPOINTS = [
   "https://overpass.kumi.systems/api/interpreter",
 ];
 const VOICE_RELAYS = new WeakMap();
+const APPROVED_ACTIVITIES =
+  APPROVED_SNAPSHOT.assets[APPROVED_SNAPSHOT.manifest.activitiesRef]?.records ||
+  [];
+const APPROVED_ACTIVITY_BY_ID = new Map(
+  APPROVED_ACTIVITIES.map((activity) => [activity.activityId, activity]),
+);
 const APPROVED_VOICE_CANDIDATE_IDS = APPROVED_SNAPSHOT.assets[
   "landmarks.json"
 ].flatMap((landmark) =>
-  (landmark.events || []).flatMap((event) => [event.id, `event:${event.id}`]),
+  (landmark.activityRefs || []).flatMap(({ activityId }) => [
+    activityId,
+    `event:${activityId}`,
+  ]),
 );
 const APPROVED_VOICE_CANDIDATES = APPROVED_SNAPSHOT.assets[
   "landmarks.json"
 ].flatMap((landmark) =>
-  (landmark.events || []).map((event) => ({
-    candidateId: `event:${event.id}`,
-    candidateType: "event",
-    name: event.title,
-    areaId: landmark.areaId || landmark.subzoneId || null,
-    venue: landmark.label,
-    category: event.category || null,
-    price: event.price || null,
-  })),
+  (landmark.activityRefs || []).map(({ activityId }) => {
+    const activity = APPROVED_ACTIVITY_BY_ID.get(activityId) || {};
+    return {
+      candidateId: `event:${activityId}`,
+      candidateType: "event",
+      name: activity.title,
+      areaId: landmark.areaId || landmark.subzoneId || null,
+      venue: landmark.label,
+      category: activity.category || null,
+      price: activity.price || null,
+    };
+  }),
 );
 const SECURITY_HEADERS = {
   "content-security-policy":
@@ -136,7 +148,7 @@ async function voiceSessionAdmissionResponse(request, env) {
     !body ||
     typeof body !== "object" ||
     Array.isArray(body) ||
-    body.protocolVersion !== "1.0" ||
+    body.protocolVersion !== "1.1" ||
     body.disclosureAccepted !== true
   ) {
     return json(
@@ -151,7 +163,7 @@ async function voiceSessionAdmissionResponse(request, env) {
     return json(
       errorEnvelope(
         "voice_disabled",
-        "Voice is currently unavailable. Please try again.",
+        "Voice service is currently unavailable. Please try again later.",
       ),
       { status: 503 },
     );
@@ -160,7 +172,7 @@ async function voiceSessionAdmissionResponse(request, env) {
     return json(
       errorEnvelope(
         "voice_disabled",
-        "Voice is currently unavailable. Please try again.",
+        "Voice service is currently unavailable. Please try again later.",
       ),
       { status: 503 },
     );
@@ -174,6 +186,7 @@ async function voiceSessionAdmissionResponse(request, env) {
         apiKey: env.OPENAI_API_KEY,
         approvedCandidateIds: APPROVED_VOICE_CANDIDATE_IDS,
         approvedCandidates: APPROVED_VOICE_CANDIDATES,
+        operationalLogger: (record) => console.info(JSON.stringify(record)),
       });
       VOICE_RELAYS.set(env, relay);
     }
@@ -213,9 +226,7 @@ async function voiceSessionAdmissionResponse(request, env) {
     return json(
       errorEnvelope(
         code,
-        code === "usage_limit"
-          ? "Voice usage is unavailable. Please try again later."
-          : "Voice is currently unavailable. Please try again.",
+        "Voice service is currently unavailable. Please try again later.",
       ),
       { status: statuses[code] ?? 503 },
     );
@@ -317,11 +328,13 @@ function snapshotMetadata(now = new Date()) {
       freshness: manifest.freshness,
       staleAfter: manifest.staleAfter,
       sourceHealth,
-      landmarksRef: `${prefix}/${manifest.landmarksRef}`,
+      landmarksRef: `${prefix}/${manifest.landmarksRef}?projection=activity-ui-v1`,
       poisRef: `${prefix}/${manifest.poisRef}`,
       tilesetRef: `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(manifest.snapshotId)}&assetPaths=site-root-v1`,
-      ...(manifest.eventsRef
-        ? { eventsRef: `${prefix}/${manifest.eventsRef}` }
+      ...(manifest.activitiesRef
+        ? {
+            activitiesRef: `${prefix}/${manifest.activitiesRef}?projection=activity-ui-v1`,
+          }
         : {}),
       previousSnapshotId: manifest.previousSnapshotId,
       contentHash: manifest.contentHash,

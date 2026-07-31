@@ -174,17 +174,128 @@ test("a later final user acceptance is single-use and permits the matching actio
 
   assert.equal(executed.status, "executed");
   assert.equal(destructiveEffects, 1);
-  await assert.rejects(
-    gateway.execute("saved.delete_item", { itemId: "saved-001" }, context, {
+  const replayed = await gateway.execute(
+    "saved.delete_item",
+    { itemId: "saved-001" },
+    context,
+    {
       source: "voice",
       confirmation: {
         confirmationId: first.confirmation.confirmationId,
         fingerprint: first.confirmation.fingerprint,
       },
-    }),
-    (error) => error.code === "confirmation_replayed",
+    },
   );
+  assert.deepEqual(replayed, executed);
   assert.equal(destructiveEffects, 1);
+});
+
+test("one call identity reuses its immutable confirmation and rejects conflicting replay", () => {
+  const { controller } = confirmationFixture();
+  const input = confirmationRequest({ callId: "call-001" });
+  const first = controller.request(input);
+  assert.equal(controller.request(structuredClone(input)), first);
+  throwsConfirmation(
+    () =>
+      controller.request({
+        ...input,
+        canonicalArguments: { itemId: "saved-002" },
+      }),
+    "confirmation_conflicting_replay",
+  );
+});
+
+test("pending confirmation expires without requiring a later user click", () => {
+  const { clock, controller } = confirmationFixture();
+  const pending = controller.request(confirmationRequest());
+
+  clock.advance(25_001);
+  const expired = controller.expirePending();
+
+  assert.equal(expired.confirmationId, pending.confirmationId);
+  assert.equal(expired.status, "expired");
+  assert.equal(controller.getPending(), null);
+});
+
+test("accepted and rejected decisions are idempotent but conflicting decisions fail", () => {
+  {
+    const { controller } = confirmationFixture();
+    const pending = controller.request(confirmationRequest());
+    const accepted = accept(controller, pending);
+    assert.equal(accept(controller, pending), accepted);
+    throwsConfirmation(
+      () =>
+        controller.resolve({
+          confirmationId: pending.confirmationId,
+          fingerprint: pending.fingerprint,
+          decision: "rejected",
+          inputSource: "user",
+          inputStatus: "final",
+        }),
+      "confirmation_conflicting_replay",
+    );
+  }
+  {
+    const { controller } = confirmationFixture();
+    const pending = controller.request(confirmationRequest());
+    const rejected = controller.resolve({
+      confirmationId: pending.confirmationId,
+      fingerprint: pending.fingerprint,
+      decision: "rejected",
+      inputSource: "user",
+      inputStatus: "final",
+    });
+    assert.equal(
+      controller.resolve({
+        confirmationId: pending.confirmationId,
+        fingerprint: pending.fingerprint,
+        decision: "rejected",
+        inputSource: "user",
+        inputStatus: "final",
+      }),
+      rejected,
+    );
+  }
+});
+
+test("terminal execution results are stored for identical replay and reject conflicts", () => {
+  const { controller } = confirmationFixture();
+  const input = confirmationRequest({ callId: "call-terminal" });
+  const pending = controller.request(input);
+  accept(controller, pending);
+  const executing = controller.consume({
+    ...input,
+    confirmationId: pending.confirmationId,
+    fingerprint: pending.fingerprint,
+  });
+  assert.equal(executing.status, "executing");
+  const result = Object.freeze({
+    status: "completed",
+    capabilityId: input.actionId,
+  });
+  const executed = controller.completeExecution({
+    confirmationId: pending.confirmationId,
+    fingerprint: pending.fingerprint,
+    terminalResult: result,
+  });
+  assert.equal(executed.status, "executed");
+  assert.deepEqual(
+    controller.consume({
+      ...input,
+      confirmationId: pending.confirmationId,
+      fingerprint: pending.fingerprint,
+    }).terminalResult,
+    result,
+  );
+  throwsConfirmation(
+    () =>
+      controller.completeExecution({
+        confirmationId: pending.confirmationId,
+        fingerprint: pending.fingerprint,
+        terminalResult: { ...result, status: "failed" },
+      }),
+    "confirmation_conflicting_replay",
+  );
 });
 
 test("compound commands stop at a consequential action and preserve completed safe effects", async () => {

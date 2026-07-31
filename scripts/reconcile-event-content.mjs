@@ -32,6 +32,25 @@ const sourceIdentities = (event) =>
       .filter((value) => !value.endsWith(":")),
   );
 
+const eventSourceNames = (event) =>
+  new Set(
+    [
+      ...(event.sources ?? []).map(({ source }) => source),
+      ...(event.sourceContributions ?? []).map(contributionSource),
+    ].filter(Boolean),
+  );
+
+const filterSupportedSources = (event, supportedSources) => ({
+  ...event,
+  sources: (event.sources ?? []).filter(
+    ({ source }) => !source || supportedSources.has(source),
+  ),
+  sourceContributions: (event.sourceContributions ?? []).filter((item) => {
+    const source = contributionSource(item);
+    return !source || supportedSources.has(source);
+  }),
+});
+
 export function reconcileActivityIdentity(current, incoming) {
   if (!current) return incoming;
   const currentSources = sourceIdentities(current),
@@ -83,19 +102,36 @@ export const contentHash = (value) =>
 
 export function reconcileLandmark(current, next, sourceVenues) {
   if (!current) return { action: "create", landmark: next };
+  const landmarkEventKey = (event) =>
+    String(
+      event.identityAnchor ??
+        event.occurrenceId ??
+        event.id ??
+        stableEventKey(event),
+    );
   const ownedVenues = new Set(sourceVenues.map(normalizeVenue));
   const retained = (current.events || []).filter(
     (event) => !ownedVenues.has(normalizeVenue(event.venue)),
   );
   const events = new Map(
-    retained.map((event) => [stableEventKey(event), event]),
+    retained.map((event) => [landmarkEventKey(event), event]),
   );
+  const claimedPriorIndexes = new Set();
   for (const event of next.events || []) {
-    const prior = (current.events ?? []).find(
-      (candidate) => reconcileActivityIdentity(candidate, event) !== event,
-    );
+    let priorIndex = -1;
+    let priorScore = -1;
+    for (const [index, candidate] of (current.events ?? []).entries()) {
+      if (claimedPriorIndexes.has(index)) continue;
+      const score = publishedEventMatchScore(candidate, event);
+      if (score > priorScore) {
+        priorIndex = index;
+        priorScore = score;
+      }
+    }
+    const prior = priorIndex >= 0 ? current.events[priorIndex] : null;
+    if (prior) claimedPriorIndexes.add(priorIndex);
     const reconciled = reconcileActivityIdentity(prior, event);
-    events.set(stableEventKey(reconciled), reconciled);
+    events.set(landmarkEventKey(reconciled), reconciled);
   }
   const landmark = { ...current, ...next, events: [...events.values()] };
   return contentHash(current) === contentHash(landmark)
@@ -121,23 +157,39 @@ export function reconcileSourceAvailability({
   sourceStatuses = {},
   asOf = new Date().toISOString(),
 }) {
+  const supportedSources = new Set(Object.keys(sourceStatuses));
+  const preparedPrevious = previousEvents.map((original) => {
+    const sourceNames = eventSourceNames(original);
+    const retiredSourceNames = [...sourceNames].filter(
+      (source) => !supportedSources.has(source),
+    );
+    return {
+      original,
+      event: filterSupportedSources(original, supportedSources),
+      retiredSourceNames,
+      retiredOnly:
+        sourceNames.size > 0 && retiredSourceNames.length === sourceNames.size,
+    };
+  });
   const previousByAnchor = new Map(
-    previousEvents.map((event) => [stableEventKey(event), event]),
+    preparedPrevious.map(({ event }) => [stableEventKey(event), event]),
   );
   const currentAnchors = new Set();
   const traces = [];
   const events = currentEvents.map((incoming) => {
     const prior =
       previousByAnchor.get(stableEventKey(incoming)) ??
-      previousEvents.find((event) => {
-        const oldIds = sourceIdentities(event),
-          newIds = sourceIdentities(incoming);
-        return (
-          [...oldIds].some((id) => newIds.has(id)) ||
-          (event.parentActivityId &&
-            event.parentActivityId === incoming.parentActivityId)
-        );
-      });
+      preparedPrevious
+        .map(({ event }) => event)
+        .find((event) => {
+          const oldIds = sourceIdentities(event),
+            newIds = sourceIdentities(incoming);
+          return (
+            [...oldIds].some((id) => newIds.has(id)) ||
+            (event.parentActivityId &&
+              event.parentActivityId === incoming.parentActivityId)
+          );
+        });
     const event = reconcileActivityIdentity(prior, incoming);
     currentAnchors.add(stableEventKey(event));
     if (!prior) return event;
@@ -198,10 +250,27 @@ export function reconcileSourceAvailability({
       fieldFreshness,
     };
   });
-  for (const previous of previousEvents) {
+  for (const {
+    original,
+    event: previous,
+    retiredOnly,
+    retiredSourceNames,
+  } of preparedPrevious) {
     if (currentAnchors.has(stableEventKey(previous))) continue;
-    const contributionStatuses = (previous.sourceContributions ?? [])
-      .map((item) => sourceStatuses[contributionSource(item)])
+    if (retiredOnly) {
+      traces.push({
+        eventId: stableEventKey(previous),
+        outcome: "archived",
+        reasonCode: "source_retired",
+        sourceNames: retiredSourceNames,
+        sourceRecordIds: (original.sourceContributions ?? [])
+          .map(({ sourceRecordId }) => sourceRecordId)
+          .filter(Boolean),
+      });
+      continue;
+    }
+    const contributionStatuses = [...eventSourceNames(previous)]
+      .map((source) => sourceStatuses[source])
       .filter(Boolean);
     const expired = isExpiredEvent(previous, asOf);
     if (
@@ -253,8 +322,108 @@ export function reconcileSourceAvailability({
         ({ outcome }) => outcome === "carry_forward_stale",
       ).length,
       archived: traces.filter(({ outcome }) => outcome === "archived").length,
+      retired: traces.filter(
+        ({ reasonCode }) => reasonCode === "source_retired",
+      ).length,
     },
   };
+}
+
+const occurrenceAliases = (event) =>
+  new Set(
+    [
+      event.id,
+      event.occurrenceId,
+      event.identityAnchor,
+      event.publishedEventId,
+      ...(event.sourceOccurrenceIds ?? []),
+    ].filter(Boolean),
+  );
+
+const scheduleAliases = (event) =>
+  new Set(
+    [
+      event.schedule?.start,
+      event.schedule?.end,
+      event.startsAt,
+      event.endsAt,
+      event.startDateTime,
+      event.endDateTime,
+      event.dateText,
+    ].filter(Boolean),
+  );
+
+const publishedEventMatchScore = (published, current) => {
+  const publishedAliases = occurrenceAliases(published);
+  if (
+    [...occurrenceAliases(current)].some((alias) => publishedAliases.has(alias))
+  )
+    return 100;
+  const publishedSources = sourceIdentities(published);
+  const related =
+    (published.parentActivityId &&
+      published.parentActivityId === current.parentActivityId) ||
+    [...sourceIdentities(current)].some((identity) =>
+      publishedSources.has(identity),
+    );
+  if (!related) return -1;
+  const publishedSchedule = scheduleAliases(published);
+  const currentSchedule = scheduleAliases(current);
+  const scheduleMatch = [...currentSchedule].some((value) =>
+    publishedSchedule.has(value),
+  );
+  if (publishedSchedule.size && currentSchedule.size && !scheduleMatch)
+    return -1;
+  const venueMatch =
+    normalizeVenue(published.venue) &&
+    normalizeVenue(published.venue) === normalizeVenue(current.venue);
+  if (!scheduleMatch && !venueMatch) return -1;
+  return 1 + (scheduleMatch ? 20 : 0) + (venueMatch ? 5 : 0);
+};
+
+export function reconcilePublishedLandmarks({ landmarks = [], events = [] }) {
+  const removedEventIds = [];
+  const records = landmarks.map((landmark) => {
+    const claimedCurrentIndexes = new Set();
+    return {
+      ...landmark,
+      events: (landmark.events ?? []).flatMap((published) => {
+        let currentIndex = -1;
+        let currentScore = -1;
+        for (const [index, event] of events.entries()) {
+          if (claimedCurrentIndexes.has(index)) continue;
+          const score = publishedEventMatchScore(published, event);
+          if (score > currentScore) {
+            currentIndex = index;
+            currentScore = score;
+          }
+        }
+        const current = currentIndex >= 0 ? events[currentIndex] : null;
+        if (!current) {
+          removedEventIds.push(stableEventKey(published));
+          return [];
+        }
+        claimedCurrentIndexes.add(currentIndex);
+        if (current.lifecycleState && current.lifecycleState !== "active") {
+          removedEventIds.push(stableEventKey(published));
+          return [];
+        }
+        return [
+          {
+            ...published,
+            ...current,
+            coordinates: published.coordinates,
+            venueVerified: published.venueVerified,
+            publicPlacement: published.publicPlacement,
+            mappingStatus: published.mappingStatus,
+            lifecycleState:
+              current.lifecycleState ?? published.lifecycleState ?? "active",
+          },
+        ];
+      }),
+    };
+  });
+  return { records, removedEventIds };
 }
 
 const parseEnd = (event) => {

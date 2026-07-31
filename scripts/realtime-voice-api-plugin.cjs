@@ -11,6 +11,9 @@ const {
 const {
   createLocalVoiceBudgetRepository,
 } = require("./lib/voice-budget-repository.cjs");
+const {
+  createRealtimeContentAuditLogger,
+} = require("./lib/realtime-content-audit.cjs");
 
 const SESSION_PATH = "/api/voice/sessions";
 const STREAM_PATH = /^\/api\/voice\/sessions\/([^/]+)\/stream$/;
@@ -30,11 +33,70 @@ function nodeProviderConnector({ apiKey, modelId }) {
   });
 }
 
+function createLocalRelayOptions({
+  policy,
+  repository,
+  environment,
+  runtimeMode = "unconfigured",
+  providerConnector,
+  capabilityContracts,
+  tools,
+  approvedCandidateIds,
+  approvedCandidates,
+  operationalLogger,
+  contentDebugLogger,
+  contentAuditLogger,
+}) {
+  const contentDebugEnabled =
+    runtimeMode === "development" &&
+    environment.NODE_ENV === "development" &&
+    environment.REALTIME_CONTENT_DEBUG === "true";
+  const contentAuditEnabled =
+    contentDebugEnabled && environment.REALTIME_CONTENT_AUDIT === "true";
+  const processContentLogger =
+    contentDebugLogger ??
+    ((record) => {
+      console.debug(JSON.stringify(record));
+    });
+  return {
+    policy,
+    budgetRepository: repository,
+    apiKey: environment.OPENAI_API_KEY,
+    providerConnector,
+    operationalLogger:
+      operationalLogger ??
+      ((record) => {
+        console.info(JSON.stringify(record));
+      }),
+    ...(contentDebugEnabled
+      ? {
+          contentDebugLogger: contentAuditEnabled
+            ? (record) => {
+                processContentLogger(record);
+                contentAuditLogger?.(record);
+              }
+            : processContentLogger,
+        }
+      : {}),
+    ...(capabilityContracts ? { capabilityContracts } : {}),
+    ...(tools ? { tools } : {}),
+    ...(approvedCandidateIds ? { approvedCandidateIds } : {}),
+    ...(approvedCandidates ? { approvedCandidates } : {}),
+  };
+}
+
 function realtimeVoiceApiPlugin({
   root = path.resolve(__dirname, ".."),
   environment = process.env,
   databasePath,
   providerConnector = nodeProviderConnector,
+  capabilityContracts,
+  tools,
+  approvedCandidateIds,
+  approvedCandidates,
+  operationalLogger,
+  contentDebugLogger,
+  contentAuditLogger,
 } = {}) {
   const policy = JSON.parse(
     fs.readFileSync(path.join(root, "data/realtime-voice-policy.json"), "utf8"),
@@ -47,15 +109,39 @@ function realtimeVoiceApiPlugin({
     maxPayload: 16 * 1024,
   });
   let relayPromise;
+  let runtimeMode = "unconfigured";
+  let localContentAuditLogger;
   const relay = () =>
     (relayPromise ??= import("../cloudflare/realtime-relay.mjs").then(
-      ({ createRealtimeRelay }) =>
-        createRealtimeRelay({
-          policy,
-          budgetRepository: repository,
-          apiKey: environment.OPENAI_API_KEY,
-          providerConnector,
-        }),
+      ({ createRealtimeRelay }) => {
+        const contentAuditEnabled =
+          runtimeMode === "development" &&
+          environment.NODE_ENV === "development" &&
+          environment.REALTIME_CONTENT_DEBUG === "true" &&
+          environment.REALTIME_CONTENT_AUDIT === "true";
+        if (contentAuditEnabled && !localContentAuditLogger)
+          localContentAuditLogger =
+            contentAuditLogger ??
+            createRealtimeContentAuditLogger({
+              root,
+            });
+        return createRealtimeRelay(
+          createLocalRelayOptions({
+            policy,
+            repository,
+            environment,
+            runtimeMode,
+            providerConnector,
+            capabilityContracts,
+            tools,
+            approvedCandidateIds,
+            approvedCandidates,
+            operationalLogger,
+            contentDebugLogger,
+            contentAuditLogger: localContentAuditLogger,
+          }),
+        );
+      },
     ));
 
   const requestOrigin = (request) => {
@@ -133,9 +219,7 @@ function realtimeVoiceApiPlugin({
         mapping[code] ?? 503,
         errorEnvelope(
           code,
-          code === "usage_limit"
-            ? "Voice usage is unavailable. Please try again later."
-            : "Voice is currently unavailable. Please try again.",
+          "Voice service is currently unavailable. Please try again later.",
         ),
       );
     }
@@ -159,8 +243,12 @@ function realtimeVoiceApiPlugin({
           socket,
           head,
           (browserSocket) => {
+            const sessionId = decodeURIComponent(match[1]);
+            browserSocket.on("error", () => {
+              void activeRelay.stop(sessionId, "network");
+            });
             activeRelay
-              .attach(decodeURIComponent(match[1]), browserSocket)
+              .attach(sessionId, browserSocket)
               .catch(() => browserSocket.close(1011, "Voice unavailable"));
           },
         );
@@ -174,6 +262,12 @@ function realtimeVoiceApiPlugin({
 
   let detachUpgrade = null;
   const configure = (server) => {
+    runtimeMode = "development";
+    server.middlewares.use(middleware);
+    if (server.httpServer) detachUpgrade = attachUpgrade(server.httpServer);
+  };
+  const configurePreview = (server) => {
+    runtimeMode = "preview";
     server.middlewares.use(middleware);
     if (server.httpServer) detachUpgrade = attachUpgrade(server.httpServer);
   };
@@ -194,8 +288,12 @@ function realtimeVoiceApiPlugin({
     attachUpgrade,
     close,
     configureServer: configure,
-    configurePreviewServer: configure,
+    configurePreviewServer: configurePreview,
   };
 }
 
-module.exports = { nodeProviderConnector, realtimeVoiceApiPlugin };
+module.exports = {
+  createLocalRelayOptions,
+  nodeProviderConnector,
+  realtimeVoiceApiPlugin,
+};

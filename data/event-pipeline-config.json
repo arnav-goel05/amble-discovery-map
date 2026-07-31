@@ -9,6 +9,28 @@
     "maximumBackoffMs": 4000
   },
   "paginationCeiling": 50,
+  "missingVenueRecovery": {
+    "enabled": true,
+    "maxCandidates": 3,
+    "search": {
+      "providerId": "tinyfish-search",
+      "endpoint": "https://api.search.tinyfish.ai",
+      "location": "SG",
+      "language": "en",
+      "timeoutMs": 20000,
+      "maximumResponseBytes": 524288
+    },
+    "fetch": {
+      "providerId": "tinyfish-fetch",
+      "endpoint": "https://api.fetch.tinyfish.ai",
+      "format": "markdown",
+      "batchSize": 3,
+      "maximumUrlsPerMinute": 149,
+      "timeoutMs": 110000,
+      "maxAttempts": 3,
+      "maximumResponseBytes": 5242880
+    }
+  },
   "sources": [
     {
       "name": "Catch.sg",
@@ -46,7 +68,7 @@
       "collectionOrder": 20,
       "precedence": 20,
       "adapterId": "sistic-official-listing-v1",
-      "version": "1.0",
+      "version": "1.1",
       "providerId": "sistic",
       "owner": "SISTIC.com Pte Ltd",
       "officialDomains": ["sistic.com.sg"],
@@ -72,11 +94,12 @@
       "collectionOrder": 30,
       "precedence": 30,
       "adapterId": "fever-singapore-rendered-v1",
-      "version": "1.2",
+      "version": "1.4",
       "providerId": "fever-sg",
       "owner": "Fever Labs, Inc.",
       "officialDomains": ["feverup.com"],
       "costClass": "free",
+      "directHtml": { "enabled": true, "respectRobots": true, "timeoutMs": 20000, "maximumRedirects": 5, "maximumResponseBytes": 5242880 },
       "listing": {
         "url": "https://feverup.com/en/singapore",
         "method": "GET",
@@ -95,11 +118,17 @@
       "collectionOrder": 40,
       "precedence": 40,
       "adapterId": "visit-singapore-rendered-v1",
-      "version": "1.2",
+      "version": "1.5",
       "providerId": "visit-singapore",
       "owner": "Singapore Tourism Board",
       "officialDomains": ["visitsingapore.com"],
+      "venueRecovery": {
+        "partnerDomainsByHost": {
+          "ticketmaster.sg": ["livenation.sg"]
+        }
+      },
       "costClass": "free",
+      "directHtml": { "enabled": true, "respectRobots": true, "timeoutMs": 20000, "maximumRedirects": 5, "maximumResponseBytes": 5242880 },
       "listing": {
         "url": "https://www.visitsingapore.com/whats-happening/all-happenings/",
         "method": "GET",
@@ -118,68 +147,15 @@
       "collectionOrder": 50,
       "precedence": 50,
       "adapterId": "singapore-film-society-rendered-v1",
-      "version": "1.0",
+      "version": "1.1",
       "providerId": "singapore-film-society",
       "owner": "Singapore Film Society",
       "officialDomains": ["singaporefilmsociety.com"],
       "costClass": "free",
+      "directHtml": { "enabled": true, "respectRobots": true, "timeoutMs": 20000, "maximumRedirects": 5, "maximumResponseBytes": 5242880 },
       "listing": { "url": "https://events.singaporefilmsociety.com/films", "method": "GET", "paginationCeiling": 50, "detailPathPattern": "^/films/" },
       "detail": { "url": "https://events.singaporefilmsociety.com/", "method": "GET" },
       "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 }
-    },
-    {
-      "name": "Roots HAN",
-      "enabled": false,
-      "evidenceRole": "unavailable",
-      "operatingState": "disabled",
-      "collectionOrder": 60,
-      "precedence": 60,
-      "adapterId": "roots-han-rendered-v1",
-      "version": "1.0",
-      "providerId": "roots-han",
-      "owner": "National Heritage Board Singapore",
-      "unavailableReason": "layout_contract_changed",
-      "officialDomains": ["roots.gov.sg"],
-      "costClass": "free",
-      "listing": { "url": "https://www.roots.gov.sg/han/han-whats-on?type=%7BE241AEED-FE34-4B38-AE5F-3B9B7EB33DEA%7D", "method": "GET", "paginationCeiling": 50, "detailPathPattern": "^/han/Neighborhoods/.+/HAN-Programme-Folder/" },
-      "detail": { "url": "https://www.roots.gov.sg/han/", "method": "GET" },
-      "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 }
-    },
-    {
-      "name": "Honeycombers",
-      "enabled": true,
-      "evidenceRole": "editorial",
-      "operatingState": "enabled",
-      "collectionOrder": 70,
-      "precedence": null,
-      "adapterId": "honeycombers-discovery-v1",
-      "version": "1.0",
-      "providerId": "honeycombers",
-      "owner": "The Honeycombers Pte Ltd",
-      "officialDomains": ["thehoneycombers.com"],
-      "costClass": "free",
-      "listing": { "url": "https://thehoneycombers.com/singapore/singapore-event-calendar/search-events/", "method": "GET", "paginationCeiling": 50, "detailPathPattern": "^/singapore/event/" },
-      "detail": { "url": "https://thehoneycombers.com/singapore/event/", "method": "GET" },
-      "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 },
-      "editorialPolicy": { "version": "2.0", "corroborateFirst": true, "allowSufficientEditorialOnly": true, "outboundLabels": ["visit website", "event website", "website"] }
-    },
-    {
-      "name": "ArtsEquator",
-      "enabled": true,
-      "evidenceRole": "editorial",
-      "operatingState": "enabled",
-      "collectionOrder": 80,
-      "precedence": null,
-      "adapterId": "arts-equator-discovery-v1",
-      "version": "1.0",
-      "providerId": "arts-equator",
-      "owner": "ArtsEquator Ltd",
-      "officialDomains": ["artsequator.com"],
-      "costClass": "free",
-      "listing": { "url": "https://artsequator.com/events/", "method": "GET", "paginationCeiling": 50, "detailPathPattern": "^/event/" },
-      "detail": { "url": "https://artsequator.com/event/", "method": "GET" },
-      "retrieval": { "providerId": "tinyfish-fetch", "format": "markdown", "extractLinks": true, "batchSize": 10, "maximumUrlsPerMinute": 149, "timeoutMs": 110000, "maxAttempts": 3, "maximumResponseBytes": 5242880 },
-      "editorialPolicy": { "version": "2.0", "corroborateFirst": true, "allowSufficientEditorialOnly": true, "outboundLabels": ["event website", "organizer website", "website"] }
     },
     {
       "name": "Time Out Singapore",
@@ -189,11 +165,12 @@
       "collectionOrder": 90,
       "precedence": null,
       "adapterId": "time-out-singapore-discovery-v1",
-      "version": "1.1",
+      "version": "1.3",
       "providerId": "time-out-singapore",
       "owner": "Time Out England Limited",
       "officialDomains": ["timeout.com"],
       "costClass": "free",
+      "directHtml": { "enabled": true, "respectRobots": true, "timeoutMs": 20000, "maximumRedirects": 5, "maximumResponseBytes": 5242880 },
       "listing": {
         "url": "https://www.timeout.com/singapore/things-to-do/the-time-out-singapore-hotlist",
         "urls": [

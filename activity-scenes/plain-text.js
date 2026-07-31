@@ -1,7 +1,33 @@
 function decodeHtmlEntities(value) {
-  const template = document.createElement("template");
-  template.innerHTML = value;
-  return template.content.textContent || "";
+  if (globalThis.document?.createElement) {
+    const template = document.createElement("template");
+    template.innerHTML = value;
+    return template.content.textContent || "";
+  }
+  const named = {
+    amp: "&",
+    apos: "'",
+    gt: ">",
+    lt: "<",
+    nbsp: " ",
+    quot: '"',
+  };
+  return value.replace(
+    /&(?:#(\d+)|#x([\da-f]+)|([a-z]+));/gi,
+    (entity, decimal, hexadecimal, name) => {
+      const codePoint = Number.parseInt(
+        decimal ?? hexadecimal,
+        hexadecimal ? 16 : 10,
+      );
+      if (Number.isInteger(codePoint))
+        try {
+          return String.fromCodePoint(codePoint);
+        } catch {
+          return entity;
+        }
+      return named[name?.toLowerCase()] ?? entity;
+    },
+  );
 }
 
 export function plainText(value) {

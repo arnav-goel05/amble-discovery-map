@@ -1,11 +1,10 @@
 import "@phosphor-icons/web/bold";
-import { plainText } from "./plain-text.js";
+import { projectEventDetails } from "./event-detail-projection.js";
 import {
   announceOverlayClosed,
   announceOverlayOpen,
   closeWhenAnotherOverlayOpens,
 } from "./overlay-coordinator.js";
-import { eventLocationLabel } from "./events/event-location-label.js";
 
 let activePanelInstance = null;
 
@@ -19,11 +18,7 @@ const FIELD_CONTRACT = [
   ["price", "Price"],
   ["organizer", "Organizer"],
 ];
-
-function optionalText(value) {
-  const normalized = plainText(value);
-  return normalized || null;
-}
+const INITIAL_SESSIONS_PER_VENUE = 6;
 
 function validUrl(value) {
   if (!value) return null;
@@ -55,58 +50,15 @@ function directionsUrl(anchor) {
   return url.href;
 }
 
-function referenceLabel(url) {
-  if (!url) return "Reference";
-  const hostname = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
-  if (hostname === "catch.sg") return "Catch.sg";
-  if (hostname === "sistic.com.sg") return "SISTIC";
-  return hostname;
-}
-
-function eventReferences(event, eventUrl) {
-  const records =
-    Array.isArray(event.sources) && event.sources.length
-      ? event.sources
-      : [{ source: event.source, sourceUrl: event.sourceUrl || eventUrl }];
-  const references = [];
-  for (const record of records) {
-    const url = validUrl(record?.sourceUrl || record?.url || eventUrl);
-    const label =
-      optionalText(record?.source) || (url ? referenceLabel(url) : null);
-    if (!label && !url) continue;
-    const key = `${label || ""}|${url || ""}`;
-    if (!references.some((reference) => reference.key === key))
-      references.push({ key, label: label || referenceLabel(url), url });
+function groupBy(items, keyFor) {
+  const groups = new Map();
+  for (const item of items) {
+    const key = keyFor(item);
+    const group = groups.get(key) ?? [];
+    group.push(item);
+    groups.set(key, group);
   }
-  return references;
-}
-
-function normalizeEvent(event, landmark, index) {
-  const title = plainText(event.title);
-  if (!title) return null;
-  const startTimestamp = Date.parse(event.startDateTime || "");
-  const eventUrl = validUrl(event.eventUrl || event.sourceUrl || event.url);
-  return {
-    id: event.id || `${landmark.id}-event-${index + 1}`,
-    sourceIndex: index,
-    sortTimestamp: Number.isFinite(startTimestamp)
-      ? startTimestamp
-      : Number.POSITIVE_INFINITY,
-    title,
-    date: optionalText(event.dateText || event.dateRange || event.date),
-    time: optionalText(event.timeText || event.timeRange || event.time),
-    locationType: eventLocationLabel(event, { includeDefault: true }),
-    venue: optionalText(
-      event.venue || (event.venueVerified ? landmark.label : null),
-    ),
-    address: optionalText(event.address),
-    category: optionalText(event.category),
-    price: optionalText(event.price),
-    description: optionalText(event.description),
-    organizer: optionalText(event.organizer),
-    eventUrl,
-    references: eventReferences(event, eventUrl),
-  };
+  return groups;
 }
 
 function makeElement(tag, className, text) {
@@ -225,15 +177,223 @@ export function createLandmarkEventPanel({ onClose } = {}) {
   let activeLandmark = null;
   let events = [];
   let selectedIndex = 0;
+  let selectedOccurrenceId = null;
+  const expandedVenueGroups = new Set();
+  const subscribers = new Set();
+  let revision = 0;
+  let destroyed = false;
+  let invokingExternal = false;
+  const referenceLinks = new Map();
+
+  const eventTargetId = (activity) =>
+    activity?.assistantEventId ??
+    activity?.candidateId ??
+    activity?.targetId ??
+    (Array.isArray(activity?.sourceEvent?.sessions)
+      ? activity?.activityId
+      : null) ??
+    (activity?.landmarkId && activity?.id
+      ? `event:${activity.landmarkId}:${activity.id}`
+      : (activity?.activityId ?? activity?.id ?? null));
+  const expansionKeys = (activity) =>
+    (activity?.occurrences?.length ?? 0) > INITIAL_SESSIONS_PER_VENUE
+      ? [`${activity.activityId}:schedule`]
+      : [];
+  const snapshot = () => {
+    const activity = events[selectedIndex] ?? null;
+    const occurrenceIds = (activity?.occurrences ?? [])
+      .map(({ occurrenceId }) => occurrenceId)
+      .filter(Boolean)
+      .slice(0, 20);
+    const expandedVenueGroupIds = expansionKeys(activity)
+      .filter((key) => expandedVenueGroups.has(key))
+      .slice(0, 20);
+    return {
+      revision,
+      detailOpen: !panel.hidden,
+      events: events.slice(0, 20).map((item) => ({
+        eventId: eventTargetId(item),
+        title: item.title,
+      })),
+      selectedEventId: eventTargetId(activity),
+      occurrenceIds,
+      selectedOccurrenceId: occurrenceIds.includes(selectedOccurrenceId)
+        ? selectedOccurrenceId
+        : null,
+      sessionsExpanded: expandedVenueGroupIds.length > 0,
+      sessionsExpandable: expansionKeys(activity).length > 0,
+      expandedVenueGroupIds,
+      hasPrevious: !panel.hidden && events.length > 1,
+      hasNext: !panel.hidden && events.length > 1,
+      referenceIds: [...referenceLinks.keys()].slice(0, 10),
+      routable: !getDirections.hidden && Boolean(getDirections.href),
+    };
+  };
+  const publish = () => {
+    if (destroyed) return;
+    revision += 1;
+    const current = snapshot();
+    for (const subscriber of subscribers) subscriber(current);
+  };
 
   const renderDetails = () => {
-    const event = events[selectedIndex];
+    const activity = events[selectedIndex];
     details.replaceChildren();
-    if (!event) return;
+    referenceLinks.clear();
+    if (!activity) return;
+    const occurrence =
+      activity.occurrences?.find(
+        (item) => item.occurrenceId === selectedOccurrenceId,
+      ) ??
+      activity.occurrences?.[0] ??
+      activity;
+    selectedOccurrenceId = occurrence.occurrenceId;
+    const event = {
+      ...activity,
+      date: occurrence.date ?? activity.scheduleSummary,
+      time: occurrence.time,
+      venue:
+        activity.venueGroups?.length > 1
+          ? `${activity.venueGroups.length} venues`
+          : occurrence.venue,
+    };
 
     details.appendChild(
       makeElement("h3", "landmark-event-panel__event-title", event.title),
     );
+    const scheduleRows = [];
+    if ((activity.occurrences?.length ?? 0) > 1) {
+      const expansionKey = expansionKeys(activity)[0];
+      const expanded =
+        Boolean(expansionKey) && expandedVenueGroups.has(expansionKey);
+      const makeChoiceRow = ({
+        key,
+        label,
+        items,
+        itemLabel,
+        isSelected,
+        revealNoun,
+      }) => {
+        const row = makeElement(
+          "div",
+          `landmark-event-panel__field landmark-event-panel__field--${key}-choices`,
+        );
+        row.appendChild(
+          makeElement("dt", "landmark-event-panel__label", label),
+        );
+        const value = makeElement(
+          "dd",
+          "landmark-event-panel__value landmark-event-panel__schedule-value",
+        );
+        const choices = makeElement("div", "landmark-event-panel__sessions");
+        choices.id = `activity-${key}-choices-${selectedIndex}`;
+        const visibleItems = expanded
+          ? items
+          : items.slice(0, INITIAL_SESSIONS_PER_VENUE);
+        for (const item of visibleItems) {
+          const button = makeElement(
+            "button",
+            `landmark-event-panel__session landmark-event-panel__session--${key}`,
+            itemLabel(item),
+          );
+          button.type = "button";
+          button.setAttribute("aria-pressed", String(isSelected(item)));
+          button.addEventListener("click", () => {
+            executeAction("event.selectoccurrence", {
+              eventId: eventTargetId(activity),
+              occurrenceId: item.occurrence.occurrenceId,
+            });
+          });
+          choices.appendChild(button);
+        }
+        value.appendChild(choices);
+        if (items.length > INITIAL_SESSIONS_PER_VENUE) {
+          const remaining = items.length - visibleItems.length;
+          const reveal = makeElement(
+            "button",
+            "landmark-event-panel__session-reveal",
+            expanded
+              ? `Show fewer ${revealNoun}`
+              : revealNoun === "dates"
+                ? `+${remaining} dates`
+                : `Show ${remaining} more ${revealNoun}`,
+          );
+          reveal.type = "button";
+          reveal.setAttribute("aria-expanded", String(expanded));
+          reveal.setAttribute("aria-controls", choices.id);
+          reveal.addEventListener("click", () => {
+            executeAction("event.setsessionsexpanded", {
+              eventId: eventTargetId(activity),
+              expanded: !expanded,
+            });
+          });
+          value.appendChild(reveal);
+        }
+        row.appendChild(value);
+        return row;
+      };
+
+      const canSplitSchedule = activity.occurrences.every(
+        (item) => item.date && item.time,
+      );
+      if (canSplitSchedule) {
+        const dateGroups = [
+          ...groupBy(activity.occurrences, (item) => item.date),
+        ].map(([date, occurrences]) => ({
+          label: date,
+          occurrence: occurrences[0],
+          occurrences,
+        }));
+        const selectedDate =
+          dateGroups.find(({ occurrences }) =>
+            occurrences.some(
+              (item) => item.occurrenceId === occurrence.occurrenceId,
+            ),
+          ) ?? dateGroups[0];
+        const timeCounts = groupBy(
+          selectedDate.occurrences,
+          (item) => item.time,
+        );
+        scheduleRows.push(
+          makeChoiceRow({
+            key: "date",
+            label: "Date",
+            items: dateGroups,
+            itemLabel: (item) => item.label,
+            isSelected: (item) => item.label === selectedDate.label,
+            revealNoun: "dates",
+          }),
+          makeChoiceRow({
+            key: "time",
+            label: "Time",
+            items: selectedDate.occurrences.map((item) => ({
+              occurrence: item,
+            })),
+            itemLabel: ({ occurrence: item }) =>
+              timeCounts.get(item.time).length > 1 && item.venue
+                ? `${item.time} · ${item.venue}`
+                : item.time,
+            isSelected: ({ occurrence: item }) =>
+              item.occurrenceId === occurrence.occurrenceId,
+            revealNoun: "times",
+          }),
+        );
+      } else {
+        scheduleRows.push(
+          makeChoiceRow({
+            key: "schedule",
+            label: "Dates & times",
+            items: activity.occurrences.map((item) => ({ occurrence: item })),
+            itemLabel: ({ occurrence: item }) =>
+              [item.date, item.time].filter(Boolean).join(" · ") ||
+              "Flexible schedule",
+            isSelected: ({ occurrence: item }) =>
+              item.occurrenceId === occurrence.occurrenceId,
+            revealNoun: "sessions",
+          }),
+        );
+      }
+    }
     const fields = makeElement("dl", "landmark-event-panel__fields");
 
     const referenceRow = makeElement(
@@ -241,16 +401,25 @@ export function createLandmarkEventPanel({ onClose } = {}) {
       "landmark-event-panel__field landmark-event-panel__field--reference",
     );
     referenceRow.appendChild(
-      makeElement("dt", "landmark-event-panel__label", "Reference"),
+      makeElement("dt", "landmark-event-panel__label", "Sources & tickets"),
     );
     const referenceValue = makeElement(
       "dd",
       "landmark-event-panel__value landmark-event-panel__references",
     );
-    if (event.references.length) {
-      event.references.forEach((reference, index) => {
+    const applicableReferences = (
+      activity.sourceOffers ?? activity.references
+    ).filter(
+      (reference) =>
+        reference.scope !== "sessions" ||
+        reference.occurrenceIds?.includes(occurrence.occurrenceId),
+    );
+    if (applicableReferences.length) {
+      applicableReferences.forEach((reference, index) => {
         if (index) referenceValue.appendChild(document.createTextNode(" · "));
         if (reference.url) {
+          const referenceId =
+            reference.referenceId ?? reference.id ?? `reference:${index + 1}`;
           const link = makeElement(
             "a",
             "landmark-event-panel__reference-link",
@@ -259,6 +428,18 @@ export function createLandmarkEventPanel({ onClose } = {}) {
           link.href = reference.url;
           link.target = "_blank";
           link.rel = "noopener noreferrer";
+          link.addEventListener("click", () => {
+            if (!invokingExternal)
+              executeAction(
+                "event.openreference",
+                {
+                  eventId: eventTargetId(activity),
+                  referenceId,
+                },
+                { direct: true },
+              );
+          });
+          referenceLinks.set(referenceId, link);
           referenceValue.appendChild(link);
         } else {
           referenceValue.appendChild(document.createTextNode(reference.label));
@@ -270,8 +451,10 @@ export function createLandmarkEventPanel({ onClose } = {}) {
     }
     referenceRow.appendChild(referenceValue);
     fields.appendChild(referenceRow);
+    fields.append(...scheduleRows);
 
     for (const [key, label] of FIELD_CONTRACT) {
+      if (scheduleRows.length && (key === "date" || key === "time")) continue;
       const row = makeElement(
         "div",
         `landmark-event-panel__field landmark-event-panel__field--${key}`,
@@ -308,18 +491,18 @@ export function createLandmarkEventPanel({ onClose } = {}) {
     );
     details.appendChild(description);
 
-    eventPosition.textContent = `${selectedIndex + 1} of ${events.length} events`;
+    eventPosition.textContent = `${selectedIndex + 1} of ${events.length} activities`;
     eventList.hidden = events.length < 2;
     previousButton.disabled = events.length < 2;
     nextButton.disabled = events.length < 2;
-    if (event.eventUrl) {
-      viewEvent.href = event.eventUrl;
+    if (occurrence.eventUrl) {
+      viewEvent.href = occurrence.eventUrl;
       viewEvent.hidden = false;
     } else {
       viewEvent.removeAttribute("href");
       viewEvent.hidden = true;
     }
-    const routeUrl = directionsUrl(activeLandmark?.anchor);
+    const routeUrl = directionsUrl(occurrence.anchor ?? activeLandmark?.anchor);
     if (routeUrl) {
       getDirections.href = routeUrl;
       getDirections.hidden = false;
@@ -330,15 +513,17 @@ export function createLandmarkEventPanel({ onClose } = {}) {
   };
 
   const selectEvent = (index) => {
+    if (!events[index]) return false;
     selectedIndex = index;
     renderDetails();
+    return true;
   };
 
   const moveSelection = (direction) =>
     selectEvent((selectedIndex + direction + events.length) % events.length);
 
-  const close = ({ restoreFocus = true } = {}) => {
-    if (panel.hidden) return;
+  const closePanel = ({ restoreFocus = true } = {}) => {
+    if (panel.hidden) return false;
     const closedLandmark = activeLandmark;
     panel.classList.remove("is-open");
     panel.hidden = true;
@@ -349,21 +534,129 @@ export function createLandmarkEventPanel({ onClose } = {}) {
     activeLandmark = null;
     announceOverlayClosed("event-details");
     onClose?.({ landmark: closedLandmark });
+    return true;
   };
 
-  const normalizeEvents = (landmark, sourceEvents) =>
-    sourceEvents
-      .map((event, index) => normalizeEvent(event, landmark, index))
-      .filter(Boolean)
-      .sort(
-        (left, right) =>
-          left.sortTimestamp - right.sortTimestamp ||
-          left.sourceIndex - right.sourceIndex,
+  const selectedActivity = () => events[selectedIndex] ?? null;
+  const selectedOccurrence = () => {
+    const activity = selectedActivity();
+    return (
+      activity?.occurrences?.find(
+        (occurrence) => occurrence.occurrenceId === selectedOccurrenceId,
+      ) ?? activity
+    );
+  };
+  const executeAction = (actionId, args = {}, { direct = false } = {}) => {
+    const activity = selectedActivity();
+    const currentEventId = eventTargetId(activity);
+    if (actionId === "event.selectoccurrence") {
+      if (
+        panel.hidden ||
+        args.eventId !== currentEventId ||
+        (activity?.occurrences?.length ?? 0) < 2 ||
+        !activity?.occurrences?.some(
+          ({ occurrenceId }) => occurrenceId === args.occurrenceId,
+        )
+      )
+        return false;
+      selectedOccurrenceId = args.occurrenceId;
+      renderDetails();
+    } else if (actionId === "event.setsessionsexpanded") {
+      if (
+        panel.hidden ||
+        args.eventId !== currentEventId ||
+        typeof args.expanded !== "boolean"
+      )
+        return false;
+      const keys = args.venueGroupId
+        ? [`${activity.activityId}:${args.venueGroupId}`].filter((key) =>
+            expansionKeys(activity).includes(key),
+          )
+        : expansionKeys(activity);
+      if (!keys.length) return false;
+      for (const key of keys)
+        if (args.expanded) expandedVenueGroups.add(key);
+        else expandedVenueGroups.delete(key);
+      renderDetails();
+    } else if (actionId === "event.previousevent") {
+      if (panel.hidden || events.length < 2 || !moveSelection(-1)) return false;
+    } else if (actionId === "event.nextevent") {
+      if (panel.hidden || events.length < 2 || !moveSelection(1)) return false;
+    } else if (actionId === "event.closedetail") {
+      if (!closePanel(args)) return false;
+    } else if (actionId === "event.addtoplan") {
+      const event = selectedOccurrence();
+      if (
+        panel.hidden ||
+        (args.eventId && args.eventId !== currentEventId) ||
+        !event ||
+        !activeLandmark
+      )
+        return false;
+      window.dispatchEvent(
+        new CustomEvent("whats-here:add-to-plan", {
+          detail: {
+            id: event.id,
+            type: "event",
+            title: event.title,
+            place: event.venue || activeLandmark.label,
+            detail:
+              [event.date, event.time].filter(Boolean).join(" · ") ||
+              event.description,
+            startsAt: event.startsAt || event.startDate || null,
+            endsAt: event.endsAt || event.endDate || null,
+            accessibility:
+              event.accessibility || activeLandmark.accessibility || null,
+            availability: event.availability || null,
+            latitude: Number(activeLandmark.anchor?.lat),
+            longitude: Number(activeLandmark.anchor?.lng),
+            sourceUrl: event.eventUrl,
+          },
+        }),
       );
+    } else if (actionId === "event.openreference") {
+      const target = args.referenceId
+        ? referenceLinks.get(args.referenceId)
+        : viewEvent;
+      if (
+        panel.hidden ||
+        (args.eventId && args.eventId !== currentEventId) ||
+        !target ||
+        target.hidden ||
+        !target.href
+      )
+        return false;
+      if (!direct) {
+        invokingExternal = true;
+        target.click();
+        invokingExternal = false;
+      }
+    } else if (actionId === "event.opendirections") {
+      if (
+        panel.hidden ||
+        (args.eventId && args.eventId !== currentEventId) ||
+        getDirections.hidden ||
+        !getDirections.href
+      )
+        return false;
+      if (!direct) {
+        invokingExternal = true;
+        getDirections.click();
+        invokingExternal = false;
+      }
+    } else return false;
+    publish();
+    return true;
+  };
+  const close = (options) => executeAction("event.closedetail", options ?? {});
+
+  const normalizeEvents = (landmark, sourceEvents, activity = null) =>
+    projectEventDetails({ landmark, sourceEvents, activity });
 
   const open = ({
     landmark,
     sourceEvents,
+    activity = null,
     selectedEventIndex = 0,
     trigger,
   }) => {
@@ -377,7 +670,7 @@ export function createLandmarkEventPanel({ onClose } = {}) {
     const selectedSource = sourceEvents[selectedEventIndex];
     const selectedId =
       selectedSource?.id || `${landmark.id}-event-${selectedEventIndex + 1}`;
-    const normalizedEvents = normalizeEvents(landmark, sourceEvents);
+    const normalizedEvents = normalizeEvents(landmark, sourceEvents, activity);
     if (!normalizedEvents.length) return;
     announceOverlayOpen("event-details");
     if (activeTrigger && activeTrigger !== trigger)
@@ -385,10 +678,21 @@ export function createLandmarkEventPanel({ onClose } = {}) {
     activeTrigger = trigger;
     activeLandmark = landmark;
     events = normalizedEvents;
+    const selectedActivityId = activity?.activityId;
+    const selectedTargetId =
+      activity?.candidateId ?? activity?.targetId ?? null;
+    if (selectedTargetId)
+      for (const candidate of events)
+        if (candidate.activityId === selectedActivityId)
+          candidate.assistantEventId = selectedTargetId;
     const sortedSelectedIndex = events.findIndex(
-      (event) => event.id === selectedId,
+      (event) =>
+        event.activityId === activity?.activityId ||
+        event.occurrences?.some((occurrence) => occurrence.id === selectedId),
     );
     selectedIndex = sortedSelectedIndex >= 0 ? sortedSelectedIndex : 0;
+    selectedOccurrenceId =
+      activity?.matchingOccurrences?.[0]?.occurrenceId ?? selectedId;
     heading.textContent = landmark.label;
     renderDetails();
     panel.hidden = false;
@@ -397,6 +701,8 @@ export function createLandmarkEventPanel({ onClose } = {}) {
     document.body.dataset.eventPanelOpen = "true";
     document.body.dataset.eventPanelLandmark = landmark.id;
     closeButton.focus();
+    publish();
+    return true;
   };
 
   const refresh = ({ landmark, sourceEvents, trigger }) => {
@@ -406,7 +712,8 @@ export function createLandmarkEventPanel({ onClose } = {}) {
       activeTrigger !== trigger
     )
       return false;
-    const selectedId = events[selectedIndex]?.id;
+    const selectedActivityId = events[selectedIndex]?.activityId;
+    const selectedId = selectedOccurrenceId;
     const normalizedEvents = normalizeEvents(
       landmark,
       Array.isArray(sourceEvents) ? sourceEvents : [],
@@ -418,11 +725,16 @@ export function createLandmarkEventPanel({ onClose } = {}) {
     activeLandmark = landmark;
     events = normalizedEvents;
     const replacementIndex = events.findIndex(
-      (event) => event.id === selectedId,
+      (event) =>
+        event.activityId === selectedActivityId ||
+        event.occurrences?.some(
+          (occurrence) => occurrence.occurrenceId === selectedId,
+        ),
     );
     selectedIndex = replacementIndex >= 0 ? replacementIndex : 0;
     heading.textContent = landmark.label;
     renderDetails();
+    publish();
     return true;
   };
 
@@ -431,35 +743,33 @@ export function createLandmarkEventPanel({ onClose } = {}) {
   };
   const stopMapInteraction = (event) => event.stopPropagation();
 
-  addToPlan.addEventListener("click", () => {
-    const event = events[selectedIndex];
-    if (!event || !activeLandmark) return;
-    window.dispatchEvent(
-      new CustomEvent("whats-here:add-to-plan", {
-        detail: {
-          id: event.id,
-          type: "event",
-          title: event.title,
-          place: event.venue || activeLandmark.label,
-          detail:
-            [event.date, event.time].filter(Boolean).join(" · ") ||
-            event.description,
-          startsAt: event.startsAt || event.startDate || null,
-          endsAt: event.endsAt || event.endDate || null,
-          accessibility:
-            event.accessibility || activeLandmark.accessibility || null,
-          availability: event.availability || null,
-          latitude: Number(activeLandmark.anchor.lat),
-          longitude: Number(activeLandmark.anchor.lng),
-          sourceUrl: event.eventUrl,
-        },
-      }),
-    );
+  addToPlan.addEventListener("click", () =>
+    executeAction("event.addtoplan", {
+      eventId: eventTargetId(selectedActivity()),
+    }),
+  );
+  viewEvent.addEventListener("click", () => {
+    if (!invokingExternal)
+      executeAction(
+        "event.openreference",
+        { eventId: eventTargetId(selectedActivity()) },
+        { direct: true },
+      );
+  });
+  getDirections.addEventListener("click", () => {
+    if (!invokingExternal)
+      executeAction(
+        "event.opendirections",
+        { eventId: eventTargetId(selectedActivity()) },
+        { direct: true },
+      );
   });
   backButton.addEventListener("click", () => close());
   closeButton.addEventListener("click", () => close());
-  previousButton.addEventListener("click", () => moveSelection(-1));
-  nextButton.addEventListener("click", () => moveSelection(1));
+  previousButton.addEventListener("click", () =>
+    executeAction("event.previousevent"),
+  );
+  nextButton.addEventListener("click", () => executeAction("event.nextevent"));
   document.addEventListener("keydown", onDocumentKeydown);
   const stopWatchingOverlays = closeWhenAnotherOverlayOpens(
     "event-details",
@@ -476,7 +786,10 @@ export function createLandmarkEventPanel({ onClose } = {}) {
   }
 
   const destroy = () => {
+    if (destroyed) return;
     close({ restoreFocus: false });
+    destroyed = true;
+    subscribers.clear();
     stopWatchingOverlays();
     document.removeEventListener("keydown", onDocumentKeydown);
     for (const type of [
@@ -494,19 +807,44 @@ export function createLandmarkEventPanel({ onClose } = {}) {
 
   const api = {
     close,
+    dispatch: executeAction,
     destroy,
     id: panel.id,
     open,
     refresh,
-    previous: () => moveSelection(-1),
-    next: () => moveSelection(1),
-    addToPlan: () => addToPlan.click(),
-    openReference: () => {
-      if (!viewEvent.hidden && viewEvent.href) viewEvent.click();
+    snapshot,
+    subscribe(listener, { emitCurrent = false } = {}) {
+      if (typeof listener !== "function")
+        throw new TypeError("Event-panel subscriber must be callable");
+      subscribers.add(listener);
+      if (emitCurrent) listener(snapshot());
+      return () => subscribers.delete(listener);
     },
-    openDirections: () => {
-      if (!getDirections.hidden && getDirections.href) getDirections.click();
-    },
+    previous: () => executeAction("event.previousevent"),
+    next: () => executeAction("event.nextevent"),
+    addToPlan: () =>
+      executeAction("event.addtoplan", {
+        eventId: eventTargetId(selectedActivity()),
+      }),
+    selectOccurrence: (eventId, occurrenceId) =>
+      executeAction("event.selectoccurrence", {
+        eventId,
+        occurrenceId,
+      }),
+    setSessionsExpanded: (eventId, expanded) =>
+      executeAction("event.setsessionsexpanded", {
+        eventId,
+        expanded,
+      }),
+    openReference: (referenceId) =>
+      executeAction("event.openreference", {
+        eventId: eventTargetId(selectedActivity()),
+        referenceId,
+      }),
+    openDirections: () =>
+      executeAction("event.opendirections", {
+        eventId: eventTargetId(selectedActivity()),
+      }),
   };
   activePanelInstance = api;
   return api;

@@ -162,7 +162,7 @@ function checkedLabel(timestamp) {
   return `Last checked ${new Intl.DateTimeFormat("en-SG", { dateStyle: "medium", timeStyle: "short" }).format(new Date(timestamp))}`;
 }
 
-export function createRestaurantDetail() {
+export function createRestaurantDetail({ dispatchAction = null } = {}) {
   const root = element("aside", "restaurant-detail");
   root.id = "restaurant-detail";
   root.hidden = true;
@@ -221,8 +221,31 @@ export function createRestaurantDetail() {
   let trigger = null;
   let onClose = null;
   let activeRestaurant = null;
-  const close = ({ restoreFocus = true } = {}) => {
-    if (root.hidden) return;
+  let activeDealLinks = new Map();
+  let invokingExternal = false;
+  let revision = 0;
+  let destroyed = false;
+  const listeners = new Set();
+  const restaurantId = () =>
+    activeRestaurant?.id ? `restaurant:${activeRestaurant.id}` : null;
+  const snapshot = () => ({
+    revision,
+    detailOpen: !root.hidden,
+    selectedRestaurantId: restaurantId(),
+    referenceAvailable:
+      !viewRestaurant.hidden && Boolean(viewRestaurant.getAttribute("href")),
+    directionsAvailable:
+      !getDirections.hidden && Boolean(getDirections.getAttribute("href")),
+    dealIds: [...activeDealLinks.keys()].slice(0, 20),
+  });
+  const publish = () => {
+    if (destroyed) return;
+    revision += 1;
+    const current = snapshot();
+    for (const listener of listeners) listener(structuredClone(current));
+  };
+  const closeInternal = ({ restoreFocus = true } = {}) => {
+    if (root.hidden) return false;
     root.hidden = true;
     document.body.dataset.restaurantDetailOpen = "false";
     if (restoreFocus && trigger?.isConnected) trigger.focus();
@@ -231,9 +254,12 @@ export function createRestaurantDetail() {
     const callback = onClose;
     onClose = null;
     callback?.();
+    publish();
+    return true;
   };
 
   const renderDeals = (container, state) => {
+    activeDealLinks = new Map();
     container.replaceChildren();
     if (
       !state ||
@@ -246,6 +272,7 @@ export function createRestaurantDetail() {
           state?.progress?.label || "Preparing restaurant lookup…",
         ),
       );
+      publish();
       return;
     }
     if (state.stale) {
@@ -269,6 +296,7 @@ export function createRestaurantDetail() {
             "Deal lookup is unavailable right now.",
         ),
       );
+      publish();
       return;
     }
     const currentDeals = (result.deals || []).filter(
@@ -291,10 +319,11 @@ export function createRestaurantDetail() {
             checkedLabel(result.fetchedAt || state.fetchedAt),
           ),
         );
+      publish();
       return;
     }
     const list = element("ul", "restaurant-detail__deals");
-    for (const deal of currentDeals) {
+    for (const [index, deal] of currentDeals.entries()) {
       const item = element("li", "restaurant-detail__deal");
       item.append(
         element("strong", "restaurant-detail__deal-title", deal.title),
@@ -308,11 +337,87 @@ export function createRestaurantDetail() {
       source.href = deal.sourceUrl;
       source.target = "_blank";
       source.rel = "noopener noreferrer";
+      const dealId = String(deal.dealId ?? deal.id ?? `deal:${index + 1}`);
+      source.dataset.dealId = dealId;
+      source.addEventListener("click", (event) => {
+        if (invokingExternal) return;
+        if (dispatchAction) event.preventDefault();
+        void dispatchDirect("restaurant.opendealreference", {
+          restaurantId: restaurantId(),
+          dealId,
+        });
+      });
+      activeDealLinks.set(dealId, source);
       item.appendChild(source);
       list.appendChild(item);
     }
     container.appendChild(list);
+    publish();
   };
+
+  const executeAction = (actionId, args = {}, { direct = false } = {}) => {
+    const currentId = restaurantId();
+    if (actionId === "restaurant.closedetail") return closeInternal(args);
+    if (root.hidden || (args.restaurantId && args.restaurantId !== currentId))
+      return false;
+    if (actionId === "restaurant.addtoplan") {
+      if (!activeRestaurant) return false;
+      window.dispatchEvent(
+        new CustomEvent("whats-here:add-to-plan", {
+          detail: {
+            id: activeRestaurant.id,
+            type: "restaurant",
+            title: activeRestaurant.name,
+            place: activeRestaurant.address || activeRestaurant.name,
+            detail: [
+              activeRestaurant.cuisine?.replaceAll(";", ", "),
+              activeRestaurant.openingHours,
+            ]
+              .filter(Boolean)
+              .join(" · "),
+            cuisine: activeRestaurant.cuisine || null,
+            openingHours: activeRestaurant.openingHours || null,
+            accessibility:
+              activeRestaurant.accessibility ||
+              activeRestaurant.wheelchair ||
+              null,
+            availability: activeRestaurant.availability || null,
+            latitude: Number(activeRestaurant.latitude),
+            longitude: Number(activeRestaurant.longitude),
+            sourceUrl: activeRestaurant.website || activeRestaurant.osm?.url,
+          },
+        }),
+      );
+    } else if (actionId === "restaurant.openreference") {
+      if (viewRestaurant.hidden || !viewRestaurant.href) return false;
+      if (!direct) {
+        invokingExternal = true;
+        viewRestaurant.click();
+        invokingExternal = false;
+      }
+    } else if (actionId === "restaurant.opendirections") {
+      if (getDirections.hidden || !getDirections.href) return false;
+      if (!direct) {
+        invokingExternal = true;
+        getDirections.click();
+        invokingExternal = false;
+      }
+    } else if (actionId === "restaurant.opendealreference") {
+      const link = activeDealLinks.get(String(args.dealId));
+      if (!link) return false;
+      if (!direct) {
+        invokingExternal = true;
+        link.click();
+        invokingExternal = false;
+      }
+    } else return false;
+    publish();
+    return true;
+  };
+  const dispatchDirect = (actionId, args = {}) =>
+    typeof dispatchAction === "function"
+      ? dispatchAction(actionId, args)
+      : executeAction(actionId, args, { direct: true });
 
   const open = (restaurant, selectedTrigger, closeCallback) => {
     trigger = selectedTrigger || null;
@@ -362,42 +467,42 @@ export function createRestaurantDetail() {
     root.hidden = false;
     document.body.dataset.restaurantDetailOpen = "true";
     closeButton.focus();
+    publish();
     return { renderDeals: (state) => renderDeals(dealContent, state) };
   };
 
-  addToPlan.addEventListener("click", () => {
-    if (!activeRestaurant) return;
-    window.dispatchEvent(
-      new CustomEvent("whats-here:add-to-plan", {
-        detail: {
-          id: activeRestaurant.id,
-          type: "restaurant",
-          title: activeRestaurant.name,
-          place: activeRestaurant.address || activeRestaurant.name,
-          detail: [
-            activeRestaurant.cuisine?.replaceAll(";", ", "),
-            activeRestaurant.openingHours,
-          ]
-            .filter(Boolean)
-            .join(" · "),
-          cuisine: activeRestaurant.cuisine || null,
-          openingHours: activeRestaurant.openingHours || null,
-          accessibility:
-            activeRestaurant.accessibility ||
-            activeRestaurant.wheelchair ||
-            null,
-          availability: activeRestaurant.availability || null,
-          latitude: Number(activeRestaurant.latitude),
-          longitude: Number(activeRestaurant.longitude),
-          sourceUrl: activeRestaurant.website || activeRestaurant.osm?.url,
-        },
+  addToPlan.addEventListener(
+    "click",
+    () =>
+      void dispatchDirect("restaurant.addtoplan", {
+        restaurantId: restaurantId(),
       }),
-    );
+  );
+  viewRestaurant.addEventListener("click", (event) => {
+    if (invokingExternal) return;
+    if (dispatchAction) event.preventDefault();
+    void dispatchDirect("restaurant.openreference", {
+      restaurantId: restaurantId(),
+    });
   });
-  backButton.addEventListener("click", () => close());
-  closeButton.addEventListener("click", () => close());
+  getDirections.addEventListener("click", (event) => {
+    if (invokingExternal) return;
+    if (dispatchAction) event.preventDefault();
+    void dispatchDirect("restaurant.opendirections", {
+      restaurantId: restaurantId(),
+    });
+  });
+  backButton.addEventListener(
+    "click",
+    () => void dispatchDirect("restaurant.closedetail"),
+  );
+  closeButton.addEventListener(
+    "click",
+    () => void dispatchDirect("restaurant.closedetail"),
+  );
   const onKeydown = (event) => {
-    if (event.key === "Escape") close();
+    if (event.key === "Escape" && !root.hidden)
+      void dispatchDirect("restaurant.closedetail");
   };
   document.addEventListener("keydown", onKeydown);
   for (const eventName of [
@@ -409,25 +514,38 @@ export function createRestaurantDetail() {
   ])
     root.addEventListener(eventName, (event) => event.stopPropagation());
   return {
-    close,
+    close: (options) => executeAction("restaurant.closedetail", options ?? {}),
+    dispatch: executeAction,
     open,
-    addToPlan: () => addToPlan.click(),
-    openReference: () => {
-      if (!viewRestaurant.hidden && viewRestaurant.href) viewRestaurant.click();
+    snapshot,
+    subscribe(listener, { emitCurrent = false } = {}) {
+      if (typeof listener !== "function")
+        throw new TypeError("Restaurant-detail subscriber must be callable");
+      listeners.add(listener);
+      if (emitCurrent) listener(snapshot());
+      return () => listeners.delete(listener);
     },
-    openDirections: () => {
-      if (!getDirections.hidden && getDirections.href) getDirections.click();
-    },
-    openDealReference(dealId) {
-      const links = [
-        ...root.querySelectorAll(".restaurant-detail__deal-source"),
-      ];
-      const link =
-        links.find((item) => item.dataset.dealId === dealId) || links[0];
-      link?.click();
-      return Boolean(link);
-    },
+    addToPlan: () =>
+      executeAction("restaurant.addtoplan", {
+        restaurantId: restaurantId(),
+      }),
+    openReference: () =>
+      executeAction("restaurant.openreference", {
+        restaurantId: restaurantId(),
+      }),
+    openDirections: () =>
+      executeAction("restaurant.opendirections", {
+        restaurantId: restaurantId(),
+      }),
+    openDealReference: (dealId) =>
+      executeAction("restaurant.opendealreference", {
+        restaurantId: restaurantId(),
+        dealId,
+      }),
     destroy: () => {
+      if (destroyed) return;
+      destroyed = true;
+      listeners.clear();
       document.removeEventListener("keydown", onKeydown);
       root.remove();
     },

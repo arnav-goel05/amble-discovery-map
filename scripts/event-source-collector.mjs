@@ -14,6 +14,9 @@ import { renderedAdapterFor } from "./lib/event-sources/index.mjs";
 import { createAuthorityCaptureIndex } from "./lib/event-sources/authority-capture.mjs";
 import { confirmDiscoveryRecord } from "./lib/event-sources/authority-confirmation.mjs";
 import { parseAuthorityDetail } from "./lib/event-sources/rendered-adapter-utils.mjs";
+import { createDirectHtmlFetchClient } from "./lib/event-sources/direct-html-fetch.mjs";
+import { createLayeredDetailFetchClient } from "./lib/event-sources/layered-detail-fetch.mjs";
+import { applyEventFieldCompleteness } from "./lib/event-sources/event-field-extraction.mjs";
 import {
   assertAuthorityUrlAllowed,
   loadEventAuthorityRegistry,
@@ -22,6 +25,11 @@ import {
   assessActivityInclusion,
   normalizeSchedule,
 } from "./lib/event-sources/activity-policy.mjs";
+import {
+  explicitContinuousSchedule,
+  officialProductAuthorityRefs,
+  parseEnumeratedSchedule,
+} from "./lib/event-sources/schedule-semantics.mjs";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 
@@ -52,6 +60,27 @@ const first = (value, paths) =>
 const text = (value) =>
   typeof value === "string" && value.trim() ? value.trim() : null;
 const asArray = (value) => (Array.isArray(value) ? value : []);
+const addFieldCompletenessCounts = (target, record) => {
+  for (const [field, assessment] of Object.entries(
+    record?.fieldCompleteness ?? {},
+  )) {
+    target[field] ??= {
+      present: 0,
+      not_published_by_source: 0,
+      extraction_failed: 0,
+    };
+    if (assessment?.status in target[field])
+      target[field][assessment.status] += 1;
+  }
+};
+const failedExtractionRecord = (detailUrl) =>
+  applyEventFieldCompleteness(
+    { detailUrl },
+    {
+      evidenceHash: sha(detailUrl),
+      extractionFailed: true,
+    },
+  );
 const RETRYABLE_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
 const DEFAULT_PROVIDER_POLICY = fileURLToPath(
   new URL("../data/provider-policy.json", import.meta.url),
@@ -343,6 +372,13 @@ function performancesFrom(detail, fallback = {}) {
       ) ??
       fallback.timeText ??
       null,
+    schedule:
+      item?.schedule && typeof item.schedule === "object"
+        ? structuredClone(item.schedule)
+        : {
+            kind: "exact",
+            evidenceReasonCode: "structured_performance_exact",
+          },
   }));
 }
 
@@ -560,7 +596,136 @@ function detailUrlForListing(source, listing) {
   }
   const rawPath = text(listing.Url) ?? text(listing.URL) ?? text(listing.Link);
   if (!rawPath) return { invalid: "missing_detail_url" };
-  return { publicUrl: canonicalDetailUrl(rawPath, "https://www.catch.sg") };
+  try {
+    const publicUrl = canonicalDetailUrl(rawPath, "https://www.catch.sg");
+    const slug = decodeURIComponent(
+      new URL(publicUrl).pathname.split("/").filter(Boolean).at(-1) ?? "",
+    );
+    if (!slug || slug.startsWith("*")) return { invalid: "invalid_detail_url" };
+    return { publicUrl };
+  } catch {
+    return { invalid: "invalid_detail_url" };
+  }
+}
+
+function sisticNotesText(value) {
+  return String(value ?? "")
+    .replace(/<br\s*\/?\s*>|<\/p>|<\/li>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .split("\n")
+    .map((line) => line.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+}
+
+function sisticDate(value) {
+  const match = String(value ?? "").match(
+    /\b(\d{1,2})\s+(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+(20\d{2})\b/i,
+  );
+  const month = MONTHS.get(match?.[2]?.slice(0, 3).toLowerCase());
+  if (!match || !month) return null;
+  const date = `${match[3]}-${String(month).padStart(2, "0")}-${String(
+    Number(match[1]),
+  ).padStart(2, "0")}`;
+  const parsed = new Date(`${date}T00:00:00Z`);
+  return parsed.getUTCFullYear() === Number(match[3]) &&
+    parsed.getUTCMonth() + 1 === month &&
+    parsed.getUTCDate() === Number(match[1])
+    ? date
+    : null;
+}
+
+function sisticClockMatches(value) {
+  return [
+    ...String(value ?? "").matchAll(
+      /\b(\d{1,2})(?:([:.])(\d{2}))?\s*(am|pm)\b/gi,
+    ),
+  ].flatMap((match) => {
+    let hour = Number(match[1]);
+    const minute = Number(match[3] ?? 0);
+    const meridiem = match[4].toLowerCase();
+    if (hour < 1 || hour > 12 || minute > 59) return [];
+    if (hour === 12) hour = 0;
+    if (meridiem === "pm") hour += 12;
+    return [
+      {
+        index: match.index,
+        endIndex: match.index + match[0].length,
+        iso: `${String(hour).padStart(2, "0")}:${String(minute).padStart(
+          2,
+          "0",
+        )}`,
+        display: match[0].replace(/\s+/g, " ").trim(),
+      },
+    ];
+  });
+}
+
+function parseSisticEventDateNotes(notes, dateText) {
+  const lines = sisticNotesText(notes);
+  const fallbackDates = [
+    ...String(dateText ?? "").matchAll(
+      /\b\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+20\d{2}\b/gi,
+    ),
+  ];
+  const fallbackDate =
+    fallbackDates.length === 1 &&
+    !/\b(?:to|until|through)\b|\s[-–—]\s/i.test(dateText ?? "")
+      ? sisticDate(fallbackDates[0][0])
+      : null;
+  const performances = [];
+  const timeLabels = [];
+  for (const line of lines) {
+    const clocks = sisticClockMatches(line);
+    if (!clocks.length) continue;
+    const date = sisticDate(line) ?? fallbackDate;
+    const separator =
+      clocks.length >= 2 ? line.slice(clocks[0].endIndex, clocks[1].index) : "";
+    const isRange =
+      clocks.length === 2 && /^\s*(?:[-–—]|to)\s*$/i.test(separator);
+    timeLabels.push(
+      isRange
+        ? `${clocks[0].display} - ${clocks[1].display}`
+        : clocks.map(({ display }) => display).join(" & "),
+    );
+    if (!date) continue;
+    if (isRange) {
+      performances.push({
+        startDateTime: `${date}T${clocks[0].iso}:00+08:00`,
+        endDateTime: `${date}T${clocks[1].iso}:00+08:00`,
+        dateText: date,
+        timeText: `${clocks[0].display} - ${clocks[1].display}`,
+        schedule: {
+          kind: "exact",
+          evidenceReasonCode: "sistic_event_date_notes_parsed",
+        },
+      });
+      continue;
+    }
+    for (const clock of clocks)
+      performances.push({
+        startDateTime: `${date}T${clock.iso}:00+08:00`,
+        endDateTime: null,
+        dateText: date,
+        timeText: clock.display,
+        schedule: {
+          kind: "exact",
+          evidenceReasonCode: "sistic_event_date_notes_parsed",
+        },
+      });
+  }
+  return {
+    timeText: [...new Set(timeLabels)].join("; ") || null,
+    performances: [
+      ...new Map(
+        performances.map((performance) => [
+          `${performance.startDateTime}\0${performance.endDateTime ?? ""}`,
+          performance,
+        ]),
+      ).values(),
+    ],
+  };
 }
 
 export function mapSisticDetail(detail, listing, detailUrl, listingPage) {
@@ -583,15 +748,21 @@ export function mapSisticDetail(detail, listing, detailUrl, listingPage) {
   const dateText =
     text(first(detail, ["/event_date", "/date_text"])) ??
     text(first(listing, ["/event_date"]));
+  const notesSchedule = parseSisticEventDateNotes(
+    first(detail, ["/event_date_notes", "/date_notes"]),
+    dateText,
+  );
   const fixture = {
-    adapterVersion: "1.0",
+    adapterVersion: "1.1",
     listingPage,
     detailUrl,
     sourceId: text(detail.alias) ?? text(listing.alias),
     title: text(detail.title) ?? text(listing.title),
     mode: modeFrom(first(detail, ["/event_format", "/format", "/mode"]), venue),
     dateText,
-    timeText: text(first(detail, ["/event_time", "/time_text"])),
+    timeText:
+      notesSchedule.timeText ??
+      text(first(detail, ["/event_time", "/time_text"])),
     venue,
     address: text(
       first(detail, ["/venue_name/address", "/venue_address", "/address"]),
@@ -601,9 +772,16 @@ export function mapSisticDetail(detail, listing, detailUrl, listingPage) {
     price: text(first(detail, ["/price", "/price_range", "/ticket_price"])),
     description: text(first(detail, ["/description", "/synopsis"])),
     organizer: text(first(detail, ["/organizer", "/promoter", "/presenter"])),
+    authorityRefs: officialProductAuthorityRefs({
+      source: "SISTIC",
+      sourceId: text(detail.alias) ?? text(listing.alias),
+      detailUrl,
+    }),
     performances: [],
   };
   fixture.performances = performancesFrom(detail, fixture);
+  if (!fixture.performances.length && notesSchedule.performances.length)
+    fixture.performances = notesSchedule.performances;
   if (/^various venues$/i.test(fixture.venue ?? "")) {
     const description = String(fixture.description ?? "")
       .replace(/<br\s*\/?\s*>/gi, "\n")
@@ -647,15 +825,54 @@ export function mapSisticDetail(detail, listing, detailUrl, listingPage) {
       .filter(Boolean);
     if (occurrences.length >= 2) fixture.performances = occurrences;
   }
-  if (!fixture.performances.length)
-    fixture.performances = [
-      {
-        startDateTime: text(detail.start_date) ?? text(listing.start_date),
-        endDateTime: text(detail.end_date) ?? text(listing.end_date),
-        dateText: fixture.dateText,
-        timeText: fixture.timeText,
-      },
-    ];
+  if (!fixture.performances.length) {
+    const structuredStart = text(detail.start_date) ?? text(listing.start_date);
+    const structuredEnd = text(detail.end_date) ?? text(listing.end_date);
+    const enumerated = parseEnumeratedSchedule(fixture.dateText);
+    if (enumerated.performances.length)
+      fixture.performances = enumerated.performances;
+    else if (structuredStart)
+      fixture.performances = [
+        {
+          startDateTime: structuredStart,
+          endDateTime: structuredEnd,
+          dateText: fixture.dateText,
+          timeText: fixture.timeText,
+          schedule: {
+            kind: "exact",
+            evidenceReasonCode: "structured_performance_exact",
+          },
+        },
+      ];
+    else if (explicitContinuousSchedule(fixture.dateText))
+      fixture.performances = [
+        {
+          startDateTime: text(detail.start_date) ?? text(listing.start_date),
+          endDateTime: text(detail.end_date) ?? text(listing.end_date),
+          dateText: fixture.dateText,
+          timeText: fixture.timeText,
+          schedule: {
+            kind: "range",
+            evidenceReasonCode: "continuous_range_confirmed",
+          },
+        },
+      ];
+    else
+      fixture.performances = [
+        {
+          startDateTime: null,
+          endDateTime: null,
+          dateText: fixture.dateText,
+          timeText: fixture.timeText,
+          schedule: {
+            kind: "selectable",
+            finalKnownOccurrence:
+              text(detail.end_date) ?? text(listing.end_date),
+            evidenceReasonCode: "schedule_dates_not_expanded",
+          },
+        },
+      ];
+  }
   return fixture;
 }
 
@@ -686,7 +903,7 @@ export function mapCatchDetail(
       : null) ??
     text(first(listing, ["/Info/EventDate", "/EventDate"]));
   const fixture = {
-    adapterVersion: "1.0",
+    adapterVersion: "1.1",
     listingPage,
     detailUrl,
     sourceId: new URL(detailUrl).pathname,
@@ -727,6 +944,13 @@ export function mapCatchDetail(
     organizer: text(
       first(detail, ["/Organizer", "/Presenter", "/PresentedBy"]),
     ),
+    authorityRefs: officialProductAuthorityRefs({
+      source: "Catch.sg",
+      bookingUrl: text(
+        first(detail, ["/BookingUrl", "/BookingURL", "/TicketUrl"]),
+      ),
+      detailUrl,
+    }),
     performances: [],
   };
   fixture.performances = catchPerformances(detail, window);
@@ -824,14 +1048,22 @@ async function requestDetail(source, listing, transport, publicUrl) {
   const bootstrap = await transport({ url: publicUrl, method: "GET" });
   if (!bootstrap.ok)
     return {
-      blocked: `Catch detail bootstrap returned HTTP ${bootstrap.status}`,
+      blocked: {
+        reasonCode: externalBlockerCodeForStatus(bootstrap.status),
+        httpStatus: bootstrap.status,
+        message: `Catch detail bootstrap returned HTTP ${bootstrap.status}`,
+      },
     };
   const eventPageID = bootstrap.text.match(
     /event-detail-page-id=["']([^"']+)["']/i,
   )?.[1];
   if (!eventPageID)
     return {
-      blocked: "Catch detail bootstrap no longer exposes event-detail-page-id",
+      blocked: {
+        reasonCode: "layout_contract_changed",
+        message:
+          "Catch detail bootstrap no longer exposes event-detail-page-id",
+      },
     };
   const body = new URLSearchParams({
     pathUrl: publicUrl,
@@ -901,6 +1133,24 @@ function httpStatusOfProviderError(value) {
     : null;
 }
 
+const RENDERED_BLOCKER_CODES = new Set([
+  "authentication_or_captcha",
+  "layout_contract_changed",
+  "pagination_inaccessible",
+  "persistent_rate_limit",
+  "source_unavailable",
+  "provider_policy_invalid",
+  "retrieval_credential_missing",
+  "official_reference_invalid",
+  "adapter_missing",
+]);
+
+function renderedBlockerReason(value, fallback = "source_unavailable") {
+  if (RENDERED_BLOCKER_CODES.has(value?.code)) return value.code;
+  const status = httpStatusOfProviderError(value);
+  return status ? externalBlockerCodeForStatus(status) : fallback;
+}
+
 function validateRenderedResult(source, requestedUrl, result) {
   const finalUrl = canonicalRenderedUrl(
     result?.final_url ?? result?.finalUrl ?? result?.url ?? requestedUrl,
@@ -938,9 +1188,60 @@ async function collectDiscoveryDetails({
     processedSourceRecordRefs = [],
     invalidSourceRecordRefs = [],
     invalidReasonCodes = {},
-    confirmationOutcomeCounts = {};
+    confirmationOutcomeCounts = {},
+    fieldCompletenessCounts = {};
   const confirmationRefs = [],
     authorityRefs = [];
+  const detailFailures = [];
+  const captureDetailFailure = ({
+    detailUrl,
+    error,
+    reasonCode,
+    httpStatus,
+  }) => {
+    const retrievedAt = now();
+    const fixtureRef = `raw/${source.adapterId}/discoveries/${sha(detailUrl)}.failure.json`;
+    const recordRef = `${fixtureRef}#/records/0`;
+    writeJson(join(runDir, fixtureRef), {
+      schemaVersion: "1.0",
+      runId: run.runId,
+      createdAt: retrievedAt,
+      source: { name: source.name, role: source.sourceRole },
+      counts: { records: 1 },
+      records: [
+        {
+          ...failedExtractionRecord(detailUrl),
+          recordType: "retrieval_failure",
+          sourceId: `failure:${sha(detailUrl)}`,
+          detailUrl,
+          reasonCode,
+          httpStatus: httpStatus ?? null,
+        },
+      ],
+    });
+    addFieldCompletenessCounts(
+      fieldCompletenessCounts,
+      failedExtractionRecord(detailUrl),
+    );
+    artifactRefs.push(fixtureRef);
+    sourceRecordRefs.push(recordRef);
+    invalidSourceRecordRefs.push(recordRef);
+    invalidReasonCodes[recordRef] = reasonCode;
+    detailFailures.push({
+      detailUrl,
+      reasonCode,
+      httpStatus: httpStatus ?? null,
+    });
+    logger({
+      action: "discovery_detail_failed",
+      sourceName: source.name,
+      entityId: detailUrl,
+      reasonCode,
+      httpStatus: httpStatus ?? null,
+      error: error?.message ?? String(error ?? reasonCode),
+      evidenceRef: fixtureRef,
+    });
+  };
   for (const detailUrl of [...detailUrls].sort()) {
     let batch;
     try {
@@ -950,42 +1251,53 @@ async function collectDiscoveryDetails({
         entityId: detailUrl,
       });
     } catch (error) {
-      return {
-        status: source.operatingMode === "pilot" ? "pilot_failed" : "blocked",
-        blockerReasonCode: error.code ?? "source_unavailable",
+      captureDetailFailure({
+        detailUrl,
+        error,
+        reasonCode: renderedBlockerReason(error),
         httpStatus: Number.isInteger(error.status) ? error.status : null,
-        error: error.message,
-      };
+      });
+      continue;
     }
     const { result, error } = tinyfishResult(batch, detailUrl);
-    if (error || !result)
-      return {
-        status: source.operatingMode === "pilot" ? "pilot_failed" : "blocked",
-        blockerReasonCode: error?.code ?? "source_unavailable",
-        httpStatus: httpStatusOfProviderError(error),
+    if (error || !result) {
+      captureDetailFailure({
+        detailUrl,
         error:
-          (error
-            ? `${source.name} discovery detail retrieval failed (${error.code ?? "source_unavailable"})`
-            : null) ?? `${source.name} discovery detail returned no result`,
-      };
+          error ??
+          new Error(`${source.name} discovery detail returned no result`),
+        reasonCode: renderedBlockerReason(error),
+        httpStatus: httpStatusOfProviderError(error),
+      });
+      continue;
+    }
     let finalUrl;
     try {
       finalUrl = validateRenderedResult(source, detailUrl, result).finalUrl;
     } catch (validationError) {
-      return {
-        status: "blocked",
-        blockerReasonCode: "official_reference_invalid",
-        error: validationError.message,
-      };
+      captureDetailFailure({
+        detailUrl,
+        error: validationError,
+        reasonCode: "official_reference_invalid",
+      });
+      continue;
     }
     const listingRecord =
       detailListingRecords.get(detailUrl)?.record ??
       detailListingRecords.get(finalUrl)?.record ??
       null;
-    const discovery = adapter.detail(result, source, finalUrl, {
-        listingRecord,
-      }),
-      hash = sha(discovery.discoveryRecordId),
+    let discovery;
+    try {
+      discovery = adapter.detail(result, source, finalUrl, { listingRecord });
+    } catch (error) {
+      captureDetailFailure({
+        detailUrl,
+        error,
+        reasonCode: "layout_contract_changed",
+      });
+      continue;
+    }
+    const hash = sha(discovery.discoveryRecordId),
       retrievedAt = now();
     logger({
       action: "discovery_detail_parsed",
@@ -1078,6 +1390,20 @@ async function collectDiscoveryDetails({
           title: parsed.title,
           dateText: parsed.dateText,
           venue: parsed.venue,
+          claims: {
+            title: parsed.title,
+            dateText: parsed.dateText,
+            timeText: parsed.timeText,
+            venue: parsed.venue,
+            address: parsed.address,
+            description: parsed.description,
+            category: parsed.category,
+            price: parsed.price,
+            organizer: parsed.organizer,
+            availability: parsed.availability,
+            url: parsed.officialUrl ?? canonicalUrl,
+          },
+          fieldCompleteness: parsed.fieldCompleteness,
           performances: performances.map((performance, index) => ({
             authorityOccurrenceId:
               performance.authorityOccurrenceId ??
@@ -1102,7 +1428,16 @@ async function collectDiscoveryDetails({
       evidenceLevel: decision.evidenceLevel ?? null,
       eligible: eligibleDecision,
     });
-    const claims = discovery.claims ?? {};
+    const discoveryClaims = discovery.claims ?? {};
+    const discoveryPerformances = Array.isArray(discovery.performances)
+      ? discovery.performances
+      : [];
+    const claims = { ...discoveryClaims };
+    for (const [fieldName, value] of Object.entries(
+      decision.authorityClaims ?? {},
+    ))
+      if (value !== null && value !== undefined && value !== "")
+        claims[fieldName] = value;
     const venue = claims.venue ?? null;
     const offMapSubtype = /secret|tba|to be announced/i.test(venue ?? "")
       ? "secret_tba"
@@ -1129,15 +1464,37 @@ async function collectDiscoveryDetails({
       dateText: claims.dateText,
       timeText: claims.timeText,
       venue,
+      address: claims.address ?? null,
+      description: claims.description ?? null,
+      category: claims.category ?? null,
+      price: claims.price ?? null,
+      organizer: claims.organizer ?? null,
+      availability: claims.availability ?? "unknown",
+      officialUrl: claims.url ?? discovery.detailUrl,
       scope: claims.scope ?? "Singapore",
-      schedule: normalizeSchedule({
-        kind: claims.dateText
-          ? /anytime|choose|select/i.test(claims.dateText)
-            ? "anytime"
-            : "exact"
-          : "unverified",
-        displayText: claims.dateText ?? null,
-      }),
+      performances: discoveryPerformances,
+      schedule: discoveryPerformances.length
+        ? normalizeSchedule({
+            kind: discoveryPerformances.length > 1 ? "recurring" : "exact",
+            start: discoveryPerformances[0]?.startDateTime ?? null,
+            end:
+              discoveryPerformances.at(-1)?.endDateTime ??
+              discoveryPerformances.at(-1)?.startDateTime ??
+              null,
+            displayText:
+              claims.timeText && claims.dateText
+                ? `${claims.dateText} · ${claims.timeText}`
+                : (claims.dateText ?? claims.timeText ?? null),
+            evidenceReasonCode: "editorial_detail_schedule_parsed",
+          })
+        : normalizeSchedule({
+            kind: claims.dateText
+              ? /anytime|choose|select/i.test(claims.dateText)
+                ? "anytime"
+                : "exact"
+              : "unverified",
+            displayText: claims.dateText ?? null,
+          }),
       publicPlacement: venue ? "off_map" : "none",
       mappingStatus:
         venue && offMapSubtype === "geometry_unavailable"
@@ -1160,11 +1517,23 @@ async function collectDiscoveryDetails({
           sourceName: source.name,
           evidenceLevel: decision.evidenceLevel,
           freshness: "current",
-          fields: ["title", "schedule", "location"],
+          fields: Object.entries(discovery.fieldCompleteness ?? {})
+            .filter(([, assessment]) => assessment.status === "present")
+            .map(([field]) => field),
           evidenceRefs: discovery.evidenceRefs,
         },
       ],
     });
+    if (decision.authorityFieldCompleteness)
+      discovery.fieldCompleteness = {
+        ...(discovery.fieldCompleteness ?? {}),
+        ...Object.fromEntries(
+          Object.entries(decision.authorityFieldCompleteness).filter(
+            ([, assessment]) => assessment.status === "present",
+          ),
+        ),
+      };
+    addFieldCompletenessCounts(fieldCompletenessCounts, discovery);
     writeJson(join(runDir, fixtureRef), {
       schemaVersion: "1.0",
       runId: run.runId,
@@ -1190,16 +1559,16 @@ async function collectDiscoveryDetails({
   const indexRef = "raw/authority/index.json";
   if (!artifactRefs.includes(indexRef)) artifactRefs.push(indexRef);
   return {
-    status: "success",
+    status: detailFailures.length ? "blocked" : "success",
     sourceRole: "discovery",
     operatingMode: source.operatingMode,
     counts: {
       pages: pages.length,
-      sourceRecordsReceived: detailUrls.size,
-      invalidSourceRecords: 0,
-      processedSourceRecords: detailUrls.size,
-      discoveryRecordsReceived: detailUrls.size,
-      occurrencesEmitted: detailUrls.size,
+      sourceRecordsReceived: sourceRecordRefs.length,
+      invalidSourceRecords: invalidSourceRecordRefs.length,
+      processedSourceRecords: processedSourceRecordRefs.length,
+      discoveryRecordsReceived: sourceRecordRefs.length,
+      occurrencesEmitted: processedSourceRecordRefs.length,
       excludedOccurrences: [...Object.entries(confirmationOutcomeCounts)]
         .filter(
           ([decision]) =>
@@ -1221,19 +1590,21 @@ async function collectDiscoveryDetails({
         0,
       ),
       confirmationOutcomeCounts,
+      fieldCompleteness: fieldCompletenessCounts,
       authorityCaptures: authorityRefs.length,
     },
     completion: {
       paginationComplete: true,
       pagesVisited: pages.map(({ ref }) => ref),
-      sourceRecordsDiscovered: detailUrls.size,
+      sourceRecordsDiscovered: sourceRecordRefs.length,
       providerReportedTotal: null,
-      derivedTotal: detailUrls.size,
+      derivedTotal: sourceRecordRefs.length,
       providerTotalEvidence: null,
       terminalEvidence: pages.at(-1)?.terminalEvidence,
       pageRecordCounts: pages.map(({ count }) => count),
       detailUrlsDiscovered: detailUrls.size,
-      detailPagesCaptured: detailUrls.size,
+      detailPagesCaptured: processedSourceRecordRefs.length,
+      detailFailures: detailFailures.length,
       zeroResultConfirmed: detailUrls.size === 0,
     },
     sourceRecordRefs,
@@ -1243,7 +1614,11 @@ async function collectDiscoveryDetails({
     confirmationRefs,
     authorityRefs,
     artifactRefs,
-    error: null,
+    blockerReasonCode: detailFailures[0]?.reasonCode ?? null,
+    httpStatus: detailFailures[0]?.httpStatus ?? null,
+    error: detailFailures.length
+      ? `${detailFailures.length} discovery detail retrievals were isolated`
+      : null,
   };
 }
 
@@ -1267,7 +1642,24 @@ export async function collectRenderedSource({
     };
   let client = renderedClient;
   try {
-    client ??= createTinyfishFetchClient({ ...source.retrieval, logger });
+    if (!client) {
+      const fallbackClient = createTinyfishFetchClient({
+        ...source.retrieval,
+        logger,
+      });
+      const directBounds = source.directHtml;
+      client = directBounds?.enabled
+        ? createLayeredDetailFetchClient({
+            directClient: createDirectHtmlFetchClient({
+              ...directBounds,
+              officialDomains: source.officialDomains,
+              logger,
+            }),
+            fallbackClient,
+            logger,
+          })
+        : fallbackClient;
+    }
   } catch (error) {
     return {
       status: "blocked",
@@ -1281,7 +1673,8 @@ export async function collectRenderedSource({
     surfaceOutcomes = [],
     detailUrls = new Set(),
     detailListingRecords = new Map(),
-    listingRecords = [];
+    listingRecords = [],
+    fieldCompletenessCounts = {};
   let listingAppearances = 0;
   const recordSurfaceFailure = (pageUrl, reasonCode, error, extras = {}) => {
     const outcome = {
@@ -1356,14 +1749,14 @@ export async function collectRenderedSource({
         });
       }
     } catch (error) {
-      recordSurfaceFailure(pageUrl, error.code ?? "source_unavailable", error);
+      recordSurfaceFailure(pageUrl, renderedBlockerReason(error), error);
       continue;
     }
     const { result, error } = tinyfishResult(batch, pageUrl);
     if (error || !result) {
       recordSurfaceFailure(
         pageUrl,
-        error?.code ?? "source_unavailable",
+        renderedBlockerReason(error),
         error ??
           new Error(`${source.name} listing retrieval returned no result`),
         { httpStatus: httpStatusOfProviderError(error) },
@@ -1601,7 +1994,7 @@ export async function collectRenderedSource({
       } catch (error) {
         return {
           status: "blocked",
-          blockerReasonCode: error.code ?? "source_unavailable",
+          blockerReasonCode: renderedBlockerReason(error),
           error: error.message,
         };
       }
@@ -1667,6 +2060,56 @@ export async function collectRenderedSource({
     invalidSourceRecordRefs = [...expansionInvalidRecordRefs],
     processedSourceRecordRefs = [],
     invalidReasonCodes = { ...expansionInvalidReasonCodes };
+  const detailFailures = [];
+  const captureDetailFailure = ({
+    detailUrl,
+    error,
+    reasonCode,
+    httpStatus = null,
+  }) => {
+    const retrievedAt = now();
+    const fixtureRef = `raw/${slug}/details/${sha(detailUrl)}.json`;
+    const recordRef = `${fixtureRef}#/records/0`;
+    writeJson(join(runDir, fixtureRef), {
+      schemaVersion: "1.0",
+      runId: run.runId,
+      createdAt: retrievedAt,
+      source: {
+        name: source.name,
+        role: source.sourceRole,
+        mode: source.operatingMode,
+      },
+      counts: { records: 1 },
+      records: [
+        {
+          ...failedExtractionRecord(detailUrl),
+          recordType: "retrieval_failure",
+          sourceId: `failure:${sha(detailUrl)}`,
+          detailUrl,
+          reasonCode,
+          httpStatus,
+        },
+      ],
+    });
+    addFieldCompletenessCounts(
+      fieldCompletenessCounts,
+      failedExtractionRecord(detailUrl),
+    );
+    artifactRefs.push(fixtureRef);
+    sourceRecordRefs.push(recordRef);
+    invalidSourceRecordRefs.push(recordRef);
+    invalidReasonCodes[recordRef] = reasonCode;
+    detailFailures.push({ detailUrl, reasonCode, httpStatus });
+    logger({
+      action: "detail_failed",
+      sourceName: source.name,
+      entityId: detailUrl,
+      reasonCode,
+      httpStatus,
+      error: error?.message ?? String(error ?? reasonCode),
+      evidenceRef: fixtureRef,
+    });
+  };
   const captureOutboundListingFallback = ({
     detailUrl,
     listingEvidence,
@@ -1697,24 +2140,31 @@ export async function collectRenderedSource({
       contentHash: listingEvidence.record.rawDocumentHash,
       retrievedAt,
     });
-    const fixture = {
-      ...listingEvidence.record,
-      detailUrl,
-      ...sourceRecordProvenance({
-        run,
-        source,
-        retrievedAt,
-        listingRef: listingEvidence.listingRef,
-        responseRef,
-        officialReferenceRef,
-        officialReference: {
-          requestedUrl: listingUrl,
-          finalUrl: listingUrl,
-          status: 200,
-        },
+    const fixture = applyEventFieldCompleteness(
+      {
+        ...listingEvidence.record,
         detailUrl,
-      }),
-    };
+        ...sourceRecordProvenance({
+          run,
+          source,
+          retrievedAt,
+          listingRef: listingEvidence.listingRef,
+          responseRef,
+          officialReferenceRef,
+          officialReference: {
+            requestedUrl: listingUrl,
+            finalUrl: listingUrl,
+            status: 200,
+          },
+          detailUrl,
+        }),
+      },
+      {
+        evidenceHash: listingEvidence.record.rawDocumentHash,
+        evidenceRef: listingEvidence.listingRef,
+        extractionFailed: true,
+      },
+    );
     writeJson(join(runDir, fixtureRef), {
       schemaVersion: "1.0",
       runId: run.runId,
@@ -1731,6 +2181,7 @@ export async function collectRenderedSource({
     const recordRef = `${fixtureRef}#/records/0`;
     sourceRecordRefs.push(recordRef);
     processedSourceRecordRefs.push(recordRef);
+    addFieldCompletenessCounts(fieldCompletenessCounts, fixture);
     logger({
       action: "detail_outbound_fallback_applied",
       sourceName: source.name,
@@ -1759,25 +2210,31 @@ export async function collectRenderedSource({
       retrievedAt,
     });
     artifactRefs.push(officialReferenceRef);
-    const fixtures = listingRecords.map(
-      ({ record, listingRef, listingUrl }) => ({
-        ...record,
-        detailUrl: canonicalRenderedUrl(listingUrl),
-        ...sourceRecordProvenance({
-          run,
-          source,
-          retrievedAt,
-          listingRef,
-          responseRef: listingRef,
-          officialReferenceRef,
-          officialReference: {
-            requestedUrl: listingUrl,
-            finalUrl: listingUrl,
-            status: 200,
-          },
+    const fixtures = listingRecords.map(({ record, listingRef, listingUrl }) =>
+      applyEventFieldCompleteness(
+        {
+          ...record,
           detailUrl: canonicalRenderedUrl(listingUrl),
-        }),
-      }),
+          ...sourceRecordProvenance({
+            run,
+            source,
+            retrievedAt,
+            listingRef,
+            responseRef: listingRef,
+            officialReferenceRef,
+            officialReference: {
+              requestedUrl: listingUrl,
+              finalUrl: listingUrl,
+              status: 200,
+            },
+            detailUrl: canonicalRenderedUrl(listingUrl),
+          }),
+        },
+        {
+          evidenceHash: record.rawDocumentHash,
+          evidenceRef: listingRef,
+        },
+      ),
     );
     writeJson(join(runDir, fixtureRef), {
       schemaVersion: "1.0",
@@ -1793,6 +2250,7 @@ export async function collectRenderedSource({
     });
     artifactRefs.push(fixtureRef);
     fixtures.forEach((fixture, index) => {
+      addFieldCompletenessCounts(fieldCompletenessCounts, fixture);
       const recordRef = `${fixtureRef}#/records/${index}`;
       sourceRecordRefs.push(recordRef);
       if (!fixture.sourceId || !fixture.title) {
@@ -1844,18 +2302,20 @@ export async function collectRenderedSource({
           listingEvidence,
           batch: null,
           error: {
-            code: error.code ?? "source_unavailable",
+            code: renderedBlockerReason(error),
             message: error.message,
           },
-          reasonCode: error.code ?? "source_unavailable",
+          reasonCode: renderedBlockerReason(error),
         });
         continue;
       }
-      return {
-        status: "blocked",
-        blockerReasonCode: error.code ?? "source_unavailable",
-        error: error.message,
-      };
+      captureDetailFailure({
+        detailUrl,
+        error,
+        reasonCode: renderedBlockerReason(error),
+        httpStatus: Number.isInteger(error.status) ? error.status : null,
+      });
+      continue;
     }
     const { result, error } = tinyfishResult(batch, detailUrl);
     if (error || !result) {
@@ -1866,17 +2326,19 @@ export async function collectRenderedSource({
           batch,
           result,
           error,
-          reasonCode: error?.code ?? "source_unavailable",
+          reasonCode: renderedBlockerReason(error),
         });
         continue;
       }
-      return {
-        status: "blocked",
-        blockerReasonCode: "source_unavailable",
+      captureDetailFailure({
+        detailUrl,
         error:
-          error?.message ??
-          `${source.name} detail retrieval returned no result`,
-      };
+          error ??
+          new Error(`${source.name} detail retrieval returned no result`),
+        reasonCode: "source_unavailable",
+        httpStatus: httpStatusOfProviderError(error),
+      });
+      continue;
     }
     const finalUrl = canonicalRenderedUrl(
       result.final_url ?? result.finalUrl ?? result.url ?? detailUrl,
@@ -1899,18 +2361,29 @@ export async function collectRenderedSource({
         });
         continue;
       }
-      return {
-        status: "blocked",
-        blockerReasonCode: "official_reference_invalid",
-        error: validationError.message,
-      };
+      captureDetailFailure({
+        detailUrl,
+        error: validationError,
+        reasonCode: "official_reference_invalid",
+      });
+      continue;
     }
     const finalListingEvidence =
       listingEvidence ?? detailListingRecords.get(finalUrl) ?? null;
     const listingRecord = finalListingEvidence?.record ?? null;
-    const fixtures = adapter.details
-      ? adapter.details(result, source, finalUrl, { listingRecord })
-      : [adapter.detail(result, source, finalUrl, { listingRecord })];
+    let fixtures;
+    try {
+      fixtures = adapter.details
+        ? adapter.details(result, source, finalUrl, { listingRecord })
+        : [adapter.detail(result, source, finalUrl, { listingRecord })];
+    } catch (error) {
+      captureDetailFailure({
+        detailUrl,
+        error,
+        reasonCode: "layout_contract_changed",
+      });
+      continue;
+    }
     const hash = sha(finalUrl),
       retrievedAt = now();
     const responseRef = `raw/${slug}/details/${hash}.response.json`,
@@ -1961,6 +2434,7 @@ export async function collectRenderedSource({
     });
     artifactRefs.push(responseRef, officialReferenceRef, fixtureRef);
     fixtures.forEach((fixture, index) => {
+      addFieldCompletenessCounts(fieldCompletenessCounts, fixture);
       const recordRef = `${fixtureRef}#/records/${index}`;
       sourceRecordRefs.push(recordRef);
       if (fixture.listingFallbackFields?.length)
@@ -1981,6 +2455,7 @@ export async function collectRenderedSource({
   let occurrencesEmitted = 0,
     excludedOccurrences = 0,
     eligiblePreDedup = 0;
+  const scheduleReasonCounts = {};
   for (const ref of processedSourceRecordRefs) {
     const document = JSON.parse(
       readFileSync(join(runDir, ref.split("#")[0]), "utf8"),
@@ -1991,6 +2466,12 @@ export async function collectRenderedSource({
       ? fixture.performances
       : [fixture]) {
       occurrencesEmitted += 1;
+      const scheduleReason =
+        occurrence.schedule?.evidenceReasonCode ??
+        fixture.schedule?.evidenceReasonCode ??
+        "schedule_reason_unclassified";
+      scheduleReasonCounts[scheduleReason] =
+        (scheduleReasonCounts[scheduleReason] ?? 0) + 1;
       const policy = assessActivityInclusion(
         { ...fixture, ...occurrence },
         { asOf: run.window.start },
@@ -2005,7 +2486,7 @@ export async function collectRenderedSource({
     }
   }
   return attachSurfaceAccounting({
-    status: "success",
+    status: detailFailures.length ? "blocked" : "success",
     sourceRole: source.sourceRole,
     operatingMode: source.operatingMode,
     counts: {
@@ -2016,6 +2497,12 @@ export async function collectRenderedSource({
       occurrencesEmitted,
       excludedOccurrences,
       eligiblePreDedup,
+      scheduleReasonCounts: Object.fromEntries(
+        Object.entries(scheduleReasonCounts).sort(([a], [b]) =>
+          a.localeCompare(b),
+        ),
+      ),
+      fieldCompleteness: fieldCompletenessCounts,
     },
     completion: {
       paginationComplete: true,
@@ -2030,6 +2517,7 @@ export async function collectRenderedSource({
       detailPagesCaptured: new Set(
         processedSourceRecordRefs.map((ref) => ref.split("#")[0]),
       ).size,
+      detailFailures: detailFailures.length,
       zeroResultConfirmed:
         detailUrls.size === 0 && listingRecords.length === 0
           ? pages.at(-1)?.zeroResultConfirmed === true
@@ -2040,7 +2528,11 @@ export async function collectRenderedSource({
     processedSourceRecordRefs,
     invalidReasonCodes,
     artifactRefs,
-    error: null,
+    blockerReasonCode: detailFailures[0]?.reasonCode ?? null,
+    httpStatus: detailFailures[0]?.httpStatus ?? null,
+    error: detailFailures.length
+      ? `${detailFailures.length} detail retrievals were isolated`
+      : null,
   });
 }
 
@@ -2134,7 +2626,8 @@ export async function collectSource({
     sourceRecordRefs = [],
     invalidSourceRecordRefs = [],
     processedSourceRecordRefs = [],
-    invalidReasonCodes = {};
+    invalidReasonCodes = {},
+    fieldCompletenessCounts = {};
   let detailUrlsDiscovered = 0;
   const seenDetailUrls = new Set();
   for (const listing of listings) {
@@ -2158,12 +2651,20 @@ export async function collectSource({
       resilientTransport,
       detailUrl.publicUrl,
     );
-    if (detail.blocked)
+    if (detail.blocked) {
+      const blocker =
+        typeof detail.blocked === "string"
+          ? { reasonCode: "layout_contract_changed", message: detail.blocked }
+          : detail.blocked;
       return {
         status: "blocked",
-        blockerReasonCode: "layout_contract_changed",
-        error: detail.blocked,
+        blockerReasonCode: blocker.reasonCode ?? "layout_contract_changed",
+        ...(Number.isInteger(blocker.httpStatus)
+          ? { httpStatus: blocker.httpStatus }
+          : {}),
+        error: blocker.message ?? String(detail.blocked),
       };
+    }
     if (detail.invalid) {
       sourceRecordRefs.push(listing.listingRef);
       invalidSourceRecordRefs.push(listing.listingRef);
@@ -2232,6 +2733,14 @@ export async function collectSource({
         detailUrl: detail.publicUrl,
       }),
     );
+    Object.assign(
+      fixture,
+      applyEventFieldCompleteness(fixture, {
+        evidenceHash: sha(JSON.stringify(rawDetail)),
+        evidenceRef: responseRef,
+      }),
+    );
+    addFieldCompletenessCounts(fieldCompletenessCounts, fixture);
     writeJson(join(runDir, responseRef), detail.response.body);
     writeJson(join(runDir, officialReferenceRef), {
       schemaVersion: "1.0",
@@ -2262,6 +2771,7 @@ export async function collectSource({
   let occurrencesEmitted = 0,
     excludedOccurrences = 0,
     eligiblePreDedup = 0;
+  const scheduleReasonCounts = {};
   for (const recordRef of processedSourceRecordRefs) {
     const fixtureRef = recordRef.split("#")[0];
     const fixture = JSON.parse(
@@ -2273,6 +2783,12 @@ export async function collectSource({
       ? fixture.performances
       : [fixture]) {
       occurrencesEmitted += 1;
+      const scheduleReason =
+        occurrence.schedule?.evidenceReasonCode ??
+        fixture.schedule?.evidenceReasonCode ??
+        "schedule_reason_unclassified";
+      scheduleReasonCounts[scheduleReason] =
+        (scheduleReasonCounts[scheduleReason] ?? 0) + 1;
       const policy = assessActivityInclusion(
         { ...fixture, ...occurrence },
         { asOf: run.window.start },
@@ -2296,6 +2812,17 @@ export async function collectSource({
       occurrencesEmitted,
       excludedOccurrences,
       eligiblePreDedup,
+      scheduleReasonCounts: Object.fromEntries(
+        Object.entries(scheduleReasonCounts).sort(([a], [b]) =>
+          a.localeCompare(b),
+        ),
+      ),
+      listingAppearances: listings.length,
+      uniqueSourcePointers: seenDetailUrls.size,
+      listingDuplicatesCollapsed: Object.values(invalidReasonCodes).filter(
+        (reason) => reason === "duplicate_detail_url",
+      ).length,
+      fieldCompleteness: fieldCompletenessCounts,
     },
     completion: {
       paginationComplete: true,

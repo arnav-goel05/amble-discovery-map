@@ -19,6 +19,7 @@ import { createRuntimeActionDispatcher } from "./activity-scenes/assistant/runti
 import { createDiscoveryAreaLayerManager } from "./map-layers/discovery-area-layers.js";
 import discoveryAreasUrl from "./data/discovery-areas.geojson?url";
 import transitContextUrl from "./data/transit-context.geojson?url";
+import backgroundGeometryRelease from "./data/background-geometry-release.json";
 import { createLocationController } from "./activity-scenes/location/location-controller.js";
 import {
   createLocationModel,
@@ -41,15 +42,159 @@ const EXPLORE_CAMERA = {
   bearing: -30,
 };
 
+function normalizeInjectedActivityFixture(snapshot) {
+  const canonical = snapshot.activities?.records ?? snapshot.activities;
+  if (Array.isArray(canonical))
+    return { landmarks: snapshot.landmarks ?? [], activities: canonical };
+  const activities = new Map();
+  const landmarks = (snapshot.landmarks ?? []).map((landmark) => {
+    const activityRefs = [];
+    for (const event of landmark.events ?? []) {
+      const activityId =
+        event.activityId ??
+        event.parentActivityId ??
+        event.parentListingId ??
+        `activity:${event.id}`;
+      const sessionId = `session:${activityId}`;
+      const venueGroupId = `venue-group:${activityId}:${landmark.id}`;
+      const activity = activities.get(activityId) ?? {
+        schemaVersion: "1.0",
+        activityId,
+        title: event.title,
+        description: event.description ?? null,
+        category: event.category ?? null,
+        organizer: event.organizer ?? null,
+        price: event.price ?? null,
+        lifecycleState: event.lifecycleState ?? "active",
+        freshness: event.freshness ?? "current",
+        sources: [],
+        sessions: [
+          {
+            sessionId,
+            schedule: event.schedule ?? {
+              kind: "exact",
+              start: event.startsAt ?? null,
+              end: event.endsAt ?? null,
+              displayText: event.dateText ?? null,
+            },
+            availability: event.availability ?? "unknown",
+            venueGroupIds: [],
+          },
+        ],
+        venueGroups: [],
+        sourceOffers: [],
+        scheduleSummary: {
+          kind: event.schedule?.kind ?? "exact",
+          label:
+            event.schedule?.displayText ??
+            event.dateText ??
+            "Schedule unavailable",
+          sessionCount: 1,
+        },
+      };
+      const session = activity.sessions[0];
+      if (!session.venueGroupIds.includes(venueGroupId))
+        session.venueGroupIds.push(venueGroupId);
+      if (
+        !activity.venueGroups.some(
+          (group) => group.venueGroupId === venueGroupId,
+        )
+      )
+        activity.venueGroups.push({
+          venueGroupId,
+          activityId,
+          label: event.venue ?? landmark.label,
+          address: event.address ?? null,
+          publicPlacement: "mapped",
+          mappingStatus: "approved",
+          approvedLocationId: landmark.id,
+          coordinates: landmark.anchor,
+          sessionIds: [sessionId],
+        });
+      activities.set(activityId, activity);
+      activityRefs.push({ activityId, venueGroupIds: [venueGroupId] });
+    }
+    const { events: _events, ...publicLandmark } = landmark;
+    return { ...publicLandmark, activityRefs };
+  });
+  for (const event of snapshot.offMapEvents ?? snapshot.events?.offMap ?? []) {
+    const activityId =
+      event.activityId ??
+      event.parentActivityId ??
+      event.parentListingId ??
+      `activity:${event.id}`;
+    const sessionId = `session:${activityId}`;
+    const venueGroupId = `venue-group:${activityId}:off-map`;
+    activities.set(activityId, {
+      schemaVersion: "1.0",
+      activityId,
+      title: event.title,
+      description: event.description ?? null,
+      category: event.category ?? null,
+      organizer: event.organizer ?? null,
+      price: event.price ?? null,
+      lifecycleState: event.lifecycleState ?? "active",
+      freshness: event.freshness ?? "current",
+      sources: [],
+      sessions: [
+        {
+          sessionId,
+          schedule: event.schedule ?? {
+            kind: "unverified",
+            start: null,
+            end: null,
+            displayText: event.dateText ?? null,
+          },
+          availability: event.availability ?? "unknown",
+          venueGroupIds: [venueGroupId],
+        },
+      ],
+      venueGroups: [
+        {
+          venueGroupId,
+          activityId,
+          label: event.venue ?? "Location TBA",
+          address: event.address ?? null,
+          publicPlacement: "off_map",
+          mappingStatus: event.mappingStatus ?? "not_required",
+          approvedLocationId: null,
+          coordinates: null,
+          sessionIds: [sessionId],
+          offMapSubtype: event.offMapSubtype ?? "geometry_unavailable",
+        },
+      ],
+      sourceOffers: [],
+      scheduleSummary: {
+        kind: event.schedule?.kind ?? "unverified",
+        label:
+          event.schedule?.displayText ??
+          event.dateText ??
+          "Schedule unavailable",
+        sessionCount: 1,
+      },
+    });
+  }
+  return { landmarks, activities: [...activities.values()] };
+}
+
 async function bootstrapApplication() {
   const queryParams = new URLSearchParams(window.location.search);
+  let performanceVariant = null;
+  if (
+    queryParams.get("performanceDiagnostics") === "1" &&
+    queryParams.has("performanceVariant")
+  ) {
+    const { requestedPerformanceVariant } =
+      await import("./activity-scenes/performance-diagnostic-variants.js");
+    performanceVariant = requestedPerformanceVariant(window.location.search);
+  }
   resetSavedMapView({ preserve: queryParams.has("autoStart") });
   const hasInitialCameraHash = Boolean(window.location.hash);
   let buildingHighlights = null;
   let map = null;
   let sharedActionDispatch = null;
   const featureTour = createFeatureTour({
-    dispatch: (actionId, argumentsValue) =>
+    executeCapability: (actionId, argumentsValue) =>
       sharedActionDispatch?.(actionId, argumentsValue),
   });
   const experienceIntro = createExperienceIntro({
@@ -72,6 +217,7 @@ async function bootstrapApplication() {
         featureTour.start();
       };
       map.once("moveend", startTour);
+      if (!reduceMotion) buildingHighlights?.preserveNextMovementRendering?.();
       map.easeTo({ ...EXPLORE_CAMERA, duration: reduceMotion ? 0 : 5_000 });
       window.setTimeout(startTour, reduceMotion ? 850 : 5_300);
     },
@@ -80,7 +226,7 @@ async function bootstrapApplication() {
   let activeSnapshot = null;
   let approvedPois = [];
   let approvedLandmarks = [];
-  let approvedOffMapEvents = [];
+  let approvedActivities = [];
   let discoveryAreaAsset = { type: "FeatureCollection", features: [] };
   let transitContextAsset = { type: "FeatureCollection", features: [] };
   const loadContextAsset = async (url) => {
@@ -102,10 +248,11 @@ async function bootstrapApplication() {
   if (queryParams.has("emptyApprovedSnapshot")) {
     document.body.dataset.snapshotState = "empty-test-fixture";
   } else if (injectedSnapshot) {
+    const injectedActivities =
+      normalizeInjectedActivityFixture(injectedSnapshot);
     approvedPois = injectedSnapshot.pois ?? [];
-    approvedLandmarks = injectedSnapshot.landmarks ?? [];
-    approvedOffMapEvents =
-      injectedSnapshot.events?.offMap ?? injectedSnapshot.offMapEvents ?? [];
+    approvedLandmarks = injectedActivities.landmarks;
+    approvedActivities = injectedActivities.activities;
     document.body.dataset.snapshotState = injectedSnapshot.stale
       ? "potentially-outdated"
       : "injected-test-fixture";
@@ -120,7 +267,7 @@ async function bootstrapApplication() {
       activeSnapshot = await loadPublicSnapshot();
       approvedPois = activeSnapshot.pois;
       approvedLandmarks = activeSnapshot.landmarks;
-      approvedOffMapEvents = activeSnapshot.events?.offMap ?? [];
+      approvedActivities = activeSnapshot.activities?.records ?? [];
       document.body.dataset.snapshotState = activeSnapshot.stale
         ? "potentially-outdated"
         : "fresh";
@@ -138,7 +285,7 @@ async function bootstrapApplication() {
   }
   const tilesetUrl =
     injectedSnapshot?.backgroundTilesetUrl ??
-    "optimized-tiles/tileset.json?assetMount=site-root-v1";
+    backgroundGeometryRelease.tilesetUrl;
   const poiTilesetUrl =
     injectedSnapshot?.poiTilesetUrl ??
     activeSnapshot?.metadata.tilesetRef ??
@@ -216,6 +363,7 @@ async function bootstrapApplication() {
     hash: true,
     ...INITIAL_CAMERA,
   });
+  globalThis.__performanceDiagnostics?.attachMap?.(map);
   document.body.dataset.mapInitialized = "true";
 
   const mapCanvas = map.getCanvas();
@@ -260,9 +408,11 @@ async function bootstrapApplication() {
     map,
     pois: poiTilesets,
     poiTilesetUrl,
+    diagnosticWorkloads: performanceVariant?.workloads ?? null,
   });
   let activityScenes = [];
   let eventSceneController = null;
+  let performanceVariantController = null;
 
   const reconcileActiveSnapshot = async () => {
     try {
@@ -288,11 +438,12 @@ async function bootstrapApplication() {
       });
       const events = eventSceneController?.reconcile?.({
         landmarks: next.landmarks,
-        offMapEvents: next.events?.offMap ?? [],
+        activities: next.activities?.records ?? [],
+        sourceSnapshotId: next.metadata.snapshotId,
       }) || { changed: false };
       approvedLandmarks = next.landmarks;
       approvedPois = next.pois;
-      approvedOffMapEvents = next.events?.offMap ?? [];
+      approvedActivities = next.activities?.records ?? [];
       poiTilesets = nextPois;
       activeSnapshot = next;
       document.body.dataset.snapshotReconciled =
@@ -322,6 +473,8 @@ async function bootstrapApplication() {
   );
 
   const cleanupAppLayers = () => {
+    globalThis.__performanceDiagnostics?.destroy?.();
+    delete globalThis.__performanceDiagnostics;
     experienceIntro.destroy();
     featureTour.destroy();
     mapCanvas.removeEventListener("click", dismissPanelsFromMap);
@@ -331,6 +484,7 @@ async function bootstrapApplication() {
       requestSnapshotRefresh,
     );
     snapshotStatus.destroy();
+    performanceVariantController?.destroy();
     buildingHighlights.destroy();
   };
 
@@ -468,7 +622,7 @@ async function bootstrapApplication() {
     addOverlayLayers();
     await contextAssetsPromise;
 
-    const start = () => {
+    const start = async () => {
       if (!map.getLayer("buildings-3d")) {
         buildingHighlights.start();
         const discoveryAreaLayers = createDiscoveryAreaLayerManager({
@@ -480,25 +634,40 @@ async function bootstrapApplication() {
         });
         discoveryAreaLayers.start();
         window._discoveryAreaLayers = discoveryAreaLayers;
-        activityScenes = addEsplanadePerformanceScene(map, {
-          landmarks: approvedLandmarks,
-          offMapEvents: approvedOffMapEvents,
-          areaIdOf: ({ event, landmark }) => {
-            const explicit =
-              event?.areaId || landmark?.areaId || landmark?.subzoneId || null;
-            if (explicit) return explicit;
-            const source = event?.coordinates || landmark?.anchor;
-            const coordinates = Array.isArray(source)
-              ? source
-              : [Number(source?.lng), Number(source?.lat)];
-            return resolveCoarseAreaFromFeatures(
-              coordinates,
-              discoveryAreaAsset,
-            );
-          },
-          onLandmarkSelected: (landmarkId) =>
-            buildingHighlights.setSelectedPoi(landmarkId),
+        const locationController = createLocationController({
+          model: createLocationModel({
+            resolveCoarseArea: (coordinates) =>
+              resolveCoarseAreaFromFeatures(coordinates, discoveryAreaAsset),
+          }),
         });
+        activityScenes =
+          performanceVariant?.workloads.interface === false
+            ? []
+            : addEsplanadePerformanceScene(map, {
+                landmarks: approvedLandmarks,
+                activities: approvedActivities,
+                locationController,
+                discoveryAreaAsset,
+                areaIdOf: ({ event, landmark }) => {
+                  const explicit =
+                    event?.areaId ||
+                    landmark?.areaId ||
+                    landmark?.subzoneId ||
+                    null;
+                  if (explicit) return explicit;
+                  const source = event?.coordinates || landmark?.anchor;
+                  const coordinates = Array.isArray(source)
+                    ? source
+                    : [Number(source?.lng), Number(source?.lat)];
+                  return resolveCoarseAreaFromFeatures(
+                    coordinates,
+                    discoveryAreaAsset,
+                  );
+                },
+                onLandmarkSelected: (landmarkId) =>
+                  buildingHighlights.setSelectedPoi(landmarkId),
+                diagnosticWorkloads: performanceVariant?.workloads ?? null,
+              });
         activityScenes.push({
           id: "discovery-area-layers",
           finalize: () => {
@@ -509,12 +678,6 @@ async function bootstrapApplication() {
         eventSceneController =
           activityScenes.find(({ id }) => id === "landmark-event-pills") ||
           null;
-        const locationController = createLocationController({
-          model: createLocationModel({
-            resolveCoarseArea: (coordinates) =>
-              resolveCoarseAreaFromFeatures(coordinates, discoveryAreaAsset),
-          }),
-        });
         const locationLayers = createLocationContextLayerManager({
           map,
           beforeLayerId: "buildings-3d",
@@ -549,6 +712,8 @@ async function bootstrapApplication() {
         activityScenes.push(restaurantController);
         activityScenes.push(planningController);
         let applicationControls = null;
+        let assistantController = null;
+        let mapGuidanceController = null;
         sharedActionDispatch = createRuntimeActionDispatcher({
           map,
           initialCamera: INITIAL_CAMERA,
@@ -562,53 +727,94 @@ async function bootstrapApplication() {
           transitLayers,
           discoveryAreaLayers,
           applicationControls: () => applicationControls,
+          invokeConnector: (actionId, argumentsValue) => {
+            if (
+              !assistantController ||
+              (!actionId.startsWith("map.") &&
+                !actionId.startsWith("event.") &&
+                !actionId.startsWith("navigation.") &&
+                !actionId.startsWith("plan.") &&
+                !actionId.startsWith("restaurant.") &&
+                !actionId.startsWith("tour."))
+            )
+              return null;
+            return assistantController.executeCapability(
+              actionId,
+              argumentsValue,
+            );
+          },
         });
+        const dispatchRegisteredCapability = (actionId, argumentsValue) =>
+          sharedActionDispatch(actionId, argumentsValue);
+        restaurantController.setDirectActionDispatcher?.(
+          dispatchRegisteredCapability,
+        );
+        planningController.setDirectActionDispatcher?.(
+          dispatchRegisteredCapability,
+        );
         applicationControls = createApplicationActionControls({
-          dispatch: (actionId, argumentsValue) =>
-            sharedActionDispatch(actionId, argumentsValue),
+          dispatch: dispatchRegisteredCapability,
         });
         activityScenes.push(applicationControls);
-        activityScenes.push(
-          addMapGuidanceControls(map, {
-            onShowTour: () => featureTour.start({ force: true }),
-            dispatch: (actionId, argumentsValue) =>
-              sharedActionDispatch(actionId, argumentsValue),
-          }),
-        );
-        activityScenes.push(
-          createAssistantController({
-            getCandidateEnvelope: () =>
-              globalThis.__ASSISTANT_APPROVED_CANDIDATES__ || {
-                schemaVersion: "1.0",
-                sourceSnapshotId:
-                  document.body.dataset.snapshotId || "in-memory-current",
-                generatedAt: new Date().toISOString(),
-                ...resolveCandidateEnvelopeAreas(
-                  {
-                    candidates: [
-                      ...(eventSceneController?.getApprovedCandidates?.() ||
-                        []),
-                      ...(restaurantController.getCandidates?.() || []),
-                      ...(planningController.getApprovedCandidates?.() || []),
-                    ],
-                  },
-                  discoveryAreaAsset,
-                ),
-                sources: [],
-              },
-            onSelectCandidate: (candidateId) => {
-              if (candidateId.startsWith("event:"))
-                eventSceneController?.selectCandidate?.(candidateId);
-              else if (candidateId.startsWith("restaurant:"))
-                restaurantController.selectCandidate?.(candidateId);
-              else planningController.selectCandidate?.(candidateId);
+        mapGuidanceController = addMapGuidanceControls(map, {
+          onShowTour: () => featureTour.start({ force: true }),
+          executeCapability: dispatchRegisteredCapability,
+        });
+        activityScenes.push(mapGuidanceController);
+        assistantController = createAssistantController({
+          getCandidateEnvelope: () =>
+            globalThis.__ASSISTANT_APPROVED_CANDIDATES__ || {
+              schemaVersion: "1.0",
+              sourceSnapshotId:
+                document.body.dataset.snapshotId || "in-memory-current",
+              generatedAt: new Date().toISOString(),
+              ...resolveCandidateEnvelopeAreas(
+                {
+                  candidates: [
+                    ...(eventSceneController?.getApprovedCandidates?.() || []),
+                    ...(restaurantController.getCandidates?.() || []),
+                    ...(planningController.getApprovedCandidates?.() || []),
+                  ],
+                },
+                discoveryAreaAsset,
+              ),
+              sources: [],
             },
-            areaLayerManager: discoveryAreaLayers,
-            getTransitStations: () => transitLayers.getStations?.() || [],
-            locationController,
-            dispatchAction: sharedActionDispatch,
-          }),
-        );
+          onSelectCandidate: (candidateId) => {
+            if (candidateId.startsWith("event:"))
+              eventSceneController?.selectCandidate?.(candidateId);
+            else if (candidateId.startsWith("restaurant:"))
+              restaurantController.selectCandidate?.(candidateId);
+            else planningController.selectCandidate?.(candidateId);
+          },
+          map,
+          areaLayerManager: discoveryAreaLayers,
+          locationLayers,
+          transitLayers,
+          eventController: eventSceneController,
+          restaurantController,
+          planningController,
+          featureTour,
+          mapGuidanceController,
+          experienceIntro,
+          getTransitStations: () => transitLayers.getStations?.() || [],
+          locationController,
+          dispatchAction: sharedActionDispatch,
+        });
+        activityScenes.push(assistantController);
+        if (
+          queryParams.get("performanceDiagnostics") === "1" &&
+          queryParams.has("performanceVariant")
+        ) {
+          const { installPerformanceVariantController } =
+            await import("./activity-scenes/performance-diagnostic-variants.js");
+          performanceVariantController = installPerformanceVariantController({
+            map,
+            buildingHighlights,
+            eventScene: eventSceneController,
+            search: window.location.search,
+          });
+        }
         dockActivityActions();
       }
     };

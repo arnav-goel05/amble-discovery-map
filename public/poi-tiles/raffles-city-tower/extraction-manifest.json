@@ -1,0 +1,293 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "raffles-city-tower",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "the-shoppes-at-marina-bay-sands",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "cideco-industrial-complex",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "millenia-walk",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "temasek-shophouse",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "gv-building",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "rv-point",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "singapore-repertory-theatre",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "marina-south-pier",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "esplanade-mall",
+    "lotus-at-joo-chiat",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "the-central",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "marina-square",
+    "jewel-changi-airport",
+    "boat-quay-conservation-area",
+    "shangri-la-hotel",
+    "phoon-huat-industrial-building",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "raffles-city-tower",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "hdb-hub",
+    "everitt-edge",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "geylang-east-public-library",
+    "tan-tock-seng-hospital",
+    "b-central",
+    "tong-fong-building",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "stamford-arts-centre",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre"
+  ],
+  "generatedAt": "2026-07-21T18:57:03.102Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/38/6_4.b3dm",
+      "sourceSha256": "148b984b844fa1ae08798022badde66b337dfd4a9e860a5daa3b7bf9c925f064",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "gmlNames": [
+        "RAFFLES CITY TOWER"
+      ],
+      "poiFile": "6_4-c9f7eb14e8b1.b3dm",
+      "poiSha256": "92746f62ba41aa7e82cdf2b3c0071472fe624d503588652ba16e61b31b783d46",
+      "poiTriangles": 6264,
+      "backgroundFile": "optimized-tiles/6/38/6_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "backgroundSha256": "6b473e14278a58fbe5b582e5ee4ea5686d32fcec0cac5df53af6a28f5ec84692",
+      "backgroundTriangles": 14412
+    },
+    {
+      "sourceTile": "tiles/6/38/6_3.b3dm",
+      "sourceSha256": "1f5165e2fd648b0d04e3ab233321cffafcb0b2783333e1428a06948b05697c86",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "gmlNames": [
+        "RAFFLES CITY TOWER"
+      ],
+      "poiFile": "6_3-0c39f407f673.b3dm",
+      "poiSha256": "f6d3a2390a880aede17b3102df0592f9e11fe3ff945066ed5426459b25767c53",
+      "poiTriangles": 6264,
+      "backgroundFile": "optimized-tiles/6/38/6_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "backgroundSha256": "5f33204633716921776e9a851a753bbfd955a2c3133e2eb49461d81176455ac7",
+      "backgroundTriangles": 14412
+    },
+    {
+      "sourceTile": "tiles/6/38/6_2.b3dm",
+      "sourceSha256": "6418638b9c7b54bd3a28b5e7218ca50d82f290baa5a9d64fc47a3d2c41be68bf",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "gmlNames": [
+        "RAFFLES CITY TOWER"
+      ],
+      "poiFile": "6_2-c2305aeb72f3.b3dm",
+      "poiSha256": "57e7b7fd3201ae78a3e91f4b5bc5ae71c8c33d4ce92b5e4c64571132be697d2b",
+      "poiTriangles": 6264,
+      "backgroundFile": "optimized-tiles/6/38/6_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "backgroundSha256": "1edaa6711ecca6bb91461a3833eac0a9999c3f123f280e1c7d1dec0051fd6a5b",
+      "backgroundTriangles": 14412
+    },
+    {
+      "sourceTile": "tiles/6/38/6_1.b3dm",
+      "sourceSha256": "4cbc09c7eb87abceac0a2af2dd05e709540af9d71b883e767a02dfc1a94d25bf",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "gmlNames": [
+        "RAFFLES CITY TOWER"
+      ],
+      "poiFile": "6_1-49381b968f94.b3dm",
+      "poiSha256": "dc553b8e2b90b34a70f57722c27d43240b1250da0dd33779c35559c4b5597e04",
+      "poiTriangles": 6264,
+      "backgroundFile": "optimized-tiles/6/38/6_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "backgroundSha256": "f0520a461240248fd3e5017401b5128bcac46d0cefc4bfbd1e8936cdcbe17403",
+      "backgroundTriangles": 14412
+    },
+    {
+      "sourceTile": "tiles/6/38/6_0.b3dm",
+      "sourceSha256": "a17ad9302e6aff9cdd89ec650f62e1d1cd3b027ff7b986ec77c9cb4f8869168c",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "gmlNames": [
+        "RAFFLES CITY TOWER"
+      ],
+      "poiFile": "6_0-9bb465ce53ca.b3dm",
+      "poiSha256": "bdb6f043445ade2bcf86c196c1bb6ca2e712db693eda08491bf75180260e5067",
+      "poiTriangles": 6264,
+      "backgroundFile": "optimized-tiles/6/38/6_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "backgroundSha256": "6057e72ec7771959ebd433de087324f618106fa3af5dc183e787c0d0e98faebb",
+      "backgroundTriangles": 14412
+    },
+    {
+      "sourceTile": "tiles/6/38/6_5.b3dm",
+      "sourceSha256": "1a0a1df94ab7163d01d6449ec1049b3fbb15e277949cd8d0593acdeaaecbe876",
+      "originalBatchIds": [
+        4
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "gmlNames": [
+        "RAFFLES CITY TOWER"
+      ],
+      "poiFile": "6_5-ebdc28d355cc.b3dm",
+      "poiSha256": "cc0467e916f7325d3e72ba1ad3105eb9d78eab49ec68ca337a6df4ce2bd0d020",
+      "poiTriangles": 6264,
+      "backgroundFile": "optimized-tiles/6/38/6_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_e7246017-79e6-4a0a-8abd-8d7ddf973ba6",
+        "SLA_BLDG2_30f92d94-5e94-4311-8749-c5169657af0e"
+      ],
+      "backgroundSha256": "736a81daa4fbd1da52ac0dca10c9b12bace487541dc0591af38a6f59ab19fbca",
+      "backgroundTriangles": 14412
+    }
+  ]
+}

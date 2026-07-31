@@ -1,4 +1,5 @@
 import {
+  discoveryCandidates,
   orderSuggestedAreas,
   validateDiscoveryResult,
 } from "./discovery-model.js";
@@ -29,9 +30,10 @@ const distanceMeters = ([leftLng, leftLat], [rightLng, rightLat]) => {
 
 export function matchLocalDiscovery(
   intent,
-  envelope,
+  source,
   { maxAreas = 5, transitStations = [] } = {},
 ) {
+  const catalogueMode = Array.isArray(source?.items);
   const transitRequested =
     intent?.transitConstraint?.explicitlyRequested === true &&
     intent.transitConstraint.mode === "mrt";
@@ -52,17 +54,29 @@ export function matchLocalDiscovery(
   ]);
   const exclusions = new Set((intent?.exclusions || []).flatMap(tokenize));
   const eligible = [];
-  for (const candidate of envelope?.candidates || []) {
+  for (const candidate of discoveryCandidates(source)) {
+    if (
+      !candidate.areaId ||
+      Object.keys(candidate.attributes || {}).length === 0
+    )
+      continue;
     const words = new Set(attributeText(candidate.attributes));
     if ([...exclusions].some((word) => words.has(word))) continue;
     const matched = [...query].filter((word) => words.has(word));
-    const nearestMrtMeters = stationCoordinates.length
-      ? Math.min(
-          ...stationCoordinates.map((coordinates) =>
-            distanceMeters(candidate.coordinates, coordinates),
-          ),
-        )
+    const projectedDistance = Number.isFinite(
+      candidate.attributes?.distanceMeters,
+    )
+      ? candidate.attributes.distanceMeters
       : null;
+    const nearestMrtMeters =
+      projectedDistance ??
+      (Array.isArray(candidate.coordinates) && stationCoordinates.length
+        ? Math.min(
+            ...stationCoordinates.map((coordinates) =>
+              distanceMeters(candidate.coordinates, coordinates),
+            ),
+          )
+        : null);
     eligible.push({ candidate, matched, nearestMrtMeters });
   }
   const hasExactMatch = eligible.some(({ matched }) => matched.length > 0);
@@ -104,7 +118,8 @@ export function matchLocalDiscovery(
           left.candidate.candidateId.localeCompare(right.candidate.candidateId),
       )[0];
     const attributeKeys = [...new Set(evidence.matchedKeys)].sort();
-    const name = evidence.candidate.attributes.name;
+    const name = evidence.candidate.attributes.name ?? evidence.candidate.label;
+    const supportedKeys = Object.keys(evidence.candidate.attributes).sort();
     return {
       areaId,
       rank: 1,
@@ -122,7 +137,9 @@ export function matchLocalDiscovery(
             ? `${name || "An approved option"} is a grounded option available in this area.`
             : `${name || "An approved option"} matches ${attributeKeys.join(", ") || "the request"}.`,
           candidateIds: [evidence.candidate.candidateId],
-          attributeKeys: attributeKeys.length ? attributeKeys : ["name"],
+          attributeKeys: attributeKeys.length
+            ? attributeKeys
+            : [supportedKeys[0]],
         },
       ],
       tradeoffs: [
@@ -135,10 +152,30 @@ export function matchLocalDiscovery(
       candidateIds,
     };
   });
-  const result = {
-    intentRevision: intent?.revision ?? 0,
-    areas: orderSuggestedAreas(areas).slice(0, maxAreas),
-    clarification: null,
-  };
-  return validateDiscoveryResult(result, envelope);
+  const ranked = orderSuggestedAreas(areas).slice(0, maxAreas);
+  const result = catalogueMode
+    ? ranked.length
+      ? {
+          intentRevision: intent?.revision ?? 0,
+          mode: "recommendations",
+          areas: ranked,
+          clarification: null,
+          message: null,
+        }
+      : {
+          intentRevision: intent?.revision ?? 0,
+          mode: "no_match",
+          areas: [],
+          clarification: null,
+          message:
+            "No approved match was found. Try a broader time, area, or category.",
+        }
+    : {
+        intentRevision: intent?.revision ?? 0,
+        areas: ranked,
+        clarification: null,
+      };
+  return validateDiscoveryResult(result, source, {
+    catalogRevision: catalogueMode ? source.catalogRevision : null,
+  });
 }

@@ -103,7 +103,7 @@ test("relay client uses only supplied transport and playback dependencies", asyn
         json: async () => ({
           data: {
             sessionId: "opaque",
-            protocolVersion: "1.0",
+            protocolVersion: "1.1",
             streamPath: "/api/voice/sessions/opaque/stream",
           },
         }),

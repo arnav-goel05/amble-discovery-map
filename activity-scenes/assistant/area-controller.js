@@ -6,8 +6,16 @@ export function createAreaController({
   let areas = [];
   let selectedAreaId = null;
   let revision = 0;
-  const emit = () =>
-    onChange?.({ revision, selectedAreaId, areas: structuredClone(areas) });
+  const listeners = new Set();
+  const emit = () => {
+    const snapshot = {
+      revision,
+      selectedAreaId,
+      areas: structuredClone(areas),
+    };
+    onChange?.(snapshot);
+    for (const listener of listeners) listener(structuredClone(snapshot));
+  };
 
   return Object.freeze({
     reconcile(nextAreas = []) {
@@ -70,6 +78,18 @@ export function createAreaController({
     },
     snapshot() {
       return { revision, selectedAreaId, areas: structuredClone(areas) };
+    },
+    subscribe(listener, { emitCurrent = false } = {}) {
+      if (typeof listener !== "function")
+        throw new TypeError("Area subscriber must be a function");
+      listeners.add(listener);
+      if (emitCurrent) listener(this.snapshot());
+      let active = true;
+      return () => {
+        if (!active) return false;
+        active = false;
+        return listeners.delete(listener);
+      };
     },
   });
 }

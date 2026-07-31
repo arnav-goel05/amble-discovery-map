@@ -1,0 +1,4356 @@
+[
+  {
+    "id": "tower-3-marina-bay-sands-singapore",
+    "label": "TOWER 3 (MARINA BAY SANDS SINGAPORE)",
+    "anchor": {
+      "lng": 103.86096348605537,
+      "lat": 1.2844378672608592
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:80aaa9d1687a1eb77ca839cf",
+        "venueGroupIds": [
+          "venue-group:597566fb422272fa92fe1645"
+        ]
+      },
+      {
+        "activityId": "activity:cbc53afd3fde1c60ab89468b",
+        "venueGroupIds": [
+          "venue-group:2a90d68f66ad84a786d54f1e"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "national-museum-of-singapore",
+    "label": "NATIONAL MUSEUM OF SINGAPORE",
+    "anchor": {
+      "lng": 103.84838868243224,
+      "lat": 1.2965293668742313
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:007234a687f99957b57a7c76",
+        "venueGroupIds": [
+          "venue-group:753f5445fb097f35853f75bf"
+        ]
+      },
+      {
+        "activityId": "activity:186b8491b767b898a7ca6659",
+        "venueGroupIds": [
+          "venue-group:3dd49dfc3a82756d17b610d9"
+        ]
+      },
+      {
+        "activityId": "activity:6f15b09e142fe052b26d11c4",
+        "venueGroupIds": [
+          "venue-group:e37e721aa1d9cb9244dbe18f"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "national-gallery-singapore",
+    "label": "NATIONAL GALLERY SINGAPORE",
+    "anchor": {
+      "lng": 103.8515234999511,
+      "lat": 1.2902843735283591
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:0335221daa0c1b999273e3a5",
+        "venueGroupIds": [
+          "venue-group:eedbb1d4af6d1457ffde42e8"
+        ]
+      },
+      {
+        "activityId": "activity:1c6eb924844ec9e31ab1b4ee",
+        "venueGroupIds": [
+          "venue-group:f8359cd343ab5c1ba1721564"
+        ]
+      },
+      {
+        "activityId": "activity:2cfc341ca11109b15c183b09",
+        "venueGroupIds": [
+          "venue-group:c52359a513e2a156d4d6e5e9"
+        ]
+      },
+      {
+        "activityId": "activity:33291714fe7b4684a71db53b",
+        "venueGroupIds": [
+          "venue-group:578f786141625aec4e33e3be"
+        ]
+      },
+      {
+        "activityId": "activity:3533e2e8211e8ace0933fc71",
+        "venueGroupIds": [
+          "venue-group:8fd02b906c895c86fab6a1ae"
+        ]
+      },
+      {
+        "activityId": "activity:4bdd4c7594a09df215f0a256",
+        "venueGroupIds": [
+          "venue-group:3dc595645a6f3982796c781f"
+        ]
+      },
+      {
+        "activityId": "activity:54e4fda43da3970a0f5e8a97",
+        "venueGroupIds": [
+          "venue-group:0da77390773a48d8f4de9a2a"
+        ]
+      },
+      {
+        "activityId": "activity:5aeff7e9ebfa8737bbefb7f3",
+        "venueGroupIds": [
+          "venue-group:a8c22c1525ac8ad8275b134b"
+        ]
+      },
+      {
+        "activityId": "activity:5e91bdfecf94d55cb4be3e8b",
+        "venueGroupIds": [
+          "venue-group:8fa120d74829b5f6541a7c8a"
+        ]
+      },
+      {
+        "activityId": "activity:92605588db4eda4a7516d16a",
+        "venueGroupIds": [
+          "venue-group:4d0f3d769f111da42828d720"
+        ]
+      },
+      {
+        "activityId": "activity:9357fa186aca95ced37da582",
+        "venueGroupIds": [
+          "venue-group:92c1eb7b5ba4b4bb0838d6de"
+        ]
+      },
+      {
+        "activityId": "activity:ba6bf71fb6a3d6378e0788fd",
+        "venueGroupIds": [
+          "venue-group:1dcfece5eab0814164f1cd40"
+        ]
+      },
+      {
+        "activityId": "activity:deb9ea6b4013efce926a942f",
+        "venueGroupIds": [
+          "venue-group:849f3e9c8600a4870ed74e7d"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "lion-building-c",
+    "label": "LION BUILDING C",
+    "anchor": {
+      "lng": 103.89171064224868,
+      "lat": 1.3246403459888996
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:29dec67e26132c85c1722e29",
+        "venueGroupIds": [
+          "venue-group:45361a92f84782cf62b3fcf3"
+        ]
+      },
+      {
+        "activityId": "activity:4d0caaab780bfd67197efb33",
+        "venueGroupIds": [
+          "venue-group:c77d1b7cf66e698fa08029d7"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "claymore-plaza",
+    "label": "CLAYMORE PLAZA",
+    "anchor": {
+      "lng": 103.83162054828252,
+      "lat": 1.3068173469291342
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:2d55fc369775c99ba52bf436",
+        "venueGroupIds": [
+          "venue-group:917e9702472b136980dbe2da"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rumah-bebe",
+    "label": "RUMAH BEBE",
+    "anchor": {
+      "lng": 103.90448727247086,
+      "lat": 1.3058834584402714
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:1fdda6bac52fdf004446bf62",
+        "venueGroupIds": [
+          "venue-group:a11875146987327aa9f9616b"
+        ]
+      },
+      {
+        "activityId": "activity:9972f4b9ad360cefa68c666e",
+        "venueGroupIds": [
+          "venue-group:228111b47dac8e50bdeb8fa0"
+        ]
+      },
+      {
+        "activityId": "activity:c9de641c60b2d76fbb7ef8cf",
+        "venueGroupIds": [
+          "venue-group:a77c93b97465d0a4ed771530"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "perfect-one",
+    "label": "PERFECT ONE",
+    "anchor": {
+      "lng": 103.87388124289113,
+      "lat": 1.328651337258212
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:bb10f8e6a9d16cc2cb0a5619",
+        "venueGroupIds": [
+          "venue-group:2f54342f2f3cd6d2eb55aef2"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "textile-centre",
+    "label": "TEXTILE CENTRE",
+    "anchor": {
+      "lng": 103.86146008209803,
+      "lat": 1.3038219416319847
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:1d4226cda8d59ce7cfb0d2fd",
+        "venueGroupIds": [
+          "venue-group:b2c014ebf621c6e3bc809871"
+        ]
+      },
+      {
+        "activityId": "activity:25c00b800b6211e1f972aedb",
+        "venueGroupIds": [
+          "venue-group:311fcdafe08e4ad271e71f88"
+        ]
+      },
+      {
+        "activityId": "activity:4359acc6bb5cae29ae2fa6ca",
+        "venueGroupIds": [
+          "venue-group:11a9f6a306db173ec2e6cd44"
+        ]
+      },
+      {
+        "activityId": "activity:59aa4c08836d5127cfeeecfc",
+        "venueGroupIds": [
+          "venue-group:3e1d330e87492390c8556d2c"
+        ]
+      },
+      {
+        "activityId": "activity:841b85de38eb46d38d3930a2",
+        "venueGroupIds": [
+          "venue-group:f6a293b2c4e178c7fd52bd9c"
+        ]
+      },
+      {
+        "activityId": "activity:8a090519f2b127df6c71c303",
+        "venueGroupIds": [
+          "venue-group:3f52af2851e5837c2caf6e1c"
+        ]
+      },
+      {
+        "activityId": "activity:a22fdb2f02c343f4dd2ccfc5",
+        "venueGroupIds": [
+          "venue-group:3dc2dc06b8cb09dab8edcf64"
+        ]
+      },
+      {
+        "activityId": "activity:a46ece4a9b42e0cf18ab546f",
+        "venueGroupIds": [
+          "venue-group:6e38736cbd3ced7d277fceaa"
+        ]
+      },
+      {
+        "activityId": "activity:ae74454a7e371c2c9970643f",
+        "venueGroupIds": [
+          "venue-group:1455e9fb78bfbee38c77eb0f"
+        ]
+      },
+      {
+        "activityId": "activity:c69f0aa8771e7287b57e52b5",
+        "venueGroupIds": [
+          "venue-group:3dbc60fec9d28c34c10e465a"
+        ]
+      },
+      {
+        "activityId": "activity:e9e9cbdf8d819102a71e5552",
+        "venueGroupIds": [
+          "venue-group:02b14e5439bbfbd59763bd35"
+        ]
+      },
+      {
+        "activityId": "activity:fb6addb4a1facc130862d5fd",
+        "venueGroupIds": [
+          "venue-group:076ddc54ab2339f9ec2a1037"
+        ]
+      },
+      {
+        "activityId": "activity:fd9929556c3f535eeaaa60b0",
+        "venueGroupIds": [
+          "venue-group:b77f8a38bc4527b97db721df"
+        ]
+      },
+      {
+        "activityId": "activity:ff6d9a06d5edbaa76e3f17db",
+        "venueGroupIds": [
+          "venue-group:80d58a19559903bca41ee1b7"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "song-lin-building",
+    "label": "SONG LIN BUILDING",
+    "anchor": {
+      "lng": 103.85873872770357,
+      "lat": 1.3063461756276058
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:a526e53458e983dec709382b",
+        "venueGroupIds": [
+          "venue-group:6175c3bfc25635fd90d6d977"
+        ]
+      },
+      {
+        "activityId": "activity:de78b0a84fd3170d7fd8a749",
+        "venueGroupIds": [
+          "venue-group:6b31dfd0aa8e2823b28ae854"
+        ]
+      },
+      {
+        "activityId": "activity:de984c87a38939e7dad53d57",
+        "venueGroupIds": [
+          "venue-group:593114c532323ee457115b7a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "inter-continental-singapore",
+    "label": "INTER-CONTINENTAL SINGAPORE",
+    "anchor": {
+      "lng": 103.8548742657753,
+      "lat": 1.298490549744487
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:848f5c365be76b591e5d17ac",
+        "venueGroupIds": [
+          "venue-group:647c6c1594e7444eaca46a1b"
+        ]
+      },
+      {
+        "activityId": "activity:b99bdf0b00a55d6c2b45fc74",
+        "venueGroupIds": [
+          "venue-group:ff8484902a081fe53b32b115"
+        ]
+      },
+      {
+        "activityId": "activity:def934eca9ed57fde6434da9",
+        "venueGroupIds": [
+          "venue-group:1838ea8e27ec7b4595f165b6"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "roxy-square",
+    "label": "ROXY SQUARE",
+    "anchor": {
+      "lng": 103.90406095898861,
+      "lat": 1.3043015726096299
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:1deca8bf08f7405993d510cf",
+        "venueGroupIds": [
+          "venue-group:f9bf1ee675ee83585ddd7542"
+        ]
+      },
+      {
+        "activityId": "activity:2d0f0ffeb5638ab3e97b9d37",
+        "venueGroupIds": [
+          "venue-group:78724f08c42e3ba51f4b7802"
+        ]
+      },
+      {
+        "activityId": "activity:618551a3d75e8e3a7fa9df42",
+        "venueGroupIds": [
+          "venue-group:fe1ff39136e784b573790665"
+        ]
+      },
+      {
+        "activityId": "activity:67f514b30b49c01a57edf02d",
+        "venueGroupIds": [
+          "venue-group:06ad8ae019bf55dedaad0471"
+        ]
+      },
+      {
+        "activityId": "activity:8de656ef4933689a72bc90e8",
+        "venueGroupIds": [
+          "venue-group:0a69a703e311b31cca512ec7"
+        ]
+      },
+      {
+        "activityId": "activity:ee55fe471d6e7fe30cc93860",
+        "venueGroupIds": [
+          "venue-group:1f8a45b74cb9fb70cc635478"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "blk-e-e2i",
+    "label": "BLK E (E2I)",
+    "anchor": {
+      "lng": 103.81438165844831,
+      "lat": 1.2863653629353249
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:d654862d42f02f915a0fe9f8",
+        "venueGroupIds": [
+          "venue-group:a46aefe2a5299556d1f4d4b2"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "capitol-theatre",
+    "label": "CAPITOL THEATRE",
+    "anchor": {
+      "lng": 103.85117758661914,
+      "lat": 1.2934758471005787
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:15abcfef1487e88aeb052e9a",
+        "venueGroupIds": [
+          "venue-group:1b70f49719b5f825cce3b05d"
+        ]
+      },
+      {
+        "activityId": "activity:38a41f04479b5a32cf68a52f",
+        "venueGroupIds": [
+          "venue-group:d8ae11b12cd4a4fab8dd2e28"
+        ]
+      },
+      {
+        "activityId": "activity:3a3c50ca450541df7d0ff46a",
+        "venueGroupIds": [
+          "venue-group:5ac46403a249793fe6d1f340"
+        ]
+      },
+      {
+        "activityId": "activity:3d2b2358dcdd6f236236be6b",
+        "venueGroupIds": [
+          "venue-group:3b81c160fdaa2c61f680565a"
+        ]
+      },
+      {
+        "activityId": "activity:46bd91cb5fc3a54db227e502",
+        "venueGroupIds": [
+          "venue-group:0339547babf82195425b34bf"
+        ]
+      },
+      {
+        "activityId": "activity:5824e497a46b331c07528571",
+        "venueGroupIds": [
+          "venue-group:38879e5705e2928b59a44e87"
+        ]
+      },
+      {
+        "activityId": "activity:b8891b02b0c08d3415342fa5",
+        "venueGroupIds": [
+          "venue-group:e98738dafb1d353255fa4559"
+        ]
+      },
+      {
+        "activityId": "activity:c87981936aa9baa62cdad8a5",
+        "venueGroupIds": [
+          "venue-group:6538b44fe1982567df9c63ec"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "scape",
+    "label": "SCAPE",
+    "anchor": {
+      "lng": 103.83574842041503,
+      "lat": 1.3010131553541873
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:04dbb916b573cdd19b8d7d91",
+        "venueGroupIds": [
+          "venue-group:623945664db5f315fd3240ec"
+        ]
+      },
+      {
+        "activityId": "activity:14a5ba763caebef1e57ab6b4",
+        "venueGroupIds": [
+          "venue-group:9aa2bb00fc1195fcf28cd150"
+        ]
+      },
+      {
+        "activityId": "activity:1fbbf9320012a2efbd674c4c",
+        "venueGroupIds": [
+          "venue-group:d0589820eb85245f2f2187c0"
+        ]
+      },
+      {
+        "activityId": "activity:edd7771afe84a367c2b41b43",
+        "venueGroupIds": [
+          "venue-group:43e7be4b53659c5ca1b7935b"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tampines-plaza",
+    "label": "TAMPINES PLAZA",
+    "anchor": {
+      "lng": 103.94271348743291,
+      "lat": 1.3531581619426925
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:74264e5e610649e0c487eee5",
+        "venueGroupIds": [
+          "venue-group:968fb78d6995b5942612e52d"
+        ]
+      },
+      {
+        "activityId": "activity:d358f844bd9435a20de582fb",
+        "venueGroupIds": [
+          "venue-group:fdc33a223b0e5b5b4b6f67c3"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "thian-hock-keng",
+    "label": "THIAN HOCK KENG",
+    "anchor": {
+      "lng": 103.84751036027205,
+      "lat": 1.2811022374858432
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:1ca77b5592367dab6b5f401a",
+        "venueGroupIds": [
+          "venue-group:8bbbdad7ebb77367c1221960"
+        ]
+      },
+      {
+        "activityId": "activity:8cd06e14de4bd6babe9f81c4",
+        "venueGroupIds": [
+          "venue-group:86c58fda36ee1a2683c334f3"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "singapore-chinese-cultural-centre",
+    "label": "SINGAPORE CHINESE CULTURAL CENTRE",
+    "anchor": {
+      "lng": 103.84957033668435,
+      "lat": 1.2758291819866812
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:234cad29f5e99c08abbcfbb0",
+        "venueGroupIds": [
+          "venue-group:bc4e3f5d2b3c86f5a27746cf"
+        ]
+      },
+      {
+        "activityId": "activity:2799e2693ef98075a95aec3b",
+        "venueGroupIds": [
+          "venue-group:aed59e2e928587f164d8d8b1"
+        ]
+      },
+      {
+        "activityId": "activity:3b5ba58a782f7ad767ccf83d",
+        "venueGroupIds": [
+          "venue-group:a2ec504dac673f501fec93ac"
+        ]
+      },
+      {
+        "activityId": "activity:4305c880cb136181508a0d98",
+        "venueGroupIds": [
+          "venue-group:ff2d71678a6d41a7df385ff1"
+        ]
+      },
+      {
+        "activityId": "activity:4c595bf4adc4008d1faafef3",
+        "venueGroupIds": [
+          "venue-group:d0f37c35c81db389dfc107ea"
+        ]
+      },
+      {
+        "activityId": "activity:4c6611308feb710325685fa4",
+        "venueGroupIds": [
+          "venue-group:05e798b5933a34b749d3a240"
+        ]
+      },
+      {
+        "activityId": "activity:595716df7b198c6ea1bd97b4",
+        "venueGroupIds": [
+          "venue-group:468c30e70fa210bd9947753b"
+        ]
+      },
+      {
+        "activityId": "activity:6a90d77e4afefda853714c6a",
+        "venueGroupIds": [
+          "venue-group:57ca05c0f961498f02ff5df2"
+        ]
+      },
+      {
+        "activityId": "activity:8e6ad3a4e8ec20b0ff4457d6",
+        "venueGroupIds": [
+          "venue-group:0b53ab01f18462ee7ec86c73"
+        ]
+      },
+      {
+        "activityId": "activity:9d140ed73871547dec928fc0",
+        "venueGroupIds": [
+          "venue-group:34d5928cbf7a3d849cfe5c09"
+        ]
+      },
+      {
+        "activityId": "activity:b9ee9e8bf556b9eb8bfccb10",
+        "venueGroupIds": [
+          "venue-group:7a6d3ff1bc52814b5af81c21"
+        ]
+      },
+      {
+        "activityId": "activity:df4c7a471665f33bd756f3fb",
+        "venueGroupIds": [
+          "venue-group:fdf0ac5c60fe7696b8d9ab60"
+        ]
+      },
+      {
+        "activityId": "activity:ff4938f7ea92c9bc41b48d0a",
+        "venueGroupIds": [
+          "venue-group:2d3adf572ae980505bb90029"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "wisma-geylang-serai",
+    "label": "WISMA GEYLANG SERAI",
+    "anchor": {
+      "lng": 103.89676240426208,
+      "lat": 1.3164631078694682
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:1f5dcef3ca0bdab262f0fc8b",
+        "venueGroupIds": [
+          "venue-group:38df5a5969f8d0b4a60ee673"
+        ]
+      },
+      {
+        "activityId": "activity:a180a97440ba75b992c61bd2",
+        "venueGroupIds": [
+          "venue-group:bf493f5bbda30624bfe0325c"
+        ]
+      },
+      {
+        "activityId": "activity:ff9e239fe91e8c28c7159062",
+        "venueGroupIds": [
+          "venue-group:dc05b1c312ba072e3be83959"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "marina-bay-sands-artscience-museum",
+    "label": "MARINA BAY SANDS (ARTSCIENCE MUSEUM)",
+    "anchor": {
+      "lng": 103.85927402663303,
+      "lat": 1.2862040338634544
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:071b0a865c31eef8d089a195",
+        "venueGroupIds": [
+          "venue-group:5dd6c9e8c81d07d1f9b182d3"
+        ]
+      },
+      {
+        "activityId": "activity:2b25848ce1bd898937197924",
+        "venueGroupIds": [
+          "venue-group:e6357fb235b2261f00ef1d00"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "the-commerze-irving",
+    "label": "THE COMMERZE@IRVING",
+    "anchor": {
+      "lng": 103.8864135988058,
+      "lat": 1.3362279396240475
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:2255f84b016dcc5db94768b7",
+        "venueGroupIds": [
+          "venue-group:4cb336d8e055db013b4e2209"
+        ]
+      },
+      {
+        "activityId": "activity:5a01e3d2a48ebb25a2f8c10b",
+        "venueGroupIds": [
+          "venue-group:095ccfe3582502f2ddf8e169"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "raffles-marina",
+    "label": "RAFFLES MARINA",
+    "anchor": {
+      "lng": 103.63564449273957,
+      "lat": 1.3433679037951562
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:a6f3ebb3ddd5403c7cc6d518",
+        "venueGroupIds": [
+          "venue-group:ed4d4e599933d914827fb948"
+        ]
+      },
+      {
+        "activityId": "activity:a923ab35140cb058b10c8de8",
+        "venueGroupIds": [
+          "venue-group:280ac34ee8468aba00d598a4"
+        ]
+      },
+      {
+        "activityId": "activity:f9841fc95e02bff98cedad40",
+        "venueGroupIds": [
+          "venue-group:0ff45f555adac8de6340ee7d"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "gateway-theatre",
+    "label": "GATEWAY THEATRE",
+    "anchor": {
+      "lng": 103.8165752490265,
+      "lat": 1.2839708536712913
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:187452893b9233a7428bc518",
+        "venueGroupIds": [
+          "venue-group:f28bf4b010a4b18e53302a8c"
+        ]
+      },
+      {
+        "activityId": "activity:928bf939672a02856db6c6e6",
+        "venueGroupIds": [
+          "venue-group:5dbc8cf0f1b3b8c977842dd3"
+        ]
+      },
+      {
+        "activityId": "activity:a10b985af78d9e78a4d71bce",
+        "venueGroupIds": [
+          "venue-group:68c18748066def8c04523bfb"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "orchard-central",
+    "label": "ORCHARD CENTRAL",
+    "anchor": {
+      "lng": 103.83977110373262,
+      "lat": 1.3006384889516347
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:58dc075f48285d7af03ea2fb",
+        "venueGroupIds": [
+          "venue-group:441bc432cf9614636001b60c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "safra-clubhouse-punggol",
+    "label": "SAFRA CLUBHOUSE (PUNGGOL)",
+    "anchor": {
+      "lng": 103.90619501762325,
+      "lat": 1.4102757845269558
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:e9ef9edfc801392c4f2d0745",
+        "venueGroupIds": [
+          "venue-group:67b35580efa05452787f1b39"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "singapore-philatelic-museum",
+    "label": "SINGAPORE PHILATELIC MUSEUM",
+    "anchor": {
+      "lng": 103.84871417173503,
+      "lat": 1.2928442705797234
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:8c2907315eaff3dddfce9af0",
+        "venueGroupIds": [
+          "venue-group:240231402bfa256fcb002a70"
+        ]
+      },
+      {
+        "activityId": "activity:be746bd0d7498381e206a7e6",
+        "venueGroupIds": [
+          "venue-group:bf21d4d1fa69c42fca2de4c5"
+        ]
+      },
+      {
+        "activityId": "activity:e9a3138f928d126f6c7c42c5",
+        "venueGroupIds": [
+          "venue-group:5178ea5903f7a2e96b20cfb5"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "shell-dunman",
+    "label": "SHELL DUNMAN",
+    "anchor": {
+      "lng": 103.90099738034162,
+      "lat": 1.309822817165285
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:ddb07ff4803ade67285f94e1",
+        "venueGroupIds": [
+          "venue-group:a153efadb6471141b5eb6b4d"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "63-ubi",
+    "label": "63@UBI",
+    "anchor": {
+      "lng": 103.89398163920904,
+      "lat": 1.3245980419563743
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:60bb55fb262fff47ee3f1fe7",
+        "venueGroupIds": [
+          "venue-group:03e03b5043f57b2417ea8c9d"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "changi-chapel-and-museum",
+    "label": "CHANGI CHAPEL AND MUSEUM",
+    "anchor": {
+      "lng": 103.97385869089895,
+      "lat": 1.362185483656241
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:7b84f87c648cc3718bc0f6dc",
+        "venueGroupIds": [
+          "venue-group:2b1b2fd161c9a5a9e1b325e4"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "reflection-at-bukit-chandu-opium-hill",
+    "label": "REFLECTION AT BUKIT CHANDU (OPIUM HILL)",
+    "anchor": {
+      "lng": 103.79416977824226,
+      "lat": 1.279581972175609
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:04ad73e006bb8061a4700aa2",
+        "venueGroupIds": [
+          "venue-group:ddaf90bf88e04e2b99c19e39"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "victoria-theatre-and-concert-hall-u-c",
+    "label": "VICTORIA THEATRE AND CONCERT HALL (U/C)",
+    "anchor": {
+      "lng": 103.85158346753775,
+      "lat": 1.2883545097052018
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:014f1c2555b389ad82c09594",
+        "venueGroupIds": [
+          "venue-group:af8d05b5ec5eb228cb6fc6dd"
+        ]
+      },
+      {
+        "activityId": "activity:03a74f2998d0190047e07d75",
+        "venueGroupIds": [
+          "venue-group:0d6a7a02d181bc4e335709bc"
+        ]
+      },
+      {
+        "activityId": "activity:08aaf37ead29204b0e8dce1f",
+        "venueGroupIds": [
+          "venue-group:f734b2738c7495eca350b04b"
+        ]
+      },
+      {
+        "activityId": "activity:09ffb0c765bf598f1aec66da",
+        "venueGroupIds": [
+          "venue-group:19813ddf5e82bd39601c7b32"
+        ]
+      },
+      {
+        "activityId": "activity:1227adfe5c4af9f4c9eae78e",
+        "venueGroupIds": [
+          "venue-group:59a0e4ee22d6c285e5958b07"
+        ]
+      },
+      {
+        "activityId": "activity:16cf8532c4abfb5fd0362ae8",
+        "venueGroupIds": [
+          "venue-group:34f88d9909796d70389f935b"
+        ]
+      },
+      {
+        "activityId": "activity:1b5c3fa1e7f30085060ae007",
+        "venueGroupIds": [
+          "venue-group:c5c014c7bdc26ac5a145234c"
+        ]
+      },
+      {
+        "activityId": "activity:2159162fd696e85fd9ee7ed1",
+        "venueGroupIds": [
+          "venue-group:103fb3587a6b6bd848f85408"
+        ]
+      },
+      {
+        "activityId": "activity:22b899e3d89a2e023370fc50",
+        "venueGroupIds": [
+          "venue-group:e31cb797b27fedf9493d6379"
+        ]
+      },
+      {
+        "activityId": "activity:260b6ab6279b512e2927c066",
+        "venueGroupIds": [
+          "venue-group:6cf81fa83060d4f718a94640"
+        ]
+      },
+      {
+        "activityId": "activity:27c96e3e3efc8e9db257ce29",
+        "venueGroupIds": [
+          "venue-group:f44382adb1eabb0e7f5f3b24"
+        ]
+      },
+      {
+        "activityId": "activity:2b5605060f2c6126d521b92e",
+        "venueGroupIds": [
+          "venue-group:a66a2058a7c6498d910d0d74"
+        ]
+      },
+      {
+        "activityId": "activity:343e2b4bf433cc4826d2fce1",
+        "venueGroupIds": [
+          "venue-group:8f8b63a6a87f7b5635812f79"
+        ]
+      },
+      {
+        "activityId": "activity:35a40cbd81bd229976bfd830",
+        "venueGroupIds": [
+          "venue-group:d9fc7e9aaacde7b352dc4e08"
+        ]
+      },
+      {
+        "activityId": "activity:374c1cf036c99355164e69cd",
+        "venueGroupIds": [
+          "venue-group:30cfbabedddf76392e869049"
+        ]
+      },
+      {
+        "activityId": "activity:3d5b403db096c8278010b9d7",
+        "venueGroupIds": [
+          "venue-group:3d467dfebfdbb0dca27cf386"
+        ]
+      },
+      {
+        "activityId": "activity:424e74dc3e5694001fa685ab",
+        "venueGroupIds": [
+          "venue-group:48f37c858b9c758075981331"
+        ]
+      },
+      {
+        "activityId": "activity:42697c445888031487cd30ed",
+        "venueGroupIds": [
+          "venue-group:7a6517aad99432eeef0e9230"
+        ]
+      },
+      {
+        "activityId": "activity:454dad20550b78fab4d81101",
+        "venueGroupIds": [
+          "venue-group:965b57391e5ac49b3844bb4d"
+        ]
+      },
+      {
+        "activityId": "activity:4b44aa2cf4430a6425b1d0fd",
+        "venueGroupIds": [
+          "venue-group:e43c6bf07aafed8596a9f0fb"
+        ]
+      },
+      {
+        "activityId": "activity:4cee06aee73b60e77ce1fd25",
+        "venueGroupIds": [
+          "venue-group:eb03b4b6c0e2c3549de649d7"
+        ]
+      },
+      {
+        "activityId": "activity:5472e221a541a414f6dd9a10",
+        "venueGroupIds": [
+          "venue-group:371c4fb540352f4a6263eaeb"
+        ]
+      },
+      {
+        "activityId": "activity:592040e1a6c6eac974ee4f34",
+        "venueGroupIds": [
+          "venue-group:f118fb345ff87c00c6e8214f"
+        ]
+      },
+      {
+        "activityId": "activity:5a733ef88f70ff7229401e68",
+        "venueGroupIds": [
+          "venue-group:2121c12d0d90b9cc20d0fd95"
+        ]
+      },
+      {
+        "activityId": "activity:617c6838f3fe89145e8e145b",
+        "venueGroupIds": [
+          "venue-group:6f0ef4ae6e3d1cff6ffd9bf9"
+        ]
+      },
+      {
+        "activityId": "activity:6593916e5d2fb17adb9d3990",
+        "venueGroupIds": [
+          "venue-group:7c7f924f77f3da8aabdbe67d"
+        ]
+      },
+      {
+        "activityId": "activity:6964d15677246c269240bcd3",
+        "venueGroupIds": [
+          "venue-group:a984bcff411071c94d4d4aa2"
+        ]
+      },
+      {
+        "activityId": "activity:6a8e53716518aafc2b90485c",
+        "venueGroupIds": [
+          "venue-group:bb27ef32f23a4c4f2b71e0ff"
+        ]
+      },
+      {
+        "activityId": "activity:74705a659b5d2d8c761ad7ed",
+        "venueGroupIds": [
+          "venue-group:4a64b31314987e0dcec12b09"
+        ]
+      },
+      {
+        "activityId": "activity:77777b78a55087a729b70fdc",
+        "venueGroupIds": [
+          "venue-group:91a455309c5cf5f4cc4cc21a"
+        ]
+      },
+      {
+        "activityId": "activity:8be65e48be5d823fb171e2dd",
+        "venueGroupIds": [
+          "venue-group:c248ff233a65dba3a5c93e02"
+        ]
+      },
+      {
+        "activityId": "activity:90bacf41bcbd19ab0253c9bb",
+        "venueGroupIds": [
+          "venue-group:1a4229b6c6cd987cf6d10a72"
+        ]
+      },
+      {
+        "activityId": "activity:9a63df5896786edb78c37c7d",
+        "venueGroupIds": [
+          "venue-group:415fa5b9fd49ddc4699eb735"
+        ]
+      },
+      {
+        "activityId": "activity:9b45b29b3f9e608418a2967b",
+        "venueGroupIds": [
+          "venue-group:7bf4b99d42a8181fdf970b74"
+        ]
+      },
+      {
+        "activityId": "activity:9b722e4a4495b8a48c70f187",
+        "venueGroupIds": [
+          "venue-group:4109ffbe5c517649db00d265"
+        ]
+      },
+      {
+        "activityId": "activity:a2f431c2695addbb1c4580ed",
+        "venueGroupIds": [
+          "venue-group:25128b7d1eff30939beebb6f"
+        ]
+      },
+      {
+        "activityId": "activity:a33b2aae20541bca4f788885",
+        "venueGroupIds": [
+          "venue-group:459f12f9ef1f4dbc19632c8f"
+        ]
+      },
+      {
+        "activityId": "activity:acfafe860512da19c2e6ba94",
+        "venueGroupIds": [
+          "venue-group:6fa5e80c85b885041594ad7b"
+        ]
+      },
+      {
+        "activityId": "activity:d4efc6bc06a75e6ca5231103",
+        "venueGroupIds": [
+          "venue-group:756acb7b1142b989a7a056cc"
+        ]
+      },
+      {
+        "activityId": "activity:f00756bccde6558d1d3a7cf7",
+        "venueGroupIds": [
+          "venue-group:dc26d1dd178eb5f827d2f380"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "marina-bay-sands-mice",
+    "label": "MARINA BAY SANDS (MICE)",
+    "anchor": {
+      "lng": 103.85835580221267,
+      "lat": 1.2823745906549533
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:04aeb71aa5099ec758bb6086",
+        "venueGroupIds": [
+          "venue-group:40869c637d6bca271dde1713"
+        ]
+      },
+      {
+        "activityId": "activity:3620470d22a6e8b2c0185015",
+        "venueGroupIds": [
+          "venue-group:1f18ac4a8a0d33be5ede48e3"
+        ]
+      },
+      {
+        "activityId": "activity:3f692c72c8aaf3991c178ef5",
+        "venueGroupIds": [
+          "venue-group:129703befce138824ac5e2ff"
+        ]
+      },
+      {
+        "activityId": "activity:583635f0b986de5321f17da8",
+        "venueGroupIds": [
+          "venue-group:2a3f7f8abacaf1137570f477"
+        ]
+      },
+      {
+        "activityId": "activity:5c525281ea9ef0098442230a",
+        "venueGroupIds": [
+          "venue-group:a02eb83e34d31736a4936347"
+        ]
+      },
+      {
+        "activityId": "activity:732ce73f102d930f46cd53f9",
+        "venueGroupIds": [
+          "venue-group:0777adf774f87b77c06ffd4f"
+        ]
+      },
+      {
+        "activityId": "activity:77926f7ec3f15fd2960ac578",
+        "venueGroupIds": [
+          "venue-group:da35a3135b802f01aae3c39d"
+        ]
+      },
+      {
+        "activityId": "activity:b80de2d7d91fede212b5cdec",
+        "venueGroupIds": [
+          "venue-group:a8edf4f867026d329d1c16a4"
+        ]
+      },
+      {
+        "activityId": "activity:b87da94e1278ef3711638b7a",
+        "venueGroupIds": [
+          "venue-group:a2e4536539f7a60bf6e5dbf8"
+        ]
+      },
+      {
+        "activityId": "activity:c9ce87463b8d4850d39ef540",
+        "venueGroupIds": [
+          "venue-group:afcc500816d5ed47c0babb16"
+        ]
+      },
+      {
+        "activityId": "activity:ec575d7bf386145c6fec00c7",
+        "venueGroupIds": [
+          "venue-group:47c0273f94ff911734ac5f5a"
+        ]
+      },
+      {
+        "activityId": "activity:f5e751c7ead7fa9079508856",
+        "venueGroupIds": [
+          "venue-group:a649c8c3e0d06aab508943c0"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "chinatown-heritage-centre",
+    "label": "CHINATOWN HERITAGE CENTRE",
+    "anchor": {
+      "lng": 103.84437146082173,
+      "lat": 1.2835648869624807
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:599a9c857405337bc1618e62",
+        "venueGroupIds": [
+          "venue-group:aeca53d61b04a47b2d7bcdae"
+        ]
+      },
+      {
+        "activityId": "activity:cebf9576d29ff1826cd74d1e",
+        "venueGroupIds": [
+          "venue-group:54551c05da67df3fcab171b0"
+        ]
+      },
+      {
+        "activityId": "activity:d566b276b132c04d2f0ecf6e",
+        "venueGroupIds": [
+          "venue-group:e2594996376bbae0c28ece96"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "south-beach",
+    "label": "SOUTH BEACH",
+    "anchor": {
+      "lng": 103.85511351811824,
+      "lat": 1.2941524356691765
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:81f11a7847556e73a24e1da9",
+        "venueGroupIds": [
+          "venue-group:b9553906e8da963f66b3bc46"
+        ]
+      },
+      {
+        "activityId": "activity:c77119d42811d3e9d2e746a2",
+        "venueGroupIds": [
+          "venue-group:f6b915863f8c35ad8adeb9d2"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "velocity-novena-square",
+    "label": "VELOCITY @ NOVENA SQUARE",
+    "anchor": {
+      "lng": 103.84383128630344,
+      "lat": 1.319950541615593
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:467a73f0dc2f9abe9428c09d",
+        "venueGroupIds": [
+          "venue-group:af6c4d3e022805a613663746"
+        ]
+      },
+      {
+        "activityId": "activity:8a9cedf7442e0b6854eb9966",
+        "venueGroupIds": [
+          "venue-group:388b768309a11ae4be895434"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "esplanade-theatres-on-the-bay",
+    "label": "ESPLANADE - THEATRES ON THE BAY",
+    "anchor": {
+      "lng": 103.85532007007397,
+      "lat": 1.2898528657029187
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:00653624b3bacb862f0e47a7",
+        "venueGroupIds": [
+          "venue-group:833d52a2c1e653d15dc1723a"
+        ]
+      },
+      {
+        "activityId": "activity:00df09e3d9427f214163c716",
+        "venueGroupIds": [
+          "venue-group:03271bd54c4609ce165b1a53"
+        ]
+      },
+      {
+        "activityId": "activity:012d36b32dfde99d242b1111",
+        "venueGroupIds": [
+          "venue-group:393de7d1e59c3d0f38f92c0a"
+        ]
+      },
+      {
+        "activityId": "activity:015bad5319acc84cbc3e959c",
+        "venueGroupIds": [
+          "venue-group:022362642929a02fd03a4482"
+        ]
+      },
+      {
+        "activityId": "activity:02bf642942984e38a412cdf0",
+        "venueGroupIds": [
+          "venue-group:b4466c9506bc8cde2db6fe9d"
+        ]
+      },
+      {
+        "activityId": "activity:039c2e767d81eef08fcfab63",
+        "venueGroupIds": [
+          "venue-group:f72b52814f7bf564baa51d7e"
+        ]
+      },
+      {
+        "activityId": "activity:054fde8c92a6f64029440401",
+        "venueGroupIds": [
+          "venue-group:d80c82874e5c972d6c7f6fe9"
+        ]
+      },
+      {
+        "activityId": "activity:07a4020a102558d3293699d6",
+        "venueGroupIds": [
+          "venue-group:5c126a53af09d7ef71fb39b0"
+        ]
+      },
+      {
+        "activityId": "activity:093509b06096def51dcccfef",
+        "venueGroupIds": [
+          "venue-group:3384b434f5d84e1288c16fad"
+        ]
+      },
+      {
+        "activityId": "activity:09bf9471ff2f0caf1134d2b9",
+        "venueGroupIds": [
+          "venue-group:74172c075ce9839f2d31a55a"
+        ]
+      },
+      {
+        "activityId": "activity:0aada1bdd76c97605368c74d",
+        "venueGroupIds": [
+          "venue-group:f7997ce542b03fe7c2d30358"
+        ]
+      },
+      {
+        "activityId": "activity:0b5abd94087782b00d191a6d",
+        "venueGroupIds": [
+          "venue-group:bf34a487b524f58c44382198"
+        ]
+      },
+      {
+        "activityId": "activity:0c50dbf532bf1490eeb76a58",
+        "venueGroupIds": [
+          "venue-group:314a9c735492316d4a5436ef"
+        ]
+      },
+      {
+        "activityId": "activity:100213be0edbc0352882020c",
+        "venueGroupIds": [
+          "venue-group:2278e121d7a60c3c5b38fe44"
+        ]
+      },
+      {
+        "activityId": "activity:10dd368bef544b43b9088420",
+        "venueGroupIds": [
+          "venue-group:4b44b3b010aa136f0df681d9"
+        ]
+      },
+      {
+        "activityId": "activity:12263588887108887ed9931b",
+        "venueGroupIds": [
+          "venue-group:22efd38c8b6f9310d1fed6d9"
+        ]
+      },
+      {
+        "activityId": "activity:14fe61d6e4d7e1d8775a52e4",
+        "venueGroupIds": [
+          "venue-group:927dba637b169594bdbc1ee6"
+        ]
+      },
+      {
+        "activityId": "activity:175e420e0f0f6c15b2e935ae",
+        "venueGroupIds": [
+          "venue-group:a79cbd2f22da8a4b2ac152fd"
+        ]
+      },
+      {
+        "activityId": "activity:17794ae313a09fb1119eddc4",
+        "venueGroupIds": [
+          "venue-group:08a40b01f7d4c2d5811c1166"
+        ]
+      },
+      {
+        "activityId": "activity:1c704eb0e79ef54bd7cdad51",
+        "venueGroupIds": [
+          "venue-group:48b8e6547410688af812fe88"
+        ]
+      },
+      {
+        "activityId": "activity:20e9e0dcc8c49c6954a896cb",
+        "venueGroupIds": [
+          "venue-group:f16c72e817ae6d4b16797503"
+        ]
+      },
+      {
+        "activityId": "activity:213fdc1c9029df23141b1c33",
+        "venueGroupIds": [
+          "venue-group:0df358810d0c57c0ac4802a7"
+        ]
+      },
+      {
+        "activityId": "activity:23436a96fcc8e20cce6b2c69",
+        "venueGroupIds": [
+          "venue-group:302e73fad82c20bf5469f317"
+        ]
+      },
+      {
+        "activityId": "activity:2686988bbadd5514d1570205",
+        "venueGroupIds": [
+          "venue-group:f86cc13d67dc5640d85beaff"
+        ]
+      },
+      {
+        "activityId": "activity:2724d938133c72519a58dae6",
+        "venueGroupIds": [
+          "venue-group:7155ca41c32f34390ddef36f"
+        ]
+      },
+      {
+        "activityId": "activity:2895826cbe6b4092e454370e",
+        "venueGroupIds": [
+          "venue-group:406c487757de4cd9095af133"
+        ]
+      },
+      {
+        "activityId": "activity:28a89a5e237ff5f836a42453",
+        "venueGroupIds": [
+          "venue-group:fc8a52b74236aa75af37176b"
+        ]
+      },
+      {
+        "activityId": "activity:2aedbf15c2bffadd5a2f8abe",
+        "venueGroupIds": [
+          "venue-group:5834aa55e4b85f50b44a34c5"
+        ]
+      },
+      {
+        "activityId": "activity:2f80e22afd42443e6d67964b",
+        "venueGroupIds": [
+          "venue-group:44ff5f7f0fc83e5db1126dad"
+        ]
+      },
+      {
+        "activityId": "activity:31cd86d90d17157d2ba9b0c5",
+        "venueGroupIds": [
+          "venue-group:dfa5bddf11fd4b0eae4e4043"
+        ]
+      },
+      {
+        "activityId": "activity:3425acb99f49f6b5df2321f1",
+        "venueGroupIds": [
+          "venue-group:3c1d42a22f0edafd4f9123ac"
+        ]
+      },
+      {
+        "activityId": "activity:3698faa255a8ee76159f1d25",
+        "venueGroupIds": [
+          "venue-group:1c01ce1f48cd338fb51a0e92"
+        ]
+      },
+      {
+        "activityId": "activity:3a4a55fc6ba65458b5a8ce3e",
+        "venueGroupIds": [
+          "venue-group:9548aa89301bf8d626afa7d4"
+        ]
+      },
+      {
+        "activityId": "activity:3ade0516ddc9396e589a02a6",
+        "venueGroupIds": [
+          "venue-group:78d9ad8f06048e8a787797b5"
+        ]
+      },
+      {
+        "activityId": "activity:3ec8c4f76b640af4a99cc7a4",
+        "venueGroupIds": [
+          "venue-group:37b92c36ee370f6383223263"
+        ]
+      },
+      {
+        "activityId": "activity:3ed10d739d799538cdc5dad0",
+        "venueGroupIds": [
+          "venue-group:d0871045ae48dd0700b932ed"
+        ]
+      },
+      {
+        "activityId": "activity:428bd71f4e655cdd44f254ab",
+        "venueGroupIds": [
+          "venue-group:29aa17325d5fc5a1c3e72fbf"
+        ]
+      },
+      {
+        "activityId": "activity:44205e6750efd4dcda04bac5",
+        "venueGroupIds": [
+          "venue-group:e457c66d5906c281eb71ebbb"
+        ]
+      },
+      {
+        "activityId": "activity:44535f0728d51da0582ddca7",
+        "venueGroupIds": [
+          "venue-group:955bda5ca612b8ab2a537a37"
+        ]
+      },
+      {
+        "activityId": "activity:4a8a114803825b03ddbc7e1e",
+        "venueGroupIds": [
+          "venue-group:0581290cd7551e8ef3070248"
+        ]
+      },
+      {
+        "activityId": "activity:4dc4c159bda2b67724911596",
+        "venueGroupIds": [
+          "venue-group:355e86a338995456fa57c9f8"
+        ]
+      },
+      {
+        "activityId": "activity:4f0e0e3efa40def6dd9c2a86",
+        "venueGroupIds": [
+          "venue-group:af5e8e6e13154345b5288106"
+        ]
+      },
+      {
+        "activityId": "activity:4f33aeae7d471bebeb018ac1",
+        "venueGroupIds": [
+          "venue-group:6c905f504469e935f52334ff"
+        ]
+      },
+      {
+        "activityId": "activity:512ca47bd0b6e9ddffb46311",
+        "venueGroupIds": [
+          "venue-group:6d1f3081fa9b48c8d21ba8b2"
+        ]
+      },
+      {
+        "activityId": "activity:51a72e3980d061aeb175e472",
+        "venueGroupIds": [
+          "venue-group:d4892967ff267d3bb14be201"
+        ]
+      },
+      {
+        "activityId": "activity:51e7fef58e81190efe146dbc",
+        "venueGroupIds": [
+          "venue-group:6c802c72d94fb95c294130e6"
+        ]
+      },
+      {
+        "activityId": "activity:52e71d76192b02d48a1e09a5",
+        "venueGroupIds": [
+          "venue-group:4935484270a604fd15427e62"
+        ]
+      },
+      {
+        "activityId": "activity:537bb7e03a2d6a7465aab6f9",
+        "venueGroupIds": [
+          "venue-group:5599f050a6e5c1c5e0566fd7"
+        ]
+      },
+      {
+        "activityId": "activity:5792029bc01624404fe3d647",
+        "venueGroupIds": [
+          "venue-group:d085c4156d7f948c9a984f76"
+        ]
+      },
+      {
+        "activityId": "activity:5803ea5a110cbfb48396149f",
+        "venueGroupIds": [
+          "venue-group:044f68b45c236fa4e5ebe5e3"
+        ]
+      },
+      {
+        "activityId": "activity:58f7504f8855a943bcd6307d",
+        "venueGroupIds": [
+          "venue-group:ee7d7b40d00119ea91d1dcf8"
+        ]
+      },
+      {
+        "activityId": "activity:5b1ecd4d15362da1954414ef",
+        "venueGroupIds": [
+          "venue-group:799083c68b7102b58ebcf7f4"
+        ]
+      },
+      {
+        "activityId": "activity:5dbb4cdf1532210490df08df",
+        "venueGroupIds": [
+          "venue-group:81d9aa3323b52196de5b43c3"
+        ]
+      },
+      {
+        "activityId": "activity:608e516298c25a0075e8273e",
+        "venueGroupIds": [
+          "venue-group:b8b5071b019fc45d7efb8962"
+        ]
+      },
+      {
+        "activityId": "activity:637ffb5ae6482c4d09d5bf81",
+        "venueGroupIds": [
+          "venue-group:2054e304f08b99fee4e0a9d9"
+        ]
+      },
+      {
+        "activityId": "activity:66e8543d3be227fb006106a4",
+        "venueGroupIds": [
+          "venue-group:701081a913c35d7710283f19"
+        ]
+      },
+      {
+        "activityId": "activity:685bab1aa6f5d5dc07621b36",
+        "venueGroupIds": [
+          "venue-group:0988abcd66048ebb01882b3c"
+        ]
+      },
+      {
+        "activityId": "activity:69ed80d9903e62b7b917accd",
+        "venueGroupIds": [
+          "venue-group:74b31bef630247fbe47c9c47"
+        ]
+      },
+      {
+        "activityId": "activity:6a765f117d3182caae15cc52",
+        "venueGroupIds": [
+          "venue-group:16d4c8936a7bb89215ebc7d9"
+        ]
+      },
+      {
+        "activityId": "activity:6bf8bcd471b8f250925511ba",
+        "venueGroupIds": [
+          "venue-group:066aacf3baa54105b21eff57"
+        ]
+      },
+      {
+        "activityId": "activity:6e9524c43785cbf36409cb48",
+        "venueGroupIds": [
+          "venue-group:2f505078e8a838d3ee156e92"
+        ]
+      },
+      {
+        "activityId": "activity:75d7b77349b37f4f1fa4b7ed",
+        "venueGroupIds": [
+          "venue-group:b758b606b3d326bc1576326b"
+        ]
+      },
+      {
+        "activityId": "activity:7754959103235894be8bcc17",
+        "venueGroupIds": [
+          "venue-group:dbcb95cb01e32513bbcf6f6e"
+        ]
+      },
+      {
+        "activityId": "activity:78e0c64a2020c8aceeb57e59",
+        "venueGroupIds": [
+          "venue-group:991a9b678a870695e3b21b18"
+        ]
+      },
+      {
+        "activityId": "activity:7e8349b6bbcfb8b6f810b9ab",
+        "venueGroupIds": [
+          "venue-group:9a659f92033ee15ecc51e3fc"
+        ]
+      },
+      {
+        "activityId": "activity:7f4bf6be3be009bb28946771",
+        "venueGroupIds": [
+          "venue-group:685cea415d885f3867552c4c"
+        ]
+      },
+      {
+        "activityId": "activity:8c70dd98df5862a93f0f38b6",
+        "venueGroupIds": [
+          "venue-group:f44af4898bcb3a5901cae902"
+        ]
+      },
+      {
+        "activityId": "activity:8f59bf15058334589a3bf198",
+        "venueGroupIds": [
+          "venue-group:e01c1a450a8febc6201dd2ce"
+        ]
+      },
+      {
+        "activityId": "activity:901fe3b973c76cf3dba48530",
+        "venueGroupIds": [
+          "venue-group:90f04cc8c2ccb40fee24b800"
+        ]
+      },
+      {
+        "activityId": "activity:907687004cefa0def29f3d4f",
+        "venueGroupIds": [
+          "venue-group:a260ecec24c5a19c0946e647"
+        ]
+      },
+      {
+        "activityId": "activity:92134577b4bfe9c2f6bea67a",
+        "venueGroupIds": [
+          "venue-group:62dc9daae7023af9c75bc804"
+        ]
+      },
+      {
+        "activityId": "activity:923112c9f0ba920c2f6b0b49",
+        "venueGroupIds": [
+          "venue-group:cbdd89c6afa9190d23d3c9f0"
+        ]
+      },
+      {
+        "activityId": "activity:9d0a34ab3cd9f305c172095e",
+        "venueGroupIds": [
+          "venue-group:6f444091c7eee8ff9bdff9a5"
+        ]
+      },
+      {
+        "activityId": "activity:a13d67d39aa51c769239c4fa",
+        "venueGroupIds": [
+          "venue-group:f75803ef745638d981a9f816"
+        ]
+      },
+      {
+        "activityId": "activity:a3fa58873235c48735c7d3b6",
+        "venueGroupIds": [
+          "venue-group:7e61d2f3c9ef79d0ee1c60bc"
+        ]
+      },
+      {
+        "activityId": "activity:a4aff35cf0b62d0a956c331e",
+        "venueGroupIds": [
+          "venue-group:ead85bd988fb759b7f56abe3"
+        ]
+      },
+      {
+        "activityId": "activity:a4f6008fc4da0659a0e0ba2a",
+        "venueGroupIds": [
+          "venue-group:18f72e815d44224b55573173"
+        ]
+      },
+      {
+        "activityId": "activity:a7a756e20567770587c177be",
+        "venueGroupIds": [
+          "venue-group:c9c6b12f6600cefe3ddaa717"
+        ]
+      },
+      {
+        "activityId": "activity:aa04641af063f8d223053c62",
+        "venueGroupIds": [
+          "venue-group:057df2544dcdb88bd33e5e68"
+        ]
+      },
+      {
+        "activityId": "activity:adeb13dd6111f6da498a0a34",
+        "venueGroupIds": [
+          "venue-group:ba60e1d14b00fbce6a332211"
+        ]
+      },
+      {
+        "activityId": "activity:b10b07ffa7f4a315e4b8b0b9",
+        "venueGroupIds": [
+          "venue-group:b68ddeb20a3a8e9a45761ed4"
+        ]
+      },
+      {
+        "activityId": "activity:ba1899054b9d1e7597ccade2",
+        "venueGroupIds": [
+          "venue-group:c65cc68e1219b22ce868390d"
+        ]
+      },
+      {
+        "activityId": "activity:ba2d0bd2dbef886e147fc19f",
+        "venueGroupIds": [
+          "venue-group:ff97031f354df68b7777bbfb"
+        ]
+      },
+      {
+        "activityId": "activity:c4ea557f27be3b1b5cc082fe",
+        "venueGroupIds": [
+          "venue-group:778498f9fc4d7065a1fd9b24"
+        ]
+      },
+      {
+        "activityId": "activity:cdfda0e2d6a0d9927ca8dfc0",
+        "venueGroupIds": [
+          "venue-group:32e251dcb65e58ba3e381ba3"
+        ]
+      },
+      {
+        "activityId": "activity:cf33e13db26c34140f3bc3e7",
+        "venueGroupIds": [
+          "venue-group:c22dbef7d110dcc2bf1eeb04"
+        ]
+      },
+      {
+        "activityId": "activity:d03d5ffd21648033f75ad6be",
+        "venueGroupIds": [
+          "venue-group:0bcf4c3fd7d729dbcc400dd1"
+        ]
+      },
+      {
+        "activityId": "activity:d436988a6873cd79dfd21a98",
+        "venueGroupIds": [
+          "venue-group:2d54e31ab51a6d3d01036818"
+        ]
+      },
+      {
+        "activityId": "activity:d706587c412d1a12683124bc",
+        "venueGroupIds": [
+          "venue-group:f54f86e1992e30bb049075b9"
+        ]
+      },
+      {
+        "activityId": "activity:f171e57b2a98a15e998ff467",
+        "venueGroupIds": [
+          "venue-group:713448074963a03d221a79c8"
+        ]
+      },
+      {
+        "activityId": "activity:fc350daa785e261cc5ea0886",
+        "venueGroupIds": [
+          "venue-group:d30fdfc5c393c8ad351fb766"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "katong-square",
+    "label": "KATONG SQUARE",
+    "anchor": {
+      "lng": 103.9046422889341,
+      "lat": 1.3048194212996436
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:79b6843a3ce6edf540f28303",
+        "venueGroupIds": [
+          "venue-group:4f2c81301b8d6c493cf065e0"
+        ]
+      },
+      {
+        "activityId": "activity:a3332d522c057e80a159f156",
+        "venueGroupIds": [
+          "venue-group:d835e113a7ce36c5c471cd86"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "one-commonwealth",
+    "label": "ONE COMMONWEALTH",
+    "anchor": {
+      "lng": 103.79676977856437,
+      "lat": 1.304403518047924
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:4cc3b0f599ec04e8c6ba0cb3",
+        "venueGroupIds": [
+          "venue-group:57ce34d647ba8c474af5d54d"
+        ]
+      },
+      {
+        "activityId": "activity:805c9a3216787c0c9dd1d067",
+        "venueGroupIds": [
+          "venue-group:65110dec92b72c5064b1c30b"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "woods-square",
+    "label": "WOODS SQUARE",
+    "anchor": {
+      "lng": 103.78594347618994,
+      "lat": 1.4351556332485083
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:55017f8e1babd6590b2dd26d",
+        "venueGroupIds": [
+          "venue-group:2f1528e5795bcf2685c6ba8e"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "punggol-neighbourhood-police-centre",
+    "label": "PUNGGOL NEIGHBOURHOOD POLICE CENTRE",
+    "anchor": {
+      "lng": 103.91687927680823,
+      "lat": 1.3941864165028381
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:9c8cf259cce7d12dc46bd263",
+        "venueGroupIds": [
+          "venue-group:e23f524f19021409b51f94bc"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sentosa-development-corporation",
+    "label": "SENTOSA DEVELOPMENT CORPORATION",
+    "anchor": {
+      "lng": 103.82801062504481,
+      "lat": 1.24850196384833
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:05c71ea9f68855a19aedb16b",
+        "venueGroupIds": [
+          "venue-group:d89aaf6f966a9b3270cf2d4b"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "siloso-beach-resort",
+    "label": "SILOSO BEACH RESORT",
+    "anchor": {
+      "lng": 103.81465296124205,
+      "lat": 1.2544850681946629
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:43681c45a0b05198f0c76310",
+        "venueGroupIds": [
+          "venue-group:703bef048ce24b34f3697797"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bishan-green",
+    "label": "BISHAN GREEN",
+    "anchor": {
+      "lng": 103.85464618562368,
+      "lat": 1.345545011825183
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:a537ed048202c5760f90d2ee",
+        "venueGroupIds": [
+          "venue-group:19d6d96e5ca23715b79f8a9f"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sembawang-park",
+    "label": "SEMBAWANG PARK",
+    "anchor": {
+      "lng": 103.82638914844054,
+      "lat": 1.4281238107470955
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:f085dc038abcdc3958b3808b",
+        "venueGroupIds": [
+          "venue-group:f1fd40fdad784f35514efcec"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "lee-kong-chian-natural-history-museum",
+    "label": "LEE KONG CHIAN NATURAL HISTORY MUSEUM",
+    "anchor": {
+      "lng": 103.77320276765114,
+      "lat": 1.3015969541573367
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:6e648e5e90c9ac7e6ef9d5e3",
+        "venueGroupIds": [
+          "venue-group:cec75c48b2b602eed47eb902"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "singapore-conference-hall",
+    "label": "SINGAPORE CONFERENCE HALL",
+    "anchor": {
+      "lng": 103.8490158792841,
+      "lat": 1.276175858729528
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:41f93ff464ffdf4af56c9818",
+        "venueGroupIds": [
+          "venue-group:7783452834ffa04c68731673"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "action-theatre",
+    "label": "ACTION THEATRE",
+    "anchor": {
+      "lng": 103.85080258767397,
+      "lat": 1.298437362969165
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:92c9d0a6379621d639e7183e",
+        "venueGroupIds": [
+          "venue-group:c5d8632da658f3b9a205b6d3"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "the-star",
+    "label": "THE STAR",
+    "anchor": {
+      "lng": 103.78843736435559,
+      "lat": 1.3067969894460119
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:06073f2d7892e0fb0482156f",
+        "venueGroupIds": [
+          "venue-group:3bedffbe18b5ab759373e9b6"
+        ]
+      },
+      {
+        "activityId": "activity:09ed464f7d7b87b94839a712",
+        "venueGroupIds": [
+          "venue-group:004bdb6cacabf3f44340f613"
+        ]
+      },
+      {
+        "activityId": "activity:10324e31d49aea4b172bda49",
+        "venueGroupIds": [
+          "venue-group:bbbb3c8af3cb7df2ddc0482c"
+        ]
+      },
+      {
+        "activityId": "activity:1daf7f2194e6630b346a663c",
+        "venueGroupIds": [
+          "venue-group:734a9254cf148d73a5e90f4f"
+        ]
+      },
+      {
+        "activityId": "activity:45fafcc4b2033fe5fd9afd6f",
+        "venueGroupIds": [
+          "venue-group:b5f90fd175ae55f77a3d751b"
+        ]
+      },
+      {
+        "activityId": "activity:6544fb9e576b75088c718a06",
+        "venueGroupIds": [
+          "venue-group:fd5aaa2346f7cee7b7e03beb"
+        ]
+      },
+      {
+        "activityId": "activity:81114e7775decc1fc703044e",
+        "venueGroupIds": [
+          "venue-group:2557ffcf12f6872f8dd09630"
+        ]
+      },
+      {
+        "activityId": "activity:a97c5b2e5af53e942788cd23",
+        "venueGroupIds": [
+          "venue-group:285b741f08cf138830468744"
+        ]
+      },
+      {
+        "activityId": "activity:b896fb8e47f9331b88d46744",
+        "venueGroupIds": [
+          "venue-group:926b9c7890b8bab1f343c843"
+        ]
+      },
+      {
+        "activityId": "activity:c6b4ba5a3c99d5b0ecb2261e",
+        "venueGroupIds": [
+          "venue-group:b0636595b9a970f51cdbec89"
+        ]
+      },
+      {
+        "activityId": "activity:ca29ed68d6d2dd0e7b94539a",
+        "venueGroupIds": [
+          "venue-group:76f10a36515175328acc96e5"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "national-library-building",
+    "label": "NATIONAL LIBRARY BUILDING",
+    "anchor": {
+      "lng": 103.85440629802105,
+      "lat": 1.297750037014743
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:152628662d98990a658fd04a",
+        "venueGroupIds": [
+          "venue-group:1d0c145829a88b026f53f3be"
+        ]
+      },
+      {
+        "activityId": "activity:24b982d3787a9fc504b6b077",
+        "venueGroupIds": [
+          "venue-group:00818c1e0ed8992b7be4bf62"
+        ]
+      },
+      {
+        "activityId": "activity:284793cc67ed6803add954ad",
+        "venueGroupIds": [
+          "venue-group:6234b80777f24208ea77a4f3"
+        ]
+      },
+      {
+        "activityId": "activity:34778d93e0aeab6a4eeabe83",
+        "venueGroupIds": [
+          "venue-group:3458ab8f7004137741cb45a6"
+        ]
+      },
+      {
+        "activityId": "activity:55e69f56563fcc5d9c738d03",
+        "venueGroupIds": [
+          "venue-group:88bd8c7216cc2161d712e113"
+        ]
+      },
+      {
+        "activityId": "activity:697a75cf0133af192ebc308f",
+        "venueGroupIds": [
+          "venue-group:ec9f05fe214e410335b1cb55"
+        ]
+      },
+      {
+        "activityId": "activity:84dd627fe3c715c22ccdd93e",
+        "venueGroupIds": [
+          "venue-group:186ddc4a20ded45feab9c213"
+        ]
+      },
+      {
+        "activityId": "activity:89047cc6b8e6d32caf7759c1",
+        "venueGroupIds": [
+          "venue-group:fcc3d036b4f639680a7fdef3"
+        ]
+      },
+      {
+        "activityId": "activity:8d7f9d1d53f74a68f2050139",
+        "venueGroupIds": [
+          "venue-group:4f2c8d974879e7e1be821e55"
+        ]
+      },
+      {
+        "activityId": "activity:a01db73df377e1ed81cf79c2",
+        "venueGroupIds": [
+          "venue-group:94da1f6a1c870a0288030f4f"
+        ]
+      },
+      {
+        "activityId": "activity:a20e4b3944b0e24f52a09cc3",
+        "venueGroupIds": [
+          "venue-group:8427af3736f4191c3347509c"
+        ]
+      },
+      {
+        "activityId": "activity:bee9d8daa4ec045940fcfe9b",
+        "venueGroupIds": [
+          "venue-group:9cb36b2e501e5365a5a9c1ba"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cathay-cineleisure-orchard",
+    "label": "CATHAY CINELEISURE ORCHARD",
+    "anchor": {
+      "lng": 103.83648667678145,
+      "lat": 1.3014894916590682
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:553f1facecb3e1e8c87949f1",
+        "venueGroupIds": [
+          "venue-group:91c19761127310425adccde3"
+        ]
+      },
+      {
+        "activityId": "activity:f7296f607eb32248cb5e5c49",
+        "venueGroupIds": [
+          "venue-group:accb60d7000e8b81fcf5bcaf"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "yong-siew-toh-conservatory-of-music",
+    "label": "YONG SIEW TOH CONSERVATORY OF MUSIC",
+    "anchor": {
+      "lng": 103.77264685357977,
+      "lat": 1.3021971704661977
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:1136f412e028e9074cb70bc4",
+        "venueGroupIds": [
+          "venue-group:26e7ffffe93f94e327449770"
+        ]
+      },
+      {
+        "activityId": "activity:ae6550c2bb50d0467c889ae4",
+        "venueGroupIds": [
+          "venue-group:9ae61ec63c88129e982f3d4d"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "national-university-of-singapore-university-cultural-centre",
+    "label": "NATIONAL UNIVERSITY OF SINGAPORE (UNIVERSITY CULTURAL CENTRE)",
+    "anchor": {
+      "lng": 103.77210745194748,
+      "lat": 1.3017995996080551
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:01a55f109e5e7e2883592106",
+        "venueGroupIds": [
+          "venue-group:05add70a97fa95dd84d4bc83"
+        ]
+      },
+      {
+        "activityId": "activity:0cb44d1d3ba4b07cd753b8f2",
+        "venueGroupIds": [
+          "venue-group:35dab1d53c1f09a0736777cc"
+        ]
+      },
+      {
+        "activityId": "activity:11882897c010287342f7998c",
+        "venueGroupIds": [
+          "venue-group:7e328814eea5493ea029967a"
+        ]
+      },
+      {
+        "activityId": "activity:1e0f791c8b7ace6681944d80",
+        "venueGroupIds": [
+          "venue-group:4b806bf385231ee28ca8306f"
+        ]
+      },
+      {
+        "activityId": "activity:3e51972e2c183ee79e8b471f",
+        "venueGroupIds": [
+          "venue-group:7783f5ba309e61f43e102006"
+        ]
+      },
+      {
+        "activityId": "activity:5a1f28385392c9001cb00d31",
+        "venueGroupIds": [
+          "venue-group:aef6ecc7ed242843d389396a"
+        ]
+      },
+      {
+        "activityId": "activity:69d423a3aa80eb0fad4ff6f3",
+        "venueGroupIds": [
+          "venue-group:e7182dd0ade534c3f116518f"
+        ]
+      },
+      {
+        "activityId": "activity:6f800780a741f7e48948f1b0",
+        "venueGroupIds": [
+          "venue-group:14dbbb2b865e1e10b6703397"
+        ]
+      },
+      {
+        "activityId": "activity:f954d173fe7cad74035130bb",
+        "venueGroupIds": [
+          "venue-group:54303200d80b9a46f1f12060"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tannery-house",
+    "label": "TANNERY HOUSE",
+    "anchor": {
+      "lng": 103.8769902965258,
+      "lat": 1.328324613822602
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:7fe10ada5ec08d610a5a25fd",
+        "venueGroupIds": [
+          "venue-group:6454fd016843012d28cee6e6"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "funan",
+    "label": "FUNAN",
+    "anchor": {
+      "lng": 103.85002259422048,
+      "lat": 1.2913254627239268
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:1be1778d1454b92938113b9b",
+        "venueGroupIds": [
+          "venue-group:55991963c14a3912c7b7d1bd"
+        ]
+      },
+      {
+        "activityId": "activity:3168a3e9e2d72d0489cfe902",
+        "venueGroupIds": [
+          "venue-group:2b3dc9229f309ffbe428b0bf"
+        ]
+      },
+      {
+        "activityId": "activity:4d06d8f3cc9ab401b296764b",
+        "venueGroupIds": [
+          "venue-group:07e2943459963a5e1f288c62"
+        ]
+      },
+      {
+        "activityId": "activity:9a2ea3ab29c0538eda1c69a5",
+        "venueGroupIds": [
+          "venue-group:3c81f0f02473a5e49268aef4"
+        ]
+      },
+      {
+        "activityId": "activity:a165833df1d5f6dfb2dbf177",
+        "venueGroupIds": [
+          "venue-group:a4b1d3bf1379b5d03e23bc33"
+        ]
+      },
+      {
+        "activityId": "activity:bc0a543b5f18bd5d26bbba57",
+        "venueGroupIds": [
+          "venue-group:ad6414df0210d1ece6e0b30b"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "kampong-glam-conservation-area",
+    "label": "KAMPONG GLAM CONSERVATION AREA",
+    "anchor": {
+      "lng": 103.85894705431453,
+      "lat": 1.3006281116247014
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:c29211b7f7ebd317c6e1abf2",
+        "venueGroupIds": [
+          "venue-group:6f8fd6ad282e090324a19fd2"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "the-centrepoint",
+    "label": "THE CENTREPOINT",
+    "anchor": {
+      "lng": 103.8398036531884,
+      "lat": 1.301903713692361
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:61545ae87bc7e6299bad2f3d",
+        "venueGroupIds": [
+          "venue-group:279ef704d54e1598194bf96c"
+        ]
+      },
+      {
+        "activityId": "activity:7df33b1c558c8728aedd1ea6",
+        "venueGroupIds": [
+          "venue-group:e7807c94a950a35565b9065d"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "skyline",
+    "label": "SKYLINE",
+    "anchor": {
+      "lng": 103.85311376209405,
+      "lat": 1.3011050344220936
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:10ad6379d36edb71ec3ca68f",
+        "venueGroupIds": [
+          "venue-group:39ee505901b610279775c149"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mediacorp-campus",
+    "label": "MEDIACORP CAMPUS",
+    "anchor": {
+      "lng": 103.79227734506273,
+      "lat": 1.2954237782463893
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:60f1cd634b1279e23b5ccb44",
+        "venueGroupIds": [
+          "venue-group:6c66706a4eb18e80804b0c7c"
+        ]
+      },
+      {
+        "activityId": "activity:8684efecde21ef4eb98ad09d",
+        "venueGroupIds": [
+          "venue-group:159e9d6120a40f0dfc177999"
+        ]
+      },
+      {
+        "activityId": "activity:882d7c8f14ef645a0c67cbda",
+        "venueGroupIds": [
+          "venue-group:a95407d434a95591b9301848"
+        ]
+      },
+      {
+        "activityId": "activity:9b5b0887505890f44615fc6a",
+        "venueGroupIds": [
+          "venue-group:7938372cc5f461220a9a9732"
+        ]
+      },
+      {
+        "activityId": "activity:9c2c3282d9484cd05eb30716",
+        "venueGroupIds": [
+          "venue-group:e4445e65cd75fedaca7770ce"
+        ]
+      },
+      {
+        "activityId": "activity:a755c71e84be4764022fa651",
+        "venueGroupIds": [
+          "venue-group:9e0cad22e7830a7ccac7053a"
+        ]
+      },
+      {
+        "activityId": "activity:c2715869837ae8a74c210bf0",
+        "venueGroupIds": [
+          "venue-group:0cb2be2fe05ee8b4e106b938"
+        ]
+      },
+      {
+        "activityId": "activity:ccfaa752e0e0cdee741df192",
+        "venueGroupIds": [
+          "venue-group:b9810d78f86353add788e0fd"
+        ]
+      },
+      {
+        "activityId": "activity:edf78ba1dc73357f4832a365",
+        "venueGroupIds": [
+          "venue-group:e9922572bf771f8de787186c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "little-india-conservation-area",
+    "label": "LITTLE INDIA CONSERVATION AREA",
+    "anchor": {
+      "lng": 103.85437319267903,
+      "lat": 1.3054277187462808
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:7d4b78582634c66823c77b26",
+        "venueGroupIds": [
+          "venue-group:4d6e3bf5eefc69f5fb6213db"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "elections-department",
+    "label": "ELECTIONS DEPARTMENT",
+    "anchor": {
+      "lng": 103.85033416753073,
+      "lat": 1.300061973478541
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:f4118e2623b513637c315654",
+        "venueGroupIds": [
+          "venue-group:ba0f788bba3f467ab05358a1"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tanjong-pagar-distripark",
+    "label": "TANJONG PAGAR DISTRIPARK",
+    "anchor": {
+      "lng": 103.83664260831985,
+      "lat": 1.2718859563161569
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:00ee1b7972f573c349292b17",
+        "venueGroupIds": [
+          "venue-group:708916a8f8f7c7e5f506d3c0"
+        ]
+      },
+      {
+        "activityId": "activity:209137984a1aaf64af676d09",
+        "venueGroupIds": [
+          "venue-group:3645aac398ad04edcd17b364"
+        ]
+      },
+      {
+        "activityId": "activity:2a24e2c5db3ca8d7ad1a7911",
+        "venueGroupIds": [
+          "venue-group:26f83e114c4f8a6a5cdd1871"
+        ]
+      },
+      {
+        "activityId": "activity:5963af67e8ed8b2f21e9b045",
+        "venueGroupIds": [
+          "venue-group:01b5007e06ee2850ac142426"
+        ]
+      },
+      {
+        "activityId": "activity:627dab33a9e886f216e63eb6",
+        "venueGroupIds": [
+          "venue-group:630afd1f325140ecbeed94a7"
+        ]
+      },
+      {
+        "activityId": "activity:87db7fc22040a362db2222bd",
+        "venueGroupIds": [
+          "venue-group:a09d23e76b5d0aab93170a51"
+        ]
+      },
+      {
+        "activityId": "activity:ee5b46d1fdfbd4f661d3ff18",
+        "venueGroupIds": [
+          "venue-group:b38a2214e24b0aca6fdaaeae"
+        ]
+      },
+      {
+        "activityId": "activity:fc1d23e2c3ab9c6d5a19ae30",
+        "venueGroupIds": [
+          "venue-group:425dab60c033bf009bdbaa26"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arts-house-at-the-old-parliament",
+    "label": "ARTS HOUSE AT THE OLD PARLIAMENT",
+    "anchor": {
+      "lng": 103.85095106941661,
+      "lat": 1.288348979507205
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:002d80d24a08842ab09f2f4f",
+        "venueGroupIds": [
+          "venue-group:84ddb56a03b05d8c80466dde"
+        ]
+      },
+      {
+        "activityId": "activity:155c2ebf7cac40b4659caf5b",
+        "venueGroupIds": [
+          "venue-group:a4894f52b4869fcb936ff60c"
+        ]
+      },
+      {
+        "activityId": "activity:36ac8f4fc9650c89a750da9b",
+        "venueGroupIds": [
+          "venue-group:9133d6b6cc296b6348492af9"
+        ]
+      },
+      {
+        "activityId": "activity:381acdb330c90c30074db82c",
+        "venueGroupIds": [
+          "venue-group:c2e1ee9d2209ad9672595990"
+        ]
+      },
+      {
+        "activityId": "activity:3f4ce4db181fc4634b8d1d3d",
+        "venueGroupIds": [
+          "venue-group:c9273c073e63f90b87ba4f67"
+        ]
+      },
+      {
+        "activityId": "activity:50eb59dcfb20899f3a92b61e",
+        "venueGroupIds": [
+          "venue-group:231a72830d6560f3a0503da7"
+        ]
+      },
+      {
+        "activityId": "activity:69b72f97320f171587ac4701",
+        "venueGroupIds": [
+          "venue-group:379b605987951ca0306a5c15"
+        ]
+      },
+      {
+        "activityId": "activity:7513b2840e02e8b41f30b6a6",
+        "venueGroupIds": [
+          "venue-group:2f34de3e62097bcb53ce3ad0"
+        ]
+      },
+      {
+        "activityId": "activity:824dc7e95600fb5df61146f4",
+        "venueGroupIds": [
+          "venue-group:c1ee007c3ef3f1f29a356b57"
+        ]
+      },
+      {
+        "activityId": "activity:9d3ab3227e87c70af8a46e3e",
+        "venueGroupIds": [
+          "venue-group:792f1d67ccc02961ae3b6a99"
+        ]
+      },
+      {
+        "activityId": "activity:a27ce69771acfe2d16f1a445",
+        "venueGroupIds": [
+          "venue-group:20e4a6e05c4366e7f0e45faf"
+        ]
+      },
+      {
+        "activityId": "activity:d1031e3fe173152f9e929797",
+        "venueGroupIds": [
+          "venue-group:392957f150e6c549e1eee5f8"
+        ]
+      },
+      {
+        "activityId": "activity:d6b4e9b57f03e381173ec568",
+        "venueGroupIds": [
+          "venue-group:4aa5f8d26e3c64b8759f6ad6"
+        ]
+      },
+      {
+        "activityId": "activity:e036ba9abb178505e96abc41",
+        "venueGroupIds": [
+          "venue-group:6f1832a272bab3c97d1a8a03"
+        ]
+      },
+      {
+        "activityId": "activity:e6e2b38c224b2a965fb5b0ca",
+        "venueGroupIds": [
+          "venue-group:6d5214e7c3e8a8e0f341b32b"
+        ]
+      },
+      {
+        "activityId": "activity:e98bba2ef6df613de50745f2",
+        "venueGroupIds": [
+          "venue-group:5d0dcb7adc8237de9b7ceef6"
+        ]
+      },
+      {
+        "activityId": "activity:eac1ad97dcde18d72ebca7b8",
+        "venueGroupIds": [
+          "venue-group:80f8f9463e39dae908293930"
+        ]
+      },
+      {
+        "activityId": "activity:f55335f2c8ac52205480e233",
+        "venueGroupIds": [
+          "venue-group:2101cc205abf140e65010346"
+        ]
+      },
+      {
+        "activityId": "activity:f73a703b6aaec92516a4753b",
+        "venueGroupIds": [
+          "venue-group:43d01549a6a12807677d3130"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "the-cannery",
+    "label": "THE CANNERY",
+    "anchor": {
+      "lng": 103.8458870601638,
+      "lat": 1.2906786833991504
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:fa8effccbc9aeaefae699b87",
+        "venueGroupIds": [
+          "venue-group:dc09801a76be5da981d65998"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "suntec-singapore-international-convention-and-exhibition-centre",
+    "label": "SUNTEC SINGAPORE INTERNATIONAL CONVENTION AND EXHIBITION CENTRE",
+    "anchor": {
+      "lng": 103.8572170149955,
+      "lat": 1.2937333502254984
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:194cd0d6b5ce705804d36fd6",
+        "venueGroupIds": [
+          "venue-group:223b6b4f3b28c8936d7e0a71"
+        ]
+      },
+      {
+        "activityId": "activity:477cdcacfb0861fdbbd23f88",
+        "venueGroupIds": [
+          "venue-group:99a7049aed9867be67828722"
+        ]
+      },
+      {
+        "activityId": "activity:df83589b08a2aa5caae9dc9a",
+        "venueGroupIds": [
+          "venue-group:f04a7b6459d59e77257fea1b"
+        ]
+      },
+      {
+        "activityId": "activity:f67bcca86850549489b4d8b4",
+        "venueGroupIds": [
+          "venue-group:15ffbd7245b6f56429bb7385"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "school-of-the-arts-sota",
+    "label": "SCHOOL OF THE ARTS (SOTA)",
+    "anchor": {
+      "lng": 103.84872604746548,
+      "lat": 1.2993591074546635
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:6d247f75ea17c7c9d246a542",
+        "venueGroupIds": [
+          "venue-group:69cb6e5989ca2c758f0cb99c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "singapore-polo-club",
+    "label": "SINGAPORE POLO CLUB",
+    "anchor": {
+      "lng": 103.83560333294935,
+      "lat": 1.3329808520922597
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:c86ef382e9f25cc2a012b7ab",
+        "venueGroupIds": [
+          "venue-group:79445fb99251f08a80d1c660"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "singapore-indoor-stadium",
+    "label": "SINGAPORE INDOOR STADIUM",
+    "anchor": {
+      "lng": 103.87488966127991,
+      "lat": 1.3006999649177593
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:0164460851ab413dbdd02b6e",
+        "venueGroupIds": [
+          "venue-group:52b3191072f953866e2cae6e"
+        ]
+      },
+      {
+        "activityId": "activity:07188cd2edbe6472ae0a1b12",
+        "venueGroupIds": [
+          "venue-group:50d3c7d72068f7e921186266"
+        ]
+      },
+      {
+        "activityId": "activity:111934da5e611ca1eed1a552",
+        "venueGroupIds": [
+          "venue-group:3ef5320437f425fb98c99dfc"
+        ]
+      },
+      {
+        "activityId": "activity:335ff8414d4d97d402a5fbbd",
+        "venueGroupIds": [
+          "venue-group:af86d41109f449af346ded4d"
+        ]
+      },
+      {
+        "activityId": "activity:5e01e77aa81f06701e01cdb6",
+        "venueGroupIds": [
+          "venue-group:f5216e4b5a9781317c7c2f51"
+        ]
+      },
+      {
+        "activityId": "activity:6af4395d34d734ed09dabdc5",
+        "venueGroupIds": [
+          "venue-group:974fa92ed71a9f24b2ba0683"
+        ]
+      },
+      {
+        "activityId": "activity:6dba69fc5c895db7d4861654",
+        "venueGroupIds": [
+          "venue-group:dff2d18c0da12cdf488f5c23"
+        ]
+      },
+      {
+        "activityId": "activity:a968b446d1ca54b49edbd075",
+        "venueGroupIds": [
+          "venue-group:af5048e7459b1c1473138d07"
+        ]
+      },
+      {
+        "activityId": "activity:b7732f729c2d25af554833ca",
+        "venueGroupIds": [
+          "venue-group:5402d5fbf93741789f1f52f5"
+        ]
+      },
+      {
+        "activityId": "activity:e756382aa948ef419af8a4d3",
+        "venueGroupIds": [
+          "venue-group:49fedb8dc3d5dab09cc32823"
+        ]
+      },
+      {
+        "activityId": "activity:f506acb47646bbc3d47a1377",
+        "venueGroupIds": [
+          "venue-group:0038ae85eec1f5bf1af878b6"
+        ]
+      },
+      {
+        "activityId": "activity:fd0be3f291a52ea5fff675ec",
+        "venueGroupIds": [
+          "venue-group:440072d6b5ec0a6971743a62"
+        ]
+      },
+      {
+        "activityId": "activity:fff98473dca379a6fbf059a7",
+        "venueGroupIds": [
+          "venue-group:c461a167945a0259f3b7669a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "gillman-barracks",
+    "label": "GILLMAN BARRACKS",
+    "anchor": {
+      "lng": 103.80512389849707,
+      "lat": 1.2792824258249862
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:3fd5bdf724630d167e57d31d",
+        "venueGroupIds": [
+          "venue-group:40fbcf6e5501d041368d555c"
+        ]
+      },
+      {
+        "activityId": "activity:7db693a3f7bf74d233072d93",
+        "venueGroupIds": [
+          "venue-group:68a8f6467d876f874a3f41dd"
+        ]
+      },
+      {
+        "activityId": "activity:7fbaabf44d6bcac57105ca20",
+        "venueGroupIds": [
+          "venue-group:29f4fef3c08529ecd1cba9c4"
+        ]
+      },
+      {
+        "activityId": "activity:d962bf8e7ab631365aa78073",
+        "venueGroupIds": [
+          "venue-group:7bf390b6c75e907d4cd9a115"
+        ]
+      },
+      {
+        "activityId": "activity:e5c7d1acc2ae2c8e923a4830",
+        "venueGroupIds": [
+          "venue-group:765bfb178036176629c69a5c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "downtown-east",
+    "label": "DOWNTOWN EAST",
+    "anchor": {
+      "lng": 103.95521672334625,
+      "lat": 1.37689922408012
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:f76c21afae3363ca9d446d65",
+        "venueGroupIds": [
+          "venue-group:d2249d5655120435c8e52fb5"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foochow-building",
+    "label": "FOOCHOW BUILDING",
+    "anchor": {
+      "lng": 103.85845203042678,
+      "lat": 1.30942813027063
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:0ab0bb7653354fb103b5efce",
+        "venueGroupIds": [
+          "venue-group:fbe76d4e070b672ac781fbb4"
+        ]
+      },
+      {
+        "activityId": "activity:a0c993eb7f2977e536c901cb",
+        "venueGroupIds": [
+          "venue-group:2185b72aea82805a3643c07b"
+        ]
+      },
+      {
+        "activityId": "activity:c0a27740c32d106979d2ee1f",
+        "venueGroupIds": [
+          "venue-group:4d7f349f348fce9410e14420"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tanglin-police-divisional-headquarters",
+    "label": "TANGLIN POLICE DIVISIONAL HEADQUARTERS",
+    "anchor": {
+      "lng": 103.84655670081554,
+      "lat": 1.3123555461454732
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:46c2622a5ca1e397a65265bd",
+        "venueGroupIds": [
+          "venue-group:aca38f21790f5bef49c16936"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pho-leng-building",
+    "label": "PHO LENG BUILDING",
+    "anchor": {
+      "lng": 103.88512819084154,
+      "lat": 1.315041189690809
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:732d6cb029828e8cbc6ff28e",
+        "venueGroupIds": [
+          "venue-group:4bfbe7bb19ef16a445b2b5f4"
+        ]
+      },
+      {
+        "activityId": "activity:de6146006cd136e8438d86da",
+        "venueGroupIds": [
+          "venue-group:f075b15f8f30f71c3ced485c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sculpture-square",
+    "label": "SCULPTURE SQUARE",
+    "anchor": {
+      "lng": 103.85207186997924,
+      "lat": 1.2996442908921688
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:0a3717b61b9598467ad2b0ac",
+        "venueGroupIds": [
+          "venue-group:02ce0dd03c9a5d1cee411101"
+        ]
+      },
+      {
+        "activityId": "activity:1cf03afa1116af5a02bd619a",
+        "venueGroupIds": [
+          "venue-group:0bcd9667fabf8c0c6a291ae5"
+        ]
+      },
+      {
+        "activityId": "activity:479efc0e6913648d4b32c09d",
+        "venueGroupIds": [
+          "venue-group:d100520a35acf91fc7b88fc4"
+        ]
+      },
+      {
+        "activityId": "activity:4816fc850813e70f03720553",
+        "venueGroupIds": [
+          "venue-group:2b567caba5440ce8ad550708"
+        ]
+      },
+      {
+        "activityId": "activity:8f8c5ee6275dfce9646fd193",
+        "venueGroupIds": [
+          "venue-group:a8dacb6ea72c7f4c2f4f857c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "kreta-ayer-people-s-theatre",
+    "label": "KRETA AYER PEOPLE'S THEATRE",
+    "anchor": {
+      "lng": 103.84285074556715,
+      "lat": 1.2812558250415826
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:3c04aec8babb43e20470d62b",
+        "venueGroupIds": [
+          "venue-group:2616ab82ac34ad7036951f2e"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ocbc-arena",
+    "label": "OCBC ARENA",
+    "anchor": {
+      "lng": 103.87594854421526,
+      "lat": 1.3046724467315205
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:447264bb94707258cf209946",
+        "venueGroupIds": [
+          "venue-group:967bad1eb053d5b9a1edd6f8"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hall-7-singapore-expo",
+    "label": "HALL 7 (SINGAPORE EXPO)",
+    "anchor": {
+      "lng": 103.96182911801947,
+      "lat": 1.3369764038215206
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:2785eda82341fdd72e550b2f",
+        "venueGroupIds": [
+          "venue-group:b0ebd6c7f0d5e7f443e35dc9"
+        ]
+      },
+      {
+        "activityId": "activity:391c201b03493c2b8e415eef",
+        "venueGroupIds": [
+          "venue-group:b7c12ed3f8a368f5019900f3"
+        ]
+      },
+      {
+        "activityId": "activity:c46274202145bfc9e07421e1",
+        "venueGroupIds": [
+          "venue-group:00e6b1ca15f6ab4487591e0b"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hpl-house",
+    "label": "HPL HOUSE",
+    "anchor": {
+      "lng": 103.82808714858571,
+      "lat": 1.3057160074305012
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:2125d32489f204a539e5a800",
+        "venueGroupIds": [
+          "venue-group:4bd5bd1577d39241dd24a7ef"
+        ]
+      },
+      {
+        "activityId": "activity:4033a70df011cc8c0dd94199",
+        "venueGroupIds": [
+          "venue-group:2552eb28ac00e3891817fa07"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "chijmes",
+    "label": "CHIJMES",
+    "anchor": {
+      "lng": 103.85218250595706,
+      "lat": 1.2949542822999243
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:69a2a3690d2085e44c903a5b",
+        "venueGroupIds": [
+          "venue-group:360c644d6ada6cab06451250"
+        ]
+      },
+      {
+        "activityId": "activity:abd25dafb207af48f6121bf8",
+        "venueGroupIds": [
+          "venue-group:db00f2cf074163dd6be70321"
+        ]
+      },
+      {
+        "activityId": "activity:ac186ac34f19fa662355fded",
+        "venueGroupIds": [
+          "venue-group:f16c5627c89b3e4be11d834c"
+        ]
+      },
+      {
+        "activityId": "activity:f269c0464aac44d09706c266",
+        "venueGroupIds": [
+          "venue-group:1f57b380ae00b617acdceb1a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "kampong-ubi-industrial-estate",
+    "label": "KAMPONG UBI INDUSTRIAL ESTATE",
+    "anchor": {
+      "lng": 103.89377286167166,
+      "lat": 1.330899068301611
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:4a80a9d48c1e3ab9420996bf",
+        "venueGroupIds": [
+          "venue-group:b4abfe380e92b1c654761a2f"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "chinatown-complex",
+    "label": "CHINATOWN COMPLEX",
+    "anchor": {
+      "lng": 103.84294483100366,
+      "lat": 1.2822594178115796
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:32b6f0a59a811ffb97da80bc",
+        "venueGroupIds": [
+          "venue-group:7339635b2949919038455bac"
+        ]
+      },
+      {
+        "activityId": "activity:42641dba261977f571dbf0ac",
+        "venueGroupIds": [
+          "venue-group:e142c09147b83f6c7ae0c7d0"
+        ]
+      },
+      {
+        "activityId": "activity:84bc7cb7dacad5dbad7eedff",
+        "venueGroupIds": [
+          "venue-group:f00a099c1473ae69fb99a297"
+        ]
+      },
+      {
+        "activityId": "activity:bd9f8dd2d14cdcb031af68cf",
+        "venueGroupIds": [
+          "venue-group:9e36f181704768417a334aac"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "havelock2",
+    "label": "HAVELOCK2",
+    "anchor": {
+      "lng": 103.84514698803511,
+      "lat": 1.2870513653829136
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:2e33e1ede926687efb85ed80",
+        "venueGroupIds": [
+          "venue-group:f9c970332d1a3011d38b394e"
+        ]
+      },
+      {
+        "activityId": "activity:99e9616c7bed11fcbbdad1f3",
+        "venueGroupIds": [
+          "venue-group:ed8a7965b8c4cf207adc89ae"
+        ]
+      },
+      {
+        "activityId": "activity:b0a7627563bb348be68304b4",
+        "venueGroupIds": [
+          "venue-group:59ef16b4e279a77684e65d9e"
+        ]
+      },
+      {
+        "activityId": "activity:cdbf0819a9fd429531436686",
+        "venueGroupIds": [
+          "venue-group:45fb40447f751ebf657255df"
+        ]
+      },
+      {
+        "activityId": "activity:f08361f886da839bd214800f",
+        "venueGroupIds": [
+          "venue-group:4b202e46e91186c684ee3af4"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "kembangan-estate",
+    "label": "KEMBANGAN ESTATE",
+    "anchor": {
+      "lng": 103.9064998992459,
+      "lat": 1.3244863097029875
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:2f8cb04f7cb9f6ad15cc7ebe",
+        "venueGroupIds": [
+          "venue-group:fb466245e6e40e9d5d167361"
+        ]
+      },
+      {
+        "activityId": "activity:7dfad195c60477c5c9955e82",
+        "venueGroupIds": [
+          "venue-group:1de439a98f491d9fba4a765f"
+        ]
+      },
+      {
+        "activityId": "activity:8e10e0829abeae0b526a68b1",
+        "venueGroupIds": [
+          "venue-group:9efeb4491107222a7e7e1b11"
+        ]
+      },
+      {
+        "activityId": "activity:aeb37b947a7c68a97508c674",
+        "venueGroupIds": [
+          "venue-group:543d073a67aea58310ae8820"
+        ]
+      },
+      {
+        "activityId": "activity:ec3d6779c8812c3ea819a05b",
+        "venueGroupIds": [
+          "venue-group:5cc55a8e1654922d19ad9345"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "uob-plaza",
+    "label": "UOB PLAZA",
+    "anchor": {
+      "lng": 103.85069284402124,
+      "lat": 1.2853811805176019
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:7c5407a5a9eac49e262d9ef1",
+        "venueGroupIds": [
+          "venue-group:2f59d1aa0a05aa96210dfc35"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "old-hill-street-police-station",
+    "label": "OLD HILL STREET POLICE STATION",
+    "anchor": {
+      "lng": 103.84803693372454,
+      "lat": 1.2907768766501733
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:693ad01be4cba9f6cae149c5",
+        "venueGroupIds": [
+          "venue-group:9cf4d110e8a718eab7002767"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "empress-place-building",
+    "label": "EMPRESS PLACE BUILDING",
+    "anchor": {
+      "lng": 103.85141343750463,
+      "lat": 1.2874487009217126
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:12c6b372717fab5d37d51fcc",
+        "venueGroupIds": [
+          "venue-group:4a40ca351b38148e6e016612"
+        ]
+      },
+      {
+        "activityId": "activity:131157eb0c845706707456a0",
+        "venueGroupIds": [
+          "venue-group:97d2a9f8c1ad4174ece8111b"
+        ]
+      },
+      {
+        "activityId": "activity:7cd1f08cdda0a46a086456fc",
+        "venueGroupIds": [
+          "venue-group:5e2ed1da2c8c688ef18806de"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "international-plaza",
+    "label": "INTERNATIONAL PLAZA",
+    "anchor": {
+      "lng": 103.8460300404899,
+      "lat": 1.275867541431446
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:3545562c46c8919a77959fb6",
+        "venueGroupIds": [
+          "venue-group:0f186f3e89b01318882fcc7a"
+        ]
+      },
+      {
+        "activityId": "activity:dd1862adc7c2542499b277aa",
+        "venueGroupIds": [
+          "venue-group:95a7ac7526679b3eee2e328d"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tpi-building",
+    "label": "TPI BUILDING",
+    "anchor": {
+      "lng": 103.84947398941708,
+      "lat": 1.2821347766962576
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:32560efc7d18ac17454fe8f0",
+        "venueGroupIds": [
+          "venue-group:5aec4833b819570bbe0e9da4"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "gardens-by-the-bay",
+    "label": "GARDENS BY THE BAY",
+    "anchor": {
+      "lng": 103.86478864013044,
+      "lat": 1.2846112125188787
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:0bf1359218e43f54f9674ea7",
+        "venueGroupIds": [
+          "venue-group:7adf67a0fafb658f89dc3017"
+        ]
+      },
+      {
+        "activityId": "activity:c54f782d452cc5a9d5f45e58",
+        "venueGroupIds": [
+          "venue-group:d1e60766eae7c77027486307"
+        ]
+      },
+      {
+        "activityId": "activity:c6a848242efb0b8a80a61236",
+        "venueGroupIds": [
+          "venue-group:9a4737d1a1dc271106a1a656"
+        ]
+      },
+      {
+        "activityId": "activity:e787679875d10dbe6afa3b94",
+        "venueGroupIds": [
+          "venue-group:850defdb7ea71e1694406323"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "peranakan-museum",
+    "label": "PERANAKAN MUSEUM",
+    "anchor": {
+      "lng": 103.84904934146827,
+      "lat": 1.294292363604709
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:a86387b9fd089a3c0daef558",
+        "venueGroupIds": [
+          "venue-group:2ff440c3ee4450e1ac0ab936"
+        ]
+      },
+      {
+        "activityId": "activity:c35bbae9efc09f9d5b815aad",
+        "venueGroupIds": [
+          "venue-group:2f7a6d994b3a68dcff6ede36"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "maritime-xperiential-museum",
+    "label": "MARITIME XPERIENTIAL MUSEUM",
+    "anchor": {
+      "lng": 103.82046847155313,
+      "lat": 1.2583018488997462
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:33d72f2835af6057292c369f",
+        "venueGroupIds": [
+          "venue-group:ecb5452b4d5d279288f95cdb"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "jewel-changi-airport",
+    "label": "JEWEL CHANGI AIRPORT",
+    "anchor": {
+      "lng": 103.98933257610221,
+      "lat": 1.3596958721695571
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:d089bb5e7d96780683ec67e8",
+        "venueGroupIds": [
+          "venue-group:35a713dc56f2dff0c1b8641a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "shangri-la-hotel",
+    "label": "SHANGRI-LA HOTEL",
+    "anchor": {
+      "lng": 103.82642839108709,
+      "lat": 1.3113592622406118
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:a2f542769c3d3f793d1a8a91",
+        "venueGroupIds": [
+          "venue-group:e1a5181667daab7d97231ba3"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "singapore-tyler-print-institute",
+    "label": "SINGAPORE TYLER PRINT INSTITUTE",
+    "anchor": {
+      "lng": 103.84026414836612,
+      "lat": 1.291049926847979
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:016aff3beb3129c736e31a3a",
+        "venueGroupIds": [
+          "venue-group:1da9c9fa204c40e4a4df9524"
+        ]
+      },
+      {
+        "activityId": "activity:1295775049ba56ada94af368",
+        "venueGroupIds": [
+          "venue-group:98a39f5f261a62c87e5d349b"
+        ]
+      },
+      {
+        "activityId": "activity:9acda4897dcbaaafdc58f253",
+        "venueGroupIds": [
+          "venue-group:ee18be957bb6a0223b8a8cc4"
+        ]
+      },
+      {
+        "activityId": "activity:ab43d26a258d14ba5d348fca",
+        "venueGroupIds": [
+          "venue-group:ca55022da16fe71b0c57218e"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "telok-ayer-conservation-area",
+    "label": "TELOK AYER CONSERVATION AREA",
+    "anchor": {
+      "lng": 103.84656549429408,
+      "lat": 1.2802784186244722
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:41ebbbdf93dffc29362bc0f0",
+        "venueGroupIds": [
+          "venue-group:01a06a51d281202a285b2ee8"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "golden-mile-tower",
+    "label": "GOLDEN MILE TOWER",
+    "anchor": {
+      "lng": 103.86411707012142,
+      "lat": 1.3019182569025696
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:6a7c167334a112155474f613",
+        "venueGroupIds": [
+          "venue-group:86dd074b608ed6c3d9e3fb45"
+        ]
+      },
+      {
+        "activityId": "activity:9feb3c36ad0bcd95649abb9e",
+        "venueGroupIds": [
+          "venue-group:8762c1e9a50593fc07fd99ac"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "science-centre-singapore",
+    "label": "SCIENCE CENTRE SINGAPORE",
+    "anchor": {
+      "lng": 103.73596251038015,
+      "lat": 1.332592213388047
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:de5fd5767937f0e7d019f79d",
+        "venueGroupIds": [
+          "venue-group:8994594b5500918c6d0bc36c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "marina-bay-sands-theatre",
+    "label": "MARINA BAY SANDS (THEATRE)",
+    "anchor": {
+      "lng": 103.8599918733797,
+      "lat": 1.2850308891753741
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:1e6b6f9e92b987603fe9bef9",
+        "venueGroupIds": [
+          "venue-group:972908b0d8211e5c678f74f4"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "national-archives-of-singapore",
+    "label": "NATIONAL ARCHIVES OF SINGAPORE",
+    "anchor": {
+      "lng": 103.84833011398109,
+      "lat": 1.2932347829903061
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:59bc5b39d785a9f1acf3e936",
+        "venueGroupIds": [
+          "venue-group:cf01e348d1510a8600accd8a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "our-tampines-hub",
+    "label": "OUR TAMPINES HUB",
+    "anchor": {
+      "lng": 103.94029088719775,
+      "lat": 1.353058195438635
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:188bf3fd880e470700bd779b",
+        "venueGroupIds": [
+          "venue-group:5fe5bc06faf47a980d1593fe"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "national-stadium",
+    "label": "NATIONAL STADIUM",
+    "anchor": {
+      "lng": 103.87433028576724,
+      "lat": 1.3051554568814263
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:18a217516c039e707895f6e0",
+        "venueGroupIds": [
+          "venue-group:7bc1f7101fdd8600a1df68c4"
+        ]
+      },
+      {
+        "activityId": "activity:2885551d0aac66c92b2b7538",
+        "venueGroupIds": [
+          "venue-group:4b82dc96248f52785c3abc92"
+        ]
+      },
+      {
+        "activityId": "activity:b0b8d4e70b82b292c610ab0b",
+        "venueGroupIds": [
+          "venue-group:fb54f69024682c009dda2cb9"
+        ]
+      },
+      {
+        "activityId": "activity:cf87daa18d2b7c78fbac630f",
+        "venueGroupIds": [
+          "venue-group:6fe70ea84044666788ba72fe"
+        ]
+      },
+      {
+        "activityId": "activity:d31c7846ae79fe8c23f41927",
+        "venueGroupIds": [
+          "venue-group:f6ef6e2621e2856d4bca0949"
+        ]
+      },
+      {
+        "activityId": "activity:fbf52173bf0c669b8c0ff970",
+        "venueGroupIds": [
+          "venue-group:baef9bd5e0e4362d53fcb073"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "wave-house",
+    "label": "WAVE HOUSE",
+    "anchor": {
+      "lng": 103.81380245378193,
+      "lat": 1.2545320482904971
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:d3eeb942478c697279080eb3",
+        "venueGroupIds": [
+          "venue-group:e78d9e948e1640744db0f9ac"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "crawford-court",
+    "label": "CRAWFORD COURT",
+    "anchor": {
+      "lng": 103.86115958764132,
+      "lat": 1.304750112585885
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:0a1b1e5093272547381dba79",
+        "venueGroupIds": [
+          "venue-group:42036a9dd734af1457b0ac34"
+        ]
+      },
+      {
+        "activityId": "activity:3053aacbf6b80d2ded43ab4d",
+        "venueGroupIds": [
+          "venue-group:902b23e8ef2c2783570a821e"
+        ]
+      },
+      {
+        "activityId": "activity:e3ab32dd2d9de301c5a9608b",
+        "venueGroupIds": [
+          "venue-group:5c644ed3376a386d122637ff"
+        ]
+      },
+      {
+        "activityId": "activity:e84d7719f7b0afbf3c736175",
+        "venueGroupIds": [
+          "venue-group:85577af68b6870b612d7af80"
+        ]
+      },
+      {
+        "activityId": "activity:fca47bf2e2d533ac9f57a029",
+        "venueGroupIds": [
+          "venue-group:abf3c7158dc990f80c34f4c3"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "paya-lebar-mrt-station",
+    "label": "PAYA LEBAR MRT STATION",
+    "anchor": {
+      "lng": 103.89300382774871,
+      "lat": 1.3181568153932193
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:a04b1ff883db93c1fa607064",
+        "venueGroupIds": [
+          "venue-group:b59e83066ca440f296439be5"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "little-india-mrt-station",
+    "label": "LITTLE INDIA MRT STATION",
+    "anchor": {
+      "lng": 103.8493732143747,
+      "lat": 1.306791156509505
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:e44feb35cb952b42bb6bb37f",
+        "venueGroupIds": [
+          "venue-group:decf27223a0b281e3def28fd"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "chinatown-point",
+    "label": "CHINATOWN POINT",
+    "anchor": {
+      "lng": 103.84516134225069,
+      "lat": 1.2854338873597584
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:d86e7ce289396d38674f0013",
+        "venueGroupIds": [
+          "venue-group:adfe4158b991efb1c2c632f3"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "masjid-sultan",
+    "label": "MASJID SULTAN",
+    "anchor": {
+      "lng": 103.85901516829487,
+      "lat": 1.3022291758487767
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:1ba386e59dde9ba7a1645ca6",
+        "venueGroupIds": [
+          "venue-group:b003a5fe451a9d5418d1e150"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pgp-building",
+    "label": "PGP BUILDING",
+    "anchor": {
+      "lng": 103.8522522697651,
+      "lat": 1.3056775669279062
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:1eaa563c371a34ce45526287",
+        "venueGroupIds": [
+          "venue-group:6db6d327bd645f89051e3661"
+        ]
+      },
+      {
+        "activityId": "activity:7d40e208c62e16d11d6b12e2",
+        "venueGroupIds": [
+          "venue-group:73d5dc20e2fadfa9212fad98"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "changi-point-ferry-terminal",
+    "label": "CHANGI POINT FERRY TERMINAL",
+    "anchor": {
+      "lng": 103.98760310134976,
+      "lat": 1.3908895869539188
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:44e94e3ce9177a6ff330026e",
+        "venueGroupIds": [
+          "venue-group:86924827b7251405c9fc9f03"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "chip-bee-gardens",
+    "label": "CHIP BEE GARDENS",
+    "anchor": {
+      "lng": 103.79766982963935,
+      "lat": 1.3124423887386139
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:f9ce39e92bca13a767a3e453",
+        "venueGroupIds": [
+          "venue-group:4253f33f56c5d9831b9e69f4"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "national-community-leadership-institute",
+    "label": "NATIONAL COMMUNITY LEADERSHIP INSTITUTE",
+    "anchor": {
+      "lng": 103.78829031025937,
+      "lat": 1.2830358484389668
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:2bf8da10bb9e25078f199cac",
+        "venueGroupIds": [
+          "venue-group:986b968b1d06947bb640a290"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "goodman-arts-centre",
+    "label": "GOODMAN ARTS CENTRE",
+    "anchor": {
+      "lng": 103.88537046433814,
+      "lat": 1.3034580425368636
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:d8da3462d1e820681000385e",
+        "venueGroupIds": [
+          "venue-group:018cc074a735b91036cd58e5"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "singapore-management-university",
+    "label": "SINGAPORE MANAGEMENT UNIVERSITY",
+    "anchor": {
+      "lng": 103.84973498388698,
+      "lat": 1.2957630175515251
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:f04bc02049134586a0a39883",
+        "venueGroupIds": [
+          "venue-group:31f67d0041bf30bcd066995b"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "parkway-parade",
+    "label": "PARKWAY PARADE",
+    "anchor": {
+      "lng": 103.90528981643675,
+      "lat": 1.301401897525115
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:d92f86a9c980b47ce6cf7404",
+        "venueGroupIds": [
+          "venue-group:0b85f59b536d087420bbbb00"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fort-canning-centre",
+    "label": "FORT CANNING CENTRE",
+    "anchor": {
+      "lng": 103.84679682938261,
+      "lat": 1.295210191419898
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:41e5cbf8ac861b3399afb6c3",
+        "venueGroupIds": [
+          "venue-group:224a2bc5a1337aa70a742968"
+        ]
+      },
+      {
+        "activityId": "activity:46d84187af415c218bc97472",
+        "venueGroupIds": [
+          "venue-group:58790eb64d305c50cc88dab1"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "313-somerset",
+    "label": "313 @ SOMERSET",
+    "anchor": {
+      "lng": 103.83828913679355,
+      "lat": 1.301006404707934
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:99810904d12825c3c6e71915",
+        "venueGroupIds": [
+          "venue-group:6140b53dfe5f3259c9b95d2a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "b-central",
+    "label": "B CENTRAL",
+    "anchor": {
+      "lng": 103.8653286461516,
+      "lat": 1.3194404506704762
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:c36d60394371da09072f181b",
+        "venueGroupIds": [
+          "venue-group:79faab58c740e268117a41ca"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "waterloo-centre",
+    "label": "WATERLOO CENTRE",
+    "anchor": {
+      "lng": 103.85227196877048,
+      "lat": 1.298810080426424
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:0eae7106b2cb1193a0cabeb6",
+        "venueGroupIds": [
+          "venue-group:8787c2ae88f5fbcf4faa289b"
+        ]
+      },
+      {
+        "activityId": "activity:7ac3d4de7b79a672590032a9",
+        "venueGroupIds": [
+          "venue-group:efa0aceffc9ec97ea7cbdab1"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "buddhist-tzu-chi-foundation",
+    "label": "BUDDHIST TZU CHI FOUNDATION",
+    "anchor": {
+      "lng": 103.93919980842279,
+      "lat": 1.3727092239475376
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:a80feb0233efb6bf23064055",
+        "venueGroupIds": [
+          "venue-group:e3b35d5e2cd5b48ff3f4caaa"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "zhonghua-primary-school",
+    "label": "ZHONGHUA PRIMARY SCHOOL",
+    "anchor": {
+      "lng": 103.87011032218479,
+      "lat": 1.360191717104292
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:3e1e7e8c187f9452120d81c8",
+        "venueGroupIds": [
+          "venue-group:1536710448240c644c7cf3d3"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "the-foundry",
+    "label": "THE FOUNDRY",
+    "anchor": {
+      "lng": 103.84532732841672,
+      "lat": 1.2909368546502287
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:61c479fefaa4b4864db66e3a",
+        "venueGroupIds": [
+          "venue-group:b2bc271e02dc12144687f0cc"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "singapore-general-hospital",
+    "label": "SINGAPORE GENERAL HOSPITAL",
+    "anchor": {
+      "lng": 103.83514244029448,
+      "lat": 1.2803173187374441
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:d86106558f86d8c5f6d5b122",
+        "venueGroupIds": [
+          "venue-group:bfb1f0583b4943fa54be75da"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "parc-point",
+    "label": "PARC POINT",
+    "anchor": {
+      "lng": 103.73957128533885,
+      "lat": 1.3604337570038438
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:9e4789f5a5ddd5e1fdca78dd",
+        "venueGroupIds": [
+          "venue-group:c3edc5a373fd6b20a3c705a6"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "swissotel-merchant-court-singapore",
+    "label": "SWISSOTEL MERCHANT COURT SINGAPORE",
+    "anchor": {
+      "lng": 103.84567992997425,
+      "lat": 1.2883933380548662
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:9638b51e27408453c03c5c98",
+        "venueGroupIds": [
+          "venue-group:cab8e9a0e5649e75ca5980dc"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "aliwal-arts-centre",
+    "label": "ALIWAL ARTS CENTRE",
+    "anchor": {
+      "lng": 103.86100071945835,
+      "lat": 1.302664077496818
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:21ca00af273007a045fee97f",
+        "venueGroupIds": [
+          "venue-group:844d39b0f746b6c7c83be3fe"
+        ]
+      },
+      {
+        "activityId": "activity:22cdbcf2fa285fcacd3dea56",
+        "venueGroupIds": [
+          "venue-group:474f3f51224c76a1b1b92948"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "heartbeat-bedok",
+    "label": "HEARTBEAT @ BEDOK",
+    "anchor": {
+      "lng": 103.93202774693134,
+      "lat": 1.3269408951202377
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:168b41a257468ee7201f7c10",
+        "venueGroupIds": [
+          "venue-group:cdfdd8b61d0ab8770c9fdba2"
+        ]
+      },
+      {
+        "activityId": "activity:5ba1f2da01171222977d7c82",
+        "venueGroupIds": [
+          "venue-group:d6290ca130e6e2e86ef9b034"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "anchorpoint-shopping-centre",
+    "label": "ANCHORPOINT SHOPPING CENTRE",
+    "anchor": {
+      "lng": 103.80531401638531,
+      "lat": 1.2888205494857483
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:9601b9aa9bb86d8079607a83",
+        "venueGroupIds": [
+          "venue-group:832d9e5f5931df9efb240168"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "marina-square",
+    "label": "MARINA SQUARE",
+    "anchor": {
+      "lng": 103.8577154279406,
+      "lat": 1.2915196583549364
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:44aa8bc6f6eabd76e79f1b85",
+        "venueGroupIds": [
+          "venue-group:2c63794ae6de2858b709a4e3"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arena-country-club",
+    "label": "ARENA COUNTRY CLUB",
+    "anchor": {
+      "lng": 103.68191674649238,
+      "lat": 1.329518540528672
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:3934a0e19cbbedc0c1f8827e",
+        "venueGroupIds": [
+          "venue-group:092c4803b693eb6233b605b7"
+        ]
+      },
+      {
+        "activityId": "activity:7fac2f43e954f40f6abab47c",
+        "venueGroupIds": [
+          "venue-group:0c746edddbf54204e809c499"
+        ]
+      },
+      {
+        "activityId": "activity:9373495c12de4733effb43b6",
+        "venueGroupIds": [
+          "venue-group:c7a53ae4293bd0bfd91de4ec"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sharely-warehouse-building",
+    "label": "SHARELY WAREHOUSE BUILDING",
+    "anchor": {
+      "lng": 103.87832947469487,
+      "lat": 1.3272471078059556
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:b94cd362da21fb2b2e66b734",
+        "venueGroupIds": [
+          "venue-group:463c9ad8aff76b920c7f675d"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "raffles-hotel-1886",
+    "label": "RAFFLES HOTEL (1886)",
+    "anchor": {
+      "lng": 103.85403448797335,
+      "lat": 1.2956258608499558
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:08d75a7e64af6a9bad34a894",
+        "venueGroupIds": [
+          "venue-group:5161b39393d92f58fcb5ac26"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "carlton-hotel",
+    "label": "CARLTON HOTEL",
+    "anchor": {
+      "lng": 103.85277695561217,
+      "lat": 1.295998552884164
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:db362d336a4435d594b5c2a8",
+        "venueGroupIds": [
+          "venue-group:23dc37c00b61e4a8a4233d50"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "esplanade-mall",
+    "label": "ESPLANADE MALL",
+    "anchor": {
+      "lng": 103.8560336583659,
+      "lat": 1.2896466448703383
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:2545df9a8c4f88e0e79ef441",
+        "venueGroupIds": [
+          "venue-group:b01ea33cefe248c5c8bfba61"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "far-east-shopping-centre",
+    "label": "FAR EAST SHOPPING CENTRE",
+    "anchor": {
+      "lng": 103.82997193594232,
+      "lat": 1.305562454970385
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:a80e85e61d1b9f694f10955f",
+        "venueGroupIds": [
+          "venue-group:952a5c5ad8eed375d8a383b8"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "temasek-shophouse",
+    "label": "TEMASEK SHOPHOUSE",
+    "anchor": {
+      "lng": 103.84648346553948,
+      "lat": 1.2990985396819563
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:05d24ae317fa090aab32ce61",
+        "venueGroupIds": [
+          "venue-group:7196c7d66467a7e325d65a2c"
+        ]
+      },
+      {
+        "activityId": "activity:1e26de02fd35502a23025a21",
+        "venueGroupIds": [
+          "venue-group:5ef6e54196ce6eddfeaa9d53"
+        ]
+      },
+      {
+        "activityId": "activity:570363b4d087af677d49c4b6",
+        "venueGroupIds": [
+          "venue-group:5228b394510a8e8b4dbb1b0e"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "paya-lebar-kovan-community-club",
+    "label": "PAYA LEBAR KOVAN COMMUNITY CLUB",
+    "anchor": {
+      "lng": 103.88631000637825,
+      "lat": 1.3577440177406928
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:8a5525a8eaaae11cd44cf925",
+        "venueGroupIds": [
+          "venue-group:a7c6881a98f2481091dffc79"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "one-holland-village",
+    "label": "ONE HOLLAND VILLAGE",
+    "anchor": {
+      "lng": 103.79410183564698,
+      "lat": 1.311108091221813
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:2433dbd8650555ce4612b10e",
+        "venueGroupIds": [
+          "venue-group:89ceabba41423965bf45ae3c"
+        ]
+      },
+      {
+        "activityId": "activity:cedda31e35a6c8a767984359",
+        "venueGroupIds": [
+          "venue-group:e42d1d74759e7ce9fa082f3a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ct-hub-2",
+    "label": "CT HUB 2",
+    "anchor": {
+      "lng": 103.8632631908418,
+      "lat": 1.3115805544683004
+    },
+    "activityRefs": [
+      {
+        "activityId": "activity:eb8af1954db6303a238a696c",
+        "venueGroupIds": [
+          "venue-group:c6ea3000a5d942a6916c8758"
+        ]
+      }
+    ]
+  }
+]

@@ -8,7 +8,7 @@
       "operatingState": "enabled"
     },
     {
-      "name": "Honeycombers",
+      "name": "Time Out Singapore",
       "evidenceRole": "editorial",
       "operatingState": "enabled",
       "editorialPolicy": {
@@ -16,12 +16,6 @@
         "corroborateFirst": true,
         "allowSufficientEditorialOnly": true
       }
-    },
-    {
-      "name": "Roots HAN",
-      "evidenceRole": "unavailable",
-      "operatingState": "disabled",
-      "unavailableReason": "layout_contract_changed"
     }
   ],
   "assessments": [
@@ -36,7 +30,7 @@
     {
       "fixtureId": "editorial-sufficient",
       "record": {
-        "sourceRecordId": "honey:1",
+        "sourceRecordId": "editorial:1",
         "evidenceRole": "editorial",
         "specific": true,
         "current": true,
@@ -51,7 +45,7 @@
     {
       "fixtureId": "editorial-incomplete",
       "record": {
-        "sourceRecordId": "arts:1",
+        "sourceRecordId": "editorial:incomplete",
         "evidenceRole": "editorial",
         "specific": true,
         "current": true,
@@ -81,7 +75,7 @@
     {
       "fixtureId": "editorial-promotion",
       "record": {
-        "sourceRecordId": "honey:2",
+        "sourceRecordId": "editorial:promotion",
         "evidenceRole": "editorial",
         "specific": false,
         "current": true,

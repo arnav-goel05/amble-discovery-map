@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runCommandSuite } from "./run-command-suite.mjs";
+import { stableIsolatedPort } from "./lib/isolated-port.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const nodeTests = fs
@@ -24,11 +25,22 @@ const isolatedBrowserSpecs = [
 const remainingBrowserSpecs = browserSpecs.filter(
   (file) => !isolatedBrowserSpecs.includes(file),
 );
+const browserPort = stableIsolatedPort(
+  `production-verify-browser:${process.pid}`,
+);
+const performancePort = stableIsolatedPort(
+  `production-verify-performance:${process.pid}`,
+  { base: 50_000 },
+);
 const browserCommand = (name, specs) => ({
   name,
   command: "npx",
   args: ["playwright", "test", "-c", "playwright.config.mjs", ...specs],
-  env: { PLAYWRIGHT_FULL_MATRIX: "1" },
+  env: {
+    PLAYWRIGHT_FULL_MATRIX: "1",
+    PLAYWRIGHT_PORT: String(browserPort),
+    PLAYWRIGHT_REUSE_EXISTING_SERVER: "0",
+  },
 });
 
 const result = runCommandSuite(
@@ -40,16 +52,33 @@ const result = runCommandSuite(
       args: ["run", "verify:voice-actions"],
     },
     {
-      name: "voice-zero-spend-contracts",
+      name: "voice-capability-parity",
+      command: "npm",
+      args: ["run", "verify:voice-capabilities"],
+      env: { REALTIME_PROTOCOL_VERSION: "1.1" },
+    },
+    {
+      name: "disabled-mcp-foundation",
+      command: process.execPath,
+      args: ["--test", "tests/assistant-mcp-foundation.test.mjs"],
+    },
+    {
+      name: "voice-protocol-1.1-zero-spend-contracts",
       command: process.execPath,
       args: [
         "--test",
+        "tests/assistant-realtime-client.test.mjs",
+        "tests/cloudflare-cloud-native.test.mjs",
         "tests/realtime-policy.test.mjs",
         "tests/realtime-relay.test.mjs",
         "tests/voice-budget.test.mjs",
         "tests/voice-budget-repository.test.mjs",
       ],
-      env: { REALTIME_ENABLED: "false", LIVE_REALTIME_SMOKE: "false" },
+      env: {
+        REALTIME_ENABLED: "false",
+        LIVE_REALTIME_SMOKE: "false",
+        REALTIME_PROTOCOL_VERSION: "1.1",
+      },
     },
     {
       name: "map-asset-validation",
@@ -103,6 +132,8 @@ const result = runCommandSuite(
         "1000",
         "--motion-ms",
         "500",
+        "--port",
+        String(performancePort),
       ],
     },
   ],

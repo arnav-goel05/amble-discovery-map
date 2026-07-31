@@ -6,7 +6,7 @@
       "error": {
         "type": "error",
         "code": "voice_disabled",
-        "message": "Voice is currently unavailable. Please try again."
+        "message": "Voice service is currently unavailable. Please try again later."
       },
       "terminal": { "type": "session.stopped", "reason": "disabled" }
     },
@@ -15,7 +15,7 @@
       "error": {
         "type": "error",
         "code": "usage_limit",
-        "message": "Voice usage is unavailable. Please try again later."
+        "message": "Voice service is currently unavailable. Please try again later."
       },
       "terminal": { "type": "session.stopped", "reason": "usage_limit" }
     },
@@ -24,7 +24,7 @@
       "error": {
         "type": "error",
         "code": "provider_unavailable",
-        "message": "Voice could not connect. Please try again."
+        "message": "Voice service is currently unavailable. Please try again later."
       },
       "terminal": { "type": "session.stopped", "reason": "provider" }
     },
@@ -33,7 +33,7 @@
       "error": {
         "type": "error",
         "code": "provider_unavailable",
-        "message": "The voice connection was lost. Please try again."
+        "message": "Voice service is currently unavailable. Please try again later."
       },
       "terminal": { "type": "session.stopped", "reason": "network" }
     },
@@ -54,16 +54,6 @@
         "message": "The voice message could not be processed."
       },
       "terminal": { "type": "session.stopped", "reason": "protocol" }
-    },
-    {
-      "id": "idle-expiry",
-      "error": null,
-      "terminal": { "type": "session.stopped", "reason": "idle" }
-    },
-    {
-      "id": "duration-expiry",
-      "error": null,
-      "terminal": { "type": "session.stopped", "reason": "duration" }
     },
     {
       "id": "explicit-stop",

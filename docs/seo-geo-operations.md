@@ -4,9 +4,10 @@
 
 - Canonical site identity and crawler policy are owned by `cloudflare/site-discovery.mjs` and
   validated against `tests/fixtures/site-discovery/identity.json`.
-- `public/brand/amble-wordmark.png` and `public/brand/event-map-logo.png` are existing
-  Amble-owned repository assets. `favicon-32.png` and `apple-touch-icon.png` are deterministic
-  size variants of `event-map-logo.png`.
+- `public/brand/amble-wordmark.png` and `public/brand/amble-map-mark.png` are Amble-owned
+  repository assets. `event-map-logo.png`, `favicon-32.png`, and `apple-touch-icon.png` are
+  deterministic size variants of the approved abstract neighbourhood mark. The mark uses five
+  navy city blocks, a winding negative-space street, and one teal block to represent discovery.
 - `amble-social-card.png` was finalized on 2026-07-18 from the owner-supplied capture of the
   real desktop event map and the owned wordmark. The deterministic crop-safe composition is
   1200×630 and 196,366 bytes; it introduces no fictional landmark or alternate product UI.

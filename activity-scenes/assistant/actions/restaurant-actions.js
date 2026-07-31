@@ -10,7 +10,8 @@ import {
 export const RESTAURANT_ACTION_DEFINITIONS = Object.freeze([
   {
     actionId: "restaurant.search",
-    description: "Search current restaurant results",
+    description:
+      "Search restaurants. In query preserve every cuisine, place, proximity, and other constraint as one plain search phrase; add no explanations or metadata.",
     contextProvider: "restaurantContext",
     argumentSchema: objectSchema({ query: types.text }),
     sampleArguments: { query: "cafe" },

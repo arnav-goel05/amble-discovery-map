@@ -131,6 +131,24 @@ export const APPLICATION_ACTION_DEFINITIONS = Object.freeze([
     sampleArguments: { overlayId: "assistant" },
   },
   {
+    actionId: "navigation.openattribution",
+    description: "Open map attribution and its approved references",
+    contextProvider: "applicationContext",
+  },
+  {
+    actionId: "navigation.closeattribution",
+    description: "Close map attribution",
+    contextProvider: "overlayContext",
+  },
+  {
+    actionId: "navigation.openattributionreference",
+    description: "Open an approved attribution reference",
+    contextProvider: "overlayContext",
+    confirmationClass: "consequential",
+    argumentSchema: objectSchema({ referenceId: types.id }),
+    sampleArguments: { referenceId: "openstreetmap" },
+  },
+  {
     actionId: "navigation.openexternal",
     description: "Open an allowlisted external destination",
     contextProvider: "selectionContext",

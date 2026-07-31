@@ -16,6 +16,7 @@ import { Accessor, Document, NodeIO } from "@gltf-transform/core";
 
 import {
   branchEvidenceHash,
+  browserVerificationEnvironment,
   canCommitFrontendSnapshot,
   classifyNonBuildingRecovery,
   collectLocationClues,
@@ -73,6 +74,10 @@ import {
   normalizeSchedule,
 } from "../scripts/lib/event-sources/activity-policy.mjs";
 import {
+  parseEnumeratedSchedule,
+  strictIsoOffsetTimestamp,
+} from "../scripts/lib/event-sources/schedule-semantics.mjs";
+import {
   commitFrontendSnapshot,
   prepareFrontendSnapshot,
   writeVerifiedStageHandoffs,
@@ -114,6 +119,33 @@ const SCRIPT = resolve(ROOT, "scripts/event-pipeline.mjs");
 const require = createRequire(import.meta.url);
 const { AdminRepository } = require("../scripts/lib/admin-repository.cjs");
 const { AdminService } = require("../scripts/lib/admin-service.cjs");
+
+test("pipeline browser verification uses a stable isolated strict-server port", () => {
+  const first = browserVerificationEnvironment("run-alpha");
+  const repeated = browserVerificationEnvironment("run-alpha");
+  const second = browserVerificationEnvironment("run-beta");
+  assert.equal(first.PLAYWRIGHT_PORT, repeated.PLAYWRIGHT_PORT);
+  assert.notEqual(first.PLAYWRIGHT_PORT, second.PLAYWRIGHT_PORT);
+  assert.equal(first.PLAYWRIGHT_REUSE_EXISTING_SERVER, "0");
+  assert.equal(
+    first.EVENT_PIPELINE_BROWSER_ORIGIN,
+    `http://127.0.0.1:${first.PLAYWRIGHT_PORT}`,
+  );
+  assert.ok(Number(first.PLAYWRIGHT_PORT) >= 40_000);
+  assert.ok(Number(first.PLAYWRIGHT_PORT) < 50_000);
+});
+
+test("pipeline config permanently enables bounded TinyFish missing-venue recovery", () => {
+  const recovery = readPipelineConfig().missingVenueRecovery;
+  assert.equal(recovery.enabled, true);
+  assert.equal(recovery.maxCandidates, 3);
+  assert.equal(recovery.search.providerId, "tinyfish-search");
+  assert.equal(recovery.search.endpoint, "https://api.search.tinyfish.ai");
+  assert.equal(recovery.fetch.providerId, "tinyfish-fetch");
+  assert.equal(recovery.fetch.batchSize, 3);
+  assert.ok(recovery.search.timeoutMs <= 20_000);
+  assert.ok(recovery.fetch.maximumUrlsPerMinute < 150);
+});
 
 test("v3 activity contracts keep schedule, identity, placement, mapping, lifecycle, and freshness orthogonal", () => {
   const activity = normalizeActivityContract({
@@ -234,6 +266,14 @@ test("v3 trace vocabulary covers schedule, evidence, off-map, carry-forward, hol
   for (const code of [
     "anytime",
     "schedule_unverified",
+    "missing_date",
+    "unparseable_date",
+    "conflicting_start_fields",
+    "implausibly_long_interval",
+    "far_future",
+    "known_placeholder_year",
+    "waitlist_placeholder_date",
+    "date_assessment_failed",
     "editorial_sufficient",
     "secret_tba",
     "carry_forward_stale",
@@ -339,6 +379,19 @@ test("active and future activity policy preserves exact, range, recurring, selec
     ],
     [
       {
+        title: "Past editorial date range",
+        scope: "Singapore",
+        dateText: "July 10, 2026 to July 17, 2026",
+        schedule: {
+          kind: "exact",
+          displayText: "July 10, 2026 to July 17, 2026",
+        },
+      },
+      false,
+      "archived",
+    ],
+    [
+      {
         title: "Discount only",
         scope: "Singapore",
         purePromotion: true,
@@ -379,6 +432,24 @@ test("active and future activity policy preserves exact, range, recurring, selec
     }).sessionRefs.length,
     0,
     "recurrence is not expanded infinitely",
+  );
+  assert.deepEqual(
+    normalizeSchedule(
+      {
+        kind: "exact",
+        displayText: "July 10, 2026 to July 19, 2026",
+      },
+      { dateText: "July 10, 2026 to July 19, 2026" },
+    ),
+    {
+      kind: "range",
+      start: "2026-07-10T00:00:00+08:00",
+      end: "2026-07-19T23:59:59+08:00",
+      recurrence: null,
+      sessionRefs: [],
+      displayText: "July 10, 2026 to July 19, 2026",
+      finalKnownOccurrence: "2026-07-19T23:59:59+08:00",
+    },
   );
 });
 
@@ -515,6 +586,62 @@ test("expired events and empty locations are removed at the run boundary", () =>
   );
 });
 
+test("frontend snapshot removes retired-source landmark events before lifecycle pruning", async () => {
+  const root = resolve(
+    tmpdir(),
+    `event-retired-landmark-${process.pid}-${Date.now()}`,
+  );
+  const runDir = join(root, "run");
+  mkdirSync(join(runDir, "normalized"), { recursive: true });
+  writeFileSync(
+    join(runDir, "normalized/events.json"),
+    JSON.stringify({ records: [] }),
+  );
+  try {
+    const plan = await prepareFrontendSnapshot({
+      runDir,
+      state: {
+        runId: "retire-source",
+        sources: { "Catch.sg": { status: "success" } },
+        venues: {},
+      },
+      run: {
+        runId: "retire-source",
+        window: singaporeWindow("2026-07-23"),
+      },
+      currentPois: [],
+      currentLandmarks: [
+        {
+          id: "retired-place",
+          events: [
+            {
+              id: "retired-event",
+              lifecycleState: "active",
+              sources: [{ source: "Retired Guide", sourceId: "one" }],
+              sourceContributions: [
+                {
+                  sourceName: "Retired Guide",
+                  sourceRecordId: "retired:one",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    assert.equal(plan.sourceReconciliation.counts.retired, 1);
+    assert.deepEqual(plan.expiry.removedLandmarkIds, ["retired-place"]);
+    assert.deepEqual(
+      JSON.parse(
+        readFileSync(join(runDir, "frontend/approved-landmarks.json"), "utf8"),
+      ).records,
+      [],
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("pipeline data clear removes only currently managed POIs and resets published event modules", async () => {
   const root = resolve(tmpdir(), `event-clear-${process.pid}-${Date.now()}`);
   mkdirSync(join(root, "public/poi-tiles/managed"), { recursive: true });
@@ -572,6 +699,7 @@ test("frontend snapshot stages reconciliation and commits only after executable 
           venue: "Hall",
           dateText: "12 Jul 2026",
           sources: [],
+          lifecycleState: "active",
         },
       ],
     }),
@@ -778,6 +906,19 @@ test("frontend snapshot resolves a newly dated occurrence through its preserved 
     );
     assert.equal(catalogue.mapped.length, 1);
     assert.equal(catalogue.mapped[0].id, oldId);
+    assert.equal(catalogue.schemaVersion, "3.1");
+    assert.equal(catalogue.activities.records.length, 1);
+    assert.equal(catalogue.activities.records[0].occurrenceIds[0], oldId);
+    assert.deepEqual(
+      catalogue.activities.records[0].venueGroups[0].coordinates,
+      { lng: 103.84947, lat: 1.28213 },
+    );
+    assert.equal(
+      catalogue.activities.records[0].venueGroups[0].approvedLocationId,
+      "tpi-building",
+    );
+    assert.equal(catalogue.counts.activities, 1);
+    assert.equal(catalogue.activityGroupingDecisions.counts.create, 3);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -900,17 +1041,9 @@ test("structured pipeline configuration is authoritative for sources and window"
       "fever-singapore-rendered-v1",
       "visit-singapore-rendered-v1",
       "singapore-film-society-rendered-v1",
-      "honeycombers-discovery-v1",
-      "arts-equator-discovery-v1",
       "time-out-singapore-discovery-v1",
     ],
   );
-  const roots = config.sources.find(
-    (source) => source.adapterId === "roots-han-rendered-v1",
-  );
-  assert.equal(roots.enabled, false);
-  assert.equal(roots.operatingMode, "disabled");
-  assert.equal(roots.unavailableReason, "layout_contract_changed");
   assert.ok(
     config.sources.find(
       (source) => source.adapterId === "sistic-official-listing-v1",
@@ -1156,6 +1289,83 @@ test("source detail mappers produce the universal fixture contract", () => {
   assert.equal(catchFixture.venue, "Room");
 });
 
+test("enumerated schedules become exact Singapore sessions instead of date envelopes", () => {
+  const parsed = parseEnumeratedSchedule("26 Jul & 2 Aug 2026, Sun, 9am");
+  assert.equal(parsed.reasonCode, "enumerated_dates_parsed");
+  assert.deepEqual(
+    parsed.performances.map((item) => item.startDateTime),
+    ["2026-07-26T09:00:00+08:00", "2026-08-02T09:00:00+08:00"],
+  );
+  assert.ok(
+    parsed.performances.every((item) => item.schedule.kind === "exact"),
+  );
+  assert.equal(strictIsoOffsetTimestamp("26 Jul 2026"), null);
+
+  const mapped = mapSisticDetail(
+    {
+      alias: "palacews0826",
+      title: "Memory Palace",
+      event_date: "26 Jul & 2 Aug 2026, Sun, 9am",
+      start_date: "Sun, 26 Jul 2026",
+      end_date: "Sun, 02 Aug 2026",
+      venue_name: { name: "National Museum of Singapore" },
+    },
+    {},
+    "https://www.sistic.com.sg/event-details/palacews0826",
+    1,
+  );
+  assert.equal(mapped.performances.length, 2);
+  assert.deepEqual(mapped.authorityRefs, ["sistic:palacews0826"]);
+  assert.ok(
+    mapped.performances.every((item) => item.schedule.kind === "exact"),
+  );
+
+  const catchMapped = mapCatchDetail(
+    {
+      DisplayEventTitle: "Memory Palace",
+      Location: "Offsite",
+      EventFormat: "Physical",
+      BookingUrl: "https://ticketing.sistic.com.sg/catch/booking/palacews0826",
+      LstDateTime: [
+        {
+          SetDate: "26/Jul/2026",
+          StartHour: "09:00",
+        },
+      ],
+    },
+    {},
+    "https://www.catch.sg/Event/memory-palace",
+    1,
+  );
+  assert.deepEqual(catchMapped.authorityRefs, ["sistic:palacews0826"]);
+});
+
+test("concrete sibling performances stay exact while ambiguous envelopes stay non-claiming", () => {
+  assert.equal(
+    normalizeSchedule(
+      {},
+      {
+        startDateTime: "2026-07-26T09:00:00+08:00",
+        performances: [{}, {}],
+        _concretePerformance: true,
+      },
+    ).kind,
+    "exact",
+  );
+  const ambiguous = normalizeSchedule(
+    {
+      kind: "selectable",
+      displayText: "Selected dates from 26 Jul to 2 Aug 2026",
+    },
+    {
+      startDateTime: "2026-07-26T00:00:00+08:00",
+      endDateTime: "2026-08-02T00:00:00+08:00",
+    },
+  );
+  assert.equal(ambiguous.start, null);
+  assert.equal(ambiguous.end, null);
+});
+
 test("executable source collector captures full SISTIC evidence and accounts invalid rows", async () => {
   const runDir = resolve(
     tmpdir(),
@@ -1222,7 +1432,19 @@ test("executable source collector captures full SISTIC evidence and accounts inv
       occurrencesEmitted: 1,
       excludedOccurrences: 0,
       eligiblePreDedup: 1,
+      scheduleReasonCounts: {
+        structured_performance_exact: 1,
+      },
+      listingAppearances: 2,
+      uniqueSourcePointers: 1,
+      listingDuplicatesCollapsed: 0,
+      fieldCompleteness: result.counts.fieldCompleteness,
     });
+    assert.equal(result.counts.fieldCompleteness.title.present, 1);
+    assert.equal(
+      result.counts.fieldCompleteness.organizer.not_published_by_source,
+      1,
+    );
     assert.equal(
       result.invalidReasonCodes[result.invalidSourceRecordRefs[0]],
       "missing_detail_url",
@@ -1311,7 +1533,15 @@ test("executable source collector deduplicates repeated detail URLs before captu
       occurrencesEmitted: 1,
       excludedOccurrences: 0,
       eligiblePreDedup: 1,
+      scheduleReasonCounts: {
+        structured_performance_exact: 1,
+      },
+      listingAppearances: 2,
+      uniqueSourcePointers: 1,
+      listingDuplicatesCollapsed: 1,
+      fieldCompleteness: result.counts.fieldCompleteness,
     });
+    assert.equal(result.counts.fieldCompleteness.url.present, 1);
     assert.equal(
       result.invalidReasonCodes[result.invalidSourceRecordRefs[0]],
       "duplicate_detail_url",
@@ -1391,8 +1621,125 @@ test("executable Catch collector performs bootstrap and detail API capture", asy
     assert.equal(result.status, "success");
     assert.equal(result.counts.processedSourceRecords, 1);
     assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.deepEqual(result.counts.scheduleReasonCounts, {
+      schedule_reason_unclassified: 1,
+    });
     assert.equal(requests[1].method, "GET");
     assert.match(requests[2].body, /eventPageID=42/);
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("Catch collector isolates malformed provider detail links and continues", async () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-source-catch-malformed-link-${process.pid}-${Date.now()}`,
+  );
+  const source = structuredClone(
+    readPipelineConfig().sources.find(
+      (item) => item.adapterId === "catch-official-listing-v1",
+    ),
+  );
+  const requests = [];
+  const responses = [
+    {
+      status: 200,
+      ok: true,
+      body: {
+        data: {
+          ItemTotal: 2,
+          PageTotal: 1,
+          Items: [
+            { Url: "/Event/*broken", Title: "Broken listing" },
+            { Url: "/Event/show", Title: "Show" },
+          ],
+        },
+      },
+      text: "",
+    },
+    {
+      status: 200,
+      ok: true,
+      body: null,
+      text: '<div id="event-detail-page" event-detail-page-id="42"></div>',
+    },
+    {
+      status: 200,
+      ok: true,
+      body: {
+        data: {
+          ID: "42",
+          DisplayEventTitle: "Show",
+          Location: "Hall",
+          EventFormat: "Physical",
+          DisplayEventDate: "12 Jul 2026",
+        },
+      },
+      text: "",
+    },
+  ];
+  const transport = async (request) => {
+    requests.push(request);
+    return responses.shift();
+  };
+  try {
+    const result = await collectSource({
+      runDir,
+      run: { runId: "run-a", window: singaporeWindow("2026-07-11") },
+      source,
+      transport,
+    });
+    assert.equal(result.status, "success");
+    assert.equal(result.counts.sourceRecordsReceived, 2);
+    assert.equal(result.counts.processedSourceRecords, 1);
+    assert.equal(result.counts.invalidSourceRecords, 1);
+    assert.deepEqual(Object.values(result.invalidReasonCodes), [
+      "invalid_detail_url",
+    ]);
+    assert.equal(requests.length, 3);
+    assert.equal(requests[1].url, "https://www.catch.sg/Event/show");
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("Catch detail bootstrap preserves HTTP provider-policy classification", async () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-source-catch-detail-block-${process.pid}-${Date.now()}`,
+  );
+  const source = structuredClone(
+    readPipelineConfig().sources.find(
+      (item) => item.adapterId === "catch-official-listing-v1",
+    ),
+  );
+  const responses = [
+    {
+      status: 200,
+      ok: true,
+      body: {
+        data: {
+          ItemTotal: 1,
+          PageTotal: 1,
+          Items: [{ Url: "/event/show", Title: "Show" }],
+        },
+      },
+      text: "",
+    },
+    { status: 469, ok: false, body: null, text: "do not retain" },
+  ];
+  try {
+    const result = await collectSource({
+      runDir,
+      run: { runId: "run-a", window: singaporeWindow("2026-07-11") },
+      source,
+      transport: async () => responses.shift(),
+    });
+    assert.equal(result.status, "blocked");
+    assert.equal(result.blockerReasonCode, "provider_policy_invalid");
+    assert.equal(result.httpStatus, 469);
+    assert.doesNotMatch(JSON.stringify(result), /do not retain/);
   } finally {
     rmSync(runDir, { recursive: true, force: true });
   }
@@ -1500,9 +1847,18 @@ test("code normalizer filters, preserves cross-source candidates, provenance, an
     });
     assert.deepEqual(result.counts, {
       eligiblePreDedup: 2,
+      dateReviewOccurrences: 0,
       duplicateCollapsed: 0,
       acceptedPostDedup: 2,
       acceptedPrimary: 2,
+      activities: 1,
+      activitySessions: 1,
+      activityVenueGroups: 1,
+      sourceOffers: 2,
+      activityGroupingReviews: 0,
+      parentGroupingCandidates: 1,
+      parentGroupingMerges: 1,
+      parentGroupingReviews: 0,
     });
     assert.equal(result.venueBranches.length, 1);
     const events = JSON.parse(
@@ -1521,6 +1877,7 @@ test("code normalizer filters, preserves cross-source candidates, provenance, an
       Catch: {
         occurrencesEmitted: 3,
         excludedOccurrences: 2,
+        dateReviewOccurrences: 0,
         eligiblePreDedup: 1,
         duplicateCollapsed: 0,
         acceptedPrimary: 1,
@@ -1528,6 +1885,7 @@ test("code normalizer filters, preserves cross-source candidates, provenance, an
       SISTIC: {
         occurrencesEmitted: 1,
         excludedOccurrences: 0,
+        dateReviewOccurrences: 0,
         eligiblePreDedup: 1,
         duplicateCollapsed: 0,
         acceptedPrimary: 1,
@@ -1549,37 +1907,367 @@ test("code normalizer filters, preserves cross-source candidates, provenance, an
   }
 });
 
+test("date quality review partitions questionable schedules before deduplication and venues", () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-normalizer-date-review-${process.pid}-${Date.now()}`,
+  );
+  const fixtureRef = "raw/example/details/events.json";
+  mkdirSync(dirname(join(runDir, fixtureRef)), { recursive: true });
+  writeFileSync(
+    join(runDir, fixtureRef),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      counts: { records: 3 },
+      records: [
+        {
+          sourceId: "plausible",
+          title: "Plausible event",
+          mode: "physical",
+          dateText: "25 Jul 2026",
+          venue: "Venue A",
+          detailUrl: "https://example.com/plausible",
+          performances: [],
+        },
+        {
+          sourceId: "undated",
+          title: "Undated event",
+          mode: "physical",
+          dateText: null,
+          venue: "Venue B",
+          detailUrl: "https://example.com/undated",
+          fieldCompleteness: {
+            schedule: { evidenceHash: "undated-evidence" },
+          },
+          performances: [],
+        },
+        {
+          sourceId: "placeholder",
+          title: "Future waitlist",
+          mode: "physical",
+          dateText: "2050-01-01",
+          availability: "waitlist",
+          venue: "Venue C",
+          detailUrl: "https://example.com/placeholder",
+          performances: [],
+        },
+      ],
+    }),
+  );
+  const refs = [0, 1, 2].map((index) => `${fixtureRef}#/records/${index}`);
+  try {
+    const result = normalizeRun({
+      runDir,
+      state: {
+        sources: {
+          Example: {
+            status: "success",
+            invalidSourceRecordRefs: [],
+            processedSourceRecordRefs: refs,
+          },
+        },
+      },
+      run: { runId: "run-date-review", window: singaporeWindow("2026-07-22") },
+    });
+    const events = JSON.parse(
+      readFileSync(join(runDir, "normalized/events.json"), "utf8"),
+    ).records;
+    const reviews = JSON.parse(
+      readFileSync(join(runDir, "normalized/date-reviews.json"), "utf8"),
+    ).records;
+    assert.equal(events.length, 1);
+    assert.equal(reviews.length, 2);
+    assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(result.counts.dateReviewOccurrences, 2);
+    assert.equal(result.venueBranches.length, 1);
+    assert.deepEqual(
+      result.venueBranches.flatMap(({ eventIds }) => eventIds),
+      [events[0].id],
+    );
+    assert.equal(result.sourceAccounting.Example.dateReviewOccurrences, 2);
+    assert.equal(result.dateQuality.assessed, 3);
+    assert.equal(result.dateQuality.plausible, 1);
+    assert.equal(result.dateQuality.needsReview, 2);
+    assert.deepEqual(
+      reviews.map(({ status }) => status),
+      ["needs_review", "needs_review"],
+    );
+    assert.ok(
+      reviews.every(
+        ({ event }) =>
+          event.lifecycleState === "held" &&
+          event.reviewStatus === "needs_review" &&
+          event.venueId === null,
+      ),
+    );
+    assert.ok(
+      reviews.some(({ reasonCodes }) => reasonCodes.includes("missing_date")),
+    );
+    assert.ok(
+      reviews.some(({ reasonCodes }) =>
+        reasonCodes.includes("known_placeholder_year"),
+      ),
+    );
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("date quality assessment failures hold only the affected event", () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-normalizer-date-failure-${process.pid}-${Date.now()}`,
+  );
+  const fixtureRef = "raw/example/details/event.json";
+  mkdirSync(dirname(join(runDir, fixtureRef)), { recursive: true });
+  writeFileSync(
+    join(runDir, fixtureRef),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      counts: { records: 1 },
+      records: [
+        {
+          sourceId: "event",
+          title: "Event",
+          mode: "physical",
+          dateText: "25 Jul 2026",
+          venue: "Venue A",
+          detailUrl: "https://example.com/event",
+          performances: [],
+        },
+      ],
+    }),
+  );
+  try {
+    const result = normalizeRun({
+      runDir,
+      state: {
+        sources: {
+          Example: {
+            status: "success",
+            invalidSourceRecordRefs: [],
+            processedSourceRecordRefs: [`${fixtureRef}#/records/0`],
+          },
+        },
+      },
+      run: { runId: "run-date-failure", window: singaporeWindow("2026-07-22") },
+      assessDateQuality: () => {
+        throw new Error("unexpected parser failure");
+      },
+    });
+    assert.equal(result.counts.dateReviewOccurrences, 1);
+    assert.equal(result.counts.acceptedPostDedup, 0);
+    assert.equal(result.diagnostics[0].reasonCode, "date_assessment_failed");
+    const [review] = JSON.parse(
+      readFileSync(join(runDir, "normalized/date-reviews.json"), "utf8"),
+    ).records;
+    assert.deepEqual(review.reasonCodes, ["date_assessment_failed"]);
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("normalizer classifies expanded performances by their own schedule", () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-normalizer-performance-schedule-${process.pid}-${Date.now()}`,
+  );
+  const fixtureRef = "raw/time-out/details/festival.json";
+  mkdirSync(dirname(join(runDir, fixtureRef)), { recursive: true });
+  writeFileSync(
+    join(runDir, fixtureRef),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      counts: { records: 1 },
+      records: [
+        {
+          adapterVersion: "1.0",
+          detailUrl: "https://www.timeout.com/singapore/news/festival",
+          sourceId: "festival",
+          title: "Festival",
+          mode: "physical",
+          venue: "Festival Hall",
+          schedule: { kind: "selectable", sessionRefs: ["old", "current"] },
+          performances: [
+            {
+              startDateTime: "2026-07-10T10:00:00+08:00",
+              endDateTime: "2026-07-10T12:00:00+08:00",
+              dateText: "10 Jul 2026",
+            },
+            {
+              startDateTime: "2026-07-25T10:00:00+08:00",
+              endDateTime: "2026-07-25T12:00:00+08:00",
+              dateText: "25 Jul 2026",
+            },
+          ],
+        },
+      ],
+    }),
+  );
+  try {
+    const result = normalizeRun({
+      runDir,
+      state: {
+        sources: {
+          "Time Out Singapore": {
+            status: "success",
+            invalidSourceRecordRefs: [],
+            processedSourceRecordRefs: [`${fixtureRef}#/records/0`],
+          },
+        },
+      },
+      run: { runId: "run-a", window: singaporeWindow("2026-07-20") },
+    });
+    assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(
+      result.sourceAccounting["Time Out Singapore"].occurrencesEmitted,
+      2,
+    );
+    assert.equal(
+      result.sourceAccounting["Time Out Singapore"].excludedOccurrences,
+      1,
+    );
+    const events = JSON.parse(
+      readFileSync(join(runDir, "normalized/events.json"), "utf8"),
+    ).records;
+    assert.equal(events.length, 1);
+    assert.equal(events[0].startsAt, "2026-07-25T10:00:00+08:00");
+    assert.equal(events[0].sessions.length, 1);
+    assert.equal(
+      events[0].sessions[0].sourceSessionIds[0],
+      "festival#2026-07-25T10:00:00+08:00",
+    );
+    const excluded = JSON.parse(
+      readFileSync(join(runDir, "normalized/excluded.json"), "utf8"),
+    ).records;
+    assert.equal(excluded[0].reasonCode, "expired");
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("normalizer consumes healthy records from an incomplete blocked source", () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-normalizer-incomplete-${process.pid}-${Date.now()}`,
+  );
+  const goodRef = "raw/fever/details/good.json";
+  const failedRef = "raw/fever/details/failed.json";
+  mkdirSync(join(runDir, "raw/fever/details"), { recursive: true });
+  writeFileSync(
+    join(runDir, goodRef),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      counts: { records: 1 },
+      records: [
+        {
+          adapterVersion: "1.0",
+          detailUrl: "https://feverup.com/m/good",
+          sourceId: "fever:good",
+          title: "Healthy event from incomplete source",
+          mode: "physical",
+          dateText: "27 Jul 2026",
+          venue: "The Arts House",
+          performances: [],
+        },
+      ],
+    }),
+  );
+  writeFileSync(
+    join(runDir, failedRef),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      records: [
+        {
+          recordType: "retrieval_failure",
+          sourceId: "failure:failed",
+          detailUrl: "https://feverup.com/m/failed",
+        },
+      ],
+    }),
+  );
+  const state = {
+    sources: {
+      "Fever Singapore": {
+        status: "blocked",
+        operatingMode: "required",
+        counts: {
+          sourceRecordsReceived: 2,
+          invalidSourceRecords: 1,
+          processedSourceRecords: 1,
+        },
+        invalidSourceRecordRefs: [`${failedRef}#/records/0`],
+        invalidReasonCodes: {
+          [`${failedRef}#/records/0`]: "source_unavailable",
+        },
+        processedSourceRecordRefs: [`${goodRef}#/records/0`],
+      },
+    },
+  };
+  try {
+    const result = normalizeRun({
+      runDir,
+      state,
+      run: { runId: "run-a", window: singaporeWindow("2026-07-20") },
+    });
+    assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(
+      result.sourceReconciliation.statuses["Fever Singapore"],
+      "blocked",
+    );
+    assert.equal(
+      JSON.parse(readFileSync(join(runDir, "normalized/events.json"), "utf8"))
+        .records.length,
+      1,
+    );
+    assert.deepEqual(
+      JSON.parse(readFileSync(join(runDir, "normalized/invalid.json"), "utf8"))
+        .records,
+      [
+        {
+          reasonCode: "source_unavailable",
+          sourceRecordRef: `${failedRef}#/records/0`,
+        },
+      ],
+    );
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
 test("sufficient editorial records normalize with provenance, optional fields, off-map review, and exact accounting", () => {
   const runDir = resolve(
     tmpdir(),
     `event-normalizer-editorial-${process.pid}-${Date.now()}`,
   );
-  mkdirSync(join(runDir, "raw/honeycombers/discoveries"), { recursive: true });
-  const recordRef = "raw/honeycombers/discoveries/art.json#/records/0";
+  mkdirSync(join(runDir, "raw/time-out-singapore/discoveries"), {
+    recursive: true,
+  });
+  const recordRef = "raw/time-out-singapore/discoveries/art.json#/records/0";
   writeFileSync(
-    join(runDir, "raw/honeycombers/discoveries/art.json"),
+    join(runDir, "raw/time-out-singapore/discoveries/art.json"),
     JSON.stringify({
       schemaVersion: "1.0",
       records: [
         {
           recordType: "discovery",
-          discoveryRecordId: "honeycombers:art-night",
-          sourceId: "honeycombers:art-night",
+          discoveryRecordId: "time-out-singapore:art-night",
+          sourceId: "time-out-singapore:art-night",
           title: "Future Art Night",
           dateText: "20 December 2027",
           timeText: null,
           venue: "National Gallery Singapore",
           scope: "Singapore",
-          detailUrl: "https://thehoneycombers.com/singapore/event/art-night",
+          detailUrl: "https://www.timeout.com/singapore/things-to-do/art-night",
           schedule: { kind: "exact", displayText: "20 December 2027" },
           publicPlacement: "off_map",
           mappingStatus: "pending_review",
           lifecycleState: "active",
           evidenceLevel: "editorial_authoritative",
-          primaryEvidenceId: "honeycombers:art-night",
+          primaryEvidenceId: "time-out-singapore:art-night",
           sourceContributions: [
             {
-              sourceRecordId: "honeycombers:art-night",
+              sourceRecordId: "time-out-singapore:art-night",
               freshness: "current",
               fields: ["title", "schedule", "location"],
             },
@@ -1590,7 +2278,7 @@ test("sufficient editorial records normalize with provenance, optional fields, o
   );
   const state = {
     sources: {
-      Honeycombers: {
+      "Time Out Singapore": {
         status: "success",
         sourceRole: "discovery",
         operatingMode: "required",
@@ -1607,9 +2295,18 @@ test("sufficient editorial records normalize with provenance, optional fields, o
     });
     assert.deepEqual(result.counts, {
       eligiblePreDedup: 1,
+      dateReviewOccurrences: 0,
       duplicateCollapsed: 0,
       acceptedPostDedup: 1,
       acceptedPrimary: 1,
+      activities: 1,
+      activitySessions: 1,
+      activityVenueGroups: 1,
+      sourceOffers: 1,
+      activityGroupingReviews: 0,
+      parentGroupingCandidates: 0,
+      parentGroupingMerges: 0,
+      parentGroupingReviews: 0,
     });
     assert.equal(
       result.venueBranches.length,
@@ -1628,7 +2325,9 @@ test("sufficient editorial records normalize with provenance, optional fields, o
       ],
       ["off_map", "pending_review", "editorial_authoritative", null],
     );
-    assert.deepEqual(event.supportingDiscoveryIds, ["honeycombers:art-night"]);
+    assert.deepEqual(event.supportingDiscoveryIds, [
+      "time-out-singapore:art-night",
+    ]);
     assert.equal(event.provenanceRefs[0], recordRef);
     assert.deepEqual(summarizeEvidenceLevels([event]), {
       uniqueActivities: 1,
@@ -1707,9 +2406,18 @@ test("normalizer collapses an all-day duplicate into the more precise timed occu
     });
     assert.deepEqual(result.counts, {
       eligiblePreDedup: 2,
+      dateReviewOccurrences: 0,
       duplicateCollapsed: 1,
       acceptedPostDedup: 1,
       acceptedPrimary: 1,
+      activities: 1,
+      activitySessions: 1,
+      activityVenueGroups: 1,
+      sourceOffers: 2,
+      activityGroupingReviews: 0,
+      parentGroupingCandidates: 0,
+      parentGroupingMerges: 0,
+      parentGroupingReviews: 0,
     });
     const [event] = JSON.parse(
       readFileSync(join(runDir, "normalized/events.json"), "utf8"),
@@ -1723,7 +2431,7 @@ test("normalizer collapses an all-day duplicate into the more precise timed occu
   }
 });
 
-test("normalizer retains undated venue events and audits partial records without a venue", () => {
+test("normalizer routes undated venue events to date review and audits partial records without a venue", () => {
   const runDir = resolve(
     tmpdir(),
     `event-normalizer-partial-${process.pid}-${Date.now()}`,
@@ -1774,17 +2482,98 @@ test("normalizer retains undated venue events and audits partial records without
       state,
       run: { runId: "run-a", window: singaporeWindow("2026-07-11") },
     });
-    assert.equal(result.counts.acceptedPostDedup, 1);
+    assert.equal(result.counts.acceptedPostDedup, 0);
+    assert.equal(result.counts.dateReviewOccurrences, 1);
     assert.equal(result.venueBranches.length, 0);
-    const events = JSON.parse(
-      readFileSync(join(runDir, "normalized/events.json"), "utf8"),
+    const reviews = JSON.parse(
+      readFileSync(join(runDir, "normalized/date-reviews.json"), "utf8"),
     ).records;
-    assert.equal(events[0].dateText, null);
-    assert.equal(events[0].lifecycleState, "held");
+    assert.equal(reviews[0].event.dateText, null);
+    assert.equal(reviews[0].event.lifecycleState, "held");
+    assert.deepEqual(reviews[0].reasonCodes, ["missing_date"]);
     const excluded = JSON.parse(
       readFileSync(join(runDir, "normalized/excluded.json"), "utf8"),
     ).records;
     assert.equal(excluded[0].reasonCode, "missing_venue");
+  } finally {
+    rmSync(runDir, { recursive: true, force: true });
+  }
+});
+
+test("normalizer discards structural venue labels, logs them, and only recovers from address evidence", () => {
+  const runDir = resolve(
+    tmpdir(),
+    `event-normalizer-structural-venue-${process.pid}-${Date.now()}`,
+  );
+  mkdirSync(join(runDir, "raw/fever/details"), { recursive: true });
+  const records = [
+    {
+      adapterVersion: "1.0",
+      sourceId: "description",
+      detailUrl: "https://feverup.com/m/description",
+      title: "Live at Cool Cats",
+      mode: "physical",
+      dateText: "18 Jul 2026",
+      venue: "Description",
+      performances: [],
+    },
+    {
+      adapterVersion: "1.0",
+      sourceId: "accessibility",
+      detailUrl: "https://feverup.com/m/accessibility",
+      title: "Friday Night Magic",
+      mode: "physical",
+      dateText: "18 Jul 2026",
+      venue: "Accessibility",
+      address: "3 Lor Salleh, Singapore 416747",
+      performances: [],
+    },
+  ];
+  writeFileSync(
+    join(runDir, "raw/fever/details/all.json"),
+    JSON.stringify({ schemaVersion: "1.0", runId: "run-a", records }),
+  );
+  const refs = records.map(
+    (_, index) => `raw/fever/details/all.json#/records/${index}`,
+  );
+  try {
+    const result = normalizeRun({
+      runDir,
+      state: {
+        sources: {
+          Fever: {
+            status: "success",
+            invalidSourceRecordRefs: [],
+            processedSourceRecordRefs: refs,
+          },
+        },
+      },
+      run: { runId: "run-a", window: singaporeWindow("2026-07-11") },
+    });
+    assert.equal(result.diagnostics.length, 2);
+    assert.deepEqual(
+      result.diagnostics.map(({ observedValue, action }) => ({
+        observedValue,
+        action,
+      })),
+      [
+        { observedValue: "Description", action: "discarded" },
+        {
+          observedValue: "Accessibility",
+          action: "replaced_with_address",
+        },
+      ],
+    );
+    assert.equal(result.counts.acceptedPostDedup, 1);
+    assert.equal(result.counts.dateReviewOccurrences, 0);
+    assert.equal(
+      result.venueBranches[0].venue,
+      "3 Lor Salleh, Singapore 416747",
+    );
+    const excluded = JSON.parse(
+      readFileSync(join(runDir, "normalized/excluded.json"), "utf8"),
+    ).records;
+    assert.equal(excluded[0].reasonCode, "structural_venue_label");
   } finally {
     rmSync(runDir, { recursive: true, force: true });
   }
@@ -1931,7 +2720,8 @@ test("normalizer upgrades legacy optional-field invalid records without refetchi
       run: { runId: "run-a", window: singaporeWindow("2026-07-11") },
     });
     assert.deepEqual(result.sourceReclassifications, { Catch: [recordRef] });
-    assert.equal(result.counts.acceptedPostDedup, 1);
+    assert.equal(result.counts.acceptedPostDedup, 0);
+    assert.equal(result.counts.dateReviewOccurrences, 1);
     assert.equal(
       JSON.parse(readFileSync(join(runDir, "normalized/invalid.json"), "utf8"))
         .counts.records,
@@ -2806,6 +3596,117 @@ test("source accounting rejects incomplete reconciliation", () => {
   );
 });
 
+test("blocked source accounting rejects inconsistent surface and record evidence", () => {
+  const base = {
+    status: "blocked",
+    blockerReasonCode: "source_unavailable",
+    error: "one detail failed",
+    sourceRole: "authoritative",
+    counts: {
+      pages: 1,
+      listingAppearances: 2,
+      uniqueSourcePointers: 2,
+      listingDuplicatesCollapsed: 0,
+      sourceRecordsReceived: 2,
+      invalidSourceRecords: 1,
+      processedSourceRecords: 1,
+      occurrencesEmitted: 1,
+      excludedOccurrences: 0,
+      eligiblePreDedup: 1,
+    },
+    completion: {
+      paginationComplete: true,
+      pagesVisited: ["raw/source/listings/page-0001.json"],
+      sourceRecordsDiscovered: 2,
+      providerReportedTotal: null,
+      derivedTotal: 2,
+      pageRecordCounts: [2],
+      detailUrlsDiscovered: 2,
+      detailPagesCaptured: 1,
+      detailFailures: 1,
+      zeroResultConfirmed: false,
+      surfaceOutcomes: [
+        {
+          listingSurface: "https://example.com/events",
+          status: "success",
+          appearances: 2,
+          uniquePointers: 2,
+          newUniquePointers: 2,
+          duplicatesCollapsed: 0,
+          reasonCode: null,
+          httpStatus: null,
+          evidenceRef: "raw/source/listings/page-0001.json",
+        },
+      ],
+    },
+    sourceRecordRefs: [
+      "raw/source/details/good.json#/records/0",
+      "raw/source/details/failed.json#/records/0",
+    ],
+    invalidSourceRecordRefs: ["raw/source/details/failed.json#/records/0"],
+    processedSourceRecordRefs: ["raw/source/details/good.json#/records/0"],
+    invalidReasonCodes: {
+      "raw/source/details/failed.json#/records/0": "source_unavailable",
+    },
+    artifactRefs: [
+      "raw/source/listings/page-0001.json",
+      "raw/source/details/good.json",
+      "raw/source/details/failed.json",
+    ],
+  };
+  assert.doesNotThrow(() => validateSourceResult(base));
+  assert.doesNotThrow(() =>
+    validateSourceResult({
+      ...base,
+      status: "success",
+      blockerReasonCode: null,
+      error: null,
+    }),
+  );
+  assert.throws(
+    () =>
+      validateSourceResult({
+        ...base,
+        counts: { ...base.counts, listingAppearances: 3 },
+      }),
+    /surface appearances/i,
+  );
+  assert.throws(
+    () =>
+      validateSourceResult({
+        ...base,
+        invalidSourceRecordRefs: [],
+      }),
+    /partition/i,
+  );
+  const surfaceOnly = {
+    status: "blocked",
+    blockerReasonCode: "source_unavailable",
+    error: "one listing surface failed",
+    counts: {
+      pages: 1,
+      listingAppearances: 2,
+      uniqueSourcePointers: 2,
+      listingDuplicatesCollapsed: 0,
+    },
+    completion: {
+      paginationComplete: false,
+      pagesVisited: ["raw/source/listings/page-0001.json"],
+      surfaceOutcomes: base.completion.surfaceOutcomes,
+    },
+    artifactRefs: ["raw/source/listings/page-0001.json"],
+  };
+  assert.doesNotThrow(() => validateSourceResult(surfaceOnly));
+  assert.throws(
+    () =>
+      validateSourceResult({
+        ...surfaceOnly,
+        counts: { ...surfaceOnly.counts, uniqueSourcePointers: 1 },
+      }),
+    /surface unique pointers/i,
+  );
+});
+
 test("numeric-only invalid records cannot complete a source", () => {
   assert.throws(
     () =>
@@ -3259,8 +4160,16 @@ test("status report includes contract accounting, reconciliation, errors, and ne
     normalization: {
       counts: {
         eligiblePreDedup: 1,
+        dateReviewOccurrences: 2,
         duplicateCollapsed: 0,
         acceptedPrimary: 1,
+      },
+      dateQuality: {
+        needsReview: 2,
+        byReason: { missing_date: 2 },
+        bySource: {
+          Catch: { needsReview: 2, reasons: { missing_date: 2 } },
+        },
       },
     },
     venues: {},
@@ -3290,6 +4199,8 @@ test("status report includes contract accounting, reconciliation, errors, and ne
   ])
     assert.match(report, new RegExp(heading));
   assert.match(report, /Listing appearances/);
+  assert.match(report, /Date schedule reviews: 2/);
+  assert.match(report, /missing_date/);
   assert.match(report, /\| 3 \| 2 \| 1 \| 1 \|/);
 });
 

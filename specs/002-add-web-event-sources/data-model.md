@@ -71,6 +71,34 @@ The stable source-level processing unit.
 
 Identity must not depend on roundup ordinal alone.
 
+## FieldCompleteness
+
+One assessment for each field in the shared extraction contract: `title`, `schedule`, `venue`,
+`address`, `description`, `category`, `price`, `organizer`, `availability`, and `url`.
+
+| Field             | Type        | Rules                                                                      |
+| ----------------- | ----------- | -------------------------------------------------------------------------- |
+| `field`           | enum        | Exactly one contracted field                                               |
+| `status`          | enum        | `present`, `not_published_by_source`, or `extraction_failed`               |
+| `evidenceHash`    | string      | Hash of the immutable page evidence assessed                               |
+| `contractVersion` | string      | Shared extraction-contract version                                         |
+| `method`          | string/null | `json_ld`, `microdata`, `source_html`, `rendered_text`, `listing`, or null |
+| `evidenceRef`     | string/null | Pointer into the immutable capture, never a search snippet                 |
+| `reasonCode`      | string/null | Required for a missing/failed outcome                                      |
+
+`not_published_by_source` means retrieval and interpretation succeeded but the official page did
+not publish a supported value. It is reusable only when `evidenceHash` and `contractVersion` are
+unchanged. `extraction_failed` means the field could not be assessed because retrieval or parsing
+failed and remains eligible for bounded retry. The completeness object never replaces the actual
+claim value or its provenance.
+
+## EventPageExtraction
+
+Fields: canonical event URL, source record ID, capture/evidence hash, contract and adapter
+versions, retrieval method, redirect chain, contracted claim values, `fieldCompleteness`, warnings,
+and terminal page outcome. Structured values preserve their raw source representation alongside
+normalized interpretations. Conflicting equally specific values remain explicit evidence conflicts.
+
 ## EvidenceAssessment
 
 Determines whether one or more source records establish a publishable activity.

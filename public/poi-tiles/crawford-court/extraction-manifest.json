@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "1.0",
+  "poiId": "crawford-court",
+  "extractionPoiIds": [
+    "tower-3-marina-bay-sands-singapore",
+    "national-museum-of-singapore",
+    "national-gallery-singapore",
+    "lion-building-c",
+    "claymore-plaza",
+    "rumah-bebe",
+    "perfect-one",
+    "textile-centre",
+    "song-lin-building",
+    "inter-continental-singapore",
+    "roxy-square",
+    "blk-e-e2i",
+    "capitol-theatre",
+    "scape",
+    "tampines-plaza",
+    "thian-hock-keng",
+    "singapore-chinese-cultural-centre",
+    "wisma-geylang-serai",
+    "marina-bay-sands-artscience-museum",
+    "the-commerze-irving",
+    "raffles-marina",
+    "gateway-theatre",
+    "orchard-central",
+    "safra-clubhouse-punggol",
+    "singapore-philatelic-museum",
+    "shell-dunman",
+    "63-ubi",
+    "changi-chapel-and-museum",
+    "reflection-at-bukit-chandu-opium-hill",
+    "victoria-theatre-and-concert-hall-u-c",
+    "marina-bay-sands-mice",
+    "chinatown-heritage-centre",
+    "south-beach",
+    "velocity-novena-square",
+    "esplanade-theatres-on-the-bay",
+    "katong-square",
+    "one-commonwealth",
+    "woods-square",
+    "punggol-neighbourhood-police-centre",
+    "sentosa-development-corporation",
+    "siloso-beach-resort",
+    "bishan-green",
+    "sembawang-park",
+    "lee-kong-chian-natural-history-museum",
+    "singapore-conference-hall",
+    "action-theatre",
+    "the-star",
+    "national-library-building",
+    "cathay-cineleisure-orchard",
+    "yong-siew-toh-conservatory-of-music",
+    "national-university-of-singapore-university-cultural-centre",
+    "tannery-house",
+    "funan",
+    "kampong-glam-conservation-area",
+    "the-centrepoint",
+    "skyline",
+    "mediacorp-campus",
+    "little-india-conservation-area",
+    "elections-department",
+    "tanjong-pagar-distripark",
+    "arts-house-at-the-old-parliament",
+    "the-cannery",
+    "suntec-singapore-international-convention-and-exhibition-centre",
+    "school-of-the-arts-sota",
+    "singapore-polo-club",
+    "singapore-indoor-stadium",
+    "gillman-barracks",
+    "downtown-east",
+    "foochow-building",
+    "tanglin-police-divisional-headquarters",
+    "pho-leng-building",
+    "sculpture-square",
+    "kreta-ayer-people-s-theatre",
+    "ocbc-arena",
+    "hall-7-singapore-expo",
+    "hpl-house",
+    "chijmes",
+    "kampong-ubi-industrial-estate",
+    "chinatown-complex",
+    "havelock2",
+    "kembangan-estate",
+    "uob-plaza",
+    "old-hill-street-police-station",
+    "empress-place-building",
+    "international-plaza",
+    "tpi-building",
+    "gardens-by-the-bay",
+    "peranakan-museum",
+    "maritime-xperiential-museum",
+    "jewel-changi-airport",
+    "shangri-la-hotel",
+    "singapore-tyler-print-institute",
+    "telok-ayer-conservation-area",
+    "golden-mile-tower",
+    "science-centre-singapore",
+    "marina-bay-sands-theatre",
+    "national-archives-of-singapore",
+    "our-tampines-hub",
+    "national-stadium",
+    "wave-house",
+    "crawford-court",
+    "paya-lebar-mrt-station",
+    "little-india-mrt-station",
+    "chinatown-point",
+    "masjid-sultan",
+    "pgp-building",
+    "changi-point-ferry-terminal",
+    "chip-bee-gardens",
+    "national-community-leadership-institute",
+    "goodman-arts-centre",
+    "singapore-management-university",
+    "parkway-parade",
+    "fort-canning-centre",
+    "313-somerset",
+    "b-central",
+    "waterloo-centre",
+    "buddhist-tzu-chi-foundation",
+    "zhonghua-primary-school",
+    "the-foundry",
+    "singapore-general-hospital",
+    "parc-point",
+    "swissotel-merchant-court-singapore",
+    "aliwal-arts-centre",
+    "heartbeat-bedok",
+    "anchorpoint-shopping-centre",
+    "marina-square",
+    "arena-country-club",
+    "sharely-warehouse-building",
+    "raffles-hotel-1886",
+    "carlton-hotel",
+    "esplanade-mall",
+    "far-east-shopping-centre",
+    "temasek-shophouse",
+    "paya-lebar-kovan-community-club",
+    "one-holland-village",
+    "ct-hub-2"
+  ],
+  "generatedAt": "2026-07-26T13:46:21.528Z",
+  "tiles": [
+    {
+      "sourceTile": "tiles/6/39/10_3.b3dm",
+      "sourceSha256": "df87e92e63c6c42c65a081d126dfb8a9a41c61bb25945106a0648998b0188ff3",
+      "originalBatchIds": [
+        55
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "gmlNames": [
+        "CRAWFORD COURT"
+      ],
+      "poiFile": "10_3-8c127167aae8.b3dm",
+      "poiSha256": "772cb7d44151cb06c0271e55ac10a197b6689b1912d1d4b6a29e72f225f2663a",
+      "poiTriangles": 3472,
+      "backgroundFile": "optimized-tiles/6/39/10_3.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "backgroundSha256": "10833831bb83d82edef2dee1e07ddf500d58b92f6b5d18bf8b7085b242f34ae2",
+      "backgroundTriangles": 12444
+    },
+    {
+      "sourceTile": "tiles/6/39/10_2.b3dm",
+      "sourceSha256": "3ee966a9f8030e7deb3bccb27e4bcab59b747eb89fdc826d633286321e05fab5",
+      "originalBatchIds": [
+        55
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "gmlNames": [
+        "CRAWFORD COURT"
+      ],
+      "poiFile": "10_2-cbce15ea861b.b3dm",
+      "poiSha256": "7ef6d3ee11eac695ef695878c7d6ee23967c79a1ba540d20f10ec80d1f192a71",
+      "poiTriangles": 3472,
+      "backgroundFile": "optimized-tiles/6/39/10_2.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "backgroundSha256": "3b8fa89c3e4dea50da6a2ee733c95335411deb269ed78c6c6d3fbad9c65fb002",
+      "backgroundTriangles": 12444
+    },
+    {
+      "sourceTile": "tiles/6/39/10_1.b3dm",
+      "sourceSha256": "b4a607d9d815c4b102e085181162a27885a6a16eb01bbf486b6b839f72779f0c",
+      "originalBatchIds": [
+        55
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "gmlNames": [
+        "CRAWFORD COURT"
+      ],
+      "poiFile": "10_1-401b42ac5946.b3dm",
+      "poiSha256": "be489e6f5ecacad6ee2fd9e746fc8869620354b587dc7b32210b6d89ca31642e",
+      "poiTriangles": 3472,
+      "backgroundFile": "optimized-tiles/6/39/10_1.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "backgroundSha256": "355a06c696be658a4cf0221c9a5859173c9e2f74cb5b8bb0611d6fc34228c759",
+      "backgroundTriangles": 12444
+    },
+    {
+      "sourceTile": "tiles/6/39/10_0.b3dm",
+      "sourceSha256": "5ea7a126c33c33a5a74d0c6d0f7625dae2e7e3198ad5300f677bdd3873be62ff",
+      "originalBatchIds": [
+        55
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "gmlNames": [
+        "CRAWFORD COURT"
+      ],
+      "poiFile": "10_0-c9413c333f93.b3dm",
+      "poiSha256": "bd3320fd487de5d1671a47574fdf7066b643efeea0b5843bc2ab0ebd4f7287d2",
+      "poiTriangles": 3472,
+      "backgroundFile": "optimized-tiles/6/39/10_0.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "backgroundSha256": "a234e89ffafd7b897d7ed46e4cf2707c011db321d62206df658c16fcd032d27f",
+      "backgroundTriangles": 12444
+    },
+    {
+      "sourceTile": "tiles/6/39/10_4.b3dm",
+      "sourceSha256": "4d614c412d11b726ebd1d4b48886fe817a4d61d0e26cf8ef38adec6e987e1f1b",
+      "originalBatchIds": [
+        55
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "gmlNames": [
+        "CRAWFORD COURT"
+      ],
+      "poiFile": "10_4-823c5cd16f99.b3dm",
+      "poiSha256": "e0d457169dbb0f6f687eb9a1628b8d4262dbf92cca80b7f61add96067add2340",
+      "poiTriangles": 3472,
+      "backgroundFile": "optimized-tiles/6/39/10_4.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "backgroundSha256": "ecae11ddd3951942fe6f8ca3c90022a63498c9f1387ba30368f961ee02c02533",
+      "backgroundTriangles": 12444
+    },
+    {
+      "sourceTile": "tiles/6/39/10_5.b3dm",
+      "sourceSha256": "fdbca1aecdb1442756413b9309198589976ac7bb563c4b858ab01bb7f0c12262",
+      "originalBatchIds": [
+        55
+      ],
+      "gmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "gmlNames": [
+        "CRAWFORD COURT"
+      ],
+      "poiFile": "10_5-cf124d42c4b9.b3dm",
+      "poiSha256": "74e693b173b5090f91ead6ad7173da019dc8837de956641a1df81f14f6a4debb",
+      "poiTriangles": 3472,
+      "backgroundFile": "optimized-tiles/6/39/10_5.b3dm",
+      "backgroundRemovedGmlIds": [
+        "SLA_BLDG2_13a138b2-9f11-47e6-b254-cde4410f8ace"
+      ],
+      "backgroundSha256": "a2c7c07369f7ccb961e39f5fb6dd009531337d1168a4a0c3dfd3ad8ef221a746",
+      "backgroundTriangles": 12444
+    }
+  ]
+}

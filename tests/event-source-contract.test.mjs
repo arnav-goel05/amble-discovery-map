@@ -37,6 +37,10 @@ test("the weekly source window contains the run date and seven following dates",
     inclusive: true,
   });
   assert.equal(readPipelineConfig().windowDaysAfterStart, 7);
+  assert.equal(
+    readPipelineConfig().missingVenueRecovery.search.providerId,
+    "tinyfish-search",
+  );
 });
 
 test("source record provenance repeats adapter, retrieval, window, and immutable pointers", () => {
@@ -278,6 +282,9 @@ test("duplicate captured detail URLs remain one immutable artifact", async () =>
     assert.equal(result.status, "success");
     assert.equal(result.counts.processedSourceRecords, 1);
     assert.equal(result.counts.invalidSourceRecords, 1);
+    assert.equal(result.counts.listingAppearances, 2);
+    assert.equal(result.counts.uniqueSourcePointers, 1);
+    assert.equal(result.counts.listingDuplicatesCollapsed, 1);
     assert.deepEqual(Object.values(result.invalidReasonCodes), [
       "duplicate_detail_url",
     ]);
@@ -291,26 +298,22 @@ test("duplicate captured detail URLs remain one immutable artifact", async () =>
   }
 });
 
-test("all nine definitions have deterministic evidence role, operating state, collection order, and direct precedence", () => {
+test("all six definitions have deterministic evidence role, operating state, collection order, and direct precedence", () => {
   const report = validateEventSourceDefinitions();
-  assert.equal(report.sources.length, 9);
+  assert.equal(report.sources.length, 6);
   assert.deepEqual(
     report.sources
       .filter(({ evidenceRole }) => evidenceRole === "editorial")
       .map(({ operatingState, precedence }) => [operatingState, precedence]),
-    [
-      ["enabled", null],
-      ["enabled", null],
-      ["enabled", null],
-    ],
+    [["enabled", null]],
   );
   assert.deepEqual(
     report.sources.map(({ collectionOrder }) => collectionOrder),
-    [10, 20, 30, 40, 50, 60, 70, 80, 90],
+    [10, 20, 30, 40, 50, 90],
   );
 });
 
-test("v3 source definitions migrate legacy roles and validate direct, editorial, and unavailable states", () => {
+test("v3 source definitions retain unavailable migration support while current sources validate as enabled", () => {
   const direct = migrateSourceDefinition({
     sourceRole: "authoritative",
     operatingMode: "required",
@@ -350,31 +353,11 @@ test("v3 source definitions migrate legacy roles and validate direct, editorial,
   assert.equal(report.schemaVersion, "2.0");
   assert.deepEqual(
     report.sources.map(({ evidenceRole }) => evidenceRole),
-    [
-      "direct",
-      "direct",
-      "direct",
-      "direct",
-      "direct",
-      "unavailable",
-      "editorial",
-      "editorial",
-      "editorial",
-    ],
+    ["direct", "direct", "direct", "direct", "direct", "editorial"],
   );
   assert.deepEqual(
     report.sources.map(({ operatingState }) => operatingState),
-    [
-      "enabled",
-      "enabled",
-      "enabled",
-      "enabled",
-      "enabled",
-      "disabled",
-      "enabled",
-      "enabled",
-      "enabled",
-    ],
+    ["enabled", "enabled", "enabled", "enabled", "enabled", "enabled"],
   );
 });
 
@@ -604,23 +587,21 @@ test("authority capture index reuses raw captures separately from parser fixture
   }
 });
 
-test("four authoritative rendered adapters map source semantics into the universal fixture", () => {
+test("three authoritative rendered adapters map source semantics into the universal fixture", () => {
   const sources = readPipelineConfig().sources.filter(
     ({ sourceRole, retrieval }) => sourceRole === "authoritative" && retrieval,
   );
   for (const source of sources) {
     const adapter = renderedAdapterFor(source.adapterId);
     const detailUrl =
-      source.name === "Roots HAN"
-        ? "https://www.roots.gov.sg/han/Neighborhoods/Punggol/HAN-Programme-Folder/example"
-        : source.name === "Singapore Film Society"
-          ? "https://events.singaporefilmsociety.com/events/example"
-          : new URL(
-              source.listing.detailPathPattern.includes("[0-9]")
-                ? "/m/123"
-                : "/whats-happening/example",
-              source.listing.url,
-            ).href;
+      source.name === "Singapore Film Society"
+        ? "https://events.singaporefilmsociety.com/events/example"
+        : new URL(
+            source.listing.detailPathPattern.includes("[0-9]")
+              ? "/m/123"
+              : "/whats-happening/example",
+            source.listing.url,
+          ).href;
     const fixture = adapter.detail(
       {
         url: detailUrl,
@@ -744,6 +725,31 @@ test("Fever detail parsing recognizes Date and time and uses listing evidence on
     formattedLocation.venue,
     "Green Canvas, Mandai Wildlife Reserve",
   );
+  const venueDescription = adapter.detail(
+    {
+      url,
+      title: "Live at Cool Cats",
+      text: "Venue Description\nA jazz lounge.\nGeneral Info\n📍 Venue: Cool Cats",
+      links: [],
+    },
+    source,
+    url,
+  );
+  assert.equal(venueDescription.venue, "Cool Cats");
+  const venueAccessibility = adapter.detail(
+    {
+      url,
+      title: "Friday Night Magic",
+      text: "📍 Location: 3 Lor Salleh, Level 4, Singapore 416747\n### Venue & Accessibility\nYes, seats are provided.",
+      links: [],
+    },
+    source,
+    url,
+  );
+  assert.equal(
+    venueAccessibility.venue,
+    "3 Lor Salleh, Level 4, Singapore 416747",
+  );
   const multiple = adapter.detail(
     {
       url,
@@ -755,6 +761,162 @@ test("Fever detail parsing recognizes Date and time and uses listing evidence on
     url,
   );
   assert.equal(multiple.venue, "Multiple locations");
+  const fixedDirections = adapter.detail(
+    {
+      url,
+      title: "Vespa Night Tour of Singapore",
+      text: [
+        "Date and time: select during purchase",
+        "Location: Singapore",
+        "## Getting there",
+        "Singapore Sidecars, Sultan Gate",
+        "37 MacTaggart Road, #02-01 LIREA INDUSTRIAL BUILDING, Singapore, 368083",
+        "## Need help?",
+        "Contact Support",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    "https://feverup.com/m/135442",
+  );
+  assert.equal(fixedDirections.venue, "Singapore Sidecars, Sultan Gate");
+  assert.equal(
+    fixedDirections.address,
+    "37 MacTaggart Road, #02-01 LIREA INDUSTRIAL BUILDING, Singapore, 368083",
+  );
+  assert.equal(fixedDirections.fieldCompleteness.venue.status, "present");
+  assert.equal(fixedDirections.fieldCompleteness.address.status, "present");
+  const explicitLocationWins = adapter.detail(
+    {
+      url,
+      title: "Fixed Hall Event",
+      text: [
+        "Location: Capitol Theatre",
+        "## Getting there",
+        "Ticket collection desk",
+        "13 Stamford Road, Singapore 178905",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    "https://feverup.com/m/fixture",
+  );
+  assert.equal(explicitLocationWins.venue, "Capitol Theatre");
+  assert.equal(explicitLocationWins.address, null);
+});
+
+test("Fever detail parsing expands official ticket-selector transfer state into distinct showtimes", () => {
+  const source = readPipelineConfig().sources.find(
+    ({ adapterId }) => adapterId === "fever-singapore-rendered-v1",
+  );
+  const adapter = renderedAdapterFor(source.adapterId);
+  const url = "https://feverup.com/m/629724";
+  const session = (id, start, end, label) => ({
+    default_label: label,
+    value: {
+      id,
+      label,
+      starts_at_iso: start,
+      ends_at_iso: end,
+      has_available_tickets: true,
+    },
+    level: null,
+  });
+  const selector = {
+    "page-config": {
+      planDetail: {
+        id: 629724,
+        defaultSession: {
+          id: 101,
+          startsAtIso: "2026-08-09T20:00:00+08:00",
+          endsAtIso: "2026-08-09T21:00:00+08:00",
+        },
+      },
+    },
+    "ticket-selector-config": {
+      transferState: {
+        "LevelTicketSelectorLoader.getPlanSessionsForPlace:629724": {
+          level: {
+            type: "date",
+            items: [
+              {
+                value: { from: "2026-08-09T12:00:00+08:00" },
+                level: {
+                  type: "time",
+                  items: [
+                    {
+                      value: { from: "2026-08-09T20:00:00+08:00" },
+                      level: {
+                        type: "session",
+                        items: [
+                          session(
+                            101,
+                            "2026-08-09T20:00:00+08:00",
+                            "2026-08-09T21:00:00+08:00",
+                            "Zone A",
+                          ),
+                          session(
+                            102,
+                            "2026-08-09T20:00:00+08:00",
+                            "2026-08-09T21:00:00+08:00",
+                            "Zone B",
+                          ),
+                        ],
+                      },
+                    },
+                    {
+                      value: { from: "2026-08-09T21:30:00+08:00" },
+                      level: {
+                        type: "session",
+                        items: [
+                          session(
+                            103,
+                            "2026-08-09T21:30:00+08:00",
+                            "2026-08-09T22:30:00+08:00",
+                            "Zone A",
+                          ),
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  };
+  const parsed = adapter.detail(
+    {
+      url,
+      title: "Candlelight: Ed Sheeran Meets Coldplay",
+      text: `<main><p>Venue: The Arts House</p></main><script id="astro-tools-transfer-state" type="application/json">${JSON.stringify(selector)}</script>`,
+      links: [],
+    },
+    source,
+    url,
+    {
+      listingRecord: {
+        sourceId: "629724",
+        title: "Candlelight: Ed Sheeran Meets Coldplay",
+        dateText: "9 Aug 2026",
+        venue: "The Arts House",
+      },
+    },
+  );
+  assert.deepEqual(
+    parsed.performances.map(({ startDateTime, endDateTime }) => [
+      startDateTime,
+      endDateTime,
+    ]),
+    [
+      ["2026-08-09T20:00:00+08:00", "2026-08-09T21:00:00+08:00"],
+      ["2026-08-09T21:30:00+08:00", "2026-08-09T22:30:00+08:00"],
+    ],
+  );
+  assert.equal(parsed.schedule.kind, "selectable");
+  assert.equal(parsed.schedule.sessionRefs.length, 2);
 });
 
 test("rendered Fever collection carries card evidence into detail parsing and logs fallback accounting", async () => {
@@ -797,6 +959,8 @@ test("rendered Fever collection carries card evidence into detail parsing and lo
     });
     assert.equal(collected.status, "success");
     assert.equal(collected.counts.sourceRecordsReceived, 1);
+    assert.equal(collected.counts.fieldCompleteness.title.present, 1);
+    assert.equal(collected.counts.fieldCompleteness.venue.present, 1);
     const fixtureRef = collected.sourceRecordRefs[0].split("#")[0];
     const fixture = JSON.parse(
       fs.readFileSync(path.join(state.root, fixtureRef), "utf8"),
@@ -940,7 +1104,7 @@ test("unreliable schedule phrases stay held instead of becoming exact dates", ()
     ({ adapterId }) => adapterId === "fever-singapore-rendered-v1",
   );
   const editorial = readPipelineConfig().sources.find(
-    ({ adapterId }) => adapterId === "honeycombers-discovery-v1",
+    ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
   );
   for (const phrase of ["TBA", "To be confirmed", "Coming soon"]) {
     const directRecord = renderedAdapterFor(direct.adapterId).detail(
@@ -956,15 +1120,15 @@ test("unreliable schedule phrases stay held instead of becoming exact dates", ()
     assert.equal(directRecord.schedule.kind, "unverified", phrase);
     const editorialRecord = renderedAdapterFor(editorial.adapterId).detail(
       {
-        url: "https://thehoneycombers.com/singapore/event/future",
+        url: "https://www.timeout.com/singapore/things-to-do/future",
         title: "Future Programme",
         text: `Date: ${phrase}\nVenue: The Arts House`,
         links: [],
       },
       editorial,
-      "https://thehoneycombers.com/singapore/event/future",
+      "https://www.timeout.com/singapore/things-to-do/future",
     );
-    assert.equal(editorialRecord.claims.dateText, phrase);
+    assert.equal(editorialRecord.claims.dateText, null);
   }
 });
 
@@ -1109,6 +1273,129 @@ test("Visit Singapore does not turn generic guide headings into events without s
   assert.equal(records[0].title, "National Day Guide");
   assert.equal(records[0].dateText, null);
   assert.equal(records[0].venue, null);
+});
+
+test("Visit Singapore extracts guarded event-summary and labelled-table venues from saved pages", () => {
+  const source = readPipelineConfig().sources.find(
+    ({ adapterId }) => adapterId === "visit-singapore-rendered-v1",
+  );
+  const adapter = renderedAdapterFor(source.adapterId);
+  const nativeUrl =
+    "https://www.visitsingapore.com/whats-happening/all-happenings/light-trail";
+  const native = adapter.detail(
+    {
+      url: nativeUrl,
+      title: "Light Trail",
+      text: [
+        "# Light Trail",
+        "20 Jul 2026 - 31 Jul 2026",
+        "Civic Plaza",
+        "391 Orchard Road, Singapore 238874",
+        "A limited-run installation.",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    nativeUrl,
+    { listingRecord: { title: "Light Trail", sourceId: "visit-light" } },
+  );
+  assert.equal(native.venue, "Civic Plaza");
+  assert.equal(native.address, "391 Orchard Road, Singapore 238874");
+
+  const ticketUrl = "https://ticketing.example/events/des-bishop";
+  const ticket = adapter.detail(
+    {
+      url: ticketUrl,
+      title: "Events",
+      text: [
+        "# EVENTS",
+        "Event Date & Time",
+        "Event Name",
+        "Venue",
+        "Status",
+        "26 Oct 2026 (Mon.) 08:00 pm",
+        "Des Bishop Live in Singapore",
+        "Victoria Theatre",
+        "Find tickets",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    ticketUrl,
+    {
+      listingRecord: {
+        title: "Des Bishop Live in Singapore",
+        sourceId: "visit-des-bishop",
+      },
+    },
+  );
+  assert.equal(ticket.title, "Des Bishop Live in Singapore");
+  assert.equal(ticket.venue, "Victoria Theatre");
+  assert.equal(ticket.timeText, "8:00 pm");
+  assert.deepEqual(ticket.performances, [
+    {
+      startDateTime: "2026-10-26T20:00:00+08:00",
+      endDateTime: null,
+      dateText: "26 Oct 2026",
+      timeText: "8:00 pm",
+    },
+  ]);
+  assert.equal(ticket.schedule.start, "2026-10-26T20:00:00+08:00");
+  assert.ok(ticket.listingFallbackFields.includes("title"));
+
+  const mismatched = adapter.detail(
+    {
+      url: ticketUrl,
+      title: "Events",
+      text: [
+        "Event Date & Time",
+        "Event Name",
+        "Venue",
+        "Status",
+        "26 Oct 2026 (Mon.) 08:00 pm",
+        "A Different Event",
+        "Wrong Hall",
+        "Find tickets",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    ticketUrl,
+    {
+      listingRecord: {
+        title: "Des Bishop Live in Singapore",
+        sourceId: "visit-des-bishop",
+      },
+    },
+  );
+  assert.equal(mismatched.venue, null);
+
+  const structural = adapter.detail(
+    {
+      url: ticketUrl,
+      title: "Events",
+      text: [
+        "Event Date & Time",
+        "Event Name",
+        "Venue",
+        "Status",
+        "26 Oct 2026 (Mon.) 08:00 pm",
+        "Des Bishop Live in Singapore",
+        "Venue Description",
+        "Find tickets",
+      ].join("\n"),
+      links: [],
+    },
+    source,
+    ticketUrl,
+    {
+      listingRecord: {
+        title: "Des Bishop Live in Singapore",
+        sourceId: "visit-des-bishop",
+      },
+    },
+  );
+  assert.equal(structural.venue, null);
 });
 
 test("Visit Singapore turns safe embedded event CTAs into detail work and retains unsafe cards inline", () => {
@@ -1357,6 +1644,66 @@ test("Catch.sg and SISTIC mappers retain future-horizon records outside the mini
   );
 });
 
+test("SISTIC maps official event_date_notes into exact performance times", () => {
+  const simple = mapSisticDetail(
+    {
+      alias: "hayato1026",
+      title: "Hayato Sumino",
+      event_date: "26 Oct 2026",
+      event_date_notes: "<p>7pm</p>",
+      venue_name: { name: "Esplanade Concert Hall" },
+    },
+    {},
+    "https://www.sistic.com.sg/event-details/hayato1026",
+    1,
+  );
+  assert.equal(simple.timeText, "7pm");
+  assert.deepEqual(
+    simple.performances.map(({ startDateTime, endDateTime, schedule }) => [
+      startDateTime,
+      endDateTime,
+      schedule.evidenceReasonCode,
+    ]),
+    [["2026-10-26T19:00:00+08:00", null, "sistic_event_date_notes_parsed"]],
+  );
+
+  const multiple = mapSisticDetail(
+    {
+      alias: "relation0826",
+      title: "Relation",
+      event_date: "16 Aug 2026",
+      event_date_notes: "<p>2.30pm & 7.30pm</p>",
+      venue_name: { name: "Drama Centre Theatre" },
+    },
+    {},
+    "https://www.sistic.com.sg/event-details/relation0826",
+    1,
+  );
+  assert.equal(multiple.timeText, "2.30pm & 7.30pm");
+  assert.deepEqual(
+    multiple.performances.map(({ startDateTime }) => startDateTime),
+    ["2026-08-16T14:30:00+08:00", "2026-08-16T19:30:00+08:00"],
+  );
+
+  const range = mapSisticDetail(
+    {
+      alias: "comicart1",
+      title: "Comic Art Workshop",
+      event_date: "16 Aug 2026",
+      event_date_notes: "<p>Sun, 16 Aug 2026 2PM - 4PM</p>",
+      venue_name: { name: "Workshop Studio" },
+    },
+    {},
+    "https://www.sistic.com.sg/event-details/comicart1",
+    1,
+  );
+  assert.equal(
+    range.performances[0].startDateTime,
+    "2026-08-16T14:00:00+08:00",
+  );
+  assert.equal(range.performances[0].endDateTime, "2026-08-16T16:00:00+08:00");
+});
+
 test("rendered collection proves terminal listing completion and captures each canonical detail once", async () => {
   const state = temporaryState();
   try {
@@ -1458,62 +1805,81 @@ test("rendered collection rejects off-domain pagination and rendered redirects",
   }
 });
 
-test("editorial collection reuses compatible records already collected in the run", async () => {
+test("rendered collection isolates one failed detail and retains healthy direct records", async () => {
   const state = temporaryState();
   try {
     const source = readPipelineConfig().sources.find(
-      ({ adapterId }) => adapterId === "honeycombers-discovery-v1",
+      ({ adapterId }) => adapterId === "fever-singapore-rendered-v1",
     );
-    const detailUrl =
-      "https://thehoneycombers.com/singapore/event/night-museum";
-    const calls = [];
+    const good = "https://feverup.com/m/100";
+    const failed = "https://feverup.com/m/200";
     const renderedClient = {
       fetchBatch: async ([url]) => {
-        calls.push(url);
-        const result =
-          url === source.listing.url
-            ? {
+        if (url === source.listing.url)
+          return {
+            results: [
+              {
                 url,
                 document: {
-                  links: [{ url: detailUrl, text: "Night at the Museum" }],
-                },
-              }
-            : {
-                url,
-                document: {
-                  title: "Night at the Museum",
-                  fields: {
-                    Date: "17 July 2026",
-                    Venue: "National Gallery Singapore",
-                  },
                   links: [
-                    {
-                      url: "https://peatix.com/event/night-museum",
-                      text: "Visit website",
-                    },
+                    { url: good, text: "Good event" },
+                    { url: failed, text: "Unavailable event" },
                   ],
                 },
-              };
-        return { results: [result], errors: [], payloadHash: "hash" };
+              },
+            ],
+            errors: [],
+            payloadHash: "listing",
+          };
+        if (url === failed)
+          return {
+            results: [],
+            errors: [{ url, code: "target_unreachable", status: 503 }],
+            payloadHash: "failed",
+          };
+        return {
+          results: [
+            {
+              url,
+              document: {
+                title: "Good event",
+                fields: {
+                  Date: "2026-07-27",
+                  Time: "19:00",
+                  Venue: "The Arts House",
+                },
+                links: [],
+              },
+            },
+          ],
+          errors: [],
+          payloadHash: "good",
+        };
       },
     };
     const result = await collectRenderedSource({
       runDir: state.root,
-      run: { runId: "run-reuse", window: singaporeWindow("2026-07-14") },
+      run: { runId: "partial-fever", window: singaporeWindow("2026-07-20") },
       source,
       renderedClient,
-      corroborationRecords: [
-        {
-          sourceRecordId: "catch:night-museum",
-          sourceRole: "authoritative",
-          title: "Night at the Museum",
-          dateText: "17 July 2026",
-          venue: "National Gallery Singapore",
-        },
-      ],
+      now: () => "2026-07-20T00:00:00.000Z",
     });
-    assert.equal(result.counts.confirmationOutcomeCounts.direct_reused, 1);
-    assert.deepEqual(calls, [source.listing.url, detailUrl]);
+    assert.equal(result.status, "blocked");
+    assert.equal(result.counts.sourceRecordsReceived, 2);
+    assert.equal(result.counts.processedSourceRecords, 1);
+    assert.equal(result.counts.invalidSourceRecords, 1);
+    assert.equal(result.completion.detailFailures, 1);
+    assert.equal(result.processedSourceRecordRefs.length, 1);
+    assert.equal(result.invalidSourceRecordRefs.length, 1);
+    assert.equal(
+      result.invalidReasonCodes[result.invalidSourceRecordRefs[0]],
+      "source_unavailable",
+    );
+    assert.ok(
+      result.artifactRefs.includes(
+        result.invalidSourceRecordRefs[0].split("#")[0],
+      ),
+    );
   } finally {
     state.cleanup();
   }
@@ -1578,92 +1944,12 @@ test("Singapore Film Society expands film seeds into screening occurrences and a
     assert.equal(result.counts.invalidSourceRecords, 1);
     assert.equal(result.counts.processedSourceRecords, 1);
     assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(result.counts.fieldCompleteness.title.present, 1);
+    assert.equal(result.counts.fieldCompleteness.schedule.present, 1);
+    assert.equal(result.counts.fieldCompleteness.venue.present, 1);
     assert.deepEqual(Object.values(result.invalidReasonCodes), [
       "detail_index_unavailable",
     ]);
-  } finally {
-    state.cleanup();
-  }
-});
-
-test("three editorial adapters produce accounted discovery records under the enabled source contract", async () => {
-  const state = temporaryState();
-  try {
-    const source = readPipelineConfig().sources.find(
-      ({ adapterId }) => adapterId === "honeycombers-discovery-v1",
-    );
-    const renderedClient = {
-      fetchBatch: async ([url]) => {
-        let result;
-        if (url === source.listing.url)
-          result = {
-            url,
-            document: {
-              links: [
-                {
-                  url: "/singapore/event/night-museum",
-                  text: "Night at the Museum",
-                },
-              ],
-            },
-          };
-        else if (url.includes("night-museum"))
-          result = {
-            url,
-            document: {
-              title: "Night at the Museum",
-              fields: {
-                Date: "17 July 2026",
-                Time: "19:00",
-                Venue: "National Gallery Singapore",
-              },
-              links: [
-                {
-                  url: "https://peatix.com/event/night-museum",
-                  text: "Visit Website",
-                },
-              ],
-            },
-          };
-        else
-          result = {
-            url,
-            document: {
-              title: "Night at the Museum",
-              fields: {
-                Date: "17 July 2026",
-                Time: "19:00",
-                Venue: "National Gallery Singapore",
-              },
-              links: [],
-            },
-          };
-        return {
-          results: [result],
-          errors: [],
-          payloadHash: `hash-${url}`,
-          payload: { results: [result] },
-        };
-      },
-    };
-    const result = await collectRenderedSource({
-      runDir: state.root,
-      run: { runId: "run-a", window: singaporeWindow("2026-07-14") },
-      source,
-      renderedClient,
-      now: () => "2026-07-14T00:00:00.000Z",
-    });
-    assert.equal(result.status, "success");
-    assert.equal(result.operatingMode, "required");
-    assert.equal(result.sourceRole, "discovery");
-    assert.equal(
-      result.counts.confirmationOutcomeCounts.authority_confirmed,
-      1,
-    );
-    assert.equal(result.counts.occurrencesEmitted, 1);
-    assert.equal(result.counts.eligiblePreDedup, 1);
-    assert.equal(result.processedSourceRecordRefs.length, 1);
-    assert.doesNotThrow(() => validateSourceSemantics(state.root, {}, result));
   } finally {
     state.cleanup();
   }
@@ -1676,9 +1962,7 @@ test("editorial detail and roundup containers retain attendable activities while
   for (const source of sources) {
     const adapter = renderedAdapterFor(source.adapterId);
     const detailUrl = new URL(
-      source.name === "ArtsEquator"
-        ? "/event/art-night"
-        : "/singapore/things-to-do/art-night",
+      "/singapore/things-to-do/art-night",
       source.listing.url,
     ).href;
     const retained = adapter.detail(
@@ -1844,6 +2128,11 @@ test("Time Out parses real schedules and venues without confusing publication da
     "https://www.timeout.com/singapore/things-to-do/show",
   );
   assert.equal(scheduled.claims.dateText, "17 Jul 2026 to 18 Jul 2026");
+  assert.equal(scheduled.claims.timeText, "10:00");
+  assert.deepEqual(
+    scheduled.performances.map(({ startDateTime }) => startDateTime),
+    ["2026-07-17T10:00:00+08:00", "2026-07-18T10:00:00+08:00"],
+  );
   assert.notEqual(scheduled.claims.dateText, "and times");
   assert.equal(
     scheduled.claims.venue,
@@ -2053,6 +2342,68 @@ test("Time Out homepage discovers only the current approved monthly roundup rout
   ]);
   assert.equal(parsed.evidence, "current_month_route_discovered");
   assert.equal(parsed.detailItems.length, 0);
+
+  const unlabelled = adapter.listing(
+    {
+      url: homepage,
+      text: "## Things to do in Singapore",
+      links: [
+        "/singapore/things-to-do/the-best-things-to-do-in-singapore-in-july",
+      ],
+    },
+    source,
+    homepage,
+  );
+  assert.deepEqual(unlabelled.listingUrls, [
+    "https://www.timeout.com/singapore/things-to-do/the-best-things-to-do-in-singapore-in-july",
+  ]);
+
+  const ambiguous = adapter.listing(
+    {
+      url: homepage,
+      text: "## Things to do in Singapore",
+      links: [
+        "/singapore/things-to-do/the-best-things-to-do-in-singapore-in-july",
+        "/singapore/things-to-do/the-best-things-to-do-in-singapore-in-august",
+      ],
+    },
+    source,
+    homepage,
+  );
+  assert.deepEqual(ambiguous.listingUrls, []);
+  assert.equal(ambiguous.evidence, "current_month_route_missing");
+});
+
+test("Time Out accepts a terminal art zone and ignores capture placeholders", () => {
+  const source = readPipelineConfig().sources.find(
+    ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
+  );
+  const adapter = renderedAdapterFor(source.adapterId);
+  const url = source.listing.urls.find((value) =>
+    value.includes("art-exhibitions"),
+  );
+  const first = "https://www.timeout.com/singapore/art/exhibition-one";
+  const second = "https://www.timeout.com/singapore/art/exhibition-two";
+  const parsed = adapter.listing(
+    {
+      url,
+      text: "<main><h2>Best art exhibitions in Singapore</h2><article><p>First exhibition through 31 Jul 2026.</p></article><article><p>Second exhibition at a gallery.</p></article><article>[title]</article><article>[image]</article></main>",
+      links: [first, first, first, second, second, second],
+    },
+    source,
+    url,
+  );
+  assert.equal(parsed.evidence, "bounded_numbered_art_cards");
+  assert.deepEqual(
+    parsed.detailItems.map(({ url: detailUrl, record }) => [
+      detailUrl,
+      record.surfaceOrdinal,
+    ]),
+    [
+      [first, 1],
+      [second, 2],
+    ],
+  );
 });
 
 test("rendered collection traverses bounded Time Out surfaces and fetches overlapping details once", async () => {
@@ -2214,104 +2565,69 @@ test("rendered collection accounts for every surface and blocks partial Time Out
   }
 });
 
-test("ArtsEquator retains attendable programmes mentioned beside opportunities", () => {
-  const source = readPipelineConfig().sources.find(
-    ({ name }) => name === "ArtsEquator",
-  );
-  const adapter = renderedAdapterFor(source.adapterId);
-  const detailUrl = "https://artsequator.com/event/residency-showcase";
-  const record = adapter.detail(
-    {
-      url: detailUrl,
-      document: {
-        title: "Residency Showcase",
-        text: "Open call followed by a public performance and workshop",
-        fields: {
-          Date: "18 August 2026",
-          Venue: "The Arts House",
-          City: "Singapore",
-        },
-        links: [],
-      },
-    },
-    source,
-    detailUrl,
-  );
-  assert.equal(record.reasonCode, null);
-});
-
-test("ArtsEquator parses The Events Calendar headings and venue blocks as sufficient editorial evidence", async () => {
+test("editorial collection isolates one failed detail and retains healthy discoveries", async () => {
   const state = temporaryState();
   try {
-    const source = readPipelineConfig().sources.find(
-      ({ name }) => name === "ArtsEquator",
+    const configured = readPipelineConfig().sources.find(
+      ({ adapterId }) => adapterId === "time-out-singapore-discovery-v1",
     );
-    const detailUrl = "https://artsequator.com/event/benchmarks";
-    const logs = [];
+    const source = {
+      ...configured,
+      listing: { ...configured.listing, urls: [], paginationCeiling: 1 },
+    };
+    const good = "https://www.timeout.com/singapore/news/good-event";
+    const failed = "https://www.timeout.com/singapore/news/failed-event";
+    const card = (ordinal, url, title) =>
+      `<article data-testid="tile-zone-large-list_testID"><a href="${url}" data-testid="tile-link_testID"><h3 data-testid="tile-title_testID">${ordinal}. ${title}</h3></a><span>Until 31 Aug 2026</span></article>`;
     const renderedClient = {
-      fetchBatch: async ([url]) => ({
-        results: [
-          url === source.listing.url
-            ? { url, text: "### Benchmarks", links: [detailUrl] }
-            : {
+      fetchBatch: async ([url]) => {
+        if (url === source.listing.url)
+          return {
+            results: [
+              {
                 url,
-                final_url: `${detailUrl}/`,
-                title: "Benchmarks",
-                text: "# Benchmarks\n\n## August 2, 2023 - July 31, 2026\n\nA public art trail.\n\nWebsite: https://artshouselimited.sg/civic-district\n\n## Details\n\n**Start:** : August 2, 2023\n **End:** : July 31\n\n## Venue\n\n: The Arts House\n: 1 Old Parliament Lane\nSingapore,\nSingapore\n+ Google Map",
-                links: [],
+                text: `<h2>Best events in Singapore this week</h2>${card(1, failed, "Failed event")}${card(2, good, "Good event")}<h2>Explore Singapore</h2>`,
               },
-        ],
-        errors: [],
-        payloadHash: `hash-${url}`,
-      }),
+            ],
+            errors: [],
+            payloadHash: "listing",
+          };
+        if (url === failed)
+          throw Object.assign(new Error("TinyFish request timed out"), {
+            code: "source_unavailable",
+          });
+        return {
+          results: [
+            {
+              url,
+              title: "Good event",
+              text: "Until 31 Aug 2026\n\n### Details\n\n**Address**: National Gallery Singapore\n: 1 St Andrew’s Rd\n: Singapore\n: 178957",
+            },
+          ],
+          errors: [],
+          payloadHash: "good",
+        };
+      },
     };
     const result = await collectRenderedSource({
       runDir: state.root,
-      run: { runId: "run-a", window: singaporeWindow("2026-07-20") },
+      run: {
+        runId: "partial-timeout",
+        window: singaporeWindow("2026-07-20"),
+      },
       source,
       renderedClient,
-      logger: (entry) => logs.push(entry),
       now: () => "2026-07-20T00:00:00.000Z",
     });
-    assert.equal(result.status, "success");
+    assert.equal(result.status, "blocked");
+    assert.equal(result.counts.sourceRecordsReceived, 2);
+    assert.equal(result.counts.processedSourceRecords, 1);
+    assert.equal(result.counts.invalidSourceRecords, 1);
     assert.equal(result.counts.eligiblePreDedup, 1);
+    assert.equal(result.completion.detailFailures, 1);
     assert.equal(
-      result.counts.confirmationOutcomeCounts.editorial_sufficient,
-      1,
-    );
-    const discovery = JSON.parse(
-      fs.readFileSync(
-        path.join(
-          state.root,
-          result.processedSourceRecordRefs[0].split("#")[0],
-        ),
-        "utf8",
-      ),
-    ).records[0];
-    assert.equal(discovery.dateText, "August 2, 2023 - July 31, 2026");
-    assert.equal(
-      discovery.venue,
-      "The Arts House, 1 Old Parliament Lane, Singapore, Singapore",
-    );
-    assert.ok(
-      discovery.outboundLinks.some(
-        ({ url, text }) =>
-          url === "https://artshouselimited.sg/civic-district" &&
-          text === "Event Website",
-      ),
-    );
-    assert.ok(
-      logs.some(
-        ({ action, hasSchedule, hasVenue }) =>
-          action === "discovery_detail_parsed" && hasSchedule && hasVenue,
-      ),
-    );
-    assert.ok(
-      logs.some(
-        ({ action, decision }) =>
-          action === "discovery_confirmation_decided" &&
-          decision === "editorial_sufficient",
-      ),
+      result.invalidReasonCodes[result.invalidSourceRecordRefs[0]],
+      "source_unavailable",
     );
   } finally {
     state.cleanup();

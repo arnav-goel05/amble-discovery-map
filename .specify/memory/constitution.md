@@ -1,13 +1,11 @@
 <!--
 Sync Impact Report
-- Version change: 2.2.0 -> 2.3.0
+- Version change: 2.7.0 -> 2.8.0
 - Modified principles:
-  - III. Stable Identity and Atomic Reconciliation: isolated source/event uncertainty now
-    carries forward or holds only affected identities; release-wide failures still roll back.
-  - Product, Data, and Privacy Constraints: weekly runs may retain all active and future
-    events while continuing to cover the mandatory current seven-day period.
-  - Development and Release Workflow: publication gates now distinguish branch-level
-    isolation from failures that make the assembled snapshot unsafe.
+  - Product, Data, and Privacy Constraints: removed the arbitrary per-session voice
+    response-count, maximum-duration, and idle-expiry requirements while retaining
+    per-response admission, per-turn loop prevention, cumulative spending, interruption,
+    explicit lifecycle termination, and kill-switch safeguards.
 - Added sections: none.
 - Removed sections: none.
 - Templates:
@@ -16,13 +14,17 @@ Sync Impact Report
   - ✅ .specify/templates/tasks-template.md
   - ✅ .specify/templates/commands/ (directory absent; no command templates to update)
 - Dependent artifacts:
-  - ✅ AGENTS.md
-  - ✅ docs/weekly-operations.md
-  - ✅ specs/002-add-web-event-sources/policy-review.md
-  - ✅ specs/002-add-web-event-sources/{spec,plan,research,data-model,quickstart,tasks}.md
-  - ✅ specs/002-add-web-event-sources/contracts/rendered-event-source.md
-- Deferred items: runtime runner references remain aligned to current implementation until
-  implementation tasks T141-T142 update them with the approved v3 behavior.
+  - ✅ AGENTS.md (reviewed; no runtime-command change required)
+  - ✅ README.md (reviewed; no architecture overview change required before implementation)
+  - ✅ docs/production-configuration.md
+  - ✅ specs/004-conversational-voice-map/{spec,plan,research,data-model,quickstart}.md
+  - ✅ specs/004-conversational-voice-map/contracts/realtime-relay.md
+  - ✅ specs/004-conversational-voice-map/contracts/native-audio-routing.md
+  - ✅ specs/004-conversational-voice-map/tasks.md
+- Deferred items:
+  - Runtime removal of `maxResponses`, `maxSessionSeconds`, and `idleSeconds`, plus
+    migration to the per-turn response-stage guard, are planned in Feature 004 Phase 22
+    tasks T171 and T175; no application code changed during this planning amendment.
 -->
 
 # What's Here Constitution
@@ -72,7 +74,7 @@ unverifiable MUST preserve the last approved production dataset.
 Rationale: stable reconciliation prevents duplicate highlights, stale events, visual
 layering defects, and partially published production state.
 
-### IV. Domain Boundaries and Explicit Contracts
+### IV. Domain Boundaries, Shared Capabilities, and Explicit Contracts
 
 Event discovery, venue resolution, map presentation, planning and games, restaurant
 discovery, persistence, and external adapters MUST have explicit ownership boundaries.
@@ -83,8 +85,27 @@ when they can evolve. UI components MUST own their structure and interaction beh
 pipelines supply validated data and MUST NOT generate component-specific markup. Venue-
 specific behavior MAY exist only in reviewed evidence registries or test fixtures.
 
-Rationale: clear contracts reduce accidental coupling in a product with multiple data and
-interaction pipelines.
+Every user-facing application capability MUST be represented by a versioned, typed command
+or query contract in one capability registry shared by direct UI controls, conversational
+interfaces, and any external protocol adapter. Queries MUST read authoritative application
+or approved-catalogue state and return bounded, validated domain results with stable
+identities. Commands MUST execute through the same business executor used by direct
+controls and return a validated observable outcome rather than a success assertion alone.
+After every state-changing command, the application MUST publish refreshed authoritative
+interface context, and assistant tool eligibility MUST be derived from that current state.
+Local, preview, test, and production environments MUST expose semantically equivalent
+catalogue and capability contracts; approved data and environment policy MAY differ.
+
+MCP and other external protocols MAY expose the shared capability registry, but they MUST
+remain thin adapters. They MUST NOT duplicate application business rules or bypass
+validation, provenance, authorization, confirmation, privacy, or lifecycle controls. A new
+or changed user-facing capability is incomplete until the capability inventory and
+automated parity coverage prove that direct and conversational entry points reach the same
+observable result, including failure and unavailable-state behavior.
+
+Rationale: one authoritative capability architecture prevents UI/assistant drift, gives
+conversational interfaces enough grounded state to complete tasks, and keeps optional
+integration protocols from becoming a second application backend.
 
 ### V. Testable, Secure Changes
 
@@ -92,7 +113,9 @@ Every production change MUST pass the production build and all relevant automate
 before it is complete. Changed behavior MUST have regression coverage for its success,
 failure, recovery, and lifecycle paths in proportion to risk. Publication and migration
 changes MUST test rollback or recovery. Secrets and privileged credentials MUST remain
-server-side and outside the repository. External URLs and content MUST be constrained by
+server-side and outside the repository. Credentials, API keys, authorization headers,
+cookies, session tokens, signing material, and raw audio MUST NOT be written to
+operational or diagnostic logs in any environment. External URLs and content MUST be constrained by
 provenance, robots rules, request limits, and server-side request-forgery protections.
 Anonymous public users MUST NOT gain administrative capability. The single private admin
 account MUST use authenticated sessions and securely managed password credentials.
@@ -146,10 +169,23 @@ future iteration.
   Before implementation research begins, the plan MUST name an operational owner and define
   concrete usage and spending limits. Before production use, server-side credential
   handling, an immediate service-disable control, limit-exhaustion behavior, and equivalent
-  text and direct-interface fallbacks MUST be implemented and verified.
+  text and direct-interface fallbacks MUST be implemented and verified. The application
+  MUST NOT impose or transmit a per-response output-token ceiling for this Realtime
+  experience; responses use the provider/model intrinsic maximum. That intrinsic maximum
+  MAY be pinned solely as the conservative budget-reservation bound and MUST be updated
+  with reviewed provider evidence when the approved model changes. Context, spending,
+  interruption, explicit stop, navigation/permission loss, provider failure, and
+  kill-switch boundaries remain mandatory. Voice MUST NOT impose a per-session user-turn,
+  assistant-response-count, maximum-duration, or idle-expiry limit. Each admitted user turn
+  MUST retain a finite internal provider-stage loop guard, with independent admission and
+  settlement for every billable stage.
 - Event and restaurant/deal collection MUST run weekly. Each event run MUST cover at least
   the run date through the following seven days and MAY retain all active and future events
   exposed by configured bounded source surfaces.
+- Conversational search and discovery MUST query approved application catalogue data and
+  MUST NOT perform open-web research at runtime unless a separately specified and
+  owner-approved constitutional exception defines its provenance, cost, security, privacy,
+  latency, failure, and fallback boundaries.
 - When an external source is unavailable, the last approved data MAY remain visible but
   MUST be clearly marked as potentially outdated.
 - Telegram photos and related personal verification data MUST be deleted when the associated
@@ -160,6 +196,24 @@ future iteration.
 - The product MUST NOT collect user analytics or product telemetry. Minimal operational
   logs MAY be retained only for reliability and security and MUST avoid unnecessary
   personal data.
+- Feature 004 MAY emit content-bearing diagnostic records only in an explicitly activated
+  local-development session owned by the developer. This exception MUST default off, MUST
+  be structurally unavailable in production and preview deployments, and MUST stop when
+  the local process or voice session ends. Process-output diagnostics MAY remain
+  ephemeral. Persistent diagnostics require a separate explicit startup flag and MAY
+  write sanitized newline-delimited records only to a fixed, gitignored, owner-controlled
+  local development directory. Persistent files MUST use restrictive permissions, rotate
+  before exceeding 5 MiB, retain no more than five files, and be deleted no later than
+  seven days after creation. Cleanup MUST run on logger startup and rotation without a
+  background uploader or remote sink. Persistent diagnostics MUST NOT write to application
+  data, databases, browser storage, analytics, telemetry, or network services. Diagnostic
+  records MAY include available provider-generated transcripts, prompts, tool arguments
+  and results, and redacted provider/browser event bodies needed to reproduce a defect.
+  They MUST NOT claim or synthesize a user transcript when native audio produces none.
+  Credentials, API keys, authorization material, cookies, session tokens, signing
+  material, and raw audio remain prohibited. Audio events MAY record only byte counts,
+  timing, format, and lifecycle metadata. Production and preview MUST retain the closed
+  privacy-safe operational phase schema defined by Feature 004.
 - Initial production deployment targets one application host and local durable storage.
   Automatic daily backups are not required. Any future multi-host design is a separately
   specified architectural change.
@@ -170,14 +224,18 @@ future iteration.
    NOT create or switch to another branch unless the user explicitly requests a different
    branch or explicitly authorizes creating one.
 2. A change starts with a testable specification containing bounded scope, acceptance
-   scenarios, failure behavior, data lifecycle, and measurable outcomes.
+   scenarios, failure behavior, data lifecycle, measurable outcomes, and the typed
+   command/query contracts for every affected user-facing capability.
 3. The implementation plan MUST pass every Constitution Check before research or coding.
    Any exception MUST be documented in Complexity Tracking with a rejected simpler option.
 4. Tasks MUST include relevant automated tests, data/provenance handling, privacy cleanup,
-   security controls, lifecycle reconciliation, documentation, and performance validation.
+   security controls, lifecycle reconciliation, documentation, performance validation,
+   capability-inventory updates, direct/conversational parity coverage, rich query-result
+   validation, post-command context synchronization, and local/production contract parity.
 5. Generated data MUST be staged separately from the approved production snapshot.
 6. Publication requires source validation, identity and geometry checks where applicable,
-   the production build, all relevant automated tests, and successful finalization.
+   the production build, all relevant automated tests, complete affected capability
+   coverage, environment-parity verification, and successful finalization.
 7. Every run MUST report unresolved work. Isolated source, event, deduplication, or venue
    uncertainty MUST preserve or hold only its affected identities while safe identities MAY
    publish in the same atomically verified snapshot. A failure that makes the assembled
@@ -185,8 +243,17 @@ future iteration.
    last approved production state. A run MUST NOT be labeled fully successful merely
    because finalization executed.
 8. Code review MUST reject fabricated evidence, venue-specific hardcoding outside approved
-   registries or fixtures, unbounded recovery loops, silent data loss, and unverified
-   generated-data changes.
+   registries or fixtures, unbounded recovery loops, silent data loss, unverified
+   generated-data changes, duplicated UI/assistant business logic, success-only tool
+   results, stale post-command assistant context, and untested capability drift. For the
+   approved Realtime exception, review MUST also reject application-generated
+   `max_output_tokens` fields or equivalent per-response token ceilings in provider session
+   or response requests. Review MUST also reject content-bearing voice diagnostics outside
+   explicitly activated local development, any production/preview activation path,
+   persistent debug capture that lacks the separate audit flag, fixed ignored location,
+   rotation, retention cleanup, restrictive permissions, or sanitized-before-write
+   boundary, and diagnostic output containing credentials, authorization material,
+   cookies, session tokens, signing material, or raw audio.
 
 ## Governance
 
@@ -199,4 +266,4 @@ for non-semantic clarification. Every specification, plan, implementation review
 release MUST verify compliance. Unjustified violations block completion. Runtime-specific
 instructions remain in `AGENTS.md` and domain documentation but MUST conform to this file.
 
-**Version**: 2.3.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-18
+**Version**: 2.8.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-30
