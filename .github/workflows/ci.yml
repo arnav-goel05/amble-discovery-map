@@ -36,6 +36,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Hydrate immutable R2 background release
+        run: npm run geometry:background:hydrate
+
       - name: Lint JavaScript
         run: npm run lint
 

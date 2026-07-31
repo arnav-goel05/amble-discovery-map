@@ -67,6 +67,7 @@
     "cloudflare:cloud:check": "npm run geometry:background:audit && npm run cloudflare:prepare && npm run cloudflare:cloud:verify-build",
     "cloudflare:cloud:smoke": "node scripts/verify-cloudflare-deployment.mjs",
     "cloudflare:r2:verify": "node scripts/verify-r2-tile-delivery.mjs",
+    "geometry:background:hydrate": "node scripts/hydrate-background-release.mjs",
     "geometry:background:audit": "node scripts/sync-r2-background-tiles.mjs audit",
     "geometry:background:sync": "node scripts/sync-r2-background-tiles.mjs sync",
     "inspect-glb": "node scripts/inspect-glb.mjs",
