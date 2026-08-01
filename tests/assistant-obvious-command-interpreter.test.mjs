@@ -36,6 +36,44 @@ test("routes obvious MRT visibility commands deterministically", () => {
   });
 });
 
+test("routes bounded map, tour, plan, event, restaurant, and navigation actions", () => {
+  const cases = [
+    ["pan left", "map", "map.pan", { direction: "left", amount: 1 }],
+    ["turn north", "map", "map.rotate", {}],
+    ["reset the map", "map", "map.resetview", {}],
+    [
+      "show recommendations",
+      "map",
+      "map.setlayervisibility",
+      { layer: "recommendations", visible: true },
+    ],
+    ["start the tour", "tour", "tour.start", {}],
+    ["next tour step", "tour", "tour.next", {}],
+    ["finish the tour", "tour", "tour.finish", {}],
+    ["clear event filters", "event", "event.clearfilters", {}],
+    ["next event", "event", "event.nextevent", {}],
+    ["close event details", "event", "event.closedetail", {}],
+    ["clear restaurant filters", "restaurant", "restaurant.clearfilters", {}],
+    ["close restaurant results", "restaurant", "restaurant.closeresults", {}],
+    ["open my plan", "plan", "plan.open", {}],
+    [
+      "set travel mode to walking",
+      "plan",
+      "plan.settravelmode",
+      { mode: "walking" },
+    ],
+    ["open the assistant", "navigation", "navigation.openassistant", {}],
+    ["open the attribution", "navigation", "navigation.openattribution", {}],
+  ];
+
+  for (const [text, family, capabilityId, argumentsValue] of cases)
+    assert.deepEqual(interpret(text), {
+      family,
+      capabilityId,
+      arguments: argumentsValue,
+    });
+});
+
 test("routes a free-events request through the atomic event interpreter boundary", () => {
   assert.deepEqual(interpret("find free events"), {
     family: "event",

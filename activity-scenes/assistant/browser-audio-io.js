@@ -65,17 +65,11 @@ function pcm16(floatSamples, sourceRate) {
 export function createBrowserPcmCapture({
   stream,
   appendChunk,
-  speechStart,
-  speechEnd,
   AudioContextImpl = globalThis.AudioContext || globalThis.webkitAudioContext,
-  silenceMs = 650,
-  threshold = 0.018,
 } = {}) {
   let context;
   let source;
   let processor;
-  let speaking = false;
-  let lastSpeechAt = 0;
 
   const stop = () => {
     if (processor) processor.onaudioprocess = null;
@@ -85,8 +79,6 @@ export function createBrowserPcmCapture({
     } catch {}
     void context?.close?.();
     context = source = processor = null;
-    if (speaking) speechEnd?.();
-    speaking = false;
   };
 
   return Object.freeze({
@@ -103,21 +95,7 @@ export function createBrowserPcmCapture({
       }
       processor.onaudioprocess = (event) => {
         const samples = event.inputBuffer.getChannelData(0);
-        let energy = 0;
-        for (const sample of samples) energy += sample * sample;
-        const rms = Math.sqrt(energy / Math.max(1, samples.length));
-        const now = performance.now();
-        if (rms >= threshold) {
-          lastSpeechAt = now;
-          if (!speaking) {
-            speaking = true;
-            speechStart?.();
-          }
-        } else if (speaking && now - lastSpeechAt >= silenceMs) {
-          speaking = false;
-          speechEnd?.();
-        }
-        if (speaking) appendChunk(toBase64(pcm16(samples, context.sampleRate)));
+        appendChunk(toBase64(pcm16(samples, context.sampleRate)));
       };
       source.connect(processor);
       processor.connect(context.destination);

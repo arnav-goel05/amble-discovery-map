@@ -127,7 +127,9 @@ test("rejects unsupported and invalid proposals without executable calls", () =>
 });
 
 test("normalizes and bounds utterances before proposal construction", () => {
-  const result = interpret(`  ${"romantic ".repeat(100)}free  `);
+  const result = interpret(
+    `  search events for ${"romantic ".repeat(100)}free  `,
+  );
 
   assert.ok(result.normalizedUtterance.length <= 500);
   assert.equal(

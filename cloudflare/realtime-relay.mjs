@@ -13,7 +13,10 @@ import {
   createProviderCapabilityAliasMap,
   projectRealtimeFunctionTool,
 } from "../activity-scenes/assistant/protocol-adapters/realtime-function-adapter.js";
-import { selectCapabilityTurnScope } from "../activity-scenes/assistant/capability-turn-scope.js";
+import {
+  hasAmbiguousCapabilityFamilies,
+  selectCapabilityTurnScope,
+} from "../activity-scenes/assistant/capability-turn-scope.js";
 import { EVENT_APPLY_QUERY_CAPABILITY_CONTRACT } from "../activity-scenes/assistant/connectors/event-connector.js";
 import { createPublicActionContracts } from "../activity-scenes/assistant/actions/index.js";
 import appInspectResultSchema from "../specs/004-conversational-voice-map/contracts/app-inspect-result.schema.json" with { type: "json" };
@@ -686,7 +689,11 @@ function providerSessionUpdate(
         input: {
           format: { type: "audio/pcm", rate: 24_000 },
           transcription: { model: policy.transcriptionModelId },
-          turn_detection: null,
+          turn_detection: {
+            type: "server_vad",
+            create_response: false,
+            interrupt_response: false,
+          },
         },
         output: {
           format: { type: "audio/pcm", rate: 24_000 },
@@ -907,21 +914,6 @@ export function createRealtimeRelay({
     session.bufferedProviderOutputBytes = 0;
   };
 
-  const appendPendingIngressOutput = (session) => {
-    if (!session.pendingIngressCallId) return false;
-    const callId = session.pendingIngressCallId;
-    session.pendingIngressCallId = null;
-    sendProvider(session, {
-      type: "conversation.item.create",
-      item: {
-        type: "function_call_output",
-        call_id: callId,
-        output: JSON.stringify({ accepted: true }),
-      },
-    });
-    return true;
-  };
-
   const clearConfigurationTimer = (session) => {
     if (!session.configurationTimer) return false;
     configurationClearTimeout(session.configurationTimer);
@@ -1105,11 +1097,7 @@ export function createRealtimeRelay({
       !session.activeReservedTurnId &&
       !session.pendingResponseStage &&
       session.pendingCalls.size === 0 &&
-      ![
-        "classification",
-        "awaiting_classification",
-        "awaiting_transcript",
-      ].includes(session.nativeStage)
+      session.nativeStage !== "awaiting_transcript"
     )
       sendBrowser(session, {
         type: "session.state",
@@ -1363,7 +1351,6 @@ export function createRealtimeRelay({
       result: structuredClone(pendingCall.result),
     });
     const appendResult = () => {
-      appendPendingIngressOutput(session);
       if (pendingCall.providerCall !== false)
         return sendProvider(session, {
           type: "conversation.item.create",
@@ -1433,26 +1420,18 @@ export function createRealtimeRelay({
     }
   };
 
-  const routeJoinedNativeTurn = async (session) => {
-    if (
-      session.nativeStage === "routed" ||
-      !session.finalInputTranscript ||
-      !session.nativeClassification ||
-      !session.nativeClassificationCallId
-    )
+  const routeDeterministicTranscript = async (session) => {
+    if (session.nativeStage === "routed" || !session.finalInputTranscript)
       return false;
     const utterance = session.finalInputTranscript;
-    const ingress = session.nativeClassification;
-    const callId = session.nativeClassificationCallId;
+    const callId = randomId();
     if (!(await settleFinalTranscription(session))) return false;
     if (session.state === "stopped") return false;
     session.nativeStage = "routed";
-    session.pendingIngressCallId = callId;
     const scope = scopeToolsForTurn(session, utterance, {
       includeFoundational: false,
     });
     if (
-      ingress.domain === "event" &&
       scope.deterministicCapabilityId === "event.applyquery" &&
       session.availableCapabilityIds.includes("event.applyquery")
     ) {
@@ -1468,7 +1447,6 @@ export function createRealtimeRelay({
           session.interfaceContext?.activeFilters?.eventComposerState
             ?.catalogRevision ??
           null,
-        ...(ingress.eventQuery ? { facetProposal: ingress.eventQuery } : {}),
       };
       if (!registered || !registered.validateArguments(argumentsValue).valid)
         return stop(session.sessionId, "protocol");
@@ -1532,14 +1510,12 @@ export function createRealtimeRelay({
       return requestResponseStage(session, {
         tools: scope.tools,
         toolChoice: AUTO_TOOL_CHOICE,
-        beforeCreate: () => appendPendingIngressOutput(session),
       });
     }
     session.nativeStage = "final";
-    const terminalSpeech =
-      ingress.domain === "ambiguous"
-        ? "Could you clarify which Amble feature you want to use?"
-        : OUT_OF_SCOPE_RESPONSE;
+    const terminalSpeech = hasAmbiguousCapabilityFamilies(utterance)
+      ? "Could you clarify which Amble feature you want to use?"
+      : OUT_OF_SCOPE_RESPONSE;
     return requestResponseStage(session, {
       tools: [],
       toolChoice: NO_TOOL_CHOICE,
@@ -1547,7 +1523,6 @@ export function createRealtimeRelay({
         conversation: "none",
         instructions: buildVerbatimSpeechInstructions(terminalSpeech),
       },
-      beforeCreate: () => appendPendingIngressOutput(session),
       expectedSpeech: terminalSpeech,
     });
   };
@@ -1569,9 +1544,45 @@ export function createRealtimeRelay({
     if (event.type === "error") return terminateProviderUnavailable(session);
     if (event.type === "session.updated")
       return acknowledgeProviderConfiguration(session, event);
-    if (event.type === "input_audio_buffer.committed") {
+    if (event.type === "input_audio_buffer.speech_started") {
       if (
-        !session.inputCommitted ||
+        !session.activeReservedTurnId ||
+        !session.transcriptionReservationId ||
+        session.providerSpeechActive
+      )
+        return stop(session.sessionId, "protocol");
+      session.providerSpeechActive = true;
+      session.inputAudioBytes = 0;
+      return;
+    }
+    if (event.type === "input_audio_buffer.speech_stopped") {
+      if (
+        !session.providerSpeechActive ||
+        typeof event.item_id !== "string" ||
+        !event.item_id ||
+        event.item_id.length > 128
+      )
+        return stop(session.sessionId, "protocol");
+      session.providerSpeechActive = false;
+      session.providerInputItemId = event.item_id;
+      return;
+    }
+    if (event.type === "input_audio_buffer.committed") {
+      if (session.inputCommitted && !session.activeReservedTurnId) {
+        if (
+          typeof event.item_id !== "string" ||
+          !event.item_id ||
+          event.item_id.length > 128 ||
+          (session.providerInputItemId &&
+            session.providerInputItemId !== event.item_id)
+        )
+          return stop(session.sessionId, "protocol");
+        session.providerInputItemId = event.item_id;
+        return;
+      }
+      if (
+        !session.activeReservedTurnId ||
+        session.providerSpeechActive ||
         typeof event.item_id !== "string" ||
         !event.item_id ||
         event.item_id.length > 128 ||
@@ -1580,6 +1591,13 @@ export function createRealtimeRelay({
       )
         return stop(session.sessionId, "protocol");
       session.providerInputItemId = event.item_id;
+      startTurnTrace(session);
+      tracePhase(session, "audio_committed");
+      session.activeReservedTurnId = null;
+      session.inputCommitted = true;
+      session.nativeStage = "awaiting_transcript";
+      startTranscriptionWatchdog(session);
+      sendBrowser(session, { type: "session.state", state: "processing" });
       return;
     }
     if (event.type === "conversation.item.input_audio_transcription.failed") {
@@ -1589,9 +1607,20 @@ export function createRealtimeRelay({
     if (
       event.type === "conversation.item.input_audio_transcription.completed"
     ) {
-      if (!session.transcriptionReservationId) return;
       const transcript =
         typeof event.transcript === "string" ? event.transcript.trim() : "";
+      if (!session.transcriptionReservationId) {
+        if (session.finalInputTranscript && !transcript) return;
+        if (
+          session.finalInputTranscript &&
+          session.providerInputItemId === event.item_id &&
+          session.finalInputTranscript === transcript
+        )
+          return;
+        if (session.finalInputTranscript)
+          return stop(session.sessionId, "protocol");
+        return;
+      }
       if (
         !session.inputCommitted ||
         typeof event.item_id !== "string" ||
@@ -1613,9 +1642,7 @@ export function createRealtimeRelay({
       }
       session.providerInputItemId = event.item_id;
       session.finalInputTranscript = transcript;
-      if (session.nativeStage === "classification")
-        session.nativeStage = "awaiting_classification";
-      return routeJoinedNativeTurn(session);
+      return routeDeterministicTranscript(session);
     }
     if (event.type === "conversation.item.input_audio_transcription.delta")
       return;
@@ -1640,44 +1667,6 @@ export function createRealtimeRelay({
     )
       sendBrowser(session, { type: "session.state", state: "speaking" });
     if (event.type === "response.function_call_arguments.done") {
-      if (event.name === VOICE_INGRESS_TOOL_NAME) {
-        if (
-          !["classification", "awaiting_classification"].includes(
-            session.nativeStage,
-          ) ||
-          session.tools.length !== 1 ||
-          session.tools[0]?.name !== VOICE_INGRESS_TOOL_NAME ||
-          typeof event.call_id !== "string" ||
-          !event.call_id ||
-          event.call_id.length > 128
-        )
-          return stop(session.sessionId, "protocol");
-        let ingress;
-        try {
-          ingress = canonicalizeVoiceIngress(
-            JSON.parse(event.arguments || "{}"),
-          );
-        } catch {
-          return stop(session.sessionId, "protocol");
-        }
-        if (
-          !ingress ||
-          typeof ingress !== "object" ||
-          Array.isArray(ingress) ||
-          Object.keys(ingress).length !== 2 ||
-          !["event", "other", "ambiguous"].includes(ingress.domain) ||
-          (ingress.domain === "event" &&
-            ingress.eventQuery !== null &&
-            (typeof ingress.eventQuery !== "object" ||
-              Array.isArray(ingress.eventQuery))) ||
-          (ingress.domain !== "event" && ingress.eventQuery !== null)
-        )
-          return stop(session.sessionId, "protocol");
-        session.nativeClassification = ingress;
-        session.nativeClassificationCallId = event.call_id;
-        session.nativeStage = "awaiting_transcript";
-        return routeJoinedNativeTurn(session);
-      }
       const capabilityId = providerToCanonical.get(event.name);
       discardBufferedProviderOutput(session);
       const tool = session.tools.find(
@@ -1835,10 +1824,6 @@ export function createRealtimeRelay({
       );
     if (sanitized.trustedUsage && session.responseReservationId) {
       const reservationId = session.responseReservationId;
-      const missingRequiredIngress = [
-        "classification",
-        "awaiting_classification",
-      ].includes(session.nativeStage);
       const cost = usageCostMicroUsd(sanitized.trustedUsage, policy);
       if (cost === null) return hold(session, reservationId, "untrusted_usage");
       const usageShapeHash = await hash(
@@ -1861,7 +1846,6 @@ export function createRealtimeRelay({
           session.stopAfterSettlement = null;
           return stop(session.sessionId, reason);
         }
-        if (missingRequiredIngress) return stop(session.sessionId, "protocol");
         if (!runPendingResponseStage(session))
           resumeListeningWhenSettled(session);
       } catch {
@@ -1968,6 +1952,7 @@ export function createRealtimeRelay({
         return stop(sessionId, "protocol");
       session.responseStageCount = 0;
       session.nativeStage = "awaiting_audio";
+      session.inputCommitted = false;
       if (!(await reserveResponseStage(session))) return;
       try {
         session.transcriptionReservationId = await reserve(
@@ -1981,8 +1966,6 @@ export function createRealtimeRelay({
       session.inputAudioBytes = 0;
       session.providerInputItemId = null;
       session.finalInputTranscript = null;
-      session.nativeClassification = null;
-      session.nativeClassificationCallId = null;
       session.activeReservedTurnId = message.turnId;
       return sendBrowser(session, {
         type: "turn.ready",
@@ -1996,13 +1979,15 @@ export function createRealtimeRelay({
           ? 1
           : 0;
       const decodedBytes = Math.floor((message.audio.length * 3) / 4) - padding;
-      session.inputAudioBytes += decodedBytes;
-      const maxAudioBytes =
-        policy.worstCaseReservation.inputTranscription.maxAudioSeconds *
-        24_000 *
-        2;
-      if (session.inputAudioBytes > maxAudioBytes)
-        return stop(sessionId, "usage_limit");
+      if (session.providerSpeechActive) {
+        session.inputAudioBytes += decodedBytes;
+        const maxAudioBytes =
+          policy.worstCaseReservation.inputTranscription.maxAudioSeconds *
+          24_000 *
+          2;
+        if (session.inputAudioBytes > maxAudioBytes)
+          return stop(sessionId, "usage_limit");
+      }
       return sendProvider(session, {
         type: "input_audio_buffer.append",
         audio: message.audio,
@@ -2013,20 +1998,9 @@ export function createRealtimeRelay({
       tracePhase(session, "audio_committed");
       session.activeReservedTurnId = null;
       session.inputCommitted = true;
-      session.nativeStage = "classification";
+      session.nativeStage = "awaiting_transcript";
       startTranscriptionWatchdog(session);
-      const ingressTool = createVoiceIngressTool(
-        session.interfaceContext?.eventFacetCatalog,
-      );
-      return requestResponseStage(session, {
-        tools: [ingressTool],
-        toolChoice: VOICE_INGRESS_TOOL_CHOICE,
-        response: {
-          instructions: buildVoiceIngressResponseInstructions(),
-        },
-        beforeCreate: () =>
-          sendProvider(session, { type: "input_audio_buffer.commit" }),
-      });
+      return sendProvider(session, { type: "input_audio_buffer.commit" });
     }
     if (message.type === "text.submit") {
       if (
@@ -2206,12 +2180,10 @@ export function createRealtimeRelay({
       expectedSpeechRetryCount: 0,
       stopAfterSettlement: null,
       pendingResponseStage: null,
-      pendingIngressCallId: null,
       nativeStage: null,
       providerInputItemId: null,
+      providerSpeechActive: false,
       finalInputTranscript: null,
-      nativeClassification: null,
-      nativeClassificationCallId: null,
       transcriptItems: [],
       intent: null,
       exactLocation: null,

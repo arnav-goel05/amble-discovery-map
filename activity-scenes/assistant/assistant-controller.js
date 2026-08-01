@@ -1128,6 +1128,12 @@ export function createAssistantController({
     if (message.type === "session.state") {
       postPlaybackSpeechGuard.observeState(message.state);
       relayReady = message.state === "listening";
+      if (["processing", "speaking"].includes(message.state) && activeTurnId) {
+        activeTurnId = null;
+        turnReady = false;
+        commitPending = false;
+        queuedAudio = [];
+      }
       view.setVoiceState(message.state);
       if (relayReady) void publishCapabilityContext({ force: true });
       if (relayReady && bargeInPending) {
@@ -1138,6 +1144,8 @@ export function createAssistantController({
           preserveQueuedAudio: true,
           commitAfterReady,
         });
+      } else if (relayReady && !muted && !activeTurnId) {
+        startReservedAudioTurn();
       }
     }
     if (message.type === "turn.ready" && message.turnId === activeTurnId) {

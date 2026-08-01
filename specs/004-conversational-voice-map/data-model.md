@@ -1,5 +1,10 @@
 # Data Model: Conversational Voice Map Assistant
 
+> **2026-08-01 amendment:** Provider classification and transcript/classification join fields below
+> are legacy states and are no longer populated by native ingress. The active turn owns one final
+> transcript, deterministic routing result, and optional scoped connector stage. Event residual
+> text is empty unless the user used an explicit event keyword-search prefix.
+
 ## Persistence boundary
 
 Only budget policy, reservations, and settlements persist in D1. Conversation content, audio,

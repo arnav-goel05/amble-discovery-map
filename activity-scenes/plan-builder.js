@@ -62,10 +62,9 @@ export function addPlanBuilder({
   panel.setAttribute("aria-labelledby", "plan-builder-title");
   const header = element("header", "plan-builder__header");
   const headingGroup = element("div", "plan-builder__heading-group");
-  const kicker = element("div", "plan-builder__kicker", "Your itinerary");
   const heading = element("h2", "plan-builder__heading", "Make a plan");
   heading.id = "plan-builder-title";
-  headingGroup.append(kicker, heading);
+  headingGroup.append(heading);
   const close = iconButton("plan-builder__close", "Close plan", "x");
   close.dataset.capabilityId = "plan.close";
   header.append(headingGroup, close);

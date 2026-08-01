@@ -181,10 +181,9 @@ test("permission revoke and pagehide terminate capture without retained chunks",
   assert.equal(Object.hasOwn(pageController.snapshot(), "chunks"), false);
 });
 
-test("browser capture converts live microphone samples to 24 kHz PCM and signals a turn", () => {
+test("browser capture continuously forwards live microphone samples as 24 kHz PCM", () => {
   let processor;
   let closed = 0;
-  const events = [];
   const chunks = [];
   class FakeAudioContext {
     constructor() {
@@ -207,19 +206,15 @@ test("browser capture converts live microphone samples to 24 kHz PCM and signals
     stream: {},
     AudioContextImpl: FakeAudioContext,
     appendChunk: (chunk) => chunks.push(chunk),
-    speechStart: () => events.push("start"),
-    speechEnd: () => events.push("end"),
   });
 
   assert.equal(capture.start(), true);
   processor.onaudioprocess({
     inputBuffer: { getChannelData: () => new Float32Array(2_048).fill(0.25) },
   });
-  assert.deepEqual(events, ["start"]);
   assert.equal(chunks.length, 1);
   assert.equal(Buffer.from(chunks[0], "base64").byteLength, 2_048);
 
   capture.stop();
-  assert.deepEqual(events, ["start", "end"]);
   assert.equal(closed, 1);
 });

@@ -45,7 +45,8 @@ test("direct and voice entry produce the same atomic canonical state", () => {
   const voice = createController();
   const published = [];
   direct.subscribe((snapshot) => published.push(snapshot));
-  const sentence = "free concerts this weekend near Marina Bay with friends";
+  const sentence =
+    "search events for with friends free concerts this weekend near Marina Bay";
 
   const directResult = apply(direct, sentence);
   const voiceInterpretation = interpretEventQuery({
@@ -112,7 +113,7 @@ test("typed query behavior remains deterministic when no proposal is supplied", 
     "Can you please find exhibitions today at Marina Bay",
   );
   assert.equal(result.data.outcome, "applied");
-  assert.equal(result.data.residualQuery, "Can you please");
+  assert.equal(result.data.residualQuery, "");
 });
 
 test("an unresolved voice facet returns clarification with zero mutation", () => {
@@ -199,7 +200,10 @@ for (const scenario of automatedQueryScenarios) {
 
 test("refine replaces touched facets while preserving the other phrases and query", () => {
   const controller = createController();
-  apply(controller, "romantic exhibitions today near Marina Bay under $25");
+  apply(
+    controller,
+    "search events for romantic exhibitions today near Marina Bay under $25",
+  );
   const beforeRevision = controller.snapshot().contextRevision;
 
   const result = apply(controller, "concerts this weekend free", "refine");
@@ -246,7 +250,10 @@ test("voice refinement preserves provider-restated authoritative facets", () => 
 
 test("remove deletes only recognized phrases and preserves the rest", () => {
   const controller = createController();
-  apply(controller, "romantic concerts this weekend near Marina Bay free");
+  apply(
+    controller,
+    "search events for romantic concerts this weekend near Marina Bay free",
+  );
 
   const result = apply(controller, "free this weekend", "remove");
 

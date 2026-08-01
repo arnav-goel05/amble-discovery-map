@@ -13,6 +13,29 @@ test("the empty planner explains unavailable actions without duplicate warnings"
     });
   });
   await page.locator("#plan-builder-button").click();
+  await expect(page.getByText("Your itinerary", { exact: true })).toHaveCount(
+    0,
+  );
+  expect(
+    await page.evaluate(() => {
+      const borderWidths = (selector) => {
+        const style = getComputedStyle(document.querySelector(selector));
+        return {
+          bottom: style.borderBottomWidth,
+          top: style.borderTopWidth,
+        };
+      };
+      return {
+        actions: borderWidths(".plan-builder__actions"),
+        mode: borderWidths(".plan-builder__label"),
+        preview: borderWidths(".plan-builder__preview"),
+      };
+    }),
+  ).toEqual({
+    actions: { bottom: "0px", top: "0px" },
+    mode: { bottom: "0px", top: "0px" },
+    preview: { bottom: "0px", top: "0px" },
+  });
   await expect(page.locator(".plan-builder__stop--origin")).toContainText(
     "Select to try again",
   );

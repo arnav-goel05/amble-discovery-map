@@ -12,6 +12,20 @@ content diagnostics with a bounded persistent local audit mode
 
 ## Clarifications
 
+### Session 2026-08-01
+
+- Q: Should native voice use the Realtime model to classify requests or propose event facets? → A:
+  No. The relay-owned final transcript is routed by an application-owned deterministic allowlist;
+  the provider is used for transcription and for scoped/final responses only.
+- Q: What happens to words that are not recognized event facets? → A: They are ignored by default.
+  A residual event keyword query is created only after an explicit prefix such as “search events
+  for …”. This supersedes earlier requirements to preserve arbitrary unmatched wording or force a
+  provider classification response.
+- Q: How broad is deterministic recognition? → A: It covers every active first-release connector
+  family and protected local lifecycle controls with bounded phrase/regex templates. Target-bearing
+  commands retain connector target, eligibility, confirmation, and context validation. Inactive
+  saved/game extensions remain unrecognized.
+
 ### Session 2026-07-29
 
 - Q: Where may content-bearing debug data be captured? → A: Explicitly activated local developer sessions only; secrets and raw audio remain excluded.
@@ -728,6 +742,23 @@ the exact canonical capability ID.
   authoritative application outcome, truthful final response, terminal state, configuration
   acknowledgements, and absence of timeout, protocol stop, process crash, or unintended mutation.
   Failed cases MUST be retained as regression fixtures and the gate MUST repeat after correction.
+- **FR-100**: FR-059, FR-061, FR-084–FR-090, and FR-092–FR-095 are superseded only where they
+  require a provider classification response or provider-proposed event facets. A committed native
+  turn MUST instead route the relay-owned final transcript through the deterministic application
+  router before any scoped provider tool menu is created.
+- **FR-101**: Event query interpretation MUST extract only current-catalogue What, When, Where, and
+  Price phrases recognized by the closed deterministic grammar. Unrecognized wording MUST NOT
+  become a residual query unless the utterance starts with an explicit bounded event keyword-search
+  prefix.
+- **FR-102**: The router MUST recognize bounded vocabulary for every active connector family and
+  MUST resolve incidental words such as “plan” in “add this event to my plan”, “area” in a
+  restaurant viewport request, and “MRT” in a discovery preference without exposing unrelated
+  connector families.
+- **FR-103**: Safe target-free commands with closed arguments MAY execute deterministically.
+  Target-bearing or consequential commands MUST retain current eligibility, stable target
+  resolution, confirmation policy, shared execution, and refreshed context.
+- **FR-104**: Saved/game actions MUST remain absent from deterministic recognition until real data,
+  direct controls, and their connector are registered.
 
 ### Key Entities
 
@@ -935,6 +966,10 @@ the exact canonical capability ID.
 - **SC-062**: All sixteen owner-authorized live matrix cases pass in one completed report with the
   expected routing, tool calls, application outcomes, responses, and terminal lifecycle, with zero
   protocol stops, response timeouts, relay crashes, or unresolved defects.
+- **SC-063**: The deterministic action-vocabulary matrix reaches exactly one owning connector family
+  for every representative active action, “Can you find me free events to do over the weekend?”
+  produces only Free and This weekend with an empty residual query, all voice tests pass, and no
+  `voice__classifyrequest` call occurs.
 
 ## Assumptions
 

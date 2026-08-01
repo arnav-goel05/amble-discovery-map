@@ -1,5 +1,11 @@
 # Phase 0 Research: Conversational Voice Map Assistant
 
+> **Superseding decision — 2026-08-01:** Local audit evidence showed that provider classification
+> could force-fill unsupported facets and generic request wording could leak into residual search.
+> Native ingress therefore uses the relay-owned transcript plus a deterministic closed vocabulary.
+> Only current-catalogue event facets are extracted; unmatched words are ignored unless introduced
+> by an explicit keyword-search prefix. Earlier provider-classification decisions are historical.
+
 ## Realtime transport and authentication
 
 **Decision**: Use a same-origin browser WebSocket to a backend relay, which maintains the provider

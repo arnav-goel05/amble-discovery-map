@@ -41,9 +41,9 @@ test("classifies a complete request across all four dimensions", () => {
   assert.deepEqual(result.ambiguous, []);
 });
 
-test("preserves unmatched meaningful wording as a What query", () => {
+test("preserves only explicitly requested event keyword searches", () => {
   const result = classifyEventQuery(
-    "romantic exhibitions this weekend",
+    "search events for romantic exhibitions this weekend",
     catalog,
   );
   assert.deepEqual(
@@ -51,6 +51,46 @@ test("preserves unmatched meaningful wording as a What query", () => {
     ["what:exhibitions", "when:this-weekend"],
   );
   assert.equal(result.residualQuery, "romantic");
+});
+
+test("ignores non-allowlisted request wording instead of turning it into a query", () => {
+  const result = classifyEventQuery(
+    "Can you find me free events to do over the weekend?",
+    catalog,
+  );
+  assert.deepEqual(
+    result.matches.map(({ optionId }) => optionId),
+    ["price:free", "when:this-weekend"],
+  );
+  assert.equal(result.residualQuery, "");
+});
+
+test("ignores unsupported descriptive words unless keyword search is explicit", () => {
+  const result = classifyEventQuery(
+    "show me romantic exhibitions this weekend",
+    catalog,
+  );
+  assert.deepEqual(
+    result.matches.map(({ optionId }) => optionId),
+    ["what:exhibitions", "when:this-weekend"],
+  );
+  assert.equal(result.residualQuery, "");
+});
+
+test("generic event wording applies only the explicitly spoken weekend filter", () => {
+  const result = classifyEventQuery(
+    "Can you help me find events uh to do in the weekend?",
+    catalog,
+  );
+  assert.deepEqual(
+    result.matches.map(({ optionId }) => optionId),
+    ["when:this-weekend"],
+  );
+  assert.equal(result.residualQuery, "");
+  assert.equal(
+    result.matches.some(({ optionId }) => optionId === "what:performances"),
+    false,
+  );
 });
 
 test("prefers the longest normalized catalog label", () => {

@@ -387,8 +387,6 @@ export function cleanupRelaySession(session, reason = "protocol") {
     session.responseTimer = null;
     session.transcriptionTimer = null;
     session.finalInputTranscript = null;
-    session.nativeClassification = null;
-    session.nativeClassificationCallId = null;
     session.providerInputItemId = null;
   }
   return session;

@@ -1,11 +1,19 @@
 # Implementation Plan: Conversational Voice Map Assistant
 
-**Branch**: `develop` | **Date**: 2026-07-18 | **Amended**: 2026-07-31 |
+**Branch**: `develop` | **Date**: 2026-07-18 | **Amended**: 2026-08-01 |
 **Spec**: [spec.md](spec.md)
 
 **Input**: Feature specification from `specs/004-conversational-voice-map/spec.md`
 
 ## Summary
+
+**2026-08-01 superseding amendment**: Native ingress no longer creates or joins a provider
+classification response. The relay routes its final transcript with a deterministic allowlist.
+Event interpretation extracts current-catalogue facets and ignores unmatched wording unless the
+user explicitly requests an event keyword search. The bounded deterministic vocabulary covers all
+active connector families; safe target-free commands may execute directly, while target-bearing
+and consequential actions retain scoped connector tools and the existing gateway safeguards.
+Earlier classification/join passages below are retained as implementation history.
 
 Complete the voice-first, text-capable conversational layer by replacing its success-only action
 bridge with one shared, versioned capability registry containing both queries and commands.

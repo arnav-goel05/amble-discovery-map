@@ -904,7 +904,7 @@ test("empty snapshots keep the mobile toolbar compact and hide laptop-only map c
   await page.evaluate(() => window._map.remove());
 });
 
-test("only the secret-location filter remains and location types move into activity details", async ({
+test("only the secret-location filter remains without location metadata rows", async ({
   page,
 }) => {
   await page.goto("/#17/1.2858/103.8579/0/60");
@@ -933,7 +933,7 @@ test("only the secret-location filter remains and location types move into activ
   await expect(page.locator("#landmark-event-panel")).toBeVisible();
   await expect(
     page.locator(".landmark-event-panel__field--locationType"),
-  ).toContainText("Mystery Location");
+  ).toHaveCount(0);
   expect(await page.evaluate(() => window._map.getCenter().toArray())).toEqual(
     centerBefore,
   );
@@ -952,6 +952,6 @@ test("only the secret-location filter remains and location types move into activ
   await multiple.click();
   await expect(
     page.locator(".landmark-event-panel__field--locationType"),
-  ).toContainText("Multiple locations");
+  ).toHaveCount(0);
   await page.evaluate(() => window._map.remove());
 });

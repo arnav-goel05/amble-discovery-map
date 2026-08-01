@@ -11,9 +11,6 @@ let activePanelInstance = null;
 const FIELD_CONTRACT = [
   ["date", "Date"],
   ["time", "Time"],
-  ["locationType", "Location type"],
-  ["venue", "Venue"],
-  ["address", "Address"],
   ["category", "Category"],
   ["price", "Price"],
   ["organizer", "Organizer"],
@@ -396,17 +393,6 @@ export function createLandmarkEventPanel({ onClose } = {}) {
     }
     const fields = makeElement("dl", "landmark-event-panel__fields");
 
-    const referenceRow = makeElement(
-      "div",
-      "landmark-event-panel__field landmark-event-panel__field--reference",
-    );
-    referenceRow.appendChild(
-      makeElement("dt", "landmark-event-panel__label", "Sources & tickets"),
-    );
-    const referenceValue = makeElement(
-      "dd",
-      "landmark-event-panel__value landmark-event-panel__references",
-    );
     const applicableReferences = (
       activity.sourceOffers ?? activity.references
     ).filter(
@@ -415,6 +401,17 @@ export function createLandmarkEventPanel({ onClose } = {}) {
         reference.occurrenceIds?.includes(occurrence.occurrenceId),
     );
     if (applicableReferences.length) {
+      const referenceRow = makeElement(
+        "div",
+        "landmark-event-panel__field landmark-event-panel__field--reference",
+      );
+      referenceRow.appendChild(
+        makeElement("dt", "landmark-event-panel__label", "Sources & tickets"),
+      );
+      const referenceValue = makeElement(
+        "dd",
+        "landmark-event-panel__value landmark-event-panel__references",
+      );
       applicableReferences.forEach((reference, index) => {
         if (index) referenceValue.appendChild(document.createTextNode(" · "));
         if (reference.url) {
@@ -445,16 +442,14 @@ export function createLandmarkEventPanel({ onClose } = {}) {
           referenceValue.appendChild(document.createTextNode(reference.label));
         }
       });
-    } else {
-      referenceValue.textContent = "Not available";
-      referenceValue.classList.add("is-unavailable");
+      referenceRow.appendChild(referenceValue);
+      fields.appendChild(referenceRow);
     }
-    referenceRow.appendChild(referenceValue);
-    fields.appendChild(referenceRow);
     fields.append(...scheduleRows);
 
     for (const [key, label] of FIELD_CONTRACT) {
       if (scheduleRows.length && (key === "date" || key === "time")) continue;
+      if (!event[key]) continue;
       const row = makeElement(
         "div",
         `landmark-event-panel__field landmark-event-panel__field--${key}`,
@@ -463,33 +458,33 @@ export function createLandmarkEventPanel({ onClose } = {}) {
       const value = makeElement(
         "dd",
         "landmark-event-panel__value",
-        event[key] || "Not available",
+        event[key],
       );
-      if (!event[key]) value.classList.add("is-unavailable");
       row.appendChild(value);
       fields.appendChild(row);
     }
     details.appendChild(fields);
 
-    const description = makeElement(
-      "section",
-      "landmark-event-panel__description",
-    );
-    const descriptionCopy = makeElement(
-      "p",
-      "landmark-event-panel__description-copy",
-      event.description || "Not available",
-    );
-    if (!event.description) descriptionCopy.classList.add("is-unavailable");
-    description.append(
-      makeElement(
-        "h4",
-        "landmark-event-panel__section-title",
-        "About this event",
-      ),
-      descriptionCopy,
-    );
-    details.appendChild(description);
+    if (event.description) {
+      const description = makeElement(
+        "section",
+        "landmark-event-panel__description",
+      );
+      const descriptionCopy = makeElement(
+        "p",
+        "landmark-event-panel__description-copy",
+        event.description,
+      );
+      description.append(
+        makeElement(
+          "h4",
+          "landmark-event-panel__section-title",
+          "About this event",
+        ),
+        descriptionCopy,
+      );
+      details.appendChild(description);
+    }
 
     eventPosition.textContent = `${selectedIndex + 1} of ${events.length} activities`;
     eventList.hidden = events.length < 2;

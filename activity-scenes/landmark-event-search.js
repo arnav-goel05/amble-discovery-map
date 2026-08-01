@@ -400,14 +400,14 @@ export function createLandmarkEventSearch({
     for (const subscriber of subscribers) subscriber(current);
   };
 
-  const openPopover = () => {
+  const openPopover = ({ publishChange = true } = {}) => {
     const wasOpen = wantsOpen;
     wantsOpen = true;
     root.classList.add("is-open");
     popover.hidden = false;
     input.setAttribute("aria-expanded", "true");
     if (!wasOpen) announceOverlayOpen("event-search");
-    if (!wasOpen) publish();
+    if (!wasOpen && publishChange) publish();
   };
   const closePopover = () => {
     const wasOpen = wantsOpen;
@@ -1006,6 +1006,7 @@ export function createLandmarkEventSearch({
       activeDimension = nextUnfilledDimension(state.phrases.at(-1)?.facet);
       renderTokens();
       renderOptionGroups();
+      openPopover({ publishChange: false });
       update();
       publish();
       return result;

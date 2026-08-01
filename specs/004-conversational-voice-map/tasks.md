@@ -772,3 +772,28 @@ classification response, native Realtime speech, deterministic routing, and exis
       gates, affected browser journeys, formatting, build, and Spec Kit convergence; run only the
       minimum owner-authorized live transcript/classification smoke needed to verify the provider
       session field and record bounded spend evidence in `specs/004-conversational-voice-map/quickstart.md`
+
+---
+
+## Phase 27: Convergence — Deterministic Voice Vocabulary
+
+**Purpose**: Close the gaps introduced by replacing provider classification and permissive event
+residual cleanup with the owner-approved deterministic allowlist in FR-100–FR-104 and SC-063.
+
+- [x] T213 [P] [US6] Add strict event-facet and explicit keyword-search regressions, including the
+      exact filler utterance, to `tests/event-query-classifier.test.mjs`,
+      `tests/assistant-domain-interpreter.test.mjs`, and
+      `tests/assistant-event-query-integration.test.mjs` per FR-101 and SC-063
+- [x] T214 [P] [US3] Add representative active-action vocabulary and incidental-word ownership
+      coverage in `tests/assistant-obvious-command-interpreter.test.mjs` and
+      `tests/assistant-capability-turn-scope.test.mjs` per FR-102–FR-104 and SC-063
+- [x] T215 [US6] Implement explicit-only residual keyword extraction plus closed deterministic
+      target-free commands and single-family routing in
+      `activity-scenes/events/event-query-classifier.js`,
+      `activity-scenes/assistant/interpreters/obvious-command-interpreter.js`, and
+      `activity-scenes/assistant/capability-turn-scope.js` per FR-100–FR-104
+- [x] T216 [US8] Synchronize the specification, plan, research, data model, native/relay contracts,
+      and current quickstart gate with the deterministic native-routing amendment per FR-100–FR-104
+- [x] T217 [US8] Run focused tests, the complete voice suite, scoped formatting and lint, production
+      build, and a second Spec Kit convergence pass; record zero unresolved deterministic-routing
+      errors per SC-063

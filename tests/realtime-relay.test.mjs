@@ -471,7 +471,7 @@ test("voice operational traces expose only allowlisted phase timing", async () =
   assert.equal(cleared.includes(scheduled[0]), true);
 });
 
-test("audio turns create a native response immediately after commit", async () => {
+test("audio turns wait for the final transcript before routing", async () => {
   const records = [];
   const harness = await createRelayHarness({
     operationalLogger: (record) => records.push(structuredClone(record)),
@@ -489,17 +489,17 @@ test("audio turns create a native response immediately after commit", async () =
   await flushRelay();
 
   assert.deepEqual(
-    harness.providerMessages.slice(-3).map(({ type }) => type),
-    ["session.update", "input_audio_buffer.commit", "response.create"],
+    harness.providerMessages.slice(-2).map(({ type }) => type),
+    ["session.update", "input_audio_buffer.commit"],
   );
   assert.deepEqual(
     records.map(({ phase }) => phase),
-    ["audio_committed", "response_requested"],
+    ["audio_committed"],
   );
   harness.relay.stop(sessionId, "user");
 });
 
-test("native audio starts with exactly one forced utterance ingress tool", async () => {
+test("native audio exposes no LLM classifier before transcription", async () => {
   const harness = await createRelayHarness();
   const sessionId = harness.admitted.data.sessionId;
   await harness.relay.handleBrowserMessage(
@@ -542,16 +542,13 @@ test("native audio starts with exactly one forced utterance ingress tool", async
   ).session;
   assert.deepEqual(
     configuration.tools.map(({ name }) => name),
-    ["voice__classifyrequest"],
+    [],
   );
-  assert.deepEqual(configuration.tool_choice, {
-    type: "function",
-    name: "voice__classifyrequest",
-  });
+  assert.equal(configuration.tool_choice, "none");
   harness.relay.stop(sessionId, "user");
 });
 
-test("forced ingress routes a complete event request directly to event.applyquery", async () => {
+test("deterministic transcript routing sends a complete event request to event.applyquery", async () => {
   const harness = await createRelayHarness();
   const sessionId = harness.admitted.data.sessionId;
   await harness.relay.handleBrowserMessage(
@@ -591,63 +588,29 @@ test("forced ingress routes a complete event request directly to event.applyquer
     sessionId,
     JSON.stringify({ type: "audio.commit", turnId: "turn-event-ingress" }),
   );
-  await flushRelay();
-  harness.providerListeners.message({
-    data: JSON.stringify({
-      type: "response.function_call_arguments.done",
-      name: "voice__classifyrequest",
-      call_id: "call-ingress-event",
-      arguments: JSON.stringify({
-        domain: "event",
-        eventQuery: {
-          what: [],
-          when: { label: "Today", evidence: "today" },
-          where: {
-            label: "Marina Bay Sands",
-            evidence: "Marina Bay Sands",
-          },
-          price: null,
-          residualQuery: "",
-          unresolved: [],
-        },
-      }),
-    }),
-  });
   await emitFinalInputTranscript(
     harness,
     "find events today at Marina Bay Sands",
   );
   await flushRelay();
 
-  assert.deepEqual(
-    harness.browserMessages.findLast(
-      ({ type }) => type === "capability.proposed",
-    ),
-    {
-      type: "capability.proposed",
-      callId: "call-ingress-event",
-      capabilityId: "event.applyquery",
-      kind: "command",
-      arguments: {
-        text: "find events today at Marina Bay Sands",
-        mode: "replace",
-        baseContextRevision: 9,
-        catalogRevision: "events:v9",
-        facetProposal: {
-          what: [],
-          when: { label: "Today", evidence: "today" },
-          where: {
-            label: "Marina Bay Sands",
-            evidence: "Marina Bay Sands",
-          },
-          price: null,
-          residualQuery: "",
-          unresolved: [],
-        },
-      },
-      contextRevision: 9,
-    },
+  const proposal = harness.browserMessages.findLast(
+    ({ type }) => type === "capability.proposed",
   );
+  assert.match(proposal.callId, /^relay-fixture-/);
+  assert.deepEqual(proposal, {
+    type: "capability.proposed",
+    callId: proposal.callId,
+    capabilityId: "event.applyquery",
+    kind: "command",
+    arguments: {
+      text: "find events today at Marina Bay Sands",
+      mode: "replace",
+      baseContextRevision: 9,
+      catalogRevision: "events:v9",
+    },
+    contextRevision: 9,
+  });
   assert.equal(
     harness.browserMessages.some(
       (message) =>
@@ -691,7 +654,7 @@ test("forced ingress routes a complete event request directly to event.applyquer
     sessionId,
     JSON.stringify({
       type: "capability.result",
-      callId: "call-ingress-event",
+      callId: proposal.callId,
       capabilityId: "event.applyquery",
       kind: "command",
       result: finalResult,
@@ -709,7 +672,7 @@ test("forced ingress routes a complete event request directly to event.applyquer
   harness.relay.stop(sessionId, "user");
 });
 
-test("forced ingress routes a single-filter event request atomically", async () => {
+test("deterministic transcript routing handles a single event filter atomically", async () => {
   const harness = await createRelayHarness();
   const sessionId = harness.admitted.data.sessionId;
   await harness.relay.handleBrowserMessage(
@@ -740,34 +703,25 @@ test("forced ingress routes a single-filter event request atomically", async () 
   );
   await flushRelay();
   await emitFinalInputTranscript(harness, "find exhibitions");
-  harness.providerListeners.message({
-    data: JSON.stringify({
-      type: "response.function_call_arguments.done",
-      name: "voice__classifyrequest",
-      call_id: "call-ingress-event-single",
-      arguments: JSON.stringify({ domain: "event", eventQuery: null }),
-    }),
-  });
   await flushRelay();
 
-  assert.deepEqual(
-    harness.browserMessages.findLast(
-      ({ type }) => type === "capability.proposed",
-    ),
-    {
-      type: "capability.proposed",
-      callId: "call-ingress-event-single",
-      capabilityId: "event.applyquery",
-      kind: "command",
-      arguments: {
-        text: "find exhibitions",
-        mode: "replace",
-        baseContextRevision: 2,
-        catalogRevision: "events:v2",
-      },
-      contextRevision: 2,
-    },
+  const proposal = harness.browserMessages.findLast(
+    ({ type }) => type === "capability.proposed",
   );
+  assert.match(proposal.callId, /^relay-fixture-/);
+  assert.deepEqual(proposal, {
+    type: "capability.proposed",
+    callId: proposal.callId,
+    capabilityId: "event.applyquery",
+    kind: "command",
+    arguments: {
+      text: "find exhibitions",
+      mode: "replace",
+      baseContextRevision: 2,
+      catalogRevision: "events:v2",
+    },
+    contextRevision: 2,
+  });
   harness.relay.stop(sessionId, "user");
 });
 
@@ -803,15 +757,6 @@ test("ambiguous native requests ask for clarification without exposing actions",
     sessionId,
     JSON.stringify({ type: "audio.commit", turnId: "turn-ambiguous" }),
   );
-  await flushRelay();
-  harness.providerListeners.message({
-    data: JSON.stringify({
-      type: "response.function_call_arguments.done",
-      name: "voice__classifyrequest",
-      call_id: "call-ingress-ambiguous",
-      arguments: JSON.stringify({ domain: "ambiguous", eventQuery: null }),
-    }),
-  });
   await emitFinalInputTranscript(harness, "find events and restaurants");
   harness.providerListeners.message({
     data: JSON.stringify(trustedResponseDone()),
@@ -831,7 +776,7 @@ test("ambiguous native requests ask for clarification without exposing actions",
   harness.relay.stop(sessionId, "user");
 });
 
-test("unsupported native requests expose no actions and stale ingress fails closed", async () => {
+test("unsupported native transcripts expose no actions", async () => {
   const harness = await createRelayHarness();
   const sessionId = harness.admitted.data.sessionId;
   await harness.relay.handleBrowserMessage(
@@ -853,18 +798,6 @@ test("unsupported native requests expose no actions and stale ingress fails clos
     sessionId,
     JSON.stringify({ type: "audio.commit", turnId: "turn-unsupported" }),
   );
-  await flushRelay();
-  harness.providerListeners.message({
-    data: JSON.stringify({
-      type: "response.function_call_arguments.done",
-      name: "voice__classifyrequest",
-      call_id: "call-ingress-unsupported",
-      arguments: JSON.stringify({
-        domain: "other",
-        eventQuery: null,
-      }),
-    }),
-  });
   await emitFinalInputTranscript(
     harness,
     "Tell me who won the football match yesterday",
@@ -888,23 +821,7 @@ test("unsupported native requests expose no actions and stale ingress fails clos
   });
   await flushRelay();
   assert.equal(harness.relay.sessions.has(sessionId), true);
-
-  harness.providerListeners.message({
-    data: JSON.stringify({
-      type: "response.function_call_arguments.done",
-      name: "voice__classifyrequest",
-      call_id: "call-ingress-stale",
-      arguments: JSON.stringify({ domain: "other", eventQuery: null }),
-    }),
-  });
-  await flushRelay();
-  assert.equal(harness.relay.sessions.has(sessionId), false);
-  assert.equal(
-    harness.browserMessages.some(
-      ({ type, reason }) => type === "session.stopped" && reason === "protocol",
-    ),
-    true,
-  );
+  harness.relay.stop(sessionId, "user");
 });
 
 test("non-deterministic native requests expose one connector family and no foundational tools", async () => {
@@ -950,15 +867,6 @@ test("non-deterministic native requests expose one connector family and no found
     sessionId,
     JSON.stringify({ type: "audio.commit", turnId: "turn-restaurant" }),
   );
-  await flushRelay();
-  harness.providerListeners.message({
-    data: JSON.stringify({
-      type: "response.function_call_arguments.done",
-      name: "voice__classifyrequest",
-      call_id: "call-ingress-restaurant",
-      arguments: JSON.stringify({ domain: "other", eventQuery: null }),
-    }),
-  });
   await emitFinalInputTranscript(
     harness,
     "find a nice Italian restaurant nearby",
@@ -1035,45 +943,7 @@ test("duplicate ingress fails closed before an application proposal", async () =
   );
 });
 
-test("missing ingress fails closed after settling trusted stage usage", async () => {
-  const settlements = [];
-  const harness = await createRelayHarness({
-    budgetRepository: {
-      async settle(value) {
-        settlements.push(value);
-      },
-    },
-  });
-  const sessionId = harness.admitted.data.sessionId;
-  await harness.relay.handleBrowserMessage(
-    sessionId,
-    JSON.stringify({ type: "turn.request", turnId: "turn-missing-ingress" }),
-  );
-  await harness.relay.handleBrowserMessage(
-    sessionId,
-    JSON.stringify({ type: "audio.commit", turnId: "turn-missing-ingress" }),
-  );
-  await flushRelay();
-  harness.providerListeners.message({
-    data: JSON.stringify(trustedResponseDone()),
-  });
-  await flushRelay();
-
-  assert.equal(settlements.length, 1);
-  assert.equal(harness.relay.sessions.has(sessionId), false);
-  assert.equal(
-    harness.browserMessages.some(
-      ({ type, reason }) => type === "session.stopped" && reason === "protocol",
-    ),
-    true,
-  );
-  assert.equal(
-    harness.browserMessages.some(({ type }) => type === "capability.proposed"),
-    false,
-  );
-});
-
-test("native audio with event context withholds every application event primitive during ingress", async () => {
+test("native audio with event context exposes no tools before transcription", async () => {
   const harness = await createRelayHarness();
   const sessionId = harness.admitted.data.sessionId;
   const eventQueryCapabilities = [
@@ -1118,7 +988,7 @@ test("native audio with event context withholds every application event primitiv
   const canonicalToolIds = configuration.tools.map(({ name }) =>
     name.replace("__", "."),
   );
-  assert.deepEqual(canonicalToolIds, ["voice.classifyrequest"]);
+  assert.deepEqual(canonicalToolIds, []);
   assert.equal(
     canonicalToolIds.some((capabilityId) =>
       eventQueryCapabilities.includes(capabilityId),
@@ -1128,7 +998,7 @@ test("native audio with event context withholds every application event primitiv
   harness.relay.stop(sessionId, "user");
 });
 
-test("native ingress tool classifies without owning the transcript", async () => {
+test("native audio never configures an LLM ingress classifier", async () => {
   const harness = await createRelayHarness();
   const sessionId = harness.admitted.data.sessionId;
 
@@ -1160,22 +1030,11 @@ test("native ingress tool classifies without owning the transcript", async () =>
   );
   await flushRelay();
 
-  const ingressTool = harness.providerMessages
-    .findLast(({ type }) => type === "session.update")
-    .session.tools.find(({ name }) => name === "voice__classifyrequest");
-  assert.match(ingressTool.description, /without returning.*transcript/i);
-  assert.equal("utterance" in ingressTool.parameters.properties, false);
-  assert.deepEqual(ingressTool.parameters.required, ["domain", "eventQuery"]);
-  const eventQuerySchema =
-    ingressTool.parameters.properties.eventQuery.anyOf[0];
-  assert.deepEqual(
-    eventQuerySchema.properties.what.items.properties.label.enum,
-    ["Exhibitions", "Concerts"],
-  );
-  assert.deepEqual(
-    eventQuerySchema.properties.where.anyOf[0].properties.label.enum,
-    ["Marina Bay"],
-  );
+  const configuration = harness.providerMessages.findLast(
+    ({ type }) => type === "session.update",
+  ).session;
+  assert.deepEqual(configuration.tools, []);
+  assert.equal(configuration.tool_choice, "none");
   harness.relay.stop(sessionId, "user");
 });
 
@@ -1210,10 +1069,10 @@ test("missing transcription completion terminates at the bounded deadline", asyn
 
   assert.equal(
     harness.providerMessages.some(({ type }) => type === "response.create"),
-    true,
+    false,
   );
   assert.equal(harness.relay.sessions.has(sessionId), true);
-  assert.equal(scheduled.filter(({ delay }) => delay === 30_000).length, 2);
+  assert.equal(scheduled.filter(({ delay }) => delay === 30_000).length, 1);
   scheduled[0].callback();
   await flushRelay();
   assert.equal(harness.relay.sessions.has(sessionId), false);
@@ -1225,7 +1084,7 @@ test("missing transcription completion terminates at the bounded deadline", asyn
   );
   assert.deepEqual(
     records.map(({ phase }) => phase),
-    ["audio_committed", "response_requested"],
+    ["audio_committed"],
   );
 });
 
@@ -1278,7 +1137,7 @@ test("active transcription failures terminate without routing a request", async 
   );
   assert.deepEqual(
     records.map(({ phase }) => phase),
-    ["audio_committed", "response_requested", "session_terminal"],
+    ["audio_committed", "session_terminal"],
   );
 });
 
@@ -1371,6 +1230,13 @@ test("audio exceeding the reserved transcription duration stops before forwardin
     sessionId,
     JSON.stringify({ type: "turn.request", turnId: "turn-audio-bound" }),
   );
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "input_audio_buffer.speech_started",
+      item_id: "input-item-audio-bound",
+    }),
+  });
+  await flushRelay();
   const session = harness.relay.sessions.get(sessionId);
   session.inputAudioBytes = 60 * 24_000 * 2;
   const forwardsBefore = harness.providerMessages.filter(
@@ -2264,6 +2130,47 @@ test("browser terminal reason is preserved by the relay", async () => {
   }
 });
 
+test("pagehide voids a newly reserved uncommitted audio turn after a completed turn", async () => {
+  const settlements = [];
+  const holds = [];
+  const harness = await createRelayHarness({
+    budgetRepository: {
+      async reserve() {},
+      async settle(entry) {
+        settlements.push(structuredClone(entry));
+      },
+      async hold(entry) {
+        holds.push(structuredClone(entry));
+      },
+    },
+  });
+  const sessionId = harness.admitted.data.sessionId;
+  const session = harness.relay.sessions.get(sessionId);
+
+  // Reproduce the state left by a previous committed turn whose reservations
+  // have already settled, then begin listening for the next turn.
+  session.inputCommitted = true;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "turn.request", turnId: "turn-after-completion" }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "session.stop", reason: "pagehide" }),
+  );
+  await flushRelay();
+
+  assert.deepEqual(holds, []);
+  assert.equal(settlements.length, 2);
+  assert.equal(
+    settlements.every(
+      ({ settledMicroUsd, usageShapeHash }) =>
+        settledMicroUsd === 0 && usageShapeHash === "sha256:no-billable-event",
+    ),
+    true,
+  );
+});
+
 test("consequential provider calls use browser-owned confirmation and always complete", async () => {
   const harness = await createRelayHarness();
   const sessionId = harness.admitted.data.sessionId;
@@ -3083,8 +2990,6 @@ test("every terminal reason performs complete idempotent cleanup", () => {
       transcriptionReservationId: "transcription-reservation-001",
       transcriptionTimer: setTimeout(() => {}, 60_000),
       finalInputTranscript: "memory-only transcript",
-      nativeClassification: { domain: "event", eventQuery: null },
-      nativeClassificationCallId: "call-memory-only",
       providerInputItemId: "input-item-memory-only",
       transcriptItems: [{ itemId: "transcript-001", text: "memory-only" }],
       intent: { freeTextSummary: "memory-only" },
@@ -3105,8 +3010,6 @@ test("every terminal reason performs complete idempotent cleanup", () => {
     assert.equal(first.transcriptionReservationId, null);
     assert.equal(first.transcriptionTimer, null);
     assert.equal(first.finalInputTranscript, null);
-    assert.equal(first.nativeClassification, null);
-    assert.equal(first.nativeClassificationCallId, null);
     assert.equal(first.providerInputItemId, null);
     assert.deepEqual(calls, ["abort", "provider-close", "browser-close"]);
     assert.equal(second, first);
@@ -3195,7 +3098,11 @@ test("server relay owns provider configuration and reserves before billable even
   assert.deepEqual(providerMessages[0].session.audio.input.transcription, {
     model: "gpt-realtime-whisper",
   });
-  assert.equal(providerMessages[0].session.audio.input.turn_detection, null);
+  assert.deepEqual(providerMessages[0].session.audio.input.turn_detection, {
+    type: "server_vad",
+    create_response: false,
+    interrupt_response: false,
+  });
   assert.deepEqual(
     providerMessages[0].session.tools.map(({ name }) => name),
     [],
@@ -3232,29 +3139,37 @@ test("server relay owns provider configuration and reserves before billable even
     admitted.data.sessionId,
     JSON.stringify({ type: "turn.request", turnId: "turn-001" }),
   );
-  await relay.handleBrowserMessage(
-    admitted.data.sessionId,
-    JSON.stringify({ type: "audio.commit", turnId: "turn-001" }),
-  );
-  await acknowledgeLatestConfiguration();
+  for (const event of [
+    { type: "input_audio_buffer.speech_started", item_id: "input-item-001" },
+    { type: "input_audio_buffer.speech_stopped", item_id: "input-item-001" },
+    { type: "input_audio_buffer.committed", item_id: "input-item-001" },
+  ])
+    providerListeners.message({ data: JSON.stringify(event) });
+  await flushRelay();
 
   assert.deepEqual(
     reservations.map(({ kind }) => kind),
     ["response", "input_transcription"],
   );
-  assert.deepEqual(
-    providerMessages.slice(-3).map(({ type }) => type),
-    ["session.update", "input_audio_buffer.commit", "response.create"],
+  assert.equal(
+    providerMessages.some(({ type }) => type === "response.create"),
+    false,
   );
-  assert.deepEqual(
-    providerMessages.at(-3).session.tools.map(({ name }) => name),
-    ["voice__classifyrequest"],
+  assert.equal(
+    providerMessages.some(
+      ({ type, session }) =>
+        type === "session.update" &&
+        session.tools.some(({ name }) => name === "voice__classifyrequest"),
+    ),
+    false,
   );
-  assert.deepEqual(providerMessages.at(-3).session.tool_choice, {
-    type: "function",
-    name: "voice__classifyrequest",
-  });
-  assert.equal(browserMessages.at(-1).type, "turn.ready");
+  assert.equal(
+    browserMessages.some(
+      (message) =>
+        message.type === "turn.ready" && message.turnId === "turn-001",
+    ),
+    true,
+  );
   assert.doesNotMatch(
     JSON.stringify(browserMessages),
     /api.?key|server-only-fixture|rateCard/i,
@@ -3265,29 +3180,9 @@ test("server relay owns provider configuration and reserves before billable even
   ).events.find((event) => event.type === "response.done");
   providerListeners.message({
     data: JSON.stringify({
-      type: "response.function_call_arguments.done",
-      name: "voice__classifyrequest",
-      call_id: "call-ingress-no-action",
-      arguments: JSON.stringify({ domain: "other", eventQuery: null }),
-    }),
-  });
-  providerListeners.message({
-    data: JSON.stringify({
-      type: "input_audio_buffer.committed",
-      item_id: "input-item-001",
-    }),
-  });
-  providerListeners.message({
-    data: JSON.stringify({
       type: "conversation.item.input_audio_transcription.completed",
       item_id: "input-item-001",
       transcript: "hello",
-    }),
-  });
-  providerListeners.message({
-    data: JSON.stringify({
-      type: "response.done",
-      response: { usage: providerCompletion.usage },
     }),
   });
   await new Promise((resolve) => setImmediate(resolve));
@@ -3307,7 +3202,7 @@ test("server relay owns provider configuration and reserves before billable even
     ),
     true,
   );
-  assert.equal(settlements.length, 3);
+  assert.equal(settlements.length, 2);
   assert.equal(
     browserMessages.filter(
       (message) =>
@@ -3330,7 +3225,7 @@ test("server relay owns provider configuration and reserves before billable even
   });
   await new Promise((resolve) => setImmediate(resolve));
   assert.equal(relay.sessions.has(admitted.data.sessionId), true);
-  assert.equal(settlements.length, 3);
+  assert.equal(settlements.length, 2);
   assert.equal(
     providerMessages.filter(({ type }) => type === "response.create").length,
     responseCreates,
@@ -3347,7 +3242,7 @@ test("server relay owns provider configuration and reserves before billable even
     admitted.data.sessionId,
     JSON.stringify({ type: "session.stop", reason: "user" }),
   );
-  assert.equal(settlements.length, 3);
+  assert.equal(settlements.length, 2);
   assert.deepEqual(
     settlements.map(({ reservationId }) => reservationId).sort(),
     reservations.map(({ reservationId }) => reservationId).sort(),

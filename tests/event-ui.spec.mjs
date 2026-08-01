@@ -101,9 +101,7 @@ test("empty approved snapshot renders no highlights, pills, or panels", async ({
 test("clicking the map dismisses whichever side panel is open", async ({
   page,
 }) => {
-  await page.goto(
-    "/?emptyApprovedSnapshot#17/1.285844/103.857897/-30/60",
-  );
+  await page.goto("/?emptyApprovedSnapshot#17/1.285844/103.857897/-30/60");
   await expect
     .poll(() => page.locator("body").getAttribute("data-plan-builder"))
     .toBe("mounted");
@@ -1958,9 +1956,6 @@ test("panel sorts canonically, isolates gestures, and rejects invalid details", 
     const position = document.querySelector(
       ".landmark-event-panel__event-position",
     )?.textContent;
-    const venue = document.querySelector(
-      ".landmark-event-panel__field--venue dd",
-    )?.textContent;
     let bubbledWheels = 0;
     document.addEventListener(
       "wheel",
@@ -1992,7 +1987,6 @@ test("panel sorts canonically, isolates gestures, and rejects invalid details", 
       position,
       selected,
       unavailableLink: unavailableLink?.hidden === false,
-      venue,
     };
   });
   expect(result).toEqual({
@@ -2010,7 +2004,6 @@ test("panel sorts canonically, isolates gestures, and rejects invalid details", 
     position: "2 of 2 activities",
     selected: "Late",
     unavailableLink: false,
-    venue: "Verified Landmark",
   });
 });
 
@@ -2052,7 +2045,7 @@ test("event panel renders the complete display contract and only exposes validat
     );
     const descriptionWithLink = document.querySelector(
       ".landmark-event-panel__description-copy",
-    ).textContent;
+    )?.textContent;
     const link = document.querySelector(".landmark-event-panel__link");
     const officialLink = { hidden: link.hidden, href: link.href };
     const directions = document.querySelector(
@@ -2125,7 +2118,7 @@ test("event panel renders the complete display contract and only exposes validat
     ],
     backClosedPanel: true,
     backRestoredFocus: true,
-    descriptionWithLink: "Not available",
+    descriptionWithLink: undefined,
     directionsHiddenWithoutCoordinates: true,
     directionsLink: {
       hidden: false,
@@ -2138,13 +2131,6 @@ test("event panel renders the complete display contract and only exposes validat
     fieldsWithLink: {
       "Sources & tickets": "Catch.sg",
       Date: "14 Jul 2026",
-      Time: "Not available",
-      "Location type": "Single location",
-      Venue: "Not available",
-      Address: "Not available",
-      Category: "Not available",
-      Price: "Not available",
-      Organizer: "Not available",
     },
     header: {
       backLabel: "Back to events",
@@ -2360,8 +2346,8 @@ test("event panel exposes canonical source offers and complete sessions from map
     "Sources & tickets": "Fever Singapore",
     Category: "Tours & Experiences",
     Price: "SGD 22",
-    Organizer: "Not available",
   });
+  expect(result.mapInitial.fields).not.toHaveProperty("Organizer");
   expect(result.mapEvening.state.selectedOccurrenceId).toBe("session:evening");
   expect(result.mapEvening.selectedDates).toEqual([
     { label: "2026-07-26", selected: "false" },
@@ -2549,8 +2535,6 @@ test("single-session schedule is omitted while same-date multiple timings remain
     fields: expect.objectContaining({
       Date: "2026-07-31",
       Time: "12:00 AM",
-      Venue: "SCULPTURE SQUARE",
-      Address: "155 Middle Road",
     }),
     selectionAccepted: false,
   });
@@ -2565,7 +2549,8 @@ test("single-session schedule is omitted while same-date multiple timings remain
   );
   expect(result.multipleAfter.fields.Date).toBe("2026-07-31");
   expect(result.multipleAfter.fields.Time).toBe("10:00 AM2:00 PM");
-  expect(result.multipleAfter.fields.Venue).toBe("SCULPTURE SQUARE");
+  expect(result.multipleAfter.fields).not.toHaveProperty("Venue");
+  expect(result.multipleAfter.fields).not.toHaveProperty("Address");
   expect(result.flexible).toEqual({
     dateChoices: 0,
     timeChoices: 0,

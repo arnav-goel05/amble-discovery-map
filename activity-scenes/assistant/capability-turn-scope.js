@@ -1,25 +1,85 @@
 import { interpretObviousCommand } from "./interpreters/obvious-command-interpreter.js";
 
 const FAMILY_PATTERNS = Object.freeze([
-  ["event", /\b(?:event|events|concert|concerts|exhibition|exhibitions)\b/i],
+  [
+    "event",
+    /\b(?:event|events|concert|concerts|exhibition|exhibitions|performance|performances|workshop|workshops|class|classes|occurrence|occurrences|sessions?)\b/i,
+  ],
   [
     "restaurant",
-    /\b(?:restaurant|restaurants|food|eat|meal|meals|dining|deal|deals)\b/i,
+    /\b(?:restaurant|restaurants|food|eat|meal|meals|dining|cuisine|deal|deals)\b/i,
   ],
   ["plan", /\b(?:plan|plans|itinerary|itineraries|route|routes|stop|stops)\b/i],
   [
     "transit",
     /\b(?:mrt|train|public transport|transit|rail|station|stations)\b/i,
   ],
-  ["map", /\b(?:map|zoom|pan|rotate|layer|layers)\b/i],
+  ["map", /\b(?:map|zoom|pan|rotate|bearing|layer|layers|areas?)\b/i],
   ["location", /\b(?:my location|where am i|locate me|current location)\b/i],
   ["tour", /\b(?:tour|tutorial|walkthrough|help me use)\b/i],
-  ["discovery", /\b(?:discover|recommend|explore|suggest|somewhere)\b/i],
+  [
+    "discovery",
+    /\b(?:discover|recommend|explore|suggest|somewhere|where should i go|show me an area|quiet|lively|cultural|historic|waterfront|walkable)\b|\b(?:open|select|compare|dismiss)\b.*\bareas?\b/i,
+  ],
   [
     "navigation",
-    /\b(?:open|close|dismiss|exit|back|attribution|reference|official page|external link|assistant)\b/i,
+    /\b(?:attribution|reference|official page|external link|assistant|enter experience|close overlay)\b/i,
   ],
 ]);
+
+function familiesForUtterance(utterance, activeOverlayId = null) {
+  const families = uniqueStrings(
+    FAMILY_PATTERNS.filter(([, pattern]) => pattern.test(utterance)).map(
+      ([family]) => family,
+    ),
+  );
+  if (
+    families.includes("plan") &&
+    (families.includes("event") || families.includes("restaurant")) &&
+    /\b(?:add|put)\b.*\b(?:to|in)\s+(?:my|the)\s+(?:plan|itinerary)\b/i.test(
+      utterance,
+    )
+  )
+    families.splice(families.indexOf("plan"), 1);
+  if (
+    families.includes("discovery") &&
+    families.includes("transit") &&
+    /\b(?:near|close to|by)\s+(?:an?\s+)?mrt\b/i.test(utterance)
+  )
+    families.splice(families.indexOf("transit"), 1);
+  if (
+    families.includes("map") &&
+    (families.includes("event") || families.includes("restaurant")) &&
+    /\b(?:this|current|visible)\s+(?:map\s+)?area\b/i.test(utterance)
+  )
+    families.splice(families.indexOf("map"), 1);
+  if (families.includes("map") && families.includes("discovery"))
+    families.splice(families.indexOf("map"), 1);
+  if (
+    families.includes("location") &&
+    /\b(?:use|focus(?:\s+on)?)\s+(?:my|current)\s+location\b/i.test(utterance)
+  ) {
+    families.splice(families.indexOf("location"), 1);
+    if (!families.includes("plan")) families.push("plan");
+  }
+  if (
+    families.includes("navigation") &&
+    (families.includes("event") || families.includes("restaurant")) &&
+    /\b(?:reference|official page)\b/i.test(utterance)
+  )
+    families.splice(families.indexOf("navigation"), 1);
+  if (
+    families.length === 1 &&
+    families[0] === "navigation" &&
+    /\b(?:reference|official page)\b/i.test(utterance) &&
+    typeof activeOverlayId === "string"
+  ) {
+    if (/\bevents?\b/i.test(activeOverlayId)) families[0] = "event";
+    else if (/\brestaurants?\b/i.test(activeOverlayId))
+      families[0] = "restaurant";
+  }
+  return families;
+}
 
 const OVERLAY_FAMILIES = Object.freeze([
   ["navigation", /\b(?:assistant|attribution)\b/i],
@@ -29,6 +89,10 @@ const OVERLAY_FAMILIES = Object.freeze([
   ["tour", /\btour\b/i],
   ["map", /\b(?:map|area|discovery)\b/i],
 ]);
+
+export function hasAmbiguousCapabilityFamilies(utterance = "") {
+  return familiesForUtterance(utterance).length > 1;
+}
 
 function familyForCapability(capabilityId, capabilityFamilies) {
   if (typeof capabilityId !== "string") return "";
@@ -98,11 +162,7 @@ export function selectCapabilityTurnScope({
     baseContextRevision,
     catalogRevision: catalogRevision ?? "turn-scope",
   });
-  const utteranceFamilies = uniqueStrings(
-    FAMILY_PATTERNS.filter(([, pattern]) => pattern.test(utterance)).map(
-      ([family]) => family,
-    ),
-  );
+  const utteranceFamilies = familiesForUtterance(utterance, activeOverlayId);
   const hasConflictingEventDomain =
     deterministic?.capabilityId === "event.applyquery" &&
     utteranceFamilies.includes("restaurant");

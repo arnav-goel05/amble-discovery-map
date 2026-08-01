@@ -1,5 +1,18 @@
 # Quickstart Validation: Conversational Voice Map Assistant
 
+## Current validation — Deterministic native routing (2026-08-01)
+
+1. Commit native audio and verify the relay waits for the matching final transcript without
+   creating `voice__classifyrequest` or accepting provider-proposed facets.
+2. Submit “Can you find me free events to do over the weekend?” and verify only `price:free` and
+   `when:this-weekend`, an empty residual query, and one atomic revision.
+3. Submit “search events for romantic exhibitions this weekend” and verify only the explicit
+   `romantic` keyword remains alongside recognized What/When facets.
+4. Run the action-vocabulary matrix, `npm run test:voice`, scoped ESLint/Prettier, and
+   `npm run build:ci`. Saved/game actions remain unavailable until their connector exists.
+
+Forced-classification sections below are retained as historical evidence and are superseded.
+
 ## Current validation — Relay-owned transcript and forced classification
 
 The relay has no per-session user-turn, assistant-response-count, maximum-duration, or idle-expiry

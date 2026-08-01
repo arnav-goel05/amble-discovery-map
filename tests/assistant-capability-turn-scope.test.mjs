@@ -111,7 +111,7 @@ test("uses current interface state for an otherwise unclassified turn", () => {
   );
 });
 
-test("uses connector metadata to expose overlay-navigation capabilities", () => {
+test("uses active domain context for its approved reference capability", () => {
   assert.deepEqual(
     selectCapabilityTurnScope({
       utterance: "open the official reference",
@@ -120,8 +120,8 @@ test("uses connector metadata to expose overlay-navigation capabilities", () => 
       activeOverlayId: "event-panel",
     }),
     {
-      families: ["navigation"],
-      capabilityIds: ["navigation.closeoverlay", "navigation.openexternal"],
+      families: ["event"],
+      capabilityIds: ["event.applyquery", "event.select"],
       deterministicCapabilityId: null,
       deterministicArguments: null,
     },
@@ -140,6 +140,103 @@ test("uses connector metadata to expose overlay-navigation capabilities", () => 
       deterministicArguments: null,
     },
   );
+});
+
+test("all 61 active canonical actions have a deterministic owning-family phrase", () => {
+  const actions = [
+    ["map.zoomin", "zoom in", "map"],
+    ["map.zoomout", "zoom out", "map"],
+    ["map.pan", "pan the map left", "map"],
+    ["map.rotate", "rotate the map", "map"],
+    ["map.focustarget", "focus this map target", "map"],
+    ["map.resetview", "reset the map", "map"],
+    ["map.openarea", "open this area", "discovery"],
+    ["map.selectarea", "select this area", "discovery"],
+    ["map.compareareas", "compare these areas", "discovery"],
+    ["map.dismissarea", "dismiss this area", "discovery"],
+    ["map.setlayervisibility", "hide the MRT lines", "map"],
+    ["tour.start", "start the tour", "tour"],
+    ["tour.previous", "previous tour step", "tour"],
+    ["tour.next", "next tour step", "tour"],
+    ["tour.finish", "finish the tour", "tour"],
+    ["event.search", "search events for jazz", "event"],
+    ["event.applyquery", "find free events this weekend", "event"],
+    ["event.setfilter", "make the event filter free", "event"],
+    ["event.removefilter", "remove this event filter", "event"],
+    ["event.clearfilters", "clear event filters", "event"],
+    ["event.selectresult", "select this event", "event"],
+    ["event.opendetail", "open this event detail", "event"],
+    ["event.selectoccurrence", "select this event occurrence", "event"],
+    ["event.setsessionsexpanded", "expand event sessions", "event"],
+    ["event.previousevent", "previous event", "event"],
+    ["event.nextevent", "next event", "event"],
+    ["event.closedetail", "close event details", "event"],
+    ["event.addtoplan", "add this event to my plan", "event"],
+    ["event.openreference", "open this event reference", "event"],
+    ["event.opendirections", "get directions to this event", "event"],
+    ["restaurant.search", "search restaurants", "restaurant"],
+    [
+      "restaurant.searchviewport",
+      "search restaurants in this area",
+      "restaurant",
+    ],
+    ["restaurant.setcategory", "set restaurant category", "restaurant"],
+    ["restaurant.setcuisine", "set restaurant cuisine", "restaurant"],
+    ["restaurant.clearfilters", "clear restaurant filters", "restaurant"],
+    [
+      "restaurant.selectcluster",
+      "select this restaurant cluster",
+      "restaurant",
+    ],
+    ["restaurant.selectresult", "select this restaurant", "restaurant"],
+    ["restaurant.closeresults", "close restaurant results", "restaurant"],
+    ["restaurant.closedetail", "close restaurant details", "restaurant"],
+    ["restaurant.addtoplan", "add this restaurant to my plan", "restaurant"],
+    [
+      "restaurant.openreference",
+      "open this restaurant reference",
+      "restaurant",
+    ],
+    ["restaurant.opendealreference", "open this restaurant deal", "restaurant"],
+    [
+      "restaurant.opendirections",
+      "get directions to this restaurant",
+      "restaurant",
+    ],
+    ["plan.open", "open my plan", "plan"],
+    ["plan.close", "close my plan", "plan"],
+    ["plan.uselocation", "use my location", "plan"],
+    ["plan.focuslocation", "focus on my location", "plan"],
+    ["plan.settravelmode", "set plan travel mode to walking", "plan"],
+    ["plan.addstop", "add this stop to my plan", "plan"],
+    ["plan.removestop", "remove this plan stop", "plan"],
+    ["plan.reorderstop", "reorder this plan stop", "plan"],
+    ["plan.focusstop", "focus this plan stop", "plan"],
+    ["plan.openroute", "open my plan route", "plan"],
+    ["navigation.enterexperience", "enter experience", "navigation"],
+    ["navigation.openassistant", "open the assistant", "navigation"],
+    ["navigation.closeassistant", "close the assistant", "navigation"],
+    ["navigation.closeoverlay", "close overlay", "navigation"],
+    ["navigation.openattribution", "open attribution", "navigation"],
+    ["navigation.closeattribution", "close attribution", "navigation"],
+    [
+      "navigation.openattributionreference",
+      "open attribution reference",
+      "navigation",
+    ],
+    ["navigation.openexternal", "open external link", "navigation"],
+  ];
+
+  assert.equal(actions.length, 61);
+  for (const [capabilityId, utterance, expectedFamily] of actions) {
+    const scope = selectCapabilityTurnScope({
+      utterance,
+      availableCapabilityIds,
+      capabilityFamilies,
+      catalogRevision: "events:v1",
+    });
+    assert.deepEqual(scope.families, [expectedFamily], capabilityId);
+  }
 });
 
 test("unknown turns receive no unrelated command families", () => {
@@ -286,4 +383,51 @@ test("every non-foundational connector family is reachable without exposing unre
       `${utterance}: unrelated capability`,
     );
   }
+});
+
+test("active action vocabulary deterministically selects the owning family", () => {
+  const phrasesByFamily = {
+    event: [
+      "show performances this weekend",
+      "find workshops under $25",
+      "expand event sessions",
+      "add this event to my plan",
+    ],
+    restaurant: [
+      "search restaurants in this area",
+      "set restaurant cuisine to Thai",
+      "open this restaurant deal",
+      "get directions to this restaurant",
+    ],
+    plan: [
+      "open my itinerary",
+      "set travel mode to transit",
+      "reorder this stop",
+      "open the route",
+    ],
+    map: ["rotate the map", "reset map view", "hide recommendations"],
+    tour: ["start the tour", "previous tour step", "finish the walkthrough"],
+    discovery: [
+      "recommend somewhere quiet",
+      "show me a cultural area",
+      "where should I go near MRT",
+      "compare these areas",
+    ],
+    navigation: [
+      "open the assistant",
+      "close the attribution",
+      "open the external link",
+    ],
+  };
+
+  for (const [family, phrases] of Object.entries(phrasesByFamily))
+    for (const utterance of phrases) {
+      const scope = selectCapabilityTurnScope({
+        utterance,
+        availableCapabilityIds,
+        capabilityFamilies,
+        catalogRevision: "events:v1",
+      });
+      assert.deepEqual(scope.families, [family], utterance);
+    }
 });

@@ -1,5 +1,10 @@
 # Realtime Relay Contract
 
+> **Current amendment (2026-08-01):** Native audio uses the relay-owned final input transcript
+> without a provider classification function or event-facet proposal. Deterministic application
+> routing proposes a safe closed command/event query, exposes at most one eligible connector
+> family, or produces a no-tool response. Earlier forced-classification passages are superseded.
+
 **Target protocol version**: `1.1`
 
 Version 1.1 generalizes the existing action bridge into the shared capability bridge. Voice

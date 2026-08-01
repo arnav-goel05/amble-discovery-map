@@ -365,6 +365,11 @@ test("voice event sentences update the same authoritative composer state as dire
   await expect(page.locator('[data-filter-token-id="price:free"]')).toHaveText(
     "Free",
   );
+  await expect(page.locator(".landmark-event-search__popover")).toBeVisible();
+  await expect(page.locator("#landmark-event-search-input")).toHaveAttribute(
+    "aria-expanded",
+    "true",
+  );
   await expect
     .poll(
       () =>

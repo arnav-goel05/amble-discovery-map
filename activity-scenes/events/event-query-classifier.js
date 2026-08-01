@@ -1,7 +1,10 @@
 const MAX_QUERY_LENGTH = 500;
 const SINGLE_VALUE_DIMENSIONS = new Set(["when", "where", "price"]);
+const EXPLICIT_KEYWORD_PREFIX =
+  /^(?:please\s+)?(?:search|find|show)(?:\s+me)?\s+(?:events?|activities|things)\s+(?:for|about|matching)\s+/i;
 const CONNECTORS =
-  /^(?:(?:activities|something|events?|things|search|show|find|within|around|priced|costing|near|that|are|the|for|and|on|at|in|an|a|is)\s*)+|(?:(?:activities|something|events?|things|search|show|find|within|around|priced|costing|near|that|are|the|for|and|on|at|in|an|a|is)\s*)+$/gi;
+  /^(?:(?:activities|something|events?|things|search|show|find|within|around|priced|costing|near|that|are|the|for|and|on|at|in|an|a|is|uh|um|to|do)\s*)+|(?:(?:activities|something|events?|things|search|show|find|within|around|priced|costing|near|that|are|the|for|and|on|at|in|an|a|is|uh|um|to|do)\s*)+$/gi;
+const HELP_REQUEST_PREFIX = /^(?:can|could|would)\s+you\s+help\s+me\s+/i;
 
 const normalizeWithMap = (source) => {
   const characters = [];
@@ -212,9 +215,14 @@ export function classifyEventQuery(value, catalog) {
     .replace(/[.,;:!?()[\]{}]/g, " ")
     .replace(/\s+/g, " ")
     .trim()
-    .replace(CONNECTORS, "")
-    .replace(/\s+/g, " ")
-    .trim();
+    .replace(HELP_REQUEST_PREFIX, "");
+  residualQuery = EXPLICIT_KEYWORD_PREFIX.test(residualQuery)
+    ? residualQuery
+        .replace(EXPLICIT_KEYWORD_PREFIX, "")
+        .replace(CONNECTORS, "")
+        .replace(/\s+/g, " ")
+        .trim()
+    : "";
 
   return { sourceText, matches, residualQuery, ambiguous };
 }

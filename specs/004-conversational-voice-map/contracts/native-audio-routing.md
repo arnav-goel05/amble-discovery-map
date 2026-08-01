@@ -1,5 +1,10 @@
 # Native Audio Routing Contract
 
+> **Current amendment (2026-08-01):** Stage 1 is transcription only. No provider classification
+> function is configured or forced. The final transcript enters Stage 2's closed deterministic
+> family/action vocabulary and event facet allowlist. Unmatched event wording is ignored unless an
+> explicit keyword-search prefix is present. Former classification/join text below is superseded.
+
 ## Purpose
 
 Convert committed native audio into the same bounded deterministic routing path used by text turns
@@ -12,7 +17,7 @@ arguments to reproduce the utterance.
 - Tool choice: none.
 - Output: the existing one-shot exact Amble greeting.
 
-## Stage 1: Concurrent transcription and forced classification
+## Superseded Stage 1: Concurrent transcription and forced classification
 
 - Input transcription: enabled once for the committed provider audio item.
 - Tools: exactly one provider-only classification function.
