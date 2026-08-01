@@ -114,6 +114,14 @@ As a user, I can use natural voice commands to operate every user-facing feature
 9. **Given** saved content, games, or another conditional feature has no real eligible data or
    direct control, **When** the assistant receives its capability list, **Then** that feature is not
    exposed or advertised.
+10. **Given** an action completes, **When** Amble responds, **Then** it leads with the confirmed
+    outcome and uses the verified target name, count, setting, or state when that evidence exists.
+11. **Given** an action is unchanged, empty, unavailable, failed, ambiguous, or awaiting
+    confirmation, **When** Amble responds, **Then** it distinguishes that state and never implies a
+    successful mutation.
+12. **Given** a useful follow-up capability is currently eligible, **When** Amble finishes a
+    discovery, selection, or planning response, **Then** it may offer one concise next step; minor
+    navigation and camera actions remain brief and do not force a follow-up question.
 
 ---
 
@@ -271,13 +279,17 @@ turn still succeeds; omit or fail the final transcript and verify bounded zero-m
    provider item identity and executes using the final transcript as the utterance.
 3. **Given** the classification omits an utterance field, **When** its remaining closed proposal is
    valid, **Then** the turn continues because that field is neither requested nor accepted.
-4. **Given** transcription fails, is empty, never completes before the response deadline, or belongs
-   to a stale item, **When** the relay cannot establish the active utterance, **Then** it performs no
+4. **Given** transcription fails, never completes before the response deadline, or belongs to a
+   stale item, **When** the relay cannot establish the active utterance, **Then** it performs no
    application mutation and terminates through the existing unavailable lifecycle.
-5. **Given** a spoken request causes a tool proposal, **When** the relay combines transcript and
+5. **Given** the provider completes transcription for the active item with no recognized speech,
+   **When** the relay receives that valid empty result, **Then** it settles the known transcription
+   usage, performs no application mutation, gives one concise retry prompt, and keeps voice
+   admission enabled.
+6. **Given** a spoken request causes a tool proposal, **When** the relay combines transcript and
    classification, **Then** existing argument validation, current-state eligibility, confirmation,
    shared execution, observable result, and refreshed-context rules remain unchanged.
-6. **Given** the user submits text instead of audio, **When** the turn is processed, **Then** the
+7. **Given** the user submits text instead of audio, **When** the turn is processed, **Then** the
    existing deterministic text interpretation and connector-family scoping remain unchanged.
 
 ---
@@ -604,7 +616,7 @@ the exact canonical capability ID.
 - **FR-062**: Removing transcript-gated routing MUST NOT change the deterministic interpreter or
   connector-family scoping used for text turns.
 - **FR-063**: Final input transcripts MUST be joined to the active committed audio item by provider
-  item identity. Duplicate, stale, or unrelated transcript events MUST be ignored; missing, empty,
+  item identity. Duplicate, stale, or unrelated transcript events MUST be ignored; missing,
   failed, or timed-out active transcripts MUST cause bounded zero-mutation terminal cleanup.
 - **FR-064**: Voice budget admission and settlement MUST reserve only costs for billable operations
   that the turn can actually invoke, while retaining the cumulative cap, kill switches, trusted
@@ -759,6 +771,28 @@ the exact canonical capability ID.
   resolution, confirmation policy, shared execution, and refreshed context.
 - **FR-104**: Saved/game actions MUST remain absent from deterministic recognition until real data,
   direct controls, and their connector are registered.
+- **FR-105**: Every capability-result response MUST map the validated `completed`, `empty`,
+  `unavailable`, `failed`, and `confirmation_required` states to distinct truthful dialogue and
+  MUST distinguish `changed: false` from a completed state change.
+- **FR-106**: Completed dialogue MUST lead with the confirmed outcome and use only bounded labels,
+  counts, settings, and state projected by the capability result or refreshed authoritative
+  context. Missing evidence MUST use a target-neutral fallback rather than an inferred name.
+- **FR-107**: Discovery, selection, and planning dialogue SHOULD be warm, concise, and
+  occasionally playful; camera, layer, overlay, and tour-step dialogue SHOULD remain short. The
+  system MUST NOT collapse supported actions into the phrase “Done in Amble.”
+- **FR-108**: A capability-result response MAY ask at most one follow-up question and only when the
+  proposed next capability is currently eligible in refreshed context. It MUST NOT append a
+  follow-up to every minor action.
+- **FR-109**: Consequential actions MUST present the browser-owned exact effect and confirmation
+  controls before execution. Spoken wording MUST not imply that the action has executed until the
+  validated post-confirmation result arrives.
+- **FR-110**: The dialogue matrix MUST cover event, restaurant, map/area, plan/location, tour,
+  navigation/external, clarification, no-op, empty, unavailable, failed, confirmation, and
+  out-of-scope outcomes with deterministic fixtures.
+- **FR-111**: A valid final transcription event for the active committed item with an empty
+  transcript MUST settle its known bounded transcription reservation, perform no application
+  mutation, request exactly one fixed retry prompt, and MUST NOT enter the protocol-failure path,
+  hold that reservation, or disable admission for subsequent voice sessions.
 
 ### Key Entities
 
@@ -878,9 +912,10 @@ the exact canonical capability ID.
 - **SC-030**: 100% of committed-audio fixtures start transcription and classification without
   serial startup delay, while producing zero application mutation until both active-turn results
   are available.
-- **SC-031**: 100% of classification-first and transcript-first fixtures join once by active item
-  identity; missing, empty, failed, timed-out, duplicate, and stale-transcription fixtures produce
-  zero unintended mutation and leave no pending join state.
+- **SC-031**: 100% of historical classification-first and transcript-first fixtures join once by
+  active item identity; missing, failed, timed-out, duplicate, and stale-transcription fixtures
+  produce zero unintended mutation and leave no pending join state, while the empty-transcript
+  fixture follows the bounded retry behavior in SC-068.
 - **SC-032**: 100% of native-audio tool-call fixtures reject unavailable or malformed capabilities
   and preserve the same confirmation and observable-result outcomes as direct interaction.
 - **SC-033**: Every new audio turn admits and settles at most one input-transcription reservation,
@@ -970,6 +1005,19 @@ the exact canonical capability ID.
   for every representative active action, “Can you find me free events to do over the weekend?”
   produces only Free and This weekend with an empty residual query, all voice tests pass, and no
   `voice__classifyrequest` call occurs.
+- **SC-064**: 100% of representative capability families return action-specific dialogue without
+  the generic phrase “Done in Amble,” and every dialogue fixture is supported by validated result
+  or refreshed-context evidence.
+- **SC-065**: 100% of no-op, empty, unavailable, failed, clarification, and confirmation fixtures
+  state the correct outcome and make zero false success claims.
+- **SC-066**: 100% of dialogue follow-up fixtures contain no more than one question and offer only
+  a capability proven eligible by the refreshed context.
+- **SC-067**: Event search with eligible plan capacity names at most three authoritative top events
+  and offers to add one; the same result without plan capacity names the events without offering an
+  unavailable plan action.
+- **SC-068**: An active empty-transcript completion produces zero capability proposals, one fixed
+  retry response, a settled transcription reservation, and leaves the relay session and global
+  voice-admission gate available for the next turn.
 
 ## Assumptions
 

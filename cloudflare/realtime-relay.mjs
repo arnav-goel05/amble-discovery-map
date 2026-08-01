@@ -28,6 +28,8 @@ export const OUT_OF_SCOPE_RESPONSE =
   "I can only help you explore Singapore and use Amble's current features.";
 export const AMBLE_WELCOME_MESSAGE =
   "Hi, I'm Amble, your Singapore discovery guide. Tell me what you're in the mood for—I can find events, restaurants, and places, or help you explore the map.";
+export const EMPTY_TRANSCRIPT_RETRY_MESSAGE =
+  "I didn't catch that. Please try again.";
 const VOICE_SERVICE_UNAVAILABLE_MESSAGE =
   "Voice service is currently unavailable. Please try again later.";
 const VOICE_INGRESS_TOOL_NAME = "voice__classifyrequest";
@@ -329,8 +331,47 @@ export function capabilityResultSpeech(
   argumentsValue = {},
   result = {},
 ) {
+  const clean = (value, maximum = 160) =>
+    String(value ?? "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/[.!?]+$/g, "")
+      .slice(0, maximum);
+  const humanize = (value) => {
+    const text = clean(value)
+      .replace(/^[^:]+:/, "")
+      .replace(/[-_]+/g, " ");
+    return text.replace(/\b\w/g, (letter) => letter.toUpperCase());
+  };
+  const state = result.data?.state ?? {};
+  const eventTitle = (eventId = argumentsValue.eventId) =>
+    clean(
+      (state.events ?? []).find((event) => event.eventId === eventId)?.title,
+    );
+  const stopLabel = (identity) =>
+    clean(
+      (state.stops ?? []).find(
+        (stop) => stop.stopId === identity || stop.targetId === identity,
+      )?.label,
+    );
+  const listSpeech = (values) => {
+    if (values.length < 2) return values[0] ?? "";
+    if (values.length === 2) return `${values[0]} and ${values[1]}`;
+    return `${values.slice(0, -1).join(", ")}, and ${values.at(-1)}`;
+  };
+
+  if (result.status === "empty")
+    return "I couldn't find a matching result. Nothing changed.";
+  if (result.status === "unavailable")
+    return "That action isn't available right now. Nothing changed.";
+  if (result.status === "failed")
+    return "That didn't go through. Nothing changed.";
+  if (result.status === "confirmation_required")
+    return "This action needs your confirmation. Review the exact effect in Amble when you're ready.";
   if (result.status !== "completed")
-    return "I couldn't complete that in Amble.";
+    return "I couldn't complete that. Nothing changed.";
+  if (result.changed === false)
+    return "You're already set—nothing needed changing.";
   if (capabilityId === "event.applyquery") {
     if (result.data?.outcome === "clarification_required") {
       const labels = (result.data.clarificationChoices ?? [])
@@ -342,20 +383,146 @@ export function capabilityResultSpeech(
         : "Which event option did you mean?";
     }
     const count = result.data?.resultCount;
-    if (Number.isInteger(count))
-      return `I found ${count} matching event${count === 1 ? "" : "s"}.`;
+    const topTitles = (
+      Array.isArray(result.data?.topEvents) ? result.data.topEvents : []
+    )
+      .map(({ title }) => clean(title))
+      .filter(Boolean)
+      .slice(0, 3);
+    if (Number.isInteger(count)) {
+      if (count === 0)
+        return "I couldn't find any matching events. Want to adjust the date, location, or price?";
+      const countSpeech = `I found ${count} matching event${count === 1 ? "" : "s"}.`;
+      if (!topTitles.length) return countSpeech;
+      const optionsSpeech =
+        topTitles.length === 1
+          ? `A top option is ${topTitles[0]}.`
+          : `Top options are ${listSpeech(topTitles)}.`;
+      const followUp =
+        result.data?.canAddToPlan === true
+          ? " Would you like me to add one to your plan?"
+          : "";
+      return `${countSpeech} ${optionsSpeech}${followUp}`;
+    }
     return "I updated the event results.";
   }
-  if (capabilityId === "restaurant.search") {
-    const query = String(argumentsValue.query ?? "")
-      .trim()
-      .replace(/[.!?]+$/g, "");
+  if (capabilityId === "event.search") {
+    const query = clean(argumentsValue.query);
     return query
-      ? `I updated the restaurant results for ${query}.`
-      : "I updated the restaurant results.";
+      ? `I refreshed the event results for ${query}.`
+      : "I refreshed the event results.";
   }
-  if (capabilityId === "map.zoomin") return "I zoomed in on the map.";
-  if (capabilityId === "map.zoomout") return "I zoomed out on the map.";
+  if (
+    [
+      "event.setfilter",
+      "event.removefilter",
+      "event.setcategory",
+      "event.setdaterange",
+      "event.setpricerange",
+    ].includes(capabilityId)
+  )
+    return "I updated your event filters.";
+  if (capabilityId === "event.clearfilters")
+    return "Fresh start—your event filters are cleared.";
+  if (capabilityId === "event.selectresult") {
+    const title = eventTitle();
+    return title
+      ? `Great choice—${title} is selected.`
+      : "Great choice—that event is selected.";
+  }
+  if (capabilityId === "event.opendetail") {
+    const title = eventTitle();
+    const followUp =
+      state.planCanAdd === true ? " Want me to add it to your plan?" : "";
+    return `${title ? `Here's ${title}.` : "Here are the event details."}${followUp}`;
+  }
+  if (capabilityId === "event.selectoccurrence")
+    return "Got it—I selected that event session.";
+  if (capabilityId === "event.setsessionsexpanded")
+    return argumentsValue.expanded === false
+      ? "I collapsed the session list."
+      : "I opened the full session list.";
+  if (["event.previousevent", "event.nextevent"].includes(capabilityId)) {
+    const title = eventTitle(state.selectedEventId);
+    return title
+      ? `Now showing ${title}.`
+      : "I moved to the next event details.";
+  }
+  if (capabilityId === "event.closedetail")
+    return "Event details closed. You can keep browsing.";
+  if (capabilityId === "event.addtoplan") {
+    const title = eventTitle();
+    return title
+      ? `Nice—${title} is in your plan!`
+      : "Nice—that event is in your plan!";
+  }
+  if (capabilityId === "event.openreference")
+    return "I opened the approved event page.";
+  if (capabilityId === "event.opendirections")
+    return "I opened directions to the event venue.";
+  if (capabilityId === "restaurant.search") {
+    const query = clean(argumentsValue.query);
+    const hasResults = Array.isArray(state.resultIds) && state.resultIds.length;
+    if (!query) return "I refreshed the restaurant results.";
+    return hasResults
+      ? `I found restaurant matches for ${query}. Which one sounds good?`
+      : `I refreshed the restaurant results for ${query}.`;
+  }
+  if (capabilityId === "restaurant.searchviewport")
+    return "I refreshed restaurants in the current map area.";
+  if (capabilityId === "restaurant.setcategory") {
+    const label = humanize(argumentsValue.categoryId);
+    return label
+      ? `Showing ${label} restaurants.`
+      : "I cleared the restaurant category.";
+  }
+  if (capabilityId === "restaurant.setcuisine") {
+    const label = humanize(argumentsValue.cuisineId);
+    return label
+      ? `${label} it is! I refreshed the restaurant results.`
+      : "I cleared the cuisine filter.";
+  }
+  if (capabilityId === "restaurant.clearfilters")
+    return "Fresh start—your restaurant filters are cleared.";
+  if (capabilityId === "restaurant.selectcluster")
+    return "I zoomed in to reveal the restaurants in that cluster.";
+  if (capabilityId === "restaurant.selectresult")
+    return "Good pick—that restaurant is selected.";
+  if (capabilityId === "restaurant.closeresults")
+    return "Restaurant results closed. You're back on the map.";
+  if (capabilityId === "restaurant.closedetail")
+    return "Restaurant details closed.";
+  if (capabilityId === "restaurant.addtoplan")
+    return "Delicious choice—that restaurant is in your plan!";
+  if (capabilityId === "restaurant.openreference")
+    return "I opened the approved restaurant page.";
+  if (capabilityId === "restaurant.opendealreference")
+    return "I opened the official deal page.";
+  if (capabilityId === "restaurant.opendirections")
+    return "I opened directions to the restaurant.";
+
+  if (capabilityId === "map.zoomin")
+    return "Zooming in—let's get a closer look.";
+  if (capabilityId === "map.zoomout")
+    return "Zooming out—here's the bigger picture.";
+  if (capabilityId === "map.pan")
+    return `Moving ${clean(argumentsValue.direction) || "across the map"}—let's see what's over there.`;
+  if (capabilityId === "map.rotate")
+    return Number.isFinite(argumentsValue.bearing)
+      ? `Map rotated to ${argumentsValue.bearing} degrees.`
+      : "The map is facing north again.";
+  if (capabilityId === "map.focustarget")
+    return "Found it—I brought that place into focus.";
+  if (capabilityId === "map.resetview")
+    return "Back to the Singapore overview.";
+  if (capabilityId === "map.openarea")
+    return "I opened that area's recommendations.";
+  if (capabilityId === "map.selectarea")
+    return "I highlighted that area on the map.";
+  if (capabilityId === "map.compareareas")
+    return "I put those areas into comparison view.";
+  if (capabilityId === "map.dismissarea")
+    return "Okay, I removed that area from the suggestions.";
   if (capabilityId === "map.setlayervisibility") {
     const layerLabels = {
       mrtLines: "train lines",
@@ -367,8 +534,86 @@ export function capabilityResultSpeech(
       layerLabels[argumentsValue.layer] ?? "the requested map layer";
     return `I ${argumentsValue.visible === false ? "hid" : "showed"} ${label}.`;
   }
-  if (result.changed === false) return "That is already set in Amble.";
-  return "Done in Amble.";
+
+  if (capabilityId === "plan.open") {
+    const count = Array.isArray(state.stops) ? state.stops.length : 0;
+    return count
+      ? `Here's your plan with ${count} stop${count === 1 ? "" : "s"}.`
+      : Array.isArray(state.addableTargetIds) && state.addableTargetIds.length
+        ? "Your plan is open and ready. Shall we add one of the places you're viewing?"
+        : "Your plan is open and ready.";
+  }
+  if (capabilityId === "plan.close")
+    return "Plan tucked away. Your stops are still saved.";
+  if (capabilityId === "plan.uselocation")
+    return "Your location is ready for this plan.";
+  if (capabilityId === "plan.focuslocation")
+    return "There you are! I centered the map on your location.";
+  if (capabilityId === "plan.settravelmode")
+    return `Switched to ${clean(argumentsValue.mode) || "the selected travel mode"}. I updated the route.`;
+  if (capabilityId === "plan.addstop") {
+    const label = stopLabel(argumentsValue.targetId);
+    return label
+      ? `Nice—${label} is in your plan!`
+      : "Nice—that stop is in your plan!";
+  }
+  if (capabilityId === "plan.removestop")
+    return "That stop has been removed. Your route is updated.";
+  if (capabilityId === "plan.reorderstop")
+    return `That stop is now number ${Number(argumentsValue.toIndex) + 1} in your plan.`;
+  if (capabilityId === "plan.focusstop") {
+    const label = stopLabel(argumentsValue.stopId);
+    return label
+      ? `Here's ${label}, highlighted on the map.`
+      : "I highlighted that plan stop on the map.";
+  }
+  if (capabilityId === "plan.openroute") return "I opened the approved route.";
+
+  if (capabilityId === "tour.start") return "Let's take a quick tour!";
+  if (["tour.previous", "tour.next"].includes(capabilityId)) {
+    const step = Number(state.stepIndex) + 1;
+    const count = Number(state.stepCount);
+    return Number.isInteger(step) && Number.isInteger(count)
+      ? `On to tour step ${step} of ${count}.`
+      : "I moved to the requested tour step.";
+  }
+  if (capabilityId === "tour.finish")
+    return "That's the tour—you're ready to explore!";
+
+  if (capabilityId === "navigation.enterexperience")
+    return "Welcome to the map—you're ready to explore.";
+  if (capabilityId === "navigation.openassistant")
+    return "I'm here and ready to help.";
+  if (capabilityId === "navigation.closeassistant")
+    return "Assistant closed. Your map is still ready.";
+  if (capabilityId === "navigation.closeoverlay")
+    return "All closed. You're back on the map.";
+  if (capabilityId === "navigation.openattribution")
+    return "I opened the map attribution details.";
+  if (capabilityId === "navigation.closeattribution")
+    return "Map attribution closed.";
+  if (capabilityId === "navigation.openattributionreference")
+    return "I opened the approved attribution source.";
+  if (capabilityId === "navigation.openexternal")
+    return "I opened the approved external page.";
+
+  if (capabilityId === "app.inspect")
+    return "Here's what Amble can do right now.";
+  if (capabilityId === "catalog.search") {
+    const total = result.data?.total;
+    return Number.isInteger(total)
+      ? `I found ${total} approved match${total === 1 ? "" : "es"}.`
+      : "I found approved matches in Amble.";
+  }
+  if (capabilityId === "catalog.get")
+    return "I found the approved details for those results.";
+
+  if (capabilityId.startsWith("event.")) return "I updated the event view.";
+  if (capabilityId.startsWith("restaurant."))
+    return "I updated the restaurant view.";
+  if (capabilityId.startsWith("map.")) return "I updated the map.";
+  if (capabilityId.startsWith("plan.")) return "I updated your plan.";
+  return "The requested Amble action is complete.";
 }
 
 const boundedAppInspectResultSchema = structuredClone(appInspectResultSchema);
@@ -1626,7 +1871,6 @@ export function createRealtimeRelay({
         typeof event.item_id !== "string" ||
         !event.item_id ||
         event.item_id.length > 128 ||
-        !transcript ||
         transcript.length > 500 ||
         (session.providerInputItemId &&
           session.providerInputItemId !== event.item_id)
@@ -1641,6 +1885,22 @@ export function createRealtimeRelay({
         return stop(session.sessionId, "protocol");
       }
       session.providerInputItemId = event.item_id;
+      if (!transcript) {
+        if (!(await settleFinalTranscription(session))) return false;
+        if (session.state === "stopped") return false;
+        session.nativeStage = "final";
+        return requestResponseStage(session, {
+          tools: [],
+          toolChoice: NO_TOOL_CHOICE,
+          response: {
+            conversation: "none",
+            instructions: buildVerbatimSpeechInstructions(
+              EMPTY_TRANSCRIPT_RETRY_MESSAGE,
+            ),
+          },
+          expectedSpeech: EMPTY_TRANSCRIPT_RETRY_MESSAGE,
+        });
+      }
       session.finalInputTranscript = transcript;
       return routeDeterministicTranscript(session);
     }

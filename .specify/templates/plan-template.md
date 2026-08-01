@@ -57,6 +57,9 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
   conversational observable-state parity. Keep MCP or other protocols as thin adapters
   over the same registry, and verify semantic parity across local, test, preview, and
   production environments.
+- **Conversational feedback**: Define the grounded dialogue matrix for success, no-op, empty,
+  unavailable, failed, clarification, and confirmation outcomes; identify which verified labels,
+  counts, settings, and currently eligible next steps each response may use.
 - **Quality and security**: Identify required tests, build gates, recovery coverage,
   secret handling, administrative authorization, and external-content protections. Declare
   the maximum request count for every quota-limited production-platform check; use bounded

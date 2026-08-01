@@ -1,5 +1,19 @@
 # Phase 0 Research: Conversational Voice Map Assistant
 
+## Empty-recognition admission safety
+
+**Decision**: When the provider completes transcription for the active committed item with an empty
+transcript, settle the known transcription reservation and request exactly one fixed “I didn't
+catch that” response. Do not propose a capability, mutate application state, hold the settled
+reservation, or enter the global protocol-failure kill-switch path.
+
+**Rationale**: Empty recognition is an ordinary speech-recognition outcome, not evidence of
+corrupted protocol identity. Treating it as corruption disabled every later local voice session.
+
+**Alternatives rejected**: Holding the reservation and stopping as `protocol` falsely classifies
+silence; reporting provider unavailability is misleading; fabricating an utterance violates
+transcript ownership.
+
 > **Superseding decision — 2026-08-01:** Local audit evidence showed that provider classification
 > could force-fill unsupported facets and generic request wording could leak into residual search.
 > Native ingress therefore uses the relay-owned transcript plus a deterministic closed vocabulary.
@@ -623,3 +637,20 @@ them. Same-origin relay architecture avoids adding the provider domain to browse
 
 **Alternatives considered**: Keeping the desktop-only gate contradicts the accepted user story.
 Allowing arbitrary microphone origins or provider connections would broaden the security boundary.
+
+## Grounded and engaging capability-result dialogue
+
+**Decision**: Project final capability speech deterministically from the validated result envelope
+and refreshed authoritative context. Use action-family templates that lead with the confirmed
+outcome, include verified names, counts, and settings when available, distinguish every terminal
+and no-op state, and optionally offer one currently eligible next step. Keep camera and navigation
+responses brief; allow restrained warmth for discovery, restaurant, event, and plan outcomes.
+
+**Rationale**: A universal “Done in Amble” confirms neither the target nor the resulting state and
+makes successful, unchanged, and failed interactions sound alike. Deterministic templates preserve
+the exact-speech boundary while giving users useful feedback and preventing invented names or
+unavailable follow-up offers.
+
+**Alternatives considered**: Free-form model narration risks unsupported detail and inconsistent
+failure language. A unique handwritten sentence for every capability duplicates connector rules
+and is difficult to maintain. Generic acknowledgements are safe but not informative or engaging.

@@ -670,6 +670,14 @@ test("confirmation identity can be resolved once only by its browser-owned butto
   const accept = harness.locator(selectors.confirmationAccept);
   const reject = harness.locator(selectors.confirmationReject);
   await expect(harness.locator(selectors.confirmation)).toBeVisible();
+  await expect(harness.locator(selectors.confirmation).locator("h3")).toHaveText(
+    "Confirm this action",
+  );
+  await expect(
+    harness.locator(".assistant-confirmation__effect"),
+  ).toHaveText("Open the approved official event page.");
+  await expect(accept).toHaveText("Confirm");
+  await expect(reject).toHaveText("Cancel");
   await expect(accept).toHaveAttribute("data-control-owner", "browser");
   await expect(reject).toHaveAttribute("data-control-owner", "browser");
 

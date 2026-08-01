@@ -797,3 +797,43 @@ residual cleanup with the owner-approved deterministic allowlist in FR-100–FR-
 - [x] T217 [US8] Run focused tests, the complete voice suite, scoped formatting and lint, production
       build, and a second Spec Kit convergence pass; record zero unresolved deterministic-routing
       errors per SC-063
+
+---
+
+## Phase 28: Grounded and Engaging Capability Dialogue
+
+**Purpose**: Replace generic acknowledgements with truthful action-specific speech backed by the
+validated result and refreshed authoritative context.
+
+- [x] T218 [P] [US3] Add dialogue-matrix fixtures for every action family and distinct no-op,
+      empty, unavailable, failed, clarification, and confirmation outcomes in
+      `tests/realtime-relay.test.mjs` per FR-105–FR-110 and SC-064–SC-067
+- [x] T219 [P] [US3] Extend event result contracts and connector fixtures with bounded top-event and
+      plan-eligibility evidence in
+      `specs/004-conversational-voice-map/contracts/event-apply-query-result.schema.json` and
+      `tests/assistant-event-connector.test.mjs` per FR-106/FR-108 and SC-067
+- [x] T220 [US3] Implement deterministic grounded action-family dialogue projection in
+      `cloudflare/realtime-relay.mjs` per FR-105–FR-110
+- [x] T221 [US3] Preserve browser-owned consequential confirmation wording and prevent pre-execution
+      success claims in `activity-scenes/assistant/assistant-view.js` and relay fixtures per FR-109
+- [x] T222 [US3] Verify event top-three narration and eligible add-to-plan prompting in
+      `tests/voice-action-coverage.spec.mjs` per SC-067
+- [x] T223 [US8] Run focused dialogue, connector, confirmation, and browser tests plus the complete
+      voice suite, scoped formatting/lint, and production build
+- [x] T224 [US8] Run Spec Kit convergence, implement every appended finding, and repeat until no
+      unresolved issue remains
+
+---
+
+## Phase 29: Empty-Recognition Admission Safety
+
+**Purpose**: Prevent a normal no-recognition result from being misclassified as protocol corruption
+and disabling subsequent voice sessions.
+
+- [x] T225 [US3] Specify bounded empty-recognition recovery and admission safety in the Constitution
+      and Feature 004 requirements per FR-111 and SC-068
+- [x] T226 [US3] Settle valid empty-transcript usage and request one fixed no-mutation retry prompt
+      in `cloudflare/realtime-relay.mjs`, preserving strict handling for item mismatches and
+      conflicting duplicates
+- [x] T227 [US8] Add relay regression coverage, rerun focused and complete voice verification,
+      prove live admission remains enabled, and repeat convergence until no issue remains

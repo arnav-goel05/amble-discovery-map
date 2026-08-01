@@ -27,8 +27,10 @@ response from the same committed buffer.
    once only after both match the active provider input item.
 3. Verify “find events today at Marina Bay Sands” proposes one `event.applyquery` whose `text` is the
    relay-owned final transcript and whose bounded proposal preserves both explicit filters.
-4. Verify missing, empty, failed, delayed, duplicate-conflicting, stale-item, interrupted, and
-   timed-out transcript/classification paths mutate nothing and clean up all reservations.
+4. Verify missing, failed, delayed, duplicate-conflicting, stale-item, interrupted, and timed-out
+   transcript/classification paths mutate nothing and clean up all reservations. Verify an empty
+   active transcript mutates nothing, settles its known reservation, and requests one fixed retry
+   without disabling admission.
 5. Run the focused policy, budget, relay, diagnostic, capability, browser, formatting, and build
    gates. A live provider call is optional and requires the existing owner authorization and
    bounded-spend controls.
@@ -900,3 +902,32 @@ provider call:
 - The affected Chromium matrix completed with all 41 journeys passing; three unrelated
   area-tileset readiness cases passed on their automatic retry. The production build passed with
   only the existing third-party direct-`eval` and large-chunk warnings.
+
+## Grounded capability dialogue amendment — 2026-08-01
+
+- Capability-result speech now distinguishes completed changes, no-ops, empty results,
+  unavailable actions, failures, clarification, and confirmation-required states without the
+  generic “Done in Amble” fallback.
+- Event, restaurant, map/area, plan/location, tour, navigation/external, foundational query, and
+  target-neutral fallback dialogue is deterministic and backed only by validated arguments,
+  result data, or refreshed connector state.
+- Event top-three narration offers to add an event only when the authoritative result explicitly
+  reports available plan capacity.
+- Focused Node coverage passed 87/87 tests; the event voice composer and browser-owned exact-effect
+  confirmation journeys passed 2/2 Chromium desktop tests.
+- Action coverage verified 64 version-2 capabilities and 61 direct/conversational parity cases;
+  capability coverage passed all 17 contract/result/environment suites; the complete voice suite
+  passed 257/257 tests. Scoped ESLint, `git diff --check`, and the production build passed; the
+  build retained only the existing third-party direct-eval and chunk-size warnings.
+
+## Empty-recognition admission safety amendment — 2026-08-01
+
+- A provider-completed empty transcript for the active item now settles its bounded transcription
+  usage and requests exactly one fixed retry response without proposing a capability, mutating the
+  application, stopping the session as a protocol violation, or disabling later admission.
+- Mismatched item identities, conflicting duplicate transcripts, missing completions, and actual
+  provider failures retain their strict bounded failure behavior.
+- The focused relay suite passed 61/61, the complete voice suite passed 257/257, both capability
+  verification gates passed (64 capabilities, 61 parity cases, 17 protocol suites), scoped ESLint,
+  `git diff --check`, and the production build passed. After restoring the previously tripped local
+  ledger, a fresh localhost admission returned HTTP 201 and the ledger remained enabled.

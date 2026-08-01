@@ -1,12 +1,12 @@
 <!--
 Sync Impact Report
-- Version change: 2.9.0 -> 2.10.0
+- Version change: 2.11.0 -> 2.12.0
 - Modified principles:
-  - Testable, Secure Changes: added request-budget and quota-safe verification duties for
-    Cloudflare, R2, and other quota-limited production platforms, including fresh evidence
-    after mutable-object synchronization.
-  - Development and Release Workflow: requires bounded control-plane verification and
-    rejects high-cardinality checks through visitor-facing production Workers.
+  - Domain Boundaries, Shared Capabilities, and Explicit Contracts: added grounded,
+    action-specific conversational feedback and eligible-next-step requirements.
+  - Intentional UX and Performance: added concise, engaging spoken-dialogue guidance and
+    bounded empty-recognition recovery that cannot disable later voice sessions.
+  - Development and Release Workflow: requires dialogue-matrix and outcome-language coverage.
 - Added sections: none.
 - Removed sections: none.
 - Templates:
@@ -15,13 +15,11 @@ Sync Impact Report
   - ✅ .specify/templates/tasks-template.md
   - ✅ .specify/templates/commands/ (directory absent; no command templates to update)
 - Dependent artifacts:
+  - ✅ specs/004-conversational-voice-map/spec.md
+  - ✅ specs/004-conversational-voice-map/plan.md
+  - ✅ specs/004-conversational-voice-map/contracts/realtime-relay.md
   - ✅ AGENTS.md (reviewed; no runtime-command change required)
-  - ✅ README.md (reviewed; existing architecture remains accurate)
-  - ✅ docs/cloudflare-cloud-native.md
-  - ✅ docs/cloudflare-workers-vpc.md
-- Deferred items:
-  - The isolated tile-integrity Worker is implemented and locally validated but must not be
-    deployed or queried until the currently exhausted Cloudflare daily allowance resets.
+- Deferred items: none.
 -->
 
 # What's Here Constitution
@@ -90,6 +88,14 @@ identities. Commands MUST execute through the same business executor used by dir
 controls and return a validated observable outcome rather than a success assertion alone.
 After every state-changing command, the application MUST publish refreshed authoritative
 interface context, and assistant tool eligibility MUST be derived from that current state.
+Conversational feedback for a capability result MUST be derived only from that validated outcome
+and refreshed context. When available, it MUST name the verified target, state, count, or setting;
+it MUST distinguish success, no-op, empty, unavailable, failed, clarification, and confirmation
+states instead of collapsing them into a generic acknowledgement. It MAY offer at most one concise
+next step, and only when that step is currently eligible. Missing labels or details MUST produce a
+truthful bounded fallback rather than an inferred or fabricated name. Small navigation or camera
+actions SHOULD remain brief; discovery, selection, and planning outcomes SHOULD be warm and
+engaging without obscuring the confirmed result.
 Local, preview, test, and production environments MUST expose semantically equivalent
 catalogue and capability contracts; approved data and environment policy MAY differ.
 
@@ -143,6 +149,14 @@ animation, layout measurement, or hidden rendering work MUST NOT be introduced w
 measured need. Performance-sensitive changes MUST record a before-and-after benchmark and
 MUST restore full visual quality after temporary movement optimizations. Accessibility is
 a best-effort design consideration, not a release gate.
+
+Spoken dialogue SHOULD lead with the confirmed outcome, use natural and occasionally playful
+language appropriate to the domain, and avoid repetitive generic phrases such as “Done.” It MUST
+remain concise enough not to delay the next turn, MUST NOT ask a follow-up after every minor
+action, and MUST preserve the same factual, confirmation, privacy, and interruption boundaries as
+the underlying capability. A valid final transcription event containing no recognized speech MUST
+produce a bounded retry prompt with no application mutation; it MUST settle known usage and MUST
+NOT be treated as a protocol-integrity failure or disable admission for later voice sessions.
 
 Rationale: map usability depends on responsiveness and visual restraint, but the project
 does not impose a fixed initial-load deadline.
@@ -237,7 +251,9 @@ future iteration.
 4. Tasks MUST include relevant automated tests, data/provenance handling, privacy cleanup,
    security controls, lifecycle reconciliation, documentation, performance validation,
    capability-inventory updates, direct/conversational parity coverage, rich query-result
-   validation, post-command context synchronization, and local/production contract parity.
+   validation, post-command context synchronization, action-specific dialogue-matrix coverage,
+   truthful outcome/no-op/failure/confirmation language, eligible-next-step validation, and
+   local/production contract parity.
 5. Generated data MUST be staged separately from the approved production snapshot.
 6. Publication requires source validation, identity and geometry checks where applicable,
    the production build, all relevant automated tests, complete affected capability
@@ -276,4 +292,4 @@ for non-semantic clarification. Every specification, plan, implementation review
 release MUST verify compliance. Unjustified violations block completion. Runtime-specific
 instructions remain in `AGENTS.md` and domain documentation but MUST conform to this file.
 
-**Version**: 2.10.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-31
+**Version**: 2.12.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-08-01

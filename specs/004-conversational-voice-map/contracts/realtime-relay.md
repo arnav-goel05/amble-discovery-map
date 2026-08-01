@@ -211,9 +211,10 @@ voice and emits only a safe bounded local warning.
 11. The provider model is exactly `gpt-realtime-2.1-mini`; no fallback model is configured or
     attempted.
 12. Each admitted native-audio turn creates at most one input-transcription reservation. Final
-    transcript events are matched by provider input-item identity and join once with classification;
-    missing, failed, empty, stale, duplicate, or timed-out active transcripts mutate nothing and
-    terminate through bounded cleanup.
+    transcript events are matched by provider input-item identity and route once. Missing, failed,
+    stale, duplicate, or timed-out active transcripts mutate nothing and terminate through bounded
+    cleanup. A valid empty completion for the active item instead settles known transcription usage,
+    mutates nothing, and requests one fixed retry without a protocol stop or admission disablement.
 13. Each later context revision replaces the scoped connector-family menu from current eligibility;
     it never restores a broad foundational or all-eligible native-audio menu.
 14. Query results contain at most the contract limit, use stable approved identities, and exclude
@@ -238,6 +239,11 @@ voice and emits only a safe bounded local warning.
     welcome, policy, clarification, and capability-result speech is buffered and transcript-
     checked before release. One malformed fixed response may retry within the existing three-stage
     turn bound; a second mismatch terminates through protocol cleanup.
+20. Capability-result fixed speech is projected deterministically from the validated result and
+    refreshed context. It distinguishes changed, unchanged, empty, unavailable, failed,
+    clarification, and confirmation states; uses only bounded verified evidence; never emits the
+    generic phrase “Done in Amble”; and asks at most one follow-up question gated by current
+    capability eligibility.
 
 ## Capability-call ordering
 

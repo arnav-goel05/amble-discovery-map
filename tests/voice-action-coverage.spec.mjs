@@ -346,7 +346,21 @@ test("voice event sentences update the same authoritative composer state as dire
     .toMatchObject({
       status: "completed",
       errorCode: null,
-      data: { outcome: "applied" },
+      data: {
+        outcome: "applied",
+        topEvents: expect.any(Array),
+        canAddToPlan: expect.any(Boolean),
+      },
+    });
+  const capabilityResult = harness.browserMessages.find(
+    (message) =>
+      message.type === "capability.result" && message.callId === callId,
+  ).result;
+  expect(capabilityResult.data.topEvents.length).toBeLessThanOrEqual(3);
+  for (const event of capabilityResult.data.topEvents)
+    expect(event).toEqual({
+      eventId: expect.any(String),
+      title: expect.any(String),
     });
   await expect
     .poll(

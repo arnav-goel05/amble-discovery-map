@@ -172,6 +172,7 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Verify every affected direct UI and conversational entry point uses the shared capability registry and reaches the same observable success, failure, and unavailable states
 - [ ] TXXX Verify queries return bounded validated domain results with stable identities and every state-changing command refreshes authoritative assistant context
 - [ ] TXXX Verify local, test, preview, and production expose semantically equivalent catalogue and capability contracts
+- [ ] TXXX Verify the action dialogue matrix uses only validated result/context fields, distinguishes every outcome type, and offers at most one currently eligible next step
 - [ ] TXXX Verify MCP or other protocol adapters contain no duplicated business rules and cannot bypass validation, provenance, authorization, confirmation, privacy, or lifecycle controls
 - [ ] TXXX For any constitution-approved paid service, verify usage and spending limits, server-side credentials, disable control, limit-exhaustion behavior, and the free fallback
 - [ ] TXXX Record bounded request budgets for quota-limited production checks; verify exhaustive Cloudflare/R2 integrity through binding or control-plane inventory, require fresh per-run evidence after mutable-object operations, and keep per-object public probes out of CI and routine deployment

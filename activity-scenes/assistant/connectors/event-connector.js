@@ -599,6 +599,12 @@ export function createEventConnector({
     const affectedTargetId =
       args.eventId ?? current.selectedEventId ?? before.selectedEventId;
     const patch = contextPatch(current);
+    const topEvents = current.events.slice(0, 3).map(({ eventId, title }) =>
+      Object.freeze({
+        eventId: boundedText(eventId, 200),
+        title: boundedText(title.replace(/\s+/g, " ").trim(), 160),
+      }),
+    );
     return Object.freeze({
       changed,
       affectedTargetIds: Object.freeze(
@@ -607,7 +613,11 @@ export function createEventConnector({
       contextPatch: patch,
       data:
         capabilityId === "event.applyquery"
-          ? Object.freeze(structuredClone(ownerResult?.data))
+          ? Object.freeze({
+              ...structuredClone(ownerResult?.data),
+              topEvents: Object.freeze(topEvents),
+              canAddToPlan: current.planCanAdd,
+            })
           : Object.freeze({
               state: current,
               contextPatch: patch,

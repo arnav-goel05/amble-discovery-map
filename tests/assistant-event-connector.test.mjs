@@ -93,7 +93,22 @@ function ownerFixture({
   };
   const dispatch = (capabilityId, args = {}) => {
     calls.push([capabilityId, structuredClone(args)]);
-    if (capabilityId === "event.search") state.query = String(args.query ?? "");
+    if (capabilityId === "event.applyquery") {
+      publish();
+      return {
+        changed: true,
+        data: {
+          outcome: "applied",
+          canonicalSentence: args.text,
+          residualQuery: "",
+          phrases: [],
+          clarificationChoices: [],
+          catalogRevision: "fixture-catalog",
+          resultCount: events.length,
+        },
+      };
+    } else if (capabilityId === "event.search")
+      state.query = String(args.query ?? "");
     else if (capabilityId === "event.setfilter") {
       state.filterTokens = state.filterTokens.filter(
         ({ dimension }) => dimension !== args.facet,
@@ -205,6 +220,29 @@ test("event connector exposes only bounded approved IDs and canonical commands",
     }),
     false,
   );
+});
+
+test("applyquery returns the first three authoritative event results for narration", async () => {
+  const owner = ownerFixture();
+  const connector = createEventConnector({ eventController: owner });
+
+  const result = await connector.execute(
+    "event.applyquery",
+    {
+      text: "events this weekend",
+      mode: "replace",
+      baseContextRevision: 0,
+      catalogRevision: "",
+    },
+    { revision: 0 },
+  );
+
+  assert.deepEqual(result.data.topEvents, [
+    { eventId: "event:venue-1:music-night", title: "Music Night" },
+    { eventId: "event:venue-2:fixture-2", title: "Fixture 2" },
+    { eventId: "event:venue-3:fixture-3", title: "Fixture 3" },
+  ]);
+  assert.equal(result.data.canAddToPlan, true);
 });
 
 test("model query state preserves multi-value filters and placement semantics", () => {

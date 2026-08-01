@@ -7,6 +7,17 @@
 
 ## Summary
 
+**2026-08-01 admission-safety amendment**: Treat a provider-completed empty transcript for the
+active item as a normal no-recognition result. Settle its known bounded usage, mutate nothing, and
+request one fixed retry without entering the protocol-integrity path or disabling later sessions.
+
+**2026-08-01 grounded-dialogue amendment**: Replace generic capability acknowledgements with one
+deterministic dialogue projector over validated results and refreshed context. It distinguishes
+success, no-op, empty, unavailable, failed, clarification, and confirmation; uses verified target
+labels, result counts, settings, and plan state when available; and offers at most one currently
+eligible next step. Event, restaurant, and planning outcomes may be warm and playful, while camera,
+layer, overlay, and tour-step outcomes stay brief. No connector business rule moves into the relay.
+
 **2026-08-01 superseding amendment**: Native ingress no longer creates or joins a provider
 classification response. The relay routes its final transcript with a deterministic allowlist.
 Event interpretation extracts current-catalogue facets and ignores unmatched wording unless the
@@ -183,6 +194,10 @@ _GATE: Passed before Phase 0 and re-checked after Phase 1 design._
   and common contract fixtures across local, test, preview, and production. Realtime function tools
   expose the in-app registry. The MCP foundation derives descriptors from that same registry, is
   disabled and non-networked, and cannot own business logic or bypass the gateway.
+- **Conversational feedback — PASS**: One relay-owned projector consumes only validated result and
+  refreshed-context fields, distinguishes every terminal and no-op state, and gates optional
+  next-step language on explicit eligibility evidence. Connector state remains authoritative and
+  missing labels degrade to bounded target-neutral wording.
 - **Deterministic interpretation — PASS**: Event language normalization is side-effect-free and
   shares Feature 015's catalogue grammar with the direct composer. Only the event domain executor
   can atomically commit the complete revision-bound proposal; ambiguity, invalid compounds, and

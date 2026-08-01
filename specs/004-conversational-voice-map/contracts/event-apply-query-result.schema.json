@@ -77,6 +77,30 @@
     "resultCount": {
       "type": "integer",
       "minimum": 0
+    },
+    "topEvents": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["eventId", "title"],
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        }
+      }
+    },
+    "canAddToPlan": {
+      "type": "boolean"
     }
   }
 }

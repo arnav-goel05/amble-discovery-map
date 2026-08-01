@@ -14,6 +14,7 @@ import {
 } from "../scripts/lib/realtime-relay-protocol.mjs";
 import {
   AMBLE_WELCOME_MESSAGE,
+  EMPTY_TRANSCRIPT_RETRY_MESSAGE,
   OUT_OF_SCOPE_RESPONSE,
   buildAmbleSessionInstructions,
   buildVerbatimSpeechInstructions,
@@ -243,22 +244,11 @@ test("native event mode refines only explicit follow-ups against existing state"
 });
 
 test("authoritative capability outcomes produce bounded truthful speech", () => {
-  assert.equal(
-    capabilityResultSpeech(
-      "map.setlayervisibility",
-      { layer: "mrtLines", visible: false },
-      { status: "completed", changed: true },
-    ),
-    "I hid train lines.",
-  );
-  assert.equal(
-    capabilityResultSpeech(
-      "restaurant.search",
-      { query: "Italian restaurants nearby" },
-      { status: "completed", changed: true },
-    ),
-    "I updated the restaurant results for Italian restaurants nearby.",
-  );
+  const completed = (data = {}) => ({
+    status: "completed",
+    changed: true,
+    data,
+  });
   assert.equal(
     capabilityResultSpeech(
       "event.applyquery",
@@ -271,9 +261,181 @@ test("authoritative capability outcomes produce bounded truthful speech", () => 
     "I found 11 matching events.",
   );
   assert.equal(
-    capabilityResultSpeech("map.zoomin", {}, { status: "failed" }),
-    "I couldn't complete that in Amble.",
+    capabilityResultSpeech(
+      "event.applyquery",
+      {},
+      {
+        status: "completed",
+        data: {
+          outcome: "applied",
+          resultCount: 140,
+          topEvents: [
+            { eventId: "event:brunch", title: "100% Latin Rooftop Brunch" },
+            {
+              eventId: "event:ballet",
+              title: "Singapore Ballet Masterpieces",
+            },
+            { eventId: "event:gallery", title: "When Art Meets Nature" },
+          ],
+          canAddToPlan: true,
+        },
+      },
+    ),
+    "I found 140 matching events. Top options are 100% Latin Rooftop Brunch, Singapore Ballet Masterpieces, and When Art Meets Nature. Would you like me to add one to your plan?",
   );
+  assert.equal(
+    capabilityResultSpeech(
+      "event.applyquery",
+      {},
+      completed({
+        outcome: "applied",
+        resultCount: 2,
+        topEvents: [
+          { eventId: "event:one", title: "Gallery Night" },
+          { eventId: "event:two", title: "Sunset Jazz" },
+        ],
+        canAddToPlan: false,
+      }),
+    ),
+    "I found 2 matching events. Top options are Gallery Night and Sunset Jazz.",
+  );
+
+  const cases = [
+    [
+      "restaurant.search",
+      { query: "Italian restaurants nearby" },
+      completed({ state: { resultIds: ["restaurant:one"] } }),
+      "I found restaurant matches for Italian restaurants nearby. Which one sounds good?",
+    ],
+    [
+      "restaurant.setcuisine",
+      { cuisineId: "south-indian" },
+      completed({ state: { resultIds: ["restaurant:one"] } }),
+      "South Indian it is! I refreshed the restaurant results.",
+    ],
+    [
+      "restaurant.selectresult",
+      { restaurantId: "restaurant:one" },
+      completed(),
+      "Good pick—that restaurant is selected.",
+    ],
+    [
+      "restaurant.addtoplan",
+      { restaurantId: "restaurant:one" },
+      completed(),
+      "Delicious choice—that restaurant is in your plan!",
+    ],
+    ["map.zoomin", {}, completed(), "Zooming in—let's get a closer look."],
+    ["map.zoomout", {}, completed(), "Zooming out—here's the bigger picture."],
+    [
+      "map.pan",
+      { direction: "east", amount: "medium" },
+      completed(),
+      "Moving east—let's see what's over there.",
+    ],
+    ["map.rotate", { bearing: 45 }, completed(), "Map rotated to 45 degrees."],
+    ["map.resetview", {}, completed(), "Back to the Singapore overview."],
+    [
+      "map.setlayervisibility",
+      { layer: "mrtLines", visible: false },
+      completed(),
+      "I hid train lines.",
+    ],
+    [
+      "map.selectarea",
+      { areaId: "area:marina-bay" },
+      completed(),
+      "I highlighted that area on the map.",
+    ],
+    [
+      "plan.open",
+      {},
+      completed({ state: { stops: [], addableTargetIds: ["event:one"] } }),
+      "Your plan is open and ready. Shall we add one of the places you're viewing?",
+    ],
+    [
+      "plan.settravelmode",
+      { mode: "transit" },
+      completed(),
+      "Switched to transit. I updated the route.",
+    ],
+    [
+      "plan.addstop",
+      { targetId: "event:one" },
+      completed({
+        state: {
+          stops: [
+            {
+              stopId: "stop:one",
+              targetId: "event:one",
+              label: "Gallery Night",
+            },
+          ],
+        },
+      }),
+      "Nice—Gallery Night is in your plan!",
+    ],
+    ["tour.start", {}, completed(), "Let's take a quick tour!"],
+    [
+      "tour.next",
+      {},
+      completed({ state: { stepIndex: 2, stepCount: 7 } }),
+      "On to tour step 3 of 7.",
+    ],
+    [
+      "navigation.closeoverlay",
+      {},
+      completed(),
+      "All closed. You're back on the map.",
+    ],
+    [
+      "navigation.openexternal",
+      { targetId: "event:one", linkKind: "official" },
+      completed(),
+      "I opened the approved external page.",
+    ],
+    [
+      "map.zoomin",
+      {},
+      { status: "completed", changed: false, data: {} },
+      "You're already set—nothing needed changing.",
+    ],
+    [
+      "catalog.search",
+      {},
+      { status: "empty", changed: null, data: null },
+      "I couldn't find a matching result. Nothing changed.",
+    ],
+    [
+      "map.zoomin",
+      {},
+      { status: "unavailable", changed: false, data: null },
+      "That action isn't available right now. Nothing changed.",
+    ],
+    [
+      "map.zoomin",
+      {},
+      { status: "failed", changed: false, data: null },
+      "That didn't go through. Nothing changed.",
+    ],
+    [
+      "plan.openroute",
+      {},
+      { status: "confirmation_required", changed: false, data: null },
+      "This action needs your confirmation. Review the exact effect in Amble when you're ready.",
+    ],
+  ];
+  for (const [capabilityId, argumentsValue, result, expected] of cases)
+    assert.equal(
+      capabilityResultSpeech(capabilityId, argumentsValue, result),
+      expected,
+      capabilityId,
+    );
+
+  for (const [, , , expected] of cases) {
+    assert.doesNotMatch(expected, /Done in Amble/);
+    assert.ok((expected.match(/\?/g) ?? []).length <= 1);
+  }
 });
 
 test("native ingress response instructions prohibit returning a transcript", () => {
@@ -1175,52 +1337,99 @@ test("a transcript for a different committed provider item fails closed", async 
   );
 });
 
-test("empty and conflicting duplicate final transcripts fail closed", async () => {
-  for (const candidate of ["empty", "conflicting_duplicate"]) {
-    const harness = await createRelayHarness();
-    const sessionId = harness.admitted.data.sessionId;
-    await harness.relay.handleBrowserMessage(
-      sessionId,
-      JSON.stringify({ type: "turn.request", turnId: `turn-${candidate}` }),
-    );
-    await harness.relay.handleBrowserMessage(
-      sessionId,
-      JSON.stringify({ type: "audio.commit", turnId: `turn-${candidate}` }),
-    );
-    await flushRelay();
-    harness.providerListeners.message({
-      data: JSON.stringify({
-        type: "input_audio_buffer.committed",
-        item_id: "input-item-duplicate",
-      }),
-    });
-    harness.providerListeners.message({
-      data: JSON.stringify({
-        type: "conversation.item.input_audio_transcription.completed",
-        item_id: "input-item-duplicate",
-        transcript: candidate === "empty" ? "" : "find events today",
-      }),
-    });
-    await flushRelay();
-    if (candidate === "conflicting_duplicate") {
-      assert.equal(harness.relay.sessions.has(sessionId), true);
-      harness.providerListeners.message({
-        data: JSON.stringify({
-          type: "conversation.item.input_audio_transcription.completed",
-          item_id: "input-item-duplicate",
-          transcript: "find restaurants instead",
-        }),
-      });
-      await flushRelay();
-    }
-    assert.equal(harness.relay.sessions.has(sessionId), false);
-    assert.equal(
-      harness.browserMessages.some(
-        ({ type }) => type === "capability.proposed",
-      ),
-      false,
-    );
-  }
+test("empty final transcripts settle and request one bounded retry without disabling voice", async () => {
+  const settlements = [];
+  const holds = [];
+  const harness = await createRelayHarness({
+    budgetRepository: {
+      async settle(input) {
+        settlements.push(structuredClone(input));
+      },
+      async hold(input) {
+        holds.push(structuredClone(input));
+      },
+    },
+  });
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "turn.request", turnId: "turn-empty" }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "audio.commit", turnId: "turn-empty" }),
+  );
+  await flushRelay();
+  await emitFinalInputTranscript(harness, "", "input-item-empty");
+
+  assert.equal(harness.relay.sessions.has(sessionId), true);
+  assert.equal(
+    harness.browserMessages.some(({ type }) => type === "capability.proposed"),
+    false,
+  );
+  assert.equal(
+    harness.browserMessages.some(({ type }) => type === "session.stopped"),
+    false,
+  );
+  assert.equal(holds.length, 0);
+  assert.equal(
+    settlements.filter(
+      ({ usageShapeHash }) =>
+        usageShapeHash === "sha256:provider-final-transcript-max-bound",
+    ).length,
+    1,
+  );
+  const responseCreate = harness.providerMessages
+    .filter(({ type }) => type === "response.create")
+    .at(-1);
+  assert.match(
+    responseCreate.response.instructions,
+    new RegExp(
+      EMPTY_TRANSCRIPT_RETRY_MESSAGE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+    ),
+  );
+});
+
+test("conflicting duplicate final transcripts fail closed", async () => {
+  const harness = await createRelayHarness();
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "turn.request",
+      turnId: "turn-conflicting-duplicate",
+    }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "audio.commit",
+      turnId: "turn-conflicting-duplicate",
+    }),
+  );
+  await flushRelay();
+  await emitFinalInputTranscript(
+    harness,
+    "find events today",
+    "input-item-duplicate",
+  );
+  assert.equal(harness.relay.sessions.has(sessionId), true);
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "conversation.item.input_audio_transcription.completed",
+      item_id: "input-item-duplicate",
+      transcript: "find restaurants instead",
+    }),
+  });
+  await flushRelay();
+
+  assert.equal(harness.relay.sessions.has(sessionId), false);
+  assert.equal(
+    harness.browserMessages.filter(
+      ({ type }) => type === "capability.proposed",
+    ).length,
+    0,
+  );
 });
 
 test("audio exceeding the reserved transcription duration stops before forwarding", async () => {

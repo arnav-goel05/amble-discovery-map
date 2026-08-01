@@ -107,6 +107,7 @@
 - **FR-009**: System MUST define a versioned typed command or query contract for every affected user-facing capability and use the same business executor for direct and conversational entry points
 - **FR-010**: Queries MUST return bounded validated domain results with stable identities; state-changing commands MUST return validated observable outcomes and publish refreshed authoritative interface context
 - **FR-011**: System MUST derive capability eligibility from current application state and verify semantically equivalent capability contracts across local, test, preview, and production environments
+- **FR-012**: Conversational capability feedback MUST describe the validated outcome with available verified target/state details, distinguish terminal outcome types, and offer only currently eligible next steps
 
 _Example of marking unclear requirements:_
 

@@ -379,8 +379,11 @@ State transition:
 
 `requested → operations_reserved → audio_committed → classification_and_transcription → joined → routed → responding → settled`
 
-Any admission, policy, network, provider, timeout, transcription, or protocol failure transitions
-through existing terminal cleanup and clears both reservations and join state.
+Any admission, policy, network, provider, timeout, transcription failure, or protocol failure
+transitions through existing terminal cleanup and clears both reservations and join state. A valid
+empty completion for the active item is a `no_speech` outcome: it settles the known transcription
+reservation and enters one fixed retry response without application mutation or global admission
+disablement.
 
 ## NativeVoiceClassification (memory only)
 
@@ -400,11 +403,12 @@ contains no utterance, and is cleared on completion, interruption, timeout, or s
 | -------- | ------- | ------------------------------------------------------------------------- |
 | `itemId` | string  | Must match the active committed provider audio item                       |
 | `text`   | string  | Non-empty bounded final provider transcript; authoritative turn utterance |
-| `status` | enum    | `final`, `failed`, or `terminal`                                          |
+| `status` | enum    | `final`, `no_speech`, `failed`, or `terminal`                             |
 | `joined` | boolean | Single-use guard; true only after pairing with active classification      |
 
 Partial deltas may update UI transcript state but cannot authorize routing or mutation. The final
-transcript is session-scoped and is never persisted outside explicitly authorized local audit.
+transcript is session-scoped and is never persisted outside explicitly authorized local audit. A
+`no_speech` outcome carries no authoritative utterance and cannot authorize a capability proposal.
 
 ## NativeToolMenu (memory only)
 
@@ -498,3 +502,20 @@ State transition:
 On mismatch, the buffer is discarded and the same fixed text is retried once. A second mismatch
 terminates through protocol cleanup. Tool-stage buffers follow the same release boundary but are
 discarded whenever a function call is produced.
+
+## CapabilityDialogueProjection (session memory only)
+
+| Field | Type | Rules |
+| --- | --- | --- |
+| `capabilityId` | canonical string | Must match the validated capability result |
+| `outcome` | enum | `completed_changed`, `completed_unchanged`, `empty`, `unavailable`, `failed`, `clarification`, or `confirmation_required` |
+| `evidence` | bounded object | Only result/context-projected labels, counts, settings, and state |
+| `nextCapabilityId` | nullable canonical string | Present only when refreshed context marks it eligible |
+| `speech` | bounded string | One confirmed outcome and at most one follow-up question |
+
+State transition:
+
+`validated result + refreshed context → evidence projection → deterministic template → fixed speech`
+
+Missing evidence selects a target-neutral template. The projection is never persisted and cannot
+authorize an action.
