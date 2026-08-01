@@ -29,7 +29,7 @@ Runtime diagnostics are a local developer tool, not product analytics. Enable th
 explicitly:
 
 ```text
-http://127.0.0.1:5173/?autoStart&performanceDiagnostics=1
+http://127.0.0.1:5173/?performanceDiagnostics=1
 ```
 
 The compact panel reports:

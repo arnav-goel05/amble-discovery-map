@@ -148,7 +148,7 @@ const mapReady = (page) =>
 test("mobile map always shows distinct MRT context and the available user location", async ({
   page,
 }) => {
-  await page.goto("/?autoStart&emptyApprovedSnapshot#11/1.35/103.82/0/0");
+  await page.goto("/?emptyApprovedSnapshot#11/1.35/103.82/0/0");
   await expect
     .poll(
       () =>
@@ -186,7 +186,7 @@ test("MRT visibility is visual-only until the user explicitly requests a transit
   page,
 }) => {
   const harness = await installProtocolHarness(page);
-  await page.goto("/?autoStart&emptyApprovedSnapshot#11/1.35/103.82/0/0");
+  await page.goto("/?emptyApprovedSnapshot#11/1.35/103.82/0/0");
   await expect
     .poll(() => mapReady(page), {
       timeout: 15_000,

@@ -117,6 +117,70 @@ test("evidence cannot name a generic domain while selecting a specific category"
   assert.equal(result.reason, "unverified_evidence");
 });
 
+test("a unique public venue name verifies a catalogue label with a parenthetical qualifier", () => {
+  const venue = {
+    id: "where:marina-bay-sands",
+    dimension: "where",
+    label: "MARINA BAY SANDS (MICE)",
+    searchableLabel: "marina bay sands mice",
+  };
+  const expandedCatalog = {
+    all: [...catalog.all, venue],
+    groups: {
+      ...catalog.groups,
+      where: [...catalog.groups.where, venue],
+    },
+  };
+  const result = verifyEventFacetProposal({
+    utterance: "Can you help me find events near Marina Bay Sands today?",
+    proposal: proposal({
+      what: [],
+      where: {
+        label: "MARINA BAY SANDS (MICE)",
+        evidence: "Marina Bay Sands",
+      },
+      residualQuery: "Marina Bay Sands today",
+      unresolved: ["what"],
+    }),
+    catalog: expandedCatalog,
+  });
+
+  assert.equal(result.accepted, true);
+  assert.equal(result.residualQuery, "");
+  assert.deepEqual(
+    result.matches.map(({ optionId }) => optionId),
+    ["when:today", "where:marina-bay-sands"],
+  );
+});
+
+test("an ambiguous public venue name cannot discard distinguishing qualifiers", () => {
+  const venues = ["EXPO (EAST)", "EXPO (WEST)"].map((label, index) => ({
+    id: `where:expo-${index}`,
+    dimension: "where",
+    label,
+    searchableLabel: label.toLowerCase().replaceAll(/[()]/g, ""),
+  }));
+  const expandedCatalog = {
+    all: [...catalog.all, ...venues],
+    groups: {
+      ...catalog.groups,
+      where: [...catalog.groups.where, ...venues],
+    },
+  };
+  const result = verifyEventFacetProposal({
+    utterance: "find events at Expo today",
+    proposal: proposal({
+      what: [],
+      where: { label: "EXPO (EAST)", evidence: "Expo" },
+      residualQuery: "",
+    }),
+    catalog: expandedCatalog,
+  });
+
+  assert.equal(result.accepted, false);
+  assert.equal(result.reason, "unverified_evidence");
+});
+
 test("unresolved facets request clarification without accepting a mutation", () => {
   const result = verifyEventFacetProposal({
     utterance: "find something today",

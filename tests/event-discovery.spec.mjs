@@ -154,7 +154,7 @@ async function chooseFilterOption(page, optionId) {
 test("guided filters expose every dimension and apply a partial Where selection immediately", async ({
   page,
 }) => {
-  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  await page.goto("/#17/1.2858/103.8579/0/60");
   const input = page.locator("#landmark-event-search-input");
   await input.focus();
   const dimensions = page.locator("[data-filter-dimension]");
@@ -223,7 +223,7 @@ test("guided filters expose every dimension and apply a partial Where selection 
 
 test("guided filters remain reachable at 320 CSS pixels", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 700 });
-  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  await page.goto("/#17/1.2858/103.8579/0/60");
   const input = page.locator("#landmark-event-search-input");
   await input.focus();
   await expect(page.locator("[data-filter-dimension]")).toHaveCount(4);
@@ -300,7 +300,7 @@ test("Current map area refreshes on movement and Near me uses one ephemeral loca
       },
     });
   });
-  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  await page.goto("/#17/1.2858/103.8579/0/60");
   const input = page.locator("#landmark-event-search-input");
   await chooseFilterOption(page, "where:map-area");
   await expect(
@@ -342,7 +342,7 @@ test("custom dates commit as one token and denied Near me preserves the previous
       },
     });
   });
-  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  await page.goto("/#17/1.2858/103.8579/0/60");
   const input = page.locator("#landmark-event-search-input");
   await chooseFilterOption(page, "when:custom");
   await page.locator('[name="dateStart"]').fill("2026-07-14");
@@ -371,7 +371,7 @@ test("custom dates commit as one token and denied Near me preserves the previous
 test("recognized options support typing, replacement, Backspace, and wrapping", async ({
   page,
 }) => {
-  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  await page.goto("/#17/1.2858/103.8579/0/60");
   const input = page.locator("#landmark-event-search-input");
   await input.focus();
   await page.locator('[data-filter-dimension="what"]').click();
@@ -438,7 +438,7 @@ test("recognized options support typing, replacement, Backspace, and wrapping", 
 test("zero-result filters offer exact removal recovery and a clear-all fallback", async ({
   page,
 }) => {
-  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  await page.goto("/#17/1.2858/103.8579/0/60");
   const input = page.locator("#landmark-event-search-input");
   await chooseFilterOption(page, "when:today");
   await expect(page.locator("#landmark-event-search")).toHaveAttribute(
@@ -479,7 +479,7 @@ test("map movement reuses discovery while filter changes rebuild it", async ({
   page,
 }) => {
   await page.goto(
-    "/?autoStart&performanceDiagnostics=1&performanceVariant=full#17/1.2858/103.8579/0/60",
+    "/?performanceDiagnostics=1&performanceVariant=full#17/1.2858/103.8579/0/60",
   );
   await expect
     .poll(() =>
@@ -540,7 +540,7 @@ test("guided option narrowing and bounded recovery stay within the local respons
   page,
 }) => {
   await page.goto(
-    "/?autoStart&performanceDiagnostics=1&performanceVariant=full#17/1.2858/103.8579/0/60",
+    "/?performanceDiagnostics=1&performanceVariant=full#17/1.2858/103.8579/0/60",
   );
   await page.locator("#landmark-event-search-input").focus();
   const narrowingDuration = await page.evaluate(() => {
@@ -585,7 +585,7 @@ test("the map starts directly without a startup surface", async ({ page }) => {
 test("the pixel minimap moves the map and follows event filters", async ({
   page,
 }) => {
-  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  await page.goto("/#17/1.2858/103.8579/0/60");
   const minimap = page.locator("#event-density-minimap");
   await expect(minimap).toBeVisible();
   await expect(page.locator(".event-density-minimap__status")).toHaveCount(0);
@@ -660,7 +660,7 @@ test("the minimap reuses its static raster during movement and rebuilds it for f
   page,
 }) => {
   await page.goto(
-    "/?autoStart&performanceDiagnostics=1&performanceVariant=full#17/1.2858/103.8579/0/60",
+    "/?performanceDiagnostics=1&performanceVariant=full#17/1.2858/103.8579/0/60",
   );
   const minimap = page.locator("#event-density-minimap");
   await expect(minimap).toBeVisible();
@@ -701,7 +701,7 @@ test("cached and legacy minimap rendering remain visually equivalent", async ({
 }) => {
   const imageFor = async (variant) => {
     await page.goto(
-      `/?autoStart&performanceDiagnostics=1&performanceVariant=${variant}#17/1.2858/103.8579/0/60`,
+      `/?performanceDiagnostics=1&performanceVariant=${variant}#17/1.2858/103.8579/0/60`,
     );
     await expect(page.locator("#event-density-minimap")).toBeVisible();
     await page.evaluate(async () => {
@@ -751,7 +751,7 @@ test("cached and legacy minimap rendering remain visually equivalent", async ({
 test("anonymous startup renders one compact full-title pill and tracks its map anchor", async ({
   page,
 }) => {
-  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  await page.goto("/#17/1.2858/103.8579/0/60");
   const pill = page.locator("#fixture-hall-event-pill");
   await expect(pill).toHaveCount(1);
   await expect(pill.locator(".landmark-event-pill__title")).toHaveText(
@@ -777,7 +777,7 @@ test("anonymous startup renders one compact full-title pill and tracks its map a
 test("zoomed-out discovery counts lead toward event pills", async ({
   page,
 }) => {
-  await page.goto("/?autoStart#10/1.3521/103.8198/0/45");
+  await page.goto("/#10/1.3521/103.8198/0/45");
   const counts = page.locator(".landmark-event-cluster__count");
   await expect.poll(() => counts.count()).toBeGreaterThan(0);
   await expect(
@@ -807,7 +807,7 @@ test("zoomed-out discovery counts lead toward event pills", async ({
 test("a multi-location activity is labelled at each mapped venue", async ({
   page,
 }) => {
-  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  await page.goto("/#17/1.2858/103.8579/0/60");
   await expect(
     page.locator("#trail-east-event-pill .landmark-event-pill__location"),
   ).toHaveText("Multiple locations");
@@ -820,7 +820,7 @@ test("a multi-location activity is labelled at each mapped venue", async ({
 test("multiple events share one landmark pill and one singleton detail panel", async ({
   page,
 }) => {
-  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  await page.goto("/#17/1.2858/103.8579/0/60");
   await page
     .locator("#fixture-hall-event-pill .landmark-event-pill__card")
     .click();
@@ -837,7 +837,7 @@ test("empty snapshots keep the mobile toolbar compact and hide laptop-only map c
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/?autoStart&emptyApprovedSnapshot#17/1.2858/103.8579/0/60");
+  await page.goto("/?emptyApprovedSnapshot#17/1.2858/103.8579/0/60");
   await expect(page.locator(".landmark-event-pill")).toHaveCount(0);
   await expect(page.locator("#landmark-event-search")).toBeVisible();
   await expect(
@@ -931,7 +931,7 @@ test("empty snapshots keep the mobile toolbar compact and hide laptop-only map c
 test("only the secret-location filter remains and location types move into activity details", async ({
   page,
 }) => {
-  await page.goto("/?autoStart#17/1.2858/103.8579/0/60");
+  await page.goto("/#17/1.2858/103.8579/0/60");
   const search = page.locator("#landmark-event-search-input");
   await search.focus();
   await page.locator('[data-filter-dimension="where"]').click();

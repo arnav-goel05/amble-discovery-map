@@ -63,6 +63,24 @@ published manifest verify. Changing it is the activation boundary for a deployed
 
 ## Versioned Tileset Manifest
 
-The source `optimized-tiles/tileset.json` structure is preserved. Every active B3DM content URI
-receives `?backgroundObject=<sha256>`. The manifest request receives
-`?backgroundRelease=<releaseId>`. Non-active content URIs remain unchanged.
+The source `optimized-tiles/tileset.json` structure is preserved. Every active B3DM tile records
+its expected SHA-256 and MD5 in tile metadata while retaining a clean `.b3dm` content URI. The
+manifest request receives `?backgroundRelease=<releaseId>`. Non-active content URIs remain
+unchanged.
+
+## R2 Binding Inventory Evidence
+
+- `releaseId`: a cache identity derived from the expected background release plus every ordered
+  highlighted-object key, byte length, and MD5
+- `verificationId`: a random bounded identity created for one operator invocation so mutable-key
+  preflight evidence cannot be reused as post-upload proof
+- `referenceSha256`: deterministic digest of every sorted referenced object key
+- `objectMetadataSha256`: deterministic digest of sorted key, byte-length, and reliable validator
+- `versionedObjects`: bounded active-background records containing key, size, and validator
+- `unverifiableObjectCount`: referenced objects without a reliable checksum or validator
+- `errors`: missing, undersized, validator-mismatch, or unverifiable records
+
+An inventory report is current only for its cache-keyed release and verification identities. A stored validator and
+byte length prove a matched object. Highlighted objects are compared locally against the bounded
+per-object inventory returned by the same request. Missing or unsuitable validators do not prove
+equality.

@@ -141,7 +141,7 @@ test("button searches the visible map area, clusters locations, lists restaurant
           }
         : null,
   });
-  await page.goto("/?autoStart&emptyApprovedSnapshot");
+  await page.goto("/?emptyApprovedSnapshot");
   await expect
     .poll(() => page.locator("body").getAttribute("data-restaurant-explorer"))
     .toBe("mounted");
@@ -449,7 +449,7 @@ test("stale restaurant and deal envelopes are labelled and expired deals stay hi
       },
     },
   });
-  await page.goto("/?autoStart&emptyApprovedSnapshot");
+  await page.goto("/?emptyApprovedSnapshot");
   await page.locator("#restaurant-search-button").click();
   await expect(page.locator(".restaurant-results__freshness")).toBeHidden();
   await page.locator('[data-restaurant-id="osm-node-42"]').click();
@@ -469,7 +469,7 @@ test("restaurant names are rendered as text and the list remains usable on a nar
 }) => {
   await page.setViewportSize({ width: 390, height: 760 });
   await mockRestaurantApi(page);
-  await page.goto("/?autoStart&emptyApprovedSnapshot");
+  await page.goto("/?emptyApprovedSnapshot");
   await expect
     .poll(() => page.locator("body").getAttribute("data-restaurant-explorer"))
     .toBe("mounted");

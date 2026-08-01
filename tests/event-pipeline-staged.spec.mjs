@@ -105,7 +105,7 @@ test("staged successful snapshot mounts every landmark once and opens the shared
     )
       htmlAssetFallbacks.push(response.url());
   });
-  await page.goto("/?autoStart#17/1.285844/103.857897/-30/60");
+  await page.goto("/#17/1.285844/103.857897/-30/60");
   await expect
     .poll(
       () => page.locator("body").getAttribute("data-poi-highlight-manager"),
@@ -172,7 +172,7 @@ test("staged stale metadata is visible without publishing the candidate over the
   await page.addInitScript(() => {
     globalThis.__EVENT_PIPELINE_SNAPSHOT__.stale = true;
   });
-  await page.goto("/?autoStart#17/1.285844/103.857897/-30/60");
+  await page.goto("/#17/1.285844/103.857897/-30/60");
   await expect(page.locator("body")).toHaveAttribute(
     "data-snapshot-state",
     "potentially-outdated",
@@ -187,7 +187,7 @@ test("staged stale metadata is visible without publishing the candidate over the
 
 test("staged panel remains usable at a narrow viewport", async ({ page }) => {
   test.skip(!landmarks.length, "No staged landmarks");
-  await page.goto("/?autoStart#17/1.285844/103.857897/-30/60");
+  await page.goto("/#17/1.285844/103.857897/-30/60");
   await expect(page.locator(".landmark-event-pill")).toHaveCount(
     landmarks.length,
     { timeout: 45_000 },

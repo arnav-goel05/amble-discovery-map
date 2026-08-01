@@ -223,7 +223,7 @@ async function installVoiceHarness(page) {
       providerUrls.push(request.url());
   });
 
-  await page.goto("/?autoStart#14/1.2858/103.8579/0/45");
+  await page.goto("/#14/1.2858/103.8579/0/45");
   await page.locator('[data-testid="assistant-open"]').click();
   await expect
     .poll(() => revision, { timeout: 15_000 })

@@ -55,8 +55,13 @@ export function indexSourceHierarchy(sourceTileset) {
   const byPath = new Map();
   const visit = (tile, path) => {
     byPath.set(pathKey(path), tile);
-    const uri = tileUri(tile);
-    if (uri) {
+    const uris = [
+      tileUri(tile),
+      ...(Array.isArray(tile?.extras?.omittedContentUris)
+        ? tile.extras.omittedContentUris
+        : []),
+    ].filter(Boolean);
+    for (const uri of uris) {
       const source = normalizedSourceTile(uri, `source node ${pathKey(path)}`);
       if (byContent.has(source.canonical))
         fail(`duplicate source content ${source.canonical}`);

@@ -3,11 +3,13 @@ import fs from "node:fs";
 const EXACT = Object.freeze({
   owner: "Arnav",
   modelId: "gpt-realtime-2.1-mini",
+  transcriptionModelId: "gpt-realtime-whisper",
   capMicroUsd: 10_000_000,
   maxResponseStagesPerTurn: 3,
   responseTimeoutSeconds: 30,
   providerMaxOutputTokens: 4_096,
   maxContextTokens: 4_000,
+  maxTranscriptionAudioSeconds: 60,
 });
 
 const RATE_KEYS = [
@@ -17,6 +19,7 @@ const RATE_KEYS = [
   "audioInputMicroUsdPerMillionTokens",
   "cachedAudioInputMicroUsdPerMillionTokens",
   "audioOutputMicroUsdPerMillionTokens",
+  "transcriptionMicroUsdPerMinute",
 ];
 
 export class RealtimePolicyError extends Error {
@@ -68,7 +71,13 @@ export function calculateWorstCaseReservations(policy) {
     1_000_000,
   );
   const responseMicroUsd = responseInputMicroUsd + responseOutputMicroUsd;
-  const turnMicroUsd = responseMicroUsd;
+  const inputTranscription = policy?.worstCaseReservation?.inputTranscription;
+  const transcriptionMicroUsd = checkedCeilProduct(
+    inputTranscription?.maxAudioSeconds,
+    rates.transcriptionMicroUsdPerMinute,
+    60,
+  );
+  const turnMicroUsd = responseMicroUsd + transcriptionMicroUsd;
   if (![responseMicroUsd, turnMicroUsd].every(Number.isSafeInteger))
     fail(
       "policy_arithmetic_overflow",
@@ -78,6 +87,7 @@ export function calculateWorstCaseReservations(policy) {
     responseInputMicroUsd,
     responseOutputMicroUsd,
     responseMicroUsd,
+    transcriptionMicroUsd,
     turnMicroUsd,
   };
 }
@@ -89,14 +99,10 @@ export function validateRealtimePolicy(policy) {
     fail("policy_owner_invalid", "Realtime policy owner is invalid");
   if (policy.modelId !== EXACT.modelId)
     fail("policy_model_unknown", "Realtime model is not approved");
-  if (
-    "transcriptionModelId" in policy ||
-    "transcriptionMicroUsdPerMinute" in (policy.rateCard?.rates || {}) ||
-    "inputTranscription" in (policy.worstCaseReservation || {})
-  )
+  if (policy.transcriptionModelId !== EXACT.transcriptionModelId)
     fail(
-      "policy_transcription_forbidden",
-      "Realtime policy must use native audio without a separate transcription service",
+      "policy_transcription_model_unknown",
+      "Realtime input-transcription model is not approved",
     );
   if (!safeInteger(policy.capMicroUsd))
     fail("policy_integer_invalid", "Budget cap must be a safe integer");
@@ -138,11 +144,25 @@ export function validateRealtimePolicy(policy) {
       "policy_reservation_bound_invalid",
       "Response reservation must use the reviewed provider maximum",
     );
+  if (
+    policy.worstCaseReservation?.inputTranscription?.maxAudioSeconds !==
+      EXACT.maxTranscriptionAudioSeconds ||
+    policy.worstCaseReservation?.inputTranscription?.rateMicroUsdPerMinute !==
+      policy.rateCard?.rates?.transcriptionMicroUsdPerMinute
+  )
+    fail(
+      "policy_transcription_bound_invalid",
+      "Input transcription reservation must use the reviewed duration and rate",
+    );
   if (policy.rateCardVersion !== policy.rateCard?.version)
     fail("policy_rate_card_mismatch", "Rate-card versions differ");
   const calculated = calculateWorstCaseReservations(policy);
   const declared = policy.worstCaseReservation;
   const values = [
+    [
+      declared.inputTranscription?.reservedMicroUsd,
+      calculated.transcriptionMicroUsd,
+    ],
     [declared.response.inputReservedMicroUsd, calculated.responseInputMicroUsd],
     [
       declared.response.outputReservedMicroUsd,

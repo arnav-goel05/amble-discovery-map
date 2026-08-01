@@ -18,10 +18,10 @@ test("a normal refresh discards the saved map camera while preserving the query"
   assert.deepEqual(replacement, { state: history.state, title: "", url: "/?date=today" });
 });
 
-test("explicit auto-start fixtures can preserve a requested camera", () => {
+test("explicit E2E fixtures can preserve a requested camera", () => {
   let replaced = false;
   const reset = resetSavedMapView({
-    location: { hash: "#17/1.28/103.86/0/60", pathname: "/", search: "?autoStart" },
+    location: { hash: "#17/1.28/103.86/0/60", pathname: "/", search: "" },
     history: { replaceState() { replaced = true; } },
     preserve: true,
   });

@@ -174,6 +174,7 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Verify local, test, preview, and production expose semantically equivalent catalogue and capability contracts
 - [ ] TXXX Verify MCP or other protocol adapters contain no duplicated business rules and cannot bypass validation, provenance, authorization, confirmation, privacy, or lifecycle controls
 - [ ] TXXX For any constitution-approved paid service, verify usage and spending limits, server-side credentials, disable control, limit-exhaustion behavior, and the free fallback
+- [ ] TXXX Record bounded request budgets for quota-limited production checks; verify exhaustive Cloudflare/R2 integrity through binding or control-plane inventory, require fresh per-run evidence after mutable-object operations, and keep per-object public probes out of CI and routine deployment
 - [ ] TXXX Record before-and-after performance benchmarks for rendering-sensitive changes
 - [ ] TXXX Run the required automated desktop/mobile Chromium, WebKit, and Firefox matrix; optionally record locally available branded-browser observations
 - [ ] TXXX Classify approved artifacts versus ignored caches and intermediate outputs

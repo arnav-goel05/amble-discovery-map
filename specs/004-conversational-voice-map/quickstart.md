@@ -1,26 +1,45 @@
 # Quickstart Validation: Conversational Voice Map Assistant
 
-## Planned validation — Forced native ingress
+## Current validation — Relay-owned transcript and forced classification
 
-This amendment is specified and planned but not implemented.
+The relay has no per-session user-turn, assistant-response-count, maximum-duration, or idle-expiry
+limit. A native-audio turn reserves response and transcription work before `turn.ready`, limits
+accepted PCM audio to 60 seconds, and then starts transcription and one forced classification
+response from the same committed buffer.
 
-The planned relay has no per-session user-turn, assistant-response-count, maximum-duration, or
-idle-expiry limit. Deterministic tests must complete more than six consecutive turns and remain
-active beyond the former duration and idle thresholds while separately proving that the
-ingress/domain/final state machine cannot loop beyond its three valid internal stages for one
-request.
+1. Verify the acknowledged provider configuration enables `gpt-realtime-whisper`, contains exactly
+   `voice__classifyrequest` with forced tool choice, and its closed arguments contain only `domain`
+   and `eventQuery`—never an utterance.
+2. Deliver the final transcript and classification in both orders. Verify routing occurs exactly
+   once only after both match the active provider input item.
+3. Verify “find events today at Marina Bay Sands” proposes one `event.applyquery` whose `text` is the
+   relay-owned final transcript and whose bounded proposal preserves both explicit filters.
+4. Verify missing, empty, failed, delayed, duplicate-conflicting, stale-item, interrupted, and
+   timed-out transcript/classification paths mutate nothing and clean up all reservations.
+5. Run the focused policy, budget, relay, diagnostic, capability, browser, formatting, and build
+   gates. A live provider call is optional and requires the existing owner authorization and
+   bounded-spend controls.
 
-1. Commit a mocked native-audio turn and verify the first acknowledged provider configuration
-   contains exactly `voice__submitutterance` with forced tool choice.
-2. Return `{"utterance":"today at Marina Bay Sands"}` and verify the existing deterministic router
-   proposes `event.applyquery` with the complete sentence, never `app.inspect` or `catalog.search`.
-3. Exercise a non-deterministic restaurant/detail request and verify the second-stage tool menu has
-   at most fifteen currently eligible tools from exactly one connector.
-4. Verify deterministic results create a no-tool final response, while malformed, duplicate,
-   stale, overlapping, interrupted, and timed-out ingress calls mutate nothing and clean up.
-5. Run the full voice suite, capability verifiers, affected browser journeys, lint, formatting, and
-   production build. Compare against the recorded 56-tool/three-response event baseline. Do not use
-   a live provider call unless separately authorized.
+## 2026-07-31 — Relay-owned transcript/classification convergence
+
+- The Realtime session now enables `gpt-realtime-whisper`. Native audio reserves transcription and
+  response work independently before `turn.ready`, accepts at most 60 seconds of 24 kHz mono PCM,
+  and starts transcription and the forced classification response from the same commit.
+- The forced tool no longer accepts an utterance. The relay binds the provider input item, joins one
+  final transcript with one closed classification in either completion order, and routes exactly
+  once using the transcript-owned text. Empty, failed, missing, stale-item, conflicting duplicate,
+  oversized, and terminal paths mutate nothing and clean up.
+- Focused relay, policy, budget, and diagnostic validation passed 86/86 tests. The complete voice
+  and shared-capability suite passed 253/253 tests. Capability coverage verified 64 version-2
+  capabilities, 61 direct/conversational parity cases, and all 17 contract/result/environment
+  checks.
+- All 33 affected Chromium voice journeys passed. The broader voice-UI command was stopped after
+  three unrelated area-discovery cases repeatedly failed to load the ignored local 3D tileset; no
+  voice journey had failed, and the scoped voice matrix subsequently passed in full.
+- ESLint, scoped Prettier, `git diff --check`, and the production build passed. The build retained
+  only the existing third-party direct-`eval`, large-chunk, and output-preparation warnings.
+- No live provider call or paid spend was used: the local runtime spending switch remained disabled,
+  so verification used the checked-in provider contract and deterministic relay boundary.
 
 ## 2026-07-30 — Single native event-query path
 

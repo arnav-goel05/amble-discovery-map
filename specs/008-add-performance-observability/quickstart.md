@@ -3,7 +3,7 @@
 ## Runtime diagnostics
 
 1. Start the existing local application.
-2. Open `/?autoStart&performanceDiagnostics=1`.
+2. Open `/?performanceDiagnostics=1` and select “Let's explore”.
 3. Confirm the diagnostics panel shows startup, resources, responsiveness, frames, memory
    capability, and map workload with freshness and state.
 4. Move the map and confirm motion measurements update.

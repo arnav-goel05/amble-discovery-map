@@ -198,7 +198,9 @@ test("a genuine startup failure offers retry instead of entry", async ({
   expect(await page.evaluate(() => window.__retryCount)).toBe(1);
 });
 
-test("auto-start can bypass the first-load experience", async ({ page }) => {
+test("internal skip mode can bypass the first-load experience", async ({
+  page,
+}) => {
   await page.goto("/test-harness.html");
   const state = await page.evaluate(async () => {
     const { createExperienceIntro } =

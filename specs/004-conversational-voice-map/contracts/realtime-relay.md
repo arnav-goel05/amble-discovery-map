@@ -92,18 +92,19 @@ declared bounds close the connection.
 
 ### Browser to relay
 
-- `turn.request`: requests the bounded worst-case response reservation before microphone chunks are
-  accepted. Relay replies `turn.ready` or `usage_limit`.
+- `turn.request`: requests the bounded worst-case response and input-transcription reservations
+  before microphone chunks are accepted. Relay replies `turn.ready` or `usage_limit`.
 - `audio.append`: bounded audio chunk accepted only for the active reserved turn.
-- `audio.commit`: ends the audio turn, commits the native audio buffer, and starts the staged
-  [native-audio routing contract](native-audio-routing.md) without waiting for or requesting a
-  separate transcript. The first response exposes only the forced provider-only ingress tool.
+- `audio.commit`: ends the audio turn, commits the native audio buffer, and starts the concurrent
+  transcript/classification stages in the [native-audio routing contract](native-audio-routing.md).
+  The first response exposes only the forced provider-only classification tool, while the relay
+  captures the final input transcript for the same provider item.
   Deterministic routing or one connector-family menu then determines any application capability;
   `app.inspect`, broad catalogue search, and unrelated application tools cannot compete during
-  ingress. For native event requests, this same forced response contains a closed event-facet
+  classification. For native event requests, this same forced response contains a closed event-facet
   proposal whose label enums come from the bounded current `eventFacetCatalog` in `context.update`.
   The relay forwards it only through `event.applyquery`; application code re-verifies current
-  labels, exact utterance evidence, facet conflicts, residual terms, and both revisions before any
+  labels, exact final-transcript evidence, facet conflicts, residual terms, and both revisions before any
   state change. Typed traffic does not use this proposal.
 - `text.submit`: bounded plain text input for the same action/discovery path; relay reserves the
   response before forwarding.
@@ -192,9 +193,9 @@ voice and emits only a safe bounded local warning.
 7. Session and response requests omit `max_output_tokens` and any equivalent application response
    ceiling. The provider/model intrinsic maximum is an accounting input only.
 8. Opening responses expose no tools. The first response after a native-audio commit exposes and
-   forces only the provider-only `voice.submitutterance` ingress function.
+   forces only the provider-only classification function, whose schema has no utterance field.
 9. Before every text response, the relay intersects current eligible capability IDs with connector
-   families inferred from the bounded request and current interface state. After native ingress,
+   families inferred from the bounded request and current interface state. After native classification joins the final transcript,
    the relay either uses a deterministic route, exposes at most fifteen currently eligible tools
    from one connector family, or exposes no tools. Capability schemas, gateway eligibility,
    confirmation, and execution validation remain identical for both paths.
@@ -204,8 +205,10 @@ voice and emits only a safe bounded local warning.
     then acknowledge or phrase the verified outcome but is not the action-selection authority.
 11. The provider model is exactly `gpt-realtime-2.1-mini`; no fallback model is configured or
     attempted.
-12. Input-transcription events are not requested and cannot gate, create, cancel, or otherwise
-    control a response.
+12. Each admitted native-audio turn creates at most one input-transcription reservation. Final
+    transcript events are matched by provider input-item identity and join once with classification;
+    missing, failed, empty, stale, duplicate, or timed-out active transcripts mutate nothing and
+    terminate through bounded cleanup.
 13. Each later context revision replaces the scoped connector-family menu from current eligibility;
     it never restores a broad foundational or all-eligible native-audio menu.
 14. Query results contain at most the contract limit, use stable approved identities, and exclude
@@ -218,13 +221,13 @@ voice and emits only a safe bounded local warning.
     or idle-expiry limit. It permits at most three provider response stages within one admitted
     user turn, allows at most one unresolved stage at a time, and independently applies budget
     admission and settlement to every billable stage.
-17. Provider ingress is canonicalized only across documented bounded shape variants. Matching
+17. Provider classification is canonicalized only across documented bounded shape variants. Matching
     root/nested fields and `eventWhat`/`eventWhen`/`eventWhere`/`eventPrice` aliases may collapse;
     conflicting aliases, unknown fields, or semantic changes fail closed. Unused non-event facets
-    may be null. A missing event utterance never promotes the provider's event guess.
+    may be null. An unexpected provider-supplied utterance is rejected.
 18. The deterministic application router independently verifies the provider domain. An event
-    proposal reaches `event.applyquery` only when deterministic routing also identifies the
-    utterance as an event request; obvious map, transit, and restaurant commands take precedence.
+    proposal reaches `event.applyquery` only when deterministic routing also identifies the final
+    transcript as an event request; obvious map, transit, and restaurant commands take precedence.
 19. Tool-stage commentary is buffered. If the response produces a function call, the buffer is
     discarded; if it produces no call, the buffer is released as the ordinary answer. Fixed
     welcome, policy, clarification, and capability-result speech is buffered and transcript-

@@ -4,7 +4,7 @@
 
 **Created**: 2026-07-30
 
-**Status**: Draft
+**Status**: In Progress
 
 **Input**: User description: "Fix every background tile that still renders geometry also published as an active highlight, validate the result exhaustively, and keep fixing until no overlap remains."
 
@@ -56,6 +56,26 @@ As an operator, I receive an exhaustive, bounded audit that identifies every mis
 2. **Given** shared background tiles, **When** the audit reports affected venues, **Then** ownership is attributed to every active venue whose selected identity remains.
 3. **Given** an unavailable or malformed remote object, **When** the audit runs, **Then** it reports an explicit failure and cannot return a zero-overlap success.
 
+---
+
+### User Story 4 - Preserve Production Request Capacity (Priority: P1)
+
+As an operator, I can verify every required background and highlight object without consuming
+the public request capacity needed by map visitors.
+
+**Why this priority**: A correct release gate must not make the deployed application unavailable
+by exhausting its daily request allowance.
+
+**Independent Test**: Run routine audit, synchronization, CI, and deployment verification with a
+counted request transport and prove that exhaustive inventory uses a bounded metadata operation,
+while direct object transfer is limited to objects already proven stale.
+
+**Acceptance Scenarios**:
+
+1. **Given** an unchanged complete release, **When** routine verification runs, **Then** it makes a bounded constant number of integrity-report requests and no per-object public requests.
+2. **Given** one stale object, **When** synchronization runs, **Then** inventory identifies it and only that object is transferred through the operator-owned object-store boundary.
+3. **Given** production rate limiting, **When** any legacy public diagnostic receives a rate-limit response, **Then** it stops without probing the remaining objects.
+
 ### Edge Cases
 
 - One background object may contain selected identities for multiple active venues.
@@ -66,6 +86,10 @@ As an operator, I receive an exhaustive, bounded audit that identifies every mis
 - Edge caches may retain an earlier object after the backing object has changed.
 - Publication credentials or the remote object store may be unavailable during a run.
 - A retry may begin after only some objects were uploaded.
+- A validator may be absent or unsuitable for byte-parity proof; that object must remain
+  unverifiable rather than pass by key and size alone.
+- A cached inventory report may predate a manifest-last publication and must not be accepted as
+  proof for a different release identity.
 
 ## Scope and Constraints _(mandatory)_
 
@@ -93,6 +117,11 @@ As an operator, I receive an exhaustive, bounded audit that identifies every mis
 - **FR-012**: Automated coverage MUST exercise success, stale-object detection, intermediate-state detection, shared-object ownership, malformed/unavailable remote objects, interrupted synchronization, resumption, and no-op synchronization.
 - **FR-013**: The operational workflow MUST document prerequisites, execution, zero-overlap success output, failure recovery, and cache invalidation/version behavior.
 - **FR-014**: The current production-backed object set MUST be remediated and exhaustively re-audited until the retained active identity count is zero.
+- **FR-015**: Routine audit, CI, and deployment verification MUST NOT issue one public runtime request per geometry object; exhaustive remote verification MUST use a bounded object-store inventory operation tied to the expected release.
+- **FR-016**: Remote byte parity MUST be proven with a reliable stored checksum or upload validator plus byte length. Missing, malformed, multipart-ambiguous, or mismatched validators MUST fail closed.
+- **FR-017**: Object bodies MAY be transferred through the operator-owned object-store control plane only for objects that inventory cannot prove current, and post-upload verification MUST bypass visitor-facing request capacity.
+- **FR-018**: Integrity caching MUST be release-aware and use a bounded per-run verification identity after mutable-object operations so neither a report for an earlier manifest nor pre-mutation evidence can verify a newer publication.
+- **FR-019**: Every routine verifier MUST declare and test its maximum public request count, and any legacy per-object public diagnostic MUST stop immediately on rate limiting and remain excluded from CI and routine deployment.
 
 ### Key Entities
 
@@ -113,6 +142,9 @@ As an operator, I receive an exhaustive, bounded audit that identifies every mis
 - **SC-005**: An incomplete or unverifiable synchronization produces no successful-release result in 100% of tested failure cases.
 - **SC-006**: Re-running synchronization against an already-correct release performs zero object replacements and still proves zero overlap.
 - **SC-007**: The exhaustive post-remediation report shows 0 affected objects, 0 retained active identities, and 0 affected venues.
+- **SC-008**: An unchanged release containing every referenced background and highlight object is verified with at most one public integrity-report request per gate and zero per-object public requests.
+- **SC-009**: Same-size stale objects, absent validators, missing objects, and non-drawable objects each fail routine integrity verification in 100% of automated fixtures.
+- **SC-010**: A rate-limited legacy diagnostic makes no further requests after its first rate-limit response in 100% of automated fixtures.
 
 ## Assumptions
 

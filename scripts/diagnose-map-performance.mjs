@@ -64,7 +64,11 @@ const server = spawn(
   ],
   {
     cwd: root,
-    env: { ...process.env, FORCE_COLOR: "0" },
+    env: {
+      ...process.env,
+      FORCE_COLOR: "0",
+      VITE_AMBLE_E2E_BYPASS_INTRO: "1",
+    },
     stdio: ["ignore", "pipe", "pipe"],
   },
 );
@@ -139,7 +143,7 @@ async function runTrial(browser, variant, runNumber) {
   });
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
-  const target = `${baseUrl}/?autoStart&performanceDiagnostics=1&performanceVariant=${encodeURIComponent(variant.id)}#15.3/1.285844/103.857897/-30/45`;
+  const target = `${baseUrl}/?performanceDiagnostics=1&performanceVariant=${encodeURIComponent(variant.id)}#15.3/1.285844/103.857897/-30/45`;
   const startedAt = Date.now();
   await page.goto(target, { waitUntil: "load", timeout: 45_000 });
   await page.waitForFunction(

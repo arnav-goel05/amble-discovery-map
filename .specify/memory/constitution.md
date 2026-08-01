@@ -1,11 +1,12 @@
 <!--
 Sync Impact Report
-- Version change: 2.7.0 -> 2.8.0
+- Version change: 2.9.0 -> 2.10.0
 - Modified principles:
-  - Product, Data, and Privacy Constraints: removed the arbitrary per-session voice
-    response-count, maximum-duration, and idle-expiry requirements while retaining
-    per-response admission, per-turn loop prevention, cumulative spending, interruption,
-    explicit lifecycle termination, and kill-switch safeguards.
+  - Testable, Secure Changes: added request-budget and quota-safe verification duties for
+    Cloudflare, R2, and other quota-limited production platforms, including fresh evidence
+    after mutable-object synchronization.
+  - Development and Release Workflow: requires bounded control-plane verification and
+    rejects high-cardinality checks through visitor-facing production Workers.
 - Added sections: none.
 - Removed sections: none.
 - Templates:
@@ -15,16 +16,12 @@ Sync Impact Report
   - ✅ .specify/templates/commands/ (directory absent; no command templates to update)
 - Dependent artifacts:
   - ✅ AGENTS.md (reviewed; no runtime-command change required)
-  - ✅ README.md (reviewed; no architecture overview change required before implementation)
-  - ✅ docs/production-configuration.md
-  - ✅ specs/004-conversational-voice-map/{spec,plan,research,data-model,quickstart}.md
-  - ✅ specs/004-conversational-voice-map/contracts/realtime-relay.md
-  - ✅ specs/004-conversational-voice-map/contracts/native-audio-routing.md
-  - ✅ specs/004-conversational-voice-map/tasks.md
+  - ✅ README.md (reviewed; existing architecture remains accurate)
+  - ✅ docs/cloudflare-cloud-native.md
+  - ✅ docs/cloudflare-workers-vpc.md
 - Deferred items:
-  - Runtime removal of `maxResponses`, `maxSessionSeconds`, and `idleSeconds`, plus
-    migration to the per-turn response-stage guard, are planned in Feature 004 Phase 22
-    tasks T171 and T175; no application code changed during this planning amendment.
+  - The isolated tile-integrity Worker is implemented and locally validated but must not be
+    deployed or queried until the currently exhausted Cloudflare daily allowance resets.
 -->
 
 # What's Here Constitution
@@ -117,11 +114,20 @@ server-side and outside the repository. Credentials, API keys, authorization hea
 cookies, session tokens, signing material, and raw audio MUST NOT be written to
 operational or diagnostic logs in any environment. External URLs and content MUST be constrained by
 provenance, robots rules, request limits, and server-side request-forgery protections.
+Verification against a quota-limited production platform MUST declare its maximum request
+count and MUST NOT route high-cardinality or exhaustive object checks through a
+visitor-facing runtime. Exhaustive Cloudflare R2 verification MUST use bounded R2 binding
+or control-plane inventory operations and compare deterministic manifest counts and
+digests. A gate that follows mutable-object synchronization MUST use a bounded per-run cache
+identity or an equivalent cache bypass and MUST NOT accept pre-mutation inventory as
+post-upload evidence. CI and deployment checks MUST preserve visitor-facing daily request allowance.
+Legacy per-object public probes MAY be used only as an explicitly bounded manual diagnostic,
+MUST stop on rate limiting, and MUST NOT run in CI or routine deployment.
 Anonymous public users MUST NOT gain administrative capability. The single private admin
 account MUST use authenticated sessions and securely managed password credentials.
 
-Rationale: a public service needs proof of correctness and secure defaults, not informal
-confidence.
+Rationale: a public service needs proof of correctness and secure defaults, and its tests
+must not consume the capacity required to serve users.
 
 ### VI. Intentional UX and Performance
 
@@ -235,7 +241,9 @@ future iteration.
 5. Generated data MUST be staged separately from the approved production snapshot.
 6. Publication requires source validation, identity and geometry checks where applicable,
    the production build, all relevant automated tests, complete affected capability
-   coverage, environment-parity verification, and successful finalization.
+   coverage, environment-parity verification, quota-safe platform verification, and
+   successful finalization. Any production-platform check MUST record a bounded request
+   budget and use binding or control-plane inventory for exhaustive Cloudflare/R2 checks.
 7. Every run MUST report unresolved work. Isolated source, event, deduplication, or venue
    uncertainty MUST preserve or hold only its affected identities while safe identities MAY
    publish in the same atomically verified snapshot. A failure that makes the assembled
@@ -245,7 +253,9 @@ future iteration.
 8. Code review MUST reject fabricated evidence, venue-specific hardcoding outside approved
    registries or fixtures, unbounded recovery loops, silent data loss, unverified
    generated-data changes, duplicated UI/assistant business logic, success-only tool
-   results, stale post-command assistant context, and untested capability drift. For the
+   results, stale post-command assistant context, untested capability drift, unbounded
+   production-platform request plans, or high-cardinality verification routed through a
+   visitor-facing Cloudflare Worker. For the
    approved Realtime exception, review MUST also reject application-generated
    `max_output_tokens` fields or equivalent per-response token ceilings in provider session
    or response requests. Review MUST also reject content-bearing voice diagnostics outside
@@ -266,4 +276,4 @@ for non-semantic clarification. Every specification, plan, implementation review
 release MUST verify compliance. Unjustified violations block completion. Runtime-specific
 instructions remain in `AGENTS.md` and domain documentation but MUST conform to this file.
 
-**Version**: 2.8.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-30
+**Version**: 2.10.0 | **Ratified**: 2026-07-14 | **Last Amended**: 2026-07-31

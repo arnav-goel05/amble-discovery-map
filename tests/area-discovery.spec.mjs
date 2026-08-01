@@ -164,7 +164,7 @@ async function openLocalAreaResults(page) {
       sendToBrowser({ type: "session.state", state: "listening" });
     },
   );
-  await page.goto("/?autoStart&emptyApprovedSnapshot#11/1.3521/103.8198/0/45");
+  await page.goto("/?emptyApprovedSnapshot#11/1.3521/103.8198/0/45");
   await page.locator('[data-testid="assistant-open"]').click();
   await expect(page.locator("body")).toHaveAttribute(
     "data-map-loaded",

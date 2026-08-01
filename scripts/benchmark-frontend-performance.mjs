@@ -145,7 +145,11 @@ function startServer() {
     ],
     {
       cwd: root,
-      env: { ...process.env, FORCE_COLOR: "0" },
+      env: {
+        ...process.env,
+        FORCE_COLOR: "0",
+        VITE_AMBLE_E2E_BYPASS_INTRO: "1",
+      },
       stdio: ["ignore", "pipe", "pipe"],
     },
   );
@@ -270,7 +274,7 @@ async function benchmarkRun(browser, runNumber, profile) {
 
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  const targetUrl = `${baseUrl}/?autoStart#15.3/1.285844/103.857897/-30/60`;
+  const targetUrl = `${baseUrl}/#15.3/1.285844/103.857897/-30/60`;
   if (profile.cache === "warm") {
     await page.goto(targetUrl, { waitUntil: "load", timeout: 30_000 });
     await page.waitForFunction(

@@ -7,7 +7,8 @@
   "resetPolicy": "none",
   "enabled": false,
   "modelId": "gpt-realtime-2.1-mini",
-  "rateCardVersion": "openai-2026-07-27-gpt-realtime-2.1-mini",
+  "transcriptionModelId": "gpt-realtime-whisper",
+  "rateCardVersion": "openai-2026-07-31-gpt-realtime-2.1-mini-plus-whisper",
   "maxResponseStagesPerTurn": 3,
   "responseTimeoutSeconds": 30,
   "maxContextTokens": 4000,
@@ -29,12 +30,13 @@
     "failureMode": "disabled"
   },
   "rateCard": {
-    "version": "openai-2026-07-27-gpt-realtime-2.1-mini",
+    "version": "openai-2026-07-31-gpt-realtime-2.1-mini-plus-whisper",
     "currency": "USD",
     "moneyUnit": "micro-USD",
     "observedAt": "2026-07-27",
     "sources": [
       "https://developers.openai.com/api/docs/models/gpt-realtime-2.1-mini",
+      "https://developers.openai.com/api/docs/models/gpt-realtime-whisper",
       "https://developers.openai.com/api/docs/changelog"
     ],
     "rates": {
@@ -43,7 +45,8 @@
       "textOutputMicroUsdPerMillionTokens": 2400000,
       "audioInputMicroUsdPerMillionTokens": 10000000,
       "cachedAudioInputMicroUsdPerMillionTokens": 300000,
-      "audioOutputMicroUsdPerMillionTokens": 20000000
+      "audioOutputMicroUsdPerMillionTokens": 20000000,
+      "transcriptionMicroUsdPerMinute": 17000
     },
     "reservationRules": {
       "ignoreCachedInputDiscounts": true,
@@ -54,6 +57,11 @@
     }
   },
   "worstCaseReservation": {
+    "inputTranscription": {
+      "maxAudioSeconds": 60,
+      "rateMicroUsdPerMinute": 17000,
+      "reservedMicroUsd": 17000
+    },
     "response": {
       "maxInputTokens": 4000,
       "inputRateMicroUsdPerMillionTokens": 10000000,
@@ -63,7 +71,7 @@
       "outputReservedMicroUsd": 81920,
       "reservedMicroUsd": 121920
     },
-    "maxTurnReservedMicroUsd": 121920,
+    "maxTurnReservedMicroUsd": 138920,
     "admissionInvariant": "spentMicroUsd + reservedMicroUsd + requestedMicroUsd <= capMicroUsd",
     "missingOrUntrustedUsage": "hold-full-reservation-and-disable-new-work"
   }

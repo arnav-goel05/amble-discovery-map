@@ -91,14 +91,22 @@ export function classifyRemoteObject(item, remoteBytes) {
   };
 }
 
-export function buildReleaseIdentity(snapshotId, objects) {
+export function buildReleaseIdentity(
+  snapshotId,
+  objects,
+  manifestBytes = null,
+) {
   const payload = objects
     .map(({ objectKey, sha256 }) => `${objectKey}\0${sha256}`)
     .sort()
     .join("\n");
+  const manifestIdentity = manifestBytes ? `\n${digest(manifestBytes)}` : "";
   return {
     schemaVersion: RELEASE_SCHEMA_VERSION,
-    releaseId: digest(`${snapshotId}\n${payload}`).slice(0, 16),
+    releaseId: digest(`${snapshotId}\n${payload}${manifestIdentity}`).slice(
+      0,
+      16,
+    ),
     snapshotId,
     objectCount: objects.length,
   };
@@ -193,9 +201,9 @@ function contentKey(uri) {
 export function rewriteTilesetForRelease(tileset, objects) {
   const copy = structuredClone(tileset);
   const hashes = new Map(
-    objects.map(({ objectKey, sha256 }) => [
+    objects.map(({ objectKey, sha256, md5 }) => [
       objectKey.replace(/^optimized-tiles\//u, ""),
-      sha256,
+      { sha256, md5 },
     ]),
   );
   const visit = (tile) => {
@@ -203,10 +211,32 @@ export function rewriteTilesetForRelease(tileset, objects) {
       const uri = tile?.content?.[field];
       if (typeof uri !== "string") continue;
       const key = contentKey(uri);
-      const sha256 = hashes.get(key);
-      if (!sha256) continue;
-      tile.content[field] = `${uri.split("?")[0]}?backgroundObject=${sha256}`;
+      const expected = hashes.get(key);
+      if (!expected) continue;
+      tile.content[field] = uri.split("?")[0];
+      tile.extras = {
+        ...(tile.extras ?? {}),
+        backgroundObjectSha256: expected.sha256,
+        ...(expected.md5 ? { backgroundObjectMd5: expected.md5 } : {}),
+      };
     }
+    const omitted = (tile?.extras?.omittedContentUris ?? [])
+      .map((uri) => {
+        const expected = hashes.get(contentKey(uri));
+        return expected
+          ? {
+              uri,
+              sha256: expected.sha256,
+              ...(expected.md5 ? { md5: expected.md5 } : {}),
+            }
+          : null;
+      })
+      .filter(Boolean);
+    if (omitted.length > 0)
+      tile.extras = {
+        ...(tile.extras ?? {}),
+        backgroundOmittedObjects: omitted,
+      };
     for (const child of tile?.children ?? []) visit(child);
   };
   visit(copy.root);
@@ -283,11 +313,13 @@ export async function synchronizeBackgroundRelease({
     throw new Error(
       `Post-upload audit is incomplete: ${after.summary.staleObjects} stale, ${after.summary.failedObjects} failed`,
     );
-  const identity = buildReleaseIdentity(snapshotId, objects);
   const manifest = rewriteTilesetForRelease(sourceTileset, objects);
+  const manifestBytes = Buffer.from(`${JSON.stringify(manifest)}\n`);
+  const identity = buildReleaseIdentity(snapshotId, objects, manifestBytes);
   await publishManifest(manifest, identity);
   return {
     ...after,
+    ...identity,
     summary: {
       ...after.summary,
       uploadedObjects: staleKeys.size,
@@ -303,7 +335,7 @@ export function releaseDescriptor({
   manifestBytes,
   verifiedAt = new Date().toISOString(),
 }) {
-  const identity = buildReleaseIdentity(snapshotId, objects);
+  const identity = buildReleaseIdentity(snapshotId, objects, manifestBytes);
   return {
     schemaVersion: RELEASE_SCHEMA_VERSION,
     ...identity,

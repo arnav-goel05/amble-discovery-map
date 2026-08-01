@@ -13,7 +13,7 @@ test("phones stop at the device gate while larger screens enter the application"
     )
       analyticsRequests.push(request.url());
   });
-  await page.goto("/?autoStart");
+  await page.goto("/");
 
   await expect(page).toHaveTitle("Amble: See What’s Happening in Singapore");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(

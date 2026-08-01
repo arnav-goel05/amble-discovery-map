@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   createReadStream,
@@ -13,6 +12,16 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
+import {
+  buildIntegrityReleaseId,
+  createIntegrityVerificationId,
+  createR2ControlPlane,
+  createWranglerCommandRunner,
+  fetchR2BindingInventory,
+  inventoryObjectMap,
+  r2MetadataState,
+} from "./lib/r2-binding-inventory.mjs";
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const mode = process.argv[2] === "sync" ? "sync" : "audit";
 const option = (name, fallback) => {
@@ -21,7 +30,11 @@ const option = (name, fallback) => {
     ? process.argv[index + 1]
     : fallback;
 };
-const origin = new URL(option("origin", "https://amblefinds.com"));
+const inventoryOrigin = option(
+  "inventory-origin",
+  process.env.R2_INVENTORY_ORIGIN ??
+    "https://amble-tile-integrity.project-hub-arnav.workers.dev",
+);
 const concurrency = Number(option("concurrency", mode === "sync" ? "4" : "16"));
 
 if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 32) {
@@ -106,82 +119,21 @@ async function mapLimit(items, limit, operation) {
   return results;
 }
 
-function objectUrl(item) {
-  return new URL(
-    `${item.objectKey
-      .split("/")
-      .map((segment) => encodeURIComponent(segment))
-      .join("/")}?poiObject=${item.sha256}`,
-    origin,
-  );
-}
-
-function normalizedEtag(value) {
-  return value?.replace(/^W\//u, "").replace(/^"|"$/gu, "").toLowerCase();
-}
-
-async function remoteState(item) {
-  const response = await fetch(objectUrl(item), {
-    method: "HEAD",
-    signal: AbortSignal.timeout(120_000),
-  });
-  if (response.status === 404) return "missing";
-  if (!response.ok) {
-    throw new Error(
-      `${response.status} ${response.statusText} for ${item.objectKey}`,
-    );
-  }
-  if (response.headers.get("x-amble-tile-source") !== "r2") return "missing";
-  const length = Number(response.headers.get("content-length"));
-  return normalizedEtag(response.headers.get("etag")) === item.md5 &&
-    (!Number.isFinite(length) || length === item.byteLength)
-    ? "matched"
-    : "mismatched";
-}
-
-const runWrangler = (commandArgs) =>
-  new Promise((resolve, reject) => {
-    const child = spawn(
-      path.join(root, "node_modules/.bin/wrangler"),
-      commandArgs,
-      {
-        cwd: root,
-        env: process.env,
-        stdio: ["ignore", "pipe", "pipe"],
-      },
-    );
-    let output = "";
-    child.stdout.on("data", (chunk) => {
-      output += chunk;
-    });
-    child.stderr.on("data", (chunk) => {
-      output += chunk;
-    });
-    child.on("error", reject);
-    child.on("close", (code) => {
-      if (code === 0) resolve();
-      else
-        reject(
-          new Error(`Wrangler exited ${code}: ${output.trim().slice(-1000)}`),
-        );
-    });
-  });
+const runWrangler = createWranglerCommandRunner({ root });
+const r2 = createR2ControlPlane({ runCommand: runWrangler });
+let controlPlaneObjectReads = 0;
+const readR2Object = async (key) => {
+  controlPlaneObjectReads += 1;
+  return r2.getObjectBytes(key);
+};
 
 async function uploadOnce(item) {
-  await runWrangler([
-    "r2",
-    "object",
-    "put",
-    `amble-3d-tiles/${item.objectKey}`,
-    "--remote",
-    "--force",
-    "--file",
-    item.localPath,
-    "--content-type",
-    "application/octet-stream",
-    "--cache-control",
-    "public, max-age=86400, stale-while-revalidate=604800",
-  ]);
+  await r2.putObject({
+    key: item.objectKey,
+    filePath: item.localPath,
+    contentType: "application/octet-stream",
+    cacheControl: "public, max-age=86400, stale-while-revalidate=604800",
+  });
 }
 
 async function upload(item) {
@@ -213,10 +165,30 @@ const objects = await mapLimit(
     return { ...item, md5: hashes.md5 };
   },
 );
+const currentRelease = JSON.parse(
+  readFileSync(
+    path.join(root, "data/background-geometry-release.json"),
+    "utf8",
+  ),
+);
+const inventoryReport = await fetchR2BindingInventory({
+  origin: inventoryOrigin,
+  scope: "poi",
+  releaseId: buildIntegrityReleaseId({
+    backgroundReleaseId: currentRelease.releaseId,
+    objects,
+  }),
+  verificationId: createIntegrityVerificationId(),
+  allowIncomplete: true,
+});
+const remoteObjects = inventoryObjectMap(inventoryReport, {
+  id: "highlighted",
+  detail: "inventoryObjects",
+});
 
 let results = await mapLimit(objects, concurrency, async (item) => ({
   item,
-  state: await remoteState(item),
+  state: r2MetadataState(item, remoteObjects.get(item.objectKey)),
 }));
 const stale = results.filter(({ state }) => state !== "matched");
 
@@ -225,10 +197,23 @@ if (mode === "sync" && stale.length > 0) {
   await mapLimit(stale, Math.min(concurrency, 4), async ({ item }) => {
     await upload(item);
   });
-  results = await mapLimit(objects, concurrency, async (item) => ({
-    item,
-    state: await remoteState(item),
-  }));
+  const uploadedKeys = new Set(stale.map(({ item }) => item.objectKey));
+  results = await mapLimit(objects, concurrency, async (item) => {
+    if (!uploadedKeys.has(item.objectKey))
+      return {
+        item,
+        state: r2MetadataState(item, remoteObjects.get(item.objectKey)),
+      };
+    const bytes = await readR2Object(item.objectKey);
+    return {
+      item,
+      state:
+        createHash("md5").update(bytes).digest("hex") === item.md5 &&
+        bytes.length === item.byteLength
+          ? "matched"
+          : "mismatched",
+    };
+  });
 }
 
 const summary = {
@@ -238,8 +223,26 @@ const summary = {
   missingObjects: results.filter(({ state }) => state === "missing").length,
   mismatchedObjects: results.filter(({ state }) => state === "mismatched")
     .length,
+  unverifiableObjects: results.filter(({ state }) => state === "unverifiable")
+    .length,
 };
 const complete =
-  summary.missingObjects === 0 && summary.mismatchedObjects === 0;
-console.log(JSON.stringify({ complete, ...summary }, null, 2));
+  summary.missingObjects === 0 &&
+  summary.mismatchedObjects === 0 &&
+  summary.unverifiableObjects === 0;
+console.log(
+  JSON.stringify(
+    {
+      complete,
+      ...summary,
+      requestBudget: {
+        publicIntegrityRequests: 1,
+        publicObjectRequests: 0,
+        controlPlaneObjectReads,
+      },
+    },
+    null,
+    2,
+  ),
+);
 if (!complete) process.exitCode = 1;

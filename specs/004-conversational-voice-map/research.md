@@ -575,6 +575,35 @@ failures. Trusting the provider domain or event proposal permits incorrect mutat
 audio before transcript validation exposes preambles and delimiters. Adding an unbounded retry
 loop weakens cost and lifecycle guarantees.
 
+## Relay-owned final transcript and concurrent classification
+
+**Decision**: Supersede the model-echoed utterance portion of forced native ingress. Configure one
+low-latency input-transcription model within the existing Realtime session, start transcription and
+the forced classification response from the same committed audio without serial startup, and join
+their terminal results by the provider input-item identity. The classification schema contains only
+the bounded domain and optional event-facet proposal. The relay supplies the final transcript and
+authoritative context revision to deterministic routing and verification.
+
+**Rationale**: The approved Realtime response model supports function calling but does not support
+Structured Outputs, and the live provider omitted the required `utterance` while still returning
+usable facets. Application validation can reject such output but cannot force a stochastic model to
+emit a missing field. OpenAI documents a chained voice path for predictable workflows and final
+Realtime transcription events keyed by `item_id`; production voice frameworks similarly separate
+STT from tool reasoning when auditability and mature tool calling matter. A concurrent join retains
+native response startup while making the utterance independently observable and testable.
+
+**Alternatives considered**: Prompt strengthening cannot guarantee a field on a model without
+Structured Outputs. `strict: true` was rejected by the live Realtime session configuration and is
+not a supported model feature. Retrying malformed tool calls may reduce frequency but still trusts
+the same absent field and spends another response. A completely sequential STT-LLM-TTS rewrite
+would provide the strongest stage isolation but would discard the existing Realtime speech,
+interruption, and session implementation. The selected hybrid is the smallest reliable change.
+
+**Provider evidence**: OpenAI's current voice-agent guide recommends a chained path when stronger
+control over intermediate text or deterministic logic is needed, its Realtime transcription guide
+provides final transcript events keyed by input `item_id`, and the `gpt-realtime` model catalogue
+marks function calling supported but Structured Outputs unsupported.
+
 ## Mobile and security-header compatibility
 
 **Decision**: Replace the current blanket phone/tablet rejection with capability-based support for

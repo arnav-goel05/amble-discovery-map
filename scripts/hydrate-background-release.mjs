@@ -55,7 +55,9 @@ function contentEntries(tileset) {
       ) {
         throw new Error(`Unsafe background release content URI: ${rawUri}`);
       }
-      const sha256 = parsed.searchParams.get("backgroundObject");
+      const sha256 =
+        tile?.extras?.backgroundObjectSha256 ??
+        parsed.searchParams.get("backgroundObject");
       if (sha256 && !/^[a-f0-9]{64}$/u.test(sha256)) {
         throw new Error(
           `Unversioned background release content URI: ${rawUri}`,

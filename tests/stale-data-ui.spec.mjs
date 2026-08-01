@@ -203,7 +203,7 @@ test("a recovered active snapshot reconciles events in place and later outages p
       },
     }),
   );
-  await page.goto("/?autoStart&emptyApprovedSnapshot");
+  await page.goto("/?emptyApprovedSnapshot");
   await expect
     .poll(() => page.locator("body").getAttribute("data-landmark-event-pills"))
     .toBe("mounted");

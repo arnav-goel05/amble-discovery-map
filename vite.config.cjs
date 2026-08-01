@@ -14,6 +14,63 @@ const {
 } = require("./scripts/realtime-voice-api-plugin.cjs");
 
 const TILE_PATH = /^\/(?:optimized-tiles|poi-tiles)\//;
+const LOCAL_TILE_ROOTS = [
+  ["/optimized-tiles/", path.resolve(process.cwd(), "optimized-tiles")],
+  ["/poi-tiles/", path.resolve(process.cwd(), "public/poi-tiles")],
+];
+
+function resolveLocalTile(pathname) {
+  const entry = LOCAL_TILE_ROOTS.find(([prefix]) =>
+    pathname.startsWith(prefix),
+  );
+  if (!entry) return null;
+  const [prefix, root] = entry;
+  let relative;
+  try {
+    relative = decodeURIComponent(pathname.slice(prefix.length));
+  } catch {
+    return null;
+  }
+  const candidate = path.resolve(root, relative);
+  return candidate.startsWith(`${root}${path.sep}`) ? candidate : null;
+}
+
+function serveLocalTile(request, response, pathname) {
+  const localPath = resolveLocalTile(pathname);
+  if (
+    !localPath ||
+    !fs.existsSync(localPath) ||
+    !fs.statSync(localPath).isFile()
+  )
+    return false;
+  const size = fs.statSync(localPath).size;
+  response.setHeader("Accept-Ranges", "bytes");
+  response.setHeader(
+    "Content-Type",
+    localPath.endsWith(".json")
+      ? "application/json"
+      : "application/octet-stream",
+  );
+  const range = /^bytes=(\d+)-(\d*)$/u.exec(request.headers.range ?? "");
+  let start = 0;
+  let end = size - 1;
+  if (range) {
+    start = Number(range[1]);
+    end = range[2] ? Math.min(Number(range[2]), end) : end;
+    if (start > end || start >= size) {
+      response.statusCode = 416;
+      response.setHeader("Content-Range", `bytes */${size}`);
+      response.end();
+      return true;
+    }
+    response.statusCode = 206;
+    response.setHeader("Content-Range", `bytes ${start}-${end}/${size}`);
+  }
+  response.setHeader("Content-Length", String(end - start + 1));
+  if (request.method === "HEAD") response.end();
+  else fs.createReadStream(localPath, { start, end }).pipe(response);
+  return true;
+}
 
 function remoteTileFallbackPlugin() {
   return {
@@ -40,23 +97,12 @@ function remoteTileFallbackPlugin() {
           return next();
         }
         if (
-          !origin ||
           !["GET", "HEAD"].includes(request.method) ||
           !TILE_PATH.test(url.pathname)
         )
           return next();
-
-        const localPath = path.resolve(
-          process.cwd(),
-          "public",
-          `.${url.pathname}`,
-        );
-        const publicRoot = path.resolve(process.cwd(), "public");
-        if (
-          localPath.startsWith(`${publicRoot}${path.sep}`) &&
-          fs.existsSync(localPath)
-        )
-          return next();
+        if (serveLocalTile(request, response, url.pathname)) return;
+        if (!origin) return next();
 
         try {
           const upstream = await fetch(

@@ -35,7 +35,7 @@ test("empty approved snapshot renders no highlights, pills, or panels", async ({
       errors.push(error.message);
   });
   await page.goto(
-    "/?autoStart&emptyApprovedSnapshot&rawTiles#8/1.285844/103.857897/-30/60",
+    "/?emptyApprovedSnapshot&rawTiles#8/1.285844/103.857897/-30/60",
   );
   await expect(page.locator("#warning")).toHaveCount(0);
   await expect
@@ -102,7 +102,7 @@ test("clicking the map dismisses whichever side panel is open", async ({
   page,
 }) => {
   await page.goto(
-    "/?autoStart&emptyApprovedSnapshot#17/1.285844/103.857897/-30/60",
+    "/?emptyApprovedSnapshot#17/1.285844/103.857897/-30/60",
   );
   await expect
     .poll(() => page.locator("body").getAttribute("data-plan-builder"))
@@ -129,7 +129,7 @@ test("clicking the map dismisses whichever side panel is open", async ({
 });
 
 test("legacy demo landmarks are not mounted", async ({ page }) => {
-  await page.goto("/?autoStart&demoLandmarks#17/1.285844/103.857897/-30/60");
+  await page.goto("/?demoLandmarks#17/1.285844/103.857897/-30/60");
   await expect(
     page.getByRole("button", {
       name: /Lau Pa Sat|Fullerton Hotel|National Gallery/i,
@@ -241,7 +241,7 @@ test("search selection centers the event pill without a redundant direction poin
       poiTilesetUrl: "poi-tiles/event-venues/tileset.json",
     },
   );
-  await page.goto("/?autoStart#12/1.34/103.70/0/0");
+  await page.goto("/#12/1.34/103.70/0/0");
   await expect
     .poll(
       () => page.locator("body").getAttribute("data-landmark-event-pills"),

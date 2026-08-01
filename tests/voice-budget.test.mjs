@@ -71,6 +71,21 @@ test("reservation is an immutable atomic state transition", () => {
   ]);
 });
 
+test("input transcription uses the same private atomic reservation contract", () => {
+  const next = reserveVoiceBudget(
+    createEnabledState(),
+    reservationInput({
+      reservationId: "transcription-1",
+      kind: "input_transcription",
+      requestedMicroUsd: 17_000,
+    }),
+  );
+
+  assert.equal(next.ledger.reservedMicroUsd, 17_000);
+  assert.equal(next.reservations[0].kind, "input_transcription");
+  assert.equal(JSON.stringify(next).includes("Take me somewhere"), false);
+});
+
 test("concurrent admissions cannot authorize more than the cumulative cap", () => {
   const first = reserveVoiceBudget(
     createEnabledState(),

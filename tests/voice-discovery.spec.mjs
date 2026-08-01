@@ -294,7 +294,7 @@ async function mockRealtime(page, { initialResult, refinementResult } = {}) {
 }
 
 async function openAssistant(page) {
-  await page.goto("/?autoStart&emptyApprovedSnapshot");
+  await page.goto("/?emptyApprovedSnapshot");
   await page.locator(selectors.open).click();
   await expect(page.locator(selectors.panel)).toBeVisible();
 }

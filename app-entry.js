@@ -55,7 +55,6 @@ const support = getDeviceSupport({
 const queryParams = new URLSearchParams(globalThis.location?.search ?? "");
 const allowNarrowEmptyFixture =
   !support.mobileOrTablet &&
-  queryParams.has("autoStart") &&
   queryParams.has("emptyApprovedSnapshot");
 
 async function startSupportedApplication() {

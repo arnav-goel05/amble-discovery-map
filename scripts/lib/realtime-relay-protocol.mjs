@@ -361,6 +361,7 @@ export function cleanupRelaySession(session, reason = "protocol") {
   clearTimeout(session?.idleTimer);
   clearTimeout(session?.durationTimer);
   clearTimeout(session?.responseTimer);
+  clearTimeout(session?.transcriptionTimer);
   if (session) {
     session.state = "stopped";
     session.terminalEvent = { type: "session.stopped", reason: terminalReason };
@@ -377,12 +378,18 @@ export function cleanupRelaySession(session, reason = "protocol") {
     session.browserEventQueue = null;
     session.openReservations = [];
     session.responseReservationId = null;
+    session.transcriptionReservationId = null;
     session.providerSocket = null;
     session.browserSocket = null;
     session.abortController = null;
     session.idleTimer = null;
     session.durationTimer = null;
     session.responseTimer = null;
+    session.transcriptionTimer = null;
+    session.finalInputTranscript = null;
+    session.nativeClassification = null;
+    session.nativeClassificationCallId = null;
+    session.providerInputItemId = null;
   }
   return session;
 }

@@ -247,7 +247,7 @@ async function openAssistant(page, { beforeOpen } = {}) {
   const initializationError = new Promise((_, reject) => {
     page.once("pageerror", reject);
   });
-  await page.goto("/?autoStart&emptyApprovedSnapshot");
+  await page.goto("/?emptyApprovedSnapshot");
   await Promise.race([
     page.locator(selectors.open).waitFor({ state: "visible", timeout: 60_000 }),
     initializationError,
@@ -641,7 +641,7 @@ test("interrupt and stop are the only visible browser-owned voice controls", asy
 test("confirmation identity can be resolved once only by its browser-owned buttons", async ({
   page,
 }) => {
-  await page.goto("/?autoStart&emptyApprovedSnapshot");
+  await page.goto("/?emptyApprovedSnapshot");
   await page.evaluate(async () => {
     const { createAssistantView } =
       await import("/activity-scenes/assistant/assistant-view.js");

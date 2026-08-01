@@ -156,3 +156,54 @@ Historical result: passed
 - Production build: passed.
 
 final result: passed
+
+---
+
+# Design QA: compact map and search spacing
+
+- Source visual truth: `/var/folders/kt/mjsyky8537n9z1rtwl34g_l00000gn/T/TemporaryItems/NSIRD_screencaptureui_rDJWcN/Screenshot 2026-08-01 at 7.26.50 PM.png`
+- Implementation capture: `/Users/arnav/.codex/visualizations/2026/08/01/019fbd11-534a-7fc2-851c-41626fdb8595/mobile-map-spacing-after.png`
+- Viewport: 390 × 377 CSS px
+- Source pixels: 818 × 754 px; approximately a 409 × 377 CSS-px Retina capture
+- Implementation pixels: 390 × 377 px at device scale factor 1
+- Density normalization: layout proportions were compared in CSS pixels; the source's 2× density was treated as approximately half-size
+- State: map loaded, compact search toolbar visible, search popover closed
+
+## Full-view comparison evidence
+
+The source showed a page-colored strip and scrollbar beside the right edge of the map. The corrected compact render fills the complete 390 × 377 viewport: the map and canvas both measure 390 × 377 at `(0, 0)`, while the floating search remains intentionally inset 8px on both sides.
+
+Differences in map camera position and event markers are live-data/state differences and are not part of this spacing fix.
+
+## Focused region comparison evidence
+
+The right edge was checked separately because it contains the reported defect. Before the fix, the body retained the browser default 8px margin and measured 374px inside a 390px viewport. After the fix, the body measures 390px, has `margin: 0`, and uses `overflow: hidden`; the document and map have no horizontal or vertical overflow.
+
+## Findings
+
+- No actionable P0/P1/P2 differences remain for the reported map/search gutter.
+- Fonts and typography: unchanged; search type family, weight, size, line height, and wrapping retain the existing product styles.
+- Spacing and layout rhythm: passed; the root gutter is removed and the established 8px floating-control inset is preserved.
+- Colors and visual tokens: unchanged; the map, frosted search surface, borders, and shadows continue to use existing tokens.
+- Image quality and asset fidelity: unchanged; the map tiles, density minimap, and icons remain source assets at their native rendering quality.
+- Copy and content: unchanged; `Find`, `Add filter`, and control labels remain intact.
+
+## Comparison history
+
+1. P1 finding: a compact/embedded viewport could expose the body background beside the fixed map because the root document retained its default margin.
+2. Fix: reset `html` and `body` to full width and height, remove the default margin, and prevent document overflow.
+3. Post-fix evidence: body, map, and canvas fill the 390px viewport; the search bounds are `x=8`, `width=374`; no page-colored strip or scrollbar remains.
+
+## Implementation checklist
+
+- [x] Remove the default root document margin.
+- [x] Make the document root fill the viewport.
+- [x] Prevent root overflow from exposing a gutter or scrollbar.
+- [x] Preserve the existing compact-search inset and interactions.
+- [x] Verify the corrected layout in the in-app browser.
+
+## Follow-up polish
+
+None required for this fix.
+
+final result: passed

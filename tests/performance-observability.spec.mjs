@@ -1,9 +1,9 @@
 import { expect, test } from "playwright/test";
 
 const ordinaryUrl =
-  "/?autoStart&emptyApprovedSnapshot&rawTiles#8/1.285844/103.857897/-30/60";
+  "/?emptyApprovedSnapshot&rawTiles#8/1.285844/103.857897/-30/60";
 const diagnosticsUrl =
-  "/?autoStart&emptyApprovedSnapshot&rawTiles&performanceDiagnostics=1#8/1.285844/103.857897/-30/60";
+  "/?emptyApprovedSnapshot&rawTiles&performanceDiagnostics=1#8/1.285844/103.857897/-30/60";
 
 test("ordinary sessions do not activate diagnostics", async ({ page }) => {
   await page.goto(ordinaryUrl);

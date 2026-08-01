@@ -1,10 +1,13 @@
 import { expect, test } from "playwright/test";
 
+import { installBrowserRenderGuard } from "./helpers/browser-render-guard.mjs";
+
 test("the fixed 45 degree camera stays aligned while the map zooms", async ({
   page,
 }) => {
+  const renderGuard = installBrowserRenderGuard(page);
   await page.goto(
-    "/?autoStart&emptyApprovedSnapshot#15.3/1.285844/103.857897/-30/45",
+    "/?emptyApprovedSnapshot#15.3/1.285844/103.857897/-30/45",
     { waitUntil: "domcontentloaded" },
   );
   await expect
@@ -181,4 +184,5 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({
   expect(result.backgroundScreenSpaceErrors).toContain("4");
   expect(result.poiScreenSpaceErrors).toContain("24");
   expect(result.poiScreenSpaceErrors).toContain("4");
+  renderGuard.assertClean();
 });

@@ -59,7 +59,8 @@ single-path native event queries
 - [x] The welcome exact-speech instruction is one-shot and absent from later conversation history
 - [x] Live provider validation is a deliberately bounded smoke, while the product has no conversation response-count cap
 - [x] Audit compaction uses stable content rather than changing occurrence metadata
-- [x] Native-audio response creation is independent of transcription completion or failure
+- [x] Native-audio transcription and classification start concurrently, join by active item
+      identity, and fail closed without mutation when the final transcript is unavailable
 - [x] Typed capability eligibility, validation, confirmation, execution, and observable outcomes
       remain authoritative without transcript-gated routing
 - [x] Text-turn deterministic interpretation and connector-family scoping remain unchanged
@@ -81,6 +82,7 @@ single-path native event queries
   and prohibiting secrets, raw audio, application storage, and remote telemetry.
 - Feature 004 workflows use explicit `SPECIFY_FEATURE` overrides because the shared worktree's active
   Spec Kit pointer belongs to concurrent Feature 016 work and must remain unchanged.
-- The 2026-07-30 amendment removes the separate input-transcription service from new audio turns;
+- The 2026-07-31 amendment restores provider input transcription as relay-owned utterance evidence;
+  classification remains concurrent and cannot supply or override the utterance;
   the approved Realtime model consumes native audio and the existing response watchdog remains the
   bounded provider-failure lifecycle.

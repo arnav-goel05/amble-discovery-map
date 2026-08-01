@@ -1,74 +1,163 @@
-const argument = (name, fallback) => {
-  const index = process.argv.indexOf(`--${name}`);
-  return index >= 0 ? process.argv[index + 1] : fallback;
+#!/usr/bin/env node
+
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import process from "node:process";
+import { fileURLToPath } from "node:url";
+
+import {
+  auditRemoteTilesetObjects,
+  buildTilesetIntegrityInventory,
+  compareR2BindingInventory,
+} from "./lib/tileset-integrity.mjs";
+import {
+  buildIntegrityReleaseId,
+  createIntegrityVerificationId,
+  fetchR2BindingInventory,
+} from "./lib/r2-binding-inventory.mjs";
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const args = process.argv.slice(2);
+const option = (name, fallback = null) => {
+  const index = args.indexOf(`--${name}`);
+  return index >= 0 && args[index + 1] ? args[index + 1] : fallback;
+};
+const localOnly = args.includes("--local-only");
+const objectHeads = args.includes("--object-heads");
+const origin = option("origin", "https://amble.project-hub-arnav.workers.dev");
+const inventoryOrigin = option(
+  "inventory-origin",
+  process.env.R2_INVENTORY_ORIGIN ??
+    "https://amble-tile-integrity.project-hub-arnav.workers.dev",
+);
+const concurrency = Number(option("concurrency", "24"));
+const reportPath = path.resolve(
+  root,
+  option("report", "outputs/tileset-integrity-report.json"),
+);
+if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 64)
+  throw new Error("--concurrency must be an integer from 1 to 64");
+
+const definitions = [
+  {
+    id: "background",
+    manifestPath: path.join(root, "optimized-tiles/tileset.json"),
+    manifestUrl: "https://inventory.invalid/optimized-tiles/tileset.json",
+    publicRoot: root,
+  },
+  {
+    id: "highlighted",
+    manifestPath: path.join(root, "public/poi-tiles/event-venues/tileset.json"),
+    manifestUrl:
+      "https://inventory.invalid/poi-tiles/event-venues/tileset.json",
+    publicRoot: path.join(root, "public"),
+  },
+];
+
+const releaseDescriptor = JSON.parse(
+  await readFile(
+    path.join(root, "data/background-geometry-release.json"),
+    "utf8",
+  ),
+);
+const inventoryById = new Map();
+for (const definition of definitions)
+  inventoryById.set(
+    definition.id,
+    await buildTilesetIntegrityInventory({
+      ...definition,
+      validateLocalContent:
+        localOnly || objectHeads || definition.id === "highlighted",
+    }),
+  );
+const integrityReleaseId = buildIntegrityReleaseId({
+  backgroundReleaseId: releaseDescriptor.releaseId,
+  objects: inventoryById.get("highlighted").objects,
+});
+const integrityVerificationId = createIntegrityVerificationId();
+const bindingInventory =
+  localOnly || objectHeads
+    ? null
+    : await fetchR2BindingInventory({
+        origin: inventoryOrigin,
+        scope: "poi",
+        releaseId: integrityReleaseId,
+        verificationId: integrityVerificationId,
+      });
+
+const tilesets = [];
+for (const definition of definitions) {
+  const inventory = inventoryById.get(definition.id);
+  const remote = localOnly
+    ? null
+    : objectHeads
+      ? await auditRemoteTilesetObjects({
+          objects: inventory.objects,
+          origin,
+          concurrency,
+          onProgress: (checked, total) =>
+            console.error(
+              `${definition.id}: verified ${checked}/${total} published objects`,
+            ),
+        })
+      : compareR2BindingInventory({
+          id: definition.id,
+          inventory,
+          published: bindingInventory.tilesets?.find(
+            ({ id }) => id === definition.id,
+          ),
+          requireObjectMetadata: definition.id === "highlighted",
+        });
+  tilesets.push({
+    id: definition.id,
+    complete: inventory.complete && (remote?.complete ?? true),
+    manifestCount: inventory.manifestCount,
+    referenceCount: inventory.referenceCount,
+    objectCount: inventory.objectCount,
+    localErrors: inventory.errors,
+    remoteErrors: remote?.errors ?? [],
+  });
+}
+
+const report = {
+  schemaVersion: 1,
+  complete: tilesets.every(({ complete }) => complete),
+  mode: localOnly
+    ? "local"
+    : objectHeads
+      ? "published-r2-object-heads"
+      : "r2-binding-inventory",
+  origin: localOnly ? null : origin,
+  inventoryOrigin: localOnly || objectHeads ? null : inventoryOrigin,
+  integrityReleaseId,
+  integrityVerificationId,
+  requestBudget: {
+    publicIntegrityRequests: localOnly || objectHeads ? 0 : 1,
+    publicObjectRequests: objectHeads
+      ? tilesets.reduce((sum, item) => sum + item.objectCount, 0)
+      : 0,
+  },
+  checkedAt: new Date().toISOString(),
+  summary: {
+    manifestCount: tilesets.reduce((sum, item) => sum + item.manifestCount, 0),
+    referenceCount: tilesets.reduce(
+      (sum, item) => sum + item.referenceCount,
+      0,
+    ),
+    objectCount: tilesets.reduce((sum, item) => sum + item.objectCount, 0),
+    localErrorCount: tilesets.reduce(
+      (sum, item) => sum + item.localErrors.length,
+      0,
+    ),
+    remoteErrorCount: tilesets.reduce(
+      (sum, item) => sum + item.remoteErrors.length,
+      0,
+    ),
+  },
+  tilesets,
 };
 
-const origin = new URL(
-  argument("origin", "https://amble.project-hub-arnav.workers.dev"),
-);
-
-function firstContentUri(node) {
-  if (!node || typeof node !== "object") return null;
-  const direct = node.content?.uri || node.content?.url;
-  if (typeof direct === "string") return direct;
-  for (const child of node.children ?? []) {
-    const found = firstContentUri(child);
-    if (found) return found;
-  }
-  return null;
-}
-
-async function expectR2(url, { json = false } = {}) {
-  const response = await fetch(url, { method: json ? "GET" : "HEAD" });
-  if (!response.ok)
-    throw new Error(`${response.status} ${response.statusText}: ${url}`);
-  const source = response.headers.get("x-amble-tile-source");
-  if (source !== "r2")
-    throw new Error(
-      `Expected R2 delivery for ${url}; received ${source || "no source header"}`,
-    );
-  return json ? response.json() : null;
-}
-
-async function verifyContent(url, depth = 0) {
-  if (depth > 8) throw new Error(`Nested tileset depth exceeded for ${url}`);
-  if (!url.pathname.endsWith(".json")) {
-    await expectR2(url);
-    const rangeResponse = await fetch(url, {
-      headers: { range: "bytes=0-99" },
-    });
-    if (
-      rangeResponse.status !== 206 ||
-      rangeResponse.headers.get("x-amble-tile-source") !== "r2"
-    ) {
-      throw new Error(
-        `Expected an R2 byte-range response for ${url}; received ${rangeResponse.status}`,
-      );
-    }
-    return url;
-  }
-
-  const nestedTileset = await expectR2(url, { json: true });
-  const nestedContentUri = firstContentUri(nestedTileset.root);
-  if (!nestedContentUri) throw new Error(`No content URI found in ${url}`);
-  return verifyContent(new URL(nestedContentUri, url), depth + 1);
-}
-
-async function verifyTileset(pathname) {
-  const tilesetUrl = new URL(pathname, origin);
-  const tileset = await expectR2(tilesetUrl, { json: true });
-  const contentUri = firstContentUri(tileset.root);
-  if (!contentUri) throw new Error(`No content URI found in ${tilesetUrl}`);
-  const contentUrl = new URL(contentUri, tilesetUrl);
-  const sampleUrl = await verifyContent(contentUrl);
-  return { tileset: tilesetUrl.href, sample: sampleUrl.href };
-}
-
-const results = await Promise.all([
-  verifyTileset("/optimized-tiles/tileset.json"),
-  verifyTileset("/poi-tiles/event-venues/tileset.json"),
-]);
-
-console.log(
-  JSON.stringify({ complete: true, origin: origin.href, results }, null, 2),
-);
+await mkdir(path.dirname(reportPath), { recursive: true });
+await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+console.log(JSON.stringify({ ...report, reportPath }, null, 2));
+if (!report.complete) process.exitCode = 1;

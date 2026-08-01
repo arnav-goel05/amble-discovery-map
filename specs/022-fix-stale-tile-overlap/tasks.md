@@ -57,6 +57,24 @@ per-object outcome.
 
 - [x] T017 Extract background evidence enumeration and B3DM parsing from `scripts/lib/background-geometry-release.mjs` into a focused module so each new module remains below 400 lines per Constitution VII (partial)
 
+## Phase 8: Quota-Safe Exhaustive Verification
+
+**Goal**: Preserve byte-parity and overlap proof without exhausting visitor-facing Cloudflare
+request capacity.
+
+**Independent Test**: With counted transports, verify an unchanged complete release in one public
+inventory request, detect a same-size stale object by validator, transfer only mismatches through
+Wrangler, and stop a legacy diagnostic after its first `429`.
+
+- [x] T018 [P] [US4] Add reliable-validator, same-size-stale, absent-validator, release-aware-cache, and bounded-object-detail fixtures in `tests/r2-tileset-integrity.test.mjs`
+- [x] T019 [P] [US4] Add one-request inventory comparison and rate-limit-stop fixtures in `tests/tileset-integrity.test.mjs`
+- [x] T020 [US4] Extend the isolated R2 inventory contract with release-aware cache keys, stored-validator verification, and bounded active-background/POI metadata in `cloudflare/r2-tileset-integrity.mjs` and `cloudflare/tile-integrity-worker.mjs`
+- [x] T021 [US4] Implement reusable binding-inventory parsing and direct Wrangler mismatch retrieval/verification in `scripts/lib/r2-binding-inventory.mjs`
+- [x] T022 [US4] Replace public per-object background audit and post-upload verification with inventory preflight and mismatch-only control-plane transfer in `scripts/sync-r2-background-tiles.mjs`
+- [x] T023 [US4] Replace public per-object POI audit and post-upload verification with inventory preflight and mismatch-only control-plane verification in `scripts/sync-r2-poi-tiles.mjs`
+- [x] T024 [US4] Wire one-request release-aware inventory verification into CI/deployment and document the request budget in `scripts/verify-r2-tile-delivery.mjs`, `package.json`, `.github/workflows/ci.yml`, and `docs/cloudflare-cloud-native.md`
+- [ ] T025 Run focused unit/browser tests, exhaustive local integrity, lint, formatting, and production build; after allowance reset deploy the isolated Worker and rerun production background, highlighted, render, and R2 gates until all report zero errors
+
 ## Dependencies and Execution Order
 
 - T001-T002 are complete before implementation.
@@ -68,9 +86,18 @@ per-object outcome.
 - T012 blocks the final audit T014.
 - T013 may run after T005 and before T014.
 - T015-T016 run only after the production report reaches zero.
+- T018-T019 must fail before T020-T024. T020-T021 block T022-T024. T025 runs only after every
+  quota-safe implementation task is complete.
 
 ## Implementation Strategy
 
 Use test-driven increments: enumeration and parsing, then audit classification, then safe
 synchronization, then application activation. Rerun the same production audit after every repair;
 do not stop while any stale object, retained identity, affected venue, or request failure remains.
+
+## Phase 9: Convergence
+
+- [x] T026 [US4] Make the single-request routine integrity gate compare every highlighted POI object's local byte length and MD5 with bounded R2-binding inventory metadata, and add a same-size stale-highlight regression fixture per FR-002, FR-016, and SC-008 (partial)
+- [x] T027 [US4] Derive the integrity cache identity from the background release plus the complete ordered highlighted-object metadata so a changed POI publication cannot reuse an earlier report per FR-018 (partial)
+- [x] T028 Align the SpecKit plan, research, data model, and quickstart on clean B3DM content URIs, manifest-level release selection, embedded expected validators, and control-plane post-upload verification so future work cannot restore the deck.gl query-string tile-type defect per FR-013 (contradicts)
+- [x] T029 [US4] Add a bounded per-run verification identity to R2 inventory requests and cache keys so mutable-object preflight or post-upload checks cannot reuse stale cached evidence while preserving the one-request budget per FR-006, FR-018, and SC-008 (partial)

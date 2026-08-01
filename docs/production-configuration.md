@@ -49,11 +49,11 @@ requires another explicit owner-approved policy change.
 
 ### Voice reliability logs and response timeout
 
-Each provider response has a 30-second server-side watchdog independent of the 60-second idle
-limit, five-minute session limit, and provider output-token maximum. `response.done`, browser
-interruption, and every terminal session path clear the watchdog. If the provider never completes,
-the relay attempts `response.cancel`, records `response_timeout`, conservatively holds the pending
-reservation, and terminates through the standard voice-unavailable lifecycle.
+Each provider response and each final input transcript has a 30-second server-side watchdog. There
+is no per-session turn-count, duration, or idle limit. `response.done`, a trusted final transcript,
+browser interruption, and every terminal session path clear their applicable watchdog. If either
+provider stage never completes, the relay attempts `response.cancel`, conservatively accounts for
+pending work, and terminates through the standard voice-unavailable lifecycle.
 
 Worker and local relay logs emit one JSON record per applicable phase:
 `audio_committed`, `response_requested`, `response_created`, `first_audio`, `response_done`,
@@ -63,11 +63,14 @@ delay. For example, a long gap between `response_created` and `first_audio` is p
 generation/audio latency; a missing `response_created` after `response_requested` is a provider
 acceptance stall.
 
-Committed microphone audio is understood directly by the Realtime model. The relay does not
-configure, reserve, or wait for a separate input-transcription service. It reserves the response
-envelope before accepting audio, projects foundational plus currently eligible typed
-capabilities, commits the buffer, and immediately requests the response. Unexpected late
-transcription events are ignored and cannot alter session state.
+Before accepting microphone audio, the relay independently reserves the response envelope and up
+to 60 seconds of `gpt-realtime-whisper` input transcription. Committing audio starts one forced
+classification response and input transcription from the same Realtime session. The relay binds
+the provider input-item identity, accepts one non-empty final transcript, and joins it with the
+closed domain/event-facet classification in either completion order. Only that joined result may
+route or mutate application state; failed, missing, empty, stale-item, duplicate-conflicting, or
+timed-out inputs terminate through the standard unavailable lifecycle. The model never supplies or
+overrides the authoritative utterance.
 
 The record schema is deliberately closed to `schemaVersion`, `event`, `sessionIdHash`,
 `turnNumber`, `phase`, `occurredAt`, `elapsedMs`, `sincePreviousPhaseMs`, `eventCode`, and
@@ -102,11 +105,14 @@ routine local operation continue to use only the closed privacy-safe phase recor
 When a local defect must be reviewed after the process ends, add the separate audit flag:
 
 ```bash
-NODE_ENV=development REALTIME_CONTENT_DEBUG=true REALTIME_CONTENT_AUDIT=true npm run dev
+npm run dev
 ```
 
 All four gates must be active: the Vite development adapter, `NODE_ENV=development`,
-`REALTIME_CONTENT_DEBUG=true`, and `REALTIME_CONTENT_AUDIT=true`. Missing any gate creates no audit
+`REALTIME_CONTENT_DEBUG=true`, and `REALTIME_CONTENT_AUDIT=true`, so full local content auditing is
+on by default when using the standard `npm run dev` command. The relay still requires every gate
+and refuses persistent content auditing outside development. Starting Vite directly without the
+gates creates no audit
 file. Preview and production cannot construct the sink.
 
 The sink appends already-sanitized JSONL records under
@@ -117,10 +123,9 @@ worker, database, browser storage, analytics, or telemetry path.
 
 Repeated identical `session.update` payloads are fingerprinted after their first permitted full
 copy so static instructions and capability schemas do not crowd out conversational turns. A single
-oversized record becomes a bounded fingerprint marker. Provider-generated transcript events are
-retained only when the provider actually emitted them; native-audio turns without a user
-transcription event have audio metadata and lifecycle records only. The audit never infers user
-speech.
+oversized record becomes a bounded fingerprint marker. Provider-generated partial and final
+transcript events are retained only when the provider actually emitted them. The audit never
+infers user speech or synthesizes a final transcript from classification arguments.
 
 Audit I/O failure does not stop or change a voice session; the terminal receives one bounded
 `voice.content_audit_warning` without conversational content. Delete the directory when the local

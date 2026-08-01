@@ -83,6 +83,17 @@ npm run cloudflare:deploy
 npm run cloudflare:r2:verify
 ```
 
+The verifier uses one cached report from the isolated R2-binding integrity Worker and
+compares exhaustive object counts, deterministic manifest digests, and every highlighted
+object's MD5 and byte length locally. Its release-aware cache identity covers both background
+and highlighted geometry, and a bounded per-run identity forces fresh evidence after mutable-key
+operations. Do not use
+per-object public `HEAD` verification in CI or routine deployment; it can exhaust the
+visitor-facing Workers Free daily allowance.
+
+Geometry synchronization uses the same bounded inventory preflight and transfers only proven
+mismatches through Wrangler's direct R2 control plane.
+
 R2 responses include `x-amble-tile-source: r2`. Existing application URLs remain unchanged, so no frontend CORS or URL migration is required. During upload, missing R2 objects continue to load from the local VPC origin.
 
 ## Verification

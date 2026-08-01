@@ -1,6 +1,6 @@
 # Implementation Plan: Conversational Voice Map Assistant
 
-**Branch**: `develop` | **Date**: 2026-07-18 | **Amended**: 2026-07-30 |
+**Branch**: `develop` | **Date**: 2026-07-18 | **Amended**: 2026-07-31 |
 **Spec**: [spec.md](spec.md)
 
 **Input**: Feature specification from `specs/004-conversational-voice-map/spec.md`
@@ -22,10 +22,12 @@ controls remain available without becoming an offline voice assistant. A disable
 MCP descriptor projector establishes a future transport boundary over the same registry and
 gateway, with no MCP server, listener, client, credential, or runtime dependency.
 The paid relay uses only `gpt-realtime-2.1-mini`. Text turns retain deterministic map,
-transit-layer, and event-filter interpretation plus connector-family scoping. Audio turns use the
-model's native audio understanding immediately after commit and first expose only one forced
-provider-only utterance-ingress tool. The relay then reuses deterministic text routing or exposes
-one relevant connector family. Lower-level event search/filter primitives remain available to
+transit-layer, and event-filter interpretation plus connector-family scoping. Audio turns start
+input transcription and native-audio classification concurrently after commit. The first response
+exposes only one forced provider-only classification tool whose schema contains domain and optional
+event facets but no utterance. The relay joins that proposal with the final provider transcript for
+the same committed audio item, then reuses deterministic text routing or exposes one relevant
+connector family. Lower-level event search/filter primitives remain available to
 direct controls but are withheld from the provider. Every routed audio capability still passes
 through the existing registry, browser-owned confirmation, shared executor, validated result, and
 refreshed-context path.
@@ -48,13 +50,14 @@ through the standard unavailable path, and the opening exact-speech instruction 
 single `response.create`. A bounded owner-authorized live smoke validates this real provider
 contract after deterministic tests.
 Native audio no longer begins with the complete eligible application inventory. Audio commit
-forces one provider-only `voice.submitutterance` ingress tool containing the bounded complete
-model-heard request. The relay binds the current context revision and reuses the typed-turn router:
+forces one provider-only classification tool while enabling one relay-owned final input transcript.
+The relay binds the transcript and current context revision to the classification and reuses the typed-turn router:
 deterministic event/map/transit/session requests execute through their existing shared capability,
 while unresolved requests receive at most one connector family's currently eligible tools. The
 opening greeting and deterministic-result acknowledgement expose no application tools. This keeps
-native speech-to-speech, adds no transcription service, prevents `catalog.search` from competing
-with `event.applyquery`, and reduces the initial native menu from 56 tools to one.
+native speech output and barge-in, prevents `catalog.search` from competing with
+`event.applyquery`, and keeps the initial native menu at one tool while removing the model-generated
+utterance failure mode.
 
 ## Technical Context
 
@@ -62,7 +65,8 @@ with `event.applyquery`, and reduces the initial native menu from 56 tools to on
 scripts, and tests
 
 **Primary Dependencies**: Existing Vite 8, MapLibre GL 1.15, Deck.gl 8.5, Cloudflare Workers/D1;
-OpenAI Realtime API pinned to `gpt-realtime-2.1-mini` with native audio input and no model fallback;
+OpenAI Realtime API pinned to `gpt-realtime-2.1-mini` with native audio input, one configured
+low-latency input-transcription model, and no response-model fallback;
 server-side WebSocket support; browser Media
 Capture and Web Audio APIs; versioned GeoJSON derived from data.gov.sg; no new third-party account
 connector or MCP runtime dependency
@@ -79,13 +83,13 @@ versioned GeoJSON and source manifests for URA subzones and MRT context
 WebKit, and Firefox with mocked audio/realtime streams, existing build and production verification,
 frontend performance benchmarks, deterministic event-interpreter parity fixtures, atomic
 composer-state tests, disabled MCP projection contract tests, phase-order and log-privacy tests,
-native-audio response-ordering and capability-boundary fixtures, deterministic response-watchdog
+native-audio transcript/classification join ordering and capability-boundary fixtures, deterministic response-watchdog
 tests using an injected scheduler, local-content diagnostic activation/redaction/environment-
 isolation fixtures, and persistent-audit activation, permissions, rotation, retention, compaction,
 oversize-record, terminal-reason, and non-interference fixtures; provider-alias round-trip,
 native-audio single-event-query projection and legacy-filter exclusion fixtures,
-forced native-ingress, deterministic route reuse, connector-menu cardinality, and malformed-ingress
-fixtures,
+forced native classification, deterministic route reuse, connector-menu cardinality,
+malformed-classification, missing/empty/failed/stale/duplicate transcript, and join-cleanup fixtures,
 configuration-acknowledgement ordering, provider-error termination, one-shot welcome, stable audit
 fingerprint, and bounded live-smoke fixtures
 
@@ -97,8 +101,8 @@ assets, and thin local/Cloudflare API adapters
 
 **Performance Goals**: Visible listening/acting feedback within 250 ms of local state changes;
 first assistant audio/text begins within 4 seconds for at least 90% of mocked representative turns;
-the forced ingress adds no separate transcription-service wait and the final user-facing response
-retains that 4-second mocked target;
+classification and transcription begin concurrently; the join adds no serial startup delay and the
+final user-facing response retains that 4-second mocked target;
 stalled responses terminate within the configured 30-second deadline plus one scheduler interval;
 map pan/zoom remains visually smooth with no more than 10% regression in the existing benchmark;
 area, location, and MRT layers update without rebuilding 3D tiles
@@ -106,7 +110,7 @@ area, location, and MRT layers update without rebuilding 3D tiles
 **Constraints**: Operational owner is Arnav (project owner). Voice has one cumulative lifetime cap
 of USD 10 (`10_000_000` micro-USD), no automatic reset, and no paid fallback. The standard API key
 never reaches the browser. The relay reserves the conservative response maximum before accepting
-audio for a native-audio turn; it does not invoke or reserve a separate transcription service. Raw
+audio for a native-audio turn and independently admits at most one input-transcription operation. Raw
 audio, transcripts, exact location, screenshots, and UI
 context are never persisted by the application except for permitted provider-generated transcript
 events in the separately activated bounded local developer audit. Microphone use is explicit and continuous
@@ -145,10 +149,11 @@ _GATE: Passed before Phase 0 and re-checked after Phase 1 design._
 - **Automation — PASS**: Action execution, reference resolution, recommendation validation, asset
   generation, usage reservation, settlement, cleanup, and release gates are deterministic code.
   The model proposes typed intents and actions but never owns workflow or authorization.
-- **Native audio — PASS**: The approved Realtime model consumes session-scoped audio directly.
-  Removing the separate transcription dependency eliminates paid work and a blocking failure path;
-  one forced transport-ingress call feeds deterministic application routing, while typed registry
-  validation and browser-owned confirmation remain authoritative.
+- **Native audio — PASS**: The approved Realtime model consumes session-scoped audio directly while
+  the relay captures the provider's final input transcript as application-owned utterance evidence.
+  Classification and transcription start concurrently, join by active provider item identity, and
+  cannot mutate application state independently; typed registry validation and browser-owned
+  confirmation remain authoritative.
 - **Identity and publication — PASS**: Existing stable entity IDs remain authoritative. Area and
   transit assets carry source IDs, content hashes, schema versions, and create/update/no-op/review
   status. Generated assets are staged and validated before replacement; failed refreshes preserve
@@ -205,19 +210,20 @@ connector matrix rejects unrelated email, calendar, messaging, storage, and coll
 connectors because Amble has no matching public capability or authorization lifecycle. No
 constitution violation or unjustified exception remains.
 
-## Native-Audio Amendment (2026-07-30)
+## Transcript-Owned Native-Audio Amendment (2026-07-31)
 
-Audio commit becomes the response-critical boundary. The relay reserves the response maximum before
-accepting audio for the turn, commits the provider audio buffer, exposes exactly one forced
-provider-only utterance ingress, and immediately creates the response. No input-transcription
-model, reservation, event, or watchdog participates in the turn. The validated ingress text is
-bound to relay-owned context and processed by the existing typed-turn router.
+Audio commit remains the response-critical boundary. The relay independently admits one response
+stage and one input-transcription operation, commits the provider audio buffer, exposes exactly one
+forced provider-only classification tool, and immediately creates the classification response.
+The classification contains no utterance. The final input transcript is matched to the committed
+audio item and joined with the classification and relay-owned context before deterministic routing
+or application mutation.
 
-Text submissions and routed native utterances continue through the existing deterministic
+Text submissions and transcript-owned native utterances continue through the existing deterministic
 interpreter and per-family tool scope. A deterministic command executes without another provider
 choice. Only a non-deterministic classified request receives one connector family's eligible tools,
-bounded to fifteen. This preserves the lower-ambiguity path while avoiding a second
-speech-recognition dependency.
+bounded to fifteen. This preserves the lower-ambiguity path while giving the application an
+independently observable utterance rather than depending on optional tool arguments.
 
 Provider tool choice does not confer authority. Every audio-originated function call remains
 bounded by the registered schema, current eligibility, approved identities, browser-owned
@@ -419,26 +425,28 @@ registry into closed MCP foundation fixtures. It MUST NOT open a port or route, 
 transport, add an MCP runtime dependency or credential, or implement external-client
 authorization.
 
-The native-ingress amendment MUST add no second speech recognizer or persistent transcript. The
-provider-only ingress descriptor is transport plumbing rather than a user-facing application
+The transcript-owned amendment MUST configure one input-transcription model inside the existing
+Realtime session and MUST add no separate audio upload or persistent transcript. The provider-only
+classification descriptor is transport plumbing rather than a user-facing application
 capability and therefore MUST NOT enter the shared capability inventory or MCP projection. Its
-validated utterance is immediately routed through the existing text-turn interpreter boundary.
+proposal is joined with the final active transcript and routed through the existing text-turn
+interpreter boundary.
 Application tools remain registry-derived; the Realtime adapter may only narrow them by the routed
 connector and current eligibility. The adapter MUST NOT reimplement event, restaurant, map, plan,
 or navigation business rules.
 
 ### Voice event facet proposal amendment
 
-The forced native ingress response will continue to be the only provider response before event
-execution, but its closed arguments will additionally carry `domain` and an optional structured
-`eventQuery`. Event proposals contain bounded evidence-backed What, When, Where, and Price labels,
+The forced native classification response will continue to be the only provider response before
+event execution, and its closed arguments carry `domain` and an optional structured `eventQuery`
+without an `utterance` member. Event proposals contain bounded evidence-backed What, When, Where, and Price labels,
 meaningful residual text, and unresolved facets. The relay builds the ingress schema from a compact
 bounded event-facet catalogue in authoritative interface context; it does not expose application
 tools during ingress.
 
 `activity-scenes/events/event-facet-proposal.js` will own pure deterministic verification. It maps
-provider labels only to unique current catalogue options, verifies evidence against the captured
-utterance, rejects invented/conflicting/stale values, strips request boilerplate from residual
+provider labels only to unique current catalogue options, verifies evidence against the final
+relay-owned transcript, rejects invented/conflicting/stale values, strips request boilerplate from residual
 text, and returns either a verified classification or bounded clarification. The existing event
 interpreter and query controller reuse that verifier for native voice proposals. Typed and direct
 queries omit the proposal and retain the existing deterministic classifier. Every accepted path

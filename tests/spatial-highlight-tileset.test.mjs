@@ -125,6 +125,25 @@ test("rejects source fragments that are absent from the spatial evidence", () =>
   );
 });
 
+test("uses preserved spatial evidence when empty background content is omitted", () => {
+  const source = fixtureSource();
+  const finest = source.root.children[0].children[0].children[0].children[0];
+  finest.extras = { omittedContentUris: [finest.content.uri] };
+  delete finest.content;
+  const tileset = buildSpatialHighlightTileset({
+    sourceTileset: source,
+    venues: [
+      {
+        poi: { id: "venue-one", label: "Venue One" },
+        fragments: fragments("one"),
+      },
+    ],
+  });
+  const branch = tileset.root.children[0].children[0];
+  assert.equal(branch.extras.poiId, "venue-one");
+  assert.equal(branch.extras.level, 0);
+});
+
 test("rejects unsafe fragment and content paths", () => {
   assert.throws(
     () =>

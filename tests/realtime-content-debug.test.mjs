@@ -358,7 +358,7 @@ test("persistent audit I/O failure is non-throwing and emits a bounded safe warn
   assert.doesNotMatch(JSON.stringify(warnings[0]), /private words/);
 });
 
-test("persistent audit never synthesizes a missing native-audio user transcript", () => {
+test("persistent audit records provider transcripts but never synthesizes one from classification", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "amble-audit-"));
   const logger = createRealtimeContentAuditLogger({ root });
   logger(
@@ -377,6 +377,39 @@ test("persistent audit never synthesizes a missing native-audio user transcript"
       sessionIdHash: "sha256:native-audio",
       direction: "provider_to_relay",
       payload: {
+        type: "conversation.item.input_audio_transcription.delta",
+        item_id: "input-item-001",
+        delta: "events near",
+      },
+    }),
+  );
+  logger(
+    createRealtimeContentDebugRecord({
+      sessionIdHash: "sha256:native-audio",
+      direction: "provider_to_relay",
+      payload: {
+        type: "conversation.item.input_audio_transcription.completed",
+        item_id: "input-item-001",
+        transcript: "events near Marina Bay",
+      },
+    }),
+  );
+  logger(
+    createRealtimeContentDebugRecord({
+      sessionIdHash: "sha256:native-audio",
+      direction: "provider_to_relay",
+      payload: {
+        type: "response.function_call_arguments.done",
+        name: "voice__classifyrequest",
+        arguments: JSON.stringify({ domain: "event", eventQuery: null }),
+      },
+    }),
+  );
+  logger(
+    createRealtimeContentDebugRecord({
+      sessionIdHash: "sha256:native-audio",
+      direction: "provider_to_relay",
+      payload: {
         type: "response.output_audio_transcript.done",
         transcript: "Here are three events.",
       },
@@ -387,8 +420,11 @@ test("persistent audit never synthesizes a missing native-audio user transcript"
     path.join(directory, fs.readdirSync(directory)[0]),
     "utf8",
   );
+  assert.match(bytes, /events near/);
+  assert.match(bytes, /events near Marina Bay/);
   assert.match(bytes, /Here are three events/);
-  assert.doesNotMatch(bytes, /userTranscript|input_audio_transcription|AAAA/);
+  assert.match(bytes, /input_audio_transcription/);
+  assert.doesNotMatch(bytes, /userTranscript|"utterance"|AAAA/);
 });
 
 test("persistent audit rotation and append failures remain non-throwing", () => {

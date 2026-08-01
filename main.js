@@ -188,7 +188,9 @@ async function bootstrapApplication() {
       await import("./activity-scenes/performance-diagnostic-variants.js");
     performanceVariant = requestedPerformanceVariant(window.location.search);
   }
-  resetSavedMapView({ preserve: queryParams.has("autoStart") });
+  const bypassIntroForE2E =
+    import.meta.env.VITE_AMBLE_E2E_BYPASS_INTRO === "1";
+  resetSavedMapView({ preserve: bypassIntroForE2E });
   const hasInitialCameraHash = Boolean(window.location.hash);
   let buildingHighlights = null;
   let map = null;
@@ -198,7 +200,7 @@ async function bootstrapApplication() {
       sharedActionDispatch?.(actionId, argumentsValue),
   });
   const experienceIntro = createExperienceIntro({
-    skip: queryParams.has("autoStart"),
+    skip: bypassIntroForE2E,
     sceneReady: () =>
       document.body.dataset.mapLoaded === "true" &&
       Boolean(buildingHighlights?.isBackgroundViewLoaded()),

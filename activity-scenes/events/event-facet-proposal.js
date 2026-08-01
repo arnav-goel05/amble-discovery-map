@@ -45,6 +45,25 @@ const normalized = (value) =>
 
 const words = (value) => normalized(value).split(" ").filter(Boolean);
 
+const unqualifiedLabel = (value) =>
+  normalized(String(value ?? "").replace(/\s*\([^)]*\)\s*/g, " "));
+
+const uniquelyIdentifiesUnqualifiedOption = ({ evidence, option, catalog }) => {
+  const label = normalized(option?.label);
+  const unqualified = unqualifiedLabel(option?.label);
+  if (
+    !unqualified ||
+    unqualified === label ||
+    normalized(evidence) !== unqualified
+  )
+    return false;
+  const options = catalog?.groups?.[option.dimension] ?? catalog?.all ?? [];
+  const matching = options.filter(
+    (candidate) => unqualifiedLabel(candidate?.label) === unqualified,
+  );
+  return matching.length === 1 && matching[0]?.id === option.id;
+};
+
 const meaningfulResidual = (value, utterance, excludedWords = new Set()) => {
   const utteranceWords = new Set(words(utterance));
   const retained = words(value).filter(
@@ -184,7 +203,12 @@ export function verifyEventFacetProposal({
       !evidenceClassification.matches.some(
         (match) =>
           match.optionId === option.id && match.dimension === option.dimension,
-      )
+      ) &&
+      !uniquelyIdentifiesUnqualifiedOption({
+        evidence: selection.evidence,
+        option,
+        catalog,
+      })
     )
       return reject("unverified_evidence");
     if (

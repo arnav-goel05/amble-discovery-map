@@ -17,6 +17,7 @@ import {
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
+const md5 = (bytes) => createHash("md5").update(bytes).digest("hex");
 
 function b3dm(gmlIds) {
   const feature = Buffer.from(
@@ -43,6 +44,7 @@ const object = (overrides = {}) => {
     localPath: "/tmp/1_0.b3dm",
     localBytes,
     sha256: sha256(localBytes),
+    md5: md5(localBytes),
     byteLength: localBytes.length,
     level: 0,
     selectedGmlIds: ["stadium-gml"],
@@ -113,7 +115,7 @@ test("classifies current, pristine, and intermediate remote objects", () => {
   assert.deepEqual(intermediate.affectedVenueIds, ["venue-a", "venue-b"]);
 });
 
-test("builds deterministic release identity and digest-versions active URIs", () => {
+test("builds deterministic release identity and records digests without changing B3DM types", () => {
   const first = object();
   const second = object({
     objectKey: "optimized-tiles/3/5/1_1.b3dm",
@@ -123,26 +125,42 @@ test("builds deterministic release identity and digest-versions active URIs", ()
   const b = buildReleaseIdentity("snapshot-a", [second, first]);
   assert.equal(a.releaseId, b.releaseId);
   assert.match(a.releaseId, /^[a-f0-9]{16}$/);
+  assert.notEqual(
+    buildReleaseIdentity("snapshot-a", [first, second], Buffer.from("a"))
+      .releaseId,
+    buildReleaseIdentity("snapshot-a", [first, second], Buffer.from("b"))
+      .releaseId,
+  );
 
   const tileset = {
     root: {
       content: { uri: "3/5/1_0.b3dm" },
       children: [
         { content: { url: "3/5/1_1.b3dm?old=1" } },
-        { content: { uri: "unrelated.b3dm" } },
+        {
+          content: { uri: "unrelated.b3dm" },
+          extras: { omittedContentUris: ["3/5/1_0.b3dm"] },
+        },
       ],
     },
   };
   const rewritten = rewriteTilesetForRelease(tileset, [first, second]);
+  assert.equal(rewritten.root.content.uri, "3/5/1_0.b3dm");
+  assert.equal(rewritten.root.extras.backgroundObjectSha256, first.sha256);
+  assert.equal(rewritten.root.extras.backgroundObjectMd5, first.md5);
+  assert.equal(rewritten.root.children[0].content.url, "3/5/1_1.b3dm");
   assert.equal(
-    rewritten.root.content.uri,
-    `3/5/1_0.b3dm?backgroundObject=${first.sha256}`,
+    rewritten.root.children[0].extras.backgroundObjectSha256,
+    second.sha256,
   );
   assert.equal(
-    rewritten.root.children[0].content.url,
-    `3/5/1_1.b3dm?backgroundObject=${second.sha256}`,
+    rewritten.root.children[0].extras.backgroundObjectMd5,
+    second.md5,
   );
   assert.equal(rewritten.root.children[1].content.uri, "unrelated.b3dm");
+  assert.deepEqual(rewritten.root.children[1].extras.backgroundOmittedObjects, [
+    { uri: "3/5/1_0.b3dm", sha256: first.sha256, md5: first.md5 },
+  ]);
 });
 
 test("audit reconciles shared ownership, malformed responses, and totals", async () => {

@@ -27,7 +27,7 @@ export const AMBLE_WELCOME_MESSAGE =
   "Hi, I'm Amble, your Singapore discovery guide. Tell me what you're in the mood for—I can find events, restaurants, and places, or help you explore the map.";
 const VOICE_SERVICE_UNAVAILABLE_MESSAGE =
   "Voice service is currently unavailable. Please try again later.";
-const VOICE_INGRESS_TOOL_NAME = "voice__submitutterance";
+const VOICE_INGRESS_TOOL_NAME = "voice__classifyrequest";
 const NO_TOOL_CHOICE = "none";
 const AUTO_TOOL_CHOICE = "auto";
 const TOOL_STAGE_RESPONSE_INSTRUCTIONS =
@@ -47,17 +47,14 @@ export const VOICE_INGRESS_TOOL = Object.freeze({
   type: "function",
   name: VOICE_INGRESS_TOOL_NAME,
   description:
-    "Submit the complete user utterance heard in the committed audio without adding, removing, or paraphrasing constraints.",
+    "Classify the latest committed user audio for Amble routing without returning a transcript.",
   parameters: Object.freeze({
     type: "object",
     additionalProperties: false,
-    required: ["utterance"],
+    required: ["domain", "eventQuery"],
     properties: Object.freeze({
-      utterance: Object.freeze({
-        type: "string",
-        minLength: 1,
-        maxLength: 500,
-      }),
+      domain: Object.freeze({ enum: ["event", "other", "ambiguous"] }),
+      eventQuery: Object.freeze({ type: "null" }),
     }),
   }),
 });
@@ -109,13 +106,12 @@ export function createVoiceIngressTool(eventFacetCatalog = null) {
   return Object.freeze({
     ...VOICE_INGRESS_TOOL,
     description:
-      "Submit the exact complete user utterance without adding, removing, or paraphrasing constraints. Return exactly the three declared root fields—never place residualQuery or unresolved at the root. For an event request, bind only constraints explicitly present in the utterance to current labels: generic words such as event or events are not a What category. What is always an array; When, Where, and Price are each one object or null, never arrays. Evidence must be an exact copied phrase that actually names the selected label. Omitted optional facets are null and must not be unresolved. Mark a facet unresolved only when the utterance itself expresses two or more materially plausible values. Put only meaningful unbound search terms in eventQuery.residualQuery.",
+      "Classify the latest committed user audio without returning or reconstructing a transcript. Return exactly domain and eventQuery. For an event request, bind only constraints explicitly heard to current labels: generic words such as event or events are not a What category. What is always an array; When, Where, and Price are each one object or null, never arrays. Evidence must be an exact phrase heard in the request that actually names the selected label. Omitted optional facets are null and must not be unresolved. Mark a facet unresolved only when the request expresses two or more materially plausible values. Put only meaningful unbound search terms in eventQuery.residualQuery.",
     parameters: {
       type: "object",
       additionalProperties: false,
-      required: ["utterance", "domain", "eventQuery"],
+      required: ["domain", "eventQuery"],
       properties: {
-        utterance: VOICE_INGRESS_TOOL.parameters.properties.utterance,
         domain: { enum: ["event", "other", "ambiguous"] },
         eventQuery: { anyOf: [eventQuery, { type: "null" }] },
       },
@@ -124,7 +120,6 @@ export function createVoiceIngressTool(eventFacetCatalog = null) {
 }
 
 const INGRESS_ROOT_FIELDS = new Set([
-  "utterance",
   "domain",
   "eventQuery",
   "what",
@@ -181,31 +176,8 @@ export function canonicalizeVoiceIngress(value) {
     value[field] = value[alias];
     delete value[alias];
   }
-  const recoveredFromResidual =
-    !(typeof value.utterance === "string" && value.utterance.trim()) &&
-    typeof value.residualQuery === "string" &&
-    value.residualQuery.trim();
-  const utterance =
-    typeof value.utterance === "string" && value.utterance.trim()
-      ? value.utterance
-      : recoveredFromResidual
-        ? value.residualQuery
-        : null;
-  if (
-    typeof utterance !== "string" ||
-    !utterance.trim() ||
-    utterance.length > 500
-  )
-    return null;
-  if (value.domain === undefined)
-    return Object.keys(value).length === 1 ? { utterance } : null;
+  if (value.domain === undefined) return null;
   if (!["event", "other", "ambiguous"].includes(value.domain)) return null;
-  // A provider occasionally omits the required verbatim utterance while
-  // emitting only its shorter residual text. Never trust an event proposal in
-  // that case: route the bounded residual through the deterministic non-event
-  // scope, where it may perform an obvious command or safely fall out of scope.
-  if (recoveredFromResidual && value.domain === "event")
-    return { utterance, domain: "other", eventQuery: null };
 
   if (value.domain !== "event") {
     if (!isBoundedUnusedEventQuery(value.eventQuery)) return null;
@@ -231,7 +203,6 @@ export function canonicalizeVoiceIngress(value) {
     )
       return null;
     return {
-      utterance,
       domain: value.domain,
       eventQuery: null,
     };
@@ -243,7 +214,7 @@ export function canonicalizeVoiceIngress(value) {
     Array.isArray(value.eventQuery) ||
     Object.keys(value.eventQuery).some((key) => !EVENT_QUERY_FIELDS.has(key))
   )
-    return { utterance, domain: value.domain, eventQuery: null };
+    return { domain: value.domain, eventQuery: null };
   const eventQuery = structuredClone(value.eventQuery);
   for (const field of [
     "what",
@@ -305,9 +276,8 @@ export function canonicalizeVoiceIngress(value) {
     !Array.isArray(eventQuery.unresolved) ||
     eventQuery.unresolved.length > 4
   )
-    return { utterance, domain: value.domain, eventQuery: null };
+    return { domain: value.domain, eventQuery: null };
   return {
-    utterance,
     domain: value.domain,
     eventQuery,
   };
@@ -342,12 +312,11 @@ export function buildVerbatimSpeechInstructions(text) {
 
 export function buildVoiceIngressResponseInstructions() {
   return [
-    "INGRESS TRANSCRIPTION TASK ONLY.",
+    "INGRESS CLASSIFICATION TASK ONLY.",
     "Do not answer, acknowledge, refuse, summarize, or act on the user's request in this response.",
-    "Call voice__submitutterance exactly once.",
-    "Set utterance to the exact words heard in the latest committed user audio.",
-    "Never put an assistant response, policy sentence, capability description, or prior conversation text in utterance.",
-    "Classify and structure only constraints present in those exact words.",
+    "Call voice__classifyrequest exactly once.",
+    "Return only domain and eventQuery; never return, reconstruct, or paraphrase a transcript.",
+    "Classify and structure only constraints present in the latest committed user audio.",
     "Emit no spoken or written commentary before or after the function call.",
   ].join("\n");
 }
@@ -671,7 +640,7 @@ function validateCloudRelayPolicy(policy) {
     policy?.schemaVersion !== "1.1" ||
     policy.owner !== "Arnav" ||
     policy.modelId !== "gpt-realtime-2.1-mini" ||
-    "transcriptionModelId" in policy ||
+    policy.transcriptionModelId !== "gpt-realtime-whisper" ||
     policy.capMicroUsd !== 10_000_000 ||
     policy.resetPolicy !== "none" ||
     "maxOutputTokens" in policy ||
@@ -680,8 +649,9 @@ function validateCloudRelayPolicy(policy) {
     "maxResponses" in policy ||
     policy.maxResponseStagesPerTurn !== 3 ||
     policy.rateCardVersion !== policy.rateCard?.version ||
-    "transcriptionMicroUsdPerMinute" in (policy.rateCard?.rates || {}) ||
-    "inputTranscription" in (expected || {}) ||
+    policy.rateCard?.rates?.transcriptionMicroUsdPerMinute !== 17_000 ||
+    expected?.inputTranscription?.maxAudioSeconds !== 60 ||
+    expected?.inputTranscription?.reservedMicroUsd !== 17_000 ||
     expected?.response?.providerMaxOutputTokens !== 4_096 ||
     !Number.isSafeInteger(expected?.response?.reservedMicroUsd)
   ) {
@@ -715,6 +685,7 @@ function providerSessionUpdate(
       audio: {
         input: {
           format: { type: "audio/pcm", rate: 24_000 },
+          transcription: { model: policy.transcriptionModelId },
           turn_detection: null,
         },
         output: {
@@ -804,6 +775,8 @@ export function createRealtimeRelay({
     throw new TypeError("A voice budget repository is required");
   const reservations = {
     responseMicroUsd: policy.worstCaseReservation.response.reservedMicroUsd,
+    transcriptionMicroUsd:
+      policy.worstCaseReservation.inputTranscription.reservedMicroUsd,
   };
   const sessions = new Map();
   const contracts = new Map(
@@ -1065,6 +1038,34 @@ export function createRealtimeRelay({
     return true;
   };
 
+  const clearTranscriptionWatchdog = (session) => {
+    if (!session.transcriptionTimer) return false;
+    responseClearTimeout(session.transcriptionTimer);
+    session.transcriptionTimer = null;
+    return true;
+  };
+
+  const startTranscriptionWatchdog = (session) => {
+    clearTranscriptionWatchdog(session);
+    session.transcriptionTimer = responseSetTimeout(() => {
+      if (
+        sessions.get(session.sessionId) !== session ||
+        session.state === "stopped" ||
+        !session.transcriptionReservationId ||
+        session.finalInputTranscript
+      )
+        return;
+      sendBrowser(session, {
+        type: "error",
+        code: "provider_unavailable",
+        message: VOICE_SERVICE_UNAVAILABLE_MESSAGE,
+      });
+      sendProvider(session, { type: "response.cancel" });
+      stop(session.sessionId, "response_timeout");
+    }, policy.responseTimeoutSeconds * 1_000);
+    session.transcriptionTimer?.unref?.();
+  };
+
   const sendResponseCreate = (session, response = {}) => {
     if (!session.turnTrace) startTurnTrace(session);
     clearResponseWatchdog(session);
@@ -1100,9 +1101,15 @@ export function createRealtimeRelay({
   const resumeListeningWhenSettled = (session) => {
     if (
       !session.responseReservationId &&
+      !session.transcriptionReservationId &&
       !session.activeReservedTurnId &&
       !session.pendingResponseStage &&
-      session.pendingCalls.size === 0
+      session.pendingCalls.size === 0 &&
+      ![
+        "classification",
+        "awaiting_classification",
+        "awaiting_transcript",
+      ].includes(session.nativeStage)
     )
       sendBrowser(session, {
         type: "session.state",
@@ -1208,18 +1215,26 @@ export function createRealtimeRelay({
         terminalReason: reason,
       });
     clearResponseWatchdog(session);
+    clearTranscriptionWatchdog(session);
     clearConfigurationTimer(session);
     sendBrowser(session, { type: "session.stopped", reason });
     for (const reservationId of session.openReservations) {
-      const mustHold =
-        reservationId === session.responseReservationId
-          ? session.responseCreated
+      const isResponse = reservationId === session.responseReservationId;
+      const isTranscription =
+        reservationId === session.transcriptionReservationId;
+      const mustHold = isResponse
+        ? session.responseCreated
+        : isTranscription
+          ? session.inputCommitted
           : true;
+      const conservativeAmount = isTranscription
+        ? reservations.transcriptionMicroUsd
+        : reservations.responseMicroUsd;
       const conservativeUserSettlement = mustHold && reason === "user";
       const operation = conservativeUserSettlement
         ? budgetRepository.settle({
             reservationId,
-            settledMicroUsd: reservations.responseMicroUsd,
+            settledMicroUsd: conservativeAmount,
             usageShapeHash: "sha256:conservative-user-stop",
             settledAt: now().toISOString(),
           })
@@ -1396,6 +1411,147 @@ export function createRealtimeRelay({
     });
   };
 
+  const settleFinalTranscription = async (session) => {
+    const reservationId = session.transcriptionReservationId;
+    if (!reservationId) return false;
+    try {
+      await budgetRepository.settle({
+        reservationId,
+        settledMicroUsd: reservations.transcriptionMicroUsd,
+        usageShapeHash: "sha256:provider-final-transcript-max-bound",
+        settledAt: now().toISOString(),
+      });
+      session.openReservations = session.openReservations.filter(
+        (id) => id !== reservationId,
+      );
+      session.transcriptionReservationId = null;
+      clearTranscriptionWatchdog(session);
+      return true;
+    } catch {
+      await hold(session, reservationId, "settlement_failure");
+      return false;
+    }
+  };
+
+  const routeJoinedNativeTurn = async (session) => {
+    if (
+      session.nativeStage === "routed" ||
+      !session.finalInputTranscript ||
+      !session.nativeClassification ||
+      !session.nativeClassificationCallId
+    )
+      return false;
+    const utterance = session.finalInputTranscript;
+    const ingress = session.nativeClassification;
+    const callId = session.nativeClassificationCallId;
+    if (!(await settleFinalTranscription(session))) return false;
+    if (session.state === "stopped") return false;
+    session.nativeStage = "routed";
+    session.pendingIngressCallId = callId;
+    const scope = scopeToolsForTurn(session, utterance, {
+      includeFoundational: false,
+    });
+    if (
+      ingress.domain === "event" &&
+      scope.deterministicCapabilityId === "event.applyquery" &&
+      session.availableCapabilityIds.includes("event.applyquery")
+    ) {
+      const registered = contracts.get("event.applyquery");
+      const composerState =
+        session.interfaceContext?.activeFilters?.eventComposerState;
+      const argumentsValue = {
+        text: utterance,
+        mode: selectVoiceEventQueryMode(utterance, composerState),
+        baseContextRevision: session.interfaceContext?.revision ?? 0,
+        catalogRevision:
+          session.interfaceContext?.eventFacetCatalog?.catalogRevision ??
+          session.interfaceContext?.activeFilters?.eventComposerState
+            ?.catalogRevision ??
+          null,
+        ...(ingress.eventQuery ? { facetProposal: ingress.eventQuery } : {}),
+      };
+      if (!registered || !registered.validateArguments(argumentsValue).valid)
+        return stop(session.sessionId, "protocol");
+      session.pendingCallIds.add(callId);
+      session.pendingCalls.set(callId, {
+        callId,
+        capabilityId: registered.contract.capabilityId,
+        kind: registered.contract.kind,
+        confirmationClass: registered.contract.confirmationClass,
+        argumentsKey: canonical(argumentsValue),
+        arguments: structuredClone(argumentsValue),
+        proposalRevision: session.interfaceContext?.revision ?? 0,
+        validateResult: registered.validateResult,
+        result: null,
+        providerCall: false,
+      });
+      sendBrowser(session, {
+        type: "capability.proposed",
+        callId,
+        capabilityId: registered.contract.capabilityId,
+        kind: registered.contract.kind,
+        arguments: argumentsValue,
+        contextRevision: session.interfaceContext?.revision ?? 0,
+      });
+      return true;
+    }
+    if (scope.deterministicCapabilityId) {
+      const registered = contracts.get(scope.deterministicCapabilityId);
+      if (
+        !registered ||
+        !scope.deterministicArguments ||
+        !registered.validateArguments(scope.deterministicArguments).valid
+      )
+        return stop(session.sessionId, "protocol");
+      const argumentsValue = structuredClone(scope.deterministicArguments);
+      session.pendingCallIds.add(callId);
+      session.pendingCalls.set(callId, {
+        callId,
+        capabilityId: registered.contract.capabilityId,
+        kind: registered.contract.kind,
+        confirmationClass: registered.contract.confirmationClass,
+        argumentsKey: canonical(argumentsValue),
+        arguments: structuredClone(argumentsValue),
+        proposalRevision: session.interfaceContext?.revision ?? 0,
+        validateResult: registered.validateResult,
+        result: null,
+        providerCall: false,
+      });
+      sendBrowser(session, {
+        type: "capability.proposed",
+        callId,
+        capabilityId: registered.contract.capabilityId,
+        kind: registered.contract.kind,
+        arguments: argumentsValue,
+        contextRevision: session.interfaceContext?.revision ?? 0,
+      });
+      return true;
+    }
+    if (scope.tools.length) {
+      session.nativeStage = "domain";
+      return requestResponseStage(session, {
+        tools: scope.tools,
+        toolChoice: AUTO_TOOL_CHOICE,
+        beforeCreate: () => appendPendingIngressOutput(session),
+      });
+    }
+    session.nativeStage = "final";
+    const terminalSpeech =
+      ingress.domain === "ambiguous"
+        ? "Could you clarify which Amble feature you want to use?"
+        : OUT_OF_SCOPE_RESPONSE;
+    return requestResponseStage(session, {
+      tools: [],
+      toolChoice: NO_TOOL_CHOICE,
+      response: {
+        conversation: "none",
+        instructions: buildVerbatimSpeechInstructions(terminalSpeech),
+      },
+      beforeCreate: () => appendPendingIngressOutput(session),
+      expectedSpeech: terminalSpeech,
+    });
+  };
+
   const onProviderEvent = async (session, rawEvent) => {
     if (
       session.state === "stopped" ||
@@ -1413,6 +1569,56 @@ export function createRealtimeRelay({
     if (event.type === "error") return terminateProviderUnavailable(session);
     if (event.type === "session.updated")
       return acknowledgeProviderConfiguration(session, event);
+    if (event.type === "input_audio_buffer.committed") {
+      if (
+        !session.inputCommitted ||
+        typeof event.item_id !== "string" ||
+        !event.item_id ||
+        event.item_id.length > 128 ||
+        (session.providerInputItemId &&
+          session.providerInputItemId !== event.item_id)
+      )
+        return stop(session.sessionId, "protocol");
+      session.providerInputItemId = event.item_id;
+      return;
+    }
+    if (event.type === "conversation.item.input_audio_transcription.failed") {
+      if (!session.transcriptionReservationId) return;
+      return terminateProviderUnavailable(session);
+    }
+    if (
+      event.type === "conversation.item.input_audio_transcription.completed"
+    ) {
+      if (!session.transcriptionReservationId) return;
+      const transcript =
+        typeof event.transcript === "string" ? event.transcript.trim() : "";
+      if (
+        !session.inputCommitted ||
+        typeof event.item_id !== "string" ||
+        !event.item_id ||
+        event.item_id.length > 128 ||
+        !transcript ||
+        transcript.length > 500 ||
+        (session.providerInputItemId &&
+          session.providerInputItemId !== event.item_id)
+      )
+        return stop(session.sessionId, "protocol");
+      if (session.finalInputTranscript) {
+        if (
+          session.providerInputItemId === event.item_id &&
+          session.finalInputTranscript === transcript
+        )
+          return;
+        return stop(session.sessionId, "protocol");
+      }
+      session.providerInputItemId = event.item_id;
+      session.finalInputTranscript = transcript;
+      if (session.nativeStage === "classification")
+        session.nativeStage = "awaiting_classification";
+      return routeJoinedNativeTurn(session);
+    }
+    if (event.type === "conversation.item.input_audio_transcription.delta")
+      return;
     if (event.type === "response.created") {
       tracePhase(session, "response_created");
       sendBrowser(session, {
@@ -1436,7 +1642,9 @@ export function createRealtimeRelay({
     if (event.type === "response.function_call_arguments.done") {
       if (event.name === VOICE_INGRESS_TOOL_NAME) {
         if (
-          session.nativeStage !== "ingress" ||
+          !["classification", "awaiting_classification"].includes(
+            session.nativeStage,
+          ) ||
           session.tools.length !== 1 ||
           session.tools[0]?.name !== VOICE_INGRESS_TOOL_NAME ||
           typeof event.call_id !== "string" ||
@@ -1456,137 +1664,19 @@ export function createRealtimeRelay({
           !ingress ||
           typeof ingress !== "object" ||
           Array.isArray(ingress) ||
-          ![1, 3].includes(Object.keys(ingress).length) ||
-          typeof ingress.utterance !== "string" ||
-          !ingress.utterance.trim() ||
-          ingress.utterance.length > 500 ||
-          (ingress.domain !== undefined &&
-            !["event", "other", "ambiguous"].includes(ingress.domain)) ||
+          Object.keys(ingress).length !== 2 ||
+          !["event", "other", "ambiguous"].includes(ingress.domain) ||
           (ingress.domain === "event" &&
             ingress.eventQuery !== null &&
             (typeof ingress.eventQuery !== "object" ||
               Array.isArray(ingress.eventQuery))) ||
-          (ingress.domain !== undefined &&
-            ingress.domain !== "event" &&
-            ingress.eventQuery !== null) ||
-          [
-            OUT_OF_SCOPE_RESPONSE,
-            AMBLE_WELCOME_MESSAGE,
-            VOICE_SERVICE_UNAVAILABLE_MESSAGE,
-          ].includes(ingress.utterance.trim())
+          (ingress.domain !== "event" && ingress.eventQuery !== null)
         )
           return stop(session.sessionId, "protocol");
-        session.nativeStage = "routed";
-        session.pendingIngressCallId = event.call_id;
-        const scope = scopeToolsForTurn(session, ingress.utterance, {
-          includeFoundational: false,
-        });
-        if (
-          ingress.domain === "event" &&
-          scope.deterministicCapabilityId === "event.applyquery" &&
-          session.availableCapabilityIds.includes("event.applyquery")
-        ) {
-          const registered = contracts.get("event.applyquery");
-          const composerState =
-            session.interfaceContext?.activeFilters?.eventComposerState;
-          const argumentsValue = {
-            text: ingress.utterance,
-            mode: selectVoiceEventQueryMode(ingress.utterance, composerState),
-            baseContextRevision: session.interfaceContext?.revision ?? 0,
-            catalogRevision:
-              session.interfaceContext?.eventFacetCatalog?.catalogRevision ??
-              session.interfaceContext?.activeFilters?.eventComposerState
-                ?.catalogRevision ??
-              null,
-            ...(ingress.eventQuery
-              ? { facetProposal: ingress.eventQuery }
-              : {}),
-          };
-          if (
-            !registered ||
-            !registered.validateArguments(argumentsValue).valid
-          )
-            return stop(session.sessionId, "protocol");
-          const callId = event.call_id;
-          session.pendingCallIds.add(callId);
-          session.pendingCalls.set(callId, {
-            callId,
-            capabilityId: registered.contract.capabilityId,
-            kind: registered.contract.kind,
-            confirmationClass: registered.contract.confirmationClass,
-            argumentsKey: canonical(argumentsValue),
-            arguments: structuredClone(argumentsValue),
-            proposalRevision: session.interfaceContext?.revision ?? 0,
-            validateResult: registered.validateResult,
-            result: null,
-            providerCall: false,
-          });
-          sendBrowser(session, {
-            type: "capability.proposed",
-            callId,
-            capabilityId: registered.contract.capabilityId,
-            kind: registered.contract.kind,
-            arguments: argumentsValue,
-            contextRevision: session.interfaceContext?.revision ?? 0,
-          });
-          return;
-        }
-        if (scope.deterministicCapabilityId) {
-          const registered = contracts.get(scope.deterministicCapabilityId);
-          if (
-            !registered ||
-            !scope.deterministicArguments ||
-            !registered.validateArguments(scope.deterministicArguments).valid
-          )
-            return stop(session.sessionId, "protocol");
-          const callId = event.call_id;
-          const argumentsValue = structuredClone(scope.deterministicArguments);
-          session.pendingCallIds.add(callId);
-          session.pendingCalls.set(callId, {
-            callId,
-            capabilityId: registered.contract.capabilityId,
-            kind: registered.contract.kind,
-            confirmationClass: registered.contract.confirmationClass,
-            argumentsKey: canonical(argumentsValue),
-            arguments: structuredClone(argumentsValue),
-            proposalRevision: session.interfaceContext?.revision ?? 0,
-            validateResult: registered.validateResult,
-            result: null,
-            providerCall: false,
-          });
-          sendBrowser(session, {
-            type: "capability.proposed",
-            callId,
-            capabilityId: registered.contract.capabilityId,
-            kind: registered.contract.kind,
-            arguments: argumentsValue,
-            contextRevision: session.interfaceContext?.revision ?? 0,
-          });
-          return;
-        }
-        if (scope.tools.length) {
-          session.nativeStage = "domain";
-          return requestResponseStage(session, {
-            tools: scope.tools,
-            toolChoice: AUTO_TOOL_CHOICE,
-            beforeCreate: () => appendPendingIngressOutput(session),
-          });
-        }
-        session.nativeStage = "final";
-        const terminalSpeech =
-          ingress.domain === "ambiguous"
-            ? "Could you clarify which Amble feature you want to use?"
-            : OUT_OF_SCOPE_RESPONSE;
-        return requestResponseStage(session, {
-          tools: [],
-          toolChoice: NO_TOOL_CHOICE,
-          response: {
-            conversation: "none",
-            instructions: buildVerbatimSpeechInstructions(terminalSpeech),
-          },
-          beforeCreate: () => appendPendingIngressOutput(session),
-          expectedSpeech: terminalSpeech,
-        });
+        session.nativeClassification = ingress;
+        session.nativeClassificationCallId = event.call_id;
+        session.nativeStage = "awaiting_transcript";
+        return routeJoinedNativeTurn(session);
       }
       const capabilityId = providerToCanonical.get(event.name);
       discardBufferedProviderOutput(session);
@@ -1672,9 +1762,6 @@ export function createRealtimeRelay({
       });
       return;
     }
-    if (event.type.startsWith("conversation.item.input_audio_transcription.")) {
-      return;
-    }
     const sanitized = sanitizeProviderEvent(event);
     if (!sanitized) return;
     if (event.type === "response.done") {
@@ -1748,7 +1835,10 @@ export function createRealtimeRelay({
       );
     if (sanitized.trustedUsage && session.responseReservationId) {
       const reservationId = session.responseReservationId;
-      const missingRequiredIngress = session.nativeStage === "ingress";
+      const missingRequiredIngress = [
+        "classification",
+        "awaiting_classification",
+      ].includes(session.nativeStage);
       const cost = usageCostMicroUsd(sanitized.trustedUsage, policy);
       if (cost === null) return hold(session, reservationId, "untrusted_usage");
       const usageShapeHash = await hash(
@@ -1766,7 +1856,6 @@ export function createRealtimeRelay({
         );
         session.responseReservationId = null;
         session.responseCreated = false;
-        session.inputCommitted = false;
         if (session.stopAfterSettlement) {
           const reason = session.stopAfterSettlement;
           session.stopAfterSettlement = null;
@@ -1871,28 +1960,61 @@ export function createRealtimeRelay({
     session.lastBrowserMessageType = message.type;
     if (message.type === "session.stop") return stop(sessionId, message.reason);
     if (message.type === "turn.request") {
-      if (session.activeReservedTurnId || session.responseReservationId)
+      if (
+        session.activeReservedTurnId ||
+        session.responseReservationId ||
+        session.transcriptionReservationId
+      )
         return stop(sessionId, "protocol");
       session.responseStageCount = 0;
       session.nativeStage = "awaiting_audio";
       if (!(await reserveResponseStage(session))) return;
+      try {
+        session.transcriptionReservationId = await reserve(
+          session,
+          "input_transcription",
+          reservations.transcriptionMicroUsd,
+        );
+      } catch {
+        return stop(sessionId, "usage_limit");
+      }
+      session.inputAudioBytes = 0;
+      session.providerInputItemId = null;
+      session.finalInputTranscript = null;
+      session.nativeClassification = null;
+      session.nativeClassificationCallId = null;
       session.activeReservedTurnId = message.turnId;
       return sendBrowser(session, {
         type: "turn.ready",
         turnId: message.turnId,
       });
     }
-    if (message.type === "audio.append")
+    if (message.type === "audio.append") {
+      const padding = message.audio.endsWith("==")
+        ? 2
+        : message.audio.endsWith("=")
+          ? 1
+          : 0;
+      const decodedBytes = Math.floor((message.audio.length * 3) / 4) - padding;
+      session.inputAudioBytes += decodedBytes;
+      const maxAudioBytes =
+        policy.worstCaseReservation.inputTranscription.maxAudioSeconds *
+        24_000 *
+        2;
+      if (session.inputAudioBytes > maxAudioBytes)
+        return stop(sessionId, "usage_limit");
       return sendProvider(session, {
         type: "input_audio_buffer.append",
         audio: message.audio,
       });
+    }
     if (message.type === "audio.commit") {
       startTurnTrace(session);
       tracePhase(session, "audio_committed");
       session.activeReservedTurnId = null;
       session.inputCommitted = true;
-      session.nativeStage = "ingress";
+      session.nativeStage = "classification";
+      startTranscriptionWatchdog(session);
       const ingressTool = createVoiceIngressTool(
         session.interfaceContext?.eventFacetCatalog,
       );
@@ -1907,7 +2029,11 @@ export function createRealtimeRelay({
       });
     }
     if (message.type === "text.submit") {
-      if (session.activeReservedTurnId || session.responseReservationId)
+      if (
+        session.activeReservedTurnId ||
+        session.responseReservationId ||
+        session.transcriptionReservationId
+      )
         return stop(sessionId, "protocol");
       startTurnTrace(session);
       session.responseStageCount = 0;
@@ -2048,9 +2174,12 @@ export function createRealtimeRelay({
       responseStageCount: 0,
       activeReservedTurnId: null,
       responseReservationId: null,
+      transcriptionReservationId: null,
       inputCommitted: false,
+      inputAudioBytes: 0,
       responseCreated: false,
       responseTimer: null,
+      transcriptionTimer: null,
       configurationTimer: null,
       pendingConfiguration: null,
       acceptedConfigurationKey: null,
@@ -2079,6 +2208,10 @@ export function createRealtimeRelay({
       pendingResponseStage: null,
       pendingIngressCallId: null,
       nativeStage: null,
+      providerInputItemId: null,
+      finalInputTranscript: null,
+      nativeClassification: null,
+      nativeClassificationCallId: null,
       transcriptItems: [],
       intent: null,
       exactLocation: null,

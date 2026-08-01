@@ -17,7 +17,8 @@ user data.
 | `protocolVersion`             | string             | Must match relay and client contract                                                                                                  |
 | `state`                       | enum               | `idle`, `disclosure`, `connecting`, `listening`, `processing`, `speaking`, `awaiting_confirmation`, `degraded`, `stopping`, `stopped` |
 | `createdAt`, `lastActivityAt` | timestamp          | Observability and ordering only; neither timestamp authorizes automatic session expiry                                                |
-| `activeResponseStage`         | nullable enum      | `ingress`, `domain`, or `final`; at most one unresolved provider response stage                                                       |
+| `activeResponseStage`         | nullable enum      | `classification`, `domain`, or `final`; at most one unresolved provider response stage                                                |
+| `activeTranscriptJoin`        | nullable object    | Active audio item, final transcript, classification result, and single-use join state; cleared terminally                             |
 | `transcriptItems`             | `TranscriptItem[]` | Memory only; cleared at stop                                                                                                          |
 | `intent`                      | `DiscoveryIntent`  | Memory only                                                                                                                           |
 | `contextRevision`             | integer            | Monotonic revision of interface context                                                                                               |
@@ -345,7 +346,7 @@ conflicting replays are protocol violations.
 | ------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------- |
 | `reservationId`                       | string          | Random unique identity                                                                             |
 | `sessionIdHash`                       | string          | Non-reversible operational correlation only                                                        |
-| `kind`                                | enum            | New turns use `response`; historical `input_transcription` rows remain readable for reconciliation |
+| `kind`                                | enum            | `response` or `input_transcription`; at most one transcription reservation per admitted audio turn |
 | `reservedMicroUsd`, `settledMicroUsd` | integer         | Settled never exceeds reserved                                                                     |
 | `status`                              | enum            | `reserved`, `settled`, `held`, `void`                                                              |
 | `usageShapeHash`, `rateCardVersion`   | nullable/string | No transcript or provider payload                                                                  |
@@ -357,41 +358,57 @@ Unknown/missing usage leaves the reservation `held`; it is never optimistically 
 
 ## NativeAudioTurn (memory only)
 
-| Field                   | Type    | Rules                                                  |
-| ----------------------- | ------- | ------------------------------------------------------ |
-| `turnId`                | string  | Browser-owned bounded identity                         |
-| `responseReservationId` | string  | Reserved before audio is accepted for the turn         |
-| `contextRevision`       | integer | Authoritative revision bound by the relay              |
-| `activeToolMenu`        | object  | Current ingress, domain, or final provider projection  |
-| `inputCommitted`        | boolean | Becomes true immediately before provider buffer commit |
-| `responseCreated`       | boolean | Single-use guard against duplicate response creation   |
+| Field                        | Type            | Rules                                                                       |
+| ---------------------------- | --------------- | --------------------------------------------------------------------------- |
+| `turnId`                     | string          | Browser-owned bounded identity                                              |
+| `responseReservationId`      | string          | Reserved before audio is accepted for the turn                              |
+| `transcriptionReservationId` | string          | Independently reserved once for input transcription                         |
+| `contextRevision`            | integer         | Authoritative revision bound by the relay                                   |
+| `activeToolMenu`             | object          | Current classification, domain, or final provider projection                |
+| `inputCommitted`             | boolean         | Becomes true immediately before provider buffer commit                      |
+| `providerInputItemId`        | nullable string | Binds the committed provider audio item to final transcription events       |
+| `responseCreated`            | boolean         | Single-use guard against duplicate response creation                        |
+| `joinState`                  | enum            | `waiting`, `classification_ready`, `transcript_ready`, `joined`, `terminal` |
 
 State transition:
 
-`requested → response_reserved → audio_committed → ingress_requested → routed → responding → settled`
+`requested → operations_reserved → audio_committed → classification_and_transcription → joined → routed → responding → settled`
 
-Any admission, policy, network, provider, timeout, or protocol failure transitions through the
-existing terminal cleanup. No transcription state participates in the transition.
+Any admission, policy, network, provider, timeout, transcription, or protocol failure transitions
+through existing terminal cleanup and clears both reservations and join state.
 
-## NativeVoiceIngress (memory only)
+## NativeVoiceClassification (memory only)
 
-| Field                  | Type    | Rules                                                                 |
-| ---------------------- | ------- | --------------------------------------------------------------------- |
-| `utterance`            | string  | Non-empty model-heard text, maximum 500 characters                    |
-| `boundContextRevision` | integer | Copied from authoritative relay state, never supplied by the provider |
-| `state`                | enum    | `awaiting_call`, `routed`, or `terminal`                              |
+| Field                  | Type            | Rules                                                                 |
+| ---------------------- | --------------- | --------------------------------------------------------------------- |
+| `domain`               | bounded enum    | Optional non-authoritative routing proposal                           |
+| `eventQuery`           | nullable object | Closed proposed event facets only; never supplies utterance evidence  |
+| `boundContextRevision` | integer         | Copied from authoritative relay state, never supplied by the provider |
+| `state`                | enum            | `awaiting_call`, `ready`, `joined`, or `terminal`                     |
 
-The ingress object exists only for the active turn. It is model interpretation used for routing,
-not an authoritative transcript, and is cleared on completion, interruption, timeout, or stop.
+The classification exists only for the active turn. It is model interpretation used for routing,
+contains no utterance, and is cleared on completion, interruption, timeout, or stop.
+
+## FinalInputTranscript (memory only)
+
+| Field    | Type    | Rules                                                                     |
+| -------- | ------- | ------------------------------------------------------------------------- |
+| `itemId` | string  | Must match the active committed provider audio item                       |
+| `text`   | string  | Non-empty bounded final provider transcript; authoritative turn utterance |
+| `status` | enum    | `final`, `failed`, or `terminal`                                          |
+| `joined` | boolean | Single-use guard; true only after pairing with active classification      |
+
+Partial deltas may update UI transcript state but cannot authorize routing or mutation. The final
+transcript is session-scoped and is never persisted outside explicitly authorized local audit.
 
 ## NativeToolMenu (memory only)
 
-| Field           | Type            | Rules                                                                             |
-| --------------- | --------------- | --------------------------------------------------------------------------------- |
-| `stage`         | enum            | `opening`, `ingress`, `domain`, or `final`                                        |
-| `connectorId`   | nullable string | Present only for a routed domain menu                                             |
-| `capabilityIds` | string array    | Empty, exactly `voice.submitutterance`, or at most fifteen IDs from one connector |
-| `toolChoice`    | enum/object     | `none`, forced `voice.submitutterance`, or `auto`                                 |
+| Field           | Type            | Rules                                                                                           |
+| --------------- | --------------- | ----------------------------------------------------------------------------------------------- |
+| `stage`         | enum            | `opening`, `classification`, `domain`, or `final`                                               |
+| `connectorId`   | nullable string | Present only for a routed domain menu                                                           |
+| `capabilityIds` | string array    | Empty, exactly one provider-only classification tool, or at most fifteen IDs from one connector |
+| `toolChoice`    | enum/object     | `none`, forced classification, or `auto`                                                        |
 
 Menu transitions require an acknowledged provider configuration. Application capability entries
 remain derived from the shared registry and current authoritative eligibility.

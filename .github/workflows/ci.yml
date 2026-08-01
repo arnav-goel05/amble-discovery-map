@@ -57,5 +57,11 @@ jobs:
       - name: Run browser smoke tests
         run: npm run test:smoke
 
+      - name: Verify visible 3D building layers
+        run: npm run test:render-smoke
+
+      - name: Verify every published R2 tileset object
+        run: npm run cloudflare:r2:verify
+
       - name: Verify Cloudflare production build
         run: npm run cloudflare:cloud:check

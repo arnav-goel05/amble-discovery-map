@@ -3,7 +3,8 @@
 ## Purpose
 
 Convert committed native audio into the same bounded deterministic routing path used by text turns
-without exposing the full application capability inventory or adding a transcription service.
+without exposing the full application capability inventory or trusting model-generated tool
+arguments to reproduce the utterance.
 
 ## Stage 0: Opening
 
@@ -11,9 +12,10 @@ without exposing the full application capability inventory or adding a transcrip
 - Tool choice: none.
 - Output: the existing one-shot exact Amble greeting.
 
-## Stage 1: Forced ingress
+## Stage 1: Concurrent transcription and forced classification
 
-- Tools: exactly one provider-only function named `voice__submitutterance`.
+- Input transcription: enabled once for the committed provider audio item.
+- Tools: exactly one provider-only classification function.
 - Tool choice: forced to that function.
 - Closed arguments:
 
@@ -21,13 +23,8 @@ without exposing the full application capability inventory or adding a transcrip
 {
   "type": "object",
   "additionalProperties": false,
-  "required": ["utterance", "domain", "eventQuery"],
+  "required": ["domain", "eventQuery"],
   "properties": {
-    "utterance": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 500
-    },
     "domain": { "enum": ["event", "other", "ambiguous"] },
     "eventQuery": {
       "description": "Closed current-catalogue event facet proposal, or null"
@@ -36,14 +33,19 @@ without exposing the full application capability inventory or adding a transcrip
 }
 ```
 
-The relay binds the current authoritative application context revision used by the capability
+The classification schema rejects an `utterance` member. The relay binds the current authoritative application context revision used by the capability
 gateway. It must not substitute an older connector-local event-composer revision. The function is
-transport ingress, not an application capability, direct control, registry entry, MCP projection,
-or authoritative transcript.
+transport classification, not an application capability, direct control, registry entry, MCP
+projection, or transcript source.
+
+The final input transcript is accepted only when its provider `item_id` matches the active
+committed audio item. Classification and transcription may complete in either order. Neither may
+route or mutate alone; their single-use join supplies the transcript as utterance and the function
+result as non-authoritative classification.
 
 For an event request, the same forced response proposes `what`, `when`, `where`, and `price`
-labels selected from the bounded current event catalogue, exact evidence copied from the
-utterance, meaningful unbound `residualQuery` terms, and any unresolved facets. This does not
+labels selected from the bounded current event catalogue, exact evidence grounded in the heard
+request, meaningful unbound `residualQuery` terms, and any unresolved facets. This does not
 create another provider response. The application treats the proposal as untrusted and accepts it
 only when every label uniquely resolves in the same current facet and every evidence string occurs
 in the utterance. Conflicts, invented labels, missing evidence, unresolved facets, and stale
@@ -51,7 +53,7 @@ revisions mutate nothing. Typed/direct queries omit the proposal and keep the de
 
 ## Stage 2: Deterministic routing
 
-The relay submits the bounded utterance to the existing text-turn scope and deterministic
+The relay submits the bounded final transcript to the existing text-turn scope and deterministic
 interpreter boundary.
 
 - Deterministic event sentence: propose `event.applyquery` directly.
@@ -86,15 +88,16 @@ After a deterministic result or completed domain action:
 
 ## Failure and lifecycle
 
-Missing, malformed, duplicate, stale, or overlapping ingress calls terminate through the existing
-protocol failure path with zero application mutation. Configuration acknowledgement, reservation,
+Missing, malformed, duplicate, stale, or overlapping classification calls, or a missing, empty,
+failed, timed-out, duplicate, or stale active transcript, terminate through the existing protocol
+failure path with zero application mutation. Configuration acknowledgement, reservation,
 response watchdog, interruption, budget settlement, content sanitization, and terminal cleanup
 apply independently to each provider response while remaining one user turn. A user may submit any
 number of turns for any duration while the session remains explicitly active and budget admission
 succeeds. One user turn permits at most three sequential provider response stages and at most one
 unresolved stage; this internal loop guard is not a conversation-length cap.
 
-Documented provider shape drift is normalized before semantic verification: matching root and
+Documented classification shape drift is normalized before semantic verification: matching root and
 nested facets, matching `event*` aliases, singleton single-value facets, and null unused non-event
 facets collapse to the canonical contract. Conflicts and unknown fields still fail closed. Provider
 domain labels never override the deterministic application router.

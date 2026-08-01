@@ -3,7 +3,7 @@ import { expect, test } from "playwright/test";
 test("diagnostic variants are opt-in, allowlisted, and lifecycle bounded", async ({
   page,
 }) => {
-  await page.goto("/?autoStart&emptyApprovedSnapshot");
+  await page.goto("/?emptyApprovedSnapshot");
   await expect
     .poll(() =>
       page.evaluate(
@@ -13,7 +13,7 @@ test("diagnostic variants are opt-in, allowlisted, and lifecycle bounded", async
     .toBe("undefined");
 
   await page.goto(
-    "/?autoStart&emptyApprovedSnapshot&performanceDiagnostics=1&performanceVariant=no-background-3d",
+    "/?emptyApprovedSnapshot&performanceDiagnostics=1&performanceVariant=no-background-3d",
   );
   await expect
     .poll(() =>
@@ -52,7 +52,7 @@ test("unknown variants never expose a diagnostic mutation control", async ({
   page,
 }) => {
   await page.goto(
-    "/?autoStart&emptyApprovedSnapshot&performanceDiagnostics=1&performanceVariant=unknown",
+    "/?emptyApprovedSnapshot&performanceDiagnostics=1&performanceVariant=unknown",
   );
   await expect
     .poll(() =>

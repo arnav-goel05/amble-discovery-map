@@ -15,26 +15,31 @@ distinguishes pristine, intermediate, and unknown states.
 - Trust ETag alone: rejected because validators may be absent, multipart, or cache-derived.
 - Compare only against pristine sources: rejected because intermediate extraction states exist.
 
-## Decision 2: Stable object keys plus digest-versioned content requests
+## Decision 2: Stable object keys plus a release-versioned root manifest
 
-**Decision**: Replace stale objects at their existing R2 keys, but rewrite every active content
-URI in the published root tileset to include its local SHA-256 as a query parameter.
+**Decision**: Replace stale objects at their existing R2 keys, keep each B3DM content URI clean,
+record its expected SHA-256 and MD5 in tile metadata, and version only the root tileset request
+through the checked-in release descriptor.
 
-**Rationale**: The Worker cache key includes the full request URL while R2 lookup strips the
-query. A new digest query therefore bypasses stale edge entries without duplicating large B3DM
-objects. The digest also makes the selected release observable and deterministic.
+**Rationale**: deck.gl derives the tile type from the content URI extension, so a query appended
+to `.b3dm` can make valid geometry fail type detection. The root release query selects a new
+manifest, while embedded validators make the expected object bytes explicit and the R2-binding
+gate proves backing-store parity without visitor-facing object requests.
 
 **Alternatives considered**:
 
 - Immutable copies of all 443 changed objects: valid but needlessly duplicates gigabytes.
-- Rely on cache expiry: rejected because B3DM responses can remain stale for seven days.
+- Put digest queries on individual B3DM URIs: rejected because it breaks deck.gl tile-type
+  detection.
+- Rely on cache expiry as verification: rejected because it cannot prove backing-store parity.
 - Purge cache globally: rejected because it requires an additional privileged API boundary.
 
 ## Decision 3: Publish the manifest last
 
-**Decision**: Upload stale B3DM objects, refetch and verify all active objects through their new
-digest URLs, then upload the rewritten root tileset manifest. Update/deploy the application
-release descriptor only after the manifest itself verifies.
+**Decision**: Upload stale B3DM objects, verify uploaded bodies through Wrangler's direct R2
+control plane, prove unchanged objects through reliable inventory validators, then upload the
+rewritten root tileset manifest. Update/deploy the application release descriptor only after the
+manifest itself verifies through that same control-plane boundary.
 
 **Rationale**: Until the final manifest switch, existing clients retain their previous coherent
 view. A failed object upload cannot produce a successful release. Replacing an old background
@@ -76,3 +81,26 @@ testable without network writes.
 - Affected spatial tile chains: 77
 - National Stadium remote object: pristine 9,476,792-byte source; local approved object: empty
   464-byte B3DM
+
+## Decision 6: Use release-aware R2 inventory, not public per-object probes
+
+**Decision**: Routine CI, audit, synchronization preflight, and deployment compare expected
+object keys, byte lengths, and reliable stored validators with one release-aware report from an
+isolated read-only R2-binding Worker. Wrangler downloads only mismatches for identity inspection
+and verifies only objects uploaded in the current run. Public per-object probes remain a bounded
+manual diagnostic and stop immediately on rate limiting. Each operator invocation adds a bounded
+verification identity to its cache key so a mutable-object check cannot reuse pre-upload evidence.
+
+**Rationale**: The previous public `HEAD` fan-out exhausted the daily Worker request allowance.
+R2 binding and S3/control-plane operations bypass edge cache and visitor-facing request fan-out.
+Cloudflare documents R2 binding access as direct bucket access unaffected by cache, and exposes
+object validators/checksums in `R2Object` metadata. Validators that cannot prove parity fail
+closed.
+
+**Alternatives considered**:
+
+- Continue public `HEAD` requests at lower concurrency: rejected because concurrency changes
+  latency, not total allowance consumption.
+- Check only key presence and size: rejected because same-size stale content would pass.
+- Download every object through Wrangler on every run: correct but needlessly transfers roughly
+  121 GB and makes routine verification impractical.

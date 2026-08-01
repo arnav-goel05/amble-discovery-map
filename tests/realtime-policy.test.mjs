@@ -21,13 +21,13 @@ const rejectsWith = (callback, code) =>
     return true;
   });
 
-test("checked-in realtime policy pins the approved model and budget without session limits", () => {
+test("checked-in realtime policy pins response and transcription models without session limits", () => {
   const policy = loadRealtimePolicy(policyPath);
 
   assert.equal(policy.schemaVersion, "1.1");
   assert.equal(policy.owner, "Arnav");
   assert.equal(policy.modelId, "gpt-realtime-2.1-mini");
-  assert.equal("transcriptionModelId" in policy, false);
+  assert.equal(policy.transcriptionModelId, "gpt-realtime-whisper");
   assert.equal(policy.capMicroUsd, 10_000_000);
   assert.equal(policy.resetPolicy, "none");
   assert.equal("maxSessionSeconds" in policy, false);
@@ -44,11 +44,13 @@ test("checked-in realtime policy pins the approved model and budget without sess
   assert.equal(policy.automaticResponseCreation, false);
   assert.equal(policy.imageInputEnabled, false);
   assert.equal("fallbackModelId" in policy, false);
-  assert.equal(
-    "transcriptionMicroUsdPerMinute" in policy.rateCard.rates,
-    false,
-  );
-  assert.equal("inputTranscription" in policy.worstCaseReservation, false);
+  assert.equal(policy.rateCard.rates.transcriptionMicroUsdPerMinute, 17_000);
+  assert.deepEqual(policy.worstCaseReservation.inputTranscription, {
+    maxAudioSeconds: 60,
+    rateMicroUsdPerMinute: 17_000,
+    reservedMicroUsd: 17_000,
+  });
+  assert.equal(policy.worstCaseReservation.maxTurnReservedMicroUsd, 138_920);
 });
 
 test("schema and rate-card identity fail closed", () => {
@@ -93,7 +95,7 @@ test("unknown models and altered response bounds are rejected", () => {
         ...clone(policy),
         transcriptionModelId: "transcribe-latest",
       }),
-    "policy_transcription_forbidden",
+    "policy_transcription_model_unknown",
   );
   rejectsWith(
     () => validateRealtimePolicy({ ...clone(policy), capMicroUsd: 10_000_001 }),
@@ -195,8 +197,13 @@ test("worst-case reservations use uncached highest enabled rates and match polic
     responseInputMicroUsd: 40_000,
     responseOutputMicroUsd: 81_920,
     responseMicroUsd: 121_920,
-    turnMicroUsd: 121_920,
+    transcriptionMicroUsd: 17_000,
+    turnMicroUsd: 138_920,
   });
+  assert.equal(
+    reservation.transcriptionMicroUsd,
+    policy.worstCaseReservation.inputTranscription.reservedMicroUsd,
+  );
   assert.equal(
     reservation.responseInputMicroUsd,
     policy.worstCaseReservation.response.inputReservedMicroUsd,

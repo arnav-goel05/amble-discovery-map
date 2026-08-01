@@ -732,3 +732,43 @@ live gate until all cases pass.
 - [x] T203 [US8] Run the identical owner-authorized sixteen-case live matrix, append every remaining
       defect as a regression task, fix by category, and repeat T202–T203 until SC-062 passes with no
       unresolved issue.
+
+---
+
+## Phase 26: Relay-Owned Transcript and Classification Join
+
+**Purpose**: Remove the unreliable model-echoed utterance field while preserving one forced
+classification response, native Realtime speech, deterministic routing, and existing safeguards.
+
+### Tests first
+
+- [x] T204 [P] [US8] Replace utterance-ingress schema fixtures with classification-only schema and
+      provider configuration assertions in `tests/realtime-relay.test.mjs` per FR-084–FR-085 and SC-049
+- [x] T205 [P] [US8] Add transcript-first, classification-first, missing, empty, failed, delayed,
+      duplicate, stale-item, interruption, and terminal join-cleanup fixtures in
+      `tests/realtime-relay.test.mjs` per FR-059, FR-063, FR-089–FR-090 and SC-030–SC-031/SC-052
+- [x] T206 [P] [US8] Add policy and ledger fixtures for one independently admitted and settled
+      input-transcription reservation without changing response-stage or lifetime-cap safeguards in
+      `tests/realtime-policy.test.mjs` and `tests/voice-budget.test.mjs` per FR-060/FR-064 and SC-033
+- [x] T207 [P] [US4] Add diagnostic fixtures distinguishing actual partial/final input transcripts,
+      excluding synthetic finals, and preserving production redaction in
+      `tests/realtime-content-debug.test.mjs` per FR-071 and SC-039
+
+### Implementation and proof
+
+- [x] T208 [US8] Configure the approved input-transcription model and reviewed rate in
+      `data/realtime-voice-policy.json` and `scripts/lib/realtime-policy.mjs` per FR-060/FR-064
+- [x] T209 [US8] Implement active provider-item binding, concurrent transcript/classification state,
+      single-use joining, and zero-mutation terminal cleanup in `cloudflare/realtime-relay.mjs` and
+      `scripts/lib/realtime-relay-protocol.mjs` per FR-059/FR-063/FR-084–FR-090
+- [x] T210 [US6] Route and verify native event proposals using the relay-owned final transcript while
+      leaving typed/direct deterministic behavior unchanged in `cloudflare/realtime-relay.mjs` and
+      `activity-scenes/events/event-facet-proposal.js` per FR-085–FR-086/FR-092–FR-095
+- [x] T211 [US8] Synchronize policy, operations, contracts, and validation guidance in
+      `docs/production-configuration.md`, `specs/004-conversational-voice-map/contracts/native-audio-routing.md`,
+      `specs/004-conversational-voice-map/contracts/realtime-relay.md`, and
+      `specs/004-conversational-voice-map/quickstart.md`
+- [x] T212 [US8] Run focused policy/relay/budget/diagnostic suites, complete voice tests, capability
+      gates, affected browser journeys, formatting, build, and Spec Kit convergence; run only the
+      minimum owner-authorized live transcript/classification smoke needed to verify the provider
+      session field and record bounded spend evidence in `specs/004-conversational-voice-map/quickstart.md`

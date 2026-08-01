@@ -71,7 +71,6 @@ test("voice ingress canonicalizes only documented lossless provider variations",
   const selection = { label: "Today", evidence: "today" };
   assert.deepEqual(
     canonicalizeVoiceIngress({
-      utterance: "Find events today",
       domain: "event",
       eventQuery: {
         what: [],
@@ -83,7 +82,6 @@ test("voice ingress canonicalizes only documented lossless provider variations",
       unresolved: [],
     }),
     {
-      utterance: "Find events today",
       domain: "event",
       eventQuery: {
         what: [],
@@ -97,7 +95,6 @@ test("voice ingress canonicalizes only documented lossless provider variations",
   );
   assert.deepEqual(
     canonicalizeVoiceIngress({
-      utterance: "Hide the MRT lines",
       domain: "other",
       eventQuery: { what: [], residualQuery: "" },
       what: null,
@@ -108,27 +105,16 @@ test("voice ingress canonicalizes only documented lossless provider variations",
       unresolved: [],
     }),
     {
-      utterance: "Hide the MRT lines",
       domain: "other",
       eventQuery: null,
     },
   );
   assert.deepEqual(
-    canonicalizeVoiceIngress({
-      domain: "other",
-      eventQuery: { what: [], when: null, where: null, price: null },
-      residualQuery: "Tell me who won the football match yesterday",
-      unresolved: [],
-    }),
-    {
-      utterance: "Tell me who won the football match yesterday",
-      domain: "other",
-      eventQuery: null,
-    },
+    canonicalizeVoiceIngress({ domain: "other", eventQuery: null }),
+    { domain: "other", eventQuery: null },
   );
   assert.deepEqual(
     canonicalizeVoiceIngress({
-      utterance: "Find Italian restaurants nearby",
       domain: "event",
       eventQuery: {
         what: [],
@@ -141,7 +127,6 @@ test("voice ingress canonicalizes only documented lossless provider variations",
       eventWhere: { label: "Near me", evidence: "nearby" },
     }),
     {
-      utterance: "Find Italian restaurants nearby",
       domain: "event",
       eventQuery: {
         what: [],
@@ -157,7 +142,6 @@ test("voice ingress canonicalizes only documented lossless provider variations",
 
 test("voice ingress rejects semantic, cardinality, and unknown-field changes", () => {
   const base = {
-    utterance: "Find events today",
     domain: "event",
     eventQuery: {
       what: [],
@@ -202,10 +186,9 @@ test("voice ingress rejects semantic, cardinality, and unknown-field changes", (
   );
 });
 
-test("malformed event facets are discarded without losing the intact utterance", () => {
+test("malformed event facets are discarded without affecting transcript ownership", () => {
   assert.deepEqual(
     canonicalizeVoiceIngress({
-      utterance: "Make those free this weekend",
       domain: "event",
       eventQuery: {
         what: [{ label: "Workshops", evidence: "" }],
@@ -213,16 +196,16 @@ test("malformed event facets are discarded without losing the intact utterance",
       unresolved: ["what"],
     }),
     {
-      utterance: "Make those free this weekend",
       domain: "event",
       eventQuery: null,
     },
   );
 });
 
-test("a missing event utterance cannot promote a provider event guess", () => {
-  assert.deepEqual(
+test("classification never accepts a model-supplied utterance", () => {
+  assert.equal(
     canonicalizeVoiceIngress({
+      utterance: "football match yesterday",
       domain: "event",
       eventQuery: {
         what: [],
@@ -233,11 +216,7 @@ test("a missing event utterance cannot promote a provider event guess", () => {
       residualQuery: "football match yesterday",
       unresolved: ["what", "when"],
     }),
-    {
-      utterance: "football match yesterday",
-      domain: "other",
-      eventQuery: null,
-    },
+    null,
   );
 });
 
@@ -297,9 +276,12 @@ test("authoritative capability outcomes produce bounded truthful speech", () => 
   );
 });
 
-test("native ingress response instructions prohibit answering in the utterance field", () => {
+test("native ingress response instructions prohibit returning a transcript", () => {
   const instructions = buildVoiceIngressResponseInstructions();
-  assert.match(instructions, /exact words heard/i);
+  assert.match(
+    instructions,
+    /never return, reconstruct, or paraphrase a transcript/i,
+  );
   assert.match(instructions, /Do not answer/i);
   assert.match(instructions, /exactly once/i);
   assert.match(instructions, /no spoken or written commentary/i);
@@ -386,6 +368,27 @@ async function createRelayHarness({
     providerMessages,
     relay,
   };
+}
+
+async function emitFinalInputTranscript(
+  harness,
+  transcript,
+  itemId = "input-item-001",
+) {
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "input_audio_buffer.committed",
+      item_id: itemId,
+    }),
+  });
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "conversation.item.input_audio_transcription.completed",
+      item_id: itemId,
+      transcript,
+    }),
+  });
+  await flushRelay();
 }
 
 test("voice operational traces expose only allowlisted phase timing", async () => {
@@ -539,11 +542,11 @@ test("native audio starts with exactly one forced utterance ingress tool", async
   ).session;
   assert.deepEqual(
     configuration.tools.map(({ name }) => name),
-    ["voice__submitutterance"],
+    ["voice__classifyrequest"],
   );
   assert.deepEqual(configuration.tool_choice, {
     type: "function",
-    name: "voice__submitutterance",
+    name: "voice__classifyrequest",
   });
   harness.relay.stop(sessionId, "user");
 });
@@ -592,10 +595,9 @@ test("forced ingress routes a complete event request directly to event.applyquer
   harness.providerListeners.message({
     data: JSON.stringify({
       type: "response.function_call_arguments.done",
-      name: "voice__submitutterance",
+      name: "voice__classifyrequest",
       call_id: "call-ingress-event",
       arguments: JSON.stringify({
-        utterance: "find events today at Marina Bay Sands",
         domain: "event",
         eventQuery: {
           what: [],
@@ -611,6 +613,10 @@ test("forced ingress routes a complete event request directly to event.applyquer
       }),
     }),
   });
+  await emitFinalInputTranscript(
+    harness,
+    "find events today at Marina Bay Sands",
+  );
   await flushRelay();
 
   assert.deepEqual(
@@ -733,12 +739,13 @@ test("forced ingress routes a single-filter event request atomically", async () 
     JSON.stringify({ type: "audio.commit", turnId: "turn-event-single" }),
   );
   await flushRelay();
+  await emitFinalInputTranscript(harness, "find exhibitions");
   harness.providerListeners.message({
     data: JSON.stringify({
       type: "response.function_call_arguments.done",
-      name: "voice__submitutterance",
+      name: "voice__classifyrequest",
       call_id: "call-ingress-event-single",
-      arguments: JSON.stringify({ utterance: "find exhibitions" }),
+      arguments: JSON.stringify({ domain: "event", eventQuery: null }),
     }),
   });
   await flushRelay();
@@ -800,13 +807,12 @@ test("ambiguous native requests ask for clarification without exposing actions",
   harness.providerListeners.message({
     data: JSON.stringify({
       type: "response.function_call_arguments.done",
-      name: "voice__submitutterance",
+      name: "voice__classifyrequest",
       call_id: "call-ingress-ambiguous",
-      arguments: JSON.stringify({
-        utterance: "find events and restaurants",
-      }),
+      arguments: JSON.stringify({ domain: "ambiguous", eventQuery: null }),
     }),
   });
+  await emitFinalInputTranscript(harness, "find events and restaurants");
   harness.providerListeners.message({
     data: JSON.stringify(trustedResponseDone()),
   });
@@ -851,28 +857,18 @@ test("unsupported native requests expose no actions and stale ingress fails clos
   harness.providerListeners.message({
     data: JSON.stringify({
       type: "response.function_call_arguments.done",
-      name: "voice__submitutterance",
+      name: "voice__classifyrequest",
       call_id: "call-ingress-unsupported",
       arguments: JSON.stringify({
-        utterance: "Tell me who won the football match yesterday",
-        domain: "event",
-        eventQuery: {
-          what: [],
-          when: {
-            label: "Choose dates",
-            evidence: "Tell me who won the football match yesterday",
-          },
-          where: {
-            label: "Anywhere in Singapore",
-            evidence: "Tell me who won the football match yesterday",
-          },
-          price: null,
-          residualQuery: "football match yesterday who won",
-          unresolved: [],
-        },
+        domain: "other",
+        eventQuery: null,
       }),
     }),
   });
+  await emitFinalInputTranscript(
+    harness,
+    "Tell me who won the football match yesterday",
+  );
   harness.providerListeners.message({
     data: JSON.stringify(trustedResponseDone()),
   });
@@ -896,9 +892,9 @@ test("unsupported native requests expose no actions and stale ingress fails clos
   harness.providerListeners.message({
     data: JSON.stringify({
       type: "response.function_call_arguments.done",
-      name: "voice__submitutterance",
+      name: "voice__classifyrequest",
       call_id: "call-ingress-stale",
-      arguments: JSON.stringify({ utterance: "find restaurants" }),
+      arguments: JSON.stringify({ domain: "other", eventQuery: null }),
     }),
   });
   await flushRelay();
@@ -958,13 +954,15 @@ test("non-deterministic native requests expose one connector family and no found
   harness.providerListeners.message({
     data: JSON.stringify({
       type: "response.function_call_arguments.done",
-      name: "voice__submitutterance",
+      name: "voice__classifyrequest",
       call_id: "call-ingress-restaurant",
-      arguments: JSON.stringify({
-        utterance: "find a nice Italian restaurant nearby",
-      }),
+      arguments: JSON.stringify({ domain: "other", eventQuery: null }),
     }),
   });
+  await emitFinalInputTranscript(
+    harness,
+    "find a nice Italian restaurant nearby",
+  );
   harness.providerListeners.message({
     data: JSON.stringify(trustedResponseDone()),
   });
@@ -1016,9 +1014,9 @@ test("duplicate ingress fails closed before an application proposal", async () =
   await flushRelay();
   const ingress = {
     type: "response.function_call_arguments.done",
-    name: "voice__submitutterance",
+    name: "voice__classifyrequest",
     call_id: "call-duplicate-ingress",
-    arguments: JSON.stringify({ utterance: "find restaurants" }),
+    arguments: JSON.stringify({ domain: "other", eventQuery: null }),
   };
   harness.providerListeners.message({ data: JSON.stringify(ingress) });
   harness.providerListeners.message({ data: JSON.stringify(ingress) });
@@ -1120,7 +1118,7 @@ test("native audio with event context withholds every application event primitiv
   const canonicalToolIds = configuration.tools.map(({ name }) =>
     name.replace("__", "."),
   );
-  assert.deepEqual(canonicalToolIds, ["voice.submitutterance"]);
+  assert.deepEqual(canonicalToolIds, ["voice.classifyrequest"]);
   assert.equal(
     canonicalToolIds.some((capabilityId) =>
       eventQueryCapabilities.includes(capabilityId),
@@ -1130,7 +1128,7 @@ test("native audio with event context withholds every application event primitiv
   harness.relay.stop(sessionId, "user");
 });
 
-test("native ingress tool requires the complete spoken request", async () => {
+test("native ingress tool classifies without owning the transcript", async () => {
   const harness = await createRelayHarness();
   const sessionId = harness.admitted.data.sessionId;
 
@@ -1164,14 +1162,10 @@ test("native ingress tool requires the complete spoken request", async () => {
 
   const ingressTool = harness.providerMessages
     .findLast(({ type }) => type === "session.update")
-    .session.tools.find(({ name }) => name === "voice__submitutterance");
-  assert.match(ingressTool.description, /complete user utterance/i);
-  assert.match(ingressTool.description, /without adding, removing/i);
-  assert.deepEqual(ingressTool.parameters.required, [
-    "utterance",
-    "domain",
-    "eventQuery",
-  ]);
+    .session.tools.find(({ name }) => name === "voice__classifyrequest");
+  assert.match(ingressTool.description, /without returning.*transcript/i);
+  assert.equal("utterance" in ingressTool.parameters.properties, false);
+  assert.deepEqual(ingressTool.parameters.required, ["domain", "eventQuery"]);
   const eventQuerySchema =
     ingressTool.parameters.properties.eventQuery.anyOf[0];
   assert.deepEqual(
@@ -1185,7 +1179,7 @@ test("native ingress tool requires the complete spoken request", async () => {
   harness.relay.stop(sessionId, "user");
 });
 
-test("missing transcription completion cannot stall a native audio response", async () => {
+test("missing transcription completion terminates at the bounded deadline", async () => {
   const records = [];
   const scheduled = [];
   const harness = await createRelayHarness({
@@ -1219,15 +1213,23 @@ test("missing transcription completion cannot stall a native audio response", as
     true,
   );
   assert.equal(harness.relay.sessions.has(sessionId), true);
-  assert.equal(scheduled.filter(({ delay }) => delay === 30_000).length, 1);
+  assert.equal(scheduled.filter(({ delay }) => delay === 30_000).length, 2);
+  scheduled[0].callback();
+  await flushRelay();
+  assert.equal(harness.relay.sessions.has(sessionId), false);
+  assert.equal(
+    harness.browserMessages.some(
+      ({ type, code }) => type === "error" && code === "provider_unavailable",
+    ),
+    true,
+  );
   assert.deepEqual(
     records.map(({ phase }) => phase),
     ["audio_committed", "response_requested"],
   );
-  harness.relay.stop(sessionId, "user");
 });
 
-test("late transcription failures cannot control a native audio response", async () => {
+test("active transcription failures terminate without routing a request", async () => {
   const records = [];
   const harness = await createRelayHarness({
     operationalLogger: (record) => records.push(structuredClone(record)),
@@ -1262,27 +1264,134 @@ test("late transcription failures cannot control a native audio response", async
   await flushRelay();
 
   assert.equal(
-    harness.providerMessages.some(({ type }) => type === "response.create"),
-    true,
-  );
-  assert.equal(
     harness.providerMessages.filter(({ type }) => type === "response.create")
       .length,
     responseCreates,
   );
-  assert.equal(harness.relay.sessions.has(sessionId), true);
+  assert.equal(harness.relay.sessions.has(sessionId), false);
   assert.equal(
     harness.browserMessages.some(
       (message) =>
         message.type === "error" && message.code === "provider_unavailable",
     ),
-    false,
+    true,
   );
   assert.deepEqual(
     records.map(({ phase }) => phase),
-    ["audio_committed", "response_requested"],
+    ["audio_committed", "response_requested", "session_terminal"],
   );
-  harness.relay.stop(sessionId, "user");
+});
+
+test("a transcript for a different committed provider item fails closed", async () => {
+  const harness = await createRelayHarness();
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "turn.request", turnId: "turn-item-mismatch" }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "audio.commit", turnId: "turn-item-mismatch" }),
+  );
+  await flushRelay();
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "input_audio_buffer.committed",
+      item_id: "input-item-expected",
+    }),
+  });
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "conversation.item.input_audio_transcription.completed",
+      item_id: "input-item-wrong",
+      transcript: "find events today",
+    }),
+  });
+  await flushRelay();
+
+  assert.equal(harness.relay.sessions.has(sessionId), false);
+  assert.equal(
+    harness.browserMessages.some(({ type }) => type === "capability.proposed"),
+    false,
+  );
+});
+
+test("empty and conflicting duplicate final transcripts fail closed", async () => {
+  for (const candidate of ["empty", "conflicting_duplicate"]) {
+    const harness = await createRelayHarness();
+    const sessionId = harness.admitted.data.sessionId;
+    await harness.relay.handleBrowserMessage(
+      sessionId,
+      JSON.stringify({ type: "turn.request", turnId: `turn-${candidate}` }),
+    );
+    await harness.relay.handleBrowserMessage(
+      sessionId,
+      JSON.stringify({ type: "audio.commit", turnId: `turn-${candidate}` }),
+    );
+    await flushRelay();
+    harness.providerListeners.message({
+      data: JSON.stringify({
+        type: "input_audio_buffer.committed",
+        item_id: "input-item-duplicate",
+      }),
+    });
+    harness.providerListeners.message({
+      data: JSON.stringify({
+        type: "conversation.item.input_audio_transcription.completed",
+        item_id: "input-item-duplicate",
+        transcript: candidate === "empty" ? "" : "find events today",
+      }),
+    });
+    await flushRelay();
+    if (candidate === "conflicting_duplicate") {
+      assert.equal(harness.relay.sessions.has(sessionId), true);
+      harness.providerListeners.message({
+        data: JSON.stringify({
+          type: "conversation.item.input_audio_transcription.completed",
+          item_id: "input-item-duplicate",
+          transcript: "find restaurants instead",
+        }),
+      });
+      await flushRelay();
+    }
+    assert.equal(harness.relay.sessions.has(sessionId), false);
+    assert.equal(
+      harness.browserMessages.some(
+        ({ type }) => type === "capability.proposed",
+      ),
+      false,
+    );
+  }
+});
+
+test("audio exceeding the reserved transcription duration stops before forwarding", async () => {
+  const harness = await createRelayHarness();
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "turn.request", turnId: "turn-audio-bound" }),
+  );
+  const session = harness.relay.sessions.get(sessionId);
+  session.inputAudioBytes = 60 * 24_000 * 2;
+  const forwardsBefore = harness.providerMessages.filter(
+    ({ type }) => type === "input_audio_buffer.append",
+  ).length;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "audio.append",
+      turnId: "turn-audio-bound",
+      audio: "AAAA",
+    }),
+  );
+
+  assert.equal(harness.relay.sessions.has(sessionId), false);
+  assert.equal(
+    harness.providerMessages.filter(
+      ({ type }) => type === "input_audio_buffer.append",
+    ).length,
+    forwardsBefore,
+  );
 });
 
 test("native audio tool calls reject unavailable and malformed capabilities", async () => {
@@ -2971,6 +3080,12 @@ test("every terminal reason performs complete idempotent cleanup", () => {
       browserSocket: { close: () => calls.push("browser-close") },
       abortController: { abort: () => calls.push("abort") },
       pendingConfirmation: { confirmationId: "confirmation-001" },
+      transcriptionReservationId: "transcription-reservation-001",
+      transcriptionTimer: setTimeout(() => {}, 60_000),
+      finalInputTranscript: "memory-only transcript",
+      nativeClassification: { domain: "event", eventQuery: null },
+      nativeClassificationCallId: "call-memory-only",
+      providerInputItemId: "input-item-memory-only",
       transcriptItems: [{ itemId: "transcript-001", text: "memory-only" }],
       intent: { freeTextSummary: "memory-only" },
       exactLocation: { coordinates: [103.8, 1.3] },
@@ -2987,6 +3102,12 @@ test("every terminal reason performs complete idempotent cleanup", () => {
     assert.equal(first.exactLocation, null);
     assert.equal(first.interfaceContext, null);
     assert.equal(first.pendingConfirmation, null);
+    assert.equal(first.transcriptionReservationId, null);
+    assert.equal(first.transcriptionTimer, null);
+    assert.equal(first.finalInputTranscript, null);
+    assert.equal(first.nativeClassification, null);
+    assert.equal(first.nativeClassificationCallId, null);
+    assert.equal(first.providerInputItemId, null);
     assert.deepEqual(calls, ["abort", "provider-close", "browser-close"]);
     assert.equal(second, first);
   }
@@ -3071,10 +3192,9 @@ test("server relay owns provider configuration and reserves before billable even
   assert.equal(providerMessages[0].session.model, "gpt-realtime-2.1-mini");
   assert.equal("fallback_model" in providerMessages[0].session, false);
   assert.equal("max_output_tokens" in providerMessages[0].session, false);
-  assert.equal(
-    "transcription" in providerMessages[0].session.audio.input,
-    false,
-  );
+  assert.deepEqual(providerMessages[0].session.audio.input.transcription, {
+    model: "gpt-realtime-whisper",
+  });
   assert.equal(providerMessages[0].session.audio.input.turn_detection, null);
   assert.deepEqual(
     providerMessages[0].session.tools.map(({ name }) => name),
@@ -3120,7 +3240,7 @@ test("server relay owns provider configuration and reserves before billable even
 
   assert.deepEqual(
     reservations.map(({ kind }) => kind),
-    ["response"],
+    ["response", "input_transcription"],
   );
   assert.deepEqual(
     providerMessages.slice(-3).map(({ type }) => type),
@@ -3128,11 +3248,11 @@ test("server relay owns provider configuration and reserves before billable even
   );
   assert.deepEqual(
     providerMessages.at(-3).session.tools.map(({ name }) => name),
-    ["voice__submitutterance"],
+    ["voice__classifyrequest"],
   );
   assert.deepEqual(providerMessages.at(-3).session.tool_choice, {
     type: "function",
-    name: "voice__submitutterance",
+    name: "voice__classifyrequest",
   });
   assert.equal(browserMessages.at(-1).type, "turn.ready");
   assert.doesNotMatch(
@@ -3146,9 +3266,22 @@ test("server relay owns provider configuration and reserves before billable even
   providerListeners.message({
     data: JSON.stringify({
       type: "response.function_call_arguments.done",
-      name: "voice__submitutterance",
+      name: "voice__classifyrequest",
       call_id: "call-ingress-no-action",
-      arguments: JSON.stringify({ utterance: "hello" }),
+      arguments: JSON.stringify({ domain: "other", eventQuery: null }),
+    }),
+  });
+  providerListeners.message({
+    data: JSON.stringify({
+      type: "input_audio_buffer.committed",
+      item_id: "input-item-001",
+    }),
+  });
+  providerListeners.message({
+    data: JSON.stringify({
+      type: "conversation.item.input_audio_transcription.completed",
+      item_id: "input-item-001",
+      transcript: "hello",
     }),
   });
   providerListeners.message({
@@ -3167,8 +3300,14 @@ test("server relay owns provider configuration and reserves before billable even
   });
   await new Promise((resolve) => setImmediate(resolve));
   assert.equal(relay.sessions.has(admitted.data.sessionId), true);
-  assert.equal(settlements[0].usageShapeHash, "sha256:fixture");
-  assert.equal(settlements.length, 2);
+  assert.equal(
+    settlements.some(
+      ({ usageShapeHash }) =>
+        usageShapeHash === "sha256:provider-final-transcript-max-bound",
+    ),
+    true,
+  );
+  assert.equal(settlements.length, 3);
   assert.equal(
     browserMessages.filter(
       (message) =>
@@ -3191,7 +3330,7 @@ test("server relay owns provider configuration and reserves before billable even
   });
   await new Promise((resolve) => setImmediate(resolve));
   assert.equal(relay.sessions.has(admitted.data.sessionId), true);
-  assert.equal(settlements.length, 2);
+  assert.equal(settlements.length, 3);
   assert.equal(
     providerMessages.filter(({ type }) => type === "response.create").length,
     responseCreates,
@@ -3208,7 +3347,7 @@ test("server relay owns provider configuration and reserves before billable even
     admitted.data.sessionId,
     JSON.stringify({ type: "session.stop", reason: "user" }),
   );
-  assert.equal(settlements.length, 2);
+  assert.equal(settlements.length, 3);
   assert.deepEqual(
     settlements.map(({ reservationId }) => reservationId).sort(),
     reservations.map(({ reservationId }) => reservationId).sort(),
@@ -3261,10 +3400,16 @@ test("server relay rejects overlapping turns without overwriting reservation ide
     JSON.stringify({ type: "turn.request", turnId: "turn-002" }),
   );
 
-  assert.equal(reservations.length, 1);
+  assert.equal(reservations.length, 2);
   assert.equal(relay.sessions.has(admitted.data.sessionId), false);
-  assert.equal(settlements[0].reservationId, reservations[0].reservationId);
-  assert.equal(settlements[0].settledMicroUsd, 0);
+  assert.deepEqual(
+    settlements.map(({ reservationId }) => reservationId).sort(),
+    reservations.map(({ reservationId }) => reservationId).sort(),
+  );
+  assert.equal(
+    settlements.every(({ settledMicroUsd }) => settledMicroUsd === 0),
+    true,
+  );
 });
 
 test("discovery tools reject result identities outside the server-approved set", () => {

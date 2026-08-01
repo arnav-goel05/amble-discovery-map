@@ -58,7 +58,11 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
   over the same registry, and verify semantic parity across local, test, preview, and
   production environments.
 - **Quality and security**: Identify required tests, build gates, recovery coverage,
-  secret handling, administrative authorization, and external-content protections.
+  secret handling, administrative authorization, and external-content protections. Declare
+  the maximum request count for every quota-limited production-platform check; use bounded
+  binding or control-plane inventory instead of visitor-facing requests for exhaustive
+  Cloudflare/R2 verification; require fresh per-run evidence after mutable-object operations,
+  and define rate-limit stop behavior.
 - **UX and performance**: Cover the required automated desktop/mobile Chromium, WebKit,
   and Firefox matrix, Apple HIG-informed interaction, consistent component states, and
   before/after benchmarks for rendering changes. Treat branded-browser checks as optional.
