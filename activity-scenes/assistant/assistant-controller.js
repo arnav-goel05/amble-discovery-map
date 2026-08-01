@@ -51,6 +51,7 @@ const EMPTY_ENVELOPE = Object.freeze({
   sources: [],
 });
 export function createAssistantController({
+  voiceUiEnabled = true,
   getCandidateEnvelope,
   getTransitStations = () => [],
   onSelectCandidate,
@@ -1524,6 +1525,7 @@ export function createAssistantController({
   };
 
   const view = createAssistantView({
+    voiceUiEnabled,
     executeCapability: executeDirectCapability,
     onStartVoice: startVoice,
     onSubmitText: submitText,

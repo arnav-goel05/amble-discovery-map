@@ -950,3 +950,19 @@ provider call:
   protocol suites), full ESLint, `git diff --check`, and the production build passed. The affected
   Chromium dialogue/state matrix passed 30/30 including exact restaurant follow-up identity and
   listening-after-playback behavior. No live provider call or additional paid spend was used.
+
+## Production voice UI suppression — 2026-08-02
+
+- Production builds now fail closed with the complete assistant voice shell hidden unless
+  `VITE_VOICE_UI_ENABLED=true` is explicitly supplied. Development keeps the voice shell visible
+  by default, and malformed configured values remain disabled.
+- The Cloudflare relay gate remains independent and `wrangler.cloud.jsonc` now defaults
+  `REALTIME_ENABLED=false`, so hiding the frontend is not treated as the server-side security
+  boundary.
+- Policy unit coverage passed 3/3. The production-policy Chromium fixture passed 1/1 with the shell
+  hidden and inert while direct event search remained available; the development WebSocket voice
+  fixture passed 1/1 with the shell visible and functional.
+- Full local CI, both voice capability gates (64 capabilities, 61 parity cases, and 17 protocol
+  suites), `git diff --check`, formatting validation, and the production build passed. The voice UI
+  matrix passed 34/34 applicable journeys with the production-only fixture intentionally skipped
+  in its default development run. No live provider call or paid provider spend was used.

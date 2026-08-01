@@ -48,6 +48,7 @@ The production Worker uses Cloudflare Workers Builds to deploy successful pushes
 | Build command                | `npm run cloudflare:cloud:test`   |
 | Deploy command               | `npm run cloudflare:cloud:deploy` |
 | Build variable               | `NODE_VERSION=24`                 |
+| Build variable               | `VITE_VOICE_UI_ENABLED=false`     |
 | Non-production branch builds | Disabled                          |
 
 Authorize the Cloudflare GitHub App only for this repository. Keep runtime secrets, D1, and R2 bindings on the existing Worker; build variables are not a replacement for runtime secrets.
@@ -127,8 +128,20 @@ allowance resets.
 
 ### Realtime voice kill switches and USD 10 lifetime cap
 
-Realtime voice is disabled by default. Admission requires both `REALTIME_ENABLED=true` in the Worker environment and the D1 `openai-realtime` runtime flag to be enabled. Apply `cloudflare/migrations/0003_voice_budget.sql` before enabling it. The OpenAI credential must exist only as the `OPENAI_API_KEY` Worker secret; never place it in `wrangler.cloud.jsonc`, frontend variables, logs, or build output.
+The production voice entry surface is hidden with `VITE_VOICE_UI_ENABLED=false`. Production builds
+also fail closed to hidden when that build variable is absent or malformed. Local Vite development
+defaults to visible and may set the value explicitly in `.env.local`; no Git-branch name is used at
+runtime. Hiding the shell does not remove the shared assistant controller or direct application
+controls.
+
+Realtime voice admission is independently disabled by default. Admission requires both
+`REALTIME_ENABLED=true` in the Worker environment and the D1 `openai-realtime` runtime flag to be
+enabled. Apply `cloudflare/migrations/0003_voice_budget.sql` before enabling it. The OpenAI
+credential must exist only as the `OPENAI_API_KEY` Worker secret; never place it in
+`wrangler.cloud.jsonc`, frontend variables, logs, or build output.
 
 The D1 ledger enforces a non-resetting lifetime cap of `10_000_000` micro-USD (USD 10). Each billable transcription or response reserves its worst-case amount before provider work. Unknown usage, settlement failure, cap exhaustion, or either disabled switch stops new work. Owner status responses expose state and totals only, never transcript, audio, coordinates, provider payloads, or credentials.
 
-To disable immediately, set the runtime flag off and restore `REALTIME_ENABLED=false`, then deploy. Routine verification always uses mocked audio/provider fixtures and keeps both live switches off.
+To disable immediately, set the D1 runtime flag off, restore `REALTIME_ENABLED=false`, set
+`VITE_VOICE_UI_ENABLED=false`, and deploy. Routine verification always uses mocked audio/provider
+fixtures and keeps the live switches off.

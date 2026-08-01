@@ -883,3 +883,31 @@ guessing or bypassing the shared gateway and browser confirmation boundary.
       build; fix every failure
 - [x] T237 [US8] Run Spec Kit convergence, append and implement every finding, and repeat focused and
       full verification plus convergence until no unresolved issue remains
+
+---
+
+## Phase 31: Production Voice UI Suppression
+
+**Purpose**: Remove the complete voice entry surface from production while retaining development
+voice coverage, shared capability infrastructure, direct controls, and the independent server-side
+kill switch.
+
+### Tests first
+
+- [x] T238 [P] [US4] Add deterministic explicit/default/invalid voice UI policy fixtures in
+      `tests/assistant-voice-ui-policy.test.mjs` per FR-123 and SC-077
+- [x] T239 [P] [US4] Add a production-policy browser fixture proving the voice shell is hidden,
+      inaccessible, and inert while direct controls remain available in
+      `tests/voice-assistant.spec.mjs` per FR-122/FR-124 and SC-076
+
+### Implementation and proof
+
+- [x] T240 [US4] Implement the fail-closed environment policy and thread it through `main.js`,
+      `activity-scenes/assistant/assistant-controller.js`, and
+      `activity-scenes/assistant/assistant-view.js` without removing shared controller ownership
+- [x] T241 [US4] Disable production Worker admission by default and document the separate frontend
+      and backend gates in `.env.example`, `wrangler.cloud.jsonc`,
+      `docs/cloudflare-cloud-native.md`, and `docs/production-configuration.md`
+- [x] T242 [US4] Run focused policy/browser/Worker tests, voice capability gates, lint, formatting,
+      `git diff --check`, and the production build; record zero-provider-spend evidence in
+      `specs/004-conversational-voice-map/quickstart.md`

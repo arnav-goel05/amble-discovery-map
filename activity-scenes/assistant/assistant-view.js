@@ -10,6 +10,7 @@ const element = (tag, className, text) => {
 const VOICE_DISCLOSURE_KEY = "amble.voice-disclosure.v1";
 
 export function createAssistantView({
+  voiceUiEnabled = true,
   onStartVoice,
   onStopVoice,
   onInterrupt,
@@ -48,6 +49,8 @@ export function createAssistantView({
   open.append(microphone, voiceDots, openCopy);
 
   const shell = element("div", "assistant-shell frosted-control-bar");
+  shell.hidden = !voiceUiEnabled;
+  shell.dataset.voiceUiEnabled = String(voiceUiEnabled);
   shell.dataset.expanded = "false";
   shell.dataset.mode = "idle";
   const panel = element("section", "assistant-panel");
@@ -156,6 +159,7 @@ export function createAssistantView({
       : "navigation.closeassistant";
   };
   const setOpen = (visible) => {
+    if (!voiceUiEnabled) return false;
     const nextVisible = visible === true;
     if (panel.hidden === !nextVisible) {
       syncOpenControlOwnership();
@@ -182,6 +186,7 @@ export function createAssistantView({
     return setOpen(visible);
   };
   const startFromPill = () => {
+    if (!voiceUiEnabled) return false;
     setOpen(true);
     const isFirstUse = !disclosureAccepted();
     if (isFirstUse) {
@@ -198,8 +203,10 @@ export function createAssistantView({
       disclosure.hidden = true;
     }
     onStartVoice?.({ disclosureAccepted: true });
+    return true;
   };
   open.addEventListener("click", () => {
+    if (!voiceUiEnabled) return;
     if (activeVoiceModes.has(voiceMode)) {
       shell.dataset.mode =
         shell.dataset.mode === "voice" || panel.hidden ? "results" : "voice";
@@ -237,8 +244,9 @@ export function createAssistantView({
   syncOpenControlOwnership();
   const snapshot = () =>
     Object.freeze({
-      assistantOpen: !panel.hidden,
-      activeOverlayId: panel.hidden ? null : "assistant",
+      assistantOpen: voiceUiEnabled && !panel.hidden,
+      activeOverlayId:
+        voiceUiEnabled && !panel.hidden ? "assistant" : null,
     });
 
   return Object.freeze({

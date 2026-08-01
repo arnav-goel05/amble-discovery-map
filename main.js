@@ -14,6 +14,7 @@ import { createSnapshotStatus } from "./activity-scenes/snapshot-status.js";
 import { createExperienceIntro } from "./activity-scenes/experience-intro.js";
 import { createFeatureTour } from "./activity-scenes/feature-tour.js";
 import { createAssistantController } from "./activity-scenes/assistant/assistant-controller.js";
+import { resolveVoiceUiEnabled } from "./activity-scenes/assistant/voice-ui-policy.js";
 import { createApplicationActionControls } from "./activity-scenes/assistant/actions/application-actions.js";
 import { createRuntimeActionDispatcher } from "./activity-scenes/assistant/runtime-action-dispatcher.js";
 import { createDiscoveryAreaLayerManager } from "./map-layers/discovery-area-layers.js";
@@ -41,6 +42,10 @@ const EXPLORE_CAMERA = {
   pitch: 45,
   bearing: -30,
 };
+const VOICE_UI_ENABLED = resolveVoiceUiEnabled({
+  configuredValue: import.meta.env.VITE_VOICE_UI_ENABLED,
+  development: import.meta.env.DEV,
+});
 
 function normalizeInjectedActivityFixture(snapshot) {
   const canonical = snapshot.activities?.records ?? snapshot.activities;
@@ -792,6 +797,7 @@ async function bootstrapApplication() {
         });
         activityScenes.push(mapGuidanceController);
         assistantController = createAssistantController({
+          voiceUiEnabled: VOICE_UI_ENABLED,
           getCandidateEnvelope: () =>
             globalThis.__ASSISTANT_APPROVED_CANDIDATES__ || {
               schemaVersion: "1.0",

@@ -37,6 +37,39 @@ const selectors = {
 const noisySinglishRequest =
   "Can find somewhere shiok near Dhoby Ghaut, not too noisy lah?";
 
+test("production policy hides and disables the complete voice entry surface", async ({
+  page,
+}) => {
+  test.skip(
+    process.env.VITE_VOICE_UI_ENABLED !== "false",
+    "Runs only in the production-disabled voice UI configuration.",
+  );
+
+  await page.goto("/");
+
+  const shell = page.locator(selectors.shell);
+  await expect(shell).toBeHidden();
+  await expect(page.locator(selectors.open)).toBeHidden();
+  await expect(page.locator("#landmark-event-search-input")).toBeVisible();
+
+  const state = await page.evaluate(() => {
+    const panel = document.querySelector('[data-testid="assistant-panel"]');
+    const open = document.querySelector('[data-testid="assistant-open"]');
+    open?.click();
+    return {
+      expanded: open?.getAttribute("aria-expanded"),
+      panelHidden: panel?.hidden,
+      activeElement: document.activeElement?.getAttribute("data-testid"),
+    };
+  });
+
+  expect(state).toEqual({
+    expanded: "false",
+    panelHidden: true,
+    activeElement: null,
+  });
+});
+
 async function installMicrophoneMock(page, { denied = false } = {}) {
   await page.addInitScript(
     ({ shouldDeny }) => {

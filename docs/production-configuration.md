@@ -36,6 +36,9 @@ requires another explicit owner-approved policy change.
 
 - `OPENAI_API_KEY` is a server-only secret and must never appear in browser configuration,
   responses, bundles, logs, or checked-in files.
+- `VITE_VOICE_UI_ENABLED` is a public build-time presentation policy. Exact `true` enables the
+  voice shell, exact `false` hides it, local development defaults to enabled, and production or an
+  invalid value defaults to hidden. It is not an authorization or spending boundary.
 - `REALTIME_ENABLED` is the environment master switch and defaults to disabled unless set to
   `true`. The D1 runtime switch must also be enabled before a session can start.
 - Routine development, CI, and browser tests use deterministic mock traffic and spend USD 0.

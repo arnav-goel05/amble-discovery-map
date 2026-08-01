@@ -7,6 +7,13 @@
 
 ## Summary
 
+**2026-08-02 production-visibility amendment**: Keep the shared assistant controller and capability
+registry mounted, but gate the complete voice presentation shell with a strict Vite environment
+policy. Local development defaults to visible, while production defaults to hidden and treats an
+invalid configured value as disabled. A hidden shell remains inert for programmatic open requests.
+The independent Worker admission switch stays disabled in production so removing the entry point
+does not become the security or spending boundary.
+
 **2026-08-02 deterministic follow-up amendment**: Add one session-only, revision-bound
 `PendingDialogue` after Amble asks an actionable question. The relay resolves bounded yes/no,
 ordinal, exact-name, and sole-candidate pronoun replies without model inference, consumes an offer
@@ -473,6 +480,12 @@ interpreter boundary.
 Application tools remain registry-derived; the Realtime adapter may only narrow them by the routed
 connector and current eligibility. The adapter MUST NOT reimplement event, restaurant, map, plan,
 or navigation business rules.
+
+The production-visibility amendment MUST NOT remove or conditionally construct the assistant
+controller because direct controls reuse its shared registry and executors. Only the view shell is
+hidden and made inert. The policy resolver is pure and environment-derived: explicit `true` enables,
+explicit `false` disables, development with no value enables, and production or malformed values
+disable. No browser request or Git-branch string may enable production voice.
 
 ### Voice event facet proposal amendment
 

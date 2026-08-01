@@ -845,6 +845,16 @@ the exact canonical capability ID.
   set `created`, `resolved`, `clarified`, `rejected`, `stale`, `superseded`, and
   `consumed`. These diagnostics MUST contain no transcript, candidate label, target ID, arguments,
   precise location, or provider payload.
+- **FR-122**: The production frontend MUST hide the complete voice-assistant entry surface when the
+  production voice UI policy is disabled. The hidden surface MUST NOT be keyboard-focusable or
+  exposed to assistive technology, and programmatic open attempts MUST remain inert.
+- **FR-123**: Voice UI availability MUST be controlled by an explicit build-environment policy, not
+  a runtime Git-branch check. Local development MUST remain enabled by default, production builds
+  MUST fail closed when the policy is absent or invalid, and an explicit `false` MUST override the
+  development default.
+- **FR-124**: Hiding the production voice surface MUST preserve the shared assistant controller,
+  capability registry, and ordinary direct map, event, restaurant, and planning controls. The
+  production relay master switch MUST remain independently disabled as defense in depth.
 
 ### Key Entities
 
@@ -1090,6 +1100,10 @@ the exact canonical capability ID.
   browser-owned confirmation flow and execute zero effects before direct approval.
 - **SC-075**: 100% of pending-dialogue operational records pass the existing privacy allowlist and
   contain only a closed outcome code plus ordinary non-content trace metadata.
+- **SC-076**: A production-policy browser fixture finds no visible or focusable “Speak to Amble”
+  control, cannot open an assistant overlay programmatically, and retains ordinary direct controls.
+- **SC-077**: Deterministic policy fixtures prove explicit true/false behavior, development-default
+  enablement, production-default disablement, and fail-closed handling of invalid values.
 
 ## Assumptions
 
