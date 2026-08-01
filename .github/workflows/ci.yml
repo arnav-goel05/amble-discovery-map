@@ -104,10 +104,28 @@ jobs:
       - name: Run targeted mobile interaction coverage
         run: npm run test:ui:mobile
 
+  chromium-voice:
+    name: Chromium voice interactions
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run isolated mocked voice interaction coverage
+        run: npm run test:ui:voice-ci
+
   complete:
     name: Quality checks
     if: always()
-    needs: [quality, chromium-desktop, chromium-mobile]
+    needs: [quality, chromium-desktop, chromium-mobile, chromium-voice]
     runs-on: ubuntu-latest
     steps:
       - name: Require every ordinary CI tier
@@ -115,3 +133,4 @@ jobs:
           test "${{ needs.quality.result }}" = "success"
           test "${{ needs.chromium-desktop.result }}" = "success"
           test "${{ needs.chromium-mobile.result }}" = "success"
+          test "${{ needs.chromium-voice.result }}" = "success"

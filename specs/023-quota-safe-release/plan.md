@@ -97,6 +97,7 @@ specs/023-quota-safe-release/
 └── agents/openai.yaml
 
 scripts/
+├── prepare-ci-geometry-fixture.mjs
 ├── verify-ci-policy.mjs
 ├── verify-ci-geometry-fixture.mjs
 └── verify-release-candidate.mjs
@@ -106,7 +107,10 @@ tests/
 └── fixtures/geometry-release/
 
 AGENTS.md
+main.js
 package.json
+playwright.config.mjs
+vite.config.cjs
 ```
 
 **Structure Decision**: Keep automation alongside the repository's existing workflows,

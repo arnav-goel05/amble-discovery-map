@@ -14,9 +14,17 @@ const {
 } = require("./scripts/realtime-voice-api-plugin.cjs");
 
 const TILE_PATH = /^\/(?:optimized-tiles|poi-tiles)\//;
+const configuredGeometryRoot = process.env.CI_GEOMETRY_ROOT
+  ? path.resolve(process.cwd(), process.env.CI_GEOMETRY_ROOT)
+  : process.cwd();
 const LOCAL_TILE_ROOTS = [
-  ["/optimized-tiles/", path.resolve(process.cwd(), "optimized-tiles")],
-  ["/poi-tiles/", path.resolve(process.cwd(), "public/poi-tiles")],
+  ["/optimized-tiles/", path.join(configuredGeometryRoot, "optimized-tiles")],
+  [
+    "/poi-tiles/",
+    process.env.CI_GEOMETRY_ROOT
+      ? path.join(configuredGeometryRoot, "poi-tiles")
+      : path.resolve(process.cwd(), "public/poi-tiles"),
+  ],
 ];
 
 function resolveLocalTile(pathname) {

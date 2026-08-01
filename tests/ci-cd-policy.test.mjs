@@ -20,6 +20,17 @@ const originals = {
       "utf8",
     ),
   ),
+  packageJson: JSON.parse(
+    await readFile(new URL("../package.json", import.meta.url), "utf8"),
+  ),
+  playwrightConfig: await readFile(
+    new URL("../playwright.config.mjs", import.meta.url),
+    "utf8",
+  ),
+  viteConfig: await readFile(
+    new URL("../vite.config.cjs", import.meta.url),
+    "utf8",
+  ),
 };
 const clone = () => structuredClone(originals);
 const main = "1".repeat(40);
@@ -46,6 +57,27 @@ test("ordinary CI rejects production hydration, remote inventory, and deployment
   }
 });
 
+test("browser CI cannot silently fall back from the materialized fixture", () => {
+  const missingRoot = clone();
+  missingRoot.playwrightConfig = missingRoot.playwrightConfig.replace(
+    "CI_GEOMETRY_ROOT=outputs/ci-geometry",
+    "",
+  );
+  assert.throws(
+    () => validateCiCdPolicy(missingRoot),
+    /browser fixture isolation/,
+  );
+  const fallback = clone();
+  fallback.playwrightConfig = fallback.playwrightConfig.replace(
+    "TILE_FALLBACK_ORIGIN=''",
+    "TILE_FALLBACK_ORIGIN=https://amblefinds.com",
+  );
+  assert.throws(
+    () => validateCiCdPolicy(fallback),
+    /browser production fallback/,
+  );
+});
+
 test("release rejects automatic triggers, high-cardinality probes, and direct deploy", () => {
   for (const forbidden of [
     "\n  push:\n",
@@ -56,6 +88,26 @@ test("release rejects automatic triggers, high-cardinality probes, and direct de
     inputs.release += forbidden;
     assert.throws(() => validateCiCdPolicy(inputs));
   }
+});
+
+test("Cloudflare deployment performs one post-deployment smoke attempt", () => {
+  const duplicate = clone();
+  duplicate.packageJson.scripts["cloudflare:cloud:deploy"] +=
+    " && npm run test:render-smoke:production";
+  assert.throws(
+    () => validateCiCdPolicy(duplicate),
+    /single post-deployment check/,
+  );
+  const retry = clone();
+  retry.packageJson.scripts["cloudflare:cloud:smoke"] =
+    retry.packageJson.scripts["cloudflare:cloud:smoke"].replace(
+      "PRODUCTION_SMOKE_ATTEMPTS=1",
+      "PRODUCTION_SMOKE_ATTEMPTS=3",
+    );
+  assert.throws(
+    () => validateCiCdPolicy(retry),
+    /post-deployment request budget/,
+  );
 });
 
 test("uptime remains daily, single-attempt, deduplicated, and non-mutating", () => {

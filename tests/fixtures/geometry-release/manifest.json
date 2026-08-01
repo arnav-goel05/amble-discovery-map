@@ -7,7 +7,7 @@
   },
   "objects": [
     {
-      "path": "background/root.b3dm",
+      "path": "optimized-tiles/root.b3dm",
       "role": "background",
       "identity": "fixture-building#0",
       "parent": null,
@@ -16,16 +16,16 @@
       "base64": "YjNkbQEAAACUAAAAFAAAAAAAAAAAAAAAAAAAAHsiQkFUQ0hfTEVOR1RIIjowfSAgZ2xURgIAAABkAAAAUAAAAEpTT057ImFzc2V0Ijp7InZlcnNpb24iOiIyLjAiLCJnZW5lcmF0b3IiOiJjaS1iYWNrZ3JvdW5kIn0sInNjZW5lIjowLCJzY2VuZXMiOlt7fV19IA=="
     },
     {
-      "path": "background/nested.b3dm",
+      "path": "optimized-tiles/nested.b3dm",
       "role": "nested",
       "identity": "fixture-building#1",
-      "parent": "background/root.b3dm",
+      "parent": "optimized-tiles/root.b3dm",
       "byteLength": 144,
       "sha256": "51a6e77e816cbad76bad3757f25ca6141062a0881a275e75d057c5a74dacb241",
       "base64": "YjNkbQEAAACQAAAAFAAAAAAAAAAAAAAAAAAAAHsiQkFUQ0hfTEVOR1RIIjowfSAgZ2xURgIAAABgAAAATAAAAEpTT057ImFzc2V0Ijp7InZlcnNpb24iOiIyLjAiLCJnZW5lcmF0b3IiOiJjaS1uZXN0ZWQifSwic2NlbmUiOjAsInNjZW5lcyI6W3t9XX0g"
     },
     {
-      "path": "highlights/poi.b3dm",
+      "path": "poi-tiles/fixture/poi.b3dm",
       "role": "highlight",
       "identity": "fixture-venue#0",
       "sourceIdentity": "fixture-building#0",
@@ -34,7 +34,7 @@
       "base64": "YjNkbQEAAACUAAAAFAAAAAAAAAAAAAAAAAAAAHsiQkFUQ0hfTEVOR1RIIjowfSAgZ2xURgIAAABkAAAAUAAAAEpTT057ImFzc2V0Ijp7InZlcnNpb24iOiIyLjAiLCJnZW5lcmF0b3IiOiJjaS1oaWdobGlnaHQifSwic2NlbmUiOjAsInNjZW5lcyI6W3t9XX0gIA=="
     },
     {
-      "path": "highlights/event.b3dm",
+      "path": "poi-tiles/fixture/event.b3dm",
       "role": "event-highlight",
       "identity": "fixture-event-venue#0",
       "sourceIdentity": "fixture-building#1",

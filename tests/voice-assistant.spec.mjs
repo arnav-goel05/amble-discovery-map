@@ -158,49 +158,51 @@ async function mockRelay(
     "**/api/voice/sessions/session-browser-lifecycle-001/stream",
     (socket) => {
       browserSocket = socket;
-      if (initialState)
-        socket.send(
-          JSON.stringify({ type: "session.state", state: initialState }),
-        );
-      if (transcript) {
-        socket.send(
-          JSON.stringify({
-            type: "transcript.delta",
-            itemId: "noisy-mrt-item-001",
-            role: "user",
-            modality: "audio",
-            text: "Can find somewhere shiok near Dhoby",
-          }),
-        );
-        socket.send(
-          JSON.stringify({
-            type: "transcript.final",
-            itemId: "noisy-mrt-item-001",
-            role: "user",
-            modality: "audio",
-            text: transcript,
-          }),
-        );
-      }
-      if (assistantText) {
-        socket.send(
-          JSON.stringify({
-            type: "assistant.text.delta",
-            itemId: "assistant-text-item-001",
-            role: "assistant",
-            text: assistantText.slice(0, Math.ceil(assistantText.length / 2)),
-          }),
-        );
-        socket.send(
-          JSON.stringify({
-            type: "assistant.text.done",
-            itemId: "assistant-text-item-001",
-            role: "assistant",
-            text: assistantText,
-          }),
-        );
-      }
       socket.onMessage((raw) => browserMessages.push(JSON.parse(String(raw))));
+      setTimeout(() => {
+        if (initialState)
+          socket.send(
+            JSON.stringify({ type: "session.state", state: initialState }),
+          );
+        if (transcript) {
+          socket.send(
+            JSON.stringify({
+              type: "transcript.delta",
+              itemId: "noisy-mrt-item-001",
+              role: "user",
+              modality: "audio",
+              text: "Can find somewhere shiok near Dhoby",
+            }),
+          );
+          socket.send(
+            JSON.stringify({
+              type: "transcript.final",
+              itemId: "noisy-mrt-item-001",
+              role: "user",
+              modality: "audio",
+              text: transcript,
+            }),
+          );
+        }
+        if (assistantText) {
+          socket.send(
+            JSON.stringify({
+              type: "assistant.text.delta",
+              itemId: "assistant-text-item-001",
+              role: "assistant",
+              text: assistantText.slice(0, Math.ceil(assistantText.length / 2)),
+            }),
+          );
+          socket.send(
+            JSON.stringify({
+              type: "assistant.text.done",
+              itemId: "assistant-text-item-001",
+              role: "assistant",
+              text: assistantText,
+            }),
+          );
+        }
+      }, 0);
     },
   );
   return {

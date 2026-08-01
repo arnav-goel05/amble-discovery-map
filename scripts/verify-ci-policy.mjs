@@ -16,7 +16,15 @@ function occurrenceCount(text, needle) {
   return text.split(needle).length - 1;
 }
 
-export function validateCiCdPolicy({ ci, release, uptime, incident }) {
+export function validateCiCdPolicy({
+  ci,
+  release,
+  uptime,
+  incident,
+  packageJson,
+  playwrightConfig,
+  viteConfig,
+}) {
   requireText(ci, "branches-ignore: [main]", "ordinary CI trigger");
   forbidText(ci, "pull_request:", "ordinary CI trigger");
   requireText(ci, "CI_EXTERNAL_SERVICES: forbidden", "ordinary CI environment");
@@ -44,6 +52,7 @@ export function validateCiCdPolicy({ ci, release, uptime, incident }) {
     "build:ci",
     "test:ui:ci",
     "test:ui:mobile",
+    "test:ui:voice-ci",
   ])
     requireText(ci, command, "ordinary CI coverage");
 
@@ -51,6 +60,16 @@ export function validateCiCdPolicy({ ci, release, uptime, incident }) {
   forbidText(release, "\n  push:", "release trigger");
   forbidText(release, "pull_request:", "release trigger");
   requireText(release, "candidate_sha:", "release input");
+  requireText(
+    release,
+    "CI_BASE_SHA=$(git rev-parse origin/main)",
+    "release formatting range",
+  );
+  forbidText(
+    release,
+    "CI_BASE_SHA: ${{ inputs.candidate_sha }}",
+    "release formatting range",
+  );
   if (occurrenceCount(release, "geometry:background:hydrate") !== 1)
     throw new Error(
       "release budget: production geometry hydration must appear exactly once",
@@ -60,8 +79,7 @@ export function validateCiCdPolicy({ ci, release, uptime, incident }) {
     "test:unit",
     "test:event-sources",
     "test:poi-separation",
-    "geometry:poi:audit",
-    "geometry:background:audit",
+    "cloudflare:r2:verify -- --local-only",
     "cloudflare:r2:verify",
     "cloudflare:prepare",
     "test:ui:release",
@@ -74,6 +92,71 @@ export function validateCiCdPolicy({ ci, release, uptime, incident }) {
   forbidText(release, "cloudflare:cloud:deploy", "deployment exclusivity");
   forbidText(release, "wrangler deploy", "deployment exclusivity");
   forbidText(release, "--force", "release branch safety");
+
+  if (packageJson) {
+    const deploy = packageJson.scripts?.["cloudflare:cloud:deploy"] ?? "";
+    const smoke = packageJson.scripts?.["cloudflare:cloud:smoke"] ?? "";
+    requireText(
+      deploy,
+      "npm run cloudflare:cloud:smoke",
+      "production deploy post-check",
+    );
+    forbidText(
+      deploy,
+      "test:render-smoke:production",
+      "single post-deployment check",
+    );
+    requireText(
+      smoke,
+      "PRODUCTION_SMOKE_ATTEMPTS=1",
+      "post-deployment request budget",
+    );
+    requireText(
+      smoke,
+      "PRODUCTION_SMOKE_REQUIRED_SUCCESSES=1",
+      "post-deployment success budget",
+    );
+    for (const scriptName of [
+      "test:ui:ci",
+      "test:ui:mobile",
+      "test:ui:voice-ci",
+    ])
+      requireText(
+        packageJson.scripts?.[scriptName] ?? "",
+        "geometry:fixture:prepare",
+        `${scriptName} fixture materialization`,
+      );
+  }
+
+  if (playwrightConfig) {
+    requireText(
+      playwrightConfig,
+      "CI_GEOMETRY_ROOT=outputs/ci-geometry",
+      "browser fixture isolation",
+    );
+    requireText(
+      playwrightConfig,
+      "VITE_AMBLE_E2E_OFFLINE_MAP=1",
+      "browser network isolation",
+    );
+    requireText(
+      playwrightConfig,
+      "TILE_FALLBACK_ORIGIN=''",
+      "browser production fallback",
+    );
+    for (const productionHost of ["amblefinds.com", "workers.dev"])
+      forbidText(
+        playwrightConfig,
+        productionHost,
+        "browser production fallback",
+      );
+  }
+  if (viteConfig)
+    requireText(
+      viteConfig,
+      "process.env.CI_GEOMETRY_ROOT",
+      "Vite fixture root",
+    );
 
   requireText(uptime, 'cron: "0 1 * * *"', "uptime schedule");
   requireText(uptime, "PRODUCTION_SMOKE_ATTEMPTS: 1", "uptime request budget");
@@ -146,11 +229,22 @@ const isCli =
 if (isCli) {
   const read = (name) =>
     readFile(path.join(root, ".github/workflows", name), "utf8");
-  const [ci, release, uptime, incidentText] = await Promise.all([
+  const [
+    ci,
+    release,
+    uptime,
+    incidentText,
+    packageText,
+    playwrightConfig,
+    viteConfig,
+  ] = await Promise.all([
     read("ci.yml"),
     read("release-production.yml"),
     read("production-uptime.yml"),
     readFile(path.join(root, "data/incident-automation.json"), "utf8"),
+    readFile(path.join(root, "package.json"), "utf8"),
+    readFile(path.join(root, "playwright.config.mjs"), "utf8"),
+    readFile(path.join(root, "vite.config.cjs"), "utf8"),
   ]);
   console.log(
     JSON.stringify(
@@ -159,6 +253,9 @@ if (isCli) {
         release,
         uptime,
         incident: JSON.parse(incidentText),
+        packageJson: JSON.parse(packageText),
+        playwrightConfig,
+        viteConfig,
       }),
       null,
       2,

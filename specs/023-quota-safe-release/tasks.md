@@ -8,18 +8,18 @@ candidate identity, schedule, mutation, and quota behavior must be executable.
 ## Phase 1: Setup
 
 - [x] T001 Confirm the worktree remains on `develop` and record unrelated user changes without modifying them
-- [ ] T002 [P] Add CI/release script entries to `package.json` without changing application dependencies
-- [ ] T003 [P] Add feature validation commands and expected evidence to `specs/023-quota-safe-release/quickstart.md`
+- [x] T002 [P] Add CI/release script entries to `package.json` without changing application dependencies
+- [x] T003 [P] Add feature validation commands and expected evidence to `specs/023-quota-safe-release/quickstart.md`
 
 ---
 
 ## Phase 2: Foundational safety controls
 
-- [ ] T004 Add failing workflow-policy and release-candidate tests in `tests/ci-cd-policy.test.mjs`
-- [ ] T005 Add deterministic workflow policy validation in `scripts/verify-ci-policy.mjs`
-- [ ] T006 Add exact-SHA, develop-head, main-ancestry, and ref-race validation in `scripts/verify-release-candidate.mjs`
-- [ ] T007 Add quota budgets and fail-closed forbidden-operation checks to the policy tests and scripts
-- [ ] T008 Update `AGENTS.md` with direct-push, no-PR, no-main, explicit-release, and no-unrequested-push rules
+- [x] T004 Add failing workflow-policy and release-candidate tests in `tests/ci-cd-policy.test.mjs`
+- [x] T005 Add deterministic workflow policy validation in `scripts/verify-ci-policy.mjs`
+- [x] T006 Add exact-SHA, develop-head, main-ancestry, and ref-race validation in `scripts/verify-release-candidate.mjs`
+- [x] T007 Add quota budgets and fail-closed forbidden-operation checks to the policy tests and scripts
+- [x] T008 Update `AGENTS.md` with direct-push, no-PR, no-main, explicit-release, and no-unrequested-push rules
 
 **Checkpoint**: Policy and release identity controls pass locally before workflows use them.
 
@@ -33,18 +33,18 @@ candidate identity, schedule, mutation, and quota behavior must be executable.
 
 ### Tests for User Story 1
 
-- [ ] T009 [P] [US1] Add compact geometry fixture success and failure cases under `tests/fixtures/geometry-release/`
-- [ ] T010 [P] [US1] Add fixture manifest integrity, roles, separation, corrupt, missing, hash, size, and production-URL tests in `tests/geometry-ci-fixture.test.mjs`
-- [ ] T011 [US1] Add deterministic fixture verification in `scripts/verify-ci-geometry-fixture.mjs`
-- [ ] T012 [US1] Prove the fixture verifier fails closed for every required negative case in `tests/geometry-ci-fixture.test.mjs`
+- [x] T009 [P] [US1] Add compact geometry fixture success and failure cases under `tests/fixtures/geometry-release/`
+- [x] T010 [P] [US1] Add fixture manifest integrity, roles, separation, corrupt, missing, hash, size, and production-URL tests in `tests/geometry-ci-fixture.test.mjs`
+- [x] T011 [US1] Add deterministic fixture verification and ignored runtime materialization in `scripts/verify-ci-geometry-fixture.mjs` and `scripts/prepare-ci-geometry-fixture.mjs`
+- [x] T012 [US1] Prove the fixture verifier fails closed for every required negative case in `tests/geometry-ci-fixture.test.mjs`
 
 ### Implementation for User Story 1
 
-- [ ] T013 [US1] Replace production hydration and remote R2 checks in `.github/workflows/ci.yml` with fixture verification and zero-external policy validation
-- [ ] T014 [US1] Run all Node tests, lint, formatting, production-equivalent local build, and broad Chromium desktop specs in `.github/workflows/ci.yml`
-- [ ] T015 [US1] Add a targeted Chromium mobile suite for discovery, voice, plan, and responsive device behavior in `.github/workflows/ci.yml`
-- [ ] T016 [US1] Make ordinary CI cover pushes to `develop` and explicitly created non-main branches, cancel superseded revisions, and never deploy
-- [ ] T017 [US1] Disable runtime production tile fallback during browser CI and verify no production geometry URL is requested
+- [x] T013 [US1] Replace production hydration and remote R2 checks in `.github/workflows/ci.yml` with fixture verification and zero-external policy validation
+- [x] T014 [US1] Run all Node tests, lint, formatting, production-equivalent local build, and broad Chromium desktop specs in `.github/workflows/ci.yml`
+- [x] T015 [US1] Add a targeted Chromium mobile suite for discovery, voice, plan, and responsive device behavior in `.github/workflows/ci.yml`
+- [x] T016 [US1] Make ordinary CI cover pushes to `develop` and explicitly created non-main branches, cancel superseded revisions, and never deploy
+- [x] T017 [US1] Disable runtime production tile fallback during browser CI and verify no production geometry URL is requested
 
 **Checkpoint**: Ordinary CI is comprehensive but records zero production-service operations.
 
@@ -58,19 +58,19 @@ candidate identity, schedule, mutation, and quota behavior must be executable.
 
 ### Tests for User Story 2
 
-- [ ] T018 [P] [US2] Test invalid SHA, stale develop head, divergent main, changed refs, and exact promotion command behavior in `tests/ci-cd-policy.test.mjs`
-- [ ] T019 [P] [US2] Test the release workflow contains every full gate and bounded budget but no per-object public HEAD loop
-- [ ] T020 [P] [US2] Test that only a main update can activate the production deploy path
+- [x] T018 [P] [US2] Test invalid SHA, stale develop head, divergent main, changed refs, and exact promotion command behavior in `tests/ci-cd-policy.test.mjs`
+- [x] T019 [P] [US2] Test the release workflow contains every full gate and bounded budget but no per-object public HEAD loop
+- [x] T020 [P] [US2] Test that only a main update can activate the production deploy path
 
 ### Implementation for User Story 2
 
-- [ ] T021 [US2] Add explicit `candidate_sha` release orchestration in `.github/workflows/release-production.yml`
-- [ ] T022 [US2] Add one production geometry hydration, local/background separation, bounded R2 inventory, production build, render, performance, and six-project browser gates
-- [ ] T023 [US2] Revalidate remote develop/main identities and fast-forward the exact tested SHA to main without force or pull request
-- [ ] T024 [US2] Record the release external-operation budget and keep deployment exclusively tied to main
-- [ ] T025 [US2] Read the `skill-creator` instructions and scaffold `.agents/skills/release-production/` using its required generator
-- [ ] T026 [US2] Implement the reusable release skill so Codex and manual dispatch use the same workflow and never bypass a failed gate
-- [ ] T027 [US2] Adjust GitHub branch safeguards to permit direct pushes while retaining no-force/no-delete and required checks
+- [x] T021 [US2] Add explicit `candidate_sha` release orchestration in `.github/workflows/release-production.yml`
+- [x] T022 [US2] Add one production geometry hydration, local/background separation, bounded R2 inventory, production build, render, performance, and six-project browser gates
+- [x] T023 [US2] Revalidate remote develop/main identities and fast-forward the exact tested SHA to main without force or pull request
+- [x] T024 [US2] Record the release external-operation budget and keep deployment exclusively tied to main
+- [x] T025 [US2] Read the `skill-creator` instructions and scaffold `.agents/skills/release-production/` using its required generator
+- [x] T026 [US2] Implement the reusable release skill so Codex and manual dispatch use the same workflow and never bypass a failed gate
+- [x] T027 [US2] Adjust GitHub branch safeguards to permit direct pushes while retaining no-force/no-delete and required checks
 
 **Checkpoint**: Release verification is deliberate, race-safe, exact-revision, and deployment-exclusive.
 
@@ -84,14 +84,14 @@ candidate identity, schedule, mutation, and quota behavior must be executable.
 
 ### Tests for User Story 3
 
-- [ ] T028 [P] [US3] Test 09:00 Singapore cron, one attempt, deduplicated issue, recovery close, and no rollback/redeploy in `tests/ci-cd-policy.test.mjs`
-- [ ] T029 [P] [US3] Test the incident prompt's no-issue exit, single diagnostic pass, develop-only tested fix, and prohibited operations
+- [x] T028 [P] [US3] Test 09:00 Singapore cron, one attempt, deduplicated issue, recovery close, and no rollback/redeploy in `tests/ci-cd-policy.test.mjs`
+- [x] T029 [P] [US3] Test the incident prompt's no-issue exit, single diagnostic pass, develop-only tested fix, and prohibited operations
 
 ### Implementation for User Story 3
 
-- [ ] T030 [US3] Update `.github/workflows/production-uptime.yml` to run once daily at 09:00 Singapore and enrich sanitized failure evidence without retry
-- [ ] T031 [US3] Preserve one deduplicated outage issue and document/close recovery on a later healthy daily check
-- [ ] T032 [US3] Create the daily 09:15 Singapore Codex automation with the validated incident contract
+- [x] T030 [US3] Update `.github/workflows/production-uptime.yml` to run once daily at 09:00 Singapore and enrich sanitized failure evidence without retry
+- [x] T031 [US3] Preserve one deduplicated outage issue and document/close recovery on a later healthy daily check
+- [x] T032 [US3] Create the daily 09:15 Singapore Codex automation with the validated incident contract
 
 **Checkpoint**: Monitoring is quota-bounded and automated repair cannot release itself.
 
@@ -99,11 +99,11 @@ candidate identity, schedule, mutation, and quota behavior must be executable.
 
 ## Phase 6: Documentation and end-to-end validation
 
-- [ ] T033 [P] Update operational CI/CD documentation with test tiers, budgets, manual release, deployment, uptime, and incident behavior
-- [ ] T034 Run formatter, lint, full Node tests, fixture tests, policy tests, local build, and relevant Chromium desktop/mobile tests
-- [ ] T035 Run SpecKit analysis across spec, plan, tasks, contracts, and implementation; remediate every finding
-- [ ] T036 Repeat policy, automated tests, and SpecKit analysis until no issue remains
-- [ ] T037 Review the final diff for unrelated-file preservation, secrets, forbidden endpoints, workflow permissions, and unrequested pushes/deployments
+- [x] T033 [P] Update operational CI/CD documentation with test tiers, budgets, manual release, deployment, uptime, and incident behavior
+- [x] T034 Run formatter, lint, full Node tests, fixture tests, policy tests, local build, and relevant Chromium desktop/mobile tests
+- [x] T035 Run SpecKit analysis across spec, plan, tasks, contracts, and implementation; remediate every finding
+- [x] T036 Repeat policy, automated tests, and SpecKit analysis until no issue remains
+- [x] T037 Review the final diff for unrelated-file preservation, secrets, forbidden endpoints, workflow permissions, and unrequested pushes/deployments
 
 ---
 

@@ -188,8 +188,7 @@ async function bootstrapApplication() {
       await import("./activity-scenes/performance-diagnostic-variants.js");
     performanceVariant = requestedPerformanceVariant(window.location.search);
   }
-  const bypassIntroForE2E =
-    import.meta.env.VITE_AMBLE_E2E_BYPASS_INTRO === "1";
+  const bypassIntroForE2E = import.meta.env.VITE_AMBLE_E2E_BYPASS_INTRO === "1";
   resetSavedMapView({ preserve: bypassIntroForE2E });
   const hasInitialCameraHash = Boolean(window.location.hash);
   let buildingHighlights = null;
@@ -323,6 +322,44 @@ async function bootstrapApplication() {
   };
   let poiTilesets = composePoiTilesets(approvedLandmarks, approvedPois);
   const optimizedTilesMemoryMb = 192;
+  const offlineE2eMap = import.meta.env.VITE_AMBLE_E2E_OFFLINE_MAP === "1";
+  const baseMapSource = offlineE2eMap
+    ? {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [
+            {
+              type: "Feature",
+              properties: {},
+              geometry: {
+                type: "Polygon",
+                coordinates: [
+                  [
+                    [-180, -85],
+                    [180, -85],
+                    [180, 85],
+                    [-180, 85],
+                    [-180, -85],
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+      }
+    : {
+        type: "raster",
+        tiles: [
+          "https://a.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
+          "https://b.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
+          "https://c.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
+          "https://d.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
+        ],
+        tileSize: 256,
+        attribution:
+          '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> / <a href="https://carto.com/attributions">CARTO</a> / <a href="https://www.sla.gov.sg/">SLA</a> / <a href="https://www.onemap.gov.sg/legal/termsofuse.html">OneMap</a>',
+      };
 
   map = window._map = new maplibregl.Map({
     container: "map",
@@ -331,29 +368,20 @@ async function bootstrapApplication() {
       version: 8,
       glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
       sources: {
-        "carto-voyager-nolabels": {
-          type: "raster",
-          tiles: [
-            "https://a.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
-            "https://b.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
-            "https://c.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
-            "https://d.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
-          ],
-          tileSize: 256,
-          attribution:
-            '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> / <a href="https://carto.com/attributions">CARTO</a> / <a href="https://www.sla.gov.sg/">SLA</a> / <a href="https://www.onemap.gov.sg/legal/termsofuse.html">OneMap</a>',
-        },
+        "carto-voyager-nolabels": baseMapSource,
       },
       layers: [
         {
           id: "carto-voyager-nolabels",
-          type: "raster",
+          type: offlineE2eMap ? "fill" : "raster",
           source: "carto-voyager-nolabels",
-          paint: {
-            // Keep the raster ground locked to continuously rendered 3D geometry
-            // instead of crossfading between integer tile zoom levels.
-            "raster-fade-duration": 0,
-          },
+          paint: offlineE2eMap
+            ? { "fill-color": "#eef1ed" }
+            : {
+                // Keep the raster ground locked to continuously rendered 3D geometry
+                // instead of crossfading between integer tile zoom levels.
+                "raster-fade-duration": 0,
+              },
         },
       ],
     },

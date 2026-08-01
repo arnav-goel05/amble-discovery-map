@@ -6,10 +6,9 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({
   page,
 }) => {
   const renderGuard = installBrowserRenderGuard(page);
-  await page.goto(
-    "/?emptyApprovedSnapshot#15.3/1.285844/103.857897/-30/45",
-    { waitUntil: "domcontentloaded" },
-  );
+  await page.goto("/?emptyApprovedSnapshot#15.3/1.285844/103.857897/-30/45", {
+    waitUntil: "domcontentloaded",
+  });
   await expect
     .poll(() => page.evaluate(() => Boolean(window._map?.__deck)))
     .toBe(true);

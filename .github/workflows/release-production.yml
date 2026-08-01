@@ -43,6 +43,11 @@ jobs:
       - name: Validate immutable develop candidate and fast-forward ancestry
         run: node scripts/verify-release-candidate.mjs prepare --candidate "$RELEASE_CANDIDATE_SHA" --state-file "$RELEASE_STATE_FILE"
 
+      - name: Record the immutable formatting range
+        run: |
+          echo "CI_BASE_SHA=$(git rev-parse origin/main)" >> "$GITHUB_ENV"
+          echo "CI_HEAD_SHA=$RELEASE_CANDIDATE_SHA" >> "$GITHUB_ENV"
+
       - name: Install dependencies
         run: npm ci
 
@@ -53,9 +58,6 @@ jobs:
         run: npm run geometry:background:hydrate
 
       - name: Run static and local contract gates
-        env:
-          CI_BASE_SHA: ${{ inputs.candidate_sha }}
-          CI_HEAD_SHA: ${{ inputs.candidate_sha }}
         run: |
           npm run lint
           npm run format:check
@@ -68,8 +70,7 @@ jobs:
       - name: Verify production geometry and bounded R2 inventory
         run: |
           npm run test:poi-separation
-          npm run geometry:poi:audit
-          npm run geometry:background:audit
+          npm run cloudflare:r2:verify -- --local-only
           npm run cloudflare:r2:verify
 
       - name: Verify production Cloudflare build
