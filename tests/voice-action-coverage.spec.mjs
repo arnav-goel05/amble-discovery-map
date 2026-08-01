@@ -232,6 +232,10 @@ async function installVoiceHarness(page) {
     providerUrls,
     browserMessages,
     availableCapabilityIds: () => [...availableCapabilityIds],
+    context: () =>
+      [...browserMessages]
+        .reverse()
+        .find((message) => message.type === "context.update")?.context ?? null,
     revision: () => revision,
     propose(capabilityId, argumentsValue, callId, kind = "command") {
       const proposal = {
@@ -441,6 +445,51 @@ test("voice event sentences update the same authoritative composer state as dire
   expect(
     latestContext().activeFilters.eventComposerState.canonicalSentence,
   ).toBe("This weekend Free");
+});
+
+test("a named restaurant follow-up uses the exact current target once", async ({
+  page,
+}) => {
+  const harness = await installVoiceHarness(page);
+  harness.propose(
+    "restaurant.searchviewport",
+    {},
+    "restaurant-follow-up-search",
+  );
+  await expect
+    .poll(() =>
+      harness.browserMessages.find(
+        (message) =>
+          message.type === "capability.result" &&
+          message.callId === "restaurant-follow-up-search",
+      ),
+    )
+    .toBeTruthy();
+  const candidate = harness
+    .context()
+    ?.visibleTargets?.find(({ type }) => type === "restaurant");
+  expect(candidate).toMatchObject({
+    targetId: expect.any(String),
+    label: "Fixture Kitchen",
+  });
+
+  harness.transcript("the first one", "restaurant-follow-up-utterance");
+  harness.propose(
+    "restaurant.selectresult",
+    { restaurantId: candidate.targetId },
+    "restaurant-follow-up-select",
+  );
+  await expect
+    .poll(
+      () =>
+        harness.browserMessages.filter(
+          (message) =>
+            message.type === "capability.result" &&
+            message.callId === "restaurant-follow-up-select",
+        ).length,
+    )
+    .toBe(1);
+  await expect(page.locator("#restaurant-detail")).toBeVisible();
 });
 
 test("empty conditional content and browser-owned lifecycle controls are never advertised", async ({

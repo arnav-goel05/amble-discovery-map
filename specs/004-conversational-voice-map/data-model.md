@@ -265,20 +265,21 @@ exists.
 
 ## InterfaceContextSnapshot (memory only)
 
-| Field                                       | Type                   | Rules                                                        |
-| ------------------------------------------- | ---------------------- | ------------------------------------------------------------ |
-| `revision`                                  | integer                | Monotonic; action proposals bind to it                       |
-| `viewport`                                  | object                 | Bounds, zoom, bearing; coordinates coarsened unless needed   |
-| `visibleLayers`                             | closed boolean object  | Recommendation, location, MRT-station, and MRT-line state    |
-| `visibleTargets`                            | ordered array          | Stable ID, type, ordinal, and short approved label           |
-| `focusedTargetId`, `selectedTargetIds`      | nullable/string arrays | Must reference visible/registered targets                    |
-| `activeOverlayId`                           | nullable string        | From overlay coordinator                                     |
-| `assistantPresentation`                     | nullable enum          | Recommendations, clarification, or honest no-match state     |
-| `activeFilters`                             | object                 | Allowlisted state including canonical `EventComposerState`   |
-| `locationState`                             | enum/object            | Permission/freshness plus coarse relative context by default |
-| `transitVisible`, `transitConstraintActive` | boolean                | Visibility never implies ranking constraint                  |
-| `availableCapabilityIds`                    | string array           | Eligible registry subset                                     |
-| `stateDigest`                               | string                 | Hash of assistant-relevant canonical state                   |
+| Field                                       | Type                   | Rules                                                         |
+| ------------------------------------------- | ---------------------- | ------------------------------------------------------------- |
+| `revision`                                  | integer                | Monotonic; action proposals bind to it                        |
+| `viewport`                                  | object                 | Bounds, zoom, bearing; coordinates coarsened unless needed    |
+| `visibleLayers`                             | closed boolean object  | Recommendation, location, MRT-station, and MRT-line state     |
+| `visibleTargets`                            | ordered array          | Stable ID, type, ordinal, and short approved label            |
+| `focusedTargetId`, `selectedTargetIds`      | nullable/string arrays | Must reference visible/registered targets                     |
+| `activeOverlayId`                           | nullable string        | From overlay coordinator                                      |
+| `assistantPresentation`                     | nullable enum          | Recommendations, clarification, or honest no-match state      |
+| `activeFilters`                             | object                 | Allowlisted state including canonical `EventComposerState`    |
+| `plan.addableTargetIds`                     | stable ID array        | At most 50 currently addable visible event/restaurant targets |
+| `locationState`                             | enum/object            | Permission/freshness plus coarse relative context by default  |
+| `transitVisible`, `transitConstraintActive` | boolean                | Visibility never implies ranking constraint                   |
+| `availableCapabilityIds`                    | string array           | Eligible registry subset                                      |
+| `stateDigest`                               | string                 | Hash of assistant-relevant canonical state                    |
 
 ## CapabilityTurnScope (memory only)
 
@@ -489,29 +490,27 @@ queries do not construct this entity.
 
 ## FixedSpeechDelivery (session memory only)
 
-| Field        | Type            | Rules                                                                |
-| ------------ | --------------- | -------------------------------------------------------------------- |
-| `expected`   | nullable string | Relay-owned grounded text; never model-authored                      |
-| `buffer`     | bounded events  | At most 2 MiB of sanitized assistant audio/text events               |
-| `retryCount` | integer         | Zero or one; shares the existing three-stage per-turn response guard |
+| Field      | Type            | Rules                                                  |
+| ---------- | --------------- | ------------------------------------------------------ |
+| `supplied` | nullable string | Relay-owned grounded meaning; never model-authored     |
+| `buffer`   | bounded events  | At most 2 MiB of sanitized assistant audio/text events |
 
 State transition:
 
-`expected → buffered → transcript_match → released`
+`supplied → buffered → released`
 
-On mismatch, the buffer is discarded and the same fixed text is retried once. A second mismatch
-terminates through protocol cleanup. Tool-stage buffers follow the same release boundary but are
-discarded whenever a function call is produced.
+Natural paraphrasing does not cause retry or protocol termination. Tool-stage buffers follow the
+same release boundary but are discarded whenever a function call is produced.
 
 ## CapabilityDialogueProjection (session memory only)
 
-| Field | Type | Rules |
-| --- | --- | --- |
-| `capabilityId` | canonical string | Must match the validated capability result |
-| `outcome` | enum | `completed_changed`, `completed_unchanged`, `empty`, `unavailable`, `failed`, `clarification`, or `confirmation_required` |
-| `evidence` | bounded object | Only result/context-projected labels, counts, settings, and state |
-| `nextCapabilityId` | nullable canonical string | Present only when refreshed context marks it eligible |
-| `speech` | bounded string | One confirmed outcome and at most one follow-up question |
+| Field              | Type                      | Rules                                                                                                                     |
+| ------------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `capabilityId`     | canonical string          | Must match the validated capability result                                                                                |
+| `outcome`          | enum                      | `completed_changed`, `completed_unchanged`, `empty`, `unavailable`, `failed`, `clarification`, or `confirmation_required` |
+| `evidence`         | bounded object            | Only result/context-projected labels, counts, settings, and state                                                         |
+| `nextCapabilityId` | nullable canonical string | Present only when refreshed context marks it eligible                                                                     |
+| `speech`           | bounded string            | One confirmed outcome and at most one follow-up question                                                                  |
 
 State transition:
 
@@ -519,3 +518,27 @@ State transition:
 
 Missing evidence selects a target-neutral template. The projection is never persisted and cannot
 authorize an action.
+
+## PendingDialogue (session memory only)
+
+| Field             | Type                 | Rules                                                                                         |
+| ----------------- | -------------------- | --------------------------------------------------------------------------------------------- |
+| `dialogueId`      | unique opaque string | Created once; never reused within a session                                                   |
+| `kind`            | enum                 | `single_offer`, `candidate_choice`, or `clarification`                                        |
+| `capabilityId`    | canonical string     | Owning eligible capability; nullable only for clarification                                   |
+| `candidates`      | bounded array        | At most three `{ targetId, label, arguments }` records from validated result/context evidence |
+| `expectedReplies` | closed enum array    | Any of `affirm`, `reject`, `ordinal`, `exact_name`, `sole_pronoun`, `constraint`              |
+| `contextRevision` | non-negative integer | Must equal current authoritative context before resolution                                    |
+| `createdAtMs`     | integer              | Relay monotonic/session clock value                                                           |
+| `status`          | enum                 | `active`, `consumed`, `rejected`, `stale`, or `superseded`                                    |
+
+State transition:
+
+`absent → active → consumed | rejected | stale | superseded → absent`
+
+The transition out of `active` occurs before a capability proposal or rejection response. A bare
+affirmative can consume only a `single_offer`; a `candidate_choice` remains active after a bounded
+which-one clarification. An interruption, session cleanup, unrelated explicit request, or context
+revision change removes the record. The record is never persisted, logged, or supplied to the
+provider as conversational content. Elapsed time alone does not remove it. Operational tracing may
+include only the closed transition code.

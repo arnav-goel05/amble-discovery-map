@@ -931,3 +931,22 @@ provider call:
   verification gates passed (64 capabilities, 61 parity cases, 17 protocol suites), scoped ESLint,
   `git diff --check`, and the production build passed. After restoring the previously tripped local
   ledger, a fresh localhost admission returned HTTP 201 and the ledger remained enabled.
+
+## Deterministic follow-up dialogue amendment — 2026-08-02
+
+- Amble now creates one revision-bound, single-use pending dialogue only when grounded
+  event, restaurant, or plan evidence supports an eligible next action. Sole-candidate yes/pronoun
+  replies and unique ordinal/name replies resolve the exact stored target; multi-candidate yes,
+  mixed conditions and stale context mutate nothing and clarify. Elapsed time alone does not
+  invalidate an offer while the same authoritative results remain current.
+- Rejection, interruption, unrelated intent, context change, and session cleanup invalidate the
+  offer. Resolution consumes it before the ordinary canonical capability proposal. Consequential
+  capabilities still enter browser-owned confirmation and no conversational reply can approve the
+  effect.
+- Restaurant context now preserves bounded approved names instead of exposing IDs as labels, and
+  plan context includes bounded currently addable target IDs so every prompt can name its evidence.
+- Focused relay/context/connector coverage passed 82/82 tests; the complete voice suite passed
+  257/257; the complete unit suite, both capability gates (64 capabilities, 61 parity cases, 17
+  protocol suites), full ESLint, `git diff --check`, and the production build passed. The affected
+  Chromium dialogue/state matrix passed 30/30 including exact restaurant follow-up identity and
+  listening-after-playback behavior. No live provider call or additional paid spend was used.

@@ -7,6 +7,13 @@
 
 ## Summary
 
+**2026-08-02 deterministic follow-up amendment**: Add one session-only, revision-bound
+`PendingDialogue` after Amble asks an actionable question. The relay resolves bounded yes/no,
+ordinal, exact-name, and sole-candidate pronoun replies without model inference, consumes an offer
+before proposing its stored capability, and invalidates it on rejection, interruption, unrelated
+intent, or context change. Multi-target “yes” and mixed conditional replies clarify with
+zero mutation. Consequential calls continue through browser-owned confirmation.
+
 **2026-08-01 admission-safety amendment**: Treat a provider-completed empty transcript for the
 active item as a normal no-recognition result. Settle its known bounded usage, mutate nothing, and
 request one fixed retry without entering the protocol-integrity path or disabling later sessions.
@@ -65,7 +72,7 @@ At the provider boundary, canonical dotted capability IDs are projected through 
 collision-free alias map into provider-safe function names and mapped back before any browser or
 gateway interaction. Every initial and per-turn `session.update` becomes an acknowledged
 configuration barrier: response creation waits for `session.updated`, provider errors terminate
-through the standard unavailable path, and the opening exact-speech instruction exists only on its
+through the standard unavailable path, and the opening fixed-message guidance exists only on its
 single `response.create`. A bounded owner-authorized live smoke validates this real provider
 contract after deterministic tests.
 Native audio no longer begins with the complete eligible application inventory. Audio commit
@@ -392,6 +399,7 @@ scripts/
 ├── serve-app.cjs
 └── lib/
     ├── realtime-content-debug.mjs
+    ├── pending-dialogue.mjs
     ├── realtime-policy.mjs
     └── voice-budget-ledger.mjs
 
@@ -434,6 +442,14 @@ connected voice, while the MCP foundation adapter remains disabled and has no tr
 Do not route area or transit rendering through the performance-sensitive 3D building manager.
 During implementation, re-read dirty target files immediately before editing and sequence
 overlapping files rather than applying broad rewrites.
+
+The deterministic follow-up amendment adds a pure relay-side dialogue-state interpreter and no
+new connector authority. Capability-result projection creates an offer only from stable identities,
+verified labels, current eligibility, and the refreshed context revision. Both typed and native
+turns consult that state before ordinary routing. Resolution produces the same canonical browser
+proposal as any other voice request; it never calls a domain executor directly. Session stop,
+interruption, context revision, rejection, and unrelated explicit intent clear the state.
+Privacy-safe tracing records only a closed outcome code.
 
 The migration MUST add the currently missing event placement/multi-value filter, filter-removal,
 occurrence-selection, session-expansion, and map-attribution capabilities within the existing

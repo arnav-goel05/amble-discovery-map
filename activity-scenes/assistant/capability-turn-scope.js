@@ -50,7 +50,9 @@ function familiesForUtterance(utterance, activeOverlayId = null) {
   if (
     families.includes("map") &&
     (families.includes("event") || families.includes("restaurant")) &&
-    /\b(?:this|current|visible)\s+(?:map\s+)?area\b/i.test(utterance)
+    /\b(?:(?:this|current|visible)\s+(?:map\s+)?area|(?:around|in|within|near)\s+(?:(?:the(?:\s+(?:current|visible))?|this|current|visible)\s+)?(?:map\s+)?area)\b/i.test(
+      utterance,
+    )
   )
     families.splice(families.indexOf("map"), 1);
   if (families.includes("map") && families.includes("discovery"))

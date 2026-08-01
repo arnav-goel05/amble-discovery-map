@@ -17,12 +17,15 @@ import {
   EMPTY_TRANSCRIPT_RETRY_MESSAGE,
   OUT_OF_SCOPE_RESPONSE,
   buildAmbleSessionInstructions,
-  buildVerbatimSpeechInstructions,
+  buildFixedSpeechInstructions,
   buildVoiceIngressResponseInstructions,
+  capabilityResultDialogue,
   capabilityResultSpeech,
   canonicalizeVoiceIngress,
+  createPendingDialogue,
   createRealtimeRelay,
   describeAvailableCapabilities,
+  interpretPendingDialogue,
   selectVoiceEventQueryMode,
   validateDiscoveryToolArguments,
 } from "../cloudflare/realtime-relay.mjs";
@@ -281,7 +284,7 @@ test("authoritative capability outcomes produce bounded truthful speech", () => 
         },
       },
     ),
-    "I found 140 matching events. Top options are 100% Latin Rooftop Brunch, Singapore Ballet Masterpieces, and When Art Meets Nature. Would you like me to add one to your plan?",
+    "I found 140 matching events. Top options are 100% Latin Rooftop Brunch, Singapore Ballet Masterpieces, and When Art Meets Nature. Which would you like me to add to your plan: first, 100% Latin Rooftop Brunch; second, Singapore Ballet Masterpieces; or third, When Art Meets Nature?",
   );
   assert.equal(
     capabilityResultSpeech(
@@ -304,8 +307,13 @@ test("authoritative capability outcomes produce bounded truthful speech", () => 
     [
       "restaurant.search",
       { query: "Italian restaurants nearby" },
-      completed({ state: { resultIds: ["restaurant:one"] } }),
-      "I found restaurant matches for Italian restaurants nearby. Which one sounds good?",
+      completed({
+        state: {
+          results: [{ restaurantId: "restaurant:one", label: "Pasta One" }],
+          resultIds: ["restaurant:one"],
+        },
+      }),
+      "I found restaurant matches for Italian restaurants nearby. Would you like me to open Pasta One?",
     ],
     [
       "restaurant.setcuisine",
@@ -436,6 +444,514 @@ test("authoritative capability outcomes produce bounded truthful speech", () => 
     assert.doesNotMatch(expected, /Done in Amble/);
     assert.ok((expected.match(/\?/g) ?? []).length <= 1);
   }
+});
+
+test("pending dialogue resolves identity-backed replies without time expiry", () => {
+  const pending = createPendingDialogue({
+    dialogueId: "dialogue-001",
+    capabilityId: "event.addtoplan",
+    candidates: [
+      {
+        targetId: "event:one",
+        label: "Gallery Night",
+        arguments: { eventId: "event:one" },
+      },
+      {
+        targetId: "event:two",
+        label: "Sunset Jazz",
+        arguments: { eventId: "event:two" },
+      },
+    ],
+    contextRevision: 9,
+    nowMs: 1_000,
+  });
+
+  assert.equal(
+    interpretPendingDialogue(pending, "yes", {
+      contextRevision: 9,
+    }).status,
+    "clarified",
+  );
+  assert.equal(
+    interpretPendingDialogue(pending, "the second one", {
+      contextRevision: 9,
+    }).candidate.targetId,
+    "event:two",
+  );
+  assert.equal(
+    interpretPendingDialogue(pending, "Gallery Night", {
+      contextRevision: 9,
+    }).candidate.targetId,
+    "event:one",
+  );
+  assert.equal(
+    interpretPendingDialogue(pending, "no thanks", {
+      contextRevision: 9,
+    }).status,
+    "rejected",
+  );
+  assert.equal(
+    interpretPendingDialogue(pending, "first, but only if it's free", {
+      contextRevision: 9,
+    }).reason,
+    "mixed_constraint",
+  );
+  assert.equal(
+    interpretPendingDialogue(pending, "first", {
+      contextRevision: 10,
+    }).status,
+    "stale",
+  );
+  assert.equal(
+    interpretPendingDialogue(pending, "first", {
+      contextRevision: 9,
+      nowMs: Number.MAX_SAFE_INTEGER,
+    }).candidate.targetId,
+    "event:one",
+  );
+  assert.equal(
+    interpretPendingDialogue(pending, "zoom in", {
+      contextRevision: 9,
+      nowMs: 2_000,
+    }).status,
+    "unrelated",
+  );
+});
+
+test("single-candidate offers accept affirmatives and sole-candidate pronouns", () => {
+  const pending = createPendingDialogue({
+    dialogueId: "dialogue-single",
+    capabilityId: "restaurant.selectresult",
+    candidates: [
+      {
+        targetId: "restaurant:one",
+        label: "Pasta One",
+        arguments: { restaurantId: "restaurant:one" },
+      },
+    ],
+    contextRevision: 4,
+    nowMs: 5_000,
+  });
+  for (const reply of ["yes", "yes please", "do it", "that one", "Pasta One"])
+    assert.deepEqual(
+      interpretPendingDialogue(pending, reply, {
+        contextRevision: 4,
+        nowMs: 6_000,
+      }).candidate.arguments,
+      { restaurantId: "restaurant:one" },
+      reply,
+    );
+});
+
+test("dialogue projection binds explicit event, restaurant, and plan choices", () => {
+  const eventDialogue = capabilityResultDialogue(
+    "event.applyquery",
+    {},
+    {
+      status: "completed",
+      changed: true,
+      data: {
+        outcome: "applied",
+        resultCount: 2,
+        topEvents: [
+          { eventId: "event:one", title: "Gallery Night" },
+          { eventId: "event:two", title: "Sunset Jazz" },
+        ],
+        canAddToPlan: true,
+      },
+    },
+    { dialogueId: "dialogue-events", contextRevision: 7, nowMs: 1_000 },
+  );
+  assert.match(
+    eventDialogue.speech,
+    /first, Gallery Night; or second, Sunset Jazz/,
+  );
+  assert.deepEqual(
+    eventDialogue.pendingDialogue.candidates.map(({ targetId }) => targetId),
+    ["event:one", "event:two"],
+  );
+
+  const restaurantDialogue = capabilityResultDialogue(
+    "restaurant.search",
+    { query: "Italian" },
+    {
+      status: "completed",
+      changed: true,
+      data: {
+        state: {
+          results: [{ restaurantId: "restaurant:one", label: "Pasta One" }],
+          resultIds: ["restaurant:one"],
+        },
+      },
+    },
+    { dialogueId: "dialogue-restaurants", contextRevision: 8, nowMs: 1_000 },
+  );
+  assert.equal(
+    restaurantDialogue.speech,
+    "I found restaurant matches for Italian. Would you like me to open Pasta One?",
+  );
+  assert.equal(
+    restaurantDialogue.pendingDialogue.capabilityId,
+    "restaurant.selectresult",
+  );
+
+  const planDialogue = capabilityResultDialogue(
+    "plan.open",
+    {},
+    {
+      status: "completed",
+      changed: true,
+      data: {
+        state: { stops: [], addableTargetIds: ["event:one"] },
+      },
+    },
+    {
+      dialogueId: "dialogue-plan",
+      contextRevision: 9,
+      nowMs: 1_000,
+      interfaceContext: {
+        visibleTargets: [
+          { targetId: "event:one", type: "event", label: "Gallery Night" },
+        ],
+        availableCapabilityIds: ["plan.addstop"],
+      },
+    },
+  );
+  assert.equal(
+    planDialogue.speech,
+    "Your plan is open and ready. Would you like me to add Gallery Night?",
+  );
+  assert.deepEqual(planDialogue.pendingDialogue.candidates[0].arguments, {
+    targetId: "event:one",
+  });
+});
+
+test("relay consumes a pending offer before proposing its exact stored target", async () => {
+  const records = [];
+  const harness = await createRelayHarness({
+    operationalLogger: (record) => records.push(structuredClone(record)),
+  });
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "context.update",
+      context: {
+        revision: 7,
+        visibleTargets: [
+          { targetId: "event:one", type: "event", label: "Gallery Night" },
+        ],
+        availableCapabilityIds: ["event.addtoplan"],
+      },
+    }),
+  );
+  harness.relay.sessions.get(sessionId).pendingDialogue = createPendingDialogue(
+    {
+      dialogueId: "dialogue-once",
+      capabilityId: "event.addtoplan",
+      candidates: [
+        {
+          targetId: "event:one",
+          label: "Gallery Night",
+          arguments: { eventId: "event:one" },
+        },
+      ],
+      contextRevision: 7,
+      nowMs: Date.parse("2026-07-26T10:00:00.000Z"),
+    },
+  );
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "text.submit", turnId: "turn-yes", text: "yes" }),
+  );
+  const proposal = harness.browserMessages.findLast(
+    ({ type }) => type === "capability.proposed",
+  );
+  assert.deepEqual(proposal.arguments, { eventId: "event:one" });
+  assert.equal(proposal.capabilityId, "event.addtoplan");
+  assert.equal(harness.relay.sessions.get(sessionId).pendingDialogue, null);
+  assert.equal(
+    records.some(
+      ({ phase, eventCode }) =>
+        phase === "pending_dialogue" && eventCode === "consumed",
+    ),
+    true,
+  );
+  assert.doesNotMatch(
+    JSON.stringify(records),
+    /Gallery Night|event:one|\byes\b/i,
+  );
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "capability.result",
+      callId: proposal.callId,
+      capabilityId: "event.addtoplan",
+      kind: "command",
+      result: {
+        capabilityId: "event.addtoplan",
+        kind: "command",
+        status: "completed",
+        changed: false,
+        affectedTargetIds: [],
+        contextRevision: 7,
+        data: { actionId: "event.addtoplan", changed: false },
+        errorCode: null,
+      },
+    }),
+  );
+  harness.providerListeners.message({
+    data: JSON.stringify(trustedResponseDone()),
+  });
+  await flushRelay();
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "text.submit",
+      turnId: "turn-duplicate-yes",
+      text: "yes",
+    }),
+  );
+  assert.equal(
+    harness.browserMessages.filter(({ type }) => type === "capability.proposed")
+      .length,
+    1,
+  );
+});
+
+test("validated event results create the offer consumed by the next turn", async () => {
+  const records = [];
+  const harness = await createRelayHarness({
+    operationalLogger: (record) => records.push(structuredClone(record)),
+  });
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "context.update",
+      context: {
+        revision: 7,
+        visibleTargets: [],
+        activeOverlayId: "event-search",
+        activeFilters: {
+          eventComposerState: {
+            catalogRevision: "events:v7",
+            contextRevision: 7,
+          },
+        },
+        availableCapabilityIds: ["event.applyquery", "event.addtoplan"],
+      },
+    }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "text.submit",
+      turnId: "turn-event-offer",
+      text: "find free events this weekend",
+    }),
+  );
+  assert.equal(
+    harness.relay.sessions.get(sessionId).pendingDeterministic?.capabilityId,
+    "event.applyquery",
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "context.update",
+      context: {
+        revision: 8,
+        visibleTargets: [
+          { targetId: "event:one", type: "event", label: "Gallery Night" },
+        ],
+        activeOverlayId: "event-search",
+        activeFilters: {
+          eventComposerState: {
+            catalogRevision: "events:v8",
+            contextRevision: 8,
+          },
+        },
+        availableCapabilityIds: ["event.applyquery", "event.addtoplan"],
+      },
+    }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "deterministic.result",
+      capabilityId: "event.applyquery",
+      kind: "command",
+      result: {
+        capabilityId: "event.applyquery",
+        kind: "command",
+        status: "completed",
+        changed: true,
+        affectedTargetIds: ["event:one"],
+        contextRevision: 8,
+        data: {
+          outcome: "applied",
+          canonicalSentence: "This weekend Free",
+          residualQuery: "",
+          phrases: [],
+          clarificationChoices: [],
+          catalogRevision: "events:v8",
+          resultCount: 1,
+          topEvents: [{ eventId: "event:one", title: "Gallery Night" }],
+          canAddToPlan: true,
+        },
+        errorCode: null,
+      },
+    }),
+  );
+  await flushRelay();
+  const session = harness.relay.sessions.get(sessionId);
+  assert.equal(session.pendingDialogue?.capabilityId, "event.addtoplan");
+  assert.match(
+    harness.providerMessages.findLast(({ type }) => type === "response.create")
+      .response.instructions,
+    /Would you like me to add Gallery Night to your plan\?/,
+  );
+  assert.equal(
+    records.some(
+      ({ phase, eventCode }) =>
+        phase === "pending_dialogue" && eventCode === "created",
+    ),
+    true,
+  );
+  harness.providerListeners.message({
+    data: JSON.stringify(trustedResponseDone()),
+  });
+  await flushRelay();
+
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "text.submit",
+      turnId: "turn-accept-event-offer",
+      text: "yes please",
+    }),
+  );
+  const proposal = harness.browserMessages.findLast(
+    ({ type }) => type === "capability.proposed",
+  );
+  assert.equal(typeof proposal.callId, "string");
+  assert.equal(proposal.capabilityId, "event.addtoplan");
+  assert.equal(proposal.kind, "command");
+  assert.deepEqual(proposal.arguments, { eventId: "event:one" });
+  assert.equal(proposal.contextRevision, 8);
+});
+
+test("stale offers clarify without mutation and consequential offers retain confirmation", async () => {
+  const staleHarness = await createRelayHarness();
+  const staleSessionId = staleHarness.admitted.data.sessionId;
+  const staleSession = staleHarness.relay.sessions.get(staleSessionId);
+  staleSession.pendingDialogue = createPendingDialogue({
+    dialogueId: "dialogue-stale",
+    capabilityId: "event.addtoplan",
+    candidates: [
+      {
+        targetId: "event:one",
+        label: "Gallery Night",
+        arguments: { eventId: "event:one" },
+      },
+    ],
+    contextRevision: 7,
+    nowMs: Date.parse("2026-07-26T10:00:00.000Z"),
+  });
+  await staleHarness.relay.handleBrowserMessage(
+    staleSessionId,
+    JSON.stringify({
+      type: "context.update",
+      context: {
+        revision: 8,
+        visibleTargets: [],
+        availableCapabilityIds: ["event.addtoplan"],
+      },
+    }),
+  );
+  await staleHarness.relay.handleBrowserMessage(
+    staleSessionId,
+    JSON.stringify({ type: "text.submit", turnId: "turn-stale", text: "yes" }),
+  );
+  assert.equal(
+    staleHarness.browserMessages.some(
+      ({ type }) => type === "capability.proposed",
+    ),
+    false,
+  );
+  assert.equal(staleSession.pendingDialogue, null);
+  assert.match(
+    staleHarness.providerMessages.findLast(
+      ({ type }) => type === "response.create",
+    ).response.instructions,
+    /Those results changed/,
+  );
+
+  const confirmationHarness = await createRelayHarness();
+  const confirmationSessionId = confirmationHarness.admitted.data.sessionId;
+  await confirmationHarness.relay.handleBrowserMessage(
+    confirmationSessionId,
+    JSON.stringify({
+      type: "context.update",
+      context: {
+        revision: 3,
+        visibleTargets: [
+          { targetId: "event:one", type: "event", label: "Gallery Night" },
+        ],
+        availableCapabilityIds: ["event.openreference"],
+      },
+    }),
+  );
+  confirmationHarness.relay.sessions.get(
+    confirmationSessionId,
+  ).pendingDialogue = createPendingDialogue({
+    dialogueId: "dialogue-confirm",
+    capabilityId: "event.openreference",
+    candidates: [
+      {
+        targetId: "event:one",
+        label: "Gallery Night",
+        arguments: { eventId: "event:one" },
+      },
+    ],
+    contextRevision: 3,
+    nowMs: Date.parse("2026-07-26T10:00:00.000Z"),
+  });
+  await confirmationHarness.relay.handleBrowserMessage(
+    confirmationSessionId,
+    JSON.stringify({
+      type: "text.submit",
+      turnId: "turn-confirm",
+      text: "go ahead",
+    }),
+  );
+  const consequentialProposal = confirmationHarness.browserMessages.findLast(
+    ({ type }) => type === "capability.proposed",
+  );
+  await confirmationHarness.relay.handleBrowserMessage(
+    confirmationSessionId,
+    JSON.stringify({
+      type: "confirmation.pending",
+      callId: consequentialProposal.callId,
+      capabilityId: "event.openreference",
+      confirmationId: "confirmation-follow-up",
+      fingerprint: "sha256:confirmation-follow-up",
+      targetId: "event:one",
+      effectSummary: "Open the approved Gallery Night event page.",
+      expiresAt: "2026-07-26T10:00:25.000Z",
+    }),
+  );
+  assert.equal(
+    confirmationHarness.browserMessages.at(-1).type,
+    "confirmation.required",
+  );
+  assert.equal(
+    confirmationHarness.relay.sessions.get(confirmationSessionId).pendingCalls
+      .size,
+    1,
+  );
 });
 
 test("native ingress response instructions prohibit returning a transcript", () => {
@@ -883,6 +1399,53 @@ test("deterministic transcript routing handles a single event filter atomically"
       catalogRevision: "events:v2",
     },
     contextRevision: 2,
+  });
+  harness.relay.stop(sessionId, "user");
+});
+
+test("deterministic transcript routing recognizes restaurants around the area", async () => {
+  const harness = await createRelayHarness();
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "context.update",
+      context: {
+        revision: 7,
+        visibleTargets: [],
+        activeOverlayId: "assistant",
+        availableCapabilityIds: [
+          "restaurant.search",
+          "restaurant.searchviewport",
+          "map.zoomin",
+        ],
+      },
+    }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "turn.request", turnId: "turn-restaurants-area" }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "audio.commit", turnId: "turn-restaurants-area" }),
+  );
+  await emitFinalInputTranscript(
+    harness,
+    "Can you help me find restaurants around the area?",
+  );
+  await flushRelay();
+
+  const proposal = harness.browserMessages.findLast(
+    ({ type }) => type === "capability.proposed",
+  );
+  assert.deepEqual(proposal, {
+    type: "capability.proposed",
+    callId: proposal.callId,
+    capabilityId: "restaurant.searchviewport",
+    kind: "command",
+    arguments: {},
+    contextRevision: 7,
   });
   harness.relay.stop(sessionId, "user");
 });
@@ -1337,6 +1900,87 @@ test("a transcript for a different committed provider item fails closed", async 
   );
 });
 
+test("a bounded post-commit VAD item is quarantined without disabling voice", async () => {
+  const settlements = [];
+  const holds = [];
+  const harness = await createRelayHarness({
+    budgetRepository: {
+      async settle(input) {
+        settlements.push(structuredClone(input));
+      },
+      async hold(input) {
+        holds.push(structuredClone(input));
+      },
+    },
+  });
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({ type: "turn.request", turnId: "turn-late-vad" }),
+  );
+  await flushRelay();
+  for (const event of [
+    {
+      type: "input_audio_buffer.speech_started",
+      item_id: "input-item-active",
+    },
+    {
+      type: "input_audio_buffer.speech_stopped",
+      item_id: "input-item-active",
+    },
+    {
+      type: "input_audio_buffer.committed",
+      item_id: "input-item-active",
+    },
+    {
+      type: "input_audio_buffer.speech_started",
+      item_id: "input-item-late",
+    },
+    {
+      type: "input_audio_buffer.speech_stopped",
+      item_id: "input-item-late",
+    },
+    {
+      type: "input_audio_buffer.committed",
+      item_id: "input-item-late",
+    },
+    {
+      type: "conversation.item.input_audio_transcription.completed",
+      item_id: "input-item-late",
+      transcript: "late residual audio",
+    },
+    {
+      type: "conversation.item.input_audio_transcription.completed",
+      item_id: "input-item-active",
+      transcript: "",
+    },
+  ])
+    harness.providerListeners.message({ data: JSON.stringify(event) });
+  await flushRelay();
+
+  assert.equal(harness.relay.sessions.has(sessionId), true);
+  assert.equal(holds.length, 0);
+  assert.equal(
+    harness.browserMessages.some(({ type }) => type === "session.stopped"),
+    false,
+  );
+  assert.equal(
+    harness.browserMessages.some(({ type }) => type === "capability.proposed"),
+    false,
+  );
+  assert.equal(
+    settlements.filter(
+      ({ usageShapeHash }) =>
+        usageShapeHash === "sha256:provider-final-transcript-max-bound",
+    ).length,
+    1,
+  );
+  const responseCreate = harness.providerMessages
+    .filter(({ type }) => type === "response.create")
+    .at(-1);
+  assert.match(responseCreate.response.instructions, /I didn't catch that/);
+});
+
 test("empty final transcripts settle and request one bounded retry without disabling voice", async () => {
   const settlements = [];
   const holds = [];
@@ -1425,9 +2069,8 @@ test("conflicting duplicate final transcripts fail closed", async () => {
 
   assert.equal(harness.relay.sessions.has(sessionId), false);
   assert.equal(
-    harness.browserMessages.filter(
-      ({ type }) => type === "capability.proposed",
-    ).length,
+    harness.browserMessages.filter(({ type }) => type === "capability.proposed")
+      .length,
     0,
   );
 });
@@ -1887,10 +2530,8 @@ test("Amble's welcome is absent from persistent session instructions", () => {
     AMBLE_WELCOME_MESSAGE,
     "Hi, I'm Amble, your Singapore discovery guide. Tell me what you're in the mood for—I can find events, restaurants, and places, or help you explore the map.",
   );
-  assert.match(instructions, /CRITICAL VERBATIM SPEECH RULES/);
-  assert.match(instructions, /EXACTLY AND ONLY/);
-  assert.match(instructions, /DO NOT.*PREFACE/);
-  assert.match(instructions, /DO NOT.*PARAPHRASE/);
+  assert.match(instructions, /Natural phrasing is allowed/);
+  assert.match(instructions, /never add an action, result, fact, promise/i);
   assert.doesNotMatch(
     instructions,
     new RegExp(AMBLE_WELCOME_MESSAGE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
@@ -1907,14 +2548,70 @@ test("Amble's welcome is absent from persistent session instructions", () => {
   assert.doesNotMatch(instructions, /offer a relevant in-app alternative/i);
 });
 
-test("verbatim speech instructions contain one exact payload and forbid additions", () => {
-  const instructions = buildVerbatimSpeechInstructions(AMBLE_WELCOME_MESSAGE);
+test("fixed speech instructions allow faithful natural phrasing", () => {
+  const instructions = buildFixedSpeechInstructions(AMBLE_WELCOME_MESSAGE);
 
   assert.equal(instructions.split(AMBLE_WELCOME_MESSAGE).length - 1, 1);
-  assert.match(instructions, /SPEAK EXACTLY AND ONLY/);
-  assert.match(instructions, /DO NOT ADD A PREFACE/);
-  assert.match(instructions, /DO NOT.*PARAPHRASE/);
-  assert.match(instructions, /exact supplied text and nothing else/i);
+  assert.match(instructions, /Natural paraphrasing is allowed/);
+  assert.match(instructions, /do not add actions, results, facts, promises/i);
+  assert.doesNotMatch(instructions, /SPEAK EXACTLY|VERBATIM/);
+});
+
+test("a natural fixed-response paraphrase does not retry or stop voice", async () => {
+  const harness = await createRelayHarness();
+  const sessionId = harness.admitted.data.sessionId;
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "context.update",
+      context: {
+        revision: 3,
+        visibleTargets: [],
+        availableCapabilityIds: ["event.applyquery", "restaurant.search"],
+      },
+    }),
+  );
+  await harness.relay.handleBrowserMessage(
+    sessionId,
+    JSON.stringify({
+      type: "text.submit",
+      turnId: "turn-natural-fixed-speech",
+      text: "find events and restaurants",
+    }),
+  );
+  await flushRelay();
+
+  harness.providerListeners.message({
+    data: JSON.stringify({
+      type: "response.output_audio_transcript.done",
+      item_id: "item-natural-fixed-speech",
+      transcript: "Which Amble feature would you like to use?",
+    }),
+  });
+  harness.providerListeners.message({
+    data: JSON.stringify(trustedResponseDone()),
+  });
+  await flushRelay();
+
+  assert.equal(harness.relay.sessions.has(sessionId), true);
+  assert.equal(
+    harness.providerMessages.filter(({ type }) => type === "response.create")
+      .length,
+    1,
+  );
+  assert.equal(
+    harness.browserMessages.findLast(
+      ({ type }) => type === "assistant.text.done",
+    )?.text,
+    "Which Amble feature would you like to use?",
+  );
+  assert.equal(
+    harness.browserMessages.some(
+      ({ type, reason }) => type === "session.stopped" && reason === "protocol",
+    ),
+    false,
+  );
+  harness.relay.stop(sessionId, "user");
 });
 
 test("a new voice session reserves and starts Amble's welcome before user audio", async () => {
@@ -1983,7 +2680,7 @@ test("a new voice session reserves and starts Amble's welcome before user audio"
   assert.equal(providerMessages.at(-1).type, "response.create");
   assert.equal(
     providerMessages.at(-1).response.instructions,
-    buildVerbatimSpeechInstructions(AMBLE_WELCOME_MESSAGE),
+    buildFixedSpeechInstructions(AMBLE_WELCOME_MESSAGE),
   );
   assert.equal("max_output_tokens" in providerMessages.at(-1).response, false);
   assert.equal(
@@ -3196,6 +3893,19 @@ test("every terminal reason performs complete idempotent cleanup", () => {
       browserSocket: { close: () => calls.push("browser-close") },
       abortController: { abort: () => calls.push("abort") },
       pendingConfirmation: { confirmationId: "confirmation-001" },
+      pendingDialogue: createPendingDialogue({
+        dialogueId: "dialogue-cleanup",
+        capabilityId: "event.addtoplan",
+        candidates: [
+          {
+            targetId: "event:one",
+            label: "Gallery Night",
+            arguments: { eventId: "event:one" },
+          },
+        ],
+        contextRevision: 1,
+        nowMs: 1_000,
+      }),
       transcriptionReservationId: "transcription-reservation-001",
       transcriptionTimer: setTimeout(() => {}, 60_000),
       finalInputTranscript: "memory-only transcript",
@@ -3216,6 +3926,7 @@ test("every terminal reason performs complete idempotent cleanup", () => {
     assert.equal(first.exactLocation, null);
     assert.equal(first.interfaceContext, null);
     assert.equal(first.pendingConfirmation, null);
+    assert.equal(first.pendingDialogue, null);
     assert.equal(first.transcriptionReservationId, null);
     assert.equal(first.transcriptionTimer, null);
     assert.equal(first.finalInputTranscript, null);

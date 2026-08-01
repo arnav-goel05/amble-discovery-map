@@ -42,15 +42,40 @@ const recordIds = (values, field, prefix) =>
   );
 
 function project(value, revision) {
-  const results = recordIds(
+  const resultIds = recordIds(
     value?.results ?? value?.restaurants,
     "restaurantId",
     "restaurant",
   );
+  const sourceResults = Array.isArray(value?.results ?? value?.restaurants)
+    ? (value?.results ?? value?.restaurants)
+    : [];
+  const sourceById = new Map(
+    sourceResults.map((item) => {
+      const rawId = item?.restaurantId ?? item?.id ?? item;
+      const restaurantId =
+        typeof rawId === "string" && !rawId.includes(":")
+          ? `restaurant:${rawId}`
+          : rawId;
+      return [restaurantId, item];
+    }),
+  );
+  const results = Object.freeze(
+    resultIds.map((restaurantId) => {
+      const item = sourceById.get(restaurantId);
+      const label = String(
+        item?.label ?? item?.name ?? item?.title ?? restaurantId,
+      )
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 200);
+      return Object.freeze({ restaurantId, label: label || restaurantId });
+    }),
+  );
   const clusters = recordIds(value?.clusters, "clusterId", "cluster");
   const deals = {};
   for (const [restaurantId, values] of Object.entries(value?.deals || {})) {
-    if (!ID.test(restaurantId) || !results.includes(restaurantId)) continue;
+    if (!ID.test(restaurantId) || !resultIds.includes(restaurantId)) continue;
     deals[restaurantId] = ids(values, 20);
   }
   const query = String(value?.query || "").slice(0, 500);
@@ -60,7 +85,7 @@ function project(value, revision) {
       : null;
   const cuisineId =
     typeof value?.cuisineId === "string" ? value.cuisineId.slice(0, 256) : null;
-  const selectedRestaurantId = results.includes(value?.selectedRestaurantId)
+  const selectedRestaurantId = resultIds.includes(value?.selectedRestaurantId)
     ? value.selectedRestaurantId
     : null;
   return Object.freeze({
@@ -72,16 +97,17 @@ function project(value, revision) {
     cuisineId,
     categories: Object.freeze(ids(value?.categories, 50)),
     cuisines: Object.freeze(ids(value?.cuisines, 50)),
-    resultIds: Object.freeze(results),
+    results,
+    resultIds: Object.freeze(resultIds),
     clusterIds: Object.freeze(clusters),
     deals: Object.freeze(deals),
     selectedRestaurantId,
     visibleTargets: Object.freeze(
-      results.map((targetId) =>
+      results.map(({ restaurantId: targetId, label }) =>
         Object.freeze({
           targetId,
           type: "restaurant",
-          label: targetId,
+          label,
         }),
       ),
     ),

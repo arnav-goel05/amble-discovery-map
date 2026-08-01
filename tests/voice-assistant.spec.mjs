@@ -229,6 +229,31 @@ test("WebSocket connection stays connecting until the relay confirms the opening
   await expect(page.locator(selectors.voiceState)).toContainText(
     /processing|thinking/i,
   );
+  await expect
+    .poll(() =>
+      page
+        .locator(`${selectors.voiceDots} .assistant-voice-dot`)
+        .evaluateAll((nodes) =>
+          nodes.map((node) => ({
+            animationName: getComputedStyle(node).animationName,
+            animationDelay: getComputedStyle(node).animationDelay,
+          })),
+        ),
+    )
+    .toEqual([
+      {
+        animationName: "amble-voice-dot-thinking",
+        animationDelay: "0s",
+      },
+      {
+        animationName: "amble-voice-dot-thinking",
+        animationDelay: "0.3s",
+      },
+      {
+        animationName: "amble-voice-dot-thinking",
+        animationDelay: "0.6s",
+      },
+    ]);
 
   relay.send({ type: "session.state", state: "speaking" });
   await expect(page.locator(selectors.voiceState)).toContainText(/speaking/i);
@@ -243,6 +268,17 @@ test("WebSocket connection stays connecting until the relay confirms the opening
 
   relay.send({ type: "session.state", state: "listening" });
   await expect(page.locator(selectors.voiceState)).toContainText(/listening/i);
+  await expect
+    .poll(() =>
+      page
+        .locator(`${selectors.voiceDots} .assistant-voice-dot`)
+        .evaluateAll((nodes) =>
+          nodes.every(
+            (node) => getComputedStyle(node).animationName === "none",
+          ),
+        ),
+    )
+    .toBe(true);
 });
 
 async function openAssistant(page, { beforeOpen } = {}) {
@@ -670,12 +706,12 @@ test("confirmation identity can be resolved once only by its browser-owned butto
   const accept = harness.locator(selectors.confirmationAccept);
   const reject = harness.locator(selectors.confirmationReject);
   await expect(harness.locator(selectors.confirmation)).toBeVisible();
-  await expect(harness.locator(selectors.confirmation).locator("h3")).toHaveText(
-    "Confirm this action",
-  );
   await expect(
-    harness.locator(".assistant-confirmation__effect"),
-  ).toHaveText("Open the approved official event page.");
+    harness.locator(selectors.confirmation).locator("h3"),
+  ).toHaveText("Confirm this action");
+  await expect(harness.locator(".assistant-confirmation__effect")).toHaveText(
+    "Open the approved official event page.",
+  );
   await expect(accept).toHaveText("Confirm");
   await expect(reject).toHaveText("Cancel");
   await expect(accept).toHaveAttribute("data-control-owner", "browser");

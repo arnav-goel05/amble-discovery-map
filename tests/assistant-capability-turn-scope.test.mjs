@@ -95,6 +95,38 @@ test("scopes requests to relevant connector families instead of the full registr
   );
 });
 
+test("routes restaurants around the area directly to viewport search", () => {
+  for (const utterance of [
+    "Can you help me find restaurants around the area?",
+    "Find restaurants in this area",
+    "Show me food nearby",
+    "Look for places to eat around here",
+    "Search restaurants in the current map area",
+  ])
+    assert.deepEqual(
+      selectCapabilityTurnScope({
+        utterance,
+        availableCapabilityIds: [
+          "restaurant.search",
+          "restaurant.searchviewport",
+          "map.zoomin",
+        ],
+        capabilityFamilies: {
+          "restaurant.search": "restaurants",
+          "restaurant.searchviewport": "restaurants",
+          "map.zoomin": "map",
+        },
+      }),
+      {
+        families: ["restaurant"],
+        capabilityIds: ["restaurant.search"],
+        deterministicCapabilityId: "restaurant.searchviewport",
+        deterministicArguments: {},
+      },
+      utterance,
+    );
+});
+
 test("uses current interface state for an otherwise unclassified turn", () => {
   assert.deepEqual(
     selectCapabilityTurnScope({

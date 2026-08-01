@@ -2950,6 +2950,19 @@ button {
   color: #10192b;
 }
 
+.assistant-shell[data-state="processing"] .assistant-voice-dot {
+  opacity: 0.28;
+  animation: amble-voice-dot-thinking 900ms steps(1, end) infinite;
+}
+
+.assistant-shell[data-state="processing"] .assistant-voice-dot:nth-child(2) {
+  animation-delay: 300ms;
+}
+
+.assistant-shell[data-state="processing"] .assistant-voice-dot:nth-child(3) {
+  animation-delay: 600ms;
+}
+
 .assistant-shell[data-state="speaking"] .assistant-voice-dot {
   animation: amble-voice-dot-speaking 720ms ease-in-out infinite alternate;
 }
@@ -2964,6 +2977,17 @@ button {
 
 .assistant-shell[data-state="muted"] .assistant-voice-dots {
   opacity: 0.45;
+}
+
+@keyframes amble-voice-dot-thinking {
+  0%,
+  32% {
+    opacity: 1;
+  }
+  33%,
+  100% {
+    opacity: 0.28;
+  }
 }
 
 @keyframes amble-voice-dot-speaking {
@@ -3166,6 +3190,14 @@ button {
     animation: none !important;
     scroll-behavior: auto;
     transition: none;
+  }
+
+  .assistant-shell[data-state="processing"] .assistant-voice-dot {
+    opacity: 0.28;
+  }
+
+  .assistant-shell[data-state="processing"] .assistant-voice-dot:nth-child(2) {
+    opacity: 1;
   }
 }
 

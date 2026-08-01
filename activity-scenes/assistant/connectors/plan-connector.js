@@ -67,6 +67,13 @@ function project(value, revision) {
     ),
     plan: Object.freeze({
       stopIds: Object.freeze(stops.map(({ stopId }) => stopId)),
+      addableTargetIds: Object.freeze(
+        [
+          ...new Set(
+            (value?.addableTargetIds || []).filter((id) => ID.test(id)),
+          ),
+        ].slice(0, 50),
+      ),
       travelMode,
       routeAvailable,
     }),
@@ -139,6 +146,7 @@ export function createPlanConnector({ planController } = {}) {
     const patch = Object.freeze({
       plan: Object.freeze({
         stopIds: Object.freeze(current.stops.map((stop) => stop.stopId)),
+        addableTargetIds: current.addableTargetIds,
         travelMode: current.travelMode,
         routeAvailable: current.routeAvailable,
       }),

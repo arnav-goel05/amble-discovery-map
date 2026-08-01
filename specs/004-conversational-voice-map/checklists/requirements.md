@@ -56,7 +56,7 @@ single-path native event queries
 - [x] Provider-only tool aliases preserve canonical capability identity and are collision-free
 - [x] Initial and per-turn configuration acknowledgement is required before response creation
 - [x] Provider configuration errors fail closed instead of continuing generically
-- [x] The welcome exact-speech instruction is one-shot and absent from later conversation history
+- [x] The welcome fixed-message guidance is one-shot and absent from later conversation history
 - [x] Live provider validation is a deliberately bounded smoke, while the product has no conversation response-count cap
 - [x] Audit compaction uses stable content rather than changing occurrence metadata
 - [x] Native-audio transcription and classification start concurrently, join by active item

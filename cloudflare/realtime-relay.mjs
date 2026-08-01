@@ -6,6 +6,11 @@ import {
 } from "../scripts/lib/realtime-relay-protocol.mjs";
 import { createRealtimeContentDebugRecord } from "../scripts/lib/realtime-content-debug.mjs";
 import {
+  createPendingDialogue,
+  interpretPendingDialogue,
+  pendingDialogueChoiceSpeech as choiceSpeech,
+} from "../scripts/lib/pending-dialogue.mjs";
+import {
   compileSchema,
   createCapabilityResultValidator,
 } from "../activity-scenes/assistant/capability-result.js";
@@ -38,6 +43,7 @@ const AUTO_TOOL_CHOICE = "auto";
 const TOOL_STAGE_RESPONSE_INSTRUCTIONS =
   "If an application tool is needed, call it immediately with no spoken or written commentary before or after the call. If no tool is needed, answer the user directly and concisely.";
 const BUFFERED_PROVIDER_OUTPUT_LIMIT = 2 * 1_024 * 1_024;
+const POST_COMMIT_PROVIDER_VAD_GRACE_MS = 250;
 const ASSISTANT_OUTPUT_EVENT_TYPES = new Set([
   "assistant.audio.delta",
   "assistant.audio.done",
@@ -301,17 +307,15 @@ export function selectVoiceEventQueryMode(utterance, composerState) {
     : "replace";
 }
 
-export function buildVerbatimSpeechInstructions(text) {
+export function buildFixedSpeechInstructions(text) {
   return [
-    "CRITICAL VERBATIM SPEECH TASK.",
-    "SPEAK EXACTLY AND ONLY THE TEXT BETWEEN BEGIN EXACT SPEECH AND END EXACT SPEECH.",
-    "DO NOT ADD A PREFACE, ACKNOWLEDGEMENT, EXPLANATION, FOLLOW-UP, OR CLOSING.",
-    "DO NOT REMOVE, REORDER, REPEAT, SUMMARIZE, TRANSLATE, OR PARAPHRASE ANY WORD.",
-    "DO NOT SPEAK THE DELIMITER LABELS.",
-    "BEGIN EXACT SPEECH",
+    "FIXED SPEECH TASK.",
+    "Convey the supplied message faithfully and concisely.",
+    "Natural paraphrasing is allowed, but do not add actions, results, facts, promises, questions, or follow-ups that are absent from the message.",
+    "Do not speak the delimiter labels.",
+    "BEGIN SUPPLIED MESSAGE",
     text,
-    "END EXACT SPEECH",
-    "Before responding, silently verify that the spoken response contains the exact supplied text and nothing else.",
+    "END SUPPLIED MESSAGE",
   ].join("\n");
 }
 
@@ -326,7 +330,7 @@ export function buildVoiceIngressResponseInstructions() {
   ].join("\n");
 }
 
-export function capabilityResultSpeech(
+function baseCapabilityResultSpeech(
   capabilityId,
   argumentsValue = {},
   result = {},
@@ -616,6 +620,214 @@ export function capabilityResultSpeech(
   return "The requested Amble action is complete.";
 }
 
+export { createPendingDialogue, interpretPendingDialogue };
+
+const dialogueCandidatesFromContext = (interfaceContext, type = null) =>
+  (Array.isArray(interfaceContext?.visibleTargets)
+    ? interfaceContext.visibleTargets
+    : []
+  )
+    .filter(
+      ({ targetId, label, type: candidateType }) =>
+        typeof targetId === "string" &&
+        typeof label === "string" &&
+        label.trim() &&
+        (!type || candidateType === type),
+    )
+    .slice(0, 3);
+
+export function capabilityResultDialogue(
+  capabilityId,
+  argumentsValue = {},
+  result = {},
+  {
+    dialogueId = null,
+    interfaceContext = null,
+    contextRevision = interfaceContext?.revision ?? result.contextRevision ?? 0,
+    nowMs = Date.now(),
+  } = {},
+) {
+  const plain = (speech) => ({ speech, pendingDialogue: null });
+  const capabilityEligible = (candidateCapabilityId) =>
+    !interfaceContext ||
+    interfaceContext.availableCapabilityIds?.includes(candidateCapabilityId) ===
+      true;
+  if (result.status !== "completed" || result.changed === false)
+    return plain(
+      baseCapabilityResultSpeech(capabilityId, argumentsValue, result),
+    );
+  const state = result.data?.state ?? {};
+  const create = (speech, nextCapabilityId, candidates, actionPhrase) => ({
+    speech,
+    pendingDialogue: dialogueId
+      ? createPendingDialogue({
+          dialogueId,
+          capabilityId: nextCapabilityId,
+          candidates,
+          contextRevision,
+          nowMs,
+          clarificationSpeech: choiceSpeech(candidates, actionPhrase),
+        })
+      : null,
+  });
+  if (capabilityId === "event.applyquery") {
+    if (result.data?.outcome === "clarification_required") {
+      const choices = (result.data?.clarificationChoices ?? [])
+        .map(({ choiceId, label }) => ({
+          targetId: choiceId,
+          label,
+          arguments: {
+            text: label,
+            mode: "refine",
+            baseContextRevision: contextRevision,
+            catalogRevision: result.data?.catalogRevision ?? null,
+          },
+        }))
+        .filter(({ targetId, label }) => targetId && label)
+        .slice(0, 3);
+      if (choices.length && capabilityEligible("event.applyquery")) {
+        const prompt = choiceSpeech(choices, "use");
+        return create(prompt, "event.applyquery", choices, "use");
+      }
+    }
+    const count = result.data?.resultCount;
+    if (count === 0)
+      return plain(
+        "I couldn't find any matching events. Tell me a different date, location, or price to adjust the search.",
+      );
+    const events = (
+      Array.isArray(result.data?.topEvents) ? result.data.topEvents : []
+    )
+      .map(({ eventId, title }) => ({
+        targetId: eventId,
+        label: title,
+        arguments: { eventId },
+      }))
+      .filter(({ targetId, label }) => targetId && label)
+      .slice(0, 3);
+    if (Number.isInteger(count) && events.length) {
+      const titles = events.map(({ label }) => label);
+      const list =
+        titles.length === 1
+          ? titles[0]
+          : titles.length === 2
+            ? `${titles[0]} and ${titles[1]}`
+            : `${titles[0]}, ${titles[1]}, and ${titles[2]}`;
+      const lead = `I found ${count} matching event${count === 1 ? "" : "s"}. ${events.length === 1 ? "A top option is" : "Top options are"} ${list}.`;
+      if (
+        result.data?.canAddToPlan !== true ||
+        !capabilityEligible("event.addtoplan")
+      )
+        return plain(lead);
+      const question =
+        events.length === 1
+          ? `Would you like me to add ${events[0].label} to your plan?`
+          : choiceSpeech(events, "add to your plan");
+      return create(
+        `${lead} ${question}`,
+        "event.addtoplan",
+        events,
+        "add to your plan",
+      );
+    }
+  }
+  const contextTargets = dialogueCandidatesFromContext(interfaceContext);
+  if (capabilityId === "event.opendetail") {
+    const targetId = argumentsValue.eventId;
+    const target = contextTargets.find((item) => item.targetId === targetId);
+    const stateEvent = (state.events ?? []).find(
+      (event) => event.eventId === targetId,
+    );
+    const label = stateEvent?.title ?? target?.label;
+    const canAdd =
+      capabilityEligible("event.addtoplan") &&
+      (state.planCanAdd === true ||
+        interfaceContext?.availableCapabilityIds?.includes("event.addtoplan"));
+    if (targetId && label && canAdd) {
+      const candidates = [
+        { targetId, label, arguments: { eventId: targetId } },
+      ];
+      return create(
+        `Here's ${label}. Would you like me to add ${label} to your plan?`,
+        "event.addtoplan",
+        candidates,
+        "add to your plan",
+      );
+    }
+  }
+  if (capabilityId === "restaurant.search") {
+    const query = String(argumentsValue.query ?? "").trim();
+    const resultCandidates = (Array.isArray(state.results) ? state.results : [])
+      .map(({ restaurantId, label }) => ({
+        targetId: restaurantId,
+        label,
+        arguments: { restaurantId },
+      }))
+      .filter(({ targetId, label }) => targetId && label)
+      .slice(0, 3);
+    const contextCandidates = dialogueCandidatesFromContext(
+      interfaceContext,
+      "restaurant",
+    ).map(({ targetId, label }) => ({
+      targetId,
+      label,
+      arguments: { restaurantId: targetId },
+    }));
+    const candidates = resultCandidates.length
+      ? resultCandidates
+      : contextCandidates;
+    if (
+      query &&
+      candidates.length &&
+      capabilityEligible("restaurant.selectresult")
+    ) {
+      const lead = `I found restaurant matches for ${query}.`;
+      const question =
+        candidates.length === 1
+          ? `Would you like me to open ${candidates[0].label}?`
+          : choiceSpeech(candidates, "open");
+      return create(
+        `${lead} ${question}`,
+        "restaurant.selectresult",
+        candidates,
+        "open",
+      );
+    }
+  }
+  if (capabilityId === "plan.open") {
+    const count = Array.isArray(state.stops) ? state.stops.length : 0;
+    const addable = new Set(
+      state.addableTargetIds ?? interfaceContext?.plan?.addableTargetIds ?? [],
+    );
+    const candidates = contextTargets
+      .filter(({ targetId }) => addable.has(targetId))
+      .map(({ targetId, label }) => ({
+        targetId,
+        label,
+        arguments: { targetId },
+      }));
+    if (!count && candidates.length && capabilityEligible("plan.addstop")) {
+      const lead = "Your plan is open and ready.";
+      const question =
+        candidates.length === 1
+          ? `Would you like me to add ${candidates[0].label}?`
+          : choiceSpeech(candidates, "add");
+      return create(`${lead} ${question}`, "plan.addstop", candidates, "add");
+    }
+  }
+  return plain(
+    baseCapabilityResultSpeech(capabilityId, argumentsValue, result),
+  );
+}
+
+export function capabilityResultSpeech(
+  capabilityId,
+  argumentsValue = {},
+  result = {},
+) {
+  return capabilityResultDialogue(capabilityId, argumentsValue, result).speech;
+}
+
 const boundedAppInspectResultSchema = structuredClone(appInspectResultSchema);
 boundedAppInspectResultSchema.properties.availableCapabilityIds.items.maxLength = 128;
 const boundedCatalogSearchResultSchema = structuredClone(
@@ -630,14 +842,10 @@ export function describeAvailableCapabilities(tools = []) {
 export function buildAmbleSessionInstructions(tools = []) {
   const capabilities = describeAvailableCapabilities(tools);
   return [
-    "CRITICAL VERBATIM SPEECH RULES:",
-    "- WHEN AN INSTRUCTION SAYS TO SPEAK OR SAY TEXT EXACTLY, OUTPUT EXACTLY AND ONLY THAT TEXT.",
-    "- DO NOT ADD A PREFACE, ACKNOWLEDGEMENT, EXPLANATION, FOLLOW-UP, OR CLOSING.",
-    "- DO NOT REMOVE, REORDER, REPEAT, SUMMARIZE, TRANSLATE, OR PARAPHRASE ANY WORD.",
-    "- THESE VERBATIM RULES OVERRIDE CONVERSATIONAL STYLE OR HELPFULNESS.",
+    "When response instructions supply a fixed message, convey it faithfully and concisely. Natural phrasing is allowed, but never add an action, result, fact, promise, question, or follow-up that the supplied message does not contain.",
     "You are Amble, the in-application voice guide and controller for this Singapore discovery application. You are not a general-purpose assistant.",
     "Stay strictly within Amble: discover from supplied approved application data, explain currently eligible Amble features, and control the application only through the supplied typed tools.",
-    `For unrelated requests or general knowledge, say exactly and only: \"${OUT_OF_SCOPE_RESPONSE}\" Do not answer the unrelated question or add any other text.`,
+    `For unrelated requests or general knowledge, respond only with this meaning: \"${OUT_OF_SCOPE_RESPONSE}\" Do not answer the unrelated question or add unrelated information.`,
     "You must not browse or search the open web. Search tools query only approved data already available inside Amble. Never imply that you have unrestricted browser, device, operating-system, or application control.",
     "When asked what you can do, describe only the current eligible capabilities listed below. Group them concisely in user language. Do not mention unavailable, internal, or imagined features.",
     "For every application state change, call an eligible supplied tool. Never claim an action succeeded until its tool result confirms success. If a tool fails, say so and do not pretend the state changed.",
@@ -1102,6 +1310,23 @@ export function createRealtimeRelay({
     return record;
   };
 
+  const tracePendingDialogue = (session, eventCode) =>
+    tracePhase(session, "pending_dialogue", { eventCode });
+
+  const clearPendingDialogue = (session, eventCode = null) => {
+    if (!session.pendingDialogue) return false;
+    session.pendingDialogue = null;
+    if (eventCode) tracePendingDialogue(session, eventCode);
+    return true;
+  };
+
+  const setPendingDialogue = (session, pendingDialogue) => {
+    if (session.pendingDialogue) clearPendingDialogue(session, "superseded");
+    session.pendingDialogue = pendingDialogue;
+    if (pendingDialogue) tracePendingDialogue(session, "created");
+    return pendingDialogue;
+  };
+
   const traceContent = (session, direction, payload) => {
     if (!contentDebugLogger) return;
     try {
@@ -1141,20 +1366,8 @@ export function createRealtimeRelay({
     return true;
   };
 
-  const bufferedProviderTranscript = (session) =>
-    (session.bufferedProviderOutput ?? [])
-      .filter(({ type }) => type === "assistant.text.done")
-      .map(({ text }) => String(text ?? "").trim())
-      .filter(Boolean)
-      .join("\n");
-
-  const prepareExpectedSpeech = (
-    session,
-    expectedSpeech,
-    { retry = false } = {},
-  ) => {
-    session.expectedSpeech = expectedSpeech;
-    if (!retry) session.expectedSpeechRetryCount = 0;
+  const prepareFixedSpeech = (session, fixedSpeech) => {
+    session.fixedSpeech = fixedSpeech;
     session.bufferedProviderOutput = [];
     session.bufferedProviderOutputBytes = 0;
   };
@@ -1383,6 +1596,8 @@ export function createRealtimeRelay({
 
   const createReservedResponse = (session, utterance) => {
     if (!session.responseReservationId || session.responseCreated) return false;
+    const pendingRoute = routePendingDialogue(session, utterance);
+    if (pendingRoute) return pendingRoute;
     const scope = scopeToolsForTurn(session, utterance);
     if (scope.deterministicCapabilityId) {
       const registered = contracts.get(scope.deterministicCapabilityId);
@@ -1431,10 +1646,10 @@ export function createRealtimeRelay({
       return false;
     }
     sendBrowser(session, { type: "session.state", state: "processing" });
-    prepareExpectedSpeech(session, AMBLE_WELCOME_MESSAGE);
+    prepareFixedSpeech(session, AMBLE_WELCOME_MESSAGE);
     sendResponseCreate(session, {
       conversation: "none",
-      instructions: buildVerbatimSpeechInstructions(AMBLE_WELCOME_MESSAGE),
+      instructions: buildFixedSpeechInstructions(AMBLE_WELCOME_MESSAGE),
     });
     return true;
   };
@@ -1540,8 +1755,7 @@ export function createRealtimeRelay({
       toolChoice = stageTools.length ? AUTO_TOOL_CHOICE : NO_TOOL_CHOICE,
       response = {},
       beforeCreate = null,
-      expectedSpeech = null,
-      retryExpectedSpeech = false,
+      fixedSpeech = null,
     } = {},
   ) => {
     if (session.state === "stopped") return false;
@@ -1553,8 +1767,7 @@ export function createRealtimeRelay({
         toolChoice: structuredClone(toolChoice),
         response: structuredClone(response),
         beforeCreate,
-        expectedSpeech,
-        retryExpectedSpeech,
+        fixedSpeech,
       };
       return true;
     }
@@ -1563,10 +1776,7 @@ export function createRealtimeRelay({
       if (!reservationId || session.state === "stopped") return false;
     }
     session.suppressProviderOutput = stageTools.length > 0;
-    if (expectedSpeech)
-      prepareExpectedSpeech(session, expectedSpeech, {
-        retry: retryExpectedSpeech,
-      });
+    if (fixedSpeech) prepareFixedSpeech(session, fixedSpeech);
     return requestProviderConfiguration(
       session,
       stageTools,
@@ -1575,6 +1785,101 @@ export function createRealtimeRelay({
         return sendResponseCreate(session, response);
       },
       toolChoice,
+    );
+  };
+
+  const requestFixedDialogueResponse = (session, speech) =>
+    requestResponseStage(session, {
+      tools: [],
+      toolChoice: NO_TOOL_CHOICE,
+      response: {
+        conversation: "none",
+        instructions: buildFixedSpeechInstructions(speech),
+      },
+      fixedSpeech: speech,
+    });
+
+  const proposeStoredDialogueCapability = (
+    session,
+    capabilityId,
+    argumentsValue,
+  ) => {
+    const registered = contracts.get(capabilityId);
+    if (
+      !registered ||
+      !session.availableCapabilityIds.includes(capabilityId) ||
+      !registered.validateArguments(argumentsValue).valid ||
+      session.pendingCalls.size >= 1
+    )
+      return false;
+    const callId = randomId();
+    session.pendingCallIds.add(callId);
+    session.pendingCalls.set(callId, {
+      callId,
+      capabilityId: registered.contract.capabilityId,
+      kind: registered.contract.kind,
+      confirmationClass: registered.contract.confirmationClass,
+      argumentsKey: canonical(argumentsValue),
+      arguments: structuredClone(argumentsValue),
+      proposalRevision: session.interfaceContext?.revision ?? 0,
+      validateResult: registered.validateResult,
+      result: null,
+      providerCall: false,
+    });
+    sendBrowser(session, {
+      type: "capability.proposed",
+      callId,
+      capabilityId: registered.contract.capabilityId,
+      kind: registered.contract.kind,
+      arguments: structuredClone(argumentsValue),
+      contextRevision: session.interfaceContext?.revision ?? 0,
+    });
+    return true;
+  };
+
+  const routePendingDialogue = (session, utterance) => {
+    const pending = session.pendingDialogue;
+    if (!pending) return false;
+    const outcome = interpretPendingDialogue(pending, utterance, {
+      contextRevision: session.interfaceContext?.revision ?? 0,
+    });
+    if (outcome.status === "unrelated") {
+      clearPendingDialogue(session, "superseded");
+      return false;
+    }
+    if (outcome.status === "rejected") {
+      clearPendingDialogue(session, "rejected");
+      return requestFixedDialogueResponse(
+        session,
+        "No problem—nothing changed.",
+      );
+    }
+    if (outcome.status === "stale") {
+      clearPendingDialogue(session, "stale");
+      return requestFixedDialogueResponse(
+        session,
+        "Those results changed. Please choose again from what's currently showing.",
+      );
+    }
+    if (outcome.status === "clarified") {
+      tracePendingDialogue(session, "clarified");
+      const speech =
+        outcome.reason === "mixed_constraint"
+          ? "I caught your choice, but that adds a new condition. What should I change before choosing?"
+          : pending.clarificationSpeech ||
+            choiceSpeech(pending.candidates, "choose");
+      return requestFixedDialogueResponse(session, speech);
+    }
+    if (outcome.status !== "resolved") return false;
+    const { capabilityId } = pending;
+    const argumentsValue = structuredClone(outcome.candidate.arguments);
+    clearPendingDialogue(session, "consumed");
+    if (proposeStoredDialogueCapability(session, capabilityId, argumentsValue))
+      return true;
+    tracePendingDialogue(session, "stale");
+    return requestFixedDialogueResponse(
+      session,
+      "That option is no longer available. Please choose again from what's currently showing.",
     );
   };
 
@@ -1626,20 +1931,28 @@ export function createRealtimeRelay({
       kind: pendingCall.kind,
       result: pendingCall.result,
     });
-    const expectedSpeech = capabilityResultSpeech(
+    const dialogue = capabilityResultDialogue(
       pendingCall.capabilityId,
       pendingCall.arguments,
       pendingCall.result,
+      {
+        dialogueId: randomId(),
+        interfaceContext: session.interfaceContext,
+        contextRevision: session.interfaceContext?.revision ?? 0,
+        nowMs: now().getTime(),
+      },
     );
+    setPendingDialogue(session, dialogue.pendingDialogue);
+    const fixedSpeech = dialogue.speech;
     return requestResponseStage(session, {
       tools: [],
       toolChoice: NO_TOOL_CHOICE,
       response: {
         conversation: "none",
-        instructions: buildVerbatimSpeechInstructions(expectedSpeech),
+        instructions: buildFixedSpeechInstructions(fixedSpeech),
       },
       beforeCreate: appendResult,
-      expectedSpeech,
+      fixedSpeech,
     });
   };
 
@@ -1673,6 +1986,7 @@ export function createRealtimeRelay({
     if (!(await settleFinalTranscription(session))) return false;
     if (session.state === "stopped") return false;
     session.nativeStage = "routed";
+    if (await routePendingDialogue(session, utterance)) return true;
     const scope = scopeToolsForTurn(session, utterance, {
       includeFoundational: false,
     });
@@ -1766,9 +2080,9 @@ export function createRealtimeRelay({
       toolChoice: NO_TOOL_CHOICE,
       response: {
         conversation: "none",
-        instructions: buildVerbatimSpeechInstructions(terminalSpeech),
+        instructions: buildFixedSpeechInstructions(terminalSpeech),
       },
-      expectedSpeech: terminalSpeech,
+      fixedSpeech: terminalSpeech,
     });
   };
 
@@ -1790,7 +2104,29 @@ export function createRealtimeRelay({
     if (event.type === "session.updated")
       return acknowledgeProviderConfiguration(session, event);
     if (event.type === "input_audio_buffer.speech_started") {
+      const validItemId =
+        typeof event.item_id === "string" &&
+        event.item_id.length > 0 &&
+        event.item_id.length <= 128;
+      const committedAt = session.inputCommittedAt?.getTime?.();
+      const postCommitDelay = Number.isFinite(committedAt)
+        ? now().getTime() - committedAt
+        : Infinity;
       if (
+        validItemId &&
+        session.inputCommitted &&
+        !session.activeReservedTurnId &&
+        session.transcriptionReservationId &&
+        !session.providerSpeechActive &&
+        session.ignoredProviderInputItemIds.size < 4 &&
+        postCommitDelay >= 0 &&
+        postCommitDelay <= POST_COMMIT_PROVIDER_VAD_GRACE_MS
+      ) {
+        session.ignoredProviderInputItemIds.add(event.item_id);
+        return;
+      }
+      if (
+        !validItemId ||
         !session.activeReservedTurnId ||
         !session.transcriptionReservationId ||
         session.providerSpeechActive
@@ -1801,6 +2137,7 @@ export function createRealtimeRelay({
       return;
     }
     if (event.type === "input_audio_buffer.speech_stopped") {
+      if (session.ignoredProviderInputItemIds.has(event.item_id)) return;
       if (
         !session.providerSpeechActive ||
         typeof event.item_id !== "string" ||
@@ -1813,6 +2150,7 @@ export function createRealtimeRelay({
       return;
     }
     if (event.type === "input_audio_buffer.committed") {
+      if (session.ignoredProviderInputItemIds.has(event.item_id)) return;
       if (session.inputCommitted && !session.activeReservedTurnId) {
         if (
           typeof event.item_id !== "string" ||
@@ -1840,18 +2178,21 @@ export function createRealtimeRelay({
       tracePhase(session, "audio_committed");
       session.activeReservedTurnId = null;
       session.inputCommitted = true;
+      session.inputCommittedAt = now();
       session.nativeStage = "awaiting_transcript";
       startTranscriptionWatchdog(session);
       sendBrowser(session, { type: "session.state", state: "processing" });
       return;
     }
     if (event.type === "conversation.item.input_audio_transcription.failed") {
+      if (session.ignoredProviderInputItemIds.delete(event.item_id)) return;
       if (!session.transcriptionReservationId) return;
       return terminateProviderUnavailable(session);
     }
     if (
       event.type === "conversation.item.input_audio_transcription.completed"
     ) {
+      if (session.ignoredProviderInputItemIds.delete(event.item_id)) return;
       const transcript =
         typeof event.transcript === "string" ? event.transcript.trim() : "";
       if (!session.transcriptionReservationId) {
@@ -1894,18 +2235,20 @@ export function createRealtimeRelay({
           toolChoice: NO_TOOL_CHOICE,
           response: {
             conversation: "none",
-            instructions: buildVerbatimSpeechInstructions(
+            instructions: buildFixedSpeechInstructions(
               EMPTY_TRANSCRIPT_RETRY_MESSAGE,
             ),
           },
-          expectedSpeech: EMPTY_TRANSCRIPT_RETRY_MESSAGE,
+          fixedSpeech: EMPTY_TRANSCRIPT_RETRY_MESSAGE,
         });
       }
       session.finalInputTranscript = transcript;
       return routeDeterministicTranscript(session);
     }
-    if (event.type === "conversation.item.input_audio_transcription.delta")
+    if (event.type === "conversation.item.input_audio_transcription.delta") {
+      if (session.ignoredProviderInputItemIds.has(event.item_id)) return;
       return;
+    }
     if (event.type === "response.created") {
       tracePhase(session, "response_created");
       sendBrowser(session, {
@@ -2014,41 +2357,9 @@ export function createRealtimeRelay({
     const sanitized = sanitizeProviderEvent(event);
     if (!sanitized) return;
     if (event.type === "response.done") {
-      if (session.expectedSpeech) {
-        const actualSpeech = bufferedProviderTranscript(session);
-        const producedAssistantOutput =
-          (session.bufferedProviderOutput?.length ?? 0) > 0;
-        if (
-          !producedAssistantOutput ||
-          actualSpeech === session.expectedSpeech
-        ) {
-          flushBufferedProviderOutput(session);
-          session.expectedSpeech = null;
-          session.expectedSpeechRetryCount = 0;
-        } else {
-          discardBufferedProviderOutput(session);
-          if (
-            session.expectedSpeechRetryCount < 1 &&
-            !session.pendingResponseStage
-          ) {
-            session.expectedSpeechRetryCount += 1;
-            session.pendingResponseStage = {
-              tools: [],
-              toolChoice: NO_TOOL_CHOICE,
-              response: {
-                conversation: "none",
-                instructions: buildVerbatimSpeechInstructions(
-                  session.expectedSpeech,
-                ),
-              },
-              beforeCreate: null,
-              expectedSpeech: session.expectedSpeech,
-              retryExpectedSpeech: true,
-            };
-          } else {
-            session.stopAfterSettlement = "protocol";
-          }
-        }
+      if (session.fixedSpeech) {
+        flushBufferedProviderOutput(session);
+        session.fixedSpeech = null;
       } else {
         flushBufferedProviderOutput(session);
       }
@@ -2101,11 +2412,6 @@ export function createRealtimeRelay({
         );
         session.responseReservationId = null;
         session.responseCreated = false;
-        if (session.stopAfterSettlement) {
-          const reason = session.stopAfterSettlement;
-          session.stopAfterSettlement = null;
-          return stop(session.sessionId, reason);
-        }
         if (!runPendingResponseStage(session))
           resumeListeningWhenSettled(session);
       } catch {
@@ -2213,6 +2519,7 @@ export function createRealtimeRelay({
       session.responseStageCount = 0;
       session.nativeStage = "awaiting_audio";
       session.inputCommitted = false;
+      session.inputCommittedAt = null;
       if (!(await reserveResponseStage(session))) return;
       try {
         session.transcriptionReservationId = await reserve(
@@ -2258,6 +2565,7 @@ export function createRealtimeRelay({
       tracePhase(session, "audio_committed");
       session.activeReservedTurnId = null;
       session.inputCommitted = true;
+      session.inputCommittedAt = now();
       session.nativeStage = "awaiting_transcript";
       startTranscriptionWatchdog(session);
       return sendProvider(session, { type: "input_audio_buffer.commit" });
@@ -2335,22 +2643,31 @@ export function createRealtimeRelay({
           ],
         },
       });
-      const expectedSpeech = capabilityResultSpeech(
+      const dialogue = capabilityResultDialogue(
         message.capabilityId,
         deterministicArguments,
         message.result,
+        {
+          dialogueId: randomId(),
+          interfaceContext: session.interfaceContext,
+          contextRevision: session.interfaceContext?.revision ?? 0,
+          nowMs: now().getTime(),
+        },
       );
+      setPendingDialogue(session, dialogue.pendingDialogue);
+      const fixedSpeech = dialogue.speech;
       return requestResponseStage(session, {
         tools: [],
         toolChoice: NO_TOOL_CHOICE,
         response: {
           conversation: "none",
-          instructions: buildVerbatimSpeechInstructions(expectedSpeech),
+          instructions: buildFixedSpeechInstructions(fixedSpeech),
         },
-        expectedSpeech,
+        fixedSpeech,
       });
     }
     if (message.type === "response.cancel") {
+      clearPendingDialogue(session, "superseded");
       clearResponseWatchdog(session);
       return sendProvider(session, { type: "response.cancel" });
     }
@@ -2360,6 +2677,16 @@ export function createRealtimeRelay({
         message.context.revision < session.interfaceContext.revision
       )
         return stop(sessionId, "protocol");
+      if (
+        session.pendingDialogue?.status === "active" &&
+        message.context.revision !== session.pendingDialogue.contextRevision
+      ) {
+        session.pendingDialogue = Object.freeze({
+          ...session.pendingDialogue,
+          status: "stale",
+        });
+        tracePendingDialogue(session, "stale");
+      }
       session.interfaceContext = structuredClone(message.context);
       session.availableCapabilityIds = [
         ...(message.context.availableCapabilityIds || []),
@@ -2410,6 +2737,7 @@ export function createRealtimeRelay({
       responseReservationId: null,
       transcriptionReservationId: null,
       inputCommitted: false,
+      inputCommittedAt: null,
       inputAudioBytes: 0,
       responseCreated: false,
       responseTimer: null,
@@ -2433,16 +2761,16 @@ export function createRealtimeRelay({
       pendingConfirmation: null,
       pendingDeterministic: null,
       pendingDeterministicArguments: null,
+      pendingDialogue: null,
       suppressProviderOutput: false,
       bufferedProviderOutput: null,
       bufferedProviderOutputBytes: 0,
-      expectedSpeech: null,
-      expectedSpeechRetryCount: 0,
-      stopAfterSettlement: null,
+      fixedSpeech: null,
       pendingResponseStage: null,
       nativeStage: null,
       providerInputItemId: null,
       providerSpeechActive: false,
+      ignoredProviderInputItemIds: new Set(),
       finalInputTranscript: null,
       transcriptItems: [],
       intent: null,

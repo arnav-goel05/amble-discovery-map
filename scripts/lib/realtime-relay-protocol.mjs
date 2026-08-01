@@ -372,6 +372,7 @@ export function cleanupRelaySession(session, reason = "protocol") {
     session.interfaceContext = null;
     session.pendingConfirmation = null;
     session.pendingDeterministic = null;
+    session.pendingDialogue = null;
     session.pendingCallIds?.clear?.();
     session.pendingCalls?.clear?.();
     session.terminalCalls?.clear?.();
@@ -388,6 +389,10 @@ export function cleanupRelaySession(session, reason = "protocol") {
     session.transcriptionTimer = null;
     session.finalInputTranscript = null;
     session.providerInputItemId = null;
+    session.fixedSpeech = null;
+    session.bufferedProviderOutput = null;
+    session.bufferedProviderOutputBytes = 0;
+    session.pendingResponseStage = null;
   }
   return session;
 }

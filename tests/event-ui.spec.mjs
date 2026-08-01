@@ -464,7 +464,7 @@ test("selected dimensions stay hidden until removed from their phrase editor", a
   await page.evaluate(() => globalThis.__guidedSearch.destroy());
 });
 
-test("sentence composer classifies a full request locally and renders bold phrases", async ({
+test("sentence composer renders recognized phrases and ignores unmatched wording", async ({
   page,
 }) => {
   await page.goto("/test-harness.html");
@@ -499,15 +499,9 @@ test("sentence composer classifies a full request locally and renders bold phras
     "Find workshops this weekend near Esplanade under $25 romantic",
   );
   await input.press("Enter");
-  await expect(page.locator(".landmark-event-search__token")).toHaveCount(5);
+  await expect(page.locator(".landmark-event-search__token")).toHaveCount(4);
   await expect(page.locator(".landmark-event-search__token strong")).toHaveText(
-    [
-      "Workshops & Classes",
-      "This weekend",
-      "Esplanade",
-      "Under $25",
-      "romantic",
-    ],
+    ["Workshops & Classes", "This weekend", "Esplanade", "Under $25"],
   );
   await expect(page.locator(".landmark-event-search__token i")).toHaveCount(0);
   const state = await page.evaluate(() => {
@@ -531,7 +525,7 @@ test("sentence composer classifies a full request locally and renders bold phras
     categories: ["Workshops & Classes"],
     dateRange: "this-weekend",
     priceRange: "under-25",
-    query: "romantic",
+    query: "",
     where: { kind: "venue", venueKey: "esplanade" },
   });
   expect(state.requests).toBe(0);

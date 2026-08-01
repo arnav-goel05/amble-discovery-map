@@ -46,6 +46,7 @@ const mapState = () => ({
 const planningState = () => ({
   plan: {
     stopIds: [],
+    addableTargetIds: ["event:city-hall"],
     travelMode: "walking",
     routeAvailable: false,
   },
@@ -82,6 +83,7 @@ test("coordinator creates an immutable canonical snapshot and deterministic dige
     "app.inspect",
     "map.focustarget",
   ]);
+  assert.deepEqual(snapshot.plan.addableTargetIds, ["event:city-hall"]);
   assert.equal(Object.isFrozen(snapshot), true);
   assert.equal(Object.isFrozen(snapshot.visibleTargets[0]), true);
 

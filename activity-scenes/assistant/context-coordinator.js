@@ -218,6 +218,10 @@ export function canonicalizeContextState(input = {}) {
     eventFacetCatalog: normalizeEventFacetCatalog(input.eventFacetCatalog),
     plan: {
       stopIds: uniqueStrings(plan.stopIds, 20),
+      addableTargetIds: uniqueStrings(
+        plan.addableTargetIds ?? input.addableTargetIds,
+        50,
+      ),
       travelMode: travelModes.has(plan.travelMode)
         ? plan.travelMode
         : "walking",

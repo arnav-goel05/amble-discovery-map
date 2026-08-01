@@ -122,6 +122,23 @@ As a user, I can use natural voice commands to operate every user-facing feature
 12. **Given** a useful follow-up capability is currently eligible, **When** Amble finishes a
     discovery, selection, or planning response, **Then** it may offer one concise next step; minor
     navigation and camera actions remain brief and do not force a follow-up question.
+13. **Given** Amble offers one eligible reversible action for one named result, **When** the user
+    replies with a bounded affirmative such as “yes” or “do it,” **Then** the exact offered action
+    is proposed once using the stored stable target identity without asking the model to infer it.
+14. **Given** Amble offers several results, **When** the user replies only “yes,” **Then** Amble
+    asks which named or numbered result they mean and performs no action.
+15. **Given** an active offer, **When** the user replies with a unique ordinal, exact result name,
+    or an unambiguous pronoun for the sole candidate, **Then** Amble resolves the stored candidate
+    deterministically and executes through the ordinary capability gateway.
+16. **Given** an active offer, **When** the user rejects it, changes to an unrelated action, the
+    authoritative context changes, or the offer expires, **Then** the offer is cleared and cannot
+    be executed by a later or duplicate reply.
+17. **Given** a reply combines a candidate choice with an unresolved new condition, **When** that
+    condition could materially change the result, **Then** Amble asks one focused clarification
+    and performs no speculative action.
+18. **Given** a follow-up would require browser-owned consequential confirmation, **When** the user
+    accepts the conversational offer, **Then** the existing browser confirmation names the exact
+    effect and remains the only authority that can approve execution.
 
 ---
 
@@ -362,9 +379,8 @@ the exact canonical capability ID.
 4. **Given** the provider rejects configuration or emits another provider error, **When** the relay
    receives it, **Then** the session follows the ordinary terminal provider-unavailable lifecycle
    rather than continuing with default behavior.
-5. **Given** the opening response is requested, **When** it completes, **Then** its exact-speech
-   instruction does not remain as a persistent conversation item capable of influencing later
-   turns.
+5. **Given** the opening response is requested, **When** it completes, **Then** its fixed-message
+   guidance does not remain as a persistent conversation item capable of influencing later turns.
 6. **Given** the provider proposes an aliased function name, **When** the relay validates it,
    **Then** the browser receives only the matching canonical capability ID and every existing
    schema, eligibility, confirmation, execution, and result rule remains unchanged.
@@ -664,8 +680,9 @@ the exact canonical capability ID.
 - **FR-079**: Provider function proposals MUST resolve the provider alias to one currently exposed
   canonical capability before argument validation. All browser messages and pending-call state
   MUST use only the canonical capability ID.
-- **FR-080**: The opening exact-speech instruction MUST apply only to the opening response and MUST
-  NOT be inserted as a persistent system conversation item.
+- **FR-080**: Opening fixed-message guidance MUST apply only to the opening response and MUST NOT be
+  inserted as a persistent system conversation item. Faithful natural paraphrasing MUST NOT retry
+  or terminate an otherwise healthy voice session.
 - **FR-081**: Static audit compaction fingerprints MUST be derived from stable sanitized content
   and direction while excluding occurrence timestamp and other changing audit-envelope metadata.
 - **FR-082**: The live provider smoke MUST be owner-authorized, bounded to the minimum opening and
@@ -793,6 +810,41 @@ the exact canonical capability ID.
   transcript MUST settle its known bounded transcription reservation, perform no application
   mutation, request exactly one fixed retry prompt, and MUST NOT enter the protocol-failure path,
   hold that reservation, or disable admission for subsequent voice sessions.
+- **FR-112**: Every spoken follow-up question that expects a later answer MUST create at most one
+  session-only `PendingDialogue` containing a unique dialogue ID, dialogue kind, owning capability,
+  bounded candidate stable IDs and verified labels, expected reply classes, authoritative context
+  revision, creation time, and single-use status. It MUST contain no raw audio and MUST NOT
+  outlive the voice session.
+- **FR-113**: Pending-dialogue interpretation MUST use a closed deterministic vocabulary for
+  affirmative and negative replies plus deterministic resolution of unique ordinals, exact
+  normalized candidate names, and sole-candidate pronouns. The model MUST NOT decide whether a bare
+  acknowledgement identifies or authorizes a stored target.
+- **FR-114**: A bare affirmative MAY resolve one eligible reversible offer with exactly one
+  candidate. For an offer with multiple candidates it MUST produce one explicit named/numbered
+  clarification and zero capability proposals; it MUST NOT silently choose the first result.
+- **FR-115**: A bounded rejection MUST consume the offer and mutate nothing. An unrelated explicit
+  application request MUST clear the offer and continue through ordinary routing rather than being
+  forced into the earlier dialogue.
+- **FR-116**: Offers whose stored context revision no longer matches current authoritative context
+  MUST be invalidated before resolution. An answer-like reply to an invalid offer MUST receive a
+  concise fresh-context prompt and produce zero application mutation. Elapsed time alone MUST NOT
+  invalidate an otherwise current offer.
+- **FR-117**: A resolved or rejected dialogue MUST be consumed atomically before any capability
+  proposal or fixed response is emitted. Repeated, duplicated, delayed, or interrupted replies MUST
+  not execute the stored action more than once.
+- **FR-118**: Follow-up wording MUST name the offered target when exactly one candidate exists and
+  MUST present bounded numbered or named choices when several candidates exist. Restaurant, event,
+  and plan follow-ups MUST be backed by validated result or refreshed-context identities and labels.
+- **FR-119**: Replies that combine a candidate selection with an unresolved conditional or new
+  constraint MUST not guess. They MUST either route the complete independently supported request or
+  retain the offer and ask one focused clarification with zero partial mutation.
+- **FR-120**: Conversational acceptance MUST NOT bypass `confirmation_required`. Any resulting
+  consequential capability MUST still enter the existing browser-owned confirmation state machine
+  with its exact canonical arguments, target, effect, expiry, and controls.
+- **FR-121**: The relay MUST emit only privacy-safe pending-dialogue outcome codes from the closed
+  set `created`, `resolved`, `clarified`, `rejected`, `stale`, `superseded`, and
+  `consumed`. These diagnostics MUST contain no transcript, candidate label, target ID, arguments,
+  precise location, or provider payload.
 
 ### Key Entities
 
@@ -849,6 +901,11 @@ the exact canonical capability ID.
 - **Provider Configuration State**: The current configuration revision, pending acknowledgement,
   accepted revision, and queued continuation for the opening or active turn. Only a matching
   provider acknowledgement releases the continuation.
+- **Pending Dialogue**: One session-only, revision-bound conversational offer with a
+  unique single-use identity, verified candidate stable IDs and labels, expected reply classes, and
+  an owning canonical capability. It can resolve language to an ordinary gateway proposal but can
+  neither authorize execution nor survive rejection, interruption, context change, or
+  session cleanup.
 
 ## Success Criteria _(mandatory)_
 
@@ -1018,6 +1075,21 @@ the exact canonical capability ID.
 - **SC-068**: An active empty-transcript completion produces zero capability proposals, one fixed
   retry response, a settled transcription reservation, and leaves the relay session and global
   voice-admission gate available for the next turn.
+- **SC-069**: 100% of single-candidate affirmative fixtures resolve the exact stored stable target
+  once, while repeated or duplicated replies produce no second execution.
+- **SC-070**: 100% of multi-candidate bare-affirmative and ambiguous-reference fixtures produce one
+  bounded choice prompt and zero application mutation; ordinal and exact-name fixtures select only
+  their unique matching candidate.
+- **SC-071**: 100% of rejection, interruption, unrelated-command, and context-revision
+  fixtures clear or invalidate the pending dialogue and prevent its later execution.
+- **SC-072**: 100% of mixed candidate-plus-unresolved-constraint fixtures produce zero partial
+  mutation and one focused clarification rather than silently discarding the condition.
+- **SC-073**: Every follow-up prompt fixture names its sole candidate or exposes bounded choices,
+  contains no more than one question, and is backed by current validated result/context evidence.
+- **SC-074**: 100% of conversationally accepted consequential-action fixtures still enter the
+  browser-owned confirmation flow and execute zero effects before direct approval.
+- **SC-075**: 100% of pending-dialogue operational records pass the existing privacy allowlist and
+  contain only a closed outcome code plus ordinary non-content trace metadata.
 
 ## Assumptions
 

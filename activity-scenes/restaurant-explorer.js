@@ -218,7 +218,10 @@ export function addRestaurantExplorer(
       cuisines: [...ui.cuisine.options]
         .map(({ value }) => value)
         .filter((value) => value && value !== "all"),
-      results: visible.map(({ id }) => ({ restaurantId: `restaurant:${id}` })),
+      results: visible.map(({ id, name }) => ({
+        restaurantId: `restaurant:${id}`,
+        name,
+      })),
       clusters: [],
       deals: detailState.selectedRestaurantId
         ? {

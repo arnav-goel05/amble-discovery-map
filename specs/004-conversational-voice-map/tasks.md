@@ -837,3 +837,49 @@ and disabling subsequent voice sessions.
       conflicting duplicates
 - [x] T227 [US8] Add relay regression coverage, rerun focused and complete voice verification,
       prove live admission remains enabled, and repeat convergence until no issue remains
+
+---
+
+## Phase 30: Deterministic Multi-turn Follow-up Dialogue
+
+**Purpose**: Make Amble's spoken offers actionable, identity-bound, and exactly once without model
+guessing or bypassing the shared gateway and browser confirmation boundary.
+
+### Tests first
+
+- [x] T228 [P] [US3] Add pure pending-dialogue creation and interpretation fixtures for bounded
+      yes/no, ordinal, exact-name, sole-pronoun, multiple-match, mixed-constraint, no-time-expiry, stale
+      revision, supersession, and duplicate use in `tests/realtime-relay.test.mjs` per FR-112–FR-119
+      and SC-069–SC-073
+- [x] T229 [P] [US3] Add relay multi-turn fixtures proving single-candidate execution, multi-result
+      clarification, rejection, unrelated routing, context invalidation, atomic consumption, and
+      consequential confirmation preservation in `tests/realtime-relay.test.mjs` per FR-114–FR-120
+      and SC-069–SC-074
+- [x] T230 [P] [US3] Add connector and browser dialogue fixtures proving authoritative restaurant,
+      event, and plan labels, explicit follow-up wording, next-turn listening, and zero duplicate
+      effects in `tests/assistant-domain-connectors.test.mjs`, `tests/voice-assistant.spec.mjs`, and
+      `tests/voice-action-coverage.spec.mjs` per FR-118 and SC-073
+- [x] T231 [P] [US8] Add privacy-allowlist fixtures for the closed pending-dialogue outcome codes in
+      `tests/realtime-relay.test.mjs` per FR-121 and SC-075
+
+### Implementation and proof
+
+- [x] T232 [US3] Implement the pure session-only pending-dialogue projector and closed deterministic
+      reply interpreter in `scripts/lib/pending-dialogue.mjs` and `cloudflare/realtime-relay.mjs`
+      per FR-112–FR-119
+- [x] T233 [US3] Integrate pending-dialogue creation, typed/native turn resolution, atomic consume,
+      interruption/context/session cleanup, ordinary gateway proposals, and browser-owned
+      confirmation in `cloudflare/realtime-relay.mjs` per FR-112–FR-120
+- [x] T234 [US3] Preserve bounded restaurant labels and project explicit event, restaurant, and plan
+      candidate prompts in `activity-scenes/restaurant-explorer.js`,
+      `activity-scenes/assistant/connectors/restaurant-connector.js`, and
+      `cloudflare/realtime-relay.mjs` per FR-118 and SC-073
+- [x] T235 [US8] Emit content-free pending-dialogue outcome trace codes and synchronize relay
+      contracts plus validation evidence in
+      `specs/004-conversational-voice-map/contracts/realtime-relay.md` and
+      `specs/004-conversational-voice-map/quickstart.md` per FR-121 and SC-075
+- [x] T236 [US8] Run focused multi-turn/connector/browser tests, the complete voice suite,
+      capability verification gates, scoped formatting/lint, `git diff --check`, and production
+      build; fix every failure
+- [x] T237 [US8] Run Spec Kit convergence, append and implement every finding, and repeat focused and
+      full verification plus convergence until no unresolved issue remains

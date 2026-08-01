@@ -52,7 +52,7 @@ test("restaurant connector projects bounded state and delegates contextual comma
       categories: ["cafe"],
       cuisines: ["local"],
       results: [
-        { restaurantId: "restaurant:one" },
+        { restaurantId: "restaurant:one", name: "Pasta One" },
         ...Array.from({ length: 60 }, (_, index) => ({
           restaurantId: `restaurant:extra-${index}`,
         })),
@@ -74,6 +74,11 @@ test("restaurant connector projects bounded state and delegates contextual comma
     restaurantController: owner,
   });
   assert.equal(connector.snapshot().resultIds.length, 50);
+  assert.deepEqual(connector.snapshot().results[0], {
+    restaurantId: "restaurant:one",
+    label: "Pasta One",
+  });
+  assert.equal(connector.snapshot().visibleTargets[0].label, "Pasta One");
   assert.equal(
     connector.isEligible("restaurant.opendealreference", {
       restaurantId: "restaurant:one",
@@ -173,6 +178,7 @@ test("plan connector enforces ordered-stop, target, mode, and route eligibility"
   );
   assert.deepEqual(reordered.contextPatch.plan, {
     stopIds: ["stop:two", "stop:one"],
+    addableTargetIds: ["event:new"],
     travelMode: "transit",
     routeAvailable: true,
   });

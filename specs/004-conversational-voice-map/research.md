@@ -164,7 +164,7 @@ and hyphens, while Amble's canonical IDs deliberately contain dots. Replacing ca
 throughout the application would break stable identity and shared gateway contracts. A transport
 alias isolates the incompatibility at the correct boundary. Waiting for acknowledgement prevents
 the relay from speaking under default provider instructions after a rejected update. Removing the
-persistent welcome item prevents a one-turn exact-speech command from influencing later turns.
+persistent welcome item prevents one-turn fixed-message guidance from influencing later turns.
 
 **Alternatives considered**: Renaming every capability was rejected because transport syntax must
 not redefine domain identity. Blind dot-to-underscore replacement without collision validation was
@@ -578,11 +578,11 @@ documents replacing the active session tool list through `session.update`.
 
 ## Relay-owned live reliability
 
-**Decision**: Treat Realtime tool arguments and fixed speech as stochastic transport output, not
+**Decision**: Treat Realtime tool arguments and speech as stochastic transport output, not
 authority. Canonicalize only bounded shape-equivalent ingress, independently verify the domain with
-the deterministic application router, buffer tool-stage commentary, and validate fixed-response
-transcripts before releasing audio. Retry one malformed fixed response within the existing
-three-stage turn guard.
+the deterministic application router, and buffer tool-stage commentary. Fixed-message responses
+may use faithful natural phrasing and do not retry or terminate solely because their transcript
+differs from the supplied wording.
 
 **Rationale**: The live matrix observed semantically identical fields at the root and under
 `eventQuery`, `eventWhere` aliases, null unused facets, missing required utterances, incorrect event
@@ -648,9 +648,32 @@ responses brief; allow restrained warmth for discovery, restaurant, event, and p
 
 **Rationale**: A universal “Done in Amble” confirms neither the target nor the resulting state and
 makes successful, unchanged, and failed interactions sound alike. Deterministic templates preserve
-the exact-speech boundary while giving users useful feedback and preventing invented names or
-unavailable follow-up offers.
+the authoritative meaning boundary while giving users useful feedback and preventing invented names
+or unavailable follow-up offers.
 
 **Alternatives considered**: Free-form model narration risks unsupported detail and inconsistent
 failure language. A unique handwritten sentence for every capability duplicates connector rules
 and is difficult to maintain. Generic acknowledgements are safe but not informative or engaging.
+
+## Deterministic follow-up dialogue resolution
+
+**Decision**: Store at most one revision-bound `PendingDialogue` in relay session memory whenever a
+grounded result prompt expects an answer. The offer records the owning capability, refreshed context
+revision, bounded stable candidate IDs and verified labels, and expected reply classes. A pure
+closed-vocabulary interpreter resolves negative replies, a sole-candidate affirmative, unique
+ordinals, exact normalized labels, and an unambiguous sole-candidate pronoun. It consumes resolved
+and rejected offers before producing the next action. Multi-candidate affirmation, mixed unresolved
+conditions and stale context produce zero mutation and bounded clarification. Elapsed time alone
+does not invalidate an offer whose authoritative context remains current.
+
+**Rationale**: The current model sees the previous conversation but the application does not bind a
+question to an actionable identity. Consequently a bare “yes” may be summarized or interpreted as
+new prose instead of selecting the offer. A relay-owned single-use record makes the conversational
+contract explicit without moving domain behavior out of connectors or granting the model new
+authority.
+
+**Alternatives considered**: Prompting the model to remember the offer remains probabilistic and
+cannot guarantee target identity or exactly-once behavior. Persisting dialogue state would retain
+unnecessary conversational data. Treating every “yes” as the first visible result would create an
+unsafe hidden default. Browser-owned confirmation alone does not solve reversible follow-up target
+resolution and remains unchanged for consequential calls.

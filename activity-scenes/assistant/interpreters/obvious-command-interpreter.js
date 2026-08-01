@@ -99,6 +99,11 @@ export function interpretObviousCommand({
   if (/^(?:please\s+)?close(?:\s+the)?\s+event\s+details?$/.test(normalized))
     return proposal("event", "event.closedetail");
 
+  const restaurantViewportRequest =
+    /^(?:(?:can|could|would)\s+you\s+)?(?:please\s+)?(?:help\s+me\s+)?(?:find|show|search(?:\s+for)?|look\s+for)(?:\s+me)?\s+(?:some\s+)?(?:restaurants?|food|places?\s+to\s+eat)\s+(?:(?:around|in|within|near)\s+(?:(?:the(?:\s+(?:current|visible))?|this|current|visible)\s+)?(?:map\s+)?area|nearby|near\s+here|around\s+here)(?:\s+please)?$/;
+  if (restaurantViewportRequest.test(normalized))
+    return proposal("restaurant", "restaurant.searchviewport");
+
   if (
     /^(?:please\s+)?clear(?:\s+all)?\s+restaurant\s+filters?$/.test(normalized)
   )

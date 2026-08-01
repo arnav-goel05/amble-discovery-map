@@ -32,7 +32,7 @@ Amble speaks first using the checked-in welcome message. It
 briefly introduces Singapore discovery, area/place recommendations, application search, map
 control, location, and MRT context instead of inviting general-purpose conversation. This opening
 response uses the normal server-side response reservation and counts toward the session response
-limit. Only the opening response carries the one-turn exact-speech instruction; neither the
+limit. Only the opening response carries one-turn fixed-message guidance; neither the
 welcome text nor a repeat-welcome policy is inserted into persistent session instructions or
 conversation history.
 
@@ -215,6 +215,9 @@ voice and emits only a safe bounded local warning.
     stale, duplicate, or timed-out active transcripts mutate nothing and terminate through bounded
     cleanup. A valid empty completion for the active item instead settles known transcription usage,
     mutates nothing, and requests one fixed retry without a protocol stop or admission disablement.
+    A bounded late VAD item beginning within 250 milliseconds after the active item commits is
+    quarantined through its terminal transcription event; it cannot route, mutate, consume the
+    active transcript identity, hold the active reservation, or disable later admission.
 13. Each later context revision replaces the scoped connector-family menu from current eligibility;
     it never restores a broad foundational or all-eligible native-audio menu.
 14. Query results contain at most the contract limit, use stable approved identities, and exclude
@@ -236,14 +239,26 @@ voice and emits only a safe bounded local warning.
     transcript as an event request; obvious map, transit, and restaurant commands take precedence.
 19. Tool-stage commentary is buffered. If the response produces a function call, the buffer is
     discarded; if it produces no call, the buffer is released as the ordinary answer. Fixed
-    welcome, policy, clarification, and capability-result speech is buffered and transcript-
-    checked before release. One malformed fixed response may retry within the existing three-stage
-    turn bound; a second mismatch terminates through protocol cleanup.
+    welcome, policy, clarification, and capability-result speech may be phrased naturally. A
+    transcript wording difference alone does not retry or terminate the voice session.
 20. Capability-result fixed speech is projected deterministically from the validated result and
     refreshed context. It distinguishes changed, unchanged, empty, unavailable, failed,
     clarification, and confirmation states; uses only bounded verified evidence; never emits the
     generic phrase “Done in Amble”; and asks at most one follow-up question gated by current
     capability eligibility.
+21. A result response that asks an actionable follow-up creates one session-only pending dialogue
+    from the same validated identities, labels, eligibility, and refreshed context revision. Before
+    ordinary turn scoping, the relay deterministically resolves bounded rejection, sole-candidate
+    affirmation, unique ordinal, exact name, or sole-candidate pronoun replies. It consumes resolved
+    or rejected state before emitting a proposal or response.
+22. Bare affirmation of multiple candidates and replies containing an unresolved new condition
+    create no capability proposal and request one explicit clarification. Stale, interrupted, or
+    superseded dialogue cannot execute. Elapsed time alone does not invalidate a current dialogue.
+    An unrelated explicit request clears the dialogue and continues through ordinary deterministic
+    routing.
+23. Pending-dialogue resolution may emit the same canonical browser `capability.proposed` message
+    as ordinary routing but cannot invoke an executor, bypass eligibility or argument validation,
+    or approve a consequential action. Privacy-safe traces expose only a closed outcome code.
 
 ## Capability-call ordering
 
