@@ -4,7 +4,7 @@ import { getDeviceSupport } from "./device-support.js";
 
 function showUnsupportedDevice(support) {
   document.body.dataset.deviceSupport = "unsupported";
-  document.body.dataset.deviceScreenEdge = String(support.longestScreenEdge);
+  document.body.dataset.deviceScreenEdge = String(support.shortestScreenEdge);
   document.getElementById("map")?.remove();
   document.getElementById("map-brand")?.remove();
   document.getElementById("experience-intro")?.remove();
@@ -54,8 +54,7 @@ const support = getDeviceSupport({
 });
 const queryParams = new URLSearchParams(globalThis.location?.search ?? "");
 const allowNarrowEmptyFixture =
-  !support.mobileOrTablet &&
-  queryParams.has("emptyApprovedSnapshot");
+  !support.mobileOrTablet && queryParams.has("emptyApprovedSnapshot");
 
 async function startSupportedApplication() {
   document.body.dataset.deviceSupport =

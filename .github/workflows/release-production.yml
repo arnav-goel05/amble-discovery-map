@@ -1,0 +1,135 @@
+name: Release production
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Full origin/develop commit SHA to verify and promote
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-production
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Release verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      RELEASE_CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+      RELEASE_STATE_FILE: /tmp/amble-release-candidate.json
+      PLAYWRIGHT_RETRIES: "0"
+      BACKGROUND_TILE_CONCURRENCY: "12"
+
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.candidate_sha }}
+          fetch-depth: 0
+          lfs: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Validate immutable develop candidate and fast-forward ancestry
+        run: node scripts/verify-release-candidate.mjs prepare --candidate "$RELEASE_CANDIDATE_SHA" --state-file "$RELEASE_STATE_FILE"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify workflow policy and fixture contract
+        run: npm run ci:policy && npm run geometry:fixture:verify
+
+      - name: Hydrate approved production geometry once
+        run: npm run geometry:background:hydrate
+
+      - name: Run static and local contract gates
+        env:
+          CI_BASE_SHA: ${{ inputs.candidate_sha }}
+          CI_HEAD_SHA: ${{ inputs.candidate_sha }}
+        run: |
+          npm run lint
+          npm run format:check
+          npm run test:unit
+          npm run test:event-sources
+          npm run verify:voice-actions
+          npm run verify:voice-capabilities
+          npm run cloudflare:cloud:test
+
+      - name: Verify production geometry and bounded R2 inventory
+        run: |
+          npm run test:poi-separation
+          npm run geometry:poi:audit
+          npm run geometry:background:audit
+          npm run cloudflare:r2:verify
+
+      - name: Verify production Cloudflare build
+        run: npm run cloudflare:prepare && npm run cloudflare:cloud:verify-build
+
+      - name: Install required browser matrix
+        run: npx playwright install --with-deps chromium webkit firefox
+
+      - name: Run complete desktop and mobile compatibility matrix
+        run: npm run test:ui:release
+
+      - name: Enforce frontend performance budget
+        run: npm run benchmark:release
+
+      - name: Report bounded external-operation budget
+        run: |
+          echo "Production hydration passes: 1"
+          echo "Public integrity inventory requests: 1"
+          echo "Public per-object HEAD requests: 0"
+          echo "Geometry writes: 0 during verification"
+          echo "Provider requests: 0"
+          echo "Deployment signals: 1 main update after all gates pass"
+          echo "Post-deployment attempts: 1 in the Cloudflare main build"
+
+      - name: Preserve immutable ref evidence for promotion
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate-state
+          path: ${{ env.RELEASE_STATE_FILE }}
+          retention-days: 1
+
+  promote:
+    name: Promote tested revision
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      RELEASE_CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+      RELEASE_STATE_FILE: /tmp/release-state/amble-release-candidate.json
+
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.candidate_sha }}
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Restore immutable ref evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: release-candidate-state
+          path: /tmp/release-state
+
+      - name: Revalidate refs immediately before promotion
+        run: node scripts/verify-release-candidate.mjs revalidate --candidate "$RELEASE_CANDIDATE_SHA" --state-file "$RELEASE_STATE_FILE"
+
+      - name: Fast-forward main to the exact tested revision
+        run: git push origin "$RELEASE_CANDIDATE_SHA:refs/heads/main"

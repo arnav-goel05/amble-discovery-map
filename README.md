@@ -37,7 +37,7 @@ Requirements:
 
 - Node.js 24 or newer
 - npm
-- A laptop or desktop with a longest screen edge of at least 1024 CSS pixels; phone and tablet browsers receive a lightweight compatibility screen before the 3D application loads
+- A device with a shortest screen edge of at least 500 CSS pixels; smaller phone-sized screens receive a lightweight compatibility screen before the 3D application loads
 
 ```bash
 npm ci
@@ -50,13 +50,17 @@ Open http://127.0.0.1:5173. To load production 3D geometry while developing, set
 ## Validation
 
 ```bash
-npm run build
-npm run smoke:baseline
-npm run verify
+npm run ci:policy
+npm run geometry:fixture:verify
+npm run ci:local
 npm audit
 ```
 
-`npm run verify` is the complete release gate: production build, Node contracts, source and artifact checks, browser coverage, production smoke testing, and the frontend performance contract.
+Ordinary validation is offline with respect to Amble production services: it uses a compact
+checked-in geometry contract and never hydrates R2 geometry or deploys. Browser interaction tiers
+run in GitHub Actions. The complete production gate is the explicitly dispatched
+`Release production` workflow for one immutable `origin/develop` SHA; see the
+[cloud-native deployment guide](docs/cloudflare-cloud-native.md).
 
 ## Repository map
 

@@ -222,42 +222,13 @@ test("guided filters expose every dimension and apply a partial Where selection 
 });
 
 test("guided filters remain reachable at 320 CSS pixels", async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 700 });
   await page.goto("/#17/1.2858/103.8579/0/60");
+  await page.setViewportSize({ width: 320, height: 700 });
   const input = page.locator("#landmark-event-search-input");
   await input.focus();
   await expect(page.locator("[data-filter-dimension]")).toHaveCount(4);
-
-  const compactPlacement = await page.evaluate(() => {
-    const controls = document
-      .querySelector(".landmark-event-search__controls")
-      .getBoundingClientRect();
-    const minimap = document
-      .getElementById("event-density-minimap")
-      .getBoundingClientRect();
-    const overlapsAction = [
-      ...document.querySelectorAll(".landmark-event-search__actions button"),
-    ].some((button) => {
-      const action = button.getBoundingClientRect();
-      return !(
-        minimap.right <= action.left ||
-        minimap.left >= action.right ||
-        minimap.bottom <= action.top ||
-        minimap.top >= action.bottom
-      );
-    });
-    return {
-      gap: minimap.top - controls.bottom,
-      minimapTop: minimap.top,
-      overlapsAction,
-      rightGap: innerWidth - minimap.right,
-    };
-  });
-  expect(compactPlacement.gap).toBeGreaterThanOrEqual(0);
-  expect(compactPlacement.gap).toBeLessThanOrEqual(16);
-  expect(compactPlacement.minimapTop).toBeLessThan(144);
-  expect(compactPlacement.overlapsAction).toBe(false);
-  expect(compactPlacement.rightGap).toBeLessThanOrEqual(16);
+  await expect(page.locator("#map")).toBeVisible();
+  await expect(page.locator("#event-density-minimap")).toBeHidden();
 
   const popoverBounds = await page
     .locator(".landmark-event-search__popover")
@@ -843,11 +814,16 @@ test("empty snapshots keep the mobile toolbar compact and hide laptop-only map c
   await expect(
     page.locator(".landmark-event-search__actions > button"),
   ).toHaveCount(2);
-  await expect(page.locator("#map-guidance")).toBeVisible();
+  await expect(page.locator("#map-guidance")).toBeHidden();
   await expect(
     page.getByRole("button", { name: "Show feature tour" }),
-  ).toBeVisible();
-  for (const name of ["Zoom in", "Zoom out", "Rotate map"])
+  ).toBeHidden();
+  for (const name of [
+    "Zoom in",
+    "Zoom out",
+    "Rotate map",
+    "Map information and attribution",
+  ])
     await expect(page.getByRole("button", { name })).toBeHidden();
   const mobileToolbar = await page.evaluate(() => {
     const toolbar = document

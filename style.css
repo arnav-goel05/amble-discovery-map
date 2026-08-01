@@ -35,6 +35,13 @@ button {
   right: 0;
 }
 
+@media (max-width: 1023px) {
+  #event-density-minimap,
+  #map-guidance {
+    display: none;
+  }
+}
+
 .feature-tour {
   position: fixed;
   z-index: 90;

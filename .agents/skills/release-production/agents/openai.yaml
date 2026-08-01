@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release Production"
+  short_description: "Verify and promote develop safely"
+  default_prompt: "Use $release-production to verify and release the current develop revision to production."

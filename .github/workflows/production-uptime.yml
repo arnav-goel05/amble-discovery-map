@@ -2,7 +2,8 @@ name: Production uptime
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    # GitHub cron is UTC: 01:00 UTC is 09:00 Asia/Singapore.
+    - cron: "0 1 * * *"
   workflow_dispatch:
 
 permissions:
@@ -34,15 +35,21 @@ jobs:
         env:
           PRODUCTION_SMOKE_ATTEMPTS: 1
           PRODUCTION_SMOKE_REQUIRED_SUCCESSES: 1
-        run: node scripts/verify-cloudflare-deployment.mjs
+        run: |
+          set -o pipefail
+          node scripts/verify-cloudflare-deployment.mjs 2>&1 | tee /tmp/production-smoke.log
 
       - name: Open outage issue
         if: steps.smoke.outcome == 'failure'
         uses: actions/github-script@v8
         with:
           script: |
+            const fs = require("fs");
             const title = "[uptime] amblefinds.com is unhealthy";
             const { owner, repo } = context.repo;
+            const evidence = fs.readFileSync("/tmp/production-smoke.log", "utf8")
+              .replace(/((?:authorization|cookie|token|secret|key))\s*[:=]\s*\S+/gi, "$1=[redacted]")
+              .slice(-4000);
             const issues = await github.paginate(github.rest.issues.listForRepo, {
               owner,
               repo,
@@ -54,7 +61,20 @@ jobs:
                 owner,
                 repo,
                 title,
-                body: `The production smoke check failed.\n\nRun: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+                body: [
+                  "The single daily production smoke check failed.",
+                  "",
+                  `Target: https://amblefinds.com`,
+                  `Detected: ${new Date().toISOString()}`,
+                  `Run: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+                  "",
+                  "Sanitized evidence:",
+                  "```text",
+                  evidence,
+                  "```",
+                  "",
+                  "No immediate retry, rollback, or redeployment was attempted.",
+                ].join("\n"),
               });
             }
 

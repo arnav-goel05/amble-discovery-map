@@ -5,6 +5,20 @@
 Perform all new feature work on `develop`. Do not create or switch to another branch unless
 the user explicitly requests a different branch or explicitly authorizes creating one.
 
+Commit and push directly to the current branch only when the user requests those actions. Do not
+create a pull request automatically. An ordinary commit or push must never update `main` or start
+a production release.
+
+Treat `main` as the production branch. Promote `develop` only when the user explicitly requests a
+release, and use `.agents/skills/release-production/SKILL.md` plus the canonical
+`.github/workflows/release-production.yml` gate. The gate must test one immutable
+`origin/develop` SHA and may only fast-forward `main` to that exact SHA. Never force-push, bypass a
+failed gate, manufacture an untested merge commit, or invoke a second deployment path.
+
+Ordinary CI must use the checked-in geometry fixture and must not hydrate production geometry,
+query remote R2 inventory, call live paid providers, mutate production data, or deploy. Full
+production geometry hydration and bounded remote verification are release-only operations.
+
 ## Event pipeline command
 
 When the task is `npm run event-pipeline -- start`, this command means run the complete event pipeline, not merely initialize it.

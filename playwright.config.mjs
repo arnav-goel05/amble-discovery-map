@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "playwright/test";
 
 const fullMatrix = process.env.PLAYWRIGHT_FULL_MATRIX === "1";
+const geometryFixture = process.env.PLAYWRIGHT_GEOMETRY_FIXTURE === "1";
 const testPort = Number(process.env.PLAYWRIGHT_PORT || 4174);
 const reuseExistingServer =
   process.env.PLAYWRIGHT_REUSE_EXISTING_SERVER === "1";
@@ -33,6 +34,13 @@ const projects = [
 export default defineConfig({
   testDir: "./tests",
   testMatch: "**/*.spec.mjs",
+  testIgnore: geometryFixture
+    ? [
+        "**/building-layer-visibility.spec.mjs",
+        "**/map-render-sync.spec.mjs",
+        "**/map-performance-diagnostics.spec.mjs",
+      ]
+    : [],
   outputDir: "/tmp/onemap-poi-highlight-playwright-results",
   timeout: 60_000,
   // The browser projects share one intentionally single-host test database.
@@ -49,7 +57,7 @@ export default defineConfig({
   webServer: externalBaseUrl
     ? undefined
     : {
-        command: `VITE_AMBLE_E2E_BYPASS_INTRO=1 PLAN_STORE_ROOT=/tmp/onemap-plan-playwright ADMIN_DATABASE_PATH=/tmp/onemap-admin-playwright.sqlite ADMIN_SECURE_COOKIES=0 ADMIN_PASSWORD_HASH='scrypt$v1$playwright-test-salt$h2xsKXSwyvwSJcOnD7jT1Rk_ZmaQsTCrbV_a4Hl8roNa_aXf0vca7ZiZv1So0degt4ElNIZPwUkPv6emJ4ZgAA' TELEGRAM_BOT_USERNAME=WhatsHereTestBot TELEGRAM_WEBHOOK_SECRET=test-secret npm run dev -- --host 127.0.0.1 --port ${testPort} --strictPort`,
+        command: `VITE_AMBLE_E2E_BYPASS_INTRO=1 TILE_FALLBACK_ORIGIN='' PLAN_STORE_ROOT=/tmp/onemap-plan-playwright ADMIN_DATABASE_PATH=/tmp/onemap-admin-playwright.sqlite ADMIN_SECURE_COOKIES=0 ADMIN_PASSWORD_HASH='scrypt$v1$playwright-test-salt$h2xsKXSwyvwSJcOnD7jT1Rk_ZmaQsTCrbV_a4Hl8roNa_aXf0vca7ZiZv1So0degt4ElNIZPwUkPv6emJ4ZgAA' TELEGRAM_BOT_USERNAME=WhatsHereTestBot TELEGRAM_WEBHOOK_SECRET=test-secret node node_modules/vite/bin/vite.js --host 127.0.0.1 --port ${testPort} --strictPort`,
         url: `http://127.0.0.1:${testPort}`,
         reuseExistingServer,
         timeout: 30_000,

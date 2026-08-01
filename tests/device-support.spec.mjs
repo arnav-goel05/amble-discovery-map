@@ -101,6 +101,24 @@ test("phones stop at the device gate while larger screens enter the application"
     );
     await expect(page.locator("#device-gate")).toHaveCount(0);
     await expect(page.locator("#map")).toHaveCount(1);
+    await expect(page.locator("#map")).toBeVisible();
+    await expect(page.locator("#event-density-minimap")).toBeVisible();
+    await expect(page.locator("#map-guidance")).toBeVisible();
+
+    await page.setViewportSize({ width: 900, height: 700 });
+    await expect(page.locator("body")).toHaveAttribute(
+      "data-device-support",
+      "supported",
+    );
+    await expect(page.locator("#device-gate")).toHaveCount(0);
+    await expect(page.locator("#map")).toBeVisible();
+    await expect(page.locator("#event-density-minimap")).toBeHidden();
+    await expect(page.locator("#map-guidance")).toBeHidden();
+
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await expect(page.locator("#map")).toBeVisible();
+    await expect(page.locator("#event-density-minimap")).toBeVisible();
+    await expect(page.locator("#map-guidance")).toBeVisible();
   }
   await page.evaluate(() => window._map?.remove());
 });

@@ -1,10 +1,8 @@
 name: CI
 
 on:
-  pull_request:
-    branches: [develop, main]
   push:
-    branches: [develop, main]
+    branches-ignore: [main]
   workflow_dispatch:
 
 permissions:
@@ -14,18 +12,22 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  CI_EXTERNAL_SERVICES: forbidden
+  PLAYWRIGHT_GEOMETRY_FIXTURE: "1"
+  TILE_FALLBACK_ORIGIN: ""
+
 jobs:
   quality:
-    name: Quality checks
+    name: Local quality
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 35
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          lfs: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v5
@@ -36,32 +38,80 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Hydrate immutable R2 background release
-        run: npm run geometry:background:hydrate
+      - name: Verify zero-external CI policy
+        run: npm run ci:policy
+
+      - name: Verify compact geometry fixture
+        run: npm run geometry:fixture:verify
 
       - name: Lint JavaScript
         run: npm run lint
 
       - name: Check changed-file formatting
         env:
-          CI_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before || github.sha }}
+          CI_BASE_SHA: ${{ github.event.before || github.sha }}
           CI_HEAD_SHA: ${{ github.sha }}
         run: npm run format:check
 
-      - name: Install browser matrix
-        run: npx playwright install --with-deps chromium webkit firefox
-
-      - name: Run unit and integration tests
+      - name: Run all unit and integration tests
         run: npm run test:unit
 
-      - name: Run browser smoke tests
-        run: npm run test:smoke
+      - name: Verify event source contracts
+        run: npm run test:event-sources
 
-      - name: Verify visible 3D building layers
-        run: npm run test:render-smoke
+      - name: Verify voice action and capability parity
+        run: npm run verify:voice-actions && npm run verify:voice-capabilities
 
-      - name: Verify every published R2 tileset object
-        run: npm run cloudflare:r2:verify
+      - name: Verify Cloudflare worker contracts without credentials
+        run: npm run cloudflare:cloud:test
 
-      - name: Verify Cloudflare production build
-        run: npm run cloudflare:cloud:check
+      - name: Build production-equivalent frontend without geometry hydration
+        run: npm run build:ci
+
+  chromium-desktop:
+    name: Chromium desktop interactions
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run broad desktop interaction coverage
+        run: npm run test:ui:ci
+
+  chromium-mobile:
+    name: Chromium mobile interactions
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run targeted mobile interaction coverage
+        run: npm run test:ui:mobile
+
+  complete:
+    name: Quality checks
+    if: always()
+    needs: [quality, chromium-desktop, chromium-mobile]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every ordinary CI tier
+        run: |
+          test "${{ needs.quality.result }}" = "success"
+          test "${{ needs.chromium-desktop.result }}" = "success"
+          test "${{ needs.chromium-mobile.result }}" = "success"

@@ -3,7 +3,7 @@ import test from "node:test";
 
 import {
   getDeviceSupport,
-  MINIMUM_SUPPORTED_SCREEN_EDGE,
+  MINIMUM_SUPPORTED_SHORT_SCREEN_EDGE,
 } from "../device-support.js";
 
 const supportFor = ({
@@ -29,8 +29,8 @@ const supportFor = ({
     },
   });
 
-test("device support allows laptop and desktop browsers", () => {
-  assert.equal(MINIMUM_SUPPORTED_SCREEN_EDGE, 1024);
+test("device support allows laptop, desktop, and tablet-sized screens", () => {
+  assert.equal(MINIMUM_SUPPORTED_SHORT_SCREEN_EDGE, 500);
   assert.equal(
     supportFor({
       width: 1440,
@@ -49,9 +49,28 @@ test("device support allows laptop and desktop browsers", () => {
     }).supported,
     true,
   );
+  assert.equal(
+    supportFor({
+      width: 768,
+      height: 1024,
+      userAgent: "Mozilla/5.0 iPad",
+      mobile: true,
+      maxTouchPoints: 5,
+    }).supported,
+    true,
+  );
+  assert.equal(
+    supportFor({
+      width: 800,
+      height: 1280,
+      userAgent: "Mozilla/5.0 Android",
+      mobile: true,
+    }).supported,
+    true,
+  );
 });
 
-test("device support blocks phones, tablets, and undersized screens", () => {
+test("device support blocks screens whose shortest edge is below 500 pixels", () => {
   assert.equal(
     supportFor({
       width: 430,
@@ -63,17 +82,8 @@ test("device support blocks phones, tablets, and undersized screens", () => {
   );
   assert.equal(
     supportFor({
-      width: 1280,
-      height: 800,
-      userAgent: "Mozilla/5.0 Android",
-      mobile: false,
-    }).supported,
-    false,
-  );
-  assert.equal(
-    supportFor({
-      width: 1024,
-      height: 1366,
+      width: 499,
+      height: 1024,
       userAgent: "Mozilla/5.0 Macintosh",
       mobile: false,
       maxTouchPoints: 5,
@@ -83,11 +93,20 @@ test("device support blocks phones, tablets, and undersized screens", () => {
   assert.equal(
     supportFor({
       width: 900,
-      height: 700,
+      height: 499,
       userAgent: "Mozilla/5.0 Linux",
       mobile: false,
     }).supported,
     false,
+  );
+  assert.equal(
+    supportFor({
+      width: 500,
+      height: 700,
+      userAgent: "Mozilla/5.0 Android",
+      mobile: true,
+    }).supported,
+    true,
   );
 });
 

@@ -54,17 +54,43 @@ Authorize the Cloudflare GitHub App only for this repository. Keep runtime secre
 
 The deploy command always creates a fresh frontend bundle and verifies that its lightweight entry contains the phone/tablet compatibility gate before Wrangler publishes it. A failed test, build, or verification must not replace the active deployment.
 
-GitHub Actions is the pre-merge CI gate. Pull requests into `develop` and `main` run JavaScript linting, changed-file formatting checks, the complete Node test suite, Chromium desktop/mobile smoke tests, a single cached R2 inventory verification, and a production-equivalent Cloudflare build. Both branches require the `CI / Quality checks` result but do not require another reviewer, which keeps the flow practical for a solo developer.
+GitHub Actions separates ordinary validation from production release work:
+
+| Tier                  | Trigger                                                      | Geometry and external use                                                                                    | Tests                                                                                                                                                                                                                     | Mutation                                                               |
+| --------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Ordinary CI           | Push to `develop` or an explicitly created non-main branch   | 592-byte checked-in geometry contract; zero production hydration, R2 requests, provider calls, or deployment | Lint, changed-file formatting, every Node test, event/voice contracts, local Cloudflare worker contracts, production-equivalent frontend build, all non-render Chromium desktop specs, and targeted Chromium mobile specs | None                                                                   |
+| Release verification  | Explicit dispatch with the full current `origin/develop` SHA | One approved-geometry hydration, bounded R2 control-plane/inventory checks, no public object-head loop       | Ordinary gates plus production geometry/separation, complete Chromium/WebKit/Firefox desktop/mobile matrix, production build, visible 3D rendering, and enforced performance budget                                       | Fast-forward `main` to the exact tested SHA after refs are revalidated |
+| Cloudflare deployment | Successful update to `main`                                  | Change-only R2 synchronization, one deploy, fresh inventory evidence, and one post-deploy check              | Cloudflare build and worker contracts                                                                                                                                                                                     | Production only                                                        |
+
+`main` requires both `Quality checks` and `Release verification`. `develop` permits the requested
+direct-push workflow, but force pushes and branch deletion remain prohibited on both branches.
 
 Use `develop` as the permanent integration branch:
 
 1. Perform new feature work directly on `develop`.
 2. Do not create or switch to another branch unless the user explicitly requests it.
 3. Keep completed but unreleased changes on `develop` for as long as needed.
-4. Open a release pull request from `develop` into `main` when the combined changes are ready for users.
-5. Merge the release pull request after CI passes.
+4. Commit and push directly to the current branch only when requested; do not automatically create a pull request.
+5. When the owner explicitly requests production release, invoke the repository
+   `release-production` skill or manually dispatch `Release production` with the full current
+   `origin/develop` SHA.
+6. Let that workflow verify and fast-forward `main`; never push, force, or merge around the gate.
 
-Cloudflare remains the CD system and watches only `main`. Pushes and merges into `develop` stay in GitHub and do not deploy; merging a release pull request into `main` triggers the production deployment.
+Cloudflare remains the CD system and watches only `main`. Pushes to `develop` stay in GitHub and do
+not deploy. The release workflow's exact-SHA update to `main` triggers the production deployment.
+
+## Uptime and incident handling
+
+GitHub checks `https://amblefinds.com` once daily at 09:00 Singapore time with one attempt. A
+healthy run does nothing. Failure opens one deduplicated `[uptime]` issue with sanitized evidence;
+it does not retry, roll back, or redeploy. A later healthy daily run documents recovery and closes
+the matching issue.
+
+The Codex automation `Diagnose Amble outage` runs daily at 09:15 Singapore time. Without an open
+outage issue it exits quietly. With one open issue it performs one bounded diagnostic pass,
+classifies the cause, and may commit/push a tested code fix directly to `develop`. It cannot create
+a pull request, update `main`, dispatch release, deploy, call live paid providers, or close an
+unresolved incident. Production recovery still requires the explicit release gate.
 
 ## Verify
 

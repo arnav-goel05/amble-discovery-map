@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "automationId": "diagnose-amble-outage",
+  "name": "Diagnose Amble outage",
+  "timezone": "Asia/Singapore",
+  "schedule": "daily-09:15",
+  "projectPath": "/Users/arnav/Desktop/projects/onemap-poi-highlight-spike",
+  "executionEnvironment": "local",
+  "issueTitle": "[uptime] amblefinds.com is unhealthy",
+  "productionDiagnosticAttempts": 1,
+  "allowedCodeBranch": "develop",
+  "prohibited": [
+    "create-branch",
+    "pull-request",
+    "main-update",
+    "release-dispatch",
+    "deployment",
+    "rollback",
+    "live-paid-provider",
+    "diagnostic-retry"
+  ]
+}

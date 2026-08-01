@@ -1,4 +1,4 @@
-export const MINIMUM_SUPPORTED_SCREEN_EDGE = 1024;
+export const MINIMUM_SUPPORTED_SHORT_SCREEN_EDGE = 500;
 
 const MOBILE_OR_TABLET_USER_AGENT =
   /Android|iPhone|iPad|iPod|Windows Phone|webOS|BlackBerry|Opera Mini|IEMobile/i;
@@ -11,6 +11,7 @@ export function getDeviceSupport({
   const width = Number(screen?.width) || 0;
   const height = Number(screen?.height) || 0;
   const longestScreenEdge = Math.max(width, height);
+  const shortestScreenEdge = Math.min(width, height);
   const userAgent = String(navigator?.userAgent || "");
   const mobileHint = navigator?.userAgentData?.mobile;
   const ipadDesktopMode =
@@ -35,8 +36,7 @@ export function getDeviceSupport({
 
   const voiceSupported = audioCapture && audioOutput && webSocket;
   const textAssistantSupported = webSocket;
-  const supported =
-    !mobileOrTablet && longestScreenEdge >= MINIMUM_SUPPORTED_SCREEN_EDGE;
+  const supported = shortestScreenEdge >= MINIMUM_SUPPORTED_SHORT_SCREEN_EDGE;
 
   return {
     supported,
@@ -45,6 +45,7 @@ export function getDeviceSupport({
     textAssistantSupported,
     missingCapabilities,
     longestScreenEdge,
+    shortestScreenEdge,
     mobileOrTablet,
   };
 }
