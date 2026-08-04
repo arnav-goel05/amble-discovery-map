@@ -1,12 +1,18 @@
 #!/usr/bin/env node
 
 import { createHash } from "node:crypto";
-import { mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 import release from "../data/background-geometry-release.json" with { type: "json" };
+import {
+  collectApprovedBackgroundEntries,
+  collectTilesetReleaseEntries,
+  reconcileReleaseEntries,
+} from "./lib/background-release-hydration.mjs";
+import { loadApprovedSnapshot } from "./lib/approved-snapshot.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outputRoot = path.join(root, "optimized-tiles");
@@ -38,91 +44,6 @@ async function fetchBytes(url) {
   return Buffer.from(await response.arrayBuffer());
 }
 
-function contentEntries(tileset) {
-  const entries = [];
-  const visit = (tile) => {
-    const rawUri = tile?.content?.uri ?? tile?.content?.url;
-    if (typeof rawUri === "string") {
-      const parsed = new URL(rawUri, "https://tiles.invalid/optimized-tiles/");
-      const pathname = decodeURIComponent(parsed.pathname)
-        .replace(/^\/+/u, "")
-        .replace(/^optimized-tiles\//u, "");
-      if (
-        !pathname ||
-        pathname.includes("..") ||
-        path.isAbsolute(pathname) ||
-        !pathname.endsWith(".b3dm")
-      ) {
-        throw new Error(`Unsafe background release content URI: ${rawUri}`);
-      }
-      const sha256 =
-        tile?.extras?.backgroundObjectSha256 ??
-        parsed.searchParams.get("backgroundObject");
-      if (sha256 && !/^[a-f0-9]{64}$/u.test(sha256)) {
-        throw new Error(
-          `Unversioned background release content URI: ${rawUri}`,
-        );
-      }
-      if (sha256) {
-        entries.push({
-          pathname,
-          sha256,
-          url: releaseUrl(
-            `optimized-tiles/${pathname}?backgroundObject=${sha256}`,
-          ),
-        });
-      }
-    }
-    for (const child of tile?.children ?? []) visit(child);
-  };
-  visit(tileset.root);
-  return [...new Map(entries.map((entry) => [entry.pathname, entry])).values()];
-}
-
-async function sourceFragmentPaths() {
-  const poiRoot = path.join(root, "public/poi-tiles");
-  const directories = await readdir(poiRoot, { withFileTypes: true });
-  const fragments = new Set();
-  const visit = (value) => {
-    if (Array.isArray(value)) {
-      for (const item of value) visit(item);
-      return;
-    }
-    if (!value || typeof value !== "object") return;
-    if (typeof value.sourceTile === "string") {
-      const pathname = value.sourceTile
-        .replace(/^tiles\//u, "")
-        .replace(/^optimized-tiles\//u, "");
-      if (
-        !pathname ||
-        pathname.includes("..") ||
-        path.isAbsolute(pathname) ||
-        !pathname.endsWith(".b3dm")
-      ) {
-        throw new Error(
-          `Unsafe extraction-manifest source tile: ${value.sourceTile}`,
-        );
-      }
-      fragments.add(pathname);
-    }
-    for (const child of Object.values(value)) visit(child);
-  };
-  for (const directory of directories) {
-    if (!directory.isDirectory()) continue;
-    const manifestPath = path.join(
-      poiRoot,
-      directory.name,
-      "extraction-manifest.json",
-    );
-    try {
-      visit(JSON.parse(await readFile(manifestPath, "utf8")));
-    } catch (error) {
-      if (error?.code !== "ENOENT") throw error;
-    }
-  }
-  return [...fragments].sort();
-}
-
 async function persist(basePath, relativePath, bytes) {
   const destination = path.join(basePath, relativePath);
   if (!destination.startsWith(`${basePath}${path.sep}`)) {
@@ -149,13 +70,21 @@ function localTileset(tileset) {
   return copy;
 }
 
-async function hydratePoiFragments() {
-  const poiRoot = path.join(root, "public/poi-tiles");
-  const directories = await readdir(poiRoot, { withFileTypes: true });
+async function hydratePoiFragments(pois) {
+  const directories = new Map(
+    pois.map((poi) => {
+      const dataDirectory = path.dirname(poi.data);
+      if (
+        !dataDirectory.startsWith("poi-tiles/") ||
+        dataDirectory.includes("..") ||
+        path.isAbsolute(dataDirectory)
+      )
+        throw new Error(`Unsafe active POI data path for ${poi.id}`);
+      return [dataDirectory, path.join(root, "public", dataDirectory)];
+    }),
+  );
   const entries = [];
-  for (const directory of directories) {
-    if (!directory.isDirectory()) continue;
-    const directoryPath = path.join(poiRoot, directory.name);
+  for (const [dataDirectory, directoryPath] of directories) {
     let tileset;
     try {
       await readFile(path.join(directoryPath, "extraction-manifest.json"));
@@ -177,13 +106,13 @@ async function hydratePoiFragments() {
           !pathname.endsWith(".b3dm")
         ) {
           throw new Error(
-            `Unsafe POI release content URI for ${directory.name}: ${rawUri}`,
+            `Unsafe POI release content URI for ${dataDirectory}: ${rawUri}`,
           );
         }
         entries.push({
           basePath: directoryPath,
           pathname,
-          url: releaseUrl(`poi-tiles/${directory.name}/${pathname}`),
+          url: releaseUrl(`${dataDirectory}/${pathname}`),
         });
       }
       for (const child of tile?.children ?? []) visit(child);
@@ -234,29 +163,45 @@ async function mapLimit(items, operation) {
 }
 
 const tilesetBytes = await fetchBytes(releaseUrl(release.tilesetUrl));
-const tileset = JSON.parse(tilesetBytes.toString("utf8"));
-const releaseEntries = contentEntries(tileset);
-
-if (releaseEntries.length !== release.objectCount) {
+const tilesetSha256 = createHash("sha256").update(tilesetBytes).digest("hex");
+if (tilesetSha256 !== release.manifestSha256)
   throw new Error(
-    `Background release object count mismatch: expected ${release.objectCount}, received ${releaseEntries.length}`,
+    `Background release manifest hash mismatch: expected ${release.manifestSha256}, received ${tilesetSha256}`,
+  );
+const tileset = JSON.parse(tilesetBytes.toString("utf8"));
+const active = loadApprovedSnapshot({ root });
+if (active.snapshotId !== release.snapshotId) {
+  throw new Error(
+    `Background release snapshot mismatch: expected ${release.snapshotId}, received ${active.snapshotId}`,
   );
 }
-
-const entriesByPath = new Map(
-  releaseEntries.map((entry) => [entry.pathname, entry]),
+const pois = JSON.parse(
+  await readFile(path.join(active.directory, active.poisRef), "utf8"),
 );
-for (const pathname of await sourceFragmentPaths()) {
-  if (entriesByPath.has(pathname)) continue;
-  entriesByPath.set(pathname, {
-    pathname,
-    sha256: null,
-    url: releaseUrl(
-      `optimized-tiles/${pathname}?backgroundRelease=${release.releaseId}`,
-    ),
-  });
+const extractionManifests = new Map();
+for (const poi of pois) {
+  const manifestPath = path.join(
+    root,
+    "public",
+    path.dirname(poi.data),
+    "extraction-manifest.json",
+  );
+  extractionManifests.set(
+    poi.id,
+    JSON.parse(await readFile(manifestPath, "utf8")),
+  );
 }
-const entries = [...entriesByPath.values()];
+const approvedEntries = collectApprovedBackgroundEntries({
+  pois,
+  origin,
+  readExtractionManifest: (poi) => extractionManifests.get(poi.id),
+});
+const releaseEntries = reconcileReleaseEntries({
+  servedEntries: collectTilesetReleaseEntries({ tileset, origin }),
+  approvedEntries,
+  expectedCount: release.objectCount,
+});
+const entries = releaseEntries;
 
 await mapLimit(entries, async (entry) => {
   const existingPath = path.join(outputRoot, entry.pathname);
@@ -293,7 +238,7 @@ const normalizedTilesetBytes = Buffer.from(
   `${JSON.stringify(localTileset(tileset), null, 2)}\n`,
 );
 await persist(outputRoot, "tileset.json", normalizedTilesetBytes);
-const poiFragmentCount = await hydratePoiFragments();
+const poiFragmentCount = await hydratePoiFragments(pois);
 console.log(
   `Hydrated immutable release ${release.releaseId} with ${releaseEntries.length} verified background objects, ${entries.length} required source fragments, and ${poiFragmentCount} POI fragments.`,
 );
