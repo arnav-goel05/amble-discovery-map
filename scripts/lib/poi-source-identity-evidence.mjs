@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+import fs from "node:fs";
 import path from "node:path";
 
 const SHA256_PATTERN = /^[a-f0-9]{64}$/u;
@@ -5,6 +7,44 @@ const SOURCE_TILE_PATTERN = /^tiles\/(?:\d+\/)+[^/]+\.b3dm$/u;
 
 function fail(message) {
   throw new Error(`POI source identity evidence: ${message}`);
+}
+
+const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
+
+function safeReference(value, context) {
+  if (
+    typeof value !== "string" ||
+    !value ||
+    value.includes("..") ||
+    path.isAbsolute(value)
+  )
+    fail(`${context} is unsafe or missing`);
+  return value;
+}
+
+export function loadApprovedPoiCatalogue({ root }) {
+  const pointerPath = path.join(root, "data/approved-snapshot.json");
+  const pointer = JSON.parse(fs.readFileSync(pointerPath, "utf8"));
+  const snapshotId = safeReference(pointer?.snapshotId, "snapshot ID");
+  if (!/^[a-f0-9]{64}$/u.test(pointer?.manifestHash ?? ""))
+    fail("active manifest hash is invalid");
+  const directory = path.join(root, "data/snapshots", snapshotId);
+  const manifestBytes = fs.readFileSync(path.join(directory, "manifest.json"));
+  if (sha256(manifestBytes) !== pointer.manifestHash)
+    fail("active manifest hash does not match its pointer");
+  const manifest = JSON.parse(manifestBytes.toString("utf8"));
+  if (manifest.snapshotId !== snapshotId)
+    fail("active manifest snapshot ID differs from its pointer");
+  const poisRef = safeReference(manifest.poisRef, "POI catalogue reference");
+  const expectedPoiHash = manifest.artifactHashes?.[poisRef];
+  if (!/^[a-f0-9]{64}$/u.test(expectedPoiHash ?? ""))
+    fail("POI catalogue hash is invalid");
+  const poisBytes = fs.readFileSync(path.join(directory, poisRef));
+  if (sha256(poisBytes) !== expectedPoiHash)
+    fail("POI catalogue hash does not match the active manifest");
+  const pois = JSON.parse(poisBytes.toString("utf8"));
+  if (!Array.isArray(pois)) fail("POI catalogue is not an array");
+  return { snapshotId, directory, poisRef, pois };
 }
 
 export function normalizeSourceTile(value) {

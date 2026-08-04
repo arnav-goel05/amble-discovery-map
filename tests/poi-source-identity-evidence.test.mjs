@@ -3,16 +3,16 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
-import { loadApprovedSnapshot } from "../scripts/lib/approved-snapshot.mjs";
 import {
   indexPoiSourceIdentityEvidence,
+  loadApprovedPoiCatalogue,
   normalizeSourceTile,
 } from "../scripts/lib/poi-source-identity-evidence.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 
 test("checked-in source identity evidence exactly covers the active POI catalogue", async () => {
-  const active = loadApprovedSnapshot({ root });
+  const active = loadApprovedPoiCatalogue({ root });
   const evidence = JSON.parse(
     await readFile(
       path.join(root, "data/poi-source-identity-evidence.json"),
@@ -23,9 +23,7 @@ test("checked-in source identity evidence exactly covers the active POI catalogu
     evidence,
     expectedSnapshotId: active.snapshotId,
   });
-  const pois = JSON.parse(
-    await readFile(path.join(active.directory, active.poisRef), "utf8"),
-  );
+  const pois = active.pois;
   const expectedSources = new Set();
   for (const poi of pois) {
     const manifest = JSON.parse(

@@ -5,8 +5,8 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { loadApprovedSnapshot } from "./lib/approved-snapshot.mjs";
 import {
+  loadApprovedPoiCatalogue,
   normalizeSourceTile,
   parseB3dmGmlIds,
 } from "./lib/poi-source-identity-evidence.mjs";
@@ -14,10 +14,8 @@ import {
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outputPath = path.join(root, "data/poi-source-identity-evidence.json");
 const sourceRoot = path.join(root, "public/poi-tiles/source");
-const active = loadApprovedSnapshot({ root });
-const pois = JSON.parse(
-  await readFile(path.join(active.directory, active.poisRef), "utf8"),
-);
+const active = loadApprovedPoiCatalogue({ root });
+const pois = active.pois;
 const sources = new Map();
 
 for (const poi of pois) {
