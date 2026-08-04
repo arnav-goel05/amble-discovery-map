@@ -11,6 +11,7 @@
     "ci:local": "npm run geometry:fixture:verify && npm run geometry:fixture:prepare && npm run ci:policy && npm run lint && PLAYWRIGHT_GEOMETRY_FIXTURE=1 npm run test:unit && npm run cloudflare:cloud:test && npm run build:ci",
     "geometry:fixture:verify": "node scripts/verify-ci-geometry-fixture.mjs",
     "geometry:fixture:prepare": "node scripts/prepare-ci-geometry-fixture.mjs",
+    "geometry:source-evidence:generate": "node scripts/generate-poi-source-identity-evidence.mjs",
     "predev": "npm run build:poi-tileset",
     "prebuild": "npm run build:poi-tileset",
     "venue-index:build": "node scripts/build-local-venue-index.mjs",

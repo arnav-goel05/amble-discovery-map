@@ -39,6 +39,12 @@ request, push `main` directly, invoke Wrangler deployment locally, or reproduce 
      npm run format:check
    ```
 
+   Require the latest ordinary `CI` run for that exact `origin/develop` SHA to be completed with a
+   `success` conclusion. A run for another SHA, a pending run, or a partially successful job is not
+   sufficient. Stop before release dispatch if exact-candidate ordinary CI is missing or not green;
+   this prevents release-only geometry hydration and external quota use for a candidate that has
+   not passed the zero-external fixture suite.
+
 5. Before dispatch, check whether the canonical workflow exists on the default branch:
 
    ```sh

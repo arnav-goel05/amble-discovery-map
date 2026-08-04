@@ -4,6 +4,11 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { APPROVED_POIS } from "../data/approved-pois.js";
+import {
+  indexPoiSourceIdentityEvidence,
+  normalizeSourceTile,
+  parseB3dmGmlIds,
+} from "./lib/poi-source-identity-evidence.mjs";
 
 const argument = (name, fallback = null) => {
   const index = process.argv.indexOf(`--${name}`);
@@ -11,6 +16,8 @@ const argument = (name, fallback = null) => {
 };
 const root = path.resolve(argument("root", "."));
 const registryPath = argument("registry");
+const sourceEvidencePath = argument("source-evidence");
+const expectedSnapshotId = argument("snapshot-id");
 const pristineRoot = path.resolve(
   argument("source-cache", path.join("public", "poi-tiles", "source")),
 );
@@ -35,6 +42,14 @@ const pois = onlyIds
   : configuredPois;
 if (onlyIds && pois.length !== onlyIds.size)
   throw new Error("One or more --ids values are not present in APPROVED_POIS");
+const sourceEvidence = sourceEvidencePath
+  ? indexPoiSourceIdentityEvidence({
+      evidence: JSON.parse(
+        fs.readFileSync(path.resolve(sourceEvidencePath), "utf8"),
+      ),
+      expectedSnapshotId,
+    })
+  : null;
 
 const sha256 = (file) =>
   createHash("sha256").update(fs.readFileSync(file)).digest("hex");
@@ -63,6 +78,7 @@ function batchTable(filePath) {
 }
 
 const failures = [];
+const usedSourceEvidence = new Set();
 let inspected = 0;
 for (const poi of pois) {
   const outputDir = path.join(root, "public", "poi-tiles", poi.id);
@@ -81,23 +97,49 @@ for (const poi of pois) {
     continue;
   }
   for (const entry of manifest.tiles) {
+    const sourceTile = normalizeSourceTile(entry.sourceTile);
+    const evidence = sourceEvidence?.get(sourceTile) ?? null;
+    if (sourceEvidence) {
+      if (!evidence)
+        failures.push(
+          `${poi.id}: missing source identity evidence for ${sourceTile}`,
+        );
+      else if (evidence.sourceSha256 !== entry.sourceSha256)
+        failures.push(
+          `${poi.id}: source evidence hash changed for ${sourceTile}`,
+        );
+      else usedSourceEvidence.add(sourceTile);
+    }
     const pristine = sourcePath(entry.sourceTile);
     const background = backgroundPath(entry.sourceTile);
     const poiTile = path.join(outputDir, entry.poiFile);
     for (const [kind, file] of [
-      ["pristine source", pristine],
       ["background", background],
       ["POI", poiTile],
     ]) {
       if (!fs.existsSync(file))
         failures.push(`${poi.id}: missing ${kind} tile ${file}`);
     }
-    if (![pristine, background, poiTile].every((file) => fs.existsSync(file)))
-      continue;
-    if (sha256(pristine) !== entry.sourceSha256)
-      failures.push(
-        `${poi.id}: pristine source hash changed for ${entry.sourceTile}`,
-      );
+    if (!fs.existsSync(pristine) && !evidence)
+      failures.push(`${poi.id}: missing pristine source tile ${pristine}`);
+    if (![background, poiTile].every((file) => fs.existsSync(file))) continue;
+    let sourceIds = evidence?.gmlIds ?? null;
+    if (fs.existsSync(pristine)) {
+      if (sha256(pristine) !== entry.sourceSha256)
+        failures.push(
+          `${poi.id}: pristine source hash changed for ${entry.sourceTile}`,
+        );
+      const pristineIds = parseB3dmGmlIds(fs.readFileSync(pristine));
+      if (
+        sourceIds &&
+        JSON.stringify(pristineIds) !== JSON.stringify(sourceIds)
+      )
+        failures.push(
+          `${poi.id}: source evidence identities changed for ${entry.sourceTile}`,
+        );
+      sourceIds = pristineIds;
+    }
+    if (!sourceIds) continue;
     if (sha256(poiTile) !== entry.poiSha256)
       failures.push(
         `${poi.id}: POI output hash changed for ${entry.sourceTile}`,
@@ -111,11 +153,10 @@ for (const poi of pois) {
         `${poi.id}: non-positive POI geometry count for ${entry.sourceTile}`,
       );
 
-    const sourceTable = batchTable(pristine);
     const poiIds = batchTable(poiTile)["gml:id"] || [];
     const backgroundIds = batchTable(background)["gml:id"] || [];
     const selectedIds = entry.originalBatchIds.map(
-      (batchId) => sourceTable["gml:id"]?.[batchId],
+      (batchId) => sourceIds[batchId],
     );
     if (selectedIds.some((id) => !id) || !sameValues(selectedIds, entry.gmlIds))
       failures.push(
@@ -129,7 +170,6 @@ for (const poi of pois) {
       failures.push(
         `${poi.id}: selected GML identity remains in background ${background}`,
       );
-    const sourceIds = sourceTable["gml:id"] || [];
     const removedIds = entry.backgroundRemovedGmlIds || [];
     const expectedBackgroundIds = sourceIds.filter(
       (id) => !removedIds.includes(id),
@@ -149,6 +189,15 @@ for (const poi of pois) {
     inspected += 1;
   }
 }
+
+if (
+  sourceEvidence &&
+  !onlyIds &&
+  usedSourceEvidence.size !== sourceEvidence.size
+)
+  failures.push(
+    `source identity evidence coverage differs from the active POI catalogue: used ${usedSourceEvidence.size}, available ${sourceEvidence.size}`,
+  );
 
 if (failures.length) {
   console.error(

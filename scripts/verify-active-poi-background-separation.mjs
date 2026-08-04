@@ -14,6 +14,12 @@ const args = [path.join(root, "scripts/verify-poi-background-separation.mjs")];
 if (fs.existsSync(pointerPath)) {
   const active = loadApprovedSnapshot({ root, pointerPath });
   args.push("--registry", path.join(active.directory, active.poisRef));
+  args.push(
+    "--source-evidence",
+    path.join(root, "data/poi-source-identity-evidence.json"),
+    "--snapshot-id",
+    active.snapshotId,
+  );
 }
 
 const result = spawnSync(process.execPath, args, {

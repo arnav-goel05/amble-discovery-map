@@ -3107,6 +3107,42 @@ test("POI extractor preserves exact GML identities when source tiles share a bas
         "utf8",
       ),
     );
+    const evidencePath = join(fixtureRoot, "source-identity-evidence.json");
+    writeFileSync(
+      evidencePath,
+      JSON.stringify({
+        schemaVersion: "poi-source-identity-evidence-v1",
+        snapshotId: "fixture-snapshot",
+        records: manifest.tiles.map((tile) => ({
+          sourceTile: tile.sourceTile,
+          sourceSha256: tile.sourceSha256,
+          gmlIds: tile.gmlIds,
+        })),
+      }),
+    );
+    rmSync(sourceCache, { recursive: true, force: true });
+    const verifiedWithoutPristineTiles = spawnSync(
+      process.execPath,
+      [
+        "scripts/verify-poi-background-separation.mjs",
+        "--registry",
+        registryPath,
+        "--root",
+        publishRoot,
+        "--source-cache",
+        sourceCache,
+        "--source-evidence",
+        evidencePath,
+        "--snapshot-id",
+        "fixture-snapshot",
+      ],
+      { cwd: ROOT, encoding: "utf8" },
+    );
+    assert.equal(
+      verifiedWithoutPristineTiles.status,
+      0,
+      verifiedWithoutPristineTiles.stderr,
+    );
     assert.deepEqual(manifest.tiles.flatMap(({ gmlIds }) => gmlIds).sort(), [
       "gml-1",
       "gml-2",
