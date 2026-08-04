@@ -50,6 +50,10 @@ function showApplicationLoadFailure(errorCode) {
 
 const support = getDeviceSupport({
   screen: globalThis.screen,
+  viewport: {
+    width: globalThis.innerWidth,
+    height: globalThis.innerHeight,
+  },
   navigator: globalThis.navigator,
 });
 const queryParams = new URLSearchParams(globalThis.location?.search ?? "");

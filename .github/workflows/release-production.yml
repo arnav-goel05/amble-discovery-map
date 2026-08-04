@@ -82,7 +82,7 @@ jobs:
       - name: Run staged event-pipeline browser integration
         run: npm run test:event-pipeline-browser
 
-      - name: Run complete desktop and mobile compatibility matrix
+      - name: Run bounded desktop and mobile compatibility matrix
         run: npm run test:ui:release
 
       - name: Enforce frontend performance budget

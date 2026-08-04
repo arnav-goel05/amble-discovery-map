@@ -12,11 +12,16 @@ const supportFor = ({
   userAgent,
   mobile,
   maxTouchPoints = 0,
+  viewportWidth,
+  viewportHeight,
   media = true,
   socket = true,
 }) =>
   getDeviceSupport({
     screen: { width, height },
+    ...(viewportWidth && viewportHeight
+      ? { viewport: { width: viewportWidth, height: viewportHeight } }
+      : {}),
     navigator: {
       userAgent,
       maxTouchPoints,
@@ -108,6 +113,20 @@ test("device support blocks screens whose shortest edge is below 500 pixels", ()
     }).supported,
     true,
   );
+});
+
+test("mobile viewport wins when a privacy-resistant browser masks its screen size", () => {
+  const maskedPhone = supportFor({
+    width: 1366,
+    height: 768,
+    viewportWidth: 390,
+    viewportHeight: 844,
+    userAgent: "Mozilla/5.0 (Android 14; Mobile; rv:142.0) Firefox/142.0",
+    mobile: true,
+  });
+  assert.equal(maskedPhone.mobileOrTablet, true);
+  assert.equal(maskedPhone.shortestScreenEdge, 390);
+  assert.equal(maskedPhone.supported, false);
 });
 
 test("missing voice capabilities degrades a supported desktop to direct controls", () => {

@@ -5,13 +5,12 @@ const MOBILE_OR_TABLET_USER_AGENT =
 
 export function getDeviceSupport({
   screen,
+  viewport,
   navigator,
   capabilities = {},
 } = {}) {
-  const width = Number(screen?.width) || 0;
-  const height = Number(screen?.height) || 0;
-  const longestScreenEdge = Math.max(width, height);
-  const shortestScreenEdge = Math.min(width, height);
+  const screenWidth = Number(screen?.width) || 0;
+  const screenHeight = Number(screen?.height) || 0;
   const userAgent = String(navigator?.userAgent || "");
   const mobileHint = navigator?.userAgentData?.mobile;
   const ipadDesktopMode =
@@ -20,6 +19,20 @@ export function getDeviceSupport({
     mobileHint === true ||
     MOBILE_OR_TABLET_USER_AGENT.test(userAgent) ||
     ipadDesktopMode;
+  const viewportWidth = Number(viewport?.width) || 0;
+  const viewportHeight = Number(viewport?.height) || 0;
+  const screenEdges = [screenWidth, screenHeight].filter((edge) => edge > 0);
+  const viewportEdges = [viewportWidth, viewportHeight].filter(
+    (edge) => edge > 0,
+  );
+  const effectiveEdges =
+    mobileOrTablet && viewportEdges.length === 2
+      ? [...screenEdges, ...viewportEdges]
+      : screenEdges;
+  const longestScreenEdge = Math.max(...effectiveEdges, 0);
+  const shortestScreenEdge = effectiveEdges.length
+    ? Math.min(...effectiveEdges)
+    : 0;
 
   const audioCapture =
     typeof navigator?.mediaDevices?.getUserMedia === "function";

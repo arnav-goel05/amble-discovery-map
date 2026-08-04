@@ -106,6 +106,7 @@ export function validateCiCdPolicy({
   if (packageJson) {
     const deploy = packageJson.scripts?.["cloudflare:cloud:deploy"] ?? "";
     const smoke = packageJson.scripts?.["cloudflare:cloud:smoke"] ?? "";
+    const releaseUi = packageJson.scripts?.["test:ui:release"] ?? "";
     requireText(
       deploy,
       "npm run cloudflare:cloud:smoke",
@@ -126,6 +127,40 @@ export function validateCiCdPolicy({
       "PRODUCTION_SMOKE_REQUIRED_SUCCESSES=1",
       "post-deployment success budget",
     );
+    for (const scriptName of [
+      "test:ui:release:chromium",
+      "test:ui:release:devices",
+      "test:ui:release:compact",
+    ])
+      requireText(releaseUi, `npm run ${scriptName}`, "release UI isolation");
+    requireText(
+      packageJson.scripts?.["test:ui:release:chromium"] ?? "",
+      "--project chromium-desktop",
+      "release Chromium coverage",
+    );
+    for (const project of [
+      "chromium-desktop",
+      "chromium-mobile",
+      "webkit-desktop",
+      "webkit-mobile",
+      "firefox-desktop",
+      "firefox-mobile",
+    ])
+      requireText(
+        packageJson.scripts?.["test:ui:release:devices"] ?? "",
+        `--project ${project}`,
+        "release device coverage",
+      );
+    for (const project of [
+      "chromium-compact",
+      "webkit-compact",
+      "firefox-compact",
+    ])
+      requireText(
+        packageJson.scripts?.["test:ui:release:compact"] ?? "",
+        `--project ${project}`,
+        "release compact coverage",
+      );
     for (const scriptName of [
       "test:ui:ci",
       "test:ui:mobile",

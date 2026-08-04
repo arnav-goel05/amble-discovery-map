@@ -5,7 +5,10 @@ import { expect, test } from "playwright/test";
 import { installBrowserRenderGuard } from "./helpers/browser-render-guard.mjs";
 
 const CAMERA = "#17/1.2858/103.8579/0/60";
-const MINIMUM_CHANGED_PIXEL_RATIO = 0.001;
+// GPU rasterization varies across hosted and local Chromium implementations.
+// Require a real multi-pixel layer-removal signal without coupling the gate to
+// one renderer's antialiasing footprint.
+const MINIMUM_CHANGED_PIXEL_RATIO = 0.00005;
 const fixtureId = "marina-bay-sands-artscience-museum";
 const pois = JSON.parse(
   readFileSync(new URL("../data/snapshots/initial/pois.json", import.meta.url)),
