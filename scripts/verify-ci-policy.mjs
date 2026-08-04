@@ -30,6 +30,16 @@ export function validateCiCdPolicy({
   requireText(ci, "CI_EXTERNAL_SERVICES: forbidden", "ordinary CI environment");
   requireText(ci, 'TILE_FALLBACK_ORIGIN: ""', "ordinary CI environment");
   requireText(ci, "cancel-in-progress: true", "ordinary CI concurrency");
+  requireText(
+    ci,
+    'CI_BASE_SHA="$(git rev-parse origin/main)" npm run format:check',
+    "ordinary CI formatting range",
+  );
+  requireText(
+    ci,
+    "CI_HEAD_SHA: ${{ github.sha }}",
+    "ordinary CI formatting range",
+  );
   for (const command of [
     "geometry:background:hydrate",
     "geometry:background:audit",

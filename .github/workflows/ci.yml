@@ -47,11 +47,10 @@ jobs:
       - name: Lint JavaScript
         run: npm run lint
 
-      - name: Check changed-file formatting
+      - name: Check full production-candidate formatting
         env:
-          CI_BASE_SHA: ${{ github.event.before || github.sha }}
           CI_HEAD_SHA: ${{ github.sha }}
-        run: npm run format:check
+        run: CI_BASE_SHA="$(git rev-parse origin/main)" npm run format:check
 
       - name: Run all unit and integration tests
         run: npm run test:unit

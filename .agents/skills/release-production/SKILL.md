@@ -18,15 +18,26 @@ request, push `main` directly, invoke Wrangler deployment locally, or reproduce 
 4. Confirm the intended code is already committed and pushed to `origin/develop`. If local
    `develop` differs, report the exact difference and stop unless the user separately authorized
    the needed commit and push. When that authorization exists, create the candidate commit first,
-   then run the changed-file formatter against the still-current remote base before pushing:
+   then run the changed-file formatter across the complete production candidate before pushing:
 
    ```sh
-   CI_BASE_SHA="$(git rev-parse origin/develop)" npm run format:check
+   CI_BASE_SHA="$(git rev-parse origin/main)" \
+     CI_HEAD_SHA="$(git rev-parse HEAD)" \
+     npm run format:check
    ```
 
    This checker compares committed revisions. Never treat a run made before the candidate commit
    exists as formatting evidence. Fix failures in a new commit, re-run the check, and only then
    push the final candidate to `origin/develop`.
+
+   If no commit or push is needed, run the same full-range check against the immutable remote
+   candidate before dispatch:
+
+   ```sh
+   CI_BASE_SHA="$(git rev-parse origin/main)" \
+     CI_HEAD_SHA="$(git rev-parse origin/develop)" \
+     npm run format:check
+   ```
 
 5. Before dispatch, check whether the canonical workflow exists on the default branch:
 

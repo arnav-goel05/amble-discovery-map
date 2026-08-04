@@ -245,8 +245,7 @@ export function createAssistantView({
   const snapshot = () =>
     Object.freeze({
       assistantOpen: voiceUiEnabled && !panel.hidden,
-      activeOverlayId:
-        voiceUiEnabled && !panel.hidden ? "assistant" : null,
+      activeOverlayId: voiceUiEnabled && !panel.hidden ? "assistant" : null,
     });
 
   return Object.freeze({

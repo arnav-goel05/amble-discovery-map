@@ -57,6 +57,18 @@ test("ordinary CI rejects production hydration, remote inventory, and deployment
   }
 });
 
+test("ordinary CI formats the complete main-to-candidate release range", () => {
+  const perPushOnly = clone();
+  perPushOnly.ci = perPushOnly.ci.replace(
+    'CI_BASE_SHA="$(git rev-parse origin/main)" npm run format:check',
+    "npm run format:check",
+  );
+  assert.throws(
+    () => validateCiCdPolicy(perPushOnly),
+    /ordinary CI formatting range/,
+  );
+});
+
 test("browser CI cannot silently fall back from the materialized fixture", () => {
   const missingRoot = clone();
   missingRoot.playwrightConfig = missingRoot.playwrightConfig.replace(
