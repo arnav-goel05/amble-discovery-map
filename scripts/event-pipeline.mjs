@@ -106,6 +106,10 @@ const { AdminRepository } = require("./lib/admin-repository.cjs");
 const { AdminService } = require("./lib/admin-service.cjs");
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const frontendRoot = () =>
+  process.env.EVENT_PIPELINE_FRONTEND_ROOT
+    ? resolve(process.env.EVENT_PIPELINE_FRONTEND_ROOT)
+    : ROOT;
 const OUTPUT_ROOT = process.env.EVENT_PIPELINE_OUTPUT_ROOT
   ? resolve(process.env.EVENT_PIPELINE_OUTPUT_ROOT)
   : join(ROOT, "outputs/event-pipeline");
@@ -1264,7 +1268,7 @@ function start(options) {
         reasonCodes: [],
         candidateSnapshotId: runId,
         activeSnapshotId:
-          loadCurrentApprovedData(ROOT).snapshot?.snapshotId ?? null,
+          loadCurrentApprovedData(frontendRoot()).snapshot?.snapshotId ?? null,
       },
       finalizedAt: null,
     });
@@ -2933,11 +2937,7 @@ function finalizeDedupCommand(options) {
   );
   const approved = overriddenLandmarks
     ? null
-    : loadCurrentApprovedData(
-        process.env.EVENT_PIPELINE_FRONTEND_ROOT
-          ? resolve(process.env.EVENT_PIPELINE_FRONTEND_ROOT)
-          : ROOT,
-      );
+    : loadCurrentApprovedData(frontendRoot());
   const priorEvents = overriddenLandmarks
     ? overriddenLandmarks.flatMap((landmark) => landmark.events ?? [])
     : [
@@ -5027,9 +5027,7 @@ async function stageFrontend(options) {
     ]);
     const publication = commitFrontendSnapshot({
       runDir,
-      root: process.env.EVENT_PIPELINE_FRONTEND_ROOT
-        ? resolve(process.env.EVENT_PIPELINE_FRONTEND_ROOT)
-        : ROOT,
+      root: frontendRoot(),
       run: readJson(join(runDir, "run.json")),
       state,
       commitEligibility,
@@ -5116,7 +5114,9 @@ async function prepareFrontendPlan(runId) {
     "EVENT_PIPELINE_CURRENT_LANDMARKS",
   );
   const approved =
-    currentPois || currentLandmarks ? null : loadCurrentApprovedData(ROOT);
+    currentPois || currentLandmarks
+      ? null
+      : loadCurrentApprovedData(frontendRoot());
   return prepareFrontendSnapshot({
     runDir,
     state,
