@@ -138,6 +138,11 @@ export function validateCiCdPolicy({
       "--project chromium-desktop",
       "release Chromium coverage",
     );
+    requireText(
+      packageJson.scripts?.["test:ui:release:chromium"] ?? "",
+      "PLAYWRIGHT_SKIP_DEVICE_SUPPORT=1",
+      "release device-process isolation",
+    );
     for (const project of [
       "chromium-desktop",
       "chromium-mobile",
