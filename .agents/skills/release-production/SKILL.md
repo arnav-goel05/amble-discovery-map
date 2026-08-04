@@ -6,7 +6,8 @@ description: Safely bootstrap the canonical release workflow when separately aut
 # Release Production
 
 Release only through `.github/workflows/release-production.yml`. Do not create a branch or pull
-request, push `main` directly, invoke Wrangler deployment locally, or reproduce the gate manually.
+request, push `main` directly, invoke Wrangler deployment locally, or reproduce the gate manually,
+except for the narrowly authorized read-only integrity Worker bootstrap below.
 
 1. Read `AGENTS.md` and confirm the user explicitly authorized a production release in the current
    request. If not, stop and explain that ordinary work remains on `develop`.
@@ -96,6 +97,37 @@ After the user explicitly authorizes the bootstrap in the current request:
 
 The temporary default-branch change exists only to let GitHub queue the canonical workflow. It is
 not permission to push `main`, skip checks, deploy separately, or leave `develop` as the default.
+
+## Read-only integrity Worker bootstrap
+
+The release gate's single bounded R2 inventory request depends on the isolated
+`amble-tile-integrity` Worker. For the first production release, that Worker may not exist yet
+because the `main`-owned Cloudflare deployment has never run. Treat this as a one-time control-plane
+bootstrap prerequisite only when all of the following are true:
+
+- an exact-candidate release run passed POI separation and local R2 inventory;
+- its single public inventory request failed with `404 Not Found` at the configured
+  `amble-tile-integrity` Workers URL;
+- `origin/main` was not updated and no application deployment occurred;
+- the user explicitly authorized fixing the release blocker and retrying the release; and
+- the local worktree is clean on `develop` and equals the exact successful ordinary-CI candidate.
+
+After confirming those conditions:
+
+1. Run the local Cloudflare contract tests for the candidate.
+2. Confirm Wrangler is authenticated to the intended account.
+3. Run `npm run cloudflare:tile-integrity:deploy` exactly once. This may publish only the isolated
+   read-only inventory Worker configured by `wrangler.tile-integrity.jsonc`. It must not deploy the
+   application Worker, mutate R2 geometry, update `main`, or invoke `cloudflare:cloud:deploy`.
+4. Do not probe the endpoint separately; the next canonical release run owns the one bounded
+   inventory request and supplies the verification evidence.
+5. Re-run steps 1-7 against the current immutable `origin/develop` SHA. Dispatch one new run only
+   when the user's authorization includes addressing the failed gate; never rerun the failed job or
+   dispatch two runs for the same fix.
+
+Once the Worker exists, this exception is no longer applicable. Routine releases rely on the
+existing endpoint, and the `main`-owned Cloudflare build updates it through the canonical deployment
+command.
 
 Never expose credentials or copy unsanitized provider output into reports. A successful workflow
 is not permission to make any additional production change.
