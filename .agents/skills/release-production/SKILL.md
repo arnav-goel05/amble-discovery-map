@@ -17,7 +17,17 @@ request, push `main` directly, invoke Wrangler deployment locally, or reproduce 
    divergence.
 4. Confirm the intended code is already committed and pushed to `origin/develop`. If local
    `develop` differs, report the exact difference and stop unless the user separately authorized
-   the needed commit and push.
+   the needed commit and push. When that authorization exists, create the candidate commit first,
+   then run the changed-file formatter against the still-current remote base before pushing:
+
+   ```sh
+   CI_BASE_SHA="$(git rev-parse origin/develop)" npm run format:check
+   ```
+
+   This checker compares committed revisions. Never treat a run made before the candidate commit
+   exists as formatting evidence. Fix failures in a new commit, re-run the check, and only then
+   push the final candidate to `origin/develop`.
+
 5. Before dispatch, check whether the canonical workflow exists on the default branch:
 
    ```sh
@@ -26,6 +36,7 @@ request, push `main` directly, invoke Wrangler deployment locally, or reproduce 
 
    If it exists, continue to dispatch. If it does not exist, do not attempt dispatch and do not
    surface the resulting GitHub 404 as a release failure. Follow **First-release bootstrap** below.
+
 6. Dispatch the canonical gate:
 
    ```sh

@@ -85,5 +85,4 @@ application-owned state machine and error boundary.
 
 - Migrate transport now: rejected as a larger independent project.
 - Upgrade the model now: rejected because architecture and deterministic state should be evaluated
-before spending more on model capability.
-
+  before spending more on model capability.

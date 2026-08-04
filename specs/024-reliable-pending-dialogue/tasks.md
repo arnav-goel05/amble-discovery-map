@@ -12,8 +12,8 @@
 
 **Purpose**: Confirm the current pending-dialogue behavior and feature boundary before edits.
 
-- [X] T001 Run the focused baseline `node --test tests/realtime-relay.test.mjs` and record the pre-change result in `specs/024-reliable-pending-dialogue/quickstart.md`
-- [X] T002 Verify the current interpreter, relay, and tests use the existing shared capability gateway and identify no required schema migration outside `scripts/lib/pending-dialogue.mjs`, `cloudflare/realtime-relay.mjs`, and `tests/realtime-relay.test.mjs`
+- [x] T001 Run the focused baseline `node --test tests/realtime-relay.test.mjs` and record the pre-change result in `specs/024-reliable-pending-dialogue/quickstart.md`
+- [x] T002 Verify the current interpreter, relay, and tests use the existing shared capability gateway and identify no required schema migration outside `scripts/lib/pending-dialogue.mjs`, `cloudflare/realtime-relay.mjs`, and `tests/realtime-relay.test.mjs`
 
 ---
 
@@ -23,8 +23,8 @@
 
 **⚠️ CRITICAL**: Complete before user-story implementation.
 
-- [X] T003 Add failing contract fixtures for expected reply classes, immutable applicable-choice indexes, verified labels, stable identities, and privacy-safe values in `tests/realtime-relay.test.mjs`
-- [X] T004 Implement the bounded applicable-choice representation and closed resolution outcome fields in `scripts/lib/pending-dialogue.mjs`
+- [x] T003 Add failing contract fixtures for expected reply classes, immutable applicable-choice indexes, verified labels, stable identities, and privacy-safe values in `tests/realtime-relay.test.mjs`
+- [x] T004 Implement the bounded applicable-choice representation and closed resolution outcome fields in `scripts/lib/pending-dialogue.mjs`
 
 **Checkpoint**: Pending state can represent a narrowed clarification without discarding original candidates.
 
@@ -38,12 +38,12 @@
 
 ### Tests for User Story 1
 
-- [X] T005 [US1] Add failing exact-title-with-action-words, unique-word, unique-phrase, punctuation/case, ordinal, out-of-range, duplicate-reply, and always-clarify-pronoun fixtures in `tests/realtime-relay.test.mjs`
+- [x] T005 [US1] Add failing exact-title-with-action-words, unique-word, unique-phrase, punctuation/case, ordinal, out-of-range, duplicate-reply, and always-clarify-pronoun fixtures in `tests/realtime-relay.test.mjs`
 
 ### Implementation for User Story 1
 
-- [X] T006 [US1] Implement bounded action-filler removal, exact normalized title matching, unique candidate token-span matching, valid ordinal resolution, and pronoun clarification without edit distance in `scripts/lib/pending-dialogue.mjs`
-- [X] T007 [US1] Run `node --test tests/realtime-relay.test.mjs` and mark User Story 1 complete only when its fixtures and existing single-use behavior pass
+- [x] T006 [US1] Implement bounded action-filler removal, exact normalized title matching, unique candidate token-span matching, valid ordinal resolution, and pronoun clarification without edit distance in `scripts/lib/pending-dialogue.mjs`
+- [x] T007 [US1] Run `node --test tests/realtime-relay.test.mjs` and mark User Story 1 complete only when its fixtures and existing single-use behavior pass
 
 **Checkpoint**: Natural offered-result references resolve without model routing or invented IDs.
 
@@ -57,13 +57,13 @@
 
 ### Tests for User Story 2
 
-- [X] T008 [US2] Add failing multiple-match, no-match answer-like, narrowed-ordinal follow-up, repeated ambiguity, and full-state retention fixtures in `tests/realtime-relay.test.mjs`
+- [x] T008 [US2] Add failing multiple-match, no-match answer-like, narrowed-ordinal follow-up, repeated ambiguity, and full-state retention fixtures in `tests/realtime-relay.test.mjs`
 
 ### Implementation for User Story 2
 
-- [X] T009 [US2] Return matching original candidate indexes and retain answer-like unresolved outcomes in `scripts/lib/pending-dialogue.mjs`
-- [X] T010 [US2] Preserve pending dialogue, apply narrowed applicable choices, and generate verified-label deterministic clarification speech in `cloudflare/realtime-relay.mjs`
-- [X] T011 [US2] Run `node --test tests/realtime-relay.test.mjs` and mark User Story 2 complete only when the next-turn narrowed selection executes the stored identity once
+- [x] T009 [US2] Return matching original candidate indexes and retain answer-like unresolved outcomes in `scripts/lib/pending-dialogue.mjs`
+- [x] T010 [US2] Preserve pending dialogue, apply narrowed applicable choices, and generate verified-label deterministic clarification speech in `cloudflare/realtime-relay.mjs`
+- [x] T011 [US2] Run `node --test tests/realtime-relay.test.mjs` and mark User Story 2 complete only when the next-turn narrowed selection executes the stored identity once
 
 **Checkpoint**: Ambiguity remains a recoverable multi-turn dialogue rather than falling into general routing.
 
@@ -77,12 +77,12 @@
 
 ### Tests for User Story 3
 
-- [X] T012 [US3] Add failing cancellation, explicit restaurant action, explicit map action, ambiguous reply, overlay-only fallback, and stale-context fixtures in `tests/realtime-relay.test.mjs`
+- [x] T012 [US3] Add failing cancellation, explicit restaurant action, explicit map action, ambiguous reply, overlay-only fallback, and stale-context fixtures in `tests/realtime-relay.test.mjs`
 
 ### Implementation for User Story 3
 
-- [X] T013 [US3] Add a non-overlay deterministic supported-action supersession check and keep unresolved replies inside pending routing in `cloudflare/realtime-relay.mjs`
-- [X] T014 [US3] Run `node --test tests/realtime-relay.test.mjs tests/assistant-capability-turn-scope.test.mjs` and mark User Story 3 complete only when ordinary explicit actions still route through their existing capability family
+- [x] T013 [US3] Add a non-overlay deterministic supported-action supersession check and keep unresolved replies inside pending routing in `cloudflare/realtime-relay.mjs`
+- [x] T014 [US3] Run `node --test tests/realtime-relay.test.mjs tests/assistant-capability-turn-scope.test.mjs` and mark User Story 3 complete only when ordinary explicit actions still route through their existing capability family
 
 **Checkpoint**: Pending state neither traps the user nor disappears because of ambiguous language or UI overlay context.
 
@@ -96,12 +96,12 @@
 
 ### Tests for User Story 4
 
-- [X] T015 [US4] Add failing recoverable unknown-tool, unrelated-tool, malformed-argument, invalid-schema, next-valid-turn, and terminal-integrity-boundary fixtures in `tests/realtime-relay.test.mjs`
+- [x] T015 [US4] Add failing recoverable unknown-tool, unrelated-tool, malformed-argument, invalid-schema, next-valid-turn, and terminal-integrity-boundary fixtures in `tests/realtime-relay.test.mjs`
 
 ### Implementation for User Story 4
 
-- [X] T016 [US4] Add bounded pending-dialogue tool-error recovery that discards unsafe output, preserves state, requests one fixed clarification, and bypasses terminal cleanup only for application-level errors in `cloudflare/realtime-relay.mjs`
-- [X] T017 [US4] Run `node --test tests/realtime-relay.test.mjs` and mark User Story 4 complete only when recoverable errors preserve admission and genuine protocol failures still terminate
+- [x] T016 [US4] Add bounded pending-dialogue tool-error recovery that discards unsafe output, preserves state, requests one fixed clarification, and bypasses terminal cleanup only for application-level errors in `cloudflare/realtime-relay.mjs`
+- [x] T017 [US4] Run `node --test tests/realtime-relay.test.mjs` and mark User Story 4 complete only when recoverable errors preserve admission and genuine protocol failures still terminate
 
 **Checkpoint**: An ordinary tool-selection or argument mistake no longer surfaces as voice-service unavailability when deterministic pending recovery is available.
 
@@ -111,14 +111,14 @@
 
 **Purpose**: Prove privacy, capability parity, lifecycle safety, unchanged provider policy, and Phase 1 scope.
 
-- [X] T018 Add or update privacy assertions proving pending-dialogue operational records contain no utterance, label, target identity, arguments, provider payload, precise location, credentials, or raw audio in `tests/realtime-relay.test.mjs`
-- [X] T019 Run `npm run test:voice` and resolve every failure without expanding beyond `specs/024-reliable-pending-dialogue/spec.md`
-- [X] T020 Run `npm run test:unit` to verify affected capability, connector, policy, budget, output-token, logging, and direct/conversational parity behavior
-- [X] T021 Run `npm run lint` and resolve every lint error in the feature scope
-- [X] T022 Run `npm run build:ci` and verify the production build succeeds with the existing Realtime models, WebSocket transport, and audio contract
-- [X] T023 Verify the final diff contains no Agents SDK, WebRTC, model, transcription, VAD, exact-word enforcement, new dependency, production diagnostic-content, or later-roadmap implementation and record the completed validation commands in `specs/024-reliable-pending-dialogue/quickstart.md`
-- [X] T024 [CONVERGENCE] Add and pass a one-candidate clarification fixture so every bounded applicable set produces grammatical speech with one question
-- [X] T025 [CONVERGENCE] Preserve terminal handling for reused or overlapping provider call identities even when a current pending dialogue could otherwise recover an application-level tool mistake
+- [x] T018 Add or update privacy assertions proving pending-dialogue operational records contain no utterance, label, target identity, arguments, provider payload, precise location, credentials, or raw audio in `tests/realtime-relay.test.mjs`
+- [x] T019 Run `npm run test:voice` and resolve every failure without expanding beyond `specs/024-reliable-pending-dialogue/spec.md`
+- [x] T020 Run `npm run test:unit` to verify affected capability, connector, policy, budget, output-token, logging, and direct/conversational parity behavior
+- [x] T021 Run `npm run lint` and resolve every lint error in the feature scope
+- [x] T022 Run `npm run build:ci` and verify the production build succeeds with the existing Realtime models, WebSocket transport, and audio contract
+- [x] T023 Verify the final diff contains no Agents SDK, WebRTC, model, transcription, VAD, exact-word enforcement, new dependency, production diagnostic-content, or later-roadmap implementation and record the completed validation commands in `specs/024-reliable-pending-dialogue/quickstart.md`
+- [x] T024 [CONVERGENCE] Add and pass a one-candidate clarification fixture so every bounded applicable set produces grammatical speech with one question
+- [x] T025 [CONVERGENCE] Preserve terminal handling for reused or overlapping provider call identities even when a current pending dialogue could otherwise recover an application-level tool mistake
 
 ---
 
@@ -167,6 +167,6 @@ The implementation touches two shared runtime files and one shared test file, so
 
 ## Phase 8: Convergence
 
-- [X] T026 Normalize internal candidate-title punctuation and add collision-safe exact/fragment fixtures per FR-003 and FR-004 (partial)
-- [X] T027 Implement and validate the versioned closed `unrecognized` resolution outcome, including `answerLike`, and route it without the legacy `unrelated` shape per FR-019 and `contracts/pending-dialogue-resolution.md` (partial)
-- [X] T028 Add an unavailable-current-tool pending recovery fixture that proves zero mutation and a usable next turn per SC-006 and plan: recoverable errors (partial)
+- [x] T026 Normalize internal candidate-title punctuation and add collision-safe exact/fragment fixtures per FR-003 and FR-004 (partial)
+- [x] T027 Implement and validate the versioned closed `unrecognized` resolution outcome, including `answerLike`, and route it without the legacy `unrelated` shape per FR-019 and `contracts/pending-dialogue-resolution.md` (partial)
+- [x] T028 Add an unavailable-current-tool pending recovery fixture that proves zero mutation and a usable next turn per SC-006 and plan: recoverable errors (partial)

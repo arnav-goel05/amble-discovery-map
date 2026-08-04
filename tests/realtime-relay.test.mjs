@@ -1043,9 +1043,7 @@ test("relay narrows ambiguous title choices and resolves the next ordinal", asyn
   assert.match(clarification, /Reflect at the Gallery/);
   assert.doesNotMatch(clarification, /Ballet/);
   assert.equal(
-    harness.browserMessages.some(
-      ({ type }) => type === "capability.proposed",
-    ),
+    harness.browserMessages.some(({ type }) => type === "capability.proposed"),
     false,
   );
 
@@ -1115,11 +1113,12 @@ test("relay retains pending state for an unrecognized selection-shaped reply", a
       text: "add the interesting one",
     }),
   );
-  assert.equal(session.pendingDialogue.dialogueId, "dialogue-unrecognized-selection");
   assert.equal(
-    harness.browserMessages.some(
-      ({ type }) => type === "capability.proposed",
-    ),
+    session.pendingDialogue.dialogueId,
+    "dialogue-unrecognized-selection",
+  );
+  assert.equal(
+    harness.browserMessages.some(({ type }) => type === "capability.proposed"),
     false,
   );
   assert.match(
@@ -2721,7 +2720,9 @@ test("pending dialogue recovers application-level provider tool mistakes", async
       nowMs: 5_000,
     });
 
-    harness.providerListeners.message({ data: JSON.stringify(candidate.event) });
+    harness.providerListeners.message({
+      data: JSON.stringify(candidate.event),
+    });
     await flushRelay();
     assert.equal(harness.relay.sessions.has(sessionId), true, candidate.name);
     assert.equal(session.pendingDialogue.status, "active", candidate.name);
@@ -2765,7 +2766,8 @@ test("pending dialogue recovers application-level provider tool mistakes", async
     );
     assert.equal(
       harness.browserMessages.some(
-        ({ type, reason }) => type === "session.stopped" && reason === "protocol",
+        ({ type, reason }) =>
+          type === "session.stopped" && reason === "protocol",
       ),
       false,
       candidate.name,
@@ -2829,9 +2831,8 @@ test("pending dialogue does not recover an invalid provider call identity", asyn
 
   assert.equal(harness.relay.sessions.has(sessionId), false);
   assert.equal(
-    harness.browserMessages.findLast(
-      ({ type }) => type === "session.stopped",
-    )?.reason,
+    harness.browserMessages.findLast(({ type }) => type === "session.stopped")
+      ?.reason,
     "protocol",
   );
 });
@@ -2893,9 +2894,8 @@ test("pending dialogue does not recover a reused terminal call identity", async 
 
   assert.equal(harness.relay.sessions.has(sessionId), false);
   assert.equal(
-    harness.browserMessages.findLast(
-      ({ type }) => type === "session.stopped",
-    )?.reason,
+    harness.browserMessages.findLast(({ type }) => type === "session.stopped")
+      ?.reason,
     "protocol",
   );
 });

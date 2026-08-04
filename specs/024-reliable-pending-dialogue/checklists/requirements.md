@@ -33,4 +33,3 @@
 
 - The five owner clarifications from 2026-08-02 are integrated into the specification.
 - Phase 2 and later work from `docs/amble-voice-reliability-roadmap.md` is explicitly excluded.
-

@@ -12,13 +12,13 @@ The interpreter has no network, provider, application-execution, or persistence 
 
 ## Closed outcomes
 
-| Outcome | Required fields | Relay behavior |
-| --- | --- | --- |
-| `resolved` | exact stored candidate | Atomically consume, then propose through the ordinary capability gateway |
-| `clarified` | reason, optional original candidate indexes | Preserve pending state and speak one fixed verified-label question |
-| `rejected` | none | Consume and confirm no change |
-| `stale` | none | Invalidate and request a fresh choice |
-| `unrecognized` | `answerLike` boolean | Clarify if answer-like; otherwise test only explicit supported-action supersession |
+| Outcome        | Required fields                             | Relay behavior                                                                     |
+| -------------- | ------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `resolved`     | exact stored candidate                      | Atomically consume, then propose through the ordinary capability gateway           |
+| `clarified`    | reason, optional original candidate indexes | Preserve pending state and speak one fixed verified-label question                 |
+| `rejected`     | none                                        | Consume and confirm no change                                                      |
+| `stale`        | none                                        | Invalidate and request a fresh choice                                              |
+| `unrecognized` | `answerLike` boolean                        | Clarify if answer-like; otherwise test only explicit supported-action supersession |
 
 ## Resolution precedence
 
@@ -58,4 +58,3 @@ payload, and connection failure remain terminal.
 Operational records may emit only the existing closed pending-dialogue outcome code and ordinary
 content-free trace metadata. They must not contain utterances, candidate labels or identities,
 arguments, provider payloads, exact location, credentials, authorization material, or raw audio.
-
