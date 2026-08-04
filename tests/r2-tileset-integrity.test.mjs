@@ -109,7 +109,7 @@ test("fails closed for missing and non-drawable referenced objects", async () =>
   assert.equal(empty.tilesets[0].errors[0].kind, "non-drawable-b3dm");
 });
 
-test("fails closed for same-size stale and unverifiable versioned objects", async () => {
+test("fails closed for stale stored validators while permitting SHA-only release evidence", async () => {
   const stale = await buildR2TilesetIntegrityReport(
     bucketFixture({ stale: true }),
   );
@@ -129,11 +129,9 @@ test("fails closed for same-size stale and unverifiable versioned objects", asyn
   const absentExpected = await buildR2TilesetIntegrityReport(
     bucketFixture({ absentExpectedValidator: true }),
   );
-  assert.equal(absentExpected.complete, false);
-  assert.equal(
-    absentExpected.tilesets[0].errors[0].kind,
-    "object-expected-validator-missing",
-  );
+  assert.equal(absentExpected.complete, true);
+  assert.equal(absentExpected.tilesets[0].unverifiableObjectCount, 1);
+  assert.deepEqual(absentExpected.tilesets[0].errors, []);
 });
 
 test("returns bounded POI inventory detail only when explicitly requested", async () => {

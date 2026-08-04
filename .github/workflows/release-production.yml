@@ -71,7 +71,7 @@ jobs:
         run: |
           npm run test:poi-separation
           npm run cloudflare:r2:verify -- --local-only
-          npm run cloudflare:r2:verify
+          npm run cloudflare:r2:verify -- --pre-deploy
 
       - name: Verify production Cloudflare build
         run: npm run cloudflare:prepare && npm run cloudflare:cloud:verify-build

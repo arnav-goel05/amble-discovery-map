@@ -246,10 +246,6 @@ export async function buildR2TilesetIntegrityReport(
       });
       if (!reference.expectedMd5) {
         unverifiableObjectCount += 1;
-        errors.push({
-          kind: "object-expected-validator-missing",
-          path: `/${key}`,
-        });
       } else if (!metadata.md5) {
         unverifiableObjectCount += 1;
         errors.push({

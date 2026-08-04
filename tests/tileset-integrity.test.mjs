@@ -269,6 +269,22 @@ test("compares the local manifest inventory with the R2 binding report", () => {
   );
 });
 
+test("pre-deploy comparison requires published health without requiring candidate parity", () => {
+  const result = compareR2BindingInventory({
+    id: "highlighted",
+    inventory: { objectCount: 143, referenceSha256: "candidate" },
+    published: {
+      complete: true,
+      referenceCount: 366,
+      referenceSha256: "current-production",
+    },
+    requireObjectMetadata: true,
+    requireReferenceParity: false,
+  });
+
+  assert.deepEqual(result, { complete: true, errors: [] });
+});
+
 test("routine highlighted inventory rejects same-size stale and unverifiable objects", () => {
   const inventory = {
     objectCount: 2,
@@ -379,6 +395,21 @@ test("binding inventory stops immediately on a public rate limit", async () => {
       },
     }),
     /verification stopped/,
+  );
+  assert.equal(calls, 1);
+});
+
+test("binding inventory makes one attempt for a server failure", async () => {
+  let calls = 0;
+  await assert.rejects(
+    fetchR2BindingInventory({
+      origin: "https://integrity.example.test",
+      fetchImpl: async () => {
+        calls += 1;
+        return new Response(null, { status: 503 });
+      },
+    }),
+    /503/,
   );
   assert.equal(calls, 1);
 });

@@ -63,7 +63,7 @@ export async function fetchR2BindingInventory({
   releaseId = null,
   verificationId = null,
   fetchImpl = fetch,
-  retryAttempts = 3,
+  retryAttempts = 1,
   allowIncomplete = false,
 }) {
   const url = new URL("/api/tile-integrity", origin);

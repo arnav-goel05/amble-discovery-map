@@ -25,6 +25,7 @@ const option = (name, fallback = null) => {
 };
 const localOnly = args.includes("--local-only");
 const objectHeads = args.includes("--object-heads");
+const preDeploy = args.includes("--pre-deploy");
 const origin = option("origin", "https://amble.project-hub-arnav.workers.dev");
 const inventoryOrigin = option(
   "inventory-origin",
@@ -121,6 +122,7 @@ for (const definition of definitions) {
             ({ id }) => id === definition.id,
           ),
           requireObjectMetadata: definition.id === "highlighted",
+          requireReferenceParity: !preDeploy || definition.id !== "highlighted",
         });
   tilesets.push({
     id: definition.id,
@@ -140,7 +142,9 @@ const report = {
     ? "local"
     : objectHeads
       ? "published-r2-object-heads"
-      : "r2-binding-inventory",
+      : preDeploy
+        ? "pre-deploy-r2-binding-inventory"
+        : "r2-binding-inventory",
   origin: localOnly ? null : origin,
   inventoryOrigin: localOnly || objectHeads ? null : inventoryOrigin,
   integrityReleaseId,

@@ -373,6 +373,7 @@ export function compareR2BindingInventory({
   inventory,
   published,
   requireObjectMetadata = false,
+  requireReferenceParity = true,
 }) {
   const errors = [];
   if (!published)
@@ -394,19 +395,21 @@ export function compareR2BindingInventory({
               },
             ]),
       );
-    if (published.referenceCount !== inventory.objectCount)
-      errors.push({
-        kind: "reference-count-mismatch",
-        path: id,
-        message: `published=${published.referenceCount}, local=${inventory.objectCount}`,
-      });
-    if (published.referenceSha256 !== inventory.referenceSha256)
-      errors.push({
-        kind: "reference-digest-mismatch",
-        path: id,
-        message: `published=${published.referenceSha256}, local=${inventory.referenceSha256}`,
-      });
-    if (requireObjectMetadata) {
+    if (requireReferenceParity) {
+      if (published.referenceCount !== inventory.objectCount)
+        errors.push({
+          kind: "reference-count-mismatch",
+          path: id,
+          message: `published=${published.referenceCount}, local=${inventory.objectCount}`,
+        });
+      if (published.referenceSha256 !== inventory.referenceSha256)
+        errors.push({
+          kind: "reference-digest-mismatch",
+          path: id,
+          message: `published=${published.referenceSha256}, local=${inventory.referenceSha256}`,
+        });
+    }
+    if (requireObjectMetadata && requireReferenceParity) {
       if (!Array.isArray(published.inventoryObjects))
         errors.push({
           kind: "object-inventory-missing",

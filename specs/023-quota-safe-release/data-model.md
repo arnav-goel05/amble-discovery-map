@@ -36,6 +36,12 @@ promoted`, or any non-terminal state to `failed`. Only `refs_revalidated` may tr
 - Post-deployment smoke attempts: 1
 - Live paid-provider calls: 0
 
+Before deployment, the public inventory must prove that the currently published background and
+highlighted geometry are healthy. Candidate highlighted-object parity is deliberately deferred to
+the change-only `main` deployment, which uploads and verifies the candidate objects before the
+application Worker is replaced. The pre-deploy check still requires exact background release
+parity because that immutable release is hydrated and SHA-verified by the release gate.
+
 ## OutageIssue
 
 - Stable title: `[uptime] amblefinds.com is unhealthy`

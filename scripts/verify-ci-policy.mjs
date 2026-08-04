@@ -90,7 +90,7 @@ export function validateCiCdPolicy({
     "test:event-sources",
     "test:poi-separation",
     "cloudflare:r2:verify -- --local-only",
-    "cloudflare:r2:verify",
+    "cloudflare:r2:verify -- --pre-deploy",
     "cloudflare:prepare",
     "test:ui:release",
     "benchmark:release",

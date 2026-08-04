@@ -145,9 +145,12 @@ const remoteMetadata = inventoryObjectMap(inventoryReport, {
   id: "background",
   detail: "versionedObjects",
 });
-if (remoteMetadata.size !== objects.length)
+const missingMetadata = objects.filter(
+  ({ objectKey }) => !remoteMetadata.has(objectKey),
+);
+if (missingMetadata.length > 0)
   throw new Error(
-    `R2 background inventory metadata is incomplete: expected ${objects.length}, received ${remoteMetadata.size}`,
+    `R2 background inventory metadata is incomplete for ${missingMetadata.length} active object(s)`,
   );
 const uploadedKeys = new Set();
 const inventoryFetcher = async (item) => {
