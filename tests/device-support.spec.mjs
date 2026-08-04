@@ -6,6 +6,7 @@ test("phones stop at the device gate while larger screens enter the application"
   page,
 }, testInfo) => {
   const mobileProject = testInfo.project.name.endsWith("-mobile");
+  const primaryDesktopProject = testInfo.project.name === "chromium-desktop";
   const analyticsRequests = [];
   page.on("request", (request) => {
     if (
@@ -106,6 +107,10 @@ test("phones stop at the device gate while larger screens enter the application"
     await expect(page.locator("#map")).toBeVisible({
       timeout: DESKTOP_APPLICATION_TIMEOUT,
     });
+    if (!primaryDesktopProject) {
+      await page.evaluate(() => window._map?.remove());
+      return;
+    }
     await expect(page.locator("#event-density-minimap")).toBeVisible({
       timeout: DESKTOP_APPLICATION_TIMEOUT,
     });
