@@ -151,12 +151,18 @@ export function validateCiCdPolicy({
         "browser production fallback",
       );
   }
-  if (viteConfig)
+  if (viteConfig) {
     requireText(
       viteConfig,
       "process.env.CI_GEOMETRY_ROOT",
       "Vite fixture root",
     );
+    requireText(
+      viteConfig,
+      "approvedSnapshotApiPlugin({ root: configuredGeometryRoot })",
+      "Vite snapshot fixture root",
+    );
+  }
 
   requireText(uptime, 'cron: "0 1 * * *"', "uptime schedule");
   requireText(uptime, "PRODUCTION_SMOKE_ATTEMPTS: 1", "uptime request budget");

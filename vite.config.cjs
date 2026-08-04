@@ -162,7 +162,7 @@ module.exports = {
   },
   plugins: [
     remoteTileFallbackPlugin(),
-    approvedSnapshotApiPlugin(),
+    approvedSnapshotApiPlugin({ root: configuredGeometryRoot }),
     weeklyRefreshApiPlugin(),
     adminApiPlugin(),
     realtimeVoiceApiPlugin(),

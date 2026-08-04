@@ -76,6 +76,15 @@ test("browser CI cannot silently fall back from the materialized fixture", () =>
     () => validateCiCdPolicy(fallback),
     /browser production fallback/,
   );
+  const snapshotRoot = clone();
+  snapshotRoot.viteConfig = snapshotRoot.viteConfig.replace(
+    "approvedSnapshotApiPlugin({ root: configuredGeometryRoot })",
+    "approvedSnapshotApiPlugin()",
+  );
+  assert.throws(
+    () => validateCiCdPolicy(snapshotRoot),
+    /snapshot fixture root/,
+  );
 });
 
 test("release rejects automatic triggers, high-cardinality probes, and direct deploy", () => {
