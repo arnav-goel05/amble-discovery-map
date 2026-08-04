@@ -15,6 +15,7 @@ import {
   createIntegrityVerificationId,
   fetchR2BindingInventory,
 } from "./lib/r2-binding-inventory.mjs";
+import { collectTilesetReleaseEntries } from "./lib/background-release-hydration.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
@@ -60,6 +61,15 @@ const releaseDescriptor = JSON.parse(
     "utf8",
   ),
 );
+const backgroundTileset = JSON.parse(
+  await readFile(path.join(root, "optimized-tiles/tileset.json"), "utf8"),
+);
+const activeBackgroundPaths = new Set(
+  collectTilesetReleaseEntries({
+    tileset: backgroundTileset,
+    origin: new URL("https://inventory.invalid"),
+  }).map(({ pathname }) => `/optimized-tiles/${pathname}`),
+);
 const inventoryById = new Map();
 for (const definition of definitions)
   inventoryById.set(
@@ -67,7 +77,11 @@ for (const definition of definitions)
     await buildTilesetIntegrityInventory({
       ...definition,
       validateLocalContent:
-        localOnly || objectHeads || definition.id === "highlighted",
+        objectHeads || definition.id === "highlighted"
+          ? true
+          : localOnly
+            ? ({ pathname }) => activeBackgroundPaths.has(pathname)
+            : false,
     }),
   );
 const integrityReleaseId = buildIntegrityReleaseId({

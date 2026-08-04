@@ -149,6 +149,38 @@ test("inventory accounts for every reference and rejects non-drawable B3DM", asy
   }
 });
 
+test("inventory can validate only the active release subset while accounting for all references", async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), "tileset-integrity-"));
+  try {
+    await writeFile(
+      path.join(directory, "tileset.json"),
+      JSON.stringify({
+        root: {
+          content: { uri: "active.b3dm" },
+          children: [{ content: { uri: "legacy.b3dm" } }],
+        },
+      }),
+    );
+
+    const result = await buildTilesetIntegrityInventory({
+      manifestPath: path.join(directory, "tileset.json"),
+      manifestUrl: "https://inventory.invalid/tileset.json",
+      publicRoot: directory,
+      validateLocalContent: ({ pathname }) => pathname === "/active.b3dm",
+    });
+
+    assert.equal(result.referenceCount, 2);
+    assert.equal(result.objectCount, 1);
+    assert.equal(result.complete, false);
+    assert.deepEqual(
+      result.errors.map(({ path, kind }) => ({ path, kind })),
+      [{ path: "/active.b3dm", kind: "invalid-local-b3dm" }],
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test("published audit checks every object and reports length and digest drift", async () => {
   const calls = [];
   const objects = [

@@ -156,7 +156,15 @@ export async function buildTilesetIntegrityInventory({
       }
       const key = url.pathname;
       if (objects.has(key)) continue;
-      if (!validateLocalContent) {
+      const validateObject =
+        typeof validateLocalContent === "function"
+          ? validateLocalContent({
+              pathname: url.pathname,
+              url: url.href,
+              localPath: contentPath,
+            })
+          : validateLocalContent;
+      if (!validateObject) {
         objects.set(key, {
           pathname: url.pathname,
           url: url.href,
