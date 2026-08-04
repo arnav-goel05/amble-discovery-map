@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -175,6 +176,43 @@ test("inventory can validate only the active release subset while accounting for
     assert.deepEqual(
       result.errors.map(({ path, kind }) => ({ path, kind })),
       [{ path: "/active.b3dm", kind: "invalid-local-b3dm" }],
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("inventory reference digest uses the Worker's canonical code-unit ordering", async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), "tileset-integrity-"));
+  try {
+    await writeFile(
+      path.join(directory, "tileset.json"),
+      JSON.stringify({
+        root: {
+          contents: [
+            { uri: "5/1_0.b3dm" },
+            { uri: "5/10_0.b3dm" },
+            { uri: "5/1_5.b3dm" },
+          ],
+        },
+      }),
+    );
+
+    const result = await buildTilesetIntegrityInventory({
+      manifestPath: path.join(directory, "tileset.json"),
+      manifestUrl: "https://inventory.invalid/optimized-tiles/tileset.json",
+      publicRoot: directory,
+      validateLocalContent: false,
+    });
+    const canonical = [
+      "optimized-tiles/5/10_0.b3dm",
+      "optimized-tiles/5/1_0.b3dm",
+      "optimized-tiles/5/1_5.b3dm",
+    ].join("\n");
+
+    assert.equal(
+      result.referenceSha256,
+      createHash("sha256").update(canonical).digest("hex"),
     );
   } finally {
     await rm(directory, { recursive: true, force: true });

@@ -224,6 +224,7 @@ export async function buildTilesetIntegrityInventory({
       Buffer.from(
         sortedObjects
           .map(({ pathname }) => pathname.replace(/^\/+/, ""))
+          .sort()
           .join("\n"),
       ),
     ),
