@@ -77,7 +77,10 @@ test("derives the complete active object set and National Stadium levels", () =>
     assert.equal(release.objects.length, 2);
     assert.deepEqual(
       release.objects.map(({ objectKey }) => objectKey),
-      ["optimized-tiles/nested.b3dm", "optimized-tiles/root.b3dm"],
+      [
+        "optimized-tiles/tiles/1/1/1_0.b3dm",
+        "optimized-tiles/tiles/1/1/1_1.b3dm",
+      ],
     );
     assert.deepEqual(
       release.objects.flatMap(({ selectedGmlIds }) => selectedGmlIds).sort(),

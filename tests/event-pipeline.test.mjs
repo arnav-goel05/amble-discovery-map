@@ -124,6 +124,11 @@ if (
     ROOT,
     "outputs/ci-geometry",
   );
+if (
+  process.env.PLAYWRIGHT_GEOMETRY_FIXTURE === "1" &&
+  !process.env.EVENT_PIPELINE_ASSET_ROOT
+)
+  process.env.EVENT_PIPELINE_ASSET_ROOT = resolve(ROOT, "outputs/ci-geometry");
 const require = createRequire(import.meta.url);
 const { AdminRepository } = require("../scripts/lib/admin-repository.cjs");
 const { AdminService } = require("../scripts/lib/admin-service.cjs");
@@ -4451,102 +4456,114 @@ test("CLI finalization distinguishes partial and fully blocked outcomes", () => 
   }
 });
 
-test("CLI staged frontend applies expiry even when a successful snapshot has no venues", () => {
-  const outputRoot = resolve(tmpdir(), `event-pipeline-expiry-${process.pid}`),
-    frontendRoot = join(outputRoot, "frontend-root");
-  const currentPoisPath = join(outputRoot, "current-pois.json"),
-    currentLandmarksPath = join(outputRoot, "current-landmarks.json");
-  mkdirSync(join(frontendRoot, "data"), { recursive: true });
-  writeFileSync(currentPoisPath, JSON.stringify({ records: [] }));
-  writeFileSync(
-    currentLandmarksPath,
-    JSON.stringify({
-      records: [
-        {
-          id: "expired",
-          label: "Expired",
-          anchor: { lng: 103.85, lat: 1.29 },
-          events: [{ id: "old", dateText: "1 Jan 2020" }],
-        },
-      ],
-    }),
-  );
-  writeFileSync(
-    join(frontendRoot, "data/approved-pois.js"),
-    "export const APPROVED_POIS = [];\n",
-  );
-  writeFileSync(join(frontendRoot, "data/approved-landmarks.js"), "old\n");
-  const env = {
-    ...process.env,
-    EVENT_PIPELINE_OUTPUT_ROOT: outputRoot,
-    EVENT_PIPELINE_FRONTEND_ROOT: frontendRoot,
-    EVENT_PIPELINE_CURRENT_POIS: currentPoisPath,
-    EVENT_PIPELINE_CURRENT_LANDMARKS: currentLandmarksPath,
-  };
-  const started = spawnSync(
-    process.execPath,
-    [SCRIPT, "start", "--date", "2026-07-11"],
-    { cwd: ROOT, encoding: "utf8", env },
-  );
-  const { runId } = JSON.parse(started.stdout),
-    runDir = join(outputRoot, runId),
-    statePath = join(runDir, "orchestrator-state.json");
-  const state = JSON.parse(readFileSync(statePath, "utf8"));
-  for (const source of Object.values(state.sources)) source.status = "success";
-  state.normalization = {
-    status: "success",
-    counts: { eligiblePreDedup: 0, duplicateCollapsed: 0, acceptedPrimary: 0 },
-    artifactRefs: [],
-    venueBranches: [],
-    error: null,
-  };
-  state.resolutionPreparation = {
-    status: "success",
-    artifactRefs: [],
-    error: null,
-  };
-  writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`);
-  mkdirSync(join(runDir, "normalized"), { recursive: true });
-  writeFileSync(
-    join(runDir, "normalized/events.json"),
-    JSON.stringify({ records: [] }),
-  );
-  try {
-    const staged = spawnSync(
-      process.execPath,
-      [SCRIPT, "advance", "--run", runId],
-      { cwd: ROOT, encoding: "utf8", env, timeout: 300000 },
-    );
-    assert.equal(staged.status, 0, staged.stderr);
-    const response = JSON.parse(staged.stdout);
-    assert.equal(response.complete, true);
-    const verification = JSON.parse(
-      readFileSync(join(runDir, "verification.json"), "utf8"),
-    );
-    assert.equal(
-      response.status,
-      "success",
-      `${JSON.stringify(verification, null, 2)}\n${staged.stdout}\n${staged.stderr}`,
-    );
-    const plan = JSON.parse(
-      readFileSync(join(runDir, "frontend/plan.json"), "utf8"),
-    );
-    assert.deepEqual(plan.expiry.removedLandmarkIds, ["expired"]);
-    assert.equal(
-      readFileSync(join(frontendRoot, "data/approved-landmarks.js"), "utf8"),
-      "old\n",
-    );
-    const active = loadApprovedSnapshot({ root: frontendRoot });
-    assert.deepEqual(
-      JSON.parse(
-        readFileSync(join(active.directory, active.landmarksRef), "utf8"),
+test(
+  "CLI staged frontend applies expiry even when a successful snapshot has no venues",
+  { skip: process.env.SKIP_EVENT_PIPELINE_BROWSER_TESTS === "1" },
+  () => {
+    const outputRoot = resolve(
+        tmpdir(),
+        `event-pipeline-expiry-${process.pid}`,
       ),
-      [],
+      frontendRoot = join(outputRoot, "frontend-root");
+    const currentPoisPath = join(outputRoot, "current-pois.json"),
+      currentLandmarksPath = join(outputRoot, "current-landmarks.json");
+    mkdirSync(join(frontendRoot, "data"), { recursive: true });
+    writeFileSync(currentPoisPath, JSON.stringify({ records: [] }));
+    writeFileSync(
+      currentLandmarksPath,
+      JSON.stringify({
+        records: [
+          {
+            id: "expired",
+            label: "Expired",
+            anchor: { lng: 103.85, lat: 1.29 },
+            events: [{ id: "old", dateText: "1 Jan 2020" }],
+          },
+        ],
+      }),
     );
-  } finally {
-    rmSync(outputRoot, { recursive: true, force: true });
-  }
-});
+    writeFileSync(
+      join(frontendRoot, "data/approved-pois.js"),
+      "export const APPROVED_POIS = [];\n",
+    );
+    writeFileSync(join(frontendRoot, "data/approved-landmarks.js"), "old\n");
+    const env = {
+      ...process.env,
+      EVENT_PIPELINE_OUTPUT_ROOT: outputRoot,
+      EVENT_PIPELINE_FRONTEND_ROOT: frontendRoot,
+      EVENT_PIPELINE_CURRENT_POIS: currentPoisPath,
+      EVENT_PIPELINE_CURRENT_LANDMARKS: currentLandmarksPath,
+    };
+    const started = spawnSync(
+      process.execPath,
+      [SCRIPT, "start", "--date", "2026-07-11"],
+      { cwd: ROOT, encoding: "utf8", env },
+    );
+    const { runId } = JSON.parse(started.stdout),
+      runDir = join(outputRoot, runId),
+      statePath = join(runDir, "orchestrator-state.json");
+    const state = JSON.parse(readFileSync(statePath, "utf8"));
+    for (const source of Object.values(state.sources))
+      source.status = "success";
+    state.normalization = {
+      status: "success",
+      counts: {
+        eligiblePreDedup: 0,
+        duplicateCollapsed: 0,
+        acceptedPrimary: 0,
+      },
+      artifactRefs: [],
+      venueBranches: [],
+      error: null,
+    };
+    state.resolutionPreparation = {
+      status: "success",
+      artifactRefs: [],
+      error: null,
+    };
+    writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`);
+    mkdirSync(join(runDir, "normalized"), { recursive: true });
+    writeFileSync(
+      join(runDir, "normalized/events.json"),
+      JSON.stringify({ records: [] }),
+    );
+    try {
+      const staged = spawnSync(
+        process.execPath,
+        [SCRIPT, "advance", "--run", runId],
+        { cwd: ROOT, encoding: "utf8", env, timeout: 300000 },
+      );
+      assert.equal(staged.status, 0, staged.stderr);
+      const response = JSON.parse(staged.stdout);
+      assert.equal(response.complete, true);
+      const verification = JSON.parse(
+        readFileSync(join(runDir, "verification.json"), "utf8"),
+      );
+      assert.equal(
+        response.status,
+        "success",
+        `${JSON.stringify(verification, null, 2)}\n${staged.stdout}\n${staged.stderr}`,
+      );
+      const plan = JSON.parse(
+        readFileSync(join(runDir, "frontend/plan.json"), "utf8"),
+      );
+      assert.deepEqual(plan.expiry.removedLandmarkIds, ["expired"]);
+      assert.equal(
+        readFileSync(join(frontendRoot, "data/approved-landmarks.js"), "utf8"),
+        "old\n",
+      );
+      const active = loadApprovedSnapshot({ root: frontendRoot });
+      assert.deepEqual(
+        JSON.parse(
+          readFileSync(join(active.directory, active.landmarksRef), "utf8"),
+        ),
+        [],
+      );
+    } finally {
+      rmSync(outputRoot, { recursive: true, force: true });
+    }
+  },
+);
 
 test("CLI frontend planner classifies unchanged geometry and events as no-op", () => {
   const outputRoot = resolve(tmpdir(), `event-pipeline-noop-${process.pid}`);

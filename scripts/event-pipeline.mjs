@@ -110,6 +110,10 @@ const frontendRoot = () =>
   process.env.EVENT_PIPELINE_FRONTEND_ROOT
     ? resolve(process.env.EVENT_PIPELINE_FRONTEND_ROOT)
     : ROOT;
+const assetRoot = () =>
+  process.env.EVENT_PIPELINE_ASSET_ROOT
+    ? resolve(process.env.EVENT_PIPELINE_ASSET_ROOT)
+    : ROOT;
 const OUTPUT_ROOT = process.env.EVENT_PIPELINE_OUTPUT_ROOT
   ? resolve(process.env.EVENT_PIPELINE_OUTPUT_ROOT)
   : join(ROOT, "outputs/event-pipeline");
@@ -4807,10 +4811,10 @@ async function stageFrontend(options) {
   };
   const assetInputArtifacts = [
     ...frontendInputArtifacts,
-    ...(existsSync(join(ROOT, "optimized-tiles/tileset.json"))
+    ...(existsSync(join(assetRoot(), "optimized-tiles/tileset.json"))
       ? [
           checkpointArtifact(
-            join(ROOT, "optimized-tiles/tileset.json"),
+            join(assetRoot(), "optimized-tiles/tileset.json"),
             "optimized-tiles/tileset.json",
           ),
         ]
@@ -4858,9 +4862,15 @@ async function stageFrontend(options) {
       assetsRoot,
       "--work-root",
       join(runDir, "frontend/extraction-work"),
+      "--source-cache",
+      join(assetRoot(), "optimized-tiles"),
+      "--source-tileset",
+      join(assetRoot(), "optimized-tiles/tileset.json"),
     ]);
     if (results.extraction.status === "success") {
-      const tileset = readJson(join(ROOT, "optimized-tiles/tileset.json"));
+      const tileset = readJson(
+        join(assetRoot(), "optimized-tiles/tileset.json"),
+      );
       const verificationAssets = join(runDir, "frontend/verification-assets");
       const relativeAssetUrl = (path) =>
         relative(verificationAssets, path).split(/[/\\]/).join("/");
@@ -4873,7 +4883,7 @@ async function stageFrontend(options) {
             content[key] = relativeAssetUrl(
               existsSync(join(assetsRoot, "optimized-tiles", uri))
                 ? join(assetsRoot, "optimized-tiles", uri)
-                : join(ROOT, "optimized-tiles", uri),
+                : join(assetRoot(), "optimized-tiles", uri),
             );
           }
         }
@@ -4901,9 +4911,12 @@ async function stageFrontend(options) {
       buildCombinedPoiTileset({
         pois: stagedPois,
         outputPath: combinedOutput,
+        sourceTilesetPath: join(assetRoot(), "optimized-tiles/tileset.json"),
         resolveTilesetPath: (poi) => {
           const staged = join(assetsRoot, "public", poi.data);
-          return existsSync(staged) ? staged : join(ROOT, "public", poi.data);
+          return existsSync(staged)
+            ? staged
+            : join(assetRoot(), "public", poi.data);
         },
       });
       results.combinedPoiTileset = {
@@ -4948,7 +4961,7 @@ async function stageFrontend(options) {
         "--registry",
         registry,
         "--root",
-        plan.geometryChanged ? assetsRoot : ROOT,
+        plan.geometryChanged ? assetsRoot : assetRoot(),
       ],
       process.env,
       assetGateInputs,
@@ -4956,7 +4969,7 @@ async function stageFrontend(options) {
   await executeGate(
     "build",
     "npm",
-    ["run", "build"],
+    ["run", "build:ci"],
     process.env,
     assetGateInputs,
   );

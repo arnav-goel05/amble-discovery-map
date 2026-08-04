@@ -44,12 +44,24 @@ const tile = (uri) => ({
   refine: "ADD",
   content: { uri },
 });
+const sourceTiles = {
+  root: "tiles/1/1/1_0.b3dm",
+  nested: "tiles/1/1/1_1.b3dm",
+};
+for (const [role, sourceTile] of Object.entries(sourceTiles)) {
+  const object = manifest.objects.find(({ role: objectRole }) =>
+    role === "root" ? objectRole === "background" : objectRole === "nested",
+  );
+  const destination = path.join(outputRoot, "optimized-tiles", sourceTile);
+  await mkdir(path.dirname(destination), { recursive: true });
+  await writeFile(destination, Buffer.from(object.base64, "base64"));
+}
 const background = {
   asset: { version: "1.0", generator: "amble-ci-geometry-fixture" },
   geometricError: 0,
   root: {
-    ...tile("root.b3dm"),
-    children: [tile("nested.b3dm")],
+    ...tile(sourceTiles.root),
+    children: [tile(sourceTiles.nested)],
   },
 };
 await writeFile(
@@ -86,24 +98,24 @@ const fixturePoi = {
   data: "poi-tiles/fixture/tileset.json",
   names: ["Fixture Venue"],
   tiles: {
-    "tiles/root.b3dm": [0],
-    "tiles/nested.b3dm": [0],
+    [sourceTiles.root]: [0],
+    [sourceTiles.nested]: [0],
   },
 };
 const extractionManifest = {
   poiId: fixturePoi.id,
   tiles: [
     {
-      sourceTile: "tiles/root.b3dm",
-      backgroundFile: "optimized-tiles/root.b3dm",
+      sourceTile: sourceTiles.root,
+      backgroundFile: `optimized-tiles/${sourceTiles.root}`,
       backgroundSha256: backgroundObjects["optimized-tiles/root.b3dm"].sha256,
       sourceSha256: "1".repeat(64),
       gmlIds: ["fixture-building-root"],
       poiFile: "poi.b3dm",
     },
     {
-      sourceTile: "tiles/nested.b3dm",
-      backgroundFile: "optimized-tiles/nested.b3dm",
+      sourceTile: sourceTiles.nested,
+      backgroundFile: `optimized-tiles/${sourceTiles.nested}`,
       backgroundSha256: backgroundObjects["optimized-tiles/nested.b3dm"].sha256,
       sourceSha256: "2".repeat(64),
       gmlIds: ["fixture-building-nested"],
@@ -158,7 +170,7 @@ const combinedTileset = {
     venueCount: 1,
     venueIds: [fixturePoi.id],
     venueBranchCount: 1,
-    fragmentCount: 2,
+    fragmentCount: 1,
     sourceFragmentCount: 2,
     spatialNodeCount: 1,
     externalTilesetCount: 0,

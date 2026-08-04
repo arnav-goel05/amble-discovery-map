@@ -79,6 +79,9 @@ jobs:
       - name: Install required browser matrix
         run: npx playwright install --with-deps chromium webkit firefox
 
+      - name: Run staged event-pipeline browser integration
+        run: npm run test:event-pipeline-browser
+
       - name: Run complete desktop and mobile compatibility matrix
         run: npm run test:ui:release
 
