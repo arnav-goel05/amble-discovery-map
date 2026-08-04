@@ -1,6 +1,6 @@
 ---
 name: release-production
-description: Safely verify and release the exact current develop revision to production through the repository's Release production GitHub workflow. Use only when the user explicitly asks to release, promote develop to main, push to main for deployment, or deploy the current approved code; never use for ordinary develop commits or pushes.
+description: Safely bootstrap the canonical release workflow when separately authorized, then verify and release the exact current develop revision to production through the repository's Release production GitHub workflow. Use only when the user explicitly asks to release, promote develop to main, push to main for deployment, deploy the current approved code, or fix a blocked first release; never use for ordinary develop commits or pushes.
 ---
 
 # Release Production
@@ -18,20 +18,56 @@ request, push `main` directly, invoke Wrangler deployment locally, or reproduce 
 4. Confirm the intended code is already committed and pushed to `origin/develop`. If local
    `develop` differs, report the exact difference and stop unless the user separately authorized
    the needed commit and push.
-5. Dispatch the canonical gate:
+5. Before dispatch, check whether the canonical workflow exists on the default branch:
+
+   ```sh
+   git cat-file -e origin/main:.github/workflows/release-production.yml
+   ```
+
+   If it exists, continue to dispatch. If it does not exist, do not attempt dispatch and do not
+   surface the resulting GitHub 404 as a release failure. Follow **First-release bootstrap** below.
+6. Dispatch the canonical gate:
 
    ```sh
    gh workflow run release-production.yml --ref develop -f candidate_sha=<full-origin-develop-sha>
    ```
 
-6. Locate the resulting `Release production` run for that SHA and wait for its terminal result.
+7. Locate the resulting `Release production` run for that SHA and wait for its terminal result.
    Do not dispatch a duplicate run. The workflow alone revalidates refs and fast-forwards the exact
    tested SHA to `main`.
-7. On failure, report the failed gate and its run URL. Do not retry, update `main`, or deploy unless
+8. On failure, report the failed gate and its run URL. Do not retry, update `main`, or deploy unless
    the user asks to address the failure.
-8. On success, verify `origin/main` equals the candidate. Report the GitHub run and Cloudflare
+9. On success, verify `origin/main` equals the candidate. Report the GitHub run and Cloudflare
    deployment evidence. The Cloudflare main-branch build owns change-only geometry synchronization,
    deployment, and its single post-deployment check.
+
+## First-release bootstrap
+
+GitHub permits `workflow_dispatch` only when the workflow exists on the repository's default
+branch. When the workflow is present on `origin/develop` but absent from `origin/main`, treat this
+as a one-time repository bootstrap prerequisite, not a failed release.
+
+A request to release is not authorization to change the repository's default branch. Stop and ask
+for explicit authorization to temporarily set the GitHub default branch to `develop` solely to
+queue the canonical release workflow. Do not bootstrap by directly committing or pushing the
+workflow to `main`; that would bypass the gate, risk a production build, and make `main` diverge
+from `develop`.
+
+After the user explicitly authorizes the bootstrap in the current request:
+
+1. Re-run steps 1–4 and confirm all of the following:
+   - GitHub's current default branch is `main`.
+   - The canonical workflow is absent from `origin/main` and present at the exact candidate SHA.
+   - `origin/main` is an ancestor of that candidate.
+2. Record the repository owner/name and current default branch. Temporarily change only the GitHub
+   repository default branch to `develop`. Do not alter branch protection, commits, or Cloudflare.
+3. Dispatch the canonical gate exactly once with the command in step 6 and locate the queued run.
+4. As soon as the run is located, restore the GitHub default branch to `main`, even if later gate
+   steps fail. If dispatch or run lookup fails, restore `main` before reporting the blocker.
+5. Wait for that same run and continue with steps 8–9. Never dispatch a replacement automatically.
+
+The temporary default-branch change exists only to let GitHub queue the canonical workflow. It is
+not permission to push `main`, skip checks, deploy separately, or leave `develop` as the default.
 
 Never expose credentials or copy unsanitized provider output into reports. A successful workflow
 is not permission to make any additional production change.

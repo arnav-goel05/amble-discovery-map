@@ -6,9 +6,12 @@ import {
 } from "../scripts/lib/realtime-relay-protocol.mjs";
 import { createRealtimeContentDebugRecord } from "../scripts/lib/realtime-content-debug.mjs";
 import {
+  PENDING_DIALOGUE_RESOLUTION_SCHEMA_VERSION,
   createPendingDialogue,
   interpretPendingDialogue,
+  narrowPendingDialogueChoices,
   pendingDialogueChoiceSpeech as choiceSpeech,
+  validatePendingDialogueResolutionOutcome,
 } from "../scripts/lib/pending-dialogue.mjs";
 import {
   compileSchema,
@@ -620,7 +623,13 @@ function baseCapabilityResultSpeech(
   return "The requested Amble action is complete.";
 }
 
-export { createPendingDialogue, interpretPendingDialogue };
+export {
+  PENDING_DIALOGUE_RESOLUTION_SCHEMA_VERSION,
+  createPendingDialogue,
+  interpretPendingDialogue,
+  narrowPendingDialogueChoices,
+  validatePendingDialogueResolutionOutcome,
+};
 
 const dialogueCandidatesFromContext = (interfaceContext, type = null) =>
   (Array.isArray(interfaceContext?.visibleTargets)
@@ -1799,6 +1808,30 @@ export function createRealtimeRelay({
       fixedSpeech: speech,
     });
 
+  const recoverPendingDialogueToolMistake = async (session, callId) => {
+    const pending = session.pendingDialogue;
+    if (
+      pending?.status !== "active" ||
+      pending.contextRevision !== (session.interfaceContext?.revision ?? 0) ||
+      session.pendingCalls.size > 0 ||
+      session.pendingCallIds.has(callId) ||
+      session.terminalCalls.has(callId)
+    )
+      return false;
+    const applicableCandidates = (
+      pending.applicableCandidateIndexes ??
+      pending.candidates.map((_, index) => index)
+    ).map((index) => pending.candidates[index]);
+    if (!applicableCandidates.length) return false;
+    discardBufferedProviderOutput(session);
+    tracePendingDialogue(session, "clarified");
+    await requestFixedDialogueResponse(
+      session,
+      choiceSpeech(applicableCandidates, "choose"),
+    );
+    return session.state !== "stopped";
+  };
+
   const proposeStoredDialogueCapability = (
     session,
     capabilityId,
@@ -1838,14 +1871,55 @@ export function createRealtimeRelay({
   };
 
   const routePendingDialogue = (session, utterance) => {
-    const pending = session.pendingDialogue;
+    let pending = session.pendingDialogue;
     if (!pending) return false;
     const outcome = interpretPendingDialogue(pending, utterance, {
       contextRevision: session.interfaceContext?.revision ?? 0,
     });
-    if (outcome.status === "unrelated") {
-      clearPendingDialogue(session, "superseded");
-      return false;
+    if (outcome.status === "unrecognized") {
+      if (outcome.answerLike) {
+        tracePendingDialogue(session, "clarified");
+        const applicableCandidates = (
+          pending.applicableCandidateIndexes ??
+          pending.candidates.map((_, index) => index)
+        ).map((index) => pending.candidates[index]);
+        return requestFixedDialogueResponse(
+          session,
+          choiceSpeech(applicableCandidates, "choose"),
+        );
+      }
+      const capabilityFamilies = Object.fromEntries(
+        [...contracts.entries()].map(([capabilityId, registered]) => [
+          capabilityId,
+          registered.contract.connectorId,
+        ]),
+      );
+      const explicitScope = selectCapabilityTurnScope({
+        utterance,
+        availableCapabilityIds: session.availableCapabilityIds,
+        capabilityFamilies,
+        activeOverlayId: null,
+        baseContextRevision: session.interfaceContext?.revision ?? 0,
+        catalogRevision:
+          session.interfaceContext?.activeFilters?.eventComposerState
+            ?.catalogRevision ?? null,
+      });
+      if (
+        explicitScope.deterministicCapabilityId ||
+        explicitScope.capabilityIds.length
+      ) {
+        clearPendingDialogue(session, "superseded");
+        return false;
+      }
+      tracePendingDialogue(session, "clarified");
+      const applicableCandidates = (
+        pending.applicableCandidateIndexes ??
+        pending.candidates.map((_, index) => index)
+      ).map((index) => pending.candidates[index]);
+      return requestFixedDialogueResponse(
+        session,
+        choiceSpeech(applicableCandidates, "choose"),
+      );
     }
     if (outcome.status === "rejected") {
       clearPendingDialogue(session, "rejected");
@@ -1863,11 +1937,26 @@ export function createRealtimeRelay({
     }
     if (outcome.status === "clarified") {
       tracePendingDialogue(session, "clarified");
+      if (Array.isArray(outcome.candidateIndexes)) {
+        const narrowed = narrowPendingDialogueChoices(
+          pending,
+          outcome.candidateIndexes,
+        );
+        if (!narrowed) return stop(session.sessionId, "protocol");
+        session.pendingDialogue = narrowed;
+        pending = narrowed;
+      }
+      const applicableCandidates = (
+        pending.applicableCandidateIndexes ??
+        pending.candidates.map((_, index) => index)
+      ).map((index) => pending.candidates[index]);
+      const choicesWereNarrowed =
+        applicableCandidates.length !== pending.candidates.length;
       const speech =
         outcome.reason === "mixed_constraint"
           ? "I caught your choice, but that adds a new condition. What should I change before choosing?"
-          : pending.clarificationSpeech ||
-            choiceSpeech(pending.candidates, "choose");
+          : (!choicesWereNarrowed && pending.clarificationSpeech) ||
+            choiceSpeech(applicableCandidates, "choose");
       return requestFixedDialogueResponse(session, speech);
     }
     if (outcome.status !== "resolved") return false;
@@ -2277,27 +2366,43 @@ export function createRealtimeRelay({
       );
       const registered = contracts.get(capabilityId);
       if (
-        !tool ||
-        !registered ||
         typeof event.call_id !== "string" ||
         !event.call_id ||
         event.call_id.length > 128
       )
         return stop(session.sessionId, "protocol");
+      if (
+        !tool ||
+        !registered ||
+        (session.pendingDialogue?.status === "active" &&
+          capabilityId !== session.pendingDialogue.capabilityId)
+      ) {
+        if (await recoverPendingDialogueToolMistake(session, event.call_id))
+          return;
+        return stop(session.sessionId, "protocol");
+      }
       let argumentsValue;
       try {
         argumentsValue = JSON.parse(event.arguments || "{}");
       } catch {
+        if (await recoverPendingDialogueToolMistake(session, event.call_id))
+          return;
         return stop(session.sessionId, "protocol");
       }
       if (
         !argumentsValue ||
         typeof argumentsValue !== "object" ||
         Array.isArray(argumentsValue)
-      )
+      ) {
+        if (await recoverPendingDialogueToolMistake(session, event.call_id))
+          return;
         return stop(session.sessionId, "protocol");
-      if (!registered.validateArguments(argumentsValue).valid)
+      }
+      if (!registered.validateArguments(argumentsValue).valid) {
+        if (await recoverPendingDialogueToolMistake(session, event.call_id))
+          return;
         return stop(session.sessionId, "protocol");
+      }
       try {
         validateDiscoveryToolArguments(
           capabilityId,
@@ -2305,6 +2410,8 @@ export function createRealtimeRelay({
           session.approvedCandidateIds,
         );
       } catch {
+        if (await recoverPendingDialogueToolMistake(session, event.call_id))
+          return;
         return stop(session.sessionId, "protocol");
       }
       const argumentsKey = canonical(argumentsValue);
