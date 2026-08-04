@@ -15,7 +15,14 @@ import {
   synchronizeBackgroundRelease,
 } from "../scripts/lib/background-geometry-release.mjs";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const repositoryRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+);
+const root =
+  process.env.PLAYWRIGHT_GEOMETRY_FIXTURE === "1"
+    ? path.join(repositoryRoot, "outputs/ci-geometry")
+    : repositoryRoot;
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const md5 = (bytes) => createHash("md5").update(bytes).digest("hex");
 
@@ -64,6 +71,20 @@ test("parses selected GML identities from B3DM batch tables", () => {
 
 test("derives the complete active object set and National Stadium levels", () => {
   const release = deriveActiveBackgroundObjects({ root });
+  if (process.env.PLAYWRIGHT_GEOMETRY_FIXTURE === "1") {
+    assert.equal(release.snapshotId, "ci-geometry-fixture-v1");
+    assert.equal(release.pois.length, 1);
+    assert.equal(release.objects.length, 2);
+    assert.deepEqual(
+      release.objects.map(({ objectKey }) => objectKey),
+      ["optimized-tiles/nested.b3dm", "optimized-tiles/root.b3dm"],
+    );
+    assert.deepEqual(
+      release.objects.flatMap(({ selectedGmlIds }) => selectedGmlIds).sort(),
+      ["fixture-building-nested", "fixture-building-root"],
+    );
+    return;
+  }
   assert.equal(release.pois.length, 136);
   assert.equal(release.objects.length, 665);
   assert.equal(
@@ -268,7 +289,7 @@ test("synchronization never publishes on upload failure and resumes as a no-op",
 test("release descriptor contract is internally consistent", () => {
   const descriptor = JSON.parse(
     readFileSync(
-      path.join(root, "data/background-geometry-release.json"),
+      path.join(repositoryRoot, "data/background-geometry-release.json"),
       "utf8",
     ),
   );

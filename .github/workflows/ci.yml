@@ -42,7 +42,7 @@ jobs:
         run: npm run ci:policy
 
       - name: Verify compact geometry fixture
-        run: npm run geometry:fixture:verify
+        run: npm run geometry:fixture:verify && npm run geometry:fixture:prepare
 
       - name: Lint JavaScript
         run: npm run lint

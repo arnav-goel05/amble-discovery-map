@@ -11,7 +11,11 @@ import {
 } from "../scripts/build-combined-poi-tileset.mjs";
 import { makeTilesetUrisDurable } from "../scripts/event-frontend-snapshot.mjs";
 
-const ROOT = path.resolve(import.meta.dirname, "..");
+const REPOSITORY_ROOT = path.resolve(import.meta.dirname, "..");
+const ROOT =
+  process.env.PLAYWRIGHT_GEOMETRY_FIXTURE === "1"
+    ? path.join(REPOSITORY_ROOT, "outputs/ci-geometry")
+    : REPOSITORY_ROOT;
 
 function writeFixture(root) {
   const poiRoot = path.join(root, "public/poi-tiles/venue-one");

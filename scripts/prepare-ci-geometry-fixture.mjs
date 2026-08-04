@@ -4,6 +4,10 @@ import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  activateStagedSnapshot,
+  stageImmutableSnapshot,
+} from "./lib/approved-snapshot.mjs";
 import { validateCiGeometryFixture } from "./verify-ci-geometry-fixture.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -15,6 +19,7 @@ const manifest = JSON.parse(
   ),
 );
 const report = validateCiGeometryFixture(manifest);
+const fixtureSnapshotId = "ci-geometry-fixture-v1";
 
 await rm(outputRoot, { recursive: true, force: true });
 for (const object of manifest.objects) {
@@ -70,6 +75,158 @@ for (const alias of [...aliases].sort()) {
   );
 }
 
+const backgroundObjects = Object.fromEntries(
+  manifest.objects
+    .filter(({ role }) => ["background", "nested"].includes(role))
+    .map((object) => [object.path, object]),
+);
+const fixturePoi = {
+  id: "fixture",
+  label: "Fixture Venue",
+  data: "poi-tiles/fixture/tileset.json",
+  names: ["Fixture Venue"],
+  tiles: {
+    "tiles/root.b3dm": [0],
+    "tiles/nested.b3dm": [0],
+  },
+};
+const extractionManifest = {
+  poiId: fixturePoi.id,
+  tiles: [
+    {
+      sourceTile: "tiles/root.b3dm",
+      backgroundFile: "optimized-tiles/root.b3dm",
+      backgroundSha256: backgroundObjects["optimized-tiles/root.b3dm"].sha256,
+      sourceSha256: "1".repeat(64),
+      gmlIds: ["fixture-building-root"],
+      poiFile: "poi.b3dm",
+    },
+    {
+      sourceTile: "tiles/nested.b3dm",
+      backgroundFile: "optimized-tiles/nested.b3dm",
+      backgroundSha256: backgroundObjects["optimized-tiles/nested.b3dm"].sha256,
+      sourceSha256: "2".repeat(64),
+      gmlIds: ["fixture-building-nested"],
+      poiFile: "event.b3dm",
+    },
+  ],
+};
+const publicPoiRoot = path.join(outputRoot, "public/poi-tiles/fixture");
+await mkdir(publicPoiRoot, { recursive: true });
+await writeFile(
+  path.join(publicPoiRoot, "tileset.json"),
+  `${JSON.stringify({
+    ...highlight,
+    extras: { fixturePadding: "x".repeat(2048) },
+  })}\n`,
+);
+await writeFile(
+  path.join(publicPoiRoot, "extraction-manifest.json"),
+  `${JSON.stringify(extractionManifest)}\n`,
+);
+await writeFile(
+  path.join(publicPoiRoot, "poi.b3dm"),
+  Buffer.from(
+    manifest.objects.find(({ role }) => role === "highlight").base64,
+    "base64",
+  ),
+);
+await writeFile(
+  path.join(publicPoiRoot, "event.b3dm"),
+  Buffer.from(
+    manifest.objects.find(({ role }) => role === "event-highlight").base64,
+    "base64",
+  ),
+);
+
+const combinedTileset = {
+  asset: { version: "1.0", generator: "amble-ci-geometry-fixture" },
+  geometricError: 0,
+  root: {
+    boundingVolume: { region },
+    geometricError: 0,
+    children: [
+      {
+        boundingVolume: { region },
+        geometricError: 0,
+        content: { uri: "../fixture/poi.b3dm" },
+        extras: { poiId: fixturePoi.id },
+      },
+    ],
+  },
+  extras: {
+    venueCount: 1,
+    venueIds: [fixturePoi.id],
+    venueBranchCount: 1,
+    fragmentCount: 2,
+    sourceFragmentCount: 2,
+    spatialNodeCount: 1,
+    externalTilesetCount: 0,
+  },
+};
+const combinedRoot = path.join(outputRoot, "public/poi-tiles/event-venues");
+await mkdir(combinedRoot, { recursive: true });
+await writeFile(
+  path.join(combinedRoot, "tileset.json"),
+  `${JSON.stringify(combinedTileset)}\n`,
+);
+
+const activities = {
+  schemaVersion: "1.0",
+  snapshotId: fixtureSnapshotId,
+  generatedAt: "2026-01-01T00:00:00.000Z",
+  counts: {
+    activities: 0,
+    sessions: 0,
+    venueGroups: 0,
+    sourceOffers: 0,
+    mappedActivities: 0,
+    offMapActivities: 0,
+  },
+  records: [],
+};
+const staged = stageImmutableSnapshot({
+  root: outputRoot,
+  snapshot: {
+    schemaVersion: "1.0",
+    snapshotId: fixtureSnapshotId,
+    publishedAt: "2026-01-01T00:00:00.000Z",
+    coveredWindow: {
+      start: "2026-01-01",
+      end: "2026-01-08",
+      timezone: "Asia/Singapore",
+    },
+    freshness: "fresh",
+    staleAfter: "2099-01-01T00:00:00.000Z",
+    sourceHealth: {},
+    previousSnapshotId: null,
+    landmarksRef: "landmarks.json",
+    poisRef: "pois.json",
+    tilesetRef: "tileset.json",
+    activitiesRef: "activities.json",
+    internalEventsRef: "internal-events.json",
+  },
+  artifacts: {
+    "landmarks.json": "[]\n",
+    "pois.json": `${JSON.stringify([fixturePoi])}\n`,
+    "tileset.json": `${JSON.stringify(combinedTileset)}\n`,
+    "activities.json": `${JSON.stringify(activities)}\n`,
+    "internal-events.json": `${JSON.stringify({
+      schemaVersion: "3.1",
+      mapped: [],
+      offMap: [],
+      counts: { active: 0, mapped: 0, offMap: 0 },
+    })}\n`,
+  },
+  commitEligibility: { eligible: true },
+});
+activateStagedSnapshot({ root: outputRoot, staged });
+
 console.log(
-  JSON.stringify({ ...report, outputRoot, aliasCount: aliases.size }),
+  JSON.stringify({
+    ...report,
+    outputRoot,
+    aliasCount: aliases.size,
+    fixtureSnapshotId,
+  }),
 );

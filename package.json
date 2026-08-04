@@ -8,7 +8,7 @@
     "build:poi-tileset": "node scripts/build-combined-poi-tileset.mjs",
     "build:ci": "node node_modules/vite/bin/vite.js build",
     "ci:policy": "node scripts/verify-ci-policy.mjs",
-    "ci:local": "npm run geometry:fixture:verify && npm run ci:policy && npm run lint && npm run test:unit && npm run cloudflare:cloud:test && npm run build:ci",
+    "ci:local": "npm run geometry:fixture:verify && npm run geometry:fixture:prepare && npm run ci:policy && npm run lint && PLAYWRIGHT_GEOMETRY_FIXTURE=1 npm run test:unit && npm run cloudflare:cloud:test && npm run build:ci",
     "geometry:fixture:verify": "node scripts/verify-ci-geometry-fixture.mjs",
     "geometry:fixture:prepare": "node scripts/prepare-ci-geometry-fixture.mjs",
     "predev": "npm run build:poi-tileset",

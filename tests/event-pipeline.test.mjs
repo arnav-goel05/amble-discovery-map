@@ -116,6 +116,14 @@ import { temporaryState } from "./helpers/baseline-fixtures.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SCRIPT = resolve(ROOT, "scripts/event-pipeline.mjs");
+if (
+  process.env.PLAYWRIGHT_GEOMETRY_FIXTURE === "1" &&
+  !process.env.EVENT_PIPELINE_FRONTEND_ROOT
+)
+  process.env.EVENT_PIPELINE_FRONTEND_ROOT = resolve(
+    ROOT,
+    "outputs/ci-geometry",
+  );
 const require = createRequire(import.meta.url);
 const { AdminRepository } = require("../scripts/lib/admin-repository.cjs");
 const { AdminService } = require("../scripts/lib/admin-service.cjs");
