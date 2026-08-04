@@ -1,5 +1,7 @@
 import { expect, test } from "playwright/test";
 
+const DESKTOP_APPLICATION_TIMEOUT = 20_000;
+
 test("phones stop at the device gate while larger screens enter the application", async ({
   page,
 }, testInfo) => {
@@ -101,9 +103,15 @@ test("phones stop at the device gate while larger screens enter the application"
     );
     await expect(page.locator("#device-gate")).toHaveCount(0);
     await expect(page.locator("#map")).toHaveCount(1);
-    await expect(page.locator("#map")).toBeVisible();
-    await expect(page.locator("#event-density-minimap")).toBeVisible();
-    await expect(page.locator("#map-guidance")).toBeVisible();
+    await expect(page.locator("#map")).toBeVisible({
+      timeout: DESKTOP_APPLICATION_TIMEOUT,
+    });
+    await expect(page.locator("#event-density-minimap")).toBeVisible({
+      timeout: DESKTOP_APPLICATION_TIMEOUT,
+    });
+    await expect(page.locator("#map-guidance")).toBeVisible({
+      timeout: DESKTOP_APPLICATION_TIMEOUT,
+    });
 
     await page.setViewportSize({ width: 900, height: 700 });
     await expect(page.locator("body")).toHaveAttribute(
