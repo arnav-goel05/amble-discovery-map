@@ -48,9 +48,9 @@ npm run cloudflare:cloud:deploy
 npm run geometry:background:audit -- --origin https://amblefinds.com
 ```
 
-The Cloudflare deploy command runs synchronization first and cannot deploy the application
-bundle when background parity is incomplete. `npm run cloudflare:cloud:check` runs the
-read-only zero-overlap gate before its build checks.
+The canonical release gate proves full local geometry and remote inventory parity before it
+fast-forwards `main`. The connected Cloudflare build deploys only that promoted application
+bundle; it does not repeat remote inventory or synchronize ignored geometry files.
 
 The final audit report is written below `outputs/background-geometry-release/` and is
 gitignored. National Stadium must be included in the zero-overlap venue verification.

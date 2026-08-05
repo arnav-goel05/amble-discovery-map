@@ -123,12 +123,8 @@ export function validateCiCdPolicy({
       "npm run cloudflare:cloud:smoke",
       "production deploy post-check",
     );
-    requireText(
-      deploy,
-      "npm run cloudflare:r2:verify -- --deployment",
-      "clean-checkout deployment inventory",
-    );
     for (const command of [
+      "cloudflare:r2:verify",
       "cloudflare:tile-integrity:deploy",
       "geometry:background:hydrate",
       "geometry:background:sync",

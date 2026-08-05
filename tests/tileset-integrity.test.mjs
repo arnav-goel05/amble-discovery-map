@@ -530,7 +530,7 @@ test("routine geometry synchronizers contain no visitor-facing object fetch loop
     await readFile(new URL("../package.json", import.meta.url), "utf8"),
   );
   const deploy = packageJson.scripts["cloudflare:cloud:deploy"];
-  assert.match(deploy, /cloudflare:r2:verify -- --deployment/u);
+  assert.doesNotMatch(deploy, /cloudflare:r2:verify/u);
   assert.doesNotMatch(deploy, /cloudflare:tile-integrity:deploy/u);
   assert.doesNotMatch(deploy, /geometry:(?:background|poi):sync/u);
   assert.doesNotMatch(deploy, /geometry:background:hydrate/u);

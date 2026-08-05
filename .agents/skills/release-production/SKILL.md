@@ -134,6 +134,8 @@ After confirming those conditions:
 Once the Worker exists, this exception is no longer applicable. Routine releases rely on the
 existing endpoint. The `main`-owned application build must not deploy the integrity Worker because
 Workers Builds can attach a nested Wrangler upload to the connected `amble` application service.
+It must also rely on the successful exact-SHA release inventory evidence instead of repeating the
+remote inventory request after promotion.
 
 Never expose credentials or copy unsanitized provider output into reports. A successful workflow
 is not permission to make any additional production change.

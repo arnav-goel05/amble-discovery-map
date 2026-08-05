@@ -57,16 +57,13 @@ test("ordinary CI rejects production hydration, remote inventory, and deployment
   }
 });
 
-test("Cloudflare deployment verifies remote geometry without ignored local binaries", () => {
+test("Cloudflare deployment cannot repeat release-only remote geometry verification", () => {
   const inputs = clone();
   inputs.packageJson.scripts["cloudflare:cloud:deploy"] =
-    inputs.packageJson.scripts["cloudflare:cloud:deploy"].replace(
-      "npm run cloudflare:r2:verify -- --deployment",
-      "npm run geometry:background:sync",
-    );
+    `npm run cloudflare:r2:verify -- --deployment && ${inputs.packageJson.scripts["cloudflare:cloud:deploy"]}`;
   assert.throws(
     () => validateCiCdPolicy(inputs),
-    /clean-checkout deployment inventory|clean-checkout deployment geometry policy/,
+    /clean-checkout deployment geometry policy/,
   );
 });
 

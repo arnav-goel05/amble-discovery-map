@@ -72,7 +72,7 @@ Wrangler, and stop a legacy diagnostic after its first `429`.
 - [x] T021 [US4] Implement reusable binding-inventory parsing and direct Wrangler mismatch retrieval/verification in `scripts/lib/r2-binding-inventory.mjs`
 - [x] T022 [US4] Replace public per-object background audit and post-upload verification with inventory preflight and mismatch-only control-plane transfer in `scripts/sync-r2-background-tiles.mjs`
 - [x] T023 [US4] Replace public per-object POI audit and post-upload verification with inventory preflight and mismatch-only control-plane verification in `scripts/sync-r2-poi-tiles.mjs`
-- [x] T024 [US4] Wire one-request release-aware inventory verification into CI/deployment and document the request budget in `scripts/verify-r2-tile-delivery.mjs`, `package.json`, `.github/workflows/ci.yml`, and `docs/cloudflare-cloud-native.md`
+- [x] T024 [US4] Wire one-request release-aware inventory verification into the exact-SHA release gate, keep it out of ordinary CI and the connected deployment build, and document the request budget in `scripts/verify-r2-tile-delivery.mjs`, `.github/workflows/release-production.yml`, and `docs/cloudflare-cloud-native.md`
 - [ ] T025 Run focused unit/browser tests, exhaustive local integrity, lint, formatting, and production build; after allowance reset deploy the isolated Worker and rerun production background, highlighted, render, and R2 gates until all report zero errors
 
 ## Dependencies and Execution Order
