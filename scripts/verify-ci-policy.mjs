@@ -123,6 +123,17 @@ export function validateCiCdPolicy({
       "npm run cloudflare:cloud:smoke",
       "production deploy post-check",
     );
+    requireText(
+      deploy,
+      "npm run cloudflare:r2:verify -- --deployment",
+      "clean-checkout deployment inventory",
+    );
+    for (const command of [
+      "geometry:background:hydrate",
+      "geometry:background:sync",
+      "geometry:poi:sync",
+    ])
+      forbidText(deploy, command, "clean-checkout deployment geometry policy");
     forbidText(
       deploy,
       "test:render-smoke:production",

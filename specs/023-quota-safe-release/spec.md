@@ -40,7 +40,7 @@ As the repository owner, I can explicitly promote the latest approved `develop` 
 1. **Given** a passing `develop` revision and an explicit release request, **When** release verification succeeds, **Then** `main` advances to that exact revision without a new merge commit or pull request.
 2. **Given** any failing release check, **When** release verification finishes, **Then** `main`, production, and the last approved deployment remain unchanged.
 3. **Given** `main` is not an ancestor of the release candidate, **When** release is attempted, **Then** promotion stops and reports the divergence instead of manufacturing an untested merge.
-4. **Given** `main` advances successfully, **When** deployment runs, **Then** only changed production objects are synchronized and the deployed application is checked once before success is reported.
+4. **Given** `main` advances successfully, **When** deployment runs from its clean checkout, **Then** the approved remote geometry is verified once without attempting to read ignored local B3DM files, and the deployed application is checked once before success is reported.
 
 ---
 
@@ -103,7 +103,7 @@ As the repository owner, I receive one actionable issue when the daily productio
 - **FR-016**: Promotion MUST stop when `main` cannot fast-forward to the exact verified revision.
 - **FR-017**: Successful promotion MUST update `main` to the exact verified revision without a pull request or unverified merge commit.
 - **FR-018**: Only updates to `main` MAY start production deployment.
-- **FR-019**: Production deployment MUST synchronize only missing or changed remote objects, verify fresh post-mutation evidence, deploy the application, and perform one bounded post-deployment check.
+- **FR-019**: Production deployment MUST verify the already-approved remote geometry with one manifest-based inventory request, MUST NOT attempt to synchronize ignored local B3DM files from its clean checkout, MUST deploy the application, and MUST perform one bounded post-deployment check.
 - **FR-020**: The production check MUST run once daily at 09:00 Singapore time with no immediate retry.
 - **FR-021**: A failed daily production check MUST open one deduplicated outage issue containing the timestamp, failing target, failure evidence, and run identity, and MUST NOT roll back or redeploy.
 - **FR-022**: A later healthy daily check MUST document recovery and close the matching open outage issue.

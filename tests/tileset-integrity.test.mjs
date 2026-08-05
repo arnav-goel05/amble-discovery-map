@@ -530,14 +530,9 @@ test("routine geometry synchronizers contain no visitor-facing object fetch loop
     await readFile(new URL("../package.json", import.meta.url), "utf8"),
   );
   const deploy = packageJson.scripts["cloudflare:cloud:deploy"];
-  assert.ok(
-    deploy.indexOf("cloudflare:tile-integrity:deploy") <
-      deploy.indexOf("geometry:poi:sync"),
-  );
-  assert.ok(
-    deploy.indexOf("geometry:background:sync") <
-      deploy.indexOf("cloudflare:r2:verify"),
-  );
+  assert.match(deploy, /cloudflare:r2:verify -- --deployment/u);
+  assert.doesNotMatch(deploy, /geometry:(?:background|poi):sync/u);
+  assert.doesNotMatch(deploy, /geometry:background:hydrate/u);
 
   const verifier = await readFile(
     new URL("../scripts/verify-r2-tile-delivery.mjs", import.meta.url),

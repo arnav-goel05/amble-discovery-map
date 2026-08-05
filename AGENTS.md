@@ -17,7 +17,9 @@ failed gate, manufacture an untested merge commit, or invoke a second deployment
 
 Ordinary CI must use the checked-in geometry fixture and must not hydrate production geometry,
 query remote R2 inventory, call live paid providers, mutate production data, or deploy. Full
-production geometry hydration and bounded remote verification are release-only operations.
+production geometry hydration and bounded remote verification are release-only operations. The
+Cloudflare clean checkout must verify the already-approved R2 release with one manifest-based
+inventory request; it must not try to synchronize ignored B3DM files that cannot exist there.
 
 ## Event pipeline command
 

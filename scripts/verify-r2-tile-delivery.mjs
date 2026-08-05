@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
@@ -26,6 +27,7 @@ const option = (name, fallback = null) => {
 const localOnly = args.includes("--local-only");
 const objectHeads = args.includes("--object-heads");
 const preDeploy = args.includes("--pre-deploy");
+const deployment = args.includes("--deployment");
 const origin = option("origin", "https://amble.project-hub-arnav.workers.dev");
 const inventoryOrigin = option(
   "inventory-origin",
@@ -62,33 +64,47 @@ const releaseDescriptor = JSON.parse(
     "utf8",
   ),
 );
-const backgroundTileset = JSON.parse(
-  await readFile(path.join(root, "optimized-tiles/tileset.json"), "utf8"),
-);
+const backgroundTileset = deployment
+  ? null
+  : JSON.parse(
+      await readFile(path.join(root, "optimized-tiles/tileset.json"), "utf8"),
+    );
 const activeBackgroundPaths = new Set(
-  collectTilesetReleaseEntries({
-    tileset: backgroundTileset,
-    origin: new URL("https://inventory.invalid"),
-  }).map(({ pathname }) => `/optimized-tiles/${pathname}`),
+  backgroundTileset
+    ? collectTilesetReleaseEntries({
+        tileset: backgroundTileset,
+        origin: new URL("https://inventory.invalid"),
+      }).map(({ pathname }) => `/optimized-tiles/${pathname}`)
+    : [],
 );
 const inventoryById = new Map();
-for (const definition of definitions)
+for (const definition of definitions) {
+  if (deployment && definition.id === "background") continue;
   inventoryById.set(
     definition.id,
     await buildTilesetIntegrityInventory({
       ...definition,
-      validateLocalContent:
-        objectHeads || definition.id === "highlighted"
+      validateLocalContent: deployment
+        ? false
+        : objectHeads || definition.id === "highlighted"
           ? true
           : localOnly
             ? ({ pathname }) => activeBackgroundPaths.has(pathname)
             : false,
     }),
   );
-const integrityReleaseId = buildIntegrityReleaseId({
-  backgroundReleaseId: releaseDescriptor.releaseId,
-  objects: inventoryById.get("highlighted").objects,
-});
+}
+const integrityReleaseId = deployment
+  ? createHash("sha256")
+      .update(
+        `${releaseDescriptor.releaseId}\n${inventoryById.get("highlighted").referenceSha256}`,
+      )
+      .digest("hex")
+      .slice(0, 16)
+  : buildIntegrityReleaseId({
+      backgroundReleaseId: releaseDescriptor.releaseId,
+      objects: inventoryById.get("highlighted").objects,
+    });
 const integrityVerificationId = createIntegrityVerificationId();
 const bindingInventory =
   localOnly || objectHeads
@@ -102,7 +118,18 @@ const bindingInventory =
 
 const tilesets = [];
 for (const definition of definitions) {
-  const inventory = inventoryById.get(definition.id);
+  const inventory =
+    inventoryById.get(definition.id) ??
+    (deployment && definition.id === "background"
+      ? {
+          complete: true,
+          manifestCount: 0,
+          referenceCount: releaseDescriptor.objectCount,
+          objectCount: releaseDescriptor.objectCount,
+          errors: [],
+        }
+      : null);
+  if (!inventory) throw new Error(`Missing local inventory ${definition.id}`);
   const remote = localOnly
     ? null
     : objectHeads
@@ -115,15 +142,51 @@ for (const definition of definitions) {
               `${definition.id}: verified ${checked}/${total} published objects`,
             ),
         })
-      : compareR2BindingInventory({
-          id: definition.id,
-          inventory,
-          published: bindingInventory.tilesets?.find(
-            ({ id }) => id === definition.id,
-          ),
-          requireObjectMetadata: definition.id === "highlighted",
-          requireReferenceParity: !preDeploy || definition.id !== "highlighted",
-        });
+      : deployment && definition.id === "background"
+        ? (() => {
+            const published = bindingInventory.tilesets?.find(
+              ({ id }) => id === definition.id,
+            );
+            const errors = [];
+            if (!published)
+              errors.push({
+                kind: "inventory-missing",
+                path: definition.id,
+                message: "The R2 binding report omitted this tileset",
+              });
+            else {
+              if (!published.complete)
+                errors.push(
+                  ...(published.errors?.length
+                    ? published.errors
+                    : [
+                        {
+                          kind: "published-inventory-incomplete",
+                          path: definition.id,
+                          message: `${published.errorCount ?? "unknown"} published inventory errors`,
+                        },
+                      ]),
+                );
+              if (published.referenceCount !== releaseDescriptor.objectCount)
+                errors.push({
+                  kind: "reference-count-mismatch",
+                  path: definition.id,
+                  message: `published=${published.referenceCount}, approved=${releaseDescriptor.objectCount}`,
+                });
+            }
+            return { complete: errors.length === 0, errors };
+          })()
+        : compareR2BindingInventory({
+            id: definition.id,
+            inventory,
+            published: bindingInventory.tilesets?.find(
+              ({ id }) => id === definition.id,
+            ),
+            requireObjectMetadata:
+              definition.id === "highlighted" && !deployment,
+            requireReferenceParity:
+              !preDeploy || definition.id !== "highlighted",
+          });
   tilesets.push({
     id: definition.id,
     complete: inventory.complete && (remote?.complete ?? true),
@@ -142,9 +205,11 @@ const report = {
     ? "local"
     : objectHeads
       ? "published-r2-object-heads"
-      : preDeploy
-        ? "pre-deploy-r2-binding-inventory"
-        : "r2-binding-inventory",
+      : deployment
+        ? "deployment-r2-binding-inventory"
+        : preDeploy
+          ? "pre-deploy-r2-binding-inventory"
+          : "r2-binding-inventory",
   origin: localOnly ? null : origin,
   inventoryOrigin: localOnly || objectHeads ? null : inventoryOrigin,
   integrityReleaseId,

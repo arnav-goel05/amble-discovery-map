@@ -29,7 +29,7 @@ npm run cloudflare:cloud:test
 npm run cloudflare:cloud:deploy
 ```
 
-`cloudflare:prepare` copies the public directory without the large tile trees, bundles the current approved event snapshot into the Worker, and builds the static frontend. Geometry remains in the `amble-3d-tiles` R2 bucket. The deploy command first publishes the isolated, read-only integrity Worker and then compares its bounded R2 inventory report with deterministic local manifest counts and digests. It does not issue one public request per tile.
+`cloudflare:prepare` copies the public directory without the large tile trees, bundles the current approved event snapshot into the Worker, and builds the static frontend. Geometry remains in the `amble-3d-tiles` R2 bucket. The clean Cloudflare checkout cannot contain ignored B3DM files, so the deploy command publishes the isolated, read-only integrity Worker and performs one manifest-based R2 inventory check before deploying the application. It does not hydrate or synchronize geometry and does not issue one public request per tile. Full local geometry and remote parity are already required by the exact-SHA release gate.
 
 Background and highlighted-geometry synchronization also consume one inventory report each. They
 compare reliable stored validators and byte lengths, upload only missing or stale objects, and
@@ -61,10 +61,13 @@ GitHub Actions separates ordinary validation from production release work:
 | --------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | Ordinary CI           | Push to `develop` or an explicitly created non-main branch   | 592-byte checked-in geometry contract; zero production hydration, R2 requests, provider calls, or deployment | Lint, changed-file formatting, every Node test, event/voice contracts, local Cloudflare worker contracts, production-equivalent frontend build, all non-render Chromium desktop specs, and targeted Chromium mobile specs | None                                                                   |
 | Release verification  | Explicit dispatch with the full current `origin/develop` SHA | One approved-geometry hydration, bounded R2 control-plane/inventory checks, no public object-head loop       | Ordinary gates plus production geometry/separation, complete Chromium/WebKit/Firefox desktop/mobile matrix, production build, visible 3D rendering, and enforced performance budget                                       | Fast-forward `main` to the exact tested SHA after refs are revalidated |
-| Cloudflare deployment | Successful update to `main`                                  | Change-only R2 synchronization, one deploy, fresh inventory evidence, and one post-deploy check              | Cloudflare build and worker contracts                                                                                                                                                                                     | Production only                                                        |
+| Cloudflare deployment | Successful update to `main`                                  | One manifest-based R2 inventory request, one deploy, and one post-deploy check                               | Cloudflare build and worker contracts                                                                                                                                                                                     | Production application only                                            |
 
-`main` requires both `Quality checks` and `Release verification`. `develop` permits the requested
-direct-push workflow, but force pushes and branch deletion remain prohibited on both branches.
+`main` requires the stable `Quality checks` context. The canonical workflow enforces its own
+successful `Release verification` job through the promotion job dependency; requiring that job as
+a branch context would circularly block the workflow while it is still running. `develop` permits
+the requested direct-push workflow, but force pushes and branch deletion remain prohibited on both
+branches.
 
 Use `develop` as the permanent integration branch:
 

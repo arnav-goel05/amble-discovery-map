@@ -46,6 +46,12 @@ except for the narrowly authorized read-only integrity Worker bootstrap below.
    this prevents release-only geometry hydration and external quota use for a candidate that has
    not passed the zero-external fixture suite.
 
+   Confirm `main` branch protection requires the stable ordinary `Quality checks` context. Do not
+   require the release workflow's own `Release verification` job as a branch context: GitHub
+   evaluates that same workflow while its promotion job is still running, which creates a circular
+   "expected" check and rejects the exact-SHA fast-forward. The canonical workflow's `needs:
+verify` dependency remains the release-verification enforcement boundary.
+
 5. Before dispatch, check whether the canonical workflow exists on the default branch:
 
    ```sh

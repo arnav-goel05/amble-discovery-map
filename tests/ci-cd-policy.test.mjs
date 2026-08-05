@@ -57,6 +57,19 @@ test("ordinary CI rejects production hydration, remote inventory, and deployment
   }
 });
 
+test("Cloudflare deployment verifies remote geometry without ignored local binaries", () => {
+  const inputs = clone();
+  inputs.packageJson.scripts["cloudflare:cloud:deploy"] =
+    inputs.packageJson.scripts["cloudflare:cloud:deploy"].replace(
+      "npm run cloudflare:r2:verify -- --deployment",
+      "npm run geometry:background:sync",
+    );
+  assert.throws(
+    () => validateCiCdPolicy(inputs),
+    /clean-checkout deployment inventory|clean-checkout deployment geometry policy/,
+  );
+});
+
 test("ordinary CI formats the complete main-to-candidate release range", () => {
   const perPushOnly = clone();
   perPushOnly.ci = perPushOnly.ci.replace(
