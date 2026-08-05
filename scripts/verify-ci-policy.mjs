@@ -171,6 +171,11 @@ export function validateCiCdPolicy({
         `--project ${project}`,
         "release compact coverage",
       );
+      requireText(
+        packageJson.scripts?.[scriptName] ?? "",
+        "--grep",
+        "bounded representative compact coverage",
+      );
     }
     for (const scriptName of [
       "test:ui:ci",
