@@ -156,16 +156,22 @@ export function validateCiCdPolicy({
         `--project ${project}`,
         "release device coverage",
       );
-    for (const project of [
-      "chromium-compact",
-      "webkit-compact",
-      "firefox-compact",
-    ])
+    for (const [scriptName, project] of [
+      ["test:ui:release:compact:chromium", "chromium-compact"],
+      ["test:ui:release:compact:webkit", "webkit-compact"],
+      ["test:ui:release:compact:firefox", "firefox-compact"],
+    ]) {
       requireText(
         packageJson.scripts?.["test:ui:release:compact"] ?? "",
+        `npm run ${scriptName}`,
+        "release compact-process isolation",
+      );
+      requireText(
+        packageJson.scripts?.[scriptName] ?? "",
         `--project ${project}`,
         "release compact coverage",
       );
+    }
     for (const scriptName of [
       "test:ui:ci",
       "test:ui:mobile",
