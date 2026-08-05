@@ -77,7 +77,9 @@ verify` dependency remains the release-verification enforcement boundary.
 9. On success, verify `origin/main` equals the candidate. The Cloudflare main-branch build may
    compile the promoted application once, but it must not repeat GitHub tests or verifiers, geometry
    hydration, remote inventory, or synchronization. Its deploy phase owns exactly one application
-   upload and one post-deployment check.
+   upload and one post-deployment check. Treat Workers Builds as a clean checkout: its compile path
+   must consume the checked-in approved snapshot and must not require ignored `optimized-tiles` or
+   run `build:poi-tileset`; those production geometry inputs exist only inside the release gate.
 10. Wait for the Cloudflare check attached to the candidate SHA and verify a new `amble` deployment
     was created after promotion. Inspect the active version metadata and require the application
     bindings (`ASSETS`, `RUNTIME_DB`, and `TILES_BUCKET`). Do not accept a green GitHub release alone

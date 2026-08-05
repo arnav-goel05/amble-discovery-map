@@ -30,7 +30,7 @@ npm run cloudflare:cloud:build
 npm run cloudflare:cloud:deploy
 ```
 
-`cloudflare:prepare` copies the public directory without the large tile trees, bundles the current approved event snapshot into the Worker, and builds the static frontend. Geometry remains in the `amble-3d-tiles` R2 bucket. GitHub is the sole test authority: the connected build does not repeat unit, browser, frontend-verification, geometry, performance, or remote-inventory gates. It compiles the promoted `main` revision once, then its deploy phase performs one application upload and one smoke check. It neither hydrates nor synchronizes geometry, queries the integrity Worker, nor deploys the integrity Worker itself.
+`cloudflare:prepare` copies the public directory without the large tile trees, bundles the checked-in approved event snapshot into the Worker, and builds the static frontend. It deliberately does not run `build:poi-tileset`: that command requires release-hydrated `optimized-tiles`, which is absent from a clean Workers Builds checkout, while the approved snapshot already contains the release-generated tileset catalogue. Geometry remains in the `amble-3d-tiles` R2 bucket. GitHub is the sole test authority: the connected build does not repeat unit, browser, frontend-verification, geometry, performance, or remote-inventory gates. It compiles the promoted `main` revision once, then its deploy phase performs one application upload and one smoke check. It neither hydrates nor synchronizes geometry, queries the integrity Worker, nor deploys the integrity Worker itself.
 
 Background and highlighted-geometry synchronization also consume one inventory report each. They
 compare reliable stored validators and byte lengths, upload only missing or stale objects, and

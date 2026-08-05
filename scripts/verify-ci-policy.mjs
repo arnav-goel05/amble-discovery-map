@@ -109,6 +109,7 @@ export function validateCiCdPolicy({
   if (packageJson) {
     const deploy = packageJson.scripts?.["cloudflare:cloud:deploy"] ?? "";
     const build = packageJson.scripts?.["cloudflare:cloud:build"] ?? "";
+    const prepare = packageJson.scripts?.["cloudflare:prepare"] ?? "";
     const connectedBuild = packageJson.scripts?.["cloudflare:cloud:test"] ?? "";
     const smoke = packageJson.scripts?.["cloudflare:cloud:smoke"] ?? "";
     const releaseUi = packageJson.scripts?.["test:ui:release"] ?? "";
@@ -145,6 +146,12 @@ export function validateCiCdPolicy({
     ])
       forbidText(deploy, command, "deployment phase isolation");
     requireText(build, "cloudflare:prepare", "connected build compilation");
+    for (const command of ["build:poi-tileset", "optimized-tiles"])
+      forbidText(
+        prepare,
+        command,
+        "connected build clean-checkout geometry isolation",
+      );
     for (const command of [
       "cloudflare:cloud:verify-build",
       "cloudflare:cloud:contracts",

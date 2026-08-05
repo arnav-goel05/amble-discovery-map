@@ -128,6 +128,17 @@ test("Cloudflare build phase cannot repeat GitHub verification", () => {
   }
 });
 
+test("Cloudflare clean-checkout build cannot regenerate production geometry", () => {
+  for (const command of ["npm run build:poi-tileset", "optimized-tiles"]) {
+    const inputs = clone();
+    inputs.packageJson.scripts["cloudflare:prepare"] += ` && ${command}`;
+    assert.throws(
+      () => validateCiCdPolicy(inputs),
+      /connected build clean-checkout geometry isolation/,
+    );
+  }
+});
+
 test("release skill uses main normally, develop only for bootstrap, and bounded deployment proof", () => {
   for (const needle of [
     "gh workflow run release-production.yml --ref main",
