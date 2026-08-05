@@ -176,7 +176,17 @@ export function validateCiCdPolicy({
         "--grep",
         "bounded representative compact coverage",
       );
+      requireText(
+        packageJson.scripts?.[scriptName] ?? "",
+        "PLAYWRIGHT_GEOMETRY_FIXTURE=1",
+        "release compact fixture isolation",
+      );
     }
+    requireText(
+      packageJson.scripts?.["test:ui:release:compact"] ?? "",
+      "geometry:fixture:prepare",
+      "release compact fixture materialization",
+    );
     for (const scriptName of [
       "test:ui:ci",
       "test:ui:mobile",
