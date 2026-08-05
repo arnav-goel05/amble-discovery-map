@@ -941,8 +941,7 @@ try {
   console.error(error);
   process.exitCode = 1;
 } finally {
-  if (browser)
-    cleanupTimedOut = !(await settleWithin(browser.close(), 10_000));
+  if (browser) cleanupTimedOut = !(await settleWithin(browser.close(), 10_000));
   cleanupTimedOut = !(await stopServer(server)) || cleanupTimedOut;
 }
 
