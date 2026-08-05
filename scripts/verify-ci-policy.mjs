@@ -188,6 +188,31 @@ export function validateCiCdPolicy({
       "release compact fixture materialization",
     );
     for (const scriptName of [
+      "test:ui:release:compact:chromium",
+      "test:ui:release:compact:webkit",
+    ]) {
+      for (const journey of [
+        "anonymous startup renders",
+        "intro waits for initial 3D content",
+        "users build, reorder, and route",
+        "vague voice discovery presents",
+      ])
+        requireText(
+          packageJson.scripts?.[scriptName] ?? "",
+          journey,
+          "representative event, intro, plan, and voice coverage",
+        );
+    }
+    for (const journey of [
+      "intro waits for initial 3D content",
+      "users build, reorder, and route",
+    ])
+      requireText(
+        packageJson.scripts?.["test:ui:release:compact:firefox"] ?? "",
+        journey,
+        "Firefox-supported representative coverage",
+      );
+    for (const scriptName of [
       "test:ui:ci",
       "test:ui:mobile",
       "test:ui:voice-ci",
