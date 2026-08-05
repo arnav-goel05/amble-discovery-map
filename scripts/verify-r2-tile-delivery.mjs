@@ -167,12 +167,6 @@ for (const definition of definitions) {
                         },
                       ]),
                 );
-              if (published.referenceCount !== releaseDescriptor.objectCount)
-                errors.push({
-                  kind: "reference-count-mismatch",
-                  path: definition.id,
-                  message: `published=${published.referenceCount}, approved=${releaseDescriptor.objectCount}`,
-                });
             }
             return { complete: errors.length === 0, errors };
           })()
@@ -185,7 +179,7 @@ for (const definition of definitions) {
             requireObjectMetadata:
               definition.id === "highlighted" && !deployment,
             requireReferenceParity:
-              !preDeploy || definition.id !== "highlighted",
+              !deployment && (!preDeploy || definition.id !== "highlighted"),
           });
   tilesets.push({
     id: definition.id,

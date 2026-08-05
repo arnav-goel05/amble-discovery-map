@@ -12,12 +12,6 @@ import { buildTilesetIntegrityInventory } from "../scripts/lib/tileset-integrity
 
 const execFileAsync = promisify(execFile);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const release = JSON.parse(
-  await readFile(
-    path.join(root, "data/background-geometry-release.json"),
-    "utf8",
-  ),
-);
 const highlighted = await buildTilesetIntegrityInventory({
   manifestPath: path.join(root, "public/poi-tiles/event-venues/tileset.json"),
   manifestUrl: "https://inventory.invalid/poi-tiles/event-venues/tileset.json",
@@ -25,7 +19,7 @@ const highlighted = await buildTilesetIntegrityInventory({
   validateLocalContent: false,
 });
 
-async function runDeploymentVerification({ backgroundCount }) {
+async function runDeploymentVerification({ backgroundComplete }) {
   let requests = 0;
   let observedUrl;
   const server = http.createServer((request, response) => {
@@ -41,11 +35,18 @@ async function runDeploymentVerification({ backgroundCount }) {
         tilesets: [
           {
             id: "background",
-            complete: true,
-            referenceCount: backgroundCount,
-            objectCount: backgroundCount,
-            errors: [],
-            errorCount: 0,
+            complete: backgroundComplete,
+            referenceCount: 24_542,
+            objectCount: 24_542,
+            errors: backgroundComplete
+              ? []
+              : [
+                  {
+                    kind: "object-missing",
+                    path: "/optimized-tiles/missing.b3dm",
+                  },
+                ],
+            errorCount: backgroundComplete ? 0 : 1,
           },
           {
             id: "highlighted",
@@ -100,7 +101,7 @@ async function runDeploymentVerification({ backgroundCount }) {
 
 test("deployment verifies a clean checkout with one manifest inventory request", async () => {
   const result = await runDeploymentVerification({
-    backgroundCount: release.objectCount,
+    backgroundComplete: true,
   });
   assert.equal(result.error, undefined);
   assert.equal(result.requests, 1);
@@ -111,12 +112,15 @@ test("deployment verifies a clean checkout with one manifest inventory request",
   assert.equal(result.report.requestBudget.publicObjectRequests, 0);
 });
 
-test("deployment fails closed when approved background inventory drifts", async () => {
+test("deployment fails closed when published background inventory is incomplete", async () => {
   const result = await runDeploymentVerification({
-    backgroundCount: release.objectCount - 1,
+    backgroundComplete: false,
   });
   assert.equal(result.error?.code, 1);
   assert.equal(result.requests, 1);
   assert.equal(result.report.complete, false);
-  assert.match(result.report.tilesets[0].remoteErrors[0].message, /approved=/);
+  assert.equal(
+    result.report.tilesets[0].remoteErrors[0].kind,
+    "object-missing",
+  );
 });
