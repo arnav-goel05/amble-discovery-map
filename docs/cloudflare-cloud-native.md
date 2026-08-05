@@ -29,7 +29,7 @@ npm run cloudflare:cloud:test
 npm run cloudflare:cloud:deploy
 ```
 
-`cloudflare:prepare` copies the public directory without the large tile trees, bundles the current approved event snapshot into the Worker, and builds the static frontend. Geometry remains in the `amble-3d-tiles` R2 bucket. The clean Cloudflare checkout cannot contain ignored B3DM files, so the deploy command publishes the isolated, read-only integrity Worker and performs one manifest-based R2 inventory check before deploying the application. It does not hydrate or synchronize geometry and does not issue one public request per tile. Full local geometry and remote parity are already required by the exact-SHA release gate.
+`cloudflare:prepare` copies the public directory without the large tile trees, bundles the current approved event snapshot into the Worker, and builds the static frontend. Geometry remains in the `amble-3d-tiles` R2 bucket. The clean Cloudflare checkout cannot contain ignored B3DM files, so the deploy command queries the existing isolated integrity Worker with one manifest-based R2 inventory check before deploying the application. It does not hydrate or synchronize geometry and does not issue one public request per tile. It also must not deploy the integrity Worker from inside the connected application build, because Workers Builds can attach nested Wrangler uploads to the `amble` service. Full local geometry and remote parity are already required by the exact-SHA release gate.
 
 Background and highlighted-geometry synchronization also consume one inventory report each. They
 compare reliable stored validators and byte lengths, upload only missing or stale objects, and

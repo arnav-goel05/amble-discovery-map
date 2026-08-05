@@ -80,7 +80,7 @@
     "cloudflare:prepare": "npm run build:poi-tileset && node scripts/generate-cloudflare-snapshot.mjs && node scripts/prepare-cloudflare-public.mjs && vite build --config vite.cloudflare.config.cjs",
     "cloudflare:seed:restaurants": "node scripts/generate-cloudflare-restaurant-seed.mjs",
     "cloudflare:cloud:verify-build": "node scripts/verify-cloudflare-frontend.mjs",
-    "cloudflare:cloud:deploy": "npm run cloudflare:tile-integrity:deploy && npm run cloudflare:r2:verify -- --deployment && npm run cloudflare:prepare && npm run cloudflare:cloud:verify-build && wrangler deploy --config wrangler.cloud.jsonc && npm run cloudflare:cloud:smoke",
+    "cloudflare:cloud:deploy": "npm run cloudflare:r2:verify -- --deployment && npm run cloudflare:prepare && npm run cloudflare:cloud:verify-build && wrangler deploy --config wrangler.cloud.jsonc && npm run cloudflare:cloud:smoke",
     "cloudflare:cloud:dev": "npm run cloudflare:prepare && wrangler dev --config wrangler.cloud.jsonc --remote",
     "cloudflare:cloud:test": "node scripts/generate-cloudflare-snapshot.mjs && node --test tests/cloudflare-cloud-native.test.mjs tests/cloudflare-vpc-proxy.test.mjs tests/device-support.test.mjs tests/cloudflare-frontend-build.test.mjs",
     "cloudflare:cloud:check": "npm run geometry:background:audit && npm run cloudflare:prepare && npm run cloudflare:cloud:verify-build",

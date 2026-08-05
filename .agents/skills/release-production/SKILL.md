@@ -132,8 +132,8 @@ After confirming those conditions:
    dispatch two runs for the same fix.
 
 Once the Worker exists, this exception is no longer applicable. Routine releases rely on the
-existing endpoint, and the `main`-owned Cloudflare build updates it through the canonical deployment
-command.
+existing endpoint. The `main`-owned application build must not deploy the integrity Worker because
+Workers Builds can attach a nested Wrangler upload to the connected `amble` application service.
 
 Never expose credentials or copy unsanitized provider output into reports. A successful workflow
 is not permission to make any additional production change.

@@ -20,6 +20,8 @@ query remote R2 inventory, call live paid providers, mutate production data, or 
 production geometry hydration and bounded remote verification are release-only operations. The
 Cloudflare clean checkout must verify the already-approved R2 release with one manifest-based
 inventory request; it must not try to synchronize ignored B3DM files that cannot exist there.
+The application build must not deploy the separate integrity Worker because Workers Builds may
+attach nested Wrangler uploads to the connected application service.
 
 ## Event pipeline command
 

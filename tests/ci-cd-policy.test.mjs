@@ -70,6 +70,16 @@ test("Cloudflare deployment verifies remote geometry without ignored local binar
   );
 });
 
+test("Cloudflare application deployment cannot upload the integrity Worker", () => {
+  const inputs = clone();
+  inputs.packageJson.scripts["cloudflare:cloud:deploy"] =
+    `npm run cloudflare:tile-integrity:deploy && ${inputs.packageJson.scripts["cloudflare:cloud:deploy"]}`;
+  assert.throws(
+    () => validateCiCdPolicy(inputs),
+    /clean-checkout deployment geometry policy/,
+  );
+});
+
 test("ordinary CI formats the complete main-to-candidate release range", () => {
   const perPushOnly = clone();
   perPushOnly.ci = perPushOnly.ci.replace(

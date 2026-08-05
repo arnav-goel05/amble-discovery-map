@@ -129,6 +129,7 @@ export function validateCiCdPolicy({
       "clean-checkout deployment inventory",
     );
     for (const command of [
+      "cloudflare:tile-integrity:deploy",
       "geometry:background:hydrate",
       "geometry:background:sync",
       "geometry:poi:sync",
