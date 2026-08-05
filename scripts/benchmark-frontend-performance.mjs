@@ -131,12 +131,11 @@ async function waitForServer(url, child) {
 
 function startServer() {
   if (suppliedUrl) return null;
+  const geometryFixture = process.env.PLAYWRIGHT_GEOMETRY_FIXTURE === "1";
   const child = spawn(
-    "npm",
+    process.execPath,
     [
-      "run",
-      "dev",
-      "--",
+      "node_modules/vite/bin/vite.js",
       "--host",
       "127.0.0.1",
       "--port",
@@ -149,6 +148,13 @@ function startServer() {
         ...process.env,
         FORCE_COLOR: "0",
         VITE_AMBLE_E2E_BYPASS_INTRO: "1",
+        ...(geometryFixture
+          ? {
+              VITE_AMBLE_E2E_OFFLINE_MAP: "1",
+              CI_GEOMETRY_ROOT: "outputs/ci-geometry",
+              TILE_FALLBACK_ORIGIN: "",
+            }
+          : {}),
       },
       stdio: ["ignore", "pipe", "pipe"],
     },
@@ -160,6 +166,30 @@ function startServer() {
     });
   child.serverOutput = () => output;
   return child;
+}
+
+async function settleWithin(promise, timeoutMs) {
+  let timer;
+  const completed = await Promise.race([
+    Promise.resolve(promise).then(
+      () => true,
+      () => true,
+    ),
+    new Promise((resolve) => {
+      timer = setTimeout(() => resolve(false), timeoutMs);
+    }),
+  ]);
+  clearTimeout(timer);
+  return completed;
+}
+
+async function stopServer(child) {
+  if (!child || child.exitCode != null) return true;
+  const exitPromise = new Promise((resolve) => child.once("exit", resolve));
+  child.kill("SIGTERM");
+  const exited = await settleWithin(exitPromise, 5_000);
+  if (!exited && child.exitCode == null) child.kill("SIGKILL");
+  return exited;
 }
 
 function resourceGroup(url, type = "") {
@@ -786,6 +816,7 @@ ${formatPerformanceBudgetMarkdown(report.budgetGate)}
 
 let server;
 let browser;
+let cleanupTimedOut = false;
 try {
   const budgetConfig = validatePerformanceBudgetConfig(
     JSON.parse(await readFile(budgetPath, "utf8")),
@@ -910,6 +941,12 @@ try {
   console.error(error);
   process.exitCode = 1;
 } finally {
-  await browser?.close();
-  if (server && server.exitCode == null) server.kill("SIGTERM");
+  if (browser)
+    cleanupTimedOut = !(await settleWithin(browser.close(), 10_000));
+  cleanupTimedOut = !(await stopServer(server)) || cleanupTimedOut;
+}
+
+if (cleanupTimedOut) {
+  console.error("Forced exit after bounded performance-runner cleanup");
+  process.exit(process.exitCode || 0);
 }

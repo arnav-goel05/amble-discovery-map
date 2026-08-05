@@ -107,6 +107,17 @@ export function validateCiCdPolicy({
     const deploy = packageJson.scripts?.["cloudflare:cloud:deploy"] ?? "";
     const smoke = packageJson.scripts?.["cloudflare:cloud:smoke"] ?? "";
     const releaseUi = packageJson.scripts?.["test:ui:release"] ?? "";
+    const releaseBenchmark = packageJson.scripts?.["benchmark:release"] ?? "";
+    requireText(
+      releaseBenchmark,
+      "geometry:fixture:prepare",
+      "release performance fixture materialization",
+    );
+    requireText(
+      releaseBenchmark,
+      "PLAYWRIGHT_GEOMETRY_FIXTURE=1",
+      "release performance fixture isolation",
+    );
     requireText(
       deploy,
       "npm run cloudflare:cloud:smoke",

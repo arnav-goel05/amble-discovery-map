@@ -35,7 +35,7 @@
     "verify:voice-capabilities": "node scripts/verify-voice-capability-coverage.mjs",
     "build:map-context": "node scripts/build-discovery-areas.mjs && node scripts/build-transit-context.mjs",
     "benchmark:frontend": "node scripts/benchmark-frontend-performance.mjs",
-    "benchmark:release": "node scripts/benchmark-frontend-performance.mjs --runs 1 --settle-ms 1000 --motion-ms 500 --budget-mode enforce",
+    "benchmark:release": "npm run geometry:fixture:prepare && PLAYWRIGHT_GEOMETRY_FIXTURE=1 node scripts/benchmark-frontend-performance.mjs --runs 1 --settle-ms 1000 --motion-ms 500 --budget-mode enforce",
     "diagnose:map-performance": "node scripts/diagnose-map-performance.mjs",
     "diagnose:map-assets": "node scripts/inspect-3d-tile-assets.mjs",
     "restaurant-pipeline": "node --env-file-if-exists=.env.local scripts/restaurant-pipeline.mjs",
