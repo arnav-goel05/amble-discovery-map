@@ -64,17 +64,30 @@ verify` dependency remains the release-verification enforcement boundary.
 6. Dispatch the canonical gate:
 
    ```sh
-   gh workflow run release-production.yml --ref develop -f candidate_sha=<full-origin-develop-sha>
+   gh workflow run release-production.yml --ref main -f candidate_sha=<full-origin-develop-sha>
    ```
 
-7. Locate the resulting `Release production` run for that SHA and wait for its terminal result.
-   Do not dispatch a duplicate run. The workflow alone revalidates refs and fast-forwards the exact
-   tested SHA to `main`.
+7. Preserve the run URL returned by dispatch and wait for that exact run's terminal result. The
+   workflow run's `headSha` identifies the `main` revision that owns the workflow, not the candidate
+   input, so do not locate it by comparing `headSha` with `origin/develop`. Do not dispatch a
+   duplicate run. The workflow alone revalidates refs and fast-forwards the exact tested SHA to
+   `main`.
 8. On failure, report the failed gate and its run URL. Do not retry, update `main`, or deploy unless
    the user asks to address the failure.
-9. On success, verify `origin/main` equals the candidate. Report the GitHub run and Cloudflare
-   deployment evidence. The Cloudflare main-branch build owns change-only geometry synchronization,
-   deployment, and its single post-deployment check.
+9. On success, verify `origin/main` equals the candidate. The Cloudflare main-branch build may
+   compile the promoted application once, but it must not repeat GitHub tests or verifiers, geometry
+   hydration, remote inventory, or synchronization. Its deploy phase owns exactly one application
+   upload and one post-deployment check.
+10. Wait for the Cloudflare check attached to the candidate SHA and verify a new `amble` deployment
+    was created after promotion. Inspect the active version metadata and require the application
+    bindings (`ASSETS`, `RUNTIME_DB`, and `TILES_BUCKET`). Do not accept a green GitHub release alone
+    as deployment evidence.
+11. Cloudflare Workers Builds has a hard 20-minute execution limit. Allow at most five additional
+    minutes for GitHub status propagation. If the check remains non-terminal after 25 minutes and
+    no new deployment exists, classify it as stale/timed out and stop polling. Never report success
+    or start a manual/parallel deployment. When the user authorized fixing release blockers, fix the
+    connected build on `develop`, pass exact-candidate ordinary CI, and restart this skill from step
+    1 with one new candidate release.
 
 ## First-release bootstrap
 
@@ -96,7 +109,13 @@ After the user explicitly authorizes the bootstrap in the current request:
    - `origin/main` is an ancestor of that candidate.
 2. Record the repository owner/name and current default branch. Temporarily change only the GitHub
    repository default branch to `develop`. Do not alter branch protection, commits, or Cloudflare.
-3. Dispatch the canonical gate exactly once with the command in step 6 and locate the queued run.
+3. Dispatch the canonical gate exactly once from the temporary workflow-owning branch and preserve
+   the returned run URL:
+
+   ```sh
+   gh workflow run release-production.yml --ref develop -f candidate_sha=<full-origin-develop-sha>
+   ```
+
 4. As soon as the run is located, restore the GitHub default branch to `main`, even if later gate
    steps fail. If dispatch or run lookup fails, restore `main` before reporting the blocker.
 5. Wait for that same run and continue with steps 8–9. Never dispatch a replacement automatically.
@@ -134,8 +153,8 @@ After confirming those conditions:
 Once the Worker exists, this exception is no longer applicable. Routine releases rely on the
 existing endpoint. The `main`-owned application build must not deploy the integrity Worker because
 Workers Builds can attach a nested Wrangler upload to the connected `amble` application service.
-It must also rely on the successful exact-SHA release inventory evidence instead of repeating the
-remote inventory request after promotion.
+It must rely on the successful exact-SHA release evidence instead of repeating tests or the remote
+inventory request after promotion.
 
 Never expose credentials or copy unsanitized provider output into reports. A successful workflow
 is not permission to make any additional production change.

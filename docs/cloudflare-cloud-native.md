@@ -25,11 +25,12 @@ npx wrangler secret put OPENAI_API_KEY --config wrangler.cloud.jsonc
 npx wrangler d1 migrations apply amble-runtime --remote --config wrangler.cloud.jsonc
 npm run cloudflare:seed:restaurants
 npx wrangler d1 execute amble-runtime --remote --config wrangler.cloud.jsonc --file cloudflare/generated-restaurant-seed.sql
-npm run cloudflare:cloud:test
+npm run cloudflare:cloud:contracts
+npm run cloudflare:cloud:build
 npm run cloudflare:cloud:deploy
 ```
 
-`cloudflare:prepare` copies the public directory without the large tile trees, bundles the current approved event snapshot into the Worker, and builds the static frontend. Geometry remains in the `amble-3d-tiles` R2 bucket. The connected build neither hydrates nor synchronizes geometry, queries the integrity Worker, nor deploys the integrity Worker itself. Full local geometry and the single bounded remote inventory check already belong to the exact-SHA release gate; repeating that network gate after promotion would consume quota and can block the time-limited Cloudflare build without adding evidence.
+`cloudflare:prepare` copies the public directory without the large tile trees, bundles the current approved event snapshot into the Worker, and builds the static frontend. Geometry remains in the `amble-3d-tiles` R2 bucket. GitHub is the sole test authority: the connected build does not repeat unit, browser, frontend-verification, geometry, performance, or remote-inventory gates. It compiles the promoted `main` revision once, then its deploy phase performs one application upload and one smoke check. It neither hydrates nor synchronizes geometry, queries the integrity Worker, nor deploys the integrity Worker itself.
 
 Background and highlighted-geometry synchronization also consume one inventory report each. They
 compare reliable stored validators and byte lengths, upload only missing or stale objects, and
@@ -53,7 +54,9 @@ The production Worker uses Cloudflare Workers Builds to deploy successful pushes
 
 Authorize the Cloudflare GitHub App only for this repository. Keep runtime secrets, D1, and R2 bindings on the existing Worker; build variables are not a replacement for runtime secrets.
 
-The deploy command always creates a fresh frontend bundle and verifies that its lightweight entry contains the phone/tablet compatibility gate before Wrangler publishes it. A failed test, build, or verification must not replace the active deployment.
+The existing `cloudflare:cloud:test` dashboard command is a compatibility entrypoint: Workers Builds sets `WORKERS_CI=1`, so it runs only `cloudflare:cloud:build`. Outside Workers Builds it retains the credential-free contract suite. The deploy command never rebuilds or repeats GitHub tests; it uploads the prepared bundle and runs one smoke check. A failed build or verification must not replace the active deployment.
+
+A future GitHub-owned upload would require a repository `CLOUDFLARE_API_TOKEN` secret. Until that narrowly scoped secret is deliberately provisioned, the connected Workers Build remains the single deployment executor; do not add a second deployment path using local OAuth credentials.
 
 GitHub Actions separates ordinary validation from production release work:
 
@@ -61,7 +64,7 @@ GitHub Actions separates ordinary validation from production release work:
 | --------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | Ordinary CI           | Push to `develop` or an explicitly created non-main branch   | 592-byte checked-in geometry contract; zero production hydration, R2 requests, provider calls, or deployment | Lint, changed-file formatting, every Node test, event/voice contracts, local Cloudflare worker contracts, production-equivalent frontend build, all non-render Chromium desktop specs, and targeted Chromium mobile specs | None                                                                   |
 | Release verification  | Explicit dispatch with the full current `origin/develop` SHA | One approved-geometry hydration, bounded R2 control-plane/inventory checks, no public object-head loop       | Ordinary gates plus production geometry/separation, complete Chromium/WebKit/Firefox desktop/mobile matrix, production build, visible 3D rendering, and enforced performance budget                                       | Fast-forward `main` to the exact tested SHA after refs are revalidated |
-| Cloudflare deployment | Successful update to `main`                                  | One manifest-based R2 inventory request, one deploy, and one post-deploy check                               | Cloudflare build and worker contracts                                                                                                                                                                                     | Production application only                                            |
+| Cloudflare deployment | Successful update to `main`                                  | No tests or inventory request; one application build, one deploy, and one post-deploy check                  | Compile the promoted bundle only                                                                                                                                                                                          | Production application only                                            |
 
 `main` requires the stable `Quality checks` context. The canonical workflow enforces its own
 successful `Release verification` job through the promotion job dependency; requiring that job as

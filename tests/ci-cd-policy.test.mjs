@@ -23,6 +23,14 @@ const originals = {
   packageJson: JSON.parse(
     await readFile(new URL("../package.json", import.meta.url), "utf8"),
   ),
+  cloudflareBuildPhase: await readFile(
+    new URL("../scripts/run-cloudflare-build-phase.mjs", import.meta.url),
+    "utf8",
+  ),
+  releaseSkill: await readFile(
+    new URL("../.agents/skills/release-production/SKILL.md", import.meta.url),
+    "utf8",
+  ),
   playwrightConfig: await readFile(
     new URL("../playwright.config.mjs", import.meta.url),
     "utf8",
@@ -75,6 +83,62 @@ test("Cloudflare application deployment cannot upload the integrity Worker", () 
     () => validateCiCdPolicy(inputs),
     /clean-checkout deployment geometry policy/,
   );
+});
+
+test("Cloudflare deploy phase cannot rebuild or repeat GitHub tests", () => {
+  for (const command of [
+    "npm run cloudflare:prepare",
+    "npm run cloudflare:cloud:verify-build",
+    "npm run cloudflare:cloud:contracts",
+  ]) {
+    const inputs = clone();
+    inputs.packageJson.scripts["cloudflare:cloud:deploy"] =
+      `${command} && ${inputs.packageJson.scripts["cloudflare:cloud:deploy"]}`;
+    assert.throws(
+      () => validateCiCdPolicy(inputs),
+      /deployment phase isolation/,
+    );
+  }
+});
+
+test("Cloudflare build phase routes Workers Builds to compilation, not contracts", () => {
+  const inputs = clone();
+  inputs.cloudflareBuildPhase = inputs.cloudflareBuildPhase.replace(
+    'args: ["run", "cloudflare:cloud:build"]',
+    'args: ["run", "cloudflare:cloud:contracts"]',
+  );
+  assert.throws(
+    () => validateCiCdPolicy(inputs),
+    /Workers Builds compile-only phase/,
+  );
+});
+
+test("Cloudflare build phase cannot repeat GitHub verification", () => {
+  for (const command of [
+    "npm run cloudflare:cloud:verify-build",
+    "npm run cloudflare:cloud:contracts",
+    "npm run cloudflare:r2:verify",
+  ]) {
+    const inputs = clone();
+    inputs.packageJson.scripts["cloudflare:cloud:build"] += ` && ${command}`;
+    assert.throws(
+      () => validateCiCdPolicy(inputs),
+      /connected build no-duplicate-check policy/,
+    );
+  }
+});
+
+test("release skill uses main normally, develop only for bootstrap, and bounded deployment proof", () => {
+  for (const needle of [
+    "gh workflow run release-production.yml --ref main",
+    "`headSha` identifies the `main` revision",
+    "after 25 minutes",
+    "TILES_BUCKET",
+  ]) {
+    const inputs = clone();
+    inputs.releaseSkill = inputs.releaseSkill.replace(needle, "removed");
+    assert.throws(() => validateCiCdPolicy(inputs));
+  }
 });
 
 test("ordinary CI formats the complete main-to-candidate release range", () => {

@@ -61,7 +61,7 @@ _Gate result before research: PASS. Re-check after design: PASS._
   and plan capabilities are exercised through their current production-equivalent entry points.
 - **Quality and security**: Ordinary CI has a zero-request production budget. Release permits one
   full hydration pass, bounded R2 control-plane inventory (one visitor-facing integrity request),
-  change-only writes, one deployment, and one post-deployment smoke pass. Uptime permits at most
+  no Cloudflare duplicate tests, one application build, one deployment, and one post-deployment smoke pass. Uptime permits at most
   one application attempt. Secrets remain in GitHub/Cloudflare stores and are never reported.
 - **UX and performance**: Ordinary CI provides broad Chromium desktop interaction plus targeted
   mobile coverage. Release runs Chromium, WebKit, and Firefox desktop/mobile and the existing

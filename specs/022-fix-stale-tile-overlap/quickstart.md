@@ -44,6 +44,7 @@ skipped. A failure exits non-zero and leaves the previous release descriptor unc
 ## Deploy and final production verification
 
 ```bash
+npm run cloudflare:cloud:build
 npm run cloudflare:cloud:deploy
 npm run geometry:background:audit -- --origin https://amblefinds.com
 ```

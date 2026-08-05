@@ -65,7 +65,7 @@ jobs:
           npm run test:event-sources
           npm run verify:voice-actions
           npm run verify:voice-capabilities
-          npm run cloudflare:cloud:test
+          npm run cloudflare:cloud:contracts
 
       - name: Verify production geometry and bounded R2 inventory
         run: |
@@ -97,6 +97,8 @@ jobs:
           echo "Geometry writes: 0 during verification"
           echo "Provider requests: 0"
           echo "Deployment signals: 1 main update after all gates pass"
+          echo "Cloudflare duplicate test suites: 0"
+          echo "Cloudflare application builds: 1"
           echo "Post-deployment attempts: 1 in the Cloudflare main build"
 
       - name: Preserve immutable ref evidence for promotion

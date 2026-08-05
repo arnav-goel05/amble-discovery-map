@@ -104,6 +104,7 @@ candidate identity, schedule, mutation, and quota behavior must be executable.
 - [x] T035 Run SpecKit analysis across spec, plan, tasks, contracts, and implementation; remediate every finding
 - [x] T036 Repeat policy, automated tests, and SpecKit analysis until no issue remains
 - [x] T037 Review the final diff for unrelated-file preservation, secrets, forbidden endpoints, workflow permissions, and unrequested pushes/deployments
+- [x] T038 Split the connected Workers Build so GitHub remains the sole test authority, the build phase compiles once, and the deploy phase owns only one application upload plus one smoke check
 
 ---
 

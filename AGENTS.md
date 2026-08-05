@@ -18,10 +18,11 @@ failed gate, manufacture an untested merge commit, or invoke a second deployment
 Ordinary CI must use the checked-in geometry fixture and must not hydrate production geometry,
 query remote R2 inventory, call live paid providers, mutate production data, or deploy. Full
 production geometry hydration and bounded remote verification are release-only operations. The
-Cloudflare connected build must rely on that exact-SHA release evidence instead of repeating a
-remote inventory request or trying to synchronize ignored B3DM files that cannot exist there.
-The application build must not deploy the separate integrity Worker because Workers Builds may
-attach nested Wrangler uploads to the connected application service.
+Cloudflare connected build must rely on that exact-SHA release evidence instead of repeating tests,
+a remote inventory request, or geometry synchronization. Its build phase may compile the promoted
+application once; its deploy phase may perform exactly one application upload and one
+post-deployment smoke check. It must not deploy the separate integrity Worker because Workers
+Builds may attach nested Wrangler uploads to the connected application service.
 
 ## Event pipeline command
 

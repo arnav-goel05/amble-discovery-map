@@ -22,6 +22,8 @@ export function validateCiCdPolicy({
   uptime,
   incident,
   packageJson,
+  cloudflareBuildPhase,
+  releaseSkill,
   playwrightConfig,
   viteConfig,
 }) {
@@ -58,7 +60,7 @@ export function validateCiCdPolicy({
     "test:event-sources",
     "verify:voice-actions",
     "verify:voice-capabilities",
-    "cloudflare:cloud:test",
+    "cloudflare:cloud:contracts",
     "build:ci",
     "test:ui:ci",
     "test:ui:mobile",
@@ -92,6 +94,7 @@ export function validateCiCdPolicy({
     "cloudflare:r2:verify -- --local-only",
     "cloudflare:r2:verify -- --pre-deploy",
     "cloudflare:prepare",
+    "cloudflare:cloud:contracts",
     "test:ui:release",
     "benchmark:release",
     "verify-release-candidate.mjs revalidate",
@@ -105,6 +108,8 @@ export function validateCiCdPolicy({
 
   if (packageJson) {
     const deploy = packageJson.scripts?.["cloudflare:cloud:deploy"] ?? "";
+    const build = packageJson.scripts?.["cloudflare:cloud:build"] ?? "";
+    const connectedBuild = packageJson.scripts?.["cloudflare:cloud:test"] ?? "";
     const smoke = packageJson.scripts?.["cloudflare:cloud:smoke"] ?? "";
     const releaseUi = packageJson.scripts?.["test:ui:release"] ?? "";
     const releaseBenchmark = packageJson.scripts?.["benchmark:release"] ?? "";
@@ -122,6 +127,34 @@ export function validateCiCdPolicy({
       deploy,
       "npm run cloudflare:cloud:smoke",
       "production deploy post-check",
+    );
+    requireText(
+      deploy,
+      "wrangler deploy --config wrangler.cloud.jsonc",
+      "single application upload",
+    );
+    if (occurrenceCount(deploy, "wrangler deploy") !== 1)
+      throw new Error(
+        "single application upload: expected one Wrangler deploy",
+      );
+    for (const command of [
+      "cloudflare:prepare",
+      "cloudflare:cloud:verify-build",
+      "cloudflare:cloud:contracts",
+      "cloudflare:cloud:test",
+    ])
+      forbidText(deploy, command, "deployment phase isolation");
+    requireText(build, "cloudflare:prepare", "connected build compilation");
+    for (const command of [
+      "cloudflare:cloud:verify-build",
+      "cloudflare:cloud:contracts",
+      "cloudflare:r2:verify",
+    ])
+      forbidText(build, command, "connected build no-duplicate-check policy");
+    requireText(
+      connectedBuild,
+      "run-cloudflare-build-phase.mjs",
+      "Workers Builds compatibility command",
     );
     for (const command of [
       "cloudflare:r2:verify",
@@ -243,6 +276,45 @@ export function validateCiCdPolicy({
       );
   }
 
+  if (cloudflareBuildPhase) {
+    requireText(
+      cloudflareBuildPhase,
+      'workersCi === "1"',
+      "Workers Builds routing",
+    );
+    requireText(
+      cloudflareBuildPhase,
+      'args: ["run", "cloudflare:cloud:build"]',
+      "Workers Builds compile-only phase",
+    );
+    requireText(
+      cloudflareBuildPhase,
+      'args: ["run", "cloudflare:cloud:contracts"]',
+      "local Cloudflare contract phase",
+    );
+  }
+
+  if (releaseSkill) {
+    requireText(
+      releaseSkill,
+      "gh workflow run release-production.yml --ref main",
+      "standard release skill dispatch",
+    );
+    requireText(
+      releaseSkill,
+      "gh workflow run release-production.yml --ref develop",
+      "bootstrap release skill dispatch",
+    );
+    requireText(
+      releaseSkill,
+      "`headSha` identifies the `main` revision",
+      "release run lookup identity",
+    );
+    requireText(releaseSkill, "after 25 minutes", "Cloudflare timeout bound");
+    for (const binding of ["ASSETS", "RUNTIME_DB", "TILES_BUCKET"])
+      requireText(releaseSkill, binding, "deployed application bindings");
+  }
+
   if (playwrightConfig) {
     requireText(
       playwrightConfig,
@@ -356,6 +428,8 @@ if (isCli) {
     uptime,
     incidentText,
     packageText,
+    cloudflareBuildPhase,
+    releaseSkill,
     playwrightConfig,
     viteConfig,
   ] = await Promise.all([
@@ -364,6 +438,11 @@ if (isCli) {
     read("production-uptime.yml"),
     readFile(path.join(root, "data/incident-automation.json"), "utf8"),
     readFile(path.join(root, "package.json"), "utf8"),
+    readFile(path.join(root, "scripts/run-cloudflare-build-phase.mjs"), "utf8"),
+    readFile(
+      path.join(root, ".agents/skills/release-production/SKILL.md"),
+      "utf8",
+    ),
     readFile(path.join(root, "playwright.config.mjs"), "utf8"),
     readFile(path.join(root, "vite.config.cjs"), "utf8"),
   ]);
@@ -375,6 +454,8 @@ if (isCli) {
         uptime,
         incident: JSON.parse(incidentText),
         packageJson: JSON.parse(packageText),
+        cloudflareBuildPhase,
+        releaseSkill,
         playwrightConfig,
         viteConfig,
       }),
