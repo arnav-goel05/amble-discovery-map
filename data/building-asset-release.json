@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "building-asset-release-v1",
+  "releaseId": "f78fec19bcb1956c",
+  "snapshotId": "20260726T114314Z-20260726T000000+0800-20260802T235959+0800-schedule-semantics-v10",
+  "background": {
+    "tilesetUrl": "optimized-tiles/releases/f78fec19bcb1956c/tileset.json?buildingRelease=f78fec19bcb1956c",
+    "manifestSha256": "ec0d21f1929344ad3a4fd5d9dae13fa263b3c7089f8affbfb09ef28fc886ec8f",
+    "objectCount": 24592,
+    "bytes": 4886257384,
+    "opacity": 0.3
+  },
+  "overlays": {
+    "tilesetUrl": "poi-tiles/releases/f78fec19bcb1956c/tileset.json?buildingRelease=f78fec19bcb1956c",
+    "manifestSha256": "55c4386a72d043ec4d791b9623f091ddfd5d830b5e8cf1019d5d9f7c3c1e7388",
+    "objectCount": 125,
+    "bytes": 1027443068,
+    "opacity": 1,
+    "identityCount": 199,
+    "ownerCount": 136,
+    "catalogueId": "30b8ee383631dbf07d9b769e083901700f2e4cc1c227d99f7bcffb5c4a35103f"
+  },
+  "previous": {
+    "schemaVersion": "background-geometry-release-v1",
+    "releaseId": "f0a8b4a7326670c8",
+    "snapshotId": "20260726T114314Z-20260726T000000+0800-20260802T235959+0800-schedule-semantics-v10",
+    "objectCount": 665,
+    "tilesetUrl": "optimized-tiles/tileset.json?backgroundRelease=f0a8b4a7326670c8",
+    "manifestSha256": "146e9d5101fdf117e8da95e9cea20b9dbc874668a472b6e6b94f9c2f3cd845e1",
+    "verifiedAt": "2026-07-31T12:58:51.324Z"
+  }
+}

@@ -72,6 +72,7 @@ jobs:
           npm run test:poi-separation
           npm run cloudflare:r2:verify -- --local-only
           npm run cloudflare:r2:verify -- --pre-deploy
+          npm run building-assets:release:verify
 
       - name: Verify production Cloudflare build
         run: npm run cloudflare:prepare && npm run cloudflare:cloud:verify-build
@@ -88,6 +89,7 @@ jobs:
           echo "Hydration retry GET budget: 32"
           echo "Pristine source object requests: 0 (checked-in hash-bound identity evidence)"
           echo "Public integrity inventory requests: 1"
+          echo "Immutable building release manifest requests: 2"
           echo "Public per-object HEAD requests: 0"
           echo "Geometry writes: 0 during verification"
           echo "Provider requests: 0"

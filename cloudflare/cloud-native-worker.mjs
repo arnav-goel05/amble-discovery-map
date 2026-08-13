@@ -1,4 +1,5 @@
 import { APPROVED_SNAPSHOT } from "./generated-approved-snapshot.mjs";
+import buildingAssetRelease from "../data/building-asset-release.json" with { type: "json" };
 import { r2TileResponse, tileObjectKey } from "./workers-vpc-proxy.mjs";
 import { dealResponse } from "./restaurant-deals.mjs";
 import { canonicalRedirect, discoveryResponse } from "./site-discovery.mjs";
@@ -330,7 +331,7 @@ function snapshotMetadata(now = new Date()) {
       sourceHealth,
       landmarksRef: `${prefix}/${manifest.landmarksRef}?projection=activity-ui-v1`,
       poisRef: `${prefix}/${manifest.poisRef}`,
-      tilesetRef: `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(manifest.snapshotId)}&assetPaths=site-root-v1`,
+      tilesetRef: `/${buildingAssetRelease.overlays.tilesetUrl}`,
       ...(manifest.activitiesRef
         ? {
             activitiesRef: `${prefix}/${manifest.activitiesRef}?projection=activity-ui-v1`,

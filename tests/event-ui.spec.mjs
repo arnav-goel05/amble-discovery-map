@@ -12,10 +12,8 @@ const sampanLandmarkFixture = approvedLandmarksFixture.find((landmark) =>
 const approvedPoisFixture = JSON.parse(
   readFileSync(new URL("../data/snapshots/initial/pois.json", import.meta.url)),
 );
-const backgroundGeometryRelease = JSON.parse(
-  readFileSync(
-    new URL("../data/background-geometry-release.json", import.meta.url),
-  ),
+const buildingAssetRelease = JSON.parse(
+  readFileSync(new URL("../data/building-asset-release.json", import.meta.url)),
 );
 const sampanPoiFixture = approvedPoisFixture.find(
   (poi) => poi.id === sampanLandmarkFixture.id,
@@ -89,7 +87,7 @@ test("empty approved snapshot renders no highlights, pills, or panels", async ({
   );
   await expect(page.locator("body")).toHaveAttribute(
     "data-background-tileset-url",
-    backgroundGeometryRelease.tilesetUrl,
+    buildingAssetRelease.background.tilesetUrl,
   );
   expect(errors).toEqual([]);
 

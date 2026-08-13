@@ -3,6 +3,7 @@ import test from "node:test";
 
 import worker, { parseBbox } from "../cloudflare/cloud-native-worker.mjs";
 import { APPROVED_SNAPSHOT } from "../cloudflare/generated-approved-snapshot.mjs";
+import buildingAssetRelease from "../data/building-asset-release.json" with { type: "json" };
 
 const db = {
   prepare() {
@@ -53,7 +54,7 @@ test("cloud runtime serves approved snapshot metadata without a local origin", a
   assert.equal("eventsRef" in payload.data, false);
   assert.equal(
     payload.data.tilesetRef,
-    `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(APPROVED_SNAPSHOT.manifest.snapshotId)}&assetPaths=site-root-v1`,
+    `/${buildingAssetRelease.overlays.tilesetUrl}`,
   );
 });
 

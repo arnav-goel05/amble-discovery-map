@@ -12,6 +12,7 @@ const {
 } = require("./lib/public-event-catalogue.cjs");
 
 const snapshotModule = import("./lib/approved-snapshot.mjs");
+const buildingAssetRelease = require("../data/building-asset-release.json");
 const PUBLIC_ACTIVITY_PROJECTION = "activity-ui-v1";
 const projectedRef = (reference) =>
   `${reference}?projection=${PUBLIC_ACTIVITY_PROJECTION}`;
@@ -71,7 +72,7 @@ function publicMetadata(snapshot) {
     sourceHealth,
     landmarksRef: projectedRef(snapshot.publicRefs.landmarks),
     poisRef: snapshot.publicRefs.pois,
-    tilesetRef: `/poi-tiles/event-venues/tileset.json?snapshot=${encodeURIComponent(snapshot.snapshotId)}&assetPaths=site-root-v1`,
+    tilesetRef: `/${buildingAssetRelease.overlays.tilesetUrl}`,
     ...(snapshot.publicRefs.activities
       ? { activitiesRef: projectedRef(snapshot.publicRefs.activities) }
       : {}),

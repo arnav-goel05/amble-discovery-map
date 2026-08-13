@@ -20,7 +20,7 @@ import { createRuntimeActionDispatcher } from "./activity-scenes/assistant/runti
 import { createDiscoveryAreaLayerManager } from "./map-layers/discovery-area-layers.js";
 import discoveryAreasUrl from "./data/discovery-areas.geojson?url";
 import transitContextUrl from "./data/transit-context.geojson?url";
-import backgroundGeometryRelease from "./data/background-geometry-release.json";
+import buildingAssetRelease from "./data/building-asset-release.json";
 import { createLocationController } from "./activity-scenes/location/location-controller.js";
 import {
   createLocationModel,
@@ -307,11 +307,11 @@ async function bootstrapApplication() {
     localBuildingAssets.url ?? "";
   const tilesetUrl =
     injectedSnapshot?.backgroundTilesetUrl ??
-    backgroundGeometryRelease.tilesetUrl;
+    buildingAssetRelease.background.tilesetUrl;
   const poiTilesetUrl =
     injectedSnapshot?.poiTilesetUrl ??
     activeSnapshot?.metadata.tilesetRef ??
-    "poi-tiles/event-venues/tileset.json";
+    buildingAssetRelease.overlays.tilesetUrl;
   const assetManifest =
     injectedSnapshot?.buildingAssetManifest ?? localBuildingAssets.manifest;
   const builtInPoiTilesets = [

@@ -109,6 +109,9 @@
     "background-lite:local": "node scripts/local-background-lite.mjs",
     "background-lite:browser": "PLAYWRIGHT_FULL_MATRIX=1 PLAYWRIGHT_JSON_OUTPUT_NAME=outputs/background-lite-local/browser/playwright-report.json playwright test tests/background-lite-local.spec.mjs --reporter=json",
     "background-lite:performance": "node scripts/measure-local-background-performance.mjs",
+    "building-assets:publish:plan": "node scripts/publish-r2-building-assets.mjs plan",
+    "building-assets:publish:stage": "node scripts/publish-r2-building-assets.mjs stage --concurrency 3",
+    "building-assets:release:verify": "node scripts/verify-published-building-assets.mjs",
     "prune-tileset": "node scripts/prune-tileset.mjs",
     "parse-catch-week-md": "node scripts/parse-catch-week-md.mjs"
   },

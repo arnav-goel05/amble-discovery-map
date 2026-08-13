@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 import test from "node:test";
+import buildingAssetRelease from "../data/building-asset-release.json" with { type: "json" };
 
 import {
   approvedSnapshot,
@@ -282,7 +283,7 @@ test("public snapshot metadata versions the corrected tileset representation", (
   assert.equal("eventsRef" in metadata, false);
   assert.equal(
     metadata.tilesetRef,
-    "/poi-tiles/event-venues/tileset.json?snapshot=snapshot-fixture&assetPaths=site-root-v1",
+    `/${buildingAssetRelease.overlays.tilesetUrl}`,
   );
 });
 
