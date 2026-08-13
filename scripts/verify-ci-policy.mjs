@@ -97,13 +97,13 @@ export function validateCiCdPolicy({
     "cloudflare:r2:verify -- --pre-deploy",
     "cloudflare:prepare",
     "cloudflare:cloud:contracts",
-    "benchmark:release",
     "verify-release-candidate.mjs revalidate",
     'git push origin "$RELEASE_CANDIDATE_SHA:refs/heads/main"',
   ])
     requireText(release, command, "release gate");
   forbidText(release, "--object-heads", "release request budget");
   forbidText(release, "test:ui:release", "release compatibility matrix");
+  forbidText(release, "benchmark:release", "release performance benchmark");
   forbidText(
     release,
     "playwright install --with-deps chromium webkit firefox",
@@ -112,7 +112,7 @@ export function validateCiCdPolicy({
   requireText(
     release,
     "playwright install --with-deps chromium",
-    "staged browser and performance runtime",
+    "staged browser runtime",
   );
   forbidText(release, "cloudflare:cloud:deploy", "deployment exclusivity");
   forbidText(release, "wrangler deploy", "deployment exclusivity");
@@ -126,17 +126,6 @@ export function validateCiCdPolicy({
     const smoke = packageJson.scripts?.["cloudflare:cloud:smoke"] ?? "";
     const eventPipelineBrowser =
       packageJson.scripts?.["test:event-pipeline-browser"] ?? "";
-    const releaseBenchmark = packageJson.scripts?.["benchmark:release"] ?? "";
-    requireText(
-      releaseBenchmark,
-      "geometry:fixture:prepare",
-      "release performance fixture materialization",
-    );
-    requireText(
-      releaseBenchmark,
-      "PLAYWRIGHT_GEOMETRY_FIXTURE=1",
-      "release performance fixture isolation",
-    );
     requireText(
       eventPipelineBrowser,
       "geometry:fixture:prepare",

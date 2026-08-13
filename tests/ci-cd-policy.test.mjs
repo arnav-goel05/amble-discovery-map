@@ -179,13 +179,13 @@ test("staged event-pipeline browser verification uses the compact geometry fixtu
   }
 });
 
-test("production release omits the compatibility matrix but retains bounded Chromium gates", () => {
+test("production release omits compatibility and performance matrices but retains staged Chromium", () => {
   const inputs = clone();
   assert.doesNotMatch(inputs.release, /test:ui:release/u);
   assert.doesNotMatch(inputs.release, /chromium webkit firefox/u);
+  assert.doesNotMatch(inputs.release, /benchmark:release/u);
   assert.match(inputs.release, /playwright install --with-deps chromium/u);
   assert.match(inputs.release, /test:event-pipeline-browser/u);
-  assert.match(inputs.release, /benchmark:release/u);
   assert.doesNotThrow(() => validateCiCdPolicy(inputs));
 });
 

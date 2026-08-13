@@ -65,7 +65,7 @@ As the repository owner, I receive one actionable issue when the daily productio
 - A release request targets a `develop` revision that changes while verification is running.
 - Ordinary validation attempts to access a production geometry or provider endpoint.
 - The compact fixture is incomplete, corrupt, or accidentally too large for routine use.
-- A release passes ordinary validation but fails production geometry, cross-browser, performance, or production-build checks.
+- A release passes ordinary validation but fails production geometry, staged browser, or production-build checks.
 - Production deployment partially synchronizes mutable objects before a later gate fails.
 - The daily check fails while an outage issue is already open.
 - The daily incident automation runs before the outage workflow has completed.
@@ -89,7 +89,7 @@ As the repository owner, I receive one actionable issue when the daily productio
 - **FR-002**: An ordinary commit-and-push request MUST push directly to the current branch without creating a pull request.
 - **FR-003**: An ordinary development action MUST NOT update `main` or start a production deployment.
 - **FR-004**: Ordinary validation MUST run for `develop` and explicitly created feature branches.
-- **FR-005**: Ordinary validation MUST cover formatting, linting, all local logic tests, broad desktop interaction coverage, targeted mobile interaction coverage, event-source contracts, voice capability parity, geometry separation, and a production-equivalent local build.
+- **FR-005**: Ordinary validation MUST cover formatting, linting, all local logic and integration tests, event-source contracts, voice capability parity, geometry separation, and a production-equivalent local build.
 - **FR-006**: Ordinary validation MUST use compact checked-in geometry evidence and MUST record zero production hydration, production mutation, live paid-provider, and deployment operations.
 - **FR-007**: The compact geometry evidence MUST cover valid background, nested, point-of-interest, and event-highlight geometry plus missing, corrupt, hash-mismatch, and separation failure cases.
 - **FR-008**: Ordinary validation MUST fail closed if a geometry-dependent check attempts to fall back to production evidence.
@@ -97,7 +97,7 @@ As the repository owner, I receive one actionable issue when the daily productio
 - **FR-010**: Full production geometry hydration MUST require an explicit release context and MUST NOT run in ordinary validation.
 - **FR-011**: High-cardinality public object probes MUST be rejected in routine validation and deployment.
 - **FR-012**: A release MUST target an immutable `develop` revision and MUST require an explicit owner action.
-- **FR-013**: Release verification MUST include ordinary validation, required cross-browser compatibility, production geometry validation, three-dimensional rendering, performance enforcement, bounded remote inventory checks, and a production-equivalent build.
+- **FR-013**: Release verification MUST include ordinary validation, production geometry validation, staged Chromium event-pipeline integration, bounded remote inventory checks, and a production-equivalent build.
 - **FR-014**: Every release verification MUST report bounded production-service request, read, write, and deployment budgets.
 - **FR-015**: A failed or incomplete release verification MUST leave `main` and production unchanged.
 - **FR-016**: Promotion MUST stop when `main` cannot fast-forward to the exact verified revision.

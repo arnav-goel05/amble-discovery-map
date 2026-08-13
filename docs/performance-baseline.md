@@ -55,7 +55,7 @@ location, search terms, snapshot or content identifiers, event or restaurant det
 plans, conversations, credentials, or URL queries. The file is bounded below 100 KiB and
 is retained only if the developer chooses to keep it.
 
-## Release guardrails
+## Manual performance guardrails
 
 `config/frontend-performance-budgets.json` defines checked-in per-profile red-line
 guardrails. They are deliberately loose regression limits based on current/historical
@@ -66,8 +66,10 @@ npm run benchmark:frontend
 npm run benchmark:release
 ```
 
-The first command records budget outcomes but does not fail on a breach. The release
+The first command records budget outcomes but does not fail on a breach. The second
 command enforces them and fails after preserving the completed JSON and Markdown reports.
+Both commands are advisory developer tools and are not invoked by the production release
+workflow.
 Every evaluation names the profile, metric, measured value, comparison direction,
 threshold, severity, required status, and result. A missing required browser measurement
 is explicit and fails enforcement; an optional unsupported measurement remains visible.
