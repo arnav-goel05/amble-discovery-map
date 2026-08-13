@@ -15,7 +15,7 @@ It must not infer assets by scanning directories or consume incomplete checkpoin
 
 - Background uses screen-space error `8`; highlighted overlays retain screen-space error `4`.
 - During camera movement, both 3D layers are truly hidden and tile traversal is paused.
-- After movement, both layers resume traversal at preload opacity, wait for the destination selection to become fully renderable and stable for `300 ms`, freeze that selection, and reveal together.
+- After movement, both layers become visible immediately and render tiles progressively as each tile becomes ready. Traversal remains active until the destination selection is fully loaded and stable for `300 ms`, then freezes without hiding or re-revealing the layers.
 - Overlay loads independently and uses a tested depth preference so coincident original-quality surfaces win without geometry modification.
 - One active highlighted building identity is rendered by at most one overlay fragment.
 - Updating highlight membership reloads only overlay inputs.

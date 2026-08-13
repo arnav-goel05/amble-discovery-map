@@ -224,7 +224,7 @@ test("movement readiness does not freeze a renderable parent while refinement is
   );
 });
 
-test("movement reveal keeps traversal active until the renderable selection is stable", () => {
+test("progressive rendering keeps traversal active until the complete selection is stable", () => {
   assert.deepEqual(
     movementRevealDecision({ renderable: false, stable: false }),
     { freezeTraversal: false, reveal: false, state: "loading" },

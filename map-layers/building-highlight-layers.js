@@ -572,7 +572,6 @@ export function createBuildingHighlightLayerManager({
     if (decision.reveal) {
       movementRevealTimer = null;
       setTileTraversal(false);
-      setBuildingPresentation(true);
       setFullDetailState("full-detail");
       return;
     }
@@ -727,8 +726,11 @@ export function createBuildingHighlightLayerManager({
     if (movementRevealTimer !== null) clearTimeout(movementRevealTimer);
     movementRevealTimer = null;
     setTileTraversal(true);
-    setBuildingPresentation(false, { renderActive: true });
-    setFullDetailState("waiting-for-stable-detail");
+    // Reveal the layers immediately after movement. Deck renders each tile only
+    // after its content is ready, so destination buildings can fill in
+    // progressively while traversal continues discovering/refining the view.
+    setBuildingPresentation(true);
+    setFullDetailState("progressive-loading");
     movementReadinessSignature = "";
     movementReadinessChangedAt = Date.now();
     const generation = movementGeneration;
