@@ -24,8 +24,9 @@ test("the initial wordmarks are bounded before application JavaScript loads", as
   ).toBe(true);
   await expect(page.getByText("Bringing Singapore into view")).toBeVisible();
   await expect(page.getByRole("button", { name: "Try again" })).toBeHidden();
-  await expect(page.getByRole("button", { name: "Let's explore" })).toBeHidden(
-  );
+  await expect(
+    page.getByRole("button", { name: "Let's explore" }),
+  ).toBeHidden();
 });
 
 test("the intro has no artificial minimum once the scene is ready", async ({

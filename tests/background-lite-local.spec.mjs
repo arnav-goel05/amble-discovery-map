@@ -63,10 +63,9 @@ test("each local before/after scene requires matched renderable counts and both 
   expect(results.every(({ matched }) => matched)).toBe(true);
 });
 
-test("normal local startup loads assets when supported and preserves the mobile gate", async (
-  { page },
-  testInfo,
-) => {
+test("normal local startup loads assets when supported and preserves the mobile gate", async ({
+  page,
+}, testInfo) => {
   await page.route("**/__local-building-assets/manifest.json", (route) =>
     route.fulfill({
       contentType: "application/json",

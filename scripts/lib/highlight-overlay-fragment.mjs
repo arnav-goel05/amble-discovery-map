@@ -39,7 +39,9 @@ function filteredParts(parts, batchIds) {
       Object.fromEntries(
         Object.entries(batch).map(([key, value]) => [
           key,
-          Array.isArray(value) ? batchIds.map((batchId) => value[batchId]) : value,
+          Array.isArray(value)
+            ? batchIds.map((batchId) => value[batchId])
+            : value,
         ]),
       ),
     ),
@@ -149,7 +151,9 @@ function filterDocument(document, batchIds) {
     if (node.getMesh() && node.getMesh().listPrimitives().length === 0)
       node.dispose();
   if (!triangles)
-    throw new Error(`Batches ${batchIds.join(",")} produced no overlay triangles`);
+    throw new Error(
+      `Batches ${batchIds.join(",")} produced no overlay triangles`,
+    );
 }
 
 export async function extractOverlayFragment(

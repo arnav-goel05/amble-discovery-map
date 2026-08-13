@@ -14,7 +14,9 @@ export function createSnapshotStatus() {
   const update = ({ state } = {}) => {
     root.dataset.state = state || "fresh";
     root.hidden = state !== "unavailable";
-    if (state === "unavailable") message.textContent = "Event information unavailable. Please try again later.";
+    if (state === "unavailable")
+      message.textContent =
+        "Event information unavailable. Please try again later.";
     else message.textContent = "";
   };
   const api = { root, update, destroy: () => root.remove() };
