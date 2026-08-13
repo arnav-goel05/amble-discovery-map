@@ -12,11 +12,19 @@ const { adminApiPlugin } = require("./scripts/admin-api-plugin.cjs");
 const {
   realtimeVoiceApiPlugin,
 } = require("./scripts/realtime-voice-api-plugin.cjs");
+const {
+  localBuildingAssetsPlugin,
+} = require("./scripts/local-building-assets-plugin.cjs");
 
 const TILE_PATH = /^\/(?:optimized-tiles|poi-tiles)\//;
 const configuredGeometryRoot = process.env.CI_GEOMETRY_ROOT
   ? path.resolve(process.cwd(), process.env.CI_GEOMETRY_ROOT)
   : process.cwd();
+const localBuildingAssetManifest = path.resolve(
+  process.cwd(),
+  process.env.LOCAL_BUILDING_ASSET_MANIFEST ||
+    "outputs/background-lite-local/active-building-assets.json",
+);
 const LOCAL_TILE_ROOTS = [
   ["/optimized-tiles/", path.join(configuredGeometryRoot, "optimized-tiles")],
   [
@@ -161,6 +169,10 @@ module.exports = {
     rollupOptions: { input: { main: "index.html", admin: "admin.html" } },
   },
   plugins: [
+    localBuildingAssetsPlugin({
+      activeManifestPath: localBuildingAssetManifest,
+      enabled: process.env.LOCAL_BUILDING_ASSETS !== "0",
+    }),
     remoteTileFallbackPlugin(),
     approvedSnapshotApiPlugin({ root: configuredGeometryRoot }),
     weeklyRefreshApiPlugin(),

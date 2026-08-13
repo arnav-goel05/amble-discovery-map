@@ -104,6 +104,11 @@
     "fetch-overlays": "node scripts/fetch-overlays.mjs",
     "fetch-tiles": "node scripts/fetch-tiles.mjs",
     "optimize-tiles": "node scripts/optimize-tiles.mjs",
+    "pilot:background-lite": "node scripts/pilot-background-lite.mjs",
+    "pilot:background-colors": "node scripts/pilot-background-color-variants.mjs",
+    "background-lite:local": "node scripts/local-background-lite.mjs",
+    "background-lite:browser": "PLAYWRIGHT_FULL_MATRIX=1 PLAYWRIGHT_JSON_OUTPUT_NAME=outputs/background-lite-local/browser/playwright-report.json playwright test tests/background-lite-local.spec.mjs --reporter=json",
+    "background-lite:performance": "node scripts/measure-local-background-performance.mjs",
     "prune-tileset": "node scripts/prune-tileset.mjs",
     "parse-catch-week-md": "node scripts/parse-catch-week-md.mjs"
   },
@@ -118,6 +123,7 @@
     "globals": "^16.5.0",
     "playwright": "^1.61.1",
     "prettier": "^3.9.5",
+    "sharp": "^0.32.6",
     "vite": "^8.1.5",
     "wrangler": "^4.110.0"
   },

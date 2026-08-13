@@ -11,6 +11,13 @@ import {
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
+function defaultSpatialHierarchyPath() {
+  const optimized = path.join(ROOT, "optimized-tiles", "tileset.json");
+  return fs.existsSync(optimized)
+    ? optimized
+    : path.join(ROOT, "tiles", "tileset.json");
+}
+
 function collectLegacyPoiIds(tile, ids = []) {
   if (tile?.extras?.poiId) ids.push(tile.extras.poiId);
   for (const child of tile?.children ?? []) collectLegacyPoiIds(child, ids);
@@ -93,7 +100,7 @@ function publishAtomically(outputPath, serialized) {
 export function buildCombinedPoiTileset({
   pois,
   outputPath,
-  sourceTilesetPath = path.join(ROOT, "optimized-tiles/tileset.json"),
+  sourceTilesetPath = defaultSpatialHierarchyPath(),
   resolveContentUri = (poi, fragment) => `../${poi.id}/${fragment.poiFile}`,
   resolveTilesetPath = (poi) => path.join(ROOT, "public", poi.data),
 }) {

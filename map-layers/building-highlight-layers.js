@@ -4,21 +4,33 @@ import { Tiles3DLoader } from "@loaders.gl/3d-tiles";
 
 const BACKGROUND_LAYER_ID = "buildings-3d";
 const POI_LAYER_ID = "event-venues-3d";
-const BACKGROUND_COLOR = [196, 204, 205, 145];
+// Preserve the source/material colour. Background prominence is controlled by
+// layer opacity instead of multiplying a second grey tint into every surface.
+const BACKGROUND_COLOR = [255, 255, 255, 255];
 const BACKGROUND_OPACITY = 0.3;
 const BACKGROUND_ZOOM_RANGE = [13, 22.1];
-const POI_ZOOM_RANGE = [15, 22.1];
+const POI_ZOOM_RANGE = [13, 22.1];
 const BACKGROUND_SCREEN_SPACE_ERROR = 4;
 const POI_SCREEN_SPACE_ERROR = 4;
-const MOVING_SCREEN_SPACE_ERROR = 24;
 const MAX_TILE_REQUESTS = 12;
 const POI_MEMORY_USAGE_MB = 256;
 const INITIAL_VIEW_SETTLE_MS = 600;
-const MOVEMENT_SETTLE_MS = 350;
 const MAX_REFINEMENT_WAIT_MS = 8_000;
 const BACKGROUND_FADE_MS = 400;
 const PRELOAD_OPACITY = 0.001;
-const POI_MOVING_OPACITY = 0.8;
+export const LOCAL_BUILDING_ASSET_SCHEMA = "local-building-assets-v1";
+export const LOCAL_BUILDING_RENDER_POLICY = Object.freeze({
+  backgroundOpacity: BACKGROUND_OPACITY,
+  buildingZoomRange: Object.freeze([...BACKGROUND_ZOOM_RANGE]),
+  maintainFullDetailDuringMovement: true,
+  overlayOpacity: 1,
+  overlayDepthParameters: Object.freeze({
+    depthFunc: 515,
+    depthTest: true,
+    polygonOffset: Object.freeze([-1, -1]),
+    polygonOffsetFill: true,
+  }),
+});
 
 function canonical(value) {
   if (Array.isArray(value)) return value.map(canonical);
@@ -35,6 +47,71 @@ const poiIdentity = (poi) =>
   typeof poi?.contentHash === "string" && poi.contentHash
     ? `hash:${poi.contentHash}`
     : `value:${JSON.stringify(canonical(poi))}`;
+
+export function rendererAssetManifestState(manifest, pois = []) {
+  if (!manifest)
+    return { errors: [], overlayEmpty: pois.length === 0, state: "legacy" };
+  const errors = [];
+  if (manifest.schemaVersion !== LOCAL_BUILDING_ASSET_SCHEMA)
+    errors.push("manifest-schema-invalid");
+  if (!["ready", "active-local"].includes(manifest.state))
+    errors.push("manifest-not-active");
+  if (manifest.background?.complete !== true)
+    errors.push("background-incomplete");
+  if (typeof manifest.background?.url !== "string" || !manifest.background.url)
+    errors.push("background-url-missing");
+  if (manifest.background?.opacity !== BACKGROUND_OPACITY)
+    errors.push("background-opacity-invalid");
+  const overlayEmpty = manifest.overlays?.empty === true && pois.length === 0;
+  if (manifest.overlays?.complete !== true) errors.push("overlays-incomplete");
+  if (
+    !overlayEmpty &&
+    (typeof manifest.overlays?.url !== "string" || !manifest.overlays.url)
+  )
+    errors.push("overlay-url-missing");
+  if (manifest.overlays?.opacity !== 1) errors.push("overlay-opacity-invalid");
+  if (
+    manifest.overlays?.identityCount !== undefined &&
+    (!Number.isSafeInteger(manifest.overlays.identityCount) ||
+      manifest.overlays.identityCount < 0)
+  )
+    errors.push("overlay-identity-count-invalid");
+  const configuredOwnerCount = new Set(pois.map(({ id }) => id)).size;
+  if (
+    manifest.overlays?.ownerCount !== undefined &&
+    manifest.overlays.ownerCount < configuredOwnerCount
+  )
+    errors.push("overlay-owner-count-mismatch");
+  return {
+    errors,
+    overlayEmpty,
+    state: errors.length
+      ? "intentionally-unavailable"
+      : overlayEmpty
+        ? "empty-overlay"
+        : "ready",
+  };
+}
+
+export function overlayOnlyReloadPlan({
+  backgroundUrl,
+  previousPois = [],
+  nextPois = [],
+  previousOverlayUrl,
+  nextOverlayUrl,
+}) {
+  const reconciliation = reconcilePoiGeometry(previousPois, nextPois);
+  const overlayChanged =
+    reconciliation.actions.some(({ action }) => action !== "noop") ||
+    previousOverlayUrl !== nextOverlayUrl;
+  return {
+    ...reconciliation,
+    backgroundChanged: false,
+    backgroundUrl,
+    overlayChanged,
+    overlayUrl: nextOverlayUrl,
+  };
+}
 
 export function geometryIdentityKeys(pois = []) {
   const keys = new Set();
@@ -161,6 +238,7 @@ function incrementBodyCounter(name) {
 
 function createBackgroundLayer({
   data,
+  maximumScreenSpaceError = BACKGROUND_SCREEN_SPACE_ERROR,
   maximumMemoryUsage,
   onTilesetReady,
   onContentReady,
@@ -185,7 +263,7 @@ function createBackgroundLayer({
         maximumMemoryUsage,
         viewDistanceScale: 1,
         updateTransforms: true,
-        maximumScreenSpaceError: BACKGROUND_SCREEN_SPACE_ERROR,
+        maximumScreenSpaceError,
       },
     },
     onTilesetLoad: (tileset) => {
@@ -223,6 +301,7 @@ function createPoiLayer({
     data,
     loader: Tiles3DLoader,
     opacity,
+    parameters: LOCAL_BUILDING_RENDER_POLICY.overlayDepthParameters,
     _subLayerProps: {
       scenegraph: { getColor: [255, 255, 255, 255] },
       mesh: { getColor: [255, 255, 255, 255] },
@@ -259,7 +338,9 @@ function createPoiLayer({
 }
 
 export function createBuildingHighlightLayerManager({
+  assetManifest = null,
   background,
+  backgroundScreenSpaceError = BACKGROUND_SCREEN_SPACE_ERROR,
   lightingEffect,
   map,
   pois,
@@ -271,6 +352,20 @@ export function createBuildingHighlightLayerManager({
   onPoiError,
 }) {
   validatePoiGeometrySet(pois);
+  const initialManifestState = rendererAssetManifestState(assetManifest, pois);
+  if (assetManifest && initialManifestState.errors.length) {
+    document.body.dataset.buildingAssetState = initialManifestState.state;
+    document.body.dataset.buildingAssetErrors =
+      initialManifestState.errors.join(",");
+    throw new Error(
+      `Local building assets are incomplete: ${initialManifestState.errors.join(", ")}`,
+    );
+  }
+  if (
+    !Number.isFinite(backgroundScreenSpaceError) ||
+    backgroundScreenSpaceError <= 0
+  )
+    throw new TypeError("Background screen-space error must be positive");
   const background3dEnabled = diagnosticWorkloads?.background3d !== false;
   const highlighted3dEnabled = diagnosticWorkloads?.highlighted3d !== false;
   let configuredPois = [...pois];
@@ -281,20 +376,35 @@ export function createBuildingHighlightLayerManager({
   let started = false;
   let backgroundRevealed = false;
   let backgroundOpacity = PRELOAD_OPACITY;
-  let poiOpacity = POI_MOVING_OPACITY;
+  let poiOpacity = PRELOAD_OPACITY;
   let opacityAnimationFrame = null;
-  let refinementTimer = null;
-  let refinementSettleTimer = null;
-  let refinementMaximumTimer = null;
   let initialReadinessTimer = null;
-  let waitingForSettledDetail = false;
   const movementRendering = createMovementRenderingGuard();
-  let refinementStartedAt = 0;
   let lastBackgroundTileActivity = Date.now();
   let lastTileActivity = Date.now();
   let lastReadinessSignature = "";
   let lastReadinessChange = Date.now();
   let initialReadinessStartedAt = Date.now();
+  let backgroundFailed = false;
+  let overlayFailed = false;
+  let overlayReloadCount = 0;
+
+  const updateAssetState = () => {
+    let state = initialManifestState.state;
+    if (backgroundFailed) state = "background-failed";
+    else if (overlayFailed) state = "overlay-failed";
+    else if (assetManifest && backgroundRevealed)
+      state =
+        initialManifestState.overlayEmpty || poiTileset
+          ? "complete"
+          : "overlay-loading";
+    document.body.dataset.buildingAssetState = state;
+    document.body.dataset.buildingAssetErrors = [
+      ...(initialManifestState.errors ?? []),
+      ...(backgroundFailed ? ["background-load-failed"] : []),
+      ...(overlayFailed ? ["overlay-load-failed"] : []),
+    ].join(",");
+  };
 
   const applyRefinementState = (tileset, screenSpaceError) => {
     tileset?.setProps({ maximumScreenSpaceError: screenSpaceError });
@@ -333,10 +443,14 @@ export function createBuildingHighlightLayerManager({
       String(poiScreenSpaceError);
   };
 
-  const setRefinementState = (state, screenSpaceError) => {
-    applyRefinementState(backgroundTileset, screenSpaceError);
-    applyRefinementState(poiTileset, screenSpaceError);
-    updateRefinementMetadata(state, screenSpaceError, screenSpaceError);
+  const setFullDetailState = (state) => {
+    applyRefinementState(backgroundTileset, backgroundScreenSpaceError);
+    applyRefinementState(poiTileset, POI_SCREEN_SPACE_ERROR);
+    updateRefinementMetadata(
+      state,
+      backgroundScreenSpaceError,
+      POI_SCREEN_SPACE_ERROR,
+    );
     map.triggerRepaint?.();
   };
 
@@ -368,73 +482,27 @@ export function createBuildingHighlightLayerManager({
     opacityAnimationFrame = requestAnimationFrame(update);
   };
 
-  const selectedTilesRenderable = (tileset) => {
-    if (!tileset) return true;
-    const selectedTiles = Array.isArray(tileset.selectedTiles)
-      ? tileset.selectedTiles
-      : [];
-    return selectedTiles.every(
-      (tile) => tile?.contentAvailable === false || Boolean(tile?.content),
-    );
-  };
-
-  const finishSettledDetail = () => {
-    if (!waitingForSettledDetail) return;
-    waitingForSettledDetail = false;
-    if (refinementSettleTimer !== null) clearTimeout(refinementSettleTimer);
-    if (refinementMaximumTimer !== null) clearTimeout(refinementMaximumTimer);
-    refinementSettleTimer = null;
-    refinementMaximumTimer = null;
-    updateRefinementMetadata(
-      "full-detail",
-      BACKGROUND_SCREEN_SPACE_ERROR,
-      POI_SCREEN_SPACE_ERROR,
-    );
-    if (backgroundRevealed) animateBuildingOpacity(BACKGROUND_OPACITY, 1);
-  };
-
-  const scheduleSettledDetail = () => {
-    if (refinementSettleTimer !== null) clearTimeout(refinementSettleTimer);
-    if (!waitingForSettledDetail || map.isMoving?.()) return;
-    const quietFor = Date.now() - lastTileActivity;
-    const delay = Math.max(100, INITIAL_VIEW_SETTLE_MS - quietFor);
-    refinementSettleTimer = window.setTimeout(() => {
-      refinementSettleTimer = null;
-      if (!waitingForSettledDetail || map.isMoving?.()) return;
-      const exceededMaximumWait =
-        Date.now() - refinementStartedAt >= MAX_REFINEMENT_WAIT_MS;
-      const viewIsSettled =
-        Date.now() - lastTileActivity >= INITIAL_VIEW_SETTLE_MS &&
-        selectedTilesRenderable(backgroundTileset) &&
-        selectedTilesRenderable(poiTileset);
-      if (!viewIsSettled && !exceededMaximumWait) {
-        scheduleSettledDetail();
-        return;
-      }
-      finishSettledDetail();
-    }, delay);
-  };
-
   const noteTileActivity = ({ background: isBackground = false } = {}) => {
     const now = Date.now();
     lastTileActivity = now;
     if (isBackground) lastBackgroundTileActivity = now;
-    if (waitingForSettledDetail) scheduleSettledDetail();
   };
 
   const backgroundLayer = background3dEnabled
     ? createBackgroundLayer({
         ...background,
+        maximumScreenSpaceError: backgroundScreenSpaceError,
         onTilesetReady: (tileset) => {
           backgroundTileset = tileset;
-          applyRefinementState(
-            backgroundTileset,
-            BACKGROUND_SCREEN_SPACE_ERROR,
-          );
+          applyRefinementState(backgroundTileset, backgroundScreenSpaceError);
         },
         onContentReady: onBackgroundReady,
         onTileActivity: () => noteTileActivity({ background: true }),
-        onTilesetError: onBackgroundError,
+        onTilesetError: (error) => {
+          backgroundFailed = true;
+          updateAssetState();
+          onBackgroundError?.(error);
+        },
       })
     : null;
   const backgroundPlaceholderLayer = {
@@ -448,14 +516,18 @@ export function createBuildingHighlightLayerManager({
     highlighted3dEnabled && configuredPois.length
       ? createPoiLayer({
           data: combinedPoiTilesetUrl,
-          opacity: backgroundRevealed ? 1 : POI_MOVING_OPACITY,
+          opacity: backgroundRevealed ? 1 : PRELOAD_OPACITY,
           onTilesetReady: (tileset) => {
             poiTileset = tileset;
             applyRefinementState(poiTileset, POI_SCREEN_SPACE_ERROR);
           },
           onContentReady: onPoiReady,
           onTileActivity: () => noteTileActivity(),
-          onTilesetError: onPoiError,
+          onTilesetError: (error) => {
+            overlayFailed = true;
+            updateAssetState();
+            onPoiError?.(error);
+          },
         })
       : null;
   let poiLayer = makePoiLayer();
@@ -544,42 +616,18 @@ export function createBuildingHighlightLayerManager({
 
   const handleMoveStart = () => {
     if (!started) return;
-    if (refinementTimer !== null) clearTimeout(refinementTimer);
-    if (refinementSettleTimer !== null) clearTimeout(refinementSettleTimer);
-    if (refinementMaximumTimer !== null) clearTimeout(refinementMaximumTimer);
-    waitingForSettledDetail = false;
-    const rendering = movementRendering.begin();
-    setRefinementState("moving-coarse", MOVING_SCREEN_SPACE_ERROR);
-    if (rendering.pauseTraversal) setTileTraversal(false);
-    if (rendering.hideBackground) setBackgroundVisibility(false);
-    if (backgroundRevealed)
-      animateBuildingOpacity(backgroundOpacity, POI_MOVING_OPACITY, 160);
+    movementRendering.begin();
+    setTileTraversal(true);
+    setBackgroundVisibility(true);
+    setFullDetailState("moving-full-detail");
   };
 
   const handleMoveEnd = () => {
     if (!started) return;
     setTileTraversal(true);
     movementRendering.end();
-    map.triggerRepaint?.();
-    updateRefinementMetadata(
-      "settling",
-      MOVING_SCREEN_SPACE_ERROR,
-      MOVING_SCREEN_SPACE_ERROR,
-    );
-    if (refinementTimer !== null) clearTimeout(refinementTimer);
-    refinementTimer = window.setTimeout(() => {
-      refinementTimer = null;
-      lastTileActivity = Date.now();
-      refinementStartedAt = lastTileActivity;
-      waitingForSettledDetail = true;
-      setBackgroundVisibility(true);
-      setRefinementState("refining", BACKGROUND_SCREEN_SPACE_ERROR);
-      refinementMaximumTimer = window.setTimeout(
-        finishSettledDetail,
-        MAX_REFINEMENT_WAIT_MS,
-      );
-      scheduleSettledDetail();
-    }, MOVEMENT_SETTLE_MS);
+    setBackgroundVisibility(true);
+    setFullDetailState("full-detail");
   };
 
   const setSelectedPoi = (id = null) => {
@@ -608,7 +656,16 @@ export function createBuildingHighlightLayerManager({
     started = true;
     initialReadinessStartedAt = Date.now();
     document.body.dataset.buildingsLayerStarted = "true";
-    document.body.dataset.backgroundBuildings = "muted-grey";
+    document.body.dataset.backgroundBuildings = "colour-preserving-lite";
+    document.body.dataset.backgroundOpacity = String(BACKGROUND_OPACITY);
+    document.body.dataset.poiOpacity = "1";
+    document.body.dataset.overlayDepthPreference = "polygon-offset--1";
+    document.body.dataset.buildingAssetManifestId =
+      assetManifest?.manifestId ?? "";
+    document.body.dataset.backgroundAssetIdentity =
+      assetManifest?.background?.manifestId ?? "";
+    document.body.dataset.overlayAssetIdentity =
+      assetManifest?.overlays?.catalogueId ?? "";
     document.body.dataset.background3dEnabled = String(background3dEnabled);
     document.body.dataset.highlighted3dEnabled = String(highlighted3dEnabled);
     document.body.dataset.backgroundTilesetUrl = background.data;
@@ -620,7 +677,7 @@ export function createBuildingHighlightLayerManager({
       .join(",");
     document.body.dataset.poiHighlightManager = "combined";
     document.body.dataset.backgroundMaximumScreenSpaceError = String(
-      BACKGROUND_SCREEN_SPACE_ERROR,
+      backgroundScreenSpaceError,
     );
     document.body.dataset.poiDefaultMaximumScreenSpaceError = String(
       POI_SCREEN_SPACE_ERROR,
@@ -633,9 +690,9 @@ export function createBuildingHighlightLayerManager({
     document.body.dataset.poiPreload = "disabled";
     document.body.dataset.poiPreloadCount = "0";
     document.body.dataset.tileRefinementMovingMaximumScreenSpaceError = String(
-      MOVING_SCREEN_SPACE_ERROR,
+      POI_SCREEN_SPACE_ERROR,
     );
-    document.body.dataset.tileRefinementSettleMs = String(MOVEMENT_SETTLE_MS);
+    document.body.dataset.tileRefinementSettleMs = "0";
     document.body.dataset.initialViewSettleMs = String(INITIAL_VIEW_SETTLE_MS);
     document.body.dataset.tileRefinementMaximumWaitMs = String(
       MAX_REFINEMENT_WAIT_MS,
@@ -644,22 +701,20 @@ export function createBuildingHighlightLayerManager({
     document.body.dataset.backgroundInteractionVisibility = "visible";
     updateRefinementMetadata(
       "full-detail",
-      BACKGROUND_SCREEN_SPACE_ERROR,
+      backgroundScreenSpaceError,
       POI_SCREEN_SPACE_ERROR,
     );
     map.on?.("movestart", handleMoveStart);
     map.on?.("moveend", handleMoveEnd);
     initialReadinessTimer = window.setTimeout(pollInitialReadiness, 0);
     updateMetadata();
+    updateAssetState();
     return true;
   };
 
   const destroy = () => {
     map.off?.("movestart", handleMoveStart);
     map.off?.("moveend", handleMoveEnd);
-    if (refinementTimer !== null) clearTimeout(refinementTimer);
-    if (refinementSettleTimer !== null) clearTimeout(refinementSettleTimer);
-    if (refinementMaximumTimer !== null) clearTimeout(refinementMaximumTimer);
     if (initialReadinessTimer !== null) clearTimeout(initialReadinessTimer);
     if (opacityAnimationFrame !== null)
       cancelAnimationFrame(opacityAnimationFrame);
@@ -674,9 +729,6 @@ export function createBuildingHighlightLayerManager({
     backgroundTileset = null;
     poiTileset = null;
     opacityAnimationFrame = null;
-    refinementTimer = null;
-    refinementSettleTimer = null;
-    refinementMaximumTimer = null;
     initialReadinessTimer = null;
     updateMetadata();
   };
@@ -695,6 +747,8 @@ export function createBuildingHighlightLayerManager({
     configuredPois = result.pois;
     combinedPoiTilesetUrl = nextTilesetUrl;
     poiTileset = null;
+    overlayFailed = false;
+    overlayReloadCount += 1;
     poiLayer = makePoiLayer();
     if (started && poiLayer) {
       map.addLayer(poiLayer);
@@ -716,6 +770,10 @@ export function createBuildingHighlightLayerManager({
     document.body.dataset.poiCombinedTilesetUrl = combinedPoiTilesetUrl;
     document.body.dataset.poiSnapshotId = snapshotId;
     document.body.dataset.poiRestoreIds = result.restorePoiIds.join(",");
+    document.body.dataset.overlayReloadCount = String(overlayReloadCount);
+    document.body.dataset.buildingAssetState = configuredPois.length
+      ? "overlay-loading"
+      : "empty-overlay";
     updateMetadata();
     return { ...result, changed: true };
   };
@@ -751,6 +809,12 @@ export function createBuildingHighlightLayerManager({
     started,
     background3dEnabled,
     highlighted3dEnabled,
+    assetState: document.body.dataset.buildingAssetState ?? null,
+    backgroundOpacity,
+    poiOpacity,
+    overlayReloadCount,
+    backgroundUrl: background.data,
+    overlayUrl: combinedPoiTilesetUrl,
     backgroundLayerPresent: Boolean(map.getLayer(BACKGROUND_LAYER_ID)),
     poiLayerPresent: Boolean(map.getLayer(POI_LAYER_ID)),
     refinementState: document.body.dataset.tileRefinementState ?? null,

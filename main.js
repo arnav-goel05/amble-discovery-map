@@ -29,6 +29,10 @@ import {
 import { createLocationContextLayerManager } from "./map-layers/location-context-layers.js";
 import { createTransitContextLayerManager } from "./map-layers/transit-context-layers.js";
 import { resolveCandidateEnvelopeAreas } from "./activity-scenes/assistant/candidate-area-resolution.js";
+import {
+  loadLocalBuildingAssetManifest,
+  planLocalOverlaySnapshotReconcile,
+} from "./activity-scenes/local-building-assets.js";
 
 const INITIAL_CAMERA = {
   center: [103.857897, 1.285844],
@@ -289,6 +293,18 @@ async function bootstrapApplication() {
       snapshotStatus.update({ state: "unavailable" });
     }
   }
+  const localBuildingAssets = await loadLocalBuildingAssetManifest({
+    enabled: import.meta.env.DEV,
+    manifestUrl:
+      import.meta.env.VITE_LOCAL_BUILDING_ASSET_MANIFEST_URL || undefined,
+  });
+  document.body.dataset.localBuildingAssetState = localBuildingAssets.state;
+  document.body.dataset.localBuildingAssetObservedState =
+    localBuildingAssets.observedState ?? "";
+  document.body.dataset.localBuildingAssetError =
+    localBuildingAssets.error ?? "";
+  document.body.dataset.localBuildingAssetManifestUrl =
+    localBuildingAssets.url ?? "";
   const tilesetUrl =
     injectedSnapshot?.backgroundTilesetUrl ??
     backgroundGeometryRelease.tilesetUrl;
@@ -296,6 +312,8 @@ async function bootstrapApplication() {
     injectedSnapshot?.poiTilesetUrl ??
     activeSnapshot?.metadata.tilesetRef ??
     "poi-tiles/event-venues/tileset.json";
+  const assetManifest =
+    injectedSnapshot?.buildingAssetManifest ?? localBuildingAssets.manifest;
   const builtInPoiTilesets = [
     {
       id: "esplanade",
@@ -435,14 +453,17 @@ async function bootstrapApplication() {
   });
 
   buildingHighlights = createBuildingHighlightLayerManager({
+    assetManifest,
     background: {
-      data: tilesetUrl,
+      data: assetManifest?.background?.url ?? tilesetUrl,
       maximumMemoryUsage: optimizedTilesMemoryMb,
     },
     lightingEffect,
     map,
+    backgroundScreenSpaceError:
+      injectedSnapshot?.backgroundScreenSpaceError ?? 4,
     pois: poiTilesets,
-    poiTilesetUrl,
+    poiTilesetUrl: assetManifest?.overlays?.url ?? poiTilesetUrl,
     diagnosticWorkloads: performanceVariant?.workloads ?? null,
   });
   let activityScenes = [];
@@ -466,11 +487,29 @@ async function bootstrapApplication() {
         return { changed: false };
       }
       const nextPois = composePoiTilesets(next.landmarks, next.pois);
-      const geometry = buildingHighlights.reconcile({
-        pois: nextPois,
-        poiTilesetUrl: next.metadata.tilesetRef,
-        snapshotId: next.metadata.snapshotId,
+      const overlayPlan = planLocalOverlaySnapshotReconcile({
+        assetManifest,
+        currentPois: poiTilesets,
+        nextPois,
+        nextSnapshotId: next.metadata.snapshotId,
+        nextTilesetUrl: next.metadata.tilesetRef,
       });
+      const geometry = buildingHighlights.reconcile({
+        pois: overlayPlan.pois,
+        poiTilesetUrl: overlayPlan.tilesetUrl,
+        snapshotId: overlayPlan.snapshotMismatch
+          ? assetManifest.snapshotId
+          : next.metadata.snapshotId,
+      });
+      document.body.dataset.localOverlaySnapshotState = overlayPlan.pinned
+        ? overlayPlan.snapshotMismatch
+          ? "pinned-snapshot-mismatch"
+          : "pinned-current"
+        : "snapshot-managed";
+      document.body.dataset.localOverlaySnapshotId =
+        overlayPlan.pinned && overlayPlan.snapshotMismatch
+          ? assetManifest.snapshotId
+          : next.metadata.snapshotId;
       const events = eventSceneController?.reconcile?.({
         landmarks: next.landmarks,
         activities: next.activities?.records ?? [],
@@ -479,7 +518,7 @@ async function bootstrapApplication() {
       approvedLandmarks = next.landmarks;
       approvedPois = next.pois;
       approvedActivities = next.activities?.records ?? [];
-      poiTilesets = nextPois;
+      poiTilesets = overlayPlan.pois;
       activeSnapshot = next;
       document.body.dataset.snapshotReconciled =
         geometry.changed || events.changed ? "updated" : "noop";

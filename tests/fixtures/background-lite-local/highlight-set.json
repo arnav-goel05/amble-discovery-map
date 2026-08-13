@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "background-lite-highlight-fixture-v1",
+  "activeBuildingIdentities": ["highlighted-building"],
+  "expectedBackgroundIdentities": [
+    "highlighted-building",
+    "background-building"
+  ]
+}
