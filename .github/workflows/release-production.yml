@@ -91,6 +91,7 @@ jobs:
       - name: Report bounded external-operation budget
         run: |
           echo "Production hydration passes: 1"
+          echo "Hydration retry GET budget: 32"
           echo "Pristine source object requests: 0 (checked-in hash-bound identity evidence)"
           echo "Public integrity inventory requests: 1"
           echo "Public per-object HEAD requests: 0"

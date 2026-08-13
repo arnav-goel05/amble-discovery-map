@@ -12,6 +12,7 @@ import {
   collectTilesetReleaseEntries,
   reconcileReleaseEntries,
 } from "./lib/background-release-hydration.mjs";
+import { fetchReleaseBytes } from "./lib/background-release-fetch.mjs";
 import { loadApprovedSnapshot } from "./lib/approved-snapshot.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -20,28 +21,28 @@ const origin = new URL(
   process.env.BACKGROUND_TILE_ORIGIN ?? "https://amblefinds.com",
 );
 const concurrency = Number(process.env.BACKGROUND_TILE_CONCURRENCY ?? "12");
+const retryBudget = { remaining: 32 };
 
 if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 32) {
   throw new Error(
     "BACKGROUND_TILE_CONCURRENCY must be an integer from 1 to 32",
   );
 }
-
 function releaseUrl(relativeUrl) {
   return new URL(relativeUrl, origin);
 }
 
 async function fetchBytes(url) {
-  const response = await fetch(url, {
-    signal: AbortSignal.timeout(120_000),
+  return fetchReleaseBytes({
+    url,
+    attempts: 3,
+    retryBudget,
+    onRetry: ({ attempt, attempts, delayMs, error }) => {
+      console.error(
+        `Retrying immutable release object after attempt ${attempt}/${attempts} in ${delayMs}ms: ${error.message}`,
+      );
+    },
   });
-  if (!response.ok) {
-    throw new Error(`${response.status} ${response.statusText} for ${url}`);
-  }
-  if (response.headers.get("x-amble-tile-source") !== "r2") {
-    throw new Error(`Release object was not served by R2: ${url}`);
-  }
-  return Buffer.from(await response.arrayBuffer());
 }
 
 async function persist(basePath, relativePath, bytes) {
@@ -240,5 +241,5 @@ const normalizedTilesetBytes = Buffer.from(
 await persist(outputRoot, "tileset.json", normalizedTilesetBytes);
 const poiFragmentCount = await hydratePoiFragments(pois);
 console.log(
-  `Hydrated immutable release ${release.releaseId} with ${releaseEntries.length} verified background objects, ${entries.length} required source fragments, and ${poiFragmentCount} POI fragments.`,
+  `Hydrated immutable release ${release.releaseId} with ${releaseEntries.length} verified background objects, ${entries.length} required source fragments, and ${poiFragmentCount} POI fragments (${32 - retryBudget.remaining}/32 retry GETs used).`,
 );

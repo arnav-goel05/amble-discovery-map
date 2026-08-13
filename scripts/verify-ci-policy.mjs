@@ -83,6 +83,11 @@ export function validateCiCdPolicy({
     throw new Error(
       "release budget: production geometry hydration must appear exactly once",
     );
+  requireText(
+    release,
+    "Hydration retry GET budget: 32",
+    "release hydration retry budget",
+  );
   for (const command of [
     "verify-release-candidate.mjs prepare",
     "test:unit",
