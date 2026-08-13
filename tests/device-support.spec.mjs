@@ -2,7 +2,7 @@ import { expect, test } from "playwright/test";
 
 const DESKTOP_APPLICATION_TIMEOUT = 20_000;
 
-test("phones stop at the device gate while larger screens enter the application", async ({
+test("phones and larger screens enter the application", async ({
   page,
 }, testInfo) => {
   const mobileProject = testInfo.project.name.endsWith("-mobile");
@@ -25,7 +25,7 @@ test("phones stop at the device gate while larger screens enter the application"
   );
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     "content",
-    /interactive desktop map/,
+    /interactive map/,
   );
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
     "content",
@@ -47,91 +47,73 @@ test("phones stop at the device gate while larger screens enter the application"
     })),
   ).toEqual({ cookies: "", analyticsKeys: [] });
 
+  await expect(page.locator("body")).toHaveAttribute(
+    "data-device-support",
+    "supported",
+  );
+  await expect(page.locator("#device-gate")).toHaveCount(0);
+  await expect(page.locator("#map")).toHaveCount(1);
+  await expect(page.locator("#map")).toBeVisible({
+    timeout: DESKTOP_APPLICATION_TIMEOUT,
+  });
+  await expect
+    .poll(() => page.evaluate(() => Boolean(window._map)), {
+      timeout: DESKTOP_APPLICATION_TIMEOUT,
+    })
+    .toBe(true);
+
   if (mobileProject) {
-    await expect(page.locator("body")).toHaveAttribute(
-      "data-device-support",
-      "unsupported",
-    );
-    await expect(
-      page.getByRole("heading", {
-        name: "Singapore is waiting on the big screen",
-      }),
-    ).toBeVisible();
-    await expect(page.locator("#device-gate")).toBeVisible();
-    await expect(page.locator("#map")).toHaveCount(0);
-    await expect(page.locator("#map-brand")).toHaveCount(0);
-    await expect(page.locator("#experience-intro")).toHaveCount(0);
-    expect(
-      await page.evaluate(() => ({
-        mapCreated: Boolean(window._map),
-        applicationRequested: performance
-          .getEntriesByType("resource")
-          .some(({ name }) => new URL(name).pathname === "/main.js"),
-        gateFitsViewport: (() => {
-          const gate = document
-            .getElementById("device-gate")
-            ?.getBoundingClientRect();
-          return Boolean(
-            gate &&
-            gate.width <= window.innerWidth + 1 &&
-            gate.height <= window.innerHeight + 1,
-          );
-        })(),
-        cardIntersectsViewport: (() => {
-          const card = document
-            .querySelector(".device-gate__card")
-            ?.getBoundingClientRect();
-          return Boolean(
-            card &&
-            card.bottom > 0 &&
-            card.top < window.innerHeight &&
-            card.right > 0 &&
-            card.left < window.innerWidth,
-          );
-        })(),
-      })),
-    ).toEqual({
-      mapCreated: false,
-      applicationRequested: false,
-      gateFitsViewport: true,
-      cardIntersectsViewport: true,
-    });
+    const actionAlignment = await page
+      .locator(".landmark-event-search__actions")
+      .evaluate((actions) => {
+        const bounds = actions.getBoundingClientRect();
+        const buttons = [...actions.querySelectorAll("button")];
+        const lastButtonBounds = buttons.at(-1)?.getBoundingClientRect();
+        return {
+          buttonBackgrounds: buttons.map(
+            (button) => getComputedStyle(button).backgroundColor,
+          ),
+          justifyContent: getComputedStyle(actions).justifyContent,
+          trailingGap: lastButtonBounds
+            ? Math.round(bounds.right - lastButtonBounds.right)
+            : null,
+        };
+      });
+    expect(actionAlignment.justifyContent).toBe("flex-end");
+    expect(actionAlignment.buttonBackgrounds).toEqual([
+      "rgb(255, 255, 255)",
+      "rgb(255, 255, 255)",
+    ]);
+    expect(actionAlignment.trailingGap).not.toBeNull();
+    expect(actionAlignment.trailingGap).toBeLessThanOrEqual(8);
+    await page.evaluate(() => window._map?.remove());
     return;
-  } else {
-    await expect(page.locator("body")).toHaveAttribute(
-      "data-device-support",
-      "supported",
-    );
-    await expect(page.locator("#device-gate")).toHaveCount(0);
-    await expect(page.locator("#map")).toHaveCount(1);
-    await expect(page.locator("#map")).toBeVisible({
-      timeout: DESKTOP_APPLICATION_TIMEOUT,
-    });
-    if (!primaryDesktopProject) {
-      await page.evaluate(() => window._map?.remove());
-      return;
-    }
-    await expect(page.locator("#event-density-minimap")).toBeVisible({
-      timeout: DESKTOP_APPLICATION_TIMEOUT,
-    });
-    await expect(page.locator("#map-guidance")).toBeVisible({
-      timeout: DESKTOP_APPLICATION_TIMEOUT,
-    });
-
-    await page.setViewportSize({ width: 900, height: 700 });
-    await expect(page.locator("body")).toHaveAttribute(
-      "data-device-support",
-      "supported",
-    );
-    await expect(page.locator("#device-gate")).toHaveCount(0);
-    await expect(page.locator("#map")).toBeVisible();
-    await expect(page.locator("#event-density-minimap")).toBeHidden();
-    await expect(page.locator("#map-guidance")).toBeHidden();
-
-    await page.setViewportSize({ width: 1280, height: 720 });
-    await expect(page.locator("#map")).toBeVisible();
-    await expect(page.locator("#event-density-minimap")).toBeVisible();
-    await expect(page.locator("#map-guidance")).toBeVisible();
   }
+
+  if (!primaryDesktopProject) {
+    await page.evaluate(() => window._map?.remove());
+    return;
+  }
+  await expect(page.locator("#event-density-minimap")).toBeVisible({
+    timeout: DESKTOP_APPLICATION_TIMEOUT,
+  });
+  await expect(page.locator("#map-guidance")).toBeVisible({
+    timeout: DESKTOP_APPLICATION_TIMEOUT,
+  });
+
+  await page.setViewportSize({ width: 900, height: 700 });
+  await expect(page.locator("body")).toHaveAttribute(
+    "data-device-support",
+    "supported",
+  );
+  await expect(page.locator("#device-gate")).toHaveCount(0);
+  await expect(page.locator("#map")).toBeVisible();
+  await expect(page.locator("#event-density-minimap")).toBeHidden();
+  await expect(page.locator("#map-guidance")).toBeHidden();
+
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await expect(page.locator("#map")).toBeVisible();
+  await expect(page.locator("#event-density-minimap")).toBeVisible();
+  await expect(page.locator("#map-guidance")).toBeVisible();
   await page.evaluate(() => window._map?.remove());
 });

@@ -47,7 +47,7 @@ const compactProjects = ["chromium", "webkit", "firefox"].map(
       browserName,
       viewport: { width: 1024, height: 768 },
       screen: { width: 1024, height: 768 },
-      // The six-project device gate owns touch emulation. Keep Firefox's
+      // The six-project device compatibility pass owns touch emulation. Keep Firefox's
       // representative compatibility pass desktop-like to avoid Linux touch
       // emulation stalls while still exercising the compact viewport.
       hasTouch: browserName !== "firefox",

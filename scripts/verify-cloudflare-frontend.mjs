@@ -174,11 +174,10 @@ export function verifyCloudflareFrontend(
 
   const entry = fs.readFileSync(entryPath, "utf8");
   const requiredEntrySignals = [
-    "device-gate",
     "deviceSupport",
-    "maxTouchPoints",
-    "Singapore is waiting on the big screen",
-    "Open Amble on your laptop",
+    "audio-capture",
+    "audio-output",
+    "websocket",
   ];
 
   for (const signal of requiredEntrySignals) {
@@ -192,21 +191,6 @@ export function verifyCloudflareFrontend(
     fail(
       "the compatibility entry unexpectedly contains the full 3D application",
     );
-
-  const stylesheets = [
-    ...html.matchAll(
-      /<link\b[^>]*\brel=["']stylesheet["'][^>]*\bhref=["']([^"']+)["']/gi,
-    ),
-  ]
-    .map((match) => path.join(buildRoot, match[1].replace(/^\//, "")))
-    .filter((filePath) => fs.existsSync(filePath));
-  if (
-    !stylesheets.some((filePath) =>
-      fs.readFileSync(filePath, "utf8").includes("device-gate"),
-    )
-  ) {
-    fail("the production HTML does not load the device-gate styles");
-  }
 
   return {
     canonical,

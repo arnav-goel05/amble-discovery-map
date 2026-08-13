@@ -37,7 +37,7 @@ Requirements:
 
 - Node.js 24 or newer
 - npm
-- A device with a shortest screen edge of at least 500 CSS pixels; smaller phone-sized screens receive a lightweight compatibility screen before the 3D application loads
+- A modern browser with WebGL support; phones, tablets, laptops, and desktops all load the 3D application
 
 ```bash
 npm ci

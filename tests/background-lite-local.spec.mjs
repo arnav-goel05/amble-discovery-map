@@ -63,9 +63,9 @@ test("each local before/after scene requires matched renderable counts and both 
   expect(results.every(({ matched }) => matched)).toBe(true);
 });
 
-test("normal local startup loads assets when supported and preserves the mobile gate", async ({
+test("normal local startup loads assets on desktop and mobile", async ({
   page,
-}, testInfo) => {
+}) => {
   await page.route("**/__local-building-assets/manifest.json", (route) =>
     route.fulfill({
       contentType: "application/json",
@@ -89,17 +89,6 @@ test("normal local startup loads assets when supported and preserves the mobile 
     }),
   );
   await page.goto("/?skipIntro=1", { waitUntil: "domcontentloaded" });
-  if (testInfo.project.name.endsWith("-mobile")) {
-    await expect(page.locator("body")).toHaveAttribute(
-      "data-device-support",
-      "unsupported",
-    );
-    await expect(page.locator("body")).not.toHaveAttribute(
-      "data-local-building-asset-state",
-      "active-local",
-    );
-    return;
-  }
   await expect(page.locator("body")).toHaveAttribute(
     "data-local-building-asset-state",
     "active-local",

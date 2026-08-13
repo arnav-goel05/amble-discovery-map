@@ -9,7 +9,7 @@ export const SITE_IDENTITY = Object.freeze({
   locale: "en_SG",
   title: "Amble: See What’s Happening in Singapore",
   description:
-    "Explore Singapore in 3D and discover events happening across the city. Amble turns what’s on into an interactive desktop map.",
+    "Explore Singapore in 3D and discover events happening across the city. Amble turns what’s on into an interactive map.",
   websiteId: "https://amblefinds.com/#website",
   organizationId: "https://amblefinds.com/#organization",
   logoUrl: "https://amblefinds.com/brand/event-map-logo.png",

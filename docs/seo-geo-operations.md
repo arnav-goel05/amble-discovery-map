@@ -36,8 +36,8 @@
   reviewed training agents. On the Free plan, Cloudflare documents that this classification is
   based on user-agent strings; record it as `not-available` for verified-bot enforcement and do
   not describe it as cryptographically verified.
-- Never create crawler-only HTML. Unknown and spoofed agents receive the same public page and
-  mobile gate as everyone else. Admin paths remain 404.
+- Never create crawler-only HTML. Unknown and spoofed agents receive the same public page as
+  everyone else. Admin paths remain 404.
 
 ## Validation, deploy, and rollback
 

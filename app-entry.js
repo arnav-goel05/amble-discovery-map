@@ -1,26 +1,4 @@
-import "./styles/device-gate.css";
 import { getDeviceSupport } from "./device-support.js";
-
-function showUnsupportedDevice(support) {
-  document.body.dataset.deviceSupport = "unsupported";
-  document.body.dataset.deviceScreenEdge = String(support.shortestScreenEdge);
-  document.getElementById("map")?.remove();
-  document.getElementById("map-brand")?.remove();
-  document.getElementById("experience-intro")?.remove();
-
-  const gate = document.createElement("main");
-  gate.id = "device-gate";
-  gate.className = "device-gate";
-  gate.setAttribute("aria-labelledby", "device-gate-title");
-  gate.innerHTML = `
-    <section class="device-gate__card">
-      <img class="device-gate__wordmark" src="/brand/amble-wordmark.png" alt="Amble" width="1422" height="449">
-      <h1 id="device-gate-title" class="device-gate__title">Singapore is waiting on the big screen</h1>
-      <p class="device-gate__copy">Open Amble on your laptop to explore the city in 3D, uncover exciting events, find your next restaurant, and build the perfect day out.</p>
-    </section>
-  `;
-  document.body.appendChild(gate);
-}
 
 function showApplicationLoadFailure(errorCode) {
   document.body.dataset.applicationState = "failed";
@@ -48,16 +26,9 @@ function showApplicationLoadFailure(errorCode) {
 }
 
 const support = getDeviceSupport({
-  screen: globalThis.screen,
-  viewport: {
-    width: globalThis.innerWidth,
-    height: globalThis.innerHeight,
-  },
   navigator: globalThis.navigator,
 });
 const queryParams = new URLSearchParams(globalThis.location?.search ?? "");
-const allowNarrowEmptyFixture =
-  !support.mobileOrTablet && queryParams.has("emptyApprovedSnapshot");
 
 async function startSupportedApplication() {
   document.body.dataset.deviceSupport =
@@ -85,8 +56,4 @@ async function startSupportedApplication() {
   }
 }
 
-if (support.supported || allowNarrowEmptyFixture) {
-  startSupportedApplication();
-} else {
-  showUnsupportedDevice(support);
-}
+startSupportedApplication();

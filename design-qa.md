@@ -159,6 +159,52 @@ final result: passed
 
 ---
 
+# Design QA: phone utility actions right alignment
+
+- Source visual truth: `/var/folders/kt/mjsyky8537n9z1rtwl34g_l00000gn/T/TemporaryItems/NSIRD_screencaptureui_fRXvPR/Screenshot 2026-08-14 at 3.59.05 AM.png`
+- Browser-rendered implementation: `/Users/arnav/Desktop/projects/onemap-poi-highlight-spike/outputs/design-qa/phone-actions-right/implementation-full.png`
+- Focused implementation region: `/Users/arnav/Desktop/projects/onemap-poi-highlight-spike/outputs/design-qa/phone-actions-right/implementation-actions.png`
+- Side-by-side comparison: `/Users/arnav/Desktop/projects/onemap-poi-highlight-spike/outputs/design-qa/phone-actions-right/comparison.png`
+- Viewport: 390 × 844 CSS pixels at device scale factor 1.
+- Source image: 220 × 100 pixels; implementation full image: 390 × 844 pixels; focused action container: 378 × 44 pixels.
+- Density normalization: the requested change concerns trailing alignment, so the source crop and full implementation were compared at their native aspect ratios without scaling either control pair.
+- State: map initialized, search closed, restaurant and plan utility actions visible.
+
+## Full-view and focused comparison evidence
+
+- The full phone render shows both actions directly below the search composer at the right edge, preserving the established four-pixel internal trailing inset.
+- The focused measurement reports a 378-pixel action row from x=8 to x=386. The final button ends at x=382, leaving a four-pixel trailing gap.
+- The side-by-side comparison shows the requested directional change from the reference's left placement to the implementation's right placement.
+
+## Required fidelity surfaces
+
+- Fonts and typography: unchanged; this edit does not affect labels, font family, weights, line height, or text rendering.
+- Spacing and layout rhythm: passed; the 44-pixel circular controls retain their six-pixel gap and align to the right without horizontal overflow.
+- Colors and visual tokens: unchanged; borders, translucent surfaces, icon color, and shadows use the existing product styles.
+- Image quality and asset fidelity: unchanged; existing Phosphor restaurant and checklist icons remain sharp and no replacement assets were introduced.
+- Copy and content: unchanged; accessible names, tooltips, and control behavior remain intact.
+
+## Comparison history
+
+1. P2 finding: the narrowest phone breakpoint overrode the normal right alignment and moved both utility actions to the left.
+2. Fix: removed the max-width 420-pixel left-alignment override, allowing the existing compact layout's `flex-end` alignment and four-pixel right inset to apply.
+3. Post-fix evidence: Chromium, WebKit, and Firefox mobile tests report right alignment; the 390 × 844 capture shows the pair at the right edge with no overflow or browser errors.
+
+## Findings
+
+- No actionable P0, P1, or P2 differences remain for the requested alignment change.
+- No P3 follow-up is required.
+
+## Verification
+
+- Chromium, WebKit, and Firefox mobile regression tests: 3 passed.
+- Browser console and page errors: none.
+- Horizontal overflow: 0 pixels.
+
+final result: passed
+
+---
+
 # Design QA: compact map and search spacing
 
 - Source visual truth: `/var/folders/kt/mjsyky8537n9z1rtwl34g_l00000gn/T/TemporaryItems/NSIRD_screencaptureui_rDJWcN/Screenshot 2026-08-01 at 7.26.50 PM.png`
@@ -205,5 +251,51 @@ The right edge was checked separately because it contains the reported defect. B
 ## Follow-up polish
 
 None required for this fix.
+
+final result: passed
+
+---
+
+# Design QA: solid white phone utility buttons
+
+- Source visual truth: `/var/folders/kt/mjsyky8537n9z1rtwl34g_l00000gn/T/TemporaryItems/NSIRD_screencaptureui_LPYcIy/Screenshot 2026-08-14 at 4.04.50 AM.png`
+- Browser-rendered implementation: `/Users/arnav/Desktop/projects/onemap-poi-highlight-spike/outputs/design-qa/phone-actions-white/implementation-full.png`
+- Focused implementation region: `/Users/arnav/Desktop/projects/onemap-poi-highlight-spike/outputs/design-qa/phone-actions-white/implementation-actions.png`
+- Side-by-side comparison: `/Users/arnav/Desktop/projects/onemap-poi-highlight-spike/outputs/design-qa/phone-actions-white/comparison.png`
+- Viewport: 390 × 844 CSS pixels at device scale factor 1.
+- Source image: 264 × 130 pixels; implementation full image: 390 × 844 pixels; focused action container: 378 × 44 pixels.
+- Density normalization: the requested change concerns button opacity, so the reference crop and implementation were compared at native aspect ratios with the same closed-search state.
+- State: map initialized at the supplied camera hash, search closed, restaurant and plan actions visible.
+
+## Full-view and focused comparison evidence
+
+- The reference shows detailed map geometry visible through the translucent circular buttons.
+- The final phone capture shows both controls as uniform solid-white circles, clearly separating their icons from the map while preserving their right alignment.
+- Computed styles for both controls are `rgb(255, 255, 255)`; the page reports zero horizontal overflow and zero console or page errors.
+
+## Required fidelity surfaces
+
+- Fonts and typography: unchanged; no text, accessible names, weights, or icon sizing changed.
+- Spacing and layout rhythm: unchanged; the two 44-pixel controls retain their position, six-pixel gap, radius, and four-pixel right inset.
+- Colors and visual tokens: passed; only the narrow phone breakpoint changes from translucent white to opaque `#fff`.
+- Image quality and asset fidelity: unchanged; the existing Phosphor restaurant and checklist icons remain intact and sharp.
+- Copy and content: unchanged; titles, labels, and button behavior remain the same.
+
+## Comparison history
+
+1. P2 finding: detailed map geometry showed through the phone controls and reduced their visual separation from the map.
+2. Fix: set the two utility actions to opaque white within the existing max-width 720-pixel phone rule.
+3. Post-fix evidence: the final capture and computed styles confirm both backgrounds are solid white in Chromium; the same regression assertion passes in WebKit and Firefox.
+
+## Findings
+
+- No actionable P0, P1, or P2 difference remains for the requested phone background treatment.
+- No P3 follow-up is required.
+
+## Verification
+
+- Chromium, WebKit, and Firefox mobile regression tests: 3 passed.
+- Browser console and page errors: none.
+- Horizontal overflow: 0 pixels.
 
 final result: passed

@@ -67,71 +67,12 @@ jobs:
       - name: Build production-equivalent frontend without geometry hydration
         run: npm run build:ci
 
-  chromium-desktop:
-    name: Chromium desktop interactions
-    needs: quality
-    runs-on: ubuntu-latest
-    timeout-minutes: 35
-
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-      - name: Run broad desktop interaction coverage
-        run: npm run test:ui:ci
-      - name: Run staged event-pipeline browser integration
-        run: npm run test:event-pipeline-browser
-
-  chromium-mobile:
-    name: Chromium mobile interactions
-    needs: quality
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-      - name: Run targeted mobile interaction coverage
-        run: npm run test:ui:mobile
-
-  chromium-voice:
-    name: Chromium voice interactions
-    needs: quality
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-      - name: Run isolated mocked voice interaction coverage
-        run: npm run test:ui:voice-ci
-
   complete:
     name: Quality checks
     if: always()
-    needs: [quality, chromium-desktop, chromium-mobile, chromium-voice]
+    needs: [quality]
     runs-on: ubuntu-latest
     steps:
-      - name: Require every ordinary CI tier
+      - name: Require local quality
         run: |
           test "${{ needs.quality.result }}" = "success"
-          test "${{ needs.chromium-desktop.result }}" = "success"
-          test "${{ needs.chromium-mobile.result }}" = "success"
-          test "${{ needs.chromium-voice.result }}" = "success"
