@@ -141,6 +141,9 @@ const browserVerificationEnvironment = (runId, overrides = {}) => {
     PLAYWRIGHT_PORT: String(port),
     PLAYWRIGHT_REUSE_EXISTING_SERVER: "0",
     EVENT_PIPELINE_BROWSER_ORIGIN: `http://127.0.0.1:${port}`,
+    VITE_AMBLE_E2E_OFFLINE_MAP: "1",
+    LOCAL_BUILDING_ASSETS: "0",
+    VITE_LOCAL_BUILDING_ASSETS: "0",
     ...overrides,
   };
 };
@@ -4737,6 +4740,9 @@ async function stageFrontend(options) {
         "PLAYWRIGHT_WORKERS",
         "EVENT_PIPELINE_RUN_DIR",
         "EVENT_PIPELINE_BROWSER_ORIGIN",
+        "VITE_AMBLE_E2E_OFFLINE_MAP",
+        "LOCAL_BUILDING_ASSETS",
+        "VITE_LOCAL_BUILDING_ASSETS",
         "NODE_ENV",
       ]
         .filter((key) => env[key] !== undefined)

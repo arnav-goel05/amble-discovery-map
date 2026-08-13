@@ -61,6 +61,20 @@ test("phones and larger screens enter the application", async ({
       timeout: DESKTOP_APPLICATION_TIMEOUT,
     })
     .toBe(true);
+  await expect(page.locator("body")).not.toHaveAttribute(
+    "data-application-state",
+    "failed",
+  );
+  await expect(page.locator("body")).toHaveAttribute(
+    "data-plan-builder",
+    "mounted",
+    { timeout: DESKTOP_APPLICATION_TIMEOUT },
+  );
+  await expect(page.locator("body")).toHaveAttribute(
+    "data-poi-highlight-manager",
+    "combined",
+    { timeout: DESKTOP_APPLICATION_TIMEOUT },
+  );
 
   if (mobileProject) {
     const actionAlignment = await page

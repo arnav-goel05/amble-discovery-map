@@ -144,6 +144,9 @@ test("pipeline browser verification uses a stable isolated strict-server port", 
     first.EVENT_PIPELINE_BROWSER_ORIGIN,
     `http://127.0.0.1:${first.PLAYWRIGHT_PORT}`,
   );
+  assert.equal(first.VITE_AMBLE_E2E_OFFLINE_MAP, "1");
+  assert.equal(first.LOCAL_BUILDING_ASSETS, "0");
+  assert.equal(first.VITE_LOCAL_BUILDING_ASSETS, "0");
   assert.ok(Number(first.PLAYWRIGHT_PORT) >= 40_000);
   assert.ok(Number(first.PLAYWRIGHT_PORT) < 50_000);
 });

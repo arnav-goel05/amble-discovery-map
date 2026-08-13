@@ -110,6 +110,8 @@ export function validateCiCdPolicy({
     const connectedBuild = packageJson.scripts?.["cloudflare:cloud:test"] ?? "";
     const smoke = packageJson.scripts?.["cloudflare:cloud:smoke"] ?? "";
     const releaseUi = packageJson.scripts?.["test:ui:release"] ?? "";
+    const eventPipelineBrowser =
+      packageJson.scripts?.["test:event-pipeline-browser"] ?? "";
     const releaseBenchmark = packageJson.scripts?.["benchmark:release"] ?? "";
     requireText(
       releaseBenchmark,
@@ -120,6 +122,16 @@ export function validateCiCdPolicy({
       releaseBenchmark,
       "PLAYWRIGHT_GEOMETRY_FIXTURE=1",
       "release performance fixture isolation",
+    );
+    requireText(
+      eventPipelineBrowser,
+      "geometry:fixture:prepare",
+      "staged event-pipeline fixture materialization",
+    );
+    requireText(
+      eventPipelineBrowser,
+      "PLAYWRIGHT_GEOMETRY_FIXTURE=1",
+      "staged event-pipeline browser fixture isolation",
     );
     requireText(
       deploy,

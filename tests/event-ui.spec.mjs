@@ -81,7 +81,7 @@ test("empty approved snapshot renders no highlights, pills, or panels", async ({
   );
   await expect(page.locator("body")).toHaveAttribute(
     "data-background-maximum-screen-space-error",
-    "4",
+    "8",
   );
   await expect(page.locator("body")).toHaveAttribute(
     "data-poi-default-maximum-screen-space-error",
@@ -281,7 +281,7 @@ test("search selection centers the event pill without a redundant direction poin
     .toBe("full-detail");
   await expect(page.locator("body")).toHaveAttribute(
     "data-background-current-maximum-screen-space-error",
-    "4",
+    "8",
   );
   await expect(page.locator(".landmark-direction-indicator")).toHaveCount(0);
   await expect(

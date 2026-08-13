@@ -293,7 +293,8 @@ async function bootstrapApplication() {
     }
   }
   const localBuildingAssets = await loadLocalBuildingAssetManifest({
-    enabled: import.meta.env.DEV,
+    enabled:
+      import.meta.env.DEV && import.meta.env.VITE_LOCAL_BUILDING_ASSETS !== "0",
     manifestUrl:
       import.meta.env.VITE_LOCAL_BUILDING_ASSET_MANIFEST_URL || undefined,
   });

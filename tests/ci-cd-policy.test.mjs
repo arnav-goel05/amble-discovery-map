@@ -164,6 +164,21 @@ test("ordinary CI formats the complete main-to-candidate release range", () => {
   );
 });
 
+test("staged event-pipeline browser verification uses the compact geometry fixture", () => {
+  for (const required of [
+    "geometry:fixture:prepare",
+    "PLAYWRIGHT_GEOMETRY_FIXTURE=1",
+  ]) {
+    const inputs = clone();
+    inputs.packageJson.scripts["test:event-pipeline-browser"] =
+      inputs.packageJson.scripts["test:event-pipeline-browser"].replace(
+        required,
+        "removed",
+      );
+    assert.throws(() => validateCiCdPolicy(inputs), /event-pipeline.*fixture/i);
+  }
+});
+
 test("browser CI cannot silently fall back from the materialized fixture", () => {
   const missingRoot = clone();
   missingRoot.playwrightConfig = missingRoot.playwrightConfig.replace(

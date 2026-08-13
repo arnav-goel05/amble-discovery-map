@@ -160,7 +160,7 @@ test("staged successful snapshot mounts every landmark once and opens the shared
   });
 });
 
-test("staged stale metadata is visible without publishing the candidate over the previous snapshot", async ({
+test("staged stale metadata stays unobtrusive without publishing the candidate over the previous snapshot", async ({
   page,
   request,
 }) => {
@@ -177,9 +177,8 @@ test("staged stale metadata is visible without publishing the candidate over the
     "data-snapshot-state",
     "potentially-outdated",
   );
-  await expect(page.locator("#snapshot-freshness")).toContainText(
-    /potentially outdated/i,
-  );
+  await expect(page.locator("#snapshot-status")).toBeHidden();
+  await expect(page.locator("#snapshot-freshness")).toBeEmpty();
 
   const after = await request.get("/api/snapshot");
   expect((await after.json()).data.snapshotId).toBe(activeBefore);
