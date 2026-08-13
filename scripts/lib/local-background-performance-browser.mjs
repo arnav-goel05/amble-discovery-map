@@ -128,7 +128,6 @@ async function waitForSettledScene(page, settings) {
 
 async function measureMovement(page, durationMs) {
   return page.evaluate(async (duration) => {
-    globalThis.__preserveNextMovementRendering?.();
     const map = globalThis._map;
     if (!map) throw new Error("Map is unavailable for movement measurement");
     const frames = [];
@@ -267,7 +266,7 @@ export async function measurePerformanceRun(browser, item, snapshot, settings) {
     await page.waitForFunction(
       () =>
         document.body.dataset.backgroundViewLoaded === "true" &&
-        typeof globalThis.__preserveNextMovementRendering === "function",
+        typeof globalThis.__buildingLayerDiagnosticSnapshot === "function",
       null,
       { timeout: timeoutMs },
     );

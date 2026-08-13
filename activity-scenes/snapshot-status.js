@@ -1,8 +1,3 @@
-function formatChecked(value) {
-  if (!value || Number.isNaN(Date.parse(value))) return "last checked time unavailable";
-  return `last checked ${new Intl.DateTimeFormat("en-SG", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value))}`;
-}
-
 export function createSnapshotStatus() {
   const existing = document.getElementById("snapshot-status");
   if (existing) return existing.__snapshotStatus;
@@ -16,11 +11,10 @@ export function createSnapshotStatus() {
   message.id = "snapshot-freshness";
   root.appendChild(message);
   document.body.appendChild(root);
-  const update = ({ state, fetchedAt } = {}) => {
+  const update = ({ state } = {}) => {
     root.dataset.state = state || "fresh";
-    root.hidden = state === "fresh" || !state;
-    if (state === "stale") message.textContent = `Potentially outdated · ${formatChecked(fetchedAt)}`;
-    else if (state === "unavailable") message.textContent = "Event information unavailable. Please try again later.";
+    root.hidden = state !== "unavailable";
+    if (state === "unavailable") message.textContent = "Event information unavailable. Please try again later.";
     else message.textContent = "";
   };
   const api = { root, update, destroy: () => root.remove() };

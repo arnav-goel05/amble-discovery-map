@@ -26,6 +26,8 @@
 - [x] T008 [US1] Generate `public/poi-tiles/event-venues/tileset.json` from the active approved catalogue without regenerating geometry
 - [x] T009 [US1] Verify the existing introduction zoom exception and normal movement policy remain unchanged with `tests/building-highlight-movement.test.mjs` and `tests/map-render-sync.spec.mjs`
 
+> Superseded by the later local background-lite renderer policy: all camera movement now hides both building layers and pauses traversal; there is no introduction movement exception.
+
 ## Phase 4: User Story 2 — Preserve Approved Locations
 
 **Goal**: Keep exact stable venue parity and publish only complete, valid candidates.

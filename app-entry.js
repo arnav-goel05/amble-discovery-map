@@ -1,5 +1,4 @@
 import "./styles/device-gate.css";
-import "./styles/experience-intro.css";
 import { getDeviceSupport } from "./device-support.js";
 
 function showUnsupportedDevice(support) {

@@ -207,14 +207,21 @@ test("background and highlighted buildings hide together during movement", async
 
   await page.evaluate(() => window._map.fire("movestart"));
   await expect.poll(visibility).toEqual({
-    background: true,
-    backgroundMap: "visible",
-    highlighted: true,
-    highlightedMap: "visible",
+    background: false,
+    backgroundMap: "none",
+    highlighted: false,
+    highlightedMap: "none",
     traversal: "paused",
   });
 
   await page.evaluate(() => window._map.fire("moveend"));
+  await expect.poll(visibility, { timeout: 5_000 }).toMatchObject({
+    background: true,
+    backgroundMap: "visible",
+    highlighted: true,
+    highlightedMap: "visible",
+    traversal: "active",
+  });
   await expect
     .poll(
       () =>
@@ -227,6 +234,6 @@ test("background and highlighted buildings hide together during movement", async
     backgroundMap: "visible",
     highlighted: true,
     highlightedMap: "visible",
-    traversal: "active",
+    traversal: "paused",
   });
 });

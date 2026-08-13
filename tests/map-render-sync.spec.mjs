@@ -182,18 +182,21 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({
   expect(result.maximumProjectionDelta).toBeLessThan(1e-5);
   expect(result.minimumPitch).toBe(45);
   expect(result.maximumPitch).toBeCloseTo(45, 5);
-  expect(result.refinementStates).toContain("moving-full-detail");
+  expect(result.refinementStates).toContain("moving-hidden");
   expect(result.refinementStates).toContain("full-detail");
   expect(result.traversalStates).toContain("active");
   expect(result.traversalStates).toContain("paused");
   expect(result.backgroundLoadTiles).toContain(true);
+  expect(result.backgroundLoadTiles).toContain(false);
+  expect(result.backgroundVisibility).toContain(false);
   expect(result.backgroundVisibility).toContain(true);
+  expect(result.backgroundMapVisibility).toContain("none");
   expect(result.backgroundMapVisibility).toContain("visible");
   if (result.poiVisibility.some((value) => value !== undefined)) {
     expect(result.poiVisibility).toContain(true);
     expect(result.poiMapVisibility).toContain("visible");
   }
-  expect(result.backgroundScreenSpaceErrors).toContain("4");
+  expect(result.backgroundScreenSpaceErrors).toContain("8");
   expect(result.poiScreenSpaceErrors).toContain("4");
   renderGuard.assertClean();
 });

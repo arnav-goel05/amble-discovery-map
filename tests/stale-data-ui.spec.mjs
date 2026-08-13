@@ -13,7 +13,7 @@ for (const [name, size] of [
   ["desktop", { width: 1280, height: 800 }],
   ["mobile", { width: 390, height: 760 }],
 ]) {
-  test(`${name} shows one restrained global stale indicator and an explicit unavailable state`, async ({
+  test(`${name} hides stale snapshot metadata and shows an explicit unavailable state`, async ({
     page,
   }) => {
     await page.setViewportSize(size);
@@ -25,13 +25,9 @@ for (const [name, size] of [
       }),
     );
     const indicator = page.locator("#snapshot-status");
-    await expect(indicator).toBeVisible();
-    await expect(indicator).toContainText("Potentially outdated");
-    await expect(indicator).toContainText("14 Jul 2026");
+    await expect(indicator).toBeHidden();
+    await expect(indicator).toBeEmpty();
     await expect(page.locator("#snapshot-status")).toHaveCount(1);
-    const box = await indicator.boundingBox();
-    expect(box.x).toBeGreaterThanOrEqual(0);
-    expect(box.x + box.width).toBeLessThanOrEqual(size.width);
 
     await page.evaluate(() =>
       window.__snapshotStatus.update({ state: "fresh" }),
@@ -235,8 +231,7 @@ test("a recovered active snapshot reconciles events in place and later outages p
   await page.evaluate(() =>
     window.dispatchEvent(new CustomEvent("whats-here:snapshot-refresh")),
   );
-  await expect(page.locator("#snapshot-status")).toContainText(
-    "Potentially outdated",
-  );
+  await expect(page.locator("#snapshot-status")).toBeHidden();
+  await expect(page.locator("#snapshot-status")).toBeEmpty();
   await expect(page.locator(".landmark-event-pill")).toHaveCount(1);
 });

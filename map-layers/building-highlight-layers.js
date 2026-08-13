@@ -10,7 +10,7 @@ const BACKGROUND_COLOR = [255, 255, 255, 255];
 const BACKGROUND_OPACITY = 0.3;
 const BACKGROUND_ZOOM_RANGE = [13, 22.1];
 const POI_ZOOM_RANGE = [13, 22.1];
-const BACKGROUND_SCREEN_SPACE_ERROR = 4;
+const BACKGROUND_SCREEN_SPACE_ERROR = 8;
 const POI_SCREEN_SPACE_ERROR = 4;
 const MAX_TILE_REQUESTS = 12;
 const POI_MEMORY_USAGE_MB = 256;
@@ -24,8 +24,10 @@ export const LOCAL_BUILDING_ASSET_SCHEMA = "local-building-assets-v1";
 export const LOCAL_BUILDING_RENDER_POLICY = Object.freeze({
   backgroundOpacity: BACKGROUND_OPACITY,
   buildingZoomRange: Object.freeze([...BACKGROUND_ZOOM_RANGE]),
+  backgroundScreenSpaceError: BACKGROUND_SCREEN_SPACE_ERROR,
+  highlightedScreenSpaceError: POI_SCREEN_SPACE_ERROR,
   hideBuildingsDuringMovement: true,
-  maintainFullDetailDuringMovement: true,
+  maintainFullDetailDuringMovement: false,
   movementRevealStableMs: MOVEMENT_REVEAL_STABLE_MS,
   overlayOpacity: 1,
   overlayDepthParameters: Object.freeze({
@@ -200,8 +202,10 @@ export function buildingMovementReadiness({
     highlighted,
     renderable:
       (!backgroundRequired ||
-        (background.selectedCount > 0 &&
+        (background.loaded &&
+          background.selectedCount > 0 &&
           background.readyCount === background.selectedCount)) &&
+      highlightedView.loaded &&
       highlightedView.renderable,
     signature: [
       background.selectedCount,
@@ -216,6 +220,17 @@ export function buildingMovementReadiness({
         .sort(),
     ].join("|"),
   };
+}
+
+export function movementRevealDecision({
+  renderable = false,
+  stable = false,
+} = {}) {
+  if (!renderable)
+    return { freezeTraversal: false, reveal: false, state: "loading" };
+  if (!stable)
+    return { freezeTraversal: false, reveal: false, state: "stabilizing" };
+  return { freezeTraversal: true, reveal: true, state: "ready" };
 }
 
 export function reconcilePoiGeometry(previousPois = [], nextPois = []) {
@@ -245,27 +260,6 @@ export function reconcilePoiGeometry(previousPois = [], nextPois = []) {
       restorePoiIds.push(id);
     }
   return { actions, pois, restorePoiIds };
-}
-
-export function createMovementRenderingGuard() {
-  let preserveNext = false;
-  let preserveCurrent = false;
-  return {
-    preserveNext() {
-      preserveNext = true;
-    },
-    begin() {
-      preserveCurrent = preserveNext;
-      preserveNext = false;
-      return {
-        hideBackground: !preserveCurrent,
-        pauseTraversal: !preserveCurrent,
-      };
-    },
-    end() {
-      preserveCurrent = false;
-    },
-  };
 }
 
 function incrementBodyCounter(name) {
@@ -418,7 +412,6 @@ export function createBuildingHighlightLayerManager({
   let opacityAnimationFrame = null;
   let initialReadinessTimer = null;
   let movementRevealTimer = null;
-  const movementRendering = createMovementRenderingGuard();
   let lastBackgroundTileActivity = Date.now();
   let lastTileActivity = Date.now();
   let lastReadinessSignature = "";
@@ -428,7 +421,6 @@ export function createBuildingHighlightLayerManager({
   let overlayFailed = false;
   let overlayReloadCount = 0;
   let movementGeneration = 0;
-  let movementReadinessLocked = false;
   let movementReadinessSignature = "";
   let movementReadinessChangedAt = 0;
 
@@ -459,19 +451,27 @@ export function createBuildingHighlightLayerManager({
     document.body.dataset.tileTraversalState = loadTiles ? "active" : "paused";
   };
 
-  const setBuildingPresentation = (visible) => {
+  const setBuildingPresentation = (visible, { renderActive = true } = {}) => {
     backgroundLayer?.setProps({
       opacity: visible ? backgroundOpacity : PRELOAD_OPACITY,
-      visible: true,
+      visible: renderActive,
     });
     poiLayer?.setProps({
       opacity: visible ? poiOpacity : PRELOAD_OPACITY,
-      visible: true,
+      visible: renderActive,
     });
     if (map.getLayer?.(BACKGROUND_LAYER_ID))
-      map.setLayoutProperty?.(BACKGROUND_LAYER_ID, "visibility", "visible");
+      map.setLayoutProperty?.(
+        BACKGROUND_LAYER_ID,
+        "visibility",
+        renderActive ? "visible" : "none",
+      );
     if (map.getLayer?.(POI_LAYER_ID))
-      map.setLayoutProperty?.(POI_LAYER_ID, "visibility", "visible");
+      map.setLayoutProperty?.(
+        POI_LAYER_ID,
+        "visibility",
+        renderActive ? "visible" : "none",
+      );
     document.body.dataset.backgroundInteractionVisibility = visible
       ? "visible"
       : "hidden";
@@ -541,7 +541,6 @@ export function createBuildingHighlightLayerManager({
 
   const cancelMovementReveal = () => {
     movementGeneration += 1;
-    movementReadinessLocked = false;
     if (movementRevealTimer !== null) clearTimeout(movementRevealTimer);
     movementRevealTimer = null;
   };
@@ -559,20 +558,20 @@ export function createBuildingHighlightLayerManager({
       movementReadinessSignature = readiness.signature;
       movementReadinessChangedAt = Date.now();
     }
-    if (readiness.renderable && !movementReadinessLocked) {
-      movementReadinessLocked = true;
-      setTileTraversal(false);
-      movementReadinessChangedAt = Date.now();
-    }
-    const stable =
-      Date.now() - movementReadinessChangedAt >= MOVEMENT_REVEAL_STABLE_MS;
-    document.body.dataset.movementBuildingReadiness = readiness.renderable
-      ? stable
-        ? "ready"
-        : "stabilizing"
-      : "loading";
-    if (readiness.renderable && stable) {
+    // Keep traversal active while the destination selection is still changing.
+    // A renderable snapshot only proves that the tiles selected at this instant
+    // are ready; it does not prove that refinement has discovered the complete
+    // destination set yet.
+    const stableSince = Math.max(movementReadinessChangedAt, lastTileActivity);
+    const stable = Date.now() - stableSince >= MOVEMENT_REVEAL_STABLE_MS;
+    const decision = movementRevealDecision({
+      renderable: readiness.renderable,
+      stable,
+    });
+    document.body.dataset.movementBuildingReadiness = decision.state;
+    if (decision.reveal) {
       movementRevealTimer = null;
+      setTileTraversal(false);
       setBuildingPresentation(true);
       setFullDetailState("full-detail");
       return;
@@ -712,24 +711,35 @@ export function createBuildingHighlightLayerManager({
   const handleMoveStart = () => {
     if (!started) return;
     cancelMovementReveal();
-    movementRendering.begin();
-    setTileTraversal(true);
-    setBuildingPresentation(false);
+    setTileTraversal(false);
+    setBuildingPresentation(false, { renderActive: false });
     document.body.dataset.movementBuildingReadiness = "moving";
-    setFullDetailState("moving-full-detail");
+    updateRefinementMetadata(
+      "moving-hidden",
+      backgroundScreenSpaceError,
+      POI_SCREEN_SPACE_ERROR,
+    );
+    map.triggerRepaint?.();
   };
 
   const handleMoveEnd = () => {
     if (!started) return;
+    if (movementRevealTimer !== null) clearTimeout(movementRevealTimer);
+    movementRevealTimer = null;
     setTileTraversal(true);
-    movementRendering.end();
-    setBuildingPresentation(false);
+    setBuildingPresentation(false, { renderActive: true });
     setFullDetailState("waiting-for-stable-detail");
     movementReadinessSignature = "";
-    movementReadinessLocked = false;
     movementReadinessChangedAt = Date.now();
     const generation = movementGeneration;
-    scheduleMovementReveal(generation);
+    // Traversal was paused during movement, so selectedTiles still describes
+    // the previous camera here. Give Deck a render/update turn before the
+    // destination selection is eligible for the stability gate.
+    map.triggerRepaint?.();
+    movementRevealTimer = window.setTimeout(() => {
+      movementRevealTimer = null;
+      scheduleMovementReveal(generation);
+    }, MOVEMENT_REVEAL_POLL_MS);
   };
 
   const setSelectedPoi = (id = null) => {
@@ -739,10 +749,6 @@ export function createBuildingHighlightLayerManager({
       : "";
     updateMetadata();
     return Boolean(selectedPoiId);
-  };
-
-  const preserveNextMovement = () => {
-    movementRendering.preserveNext();
   };
 
   const start = () => {
@@ -938,7 +944,6 @@ export function createBuildingHighlightLayerManager({
     destroy,
     diagnosticSnapshot,
     isBackgroundViewLoaded,
-    preserveNextMovementRendering: preserveNextMovement,
     reconcile,
     setDiagnosticTileTraversal,
     setSelectedPoi,

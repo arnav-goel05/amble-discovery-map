@@ -24,13 +24,13 @@ test("diagnostic variants are opt-in, allowlisted, and lifecycle bounded", async
     .toBe("function");
   await expect
     .poll(() =>
-      page.evaluate(() => typeof globalThis.__preserveNextMovementRendering),
+      page.evaluate(() => typeof globalThis.__buildingLayerDiagnosticSnapshot),
     )
     .toBe("function");
-  const preserved = await page.evaluate(() =>
-    globalThis.__preserveNextMovementRendering(),
+  const diagnostic = await page.evaluate(() =>
+    globalThis.__buildingLayerDiagnosticSnapshot(),
   );
-  expect(preserved.started).toBe(true);
+  expect(diagnostic.started).toBe(true);
   await expect
     .poll(() =>
       page.evaluate(() => document.body.dataset.performanceVariantApplied),

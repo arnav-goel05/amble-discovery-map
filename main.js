@@ -227,7 +227,6 @@ async function bootstrapApplication() {
         featureTour.start();
       };
       map.once("moveend", startTour);
-      if (!reduceMotion) buildingHighlights?.preserveNextMovementRendering?.();
       map.easeTo({ ...EXPLORE_CAMERA, duration: reduceMotion ? 0 : 5_000 });
       window.setTimeout(startTour, reduceMotion ? 850 : 5_300);
     },
@@ -461,7 +460,7 @@ async function bootstrapApplication() {
     lightingEffect,
     map,
     backgroundScreenSpaceError:
-      injectedSnapshot?.backgroundScreenSpaceError ?? 4,
+      injectedSnapshot?.backgroundScreenSpaceError ?? 8,
     pois: poiTilesets,
     poiTilesetUrl: assetManifest?.overlays?.url ?? poiTilesetUrl,
     diagnosticWorkloads: performanceVariant?.workloads ?? null,

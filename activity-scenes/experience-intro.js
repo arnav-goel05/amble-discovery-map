@@ -13,7 +13,7 @@ function createMarkup() {
   root.innerHTML = `
     <div class="experience-intro__content">
       <div class="experience-intro__brand">
-        <img class="experience-intro__wordmark" src="/brand/amble-wordmark.png" alt="Amble" width="1422" height="449" decoding="async" fetchpriority="high" />
+        <img class="experience-intro__wordmark" src="/brand/amble-wordmark.png" alt="Amble" width="300" height="95" decoding="async" fetchpriority="high" />
         <h1 id="experience-intro-title" class="experience-intro__title">There is too much happening in Singapore, you just didn't know it</h1>
       </div>
       <div class="experience-intro__loading" role="status" aria-live="polite">

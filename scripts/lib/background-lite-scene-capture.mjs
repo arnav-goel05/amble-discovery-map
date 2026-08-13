@@ -21,7 +21,7 @@ async function waitForScene(page, errors) {
       () =>
         document.body.dataset.backgroundViewLoaded === "true" &&
         Number(document.body.dataset.poiTileLoadCount ?? 0) > 0 &&
-        typeof globalThis.__preserveNextMovementRendering === "function",
+        typeof globalThis.__buildingLayerDiagnosticSnapshot === "function",
       null,
       { timeout: 90_000 },
     );
@@ -186,7 +186,7 @@ export function createMixedSceneRenderer({
     );
     await waitForScene(page, errors);
     const diagnostic = await page.evaluate(() =>
-      globalThis.__preserveNextMovementRendering(),
+      globalThis.__buildingLayerDiagnosticSnapshot(),
     );
     const observedCamera = await page.evaluate(() => location.hash);
     const renderState = await page.evaluate(() => ({

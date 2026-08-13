@@ -4,8 +4,8 @@ import test from "node:test";
 import {
   backgroundViewReadiness,
   buildingMovementReadiness,
-  createMovementRenderingGuard,
   LOCAL_BUILDING_RENDER_POLICY,
+  movementRevealDecision,
   optionalTilesetViewReadiness,
   overlayOnlyReloadPlan,
   rendererAssetManifestState,
@@ -37,36 +37,16 @@ const manifest = (overrides = {}) => ({
   ...overrides,
 });
 
-test("movement rendering preservation applies to exactly one camera movement", () => {
-  const guard = createMovementRenderingGuard();
-
-  assert.deepEqual(guard.begin(), {
-    hideBackground: true,
-    pauseTraversal: true,
-  });
-  guard.end();
-
-  guard.preserveNext();
-  assert.deepEqual(guard.begin(), {
-    hideBackground: false,
-    pauseTraversal: false,
-  });
-  guard.end();
-
-  assert.deepEqual(guard.begin(), {
-    hideBackground: true,
-    pauseTraversal: true,
-  });
-});
-
 test("renderer contract fixes background at 30%, overlays at 100%, and gives overlays a depth preference", () => {
   assert.equal(LOCAL_BUILDING_RENDER_POLICY.backgroundOpacity, 0.3);
   assert.deepEqual(LOCAL_BUILDING_RENDER_POLICY.buildingZoomRange, [13, 22.1]);
+  assert.equal(LOCAL_BUILDING_RENDER_POLICY.backgroundScreenSpaceError, 8);
+  assert.equal(LOCAL_BUILDING_RENDER_POLICY.highlightedScreenSpaceError, 4);
   assert.equal(LOCAL_BUILDING_RENDER_POLICY.hideBuildingsDuringMovement, true);
   assert.equal(LOCAL_BUILDING_RENDER_POLICY.movementRevealStableMs, 300);
   assert.equal(
     LOCAL_BUILDING_RENDER_POLICY.maintainFullDetailDuringMovement,
-    true,
+    false,
   );
   assert.equal(LOCAL_BUILDING_RENDER_POLICY.overlayOpacity, 1);
   assert.deepEqual(LOCAL_BUILDING_RENDER_POLICY.overlayDepthParameters, {
@@ -215,6 +195,47 @@ test("movement readiness waits for every selected background and highlighted til
       highlightedRequired: true,
       highlightedTileset,
     }).renderable,
+    false,
+  );
+  backgroundTileset.isLoaded = () => true;
+  assert.equal(
+    buildingMovementReadiness({
+      backgroundTileset,
+      highlightedRequired: true,
+      highlightedTileset,
+    }).renderable,
     true,
   );
+});
+
+test("movement readiness does not freeze a renderable parent while refinement is pending", () => {
+  const tileset = {
+    isLoaded: () => false,
+    selectedTiles: [{ content: {}, id: "renderable-parent" }],
+  };
+  assert.equal(
+    buildingMovementReadiness({ backgroundTileset: tileset }).renderable,
+    false,
+  );
+  tileset.isLoaded = () => true;
+  assert.equal(
+    buildingMovementReadiness({ backgroundTileset: tileset }).renderable,
+    true,
+  );
+});
+
+test("movement reveal keeps traversal active until the renderable selection is stable", () => {
+  assert.deepEqual(
+    movementRevealDecision({ renderable: false, stable: false }),
+    { freezeTraversal: false, reveal: false, state: "loading" },
+  );
+  assert.deepEqual(
+    movementRevealDecision({ renderable: true, stable: false }),
+    { freezeTraversal: false, reveal: false, state: "stabilizing" },
+  );
+  assert.deepEqual(movementRevealDecision({ renderable: true, stable: true }), {
+    freezeTraversal: true,
+    reveal: true,
+    state: "ready",
+  });
 });

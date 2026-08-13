@@ -105,17 +105,15 @@ export function installPerformanceVariantController({
   };
   const destroy = () => {
     delete globalRef.__applyPerformanceDiagnosticVariant;
-    delete globalRef.__preserveNextMovementRendering;
+    delete globalRef.__buildingLayerDiagnosticSnapshot;
     delete globalRef.__setPerformanceDiagnosticEventWorkloads;
     documentRef
       .getElementById("performance-diagnostic-hide-interface")
       ?.remove();
   };
   globalRef.__applyPerformanceDiagnosticVariant = apply;
-  globalRef.__preserveNextMovementRendering = () => {
-    buildingHighlights.preserveNextMovementRendering?.();
-    return buildingHighlights.diagnosticSnapshot();
-  };
+  globalRef.__buildingLayerDiagnosticSnapshot = () =>
+    buildingHighlights.diagnosticSnapshot();
   globalRef.__setPerformanceDiagnosticEventWorkloads = ({
     minimapViewportTracking,
     moveEndSearchRefresh,

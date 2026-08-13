@@ -1,9 +1,9 @@
 import { expect, test } from "playwright/test";
 
-test("the initial intro is styled before the application bundle loads", async ({
+test("the initial wordmarks are bounded before application JavaScript loads", async ({
   page,
 }) => {
-  await page.route("**/main.js", (route) => route.abort());
+  await page.route("**/app-entry.js", (route) => route.abort());
   await page.goto("/");
 
   const intro = page.locator("#experience-intro");
@@ -11,16 +11,20 @@ test("the initial intro is styled before the application bundle loads", async ({
   await expect(intro).toHaveCSS("position", "fixed");
   await expect(intro).toHaveCSS("font-family", /Arial|sans-serif/);
   await expect(wordmark).toBeVisible();
+  await expect(wordmark).toHaveAttribute("width", "300");
+  await expect(wordmark).toHaveAttribute("height", "95");
   expect(
     await wordmark.evaluate((element) => element.getBoundingClientRect().width),
   ).toBeLessThanOrEqual(300);
-  await expect(page.getByRole("button", { name: "Try again" })).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Let's explore" }),
-  ).toBeHidden();
-  await expect(page.locator("body")).toHaveAttribute(
-    "data-experience-intro",
-    "error",
+  await expect(page.locator("#map-brand")).toBeHidden();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  await expect(page.getByText("Bringing Singapore into view")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Try again" })).toBeHidden();
+  await expect(page.getByRole("button", { name: "Let's explore" })).toBeHidden(
   );
 });
 

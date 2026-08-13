@@ -131,7 +131,7 @@ tiles/                                 # preserved authoritative source
 1. Add an explicit local asset manifest that points to the complete background-lite and overlay catalogues; do not infer partial directories.
 2. Render background at 30% opacity and overlays at 100% opacity.
 3. Render background first and apply a narrowly scoped overlay depth bias/depth function so coincident full-quality geometry wins without flicker; keep this renderer treatment behind tests rather than mutating geometry.
-4. Preserve current refinement, movement, readiness, error, and memory contracts for both layers.
+4. Superseding movement amendment: hide both 3D layers and pause traversal during camera movement; after movement, refine the background at SSE `8` and highlights at SSE `4` at preload opacity, then freeze and reveal the fully renderable selection after `300 ms` of stability.
 5. Highlight catalogue changes reload only the overlay layer; background URL and hashes remain unchanged.
 
 ### Phase E — Validation and legacy retirement

@@ -1,5 +1,9 @@
 @import url("./design-tokens.css");
 
+.map-brand {
+  display: none;
+}
+
 .experience-intro {
   position: fixed;
   z-index: 100;
