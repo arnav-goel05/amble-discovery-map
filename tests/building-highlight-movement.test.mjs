@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   backgroundViewReadiness,
+  buildingMovementReadiness,
   createMovementRenderingGuard,
   LOCAL_BUILDING_RENDER_POLICY,
   optionalTilesetViewReadiness,
@@ -62,6 +63,7 @@ test("renderer contract fixes background at 30%, overlays at 100%, and gives ove
   assert.equal(LOCAL_BUILDING_RENDER_POLICY.backgroundOpacity, 0.3);
   assert.deepEqual(LOCAL_BUILDING_RENDER_POLICY.buildingZoomRange, [13, 22.1]);
   assert.equal(LOCAL_BUILDING_RENDER_POLICY.hideBuildingsDuringMovement, true);
+  assert.equal(LOCAL_BUILDING_RENDER_POLICY.movementRevealStableMs, 300);
   assert.equal(
     LOCAL_BUILDING_RENDER_POLICY.maintainFullDetailDuringMovement,
     true,
@@ -184,5 +186,35 @@ test("view readiness requires selected content and supports an empty overlay vie
       { selectedTiles: [] },
     ),
     { loaded: true, renderable: true },
+  );
+});
+
+test("movement readiness waits for every selected background and highlighted tile", () => {
+  const ready = { content: {}, id: "ready" };
+  const loading = { content: null, id: "loading" };
+  const backgroundTileset = {
+    isLoaded: () => false,
+    selectedTiles: [ready, loading],
+  };
+  const highlightedTileset = {
+    isLoaded: () => true,
+    selectedTiles: [ready],
+  };
+  assert.equal(
+    buildingMovementReadiness({
+      backgroundTileset,
+      highlightedRequired: true,
+      highlightedTileset,
+    }).renderable,
+    false,
+  );
+  loading.content = {};
+  assert.equal(
+    buildingMovementReadiness({
+      backgroundTileset,
+      highlightedRequired: true,
+      highlightedTileset,
+    }).renderable,
+    true,
   );
 });

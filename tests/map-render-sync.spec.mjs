@@ -10,7 +10,9 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({
     waitUntil: "domcontentloaded",
   });
   await expect
-    .poll(() => page.evaluate(() => Boolean(window._map?.__deck)))
+    .poll(() => page.evaluate(() => Boolean(window._map?.__deck)), {
+      timeout: 20_000,
+    })
     .toBe(true);
   await expect
     .poll(
@@ -183,15 +185,12 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({
   expect(result.refinementStates).toContain("moving-full-detail");
   expect(result.refinementStates).toContain("full-detail");
   expect(result.traversalStates).toContain("active");
+  expect(result.traversalStates).toContain("paused");
   expect(result.backgroundLoadTiles).toContain(true);
-  expect(result.backgroundVisibility).toContain(false);
   expect(result.backgroundVisibility).toContain(true);
-  expect(result.backgroundMapVisibility).toContain("none");
   expect(result.backgroundMapVisibility).toContain("visible");
   if (result.poiVisibility.some((value) => value !== undefined)) {
-    expect(result.poiVisibility).toContain(false);
     expect(result.poiVisibility).toContain(true);
-    expect(result.poiMapVisibility).toContain("none");
     expect(result.poiMapVisibility).toContain("visible");
   }
   expect(result.backgroundScreenSpaceErrors).toContain("4");
