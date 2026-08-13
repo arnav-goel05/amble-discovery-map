@@ -61,6 +61,7 @@ test("movement rendering preservation applies to exactly one camera movement", (
 test("renderer contract fixes background at 30%, overlays at 100%, and gives overlays a depth preference", () => {
   assert.equal(LOCAL_BUILDING_RENDER_POLICY.backgroundOpacity, 0.3);
   assert.deepEqual(LOCAL_BUILDING_RENDER_POLICY.buildingZoomRange, [13, 22.1]);
+  assert.equal(LOCAL_BUILDING_RENDER_POLICY.hideBuildingsDuringMovement, true);
   assert.equal(
     LOCAL_BUILDING_RENDER_POLICY.maintainFullDetailDuringMovement,
     true,

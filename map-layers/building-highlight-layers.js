@@ -22,6 +22,7 @@ export const LOCAL_BUILDING_ASSET_SCHEMA = "local-building-assets-v1";
 export const LOCAL_BUILDING_RENDER_POLICY = Object.freeze({
   backgroundOpacity: BACKGROUND_OPACITY,
   buildingZoomRange: Object.freeze([...BACKGROUND_ZOOM_RANGE]),
+  hideBuildingsDuringMovement: true,
   maintainFullDetailDuringMovement: true,
   overlayOpacity: 1,
   overlayDepthParameters: Object.freeze({
@@ -416,15 +417,25 @@ export function createBuildingHighlightLayerManager({
     document.body.dataset.tileTraversalState = loadTiles ? "active" : "paused";
   };
 
-  const setBackgroundVisibility = (visible) => {
+  const setBuildingVisibility = (visible) => {
     backgroundLayer?.setProps({ visible });
+    poiLayer?.setProps({ visible });
     if (map.getLayer?.(BACKGROUND_LAYER_ID))
       map.setLayoutProperty?.(
         BACKGROUND_LAYER_ID,
         "visibility",
         visible ? "visible" : "none",
       );
+    if (map.getLayer?.(POI_LAYER_ID))
+      map.setLayoutProperty?.(
+        POI_LAYER_ID,
+        "visibility",
+        visible ? "visible" : "none",
+      );
     document.body.dataset.backgroundInteractionVisibility = visible
+      ? "visible"
+      : "hidden";
+    document.body.dataset.poiInteractionVisibility = visible
       ? "visible"
       : "hidden";
     map.triggerRepaint?.();
@@ -618,7 +629,7 @@ export function createBuildingHighlightLayerManager({
     if (!started) return;
     movementRendering.begin();
     setTileTraversal(true);
-    setBackgroundVisibility(true);
+    setBuildingVisibility(false);
     setFullDetailState("moving-full-detail");
   };
 
@@ -626,7 +637,7 @@ export function createBuildingHighlightLayerManager({
     if (!started) return;
     setTileTraversal(true);
     movementRendering.end();
-    setBackgroundVisibility(true);
+    setBuildingVisibility(true);
     setFullDetailState("full-detail");
   };
 
@@ -699,6 +710,7 @@ export function createBuildingHighlightLayerManager({
     );
     document.body.dataset.tileTraversalState = "active";
     document.body.dataset.backgroundInteractionVisibility = "visible";
+    document.body.dataset.poiInteractionVisibility = "visible";
     updateRefinementMetadata(
       "full-detail",
       backgroundScreenSpaceError,

@@ -41,6 +41,9 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({
       const backgroundLayer = map.__deck.layerManager
         ?.getLayers()
         .find(({ id }) => id === "buildings-3d");
+      const poiLayer = map.__deck.layerManager
+        ?.getLayers()
+        .find(({ id }) => id === "event-venues-3d");
       const center = map.getCenter();
       const anchor = [103.85927402663303, 1.2862040338634544];
       const mapPoint = map.project(anchor);
@@ -75,6 +78,10 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({
           "buildings-3d",
           "visibility",
         ),
+        poiVisible: poiLayer?.props?.visible,
+        poiMapVisibility: map.getLayer("event-venues-3d")
+          ? map.getLayoutProperty("event-venues-3d", "visibility")
+          : null,
         backgroundScreenSpaceError:
           document.body.dataset.backgroundCurrentMaximumScreenSpaceError,
         poiScreenSpaceError:
@@ -149,6 +156,10 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({
           samples.map(({ backgroundMapVisibility }) => backgroundMapVisibility),
         ),
       ],
+      poiVisibility: [...new Set(samples.map(({ poiVisible }) => poiVisible))],
+      poiMapVisibility: [
+        ...new Set(samples.map(({ poiMapVisibility }) => poiMapVisibility)),
+      ],
       backgroundScreenSpaceErrors: [
         ...new Set(
           samples.map(
@@ -173,8 +184,16 @@ test("the fixed 45 degree camera stays aligned while the map zooms", async ({
   expect(result.refinementStates).toContain("full-detail");
   expect(result.traversalStates).toContain("active");
   expect(result.backgroundLoadTiles).toContain(true);
+  expect(result.backgroundVisibility).toContain(false);
   expect(result.backgroundVisibility).toContain(true);
+  expect(result.backgroundMapVisibility).toContain("none");
   expect(result.backgroundMapVisibility).toContain("visible");
+  if (result.poiVisibility.some((value) => value !== undefined)) {
+    expect(result.poiVisibility).toContain(false);
+    expect(result.poiVisibility).toContain(true);
+    expect(result.poiMapVisibility).toContain("none");
+    expect(result.poiMapVisibility).toContain("visible");
+  }
   expect(result.backgroundScreenSpaceErrors).toContain("4");
   expect(result.poiScreenSpaceErrors).toContain("4");
   renderGuard.assertClean();

@@ -166,3 +166,60 @@ test("background and highlighted buildings both reach visible pixels", async ({
     "The building visibility views must not emit browser rendering failures",
   ).toEqual([]);
 });
+
+test("background and highlighted buildings hide together during movement", async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  await page.context().addInitScript(
+    (snapshot) => {
+      globalThis.__EVENT_PIPELINE_SNAPSHOT__ = snapshot;
+    },
+    {
+      pois: [highlightedPoi],
+      landmarks: [highlightedLandmark],
+      poiTilesetUrl: highlightedPoi.data,
+    },
+  );
+  await page.goto(`/?performanceDiagnostics=1${CAMERA}`, {
+    waitUntil: "domcontentloaded",
+  });
+  await waitForSettledBuildings(page);
+
+  const visibility = () =>
+    page.evaluate(() => {
+      const layers = window._map.__deck.layerManager?.getLayers() ?? [];
+      const layer = (id) => layers.find((candidate) => candidate.id === id);
+      return {
+        background: layer("buildings-3d")?.props?.visible,
+        backgroundMap: window._map.getLayoutProperty(
+          "buildings-3d",
+          "visibility",
+        ),
+        highlighted: layer("event-venues-3d")?.props?.visible,
+        highlightedMap: window._map.getLayoutProperty(
+          "event-venues-3d",
+          "visibility",
+        ),
+        traversal: document.body.dataset.tileTraversalState,
+      };
+    });
+
+  await page.evaluate(() => window._map.fire("movestart"));
+  await expect.poll(visibility).toEqual({
+    background: false,
+    backgroundMap: "none",
+    highlighted: false,
+    highlightedMap: "none",
+    traversal: "active",
+  });
+
+  await page.evaluate(() => window._map.fire("moveend"));
+  await expect.poll(visibility).toEqual({
+    background: true,
+    backgroundMap: "visible",
+    highlighted: true,
+    highlightedMap: "visible",
+    traversal: "active",
+  });
+});
