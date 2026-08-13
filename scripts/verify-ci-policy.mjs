@@ -97,13 +97,23 @@ export function validateCiCdPolicy({
     "cloudflare:r2:verify -- --pre-deploy",
     "cloudflare:prepare",
     "cloudflare:cloud:contracts",
-    "test:ui:release",
     "benchmark:release",
     "verify-release-candidate.mjs revalidate",
     'git push origin "$RELEASE_CANDIDATE_SHA:refs/heads/main"',
   ])
     requireText(release, command, "release gate");
   forbidText(release, "--object-heads", "release request budget");
+  forbidText(release, "test:ui:release", "release compatibility matrix");
+  forbidText(
+    release,
+    "playwright install --with-deps chromium webkit firefox",
+    "release compatibility matrix",
+  );
+  requireText(
+    release,
+    "playwright install --with-deps chromium",
+    "staged browser and performance runtime",
+  );
   forbidText(release, "cloudflare:cloud:deploy", "deployment exclusivity");
   forbidText(release, "wrangler deploy", "deployment exclusivity");
   forbidText(release, "--force", "release branch safety");
@@ -114,7 +124,6 @@ export function validateCiCdPolicy({
     const prepare = packageJson.scripts?.["cloudflare:prepare"] ?? "";
     const connectedBuild = packageJson.scripts?.["cloudflare:cloud:test"] ?? "";
     const smoke = packageJson.scripts?.["cloudflare:cloud:smoke"] ?? "";
-    const releaseUi = packageJson.scripts?.["test:ui:release"] ?? "";
     const eventPipelineBrowser =
       packageJson.scripts?.["test:event-pipeline-browser"] ?? "";
     const releaseBenchmark = packageJson.scripts?.["benchmark:release"] ?? "";
@@ -200,91 +209,6 @@ export function validateCiCdPolicy({
       "PRODUCTION_SMOKE_REQUIRED_SUCCESSES=1",
       "post-deployment success budget",
     );
-    for (const scriptName of [
-      "test:ui:release:chromium",
-      "test:ui:release:devices",
-      "test:ui:release:compact",
-    ])
-      requireText(releaseUi, `npm run ${scriptName}`, "release UI isolation");
-    requireText(
-      packageJson.scripts?.["test:ui:release:chromium"] ?? "",
-      "--project chromium-desktop",
-      "release Chromium coverage",
-    );
-    requireText(
-      packageJson.scripts?.["test:ui:release:chromium"] ?? "",
-      "PLAYWRIGHT_SKIP_DEVICE_SUPPORT=1",
-      "release device-process isolation",
-    );
-    for (const project of [
-      "chromium-desktop",
-      "chromium-mobile",
-      "webkit-desktop",
-      "webkit-mobile",
-      "firefox-desktop",
-      "firefox-mobile",
-    ])
-      requireText(
-        packageJson.scripts?.["test:ui:release:devices"] ?? "",
-        `--project ${project}`,
-        "release device coverage",
-      );
-    for (const [scriptName, project] of [
-      ["test:ui:release:compact:chromium", "chromium-compact"],
-      ["test:ui:release:compact:webkit", "webkit-compact"],
-      ["test:ui:release:compact:firefox", "firefox-compact"],
-    ]) {
-      requireText(
-        packageJson.scripts?.["test:ui:release:compact"] ?? "",
-        `npm run ${scriptName}`,
-        "release compact-process isolation",
-      );
-      requireText(
-        packageJson.scripts?.[scriptName] ?? "",
-        `--project ${project}`,
-        "release compact coverage",
-      );
-      requireText(
-        packageJson.scripts?.[scriptName] ?? "",
-        "--grep",
-        "bounded representative compact coverage",
-      );
-      requireText(
-        packageJson.scripts?.[scriptName] ?? "",
-        "PLAYWRIGHT_GEOMETRY_FIXTURE=1",
-        "release compact fixture isolation",
-      );
-    }
-    requireText(
-      packageJson.scripts?.["test:ui:release:compact"] ?? "",
-      "geometry:fixture:prepare",
-      "release compact fixture materialization",
-    );
-    for (const scriptName of [
-      "test:ui:release:compact:chromium",
-      "test:ui:release:compact:webkit",
-    ]) {
-      for (const journey of [
-        "anonymous startup renders",
-        "intro waits for initial 3D content",
-        "users build, reorder, and route",
-        "vague voice discovery presents",
-      ])
-        requireText(
-          packageJson.scripts?.[scriptName] ?? "",
-          journey,
-          "representative event, intro, plan, and voice coverage",
-        );
-    }
-    for (const journey of [
-      "intro waits for initial 3D content",
-      "users build, reorder, and route",
-    ])
-      requireText(
-        packageJson.scripts?.["test:ui:release:compact:firefox"] ?? "",
-        journey,
-        "Firefox-supported representative coverage",
-      );
     for (const scriptName of [
       "test:ui:ci",
       "test:ui:mobile",

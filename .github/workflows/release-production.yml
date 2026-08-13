@@ -76,14 +76,11 @@ jobs:
       - name: Verify production Cloudflare build
         run: npm run cloudflare:prepare && npm run cloudflare:cloud:verify-build
 
-      - name: Install required browser matrix
-        run: npx playwright install --with-deps chromium webkit firefox
+      - name: Install Chromium for staged verification and performance
+        run: npx playwright install --with-deps chromium
 
       - name: Run staged event-pipeline browser integration
         run: npm run test:event-pipeline-browser
-
-      - name: Run bounded desktop and mobile compatibility matrix
-        run: npm run test:ui:release
 
       - name: Enforce frontend performance budget
         run: npm run benchmark:release

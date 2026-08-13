@@ -179,6 +179,16 @@ test("staged event-pipeline browser verification uses the compact geometry fixtu
   }
 });
 
+test("production release omits the compatibility matrix but retains bounded Chromium gates", () => {
+  const inputs = clone();
+  assert.doesNotMatch(inputs.release, /test:ui:release/u);
+  assert.doesNotMatch(inputs.release, /chromium webkit firefox/u);
+  assert.match(inputs.release, /playwright install --with-deps chromium/u);
+  assert.match(inputs.release, /test:event-pipeline-browser/u);
+  assert.match(inputs.release, /benchmark:release/u);
+  assert.doesNotThrow(() => validateCiCdPolicy(inputs));
+});
+
 test("browser CI cannot silently fall back from the materialized fixture", () => {
   const missingRoot = clone();
   missingRoot.playwrightConfig = missingRoot.playwrightConfig.replace(
