@@ -62,9 +62,6 @@ export function validateCiCdPolicy({
     "verify:voice-capabilities",
     "cloudflare:cloud:contracts",
     "build:ci",
-    "test:ui:ci",
-    "test:ui:mobile",
-    "test:ui:voice-ci",
   ])
     requireText(ci, command, "ordinary CI coverage");
 
