@@ -27,6 +27,7 @@ export function createVoiceRelayRuntimeCache() {
 }
 
 const VOICE_RELAY_RUNTIME = createVoiceRelayRuntimeCache();
+const DIRECT_VOICE_STREAM_PATH = "/api/voice/stream";
 const APPROVED_ACTIVITIES =
   APPROVED_SNAPSHOT.assets[APPROVED_SNAPSHOT.manifest.activitiesRef]?.records ||
   [];
@@ -57,6 +58,17 @@ const APPROVED_VOICE_CANDIDATES = APPROVED_SNAPSHOT.assets[
     };
   }),
 );
+
+function createVoiceRelay(env) {
+  return createRealtimeRelay({
+    policy: VOICE_POLICY,
+    budgetRepository: new D1VoiceBudgetRepository(env.RUNTIME_DB),
+    apiKey: env.OPENAI_API_KEY,
+    approvedCandidateIds: APPROVED_VOICE_CANDIDATE_IDS,
+    approvedCandidates: APPROVED_VOICE_CANDIDATES,
+    operationalLogger: (record) => console.info(JSON.stringify(record)),
+  });
+}
 const SECURITY_HEADERS = {
   "content-security-policy":
     "default-src 'self'; img-src 'self' data: https://*.basemaps.cartocdn.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self' https://*.basemaps.cartocdn.com https://demotiles.maplibre.org; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
@@ -192,16 +204,7 @@ async function voiceSessionAdmissionResponse(request, env) {
     );
   }
   try {
-    const relay = VOICE_RELAY_RUNTIME.getOrCreate(() =>
-      createRealtimeRelay({
-        policy: VOICE_POLICY,
-        budgetRepository: new D1VoiceBudgetRepository(env.RUNTIME_DB),
-        apiKey: env.OPENAI_API_KEY,
-        approvedCandidateIds: APPROVED_VOICE_CANDIDATE_IDS,
-        approvedCandidates: APPROVED_VOICE_CANDIDATES,
-        operationalLogger: (record) => console.info(JSON.stringify(record)),
-      }),
-    );
+    const relay = VOICE_RELAY_RUNTIME.getOrCreate(() => createVoiceRelay(env));
     const ledger =
       relay.sessions.size >= 5
         ? null
@@ -225,7 +228,13 @@ async function voiceSessionAdmissionResponse(request, env) {
       reservationAvailable,
       rateLimited: relay.sessions.size >= 5,
     });
-    return json(result, { status: 201 });
+    return json(
+      {
+        ...result,
+        data: { ...result.data, streamPath: DIRECT_VOICE_STREAM_PATH },
+      },
+      { status: 201 },
+    );
   } catch (error) {
     const statuses = {
       voice_disabled: 503,
@@ -241,6 +250,71 @@ async function voiceSessionAdmissionResponse(request, env) {
         "Voice service is currently unavailable. Please try again later.",
       ),
       { status: statuses[code] ?? 503 },
+    );
+  }
+}
+
+async function directVoiceStreamResponse(request, env) {
+  if (
+    request.method !== "GET" ||
+    request.headers.get("origin") !== new URL(request.url).origin ||
+    request.headers.get("upgrade")?.toLowerCase() !== "websocket"
+  ) {
+    return json(
+      errorEnvelope("invalid_request", "Voice stream upgrade is invalid."),
+      { status: 400 },
+    );
+  }
+  if (
+    env.REALTIME_ENABLED !== "true" ||
+    !env.RUNTIME_DB ||
+    !env.OPENAI_API_KEY ||
+    typeof globalThis.WebSocketPair !== "function"
+  ) {
+    return json(
+      errorEnvelope("voice_disabled", "Voice session is unavailable."),
+      { status: 503 },
+    );
+  }
+
+  const relay = createVoiceRelay(env);
+  try {
+    const ledger = await new D1VoiceBudgetRepository(
+      env.RUNTIME_DB,
+    ).getLedger();
+    const reservationAvailable = Boolean(
+      ledger &&
+      ledger.spentMicroUsd +
+        ledger.reservedMicroUsd +
+        VOICE_POLICY.worstCaseReservation.maxTurnReservedMicroUsd <=
+        ledger.capMicroUsd,
+    );
+    const admissionBody = {
+      protocolVersion: "1.1",
+      disclosureAccepted: true,
+      capabilities: { audioInput: true, audioOutput: true, text: true },
+    };
+    const result = await relay.admit({
+      requestUrl: request.url,
+      origin: request.headers.get("origin"),
+      contentType: "application/json",
+      bodyBytes: new TextEncoder().encode(JSON.stringify(admissionBody))
+        .byteLength,
+      body: admissionBody,
+      environmentEnabled: true,
+      providerPolicyValid: true,
+      rateCardValid: true,
+      reservationAvailable,
+      rateLimited: false,
+    });
+    const pair = new globalThis.WebSocketPair();
+    const [client, server] = Object.values(pair);
+    await relay.attach(result.data.sessionId, server);
+    return new Response(null, { status: 101, webSocket: client });
+  } catch {
+    return json(
+      errorEnvelope("provider_unavailable", "Voice could not connect."),
+      { status: 503 },
     );
   }
 }
@@ -755,6 +829,8 @@ export default {
       return restaurantResponse(request, url, env, context);
     if (url.pathname === "/api/voice/sessions")
       return voiceSessionAdmissionResponse(request, env);
+    if (url.pathname === DIRECT_VOICE_STREAM_PATH)
+      return directVoiceStreamResponse(request, env);
     const voiceStream = url.pathname.match(
       /^\/api\/voice\/sessions\/([^/]+)\/stream$/,
     );

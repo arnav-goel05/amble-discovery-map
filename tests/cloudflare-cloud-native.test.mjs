@@ -375,6 +375,31 @@ const voiceSessionRequest = ({
     body,
   });
 
+const voiceDb = {
+  async batch(statements) {
+    return statements.map(() => ({ success: true }));
+  },
+  prepare() {
+    return {
+      bind() {
+        return this;
+      },
+      async first() {
+        return {
+          cap_micro_usd: 10_000_000,
+          spent_micro_usd: 0,
+          reserved_micro_usd: 0,
+          enabled: 1,
+          updated_at: "2026-08-15T00:00:00.000Z",
+        };
+      },
+      async run() {
+        return { success: true };
+      },
+    };
+  },
+};
+
 test("cloud security headers allow only self microphone and same-origin voice relay", async () => {
   const response = await worker.fetch(
     new Request("https://amble.example/"),
@@ -412,6 +437,37 @@ test("cloud voice stream reuses admission relay across distinct request env wrap
   assert.equal(streamed, relay);
   assert.equal(streamed.sessions.has("session-1"), true);
   assert.equal(creations, 1);
+});
+
+test("cloud voice admission selects the isolate-independent direct stream", async () => {
+  const response = await worker.fetch(
+    voiceSessionRequest(),
+    {
+      REALTIME_ENABLED: "true",
+      OPENAI_API_KEY: "fixture-server-only-key",
+      RUNTIME_DB: voiceDb,
+    },
+    {},
+  );
+  const payload = await response.json();
+
+  assert.equal(response.status, 201);
+  assert.equal(payload.data.protocolVersion, "1.1");
+  assert.equal(payload.data.streamPath, "/api/voice/stream");
+});
+
+test("direct cloud voice stream rejects non-WebSocket requests", async () => {
+  const response = await worker.fetch(
+    new Request("https://amble.example/api/voice/stream", {
+      headers: { origin: "https://amble.example" },
+    }),
+    {},
+    {},
+  );
+  const payload = await response.json();
+
+  assert.equal(response.status, 400);
+  assert.equal(payload.error.code, "invalid_request");
 });
 
 test("disabled cloud voice admission fails closed without disclosing server secrets", async () => {
