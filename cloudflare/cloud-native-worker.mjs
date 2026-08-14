@@ -13,7 +13,20 @@ const OVERPASS_ENDPOINTS = [
   "https://overpass-api.de/api/interpreter",
   "https://overpass.kumi.systems/api/interpreter",
 ];
-const VOICE_RELAYS = new WeakMap();
+export function createVoiceRelayRuntimeCache() {
+  let relay = null;
+  return Object.freeze({
+    get() {
+      return relay;
+    },
+    getOrCreate(factory) {
+      if (!relay) relay = factory();
+      return relay;
+    },
+  });
+}
+
+const VOICE_RELAY_RUNTIME = createVoiceRelayRuntimeCache();
 const APPROVED_ACTIVITIES =
   APPROVED_SNAPSHOT.assets[APPROVED_SNAPSHOT.manifest.activitiesRef]?.records ||
   [];
@@ -179,18 +192,16 @@ async function voiceSessionAdmissionResponse(request, env) {
     );
   }
   try {
-    let relay = VOICE_RELAYS.get(env);
-    if (!relay) {
-      relay = createRealtimeRelay({
+    const relay = VOICE_RELAY_RUNTIME.getOrCreate(() =>
+      createRealtimeRelay({
         policy: VOICE_POLICY,
         budgetRepository: new D1VoiceBudgetRepository(env.RUNTIME_DB),
         apiKey: env.OPENAI_API_KEY,
         approvedCandidateIds: APPROVED_VOICE_CANDIDATE_IDS,
         approvedCandidates: APPROVED_VOICE_CANDIDATES,
         operationalLogger: (record) => console.info(JSON.stringify(record)),
-      });
-      VOICE_RELAYS.set(env, relay);
-    }
+      }),
+    );
     const ledger =
       relay.sessions.size >= 5
         ? null
@@ -245,7 +256,7 @@ async function voiceStreamResponse(request, env, sessionId) {
       { status: 400 },
     );
   }
-  const relay = VOICE_RELAYS.get(env);
+  const relay = VOICE_RELAY_RUNTIME.get();
   if (
     !relay ||
     !relay.sessions.has(sessionId) ||

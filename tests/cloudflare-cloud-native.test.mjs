@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import worker, { parseBbox } from "../cloudflare/cloud-native-worker.mjs";
+import worker, {
+  createVoiceRelayRuntimeCache,
+  parseBbox,
+} from "../cloudflare/cloud-native-worker.mjs";
 import { APPROVED_SNAPSHOT } from "../cloudflare/generated-approved-snapshot.mjs";
 import buildingAssetRelease from "../data/building-asset-release.json" with { type: "json" };
 
@@ -392,6 +395,23 @@ test("cloud security headers allow only self microphone and same-origin voice re
   const csp = response.headers.get("content-security-policy");
   assert.match(csp, /(?:^|;)\s*connect-src\s[^;]*'self'/);
   assert.doesNotMatch(csp, /api\.openai\.com|wss:\/\/[^;]*openai/i);
+});
+
+test("cloud voice stream reuses admission relay across distinct request env wrappers", () => {
+  const cache = createVoiceRelayRuntimeCache();
+  const relay = { sessions: new Map([["session-1", {}]]) };
+  let creations = 0;
+
+  const admitted = cache.getOrCreate(() => {
+    creations += 1;
+    return relay;
+  });
+  const streamed = cache.get();
+
+  assert.equal(admitted, relay);
+  assert.equal(streamed, relay);
+  assert.equal(streamed.sessions.has("session-1"), true);
+  assert.equal(creations, 1);
 });
 
 test("disabled cloud voice admission fails closed without disclosing server secrets", async () => {
