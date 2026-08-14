@@ -141,7 +141,7 @@ The shared capability bridge is an atomic browser/relay contract. Protocol `1.0`
 resume against a protocol `1.1` Worker, and a protocol `1.1` client must reject a `1.0` admission
 response.
 
-1. Keep `REALTIME_ENABLED=false` and the D1 runtime switch disabled.
+1. Keep `REALTIME_ENABLED=false` and the D1 runtime switch disabled until the remaining rollout checks pass.
 2. Deploy the browser bundle, local relay, Worker admission route, provider relay, capability
    registry, schemas, and parity fixtures from the same verified source revision.
 3. Run the mocked capability-contract, connector-parity, browser-matrix, production-build, and
@@ -150,6 +150,10 @@ response.
    `catalog.search`, and `catalog.get` before authoritative context, and rejects protocol `1.0`.
 5. Enable the D1 switch and then `REALTIME_ENABLED` only after the owner confirms the pinned policy,
    rate card, remaining reservation capacity, and optional live-smoke authorization.
+
+The current production rollout has completed these checks and explicitly enables the voice UI,
+the D1 runtime switch, and `REALTIME_ENABLED`. The lifetime USD 10 ledger cap remains the final
+admission boundary.
 
 Realtime capability IDs remain canonical dotted IDs in application contracts, browser messages,
 validation, and dispatch. The relay deterministically projects them to provider-only function names

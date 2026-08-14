@@ -36,6 +36,14 @@ const validEntry = [
   'import("./application.js")',
 ].join(";");
 
+test("production build and Worker explicitly enable the guarded voice surface", () => {
+  const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
+  const prepare = packageJson.scripts["cloudflare:prepare"];
+  const workerConfig = fs.readFileSync("wrangler.cloud.jsonc", "utf8");
+  assert.match(prepare, /VITE_VOICE_UI_ENABLED=true/u);
+  assert.match(workerConfig, /"REALTIME_ENABLED"\s*:\s*"true"/u);
+});
+
 test("accepts a lightweight Cloudflare entry containing capability degradation", (context) => {
   const root = fixture({ entry: validEntry });
   context.after(() => fs.rmSync(root, { recursive: true, force: true }));

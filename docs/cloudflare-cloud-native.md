@@ -49,7 +49,7 @@ The production Worker uses Cloudflare Workers Builds to deploy successful pushes
 | Build command                | `npm run cloudflare:cloud:test`   |
 | Deploy command               | `npm run cloudflare:cloud:deploy` |
 | Build variable               | `NODE_VERSION=24`                 |
-| Build variable               | `VITE_VOICE_UI_ENABLED=false`     |
+| Voice UI build policy        | `VITE_VOICE_UI_ENABLED=true`      |
 | Non-production branch builds | Disabled                          |
 
 Authorize the Cloudflare GitHub App only for this repository. Keep runtime secrets, D1, and R2 bindings on the existing Worker; build variables are not a replacement for runtime secrets.
@@ -134,13 +134,13 @@ allowance resets.
 
 ### Realtime voice kill switches and USD 10 lifetime cap
 
-The production voice entry surface is hidden with `VITE_VOICE_UI_ENABLED=false`. Production builds
-also fail closed to hidden when that build variable is absent or malformed. Local Vite development
-defaults to visible and may set the value explicitly in `.env.local`; no Git-branch name is used at
-runtime. Hiding the shell does not remove the shared assistant controller or direct application
+The production build command explicitly enables the voice entry surface with
+`VITE_VOICE_UI_ENABLED=true`. Local Vite development defaults to visible and may set the value
+explicitly in `.env.local`; no Git-branch name is used at runtime. Setting the build policy to
+`false` hides the shell without removing the shared assistant controller or direct application
 controls.
 
-Realtime voice admission is independently disabled by default. Admission requires both
+Realtime voice admission remains independently guarded. Admission requires both
 `REALTIME_ENABLED=true` in the Worker environment and the D1 `openai-realtime` runtime flag to be
 enabled. Apply `cloudflare/migrations/0003_voice_budget.sql` before enabling it. The OpenAI
 credential must exist only as the `OPENAI_API_KEY` Worker secret; never place it in

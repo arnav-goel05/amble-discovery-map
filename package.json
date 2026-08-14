@@ -77,7 +77,7 @@
     "cloudflare:deploy": "wrangler deploy --config wrangler.vpc.jsonc",
     "cloudflare:dev": "wrangler dev --config wrangler.vpc.jsonc --remote",
     "cloudflare:test": "node --test tests/cloudflare-vpc-proxy.test.mjs",
-    "cloudflare:prepare": "node scripts/generate-cloudflare-snapshot.mjs && node scripts/prepare-cloudflare-public.mjs && vite build --config vite.cloudflare.config.cjs",
+    "cloudflare:prepare": "node scripts/generate-cloudflare-snapshot.mjs && node scripts/prepare-cloudflare-public.mjs && VITE_VOICE_UI_ENABLED=true vite build --config vite.cloudflare.config.cjs",
     "cloudflare:seed:restaurants": "node scripts/generate-cloudflare-restaurant-seed.mjs",
     "cloudflare:cloud:verify-build": "node scripts/verify-cloudflare-frontend.mjs",
     "cloudflare:cloud:build": "npm run cloudflare:prepare",
